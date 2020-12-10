@@ -1,0 +1,6 @@
+{
+  "name": "firebolt-ui-applaunch",
+  "identifier": "firebolt-ui-applaunch",
+  "version": "1.0.0",
+  "icon": "./static/icon.png"
+}
