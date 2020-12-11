@@ -124,6 +124,18 @@ export default class PlayerControls extends Lightning.Component {
      * Variable to store the duration of the video content.
      */
     this.videoDuration = 0
+    this.tag('Buttons').children[0].patch({
+          alpha: 0.4
+    })
+    this.tag('Buttons').children[2].patch({
+      alpha: 0.4
+    })
+    this.tag('Audio').patch({
+      alpha: 0.4
+    })
+    this.tag('Extras').patch({
+      alpha: 0.4
+    })
   }
 
   /**
@@ -366,10 +378,10 @@ export default class PlayerControls extends Lightning.Component {
             })
         }
         _handleRight() {
-          this._setState('Forward')
+          // this._setState('Forward')
         }
         _handleLeft() {
-          this._setState('Rewind')
+          // this._setState('Rewind')
         }
         _getFocused() {
           this.timer()

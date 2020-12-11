@@ -150,6 +150,23 @@ export default class MainView extends Lightning.Component {
         console.log('Error', err)
       })
       .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 158,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success')
+          })
+          .catch(err => {
+            console.log('Error', err)
+          })
+      })
+      .catch(err => {
+        console.log('Error', err)
+      })
+      .then(result => {
         thunder.on('Controller', 'statechange', notification => {
           if (
             notification &&
@@ -337,7 +354,7 @@ export default class MainView extends Lightning.Component {
           }
           var thunder = ThunderJS(config)
           console.log('_handleKey', key.keyCode)
-          if (key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36) {
+          if (key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             var appApi = new AppApi()
             if (this.applicationType == 'Cobalt') {
               appApi.suspendCobalt()

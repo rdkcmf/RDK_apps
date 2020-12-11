@@ -115,6 +115,7 @@ export default class SettingsScreen extends Lightning.Component {
             key.keyCode == 77 ||
             key.keyCode == 49 ||
             key.keyCode == 36 ||
+            key.keyCode == 158 ||
             (key.keyCode == 73 && key.ctrlKey == true)
           ) {
             this._appAnimation = this.animation({
@@ -153,6 +154,7 @@ export default class SettingsScreen extends Lightning.Component {
             key.keyCode == 77 ||
             key.keyCode == 49 ||
             key.keyCode == 36 ||
+            key.keyCode == 158 ||
             (key.keyCode == 73 && key.ctrlKey == true)
           ) {
             this._appAnimation = this.animation({

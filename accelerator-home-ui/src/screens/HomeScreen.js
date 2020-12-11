@@ -263,7 +263,7 @@ export default class HomeScreen extends Lightning.Component {
         }
 
         _handleKey(key) {
-          if (key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36) {
+          if (key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             this.zoomIn(0)
             this._setState('MainView')
             this.player.stop()

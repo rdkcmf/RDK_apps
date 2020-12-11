@@ -171,7 +171,11 @@ export default class WiFiScreen extends Lightning.Component {
         console.log('System Error', err)
       })
     this._wifi.registerEvent('onIPAddressStatusChanged', notification => {
-      this.displayIp()
+      if (notification.status == 'ACQUIRED') {
+        this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+      } else if (notification.status == 'LOST') {
+        this.tag('IpAddress').text.text = 'IP:NA'
+      }
     })
   }
   displayIp() {
@@ -373,22 +377,14 @@ export default class WiFiScreen extends Lightning.Component {
    */
   switch() {
     if (this.wifiStatus) {
-      this._wifi.setEnabled(false).then(result => {
-        this._wifi.disconnect()
-        this._wifi.setInterface('WIFI', false).then(result => {
-          if (result.success) {
-            this.wifiStatus = false
-            this.tag('Networks').visible = false
-            this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
-          }
-        })
+      this._wifi.setInterface('ETHERNET', true).then(result => {
         if (result.success) {
-          this._wifi.setInterface('ETHERNET', true).then(result => {
+          this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
             if (result.success) {
-              this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-                if (result.success) {
-                }
-              })
+              this._wifi.disconnect()
+              this.wifiStatus = false
+              this.tag('Networks').visible = false
+              this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
             }
           })
         }

@@ -150,33 +150,6 @@ export default class SplashScreen extends Lightning.Component {
           mountX: 0.5,
         },
       },
-      ResolutionSwitch: {
-        w: 1920,
-        h: 1080,
-        src: Utils.asset('images/tvShows/background.jpg'),
-        alpha: 0,
-        Title: {
-          x: 1920 / 2,
-          y: 400,
-          mountX: 0.5,
-          text: {
-            fontSize: 55,
-            textAlign: 'center',
-            text: 'Do you want to switch to FullHD',
-            textColor: 0xffffffff,
-          },
-        },
-        ResolutionList: {
-          x: 1920 / 2,
-          y: 500,
-          type: Lightning.components.ListComponent,
-          w: 224 * 2,
-          h: 100,
-          itemSize: 204 + 20,
-          roll: true,
-          mountX: 0.5,
-        },
-      },
     }
   }
   /**
@@ -217,9 +190,6 @@ export default class SplashScreen extends Lightning.Component {
 
   _init() {
     this.appApi = new AppApi()
-    this.appApi.getResolution().then(result => {
-      this.resolution = result
-    })
     var homeApi = new HomeApi()
     this.tag('UISwitch.UIList').items = homeApi.getUIInfo().map((item, index) => {
       return {
@@ -230,17 +200,6 @@ export default class SplashScreen extends Lightning.Component {
         item: item,
       }
     })
-    this.tag('ResolutionSwitch.ResolutionList').items = [{ title: 'YES' }, { title: 'NO' }].map(
-      (item, index) => {
-        return {
-          ref: 'UI' + index,
-          w: 204,
-          h: 100,
-          type: Item,
-          item: item,
-        }
-      }
-    )
   }
   /**
    * Function to startVideo.
@@ -309,7 +268,7 @@ export default class SplashScreen extends Lightning.Component {
           this.timeout = setTimeout(() => {
             if (this.remotePaired == false) this._setState('AutoRemotePair')
             else if (this.hasInternet == false) this._setState('ConnectivityScreen')
-            else this._setState('ResolutionSwitch')
+            else Router.navigate('home')
           }, 5000)
         }
         $exit() {
@@ -342,7 +301,7 @@ export default class SplashScreen extends Lightning.Component {
           })
           myAnimation.start()
           setTimeout(() => {
-            this._setState('ResolutionSwitch')
+            Router.navigate('home')
           }, 5000)
         }
         $exit() {
@@ -355,7 +314,7 @@ export default class SplashScreen extends Lightning.Component {
           myAnimation.start()
         }
         _handleKey() {
-          this._setState('ResolutionSwitch')
+          Router.navigate('home')
         }
       },
       class AutoRemotePair extends this {
@@ -376,7 +335,7 @@ export default class SplashScreen extends Lightning.Component {
                 'Please put the remote in pairing mode, No Bluetooth device found'
             setTimeout(() => {
               if (this.hasInternet == false) this._setState('ConnectivityScreen')
-              else this._setState('ResolutionSwitch')
+              else Router.navigate('home')
             }, 1000)
           }, 10000)
           var error = () => {
@@ -384,7 +343,7 @@ export default class SplashScreen extends Lightning.Component {
               'Please put the remote in pairing mode, , No Bluetooth device found'
             setTimeout(() => {
               if (this.hasInternet == false) this._setState('ConnectivityScreen')
-              else this._setState('ResolutionSwitch')
+              else Router.navigate('home')
             }, 1000)
           }
           myAnimation.start()
@@ -436,7 +395,7 @@ export default class SplashScreen extends Lightning.Component {
               clearTimeout(timer)
               setTimeout(() => {
                 if (this.hasInternet == false) this._setState('ConnectivityScreen')
-                else this._setState('ResolutionSwitch')
+                else Router.navigate('home')
               }, 2000)
             } else {
               setTimeout(() => {
@@ -504,59 +463,7 @@ export default class SplashScreen extends Lightning.Component {
           } else {
             if (this.remotePaired == false) this._setState('AutoRemotePair')
             else if (this.hasInternet == false) this._setState('ConnectivityScreen')
-          }
-        }
-        $exit() {
-          const myAnimation = this.tag('UISwitch').animation({
-            duration: 1,
-            repeat: 0,
-            stopMethod: 'immediate',
-            actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
-          })
-          myAnimation.start()
-        }
-      },
-      class ResolutionSwitch extends this {
-        $enter() {
-          if (this.resolution == '1080p') {
-            Router.navigate('home')
-          }
-          const myAnimation = this.tag('ResolutionSwitch').animation({
-            duration: 0.5,
-            repeat: 0,
-            stopMethod: 'immediate',
-            actions: [
-              { p: 'alpha', v: { 0: 0, 1: 1 } },
-              { p: 'x', v: { 0: 1000, 1: 0 } },
-            ],
-          })
-          myAnimation.start()
-        }
-        _getFocused() {
-          return this.tag('ResolutionSwitch.ResolutionList').element
-        }
-        _handleRight() {
-          if (
-            this.tag('ResolutionSwitch.ResolutionList').length - 1 !=
-            this.tag('ResolutionSwitch.ResolutionList').index
-          ) {
-            this.tag('ResolutionSwitch.ResolutionList').setNext()
-            return this.tag('ResolutionSwitch.ResolutionList').element
-          }
-        }
-        _handleLeft() {
-          if (this.tag('ResolutionSwitch.ResolutionList').index > 0) {
-            this.tag('ResolutionSwitch.ResolutionList').setPrevious()
-            return this.tag('ResolutionSwitch.ResolutionList').element
-          }
-        }
-        _handleEnter() {
-          if (this.tag('ResolutionSwitch.ResolutionList').element._item.title == 'YES') {
-            this.appApi.setResolution().then(result => {
-              Router.navigate('home')
-            })
-          } else {
-            Router.navigate('home')
+            else Router.navigate('home')
           }
         }
         $exit() {

@@ -96,7 +96,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
           this.tag('Password').alpha = 0
         }
         _handleKey(event) {
-          if (event.keyCode == 27) {
+          if (event.keyCode == 27 || event.keyCode == 77) {
             this._setState('Pair')
           }
         }
