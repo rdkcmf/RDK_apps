@@ -51,18 +51,25 @@ export default class TopPanel extends Lightning.Component {
       },
     }
   }
-  _init(){
+  _init() {
     this.timeZone = 'America/New_York'
     const config = {
       host: '127.0.0.1',
       port: 9998,
-      default: 1
+      default: 1,
     }
     var thunder = ThunderJS(config)
     thunder
       .call('org.rdk.System', 'getTimeZoneDST')
       .then(result => {
-        if (result.success) this.timeZone = result.timeZone
+        if (result.success) {
+          try {
+            new Date().toLocaleDateString('en-US', { timeZone: result.timeZone })
+            this.timeZone = result.timeZone
+          } catch (err) {
+            this.timeZone = 'America/New_York'
+          }
+        }
       })
       .catch(err => {
         this.timeZone = 'America/New_York'

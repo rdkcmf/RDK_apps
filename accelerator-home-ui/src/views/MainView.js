@@ -344,6 +344,9 @@ export default class MainView extends Lightning.Component {
           } else if (this.applicationType == 'Lightning') {
             appApi.launchLightning(this.uri)
             appApi.setVisibility('ResidentApp', false)
+          } else if (this.applicationType == 'Native') {
+            appApi.launchNative(this.uri)
+            appApi.setVisibility('ResidentApp', false)
           }
         }
         _handleKey(key) {
@@ -364,6 +367,9 @@ export default class MainView extends Lightning.Component {
               appApi.setVisibility('ResidentApp', true)
             } else if (this.applicationType == 'Lightning') {
               appApi.deactivateLightning()
+              appApi.setVisibility('ResidentApp', true)
+            } else if (this.applicationType == 'Native') {
+              appApi.killNative()
               appApi.setVisibility('ResidentApp', true)
             }
             thunder
@@ -444,10 +450,10 @@ export default class MainView extends Lightning.Component {
 
           if (this.settingsType == 'Bluetooth') {
             this.settingsScreen = true
-            Router.navigate('settings/BluetoothScreen',false)
+            Router.navigate('settings/BluetoothScreen', false)
           } else if (this.settingsType == 'Wi-Fi') {
             this.settingsScreen = true
-            Router.navigate('settings/WiFiScreen',false)
+            Router.navigate('settings/WiFiScreen', false)
           }
         }
       },

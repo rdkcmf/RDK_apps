@@ -136,6 +136,9 @@ export default class WiFiScreen extends Lightning.Component {
       },
     }
   }
+  _active() {
+    this._setState('Switch')
+  }
 
   _init() {
     this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
@@ -175,6 +178,29 @@ export default class WiFiScreen extends Lightning.Component {
         this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
       } else if (notification.status == 'LOST') {
         this.tag('IpAddress').text.text = 'IP:NA'
+      }
+    })
+    this._wifi.registerEvent('onDefaultInterfaceChanged', notification => {
+      console.log(notification)
+      if (notification.newInterfaceName == 'WIFI') {
+        this._wifi.setEnabled(true).then(result => {
+          if (result.success) {
+            this.wifiStatus = true
+            this.tag('Networks').visible = true
+            this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
+            this._wifi.discoverSSIDs()
+            this.tag('Networks.AvailableNetworks.Loader').visible = true
+          }
+        })
+      } else if (
+        notification.newInterfaceName == 'ETHERNET' ||
+        notification.oldInterfaceName == 'WIFI'
+      ) {
+        this._wifi.disconnect()
+        this.wifiStatus = false
+        this.tag('Networks').visible = false
+        this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
+        this._setState('Switch')
       }
     })
   }
@@ -327,15 +353,33 @@ export default class WiFiScreen extends Lightning.Component {
           if (option === 'Cancel') {
             this._setState('Switch')
           } else if (option === 'Connect') {
-            this._wifi.connect(this._availableNetworks.tag('List').element._item, '').then(() => {})
-            //this._setState("Switch");
+            if (this._availableNetworks.tag('List').element) {
+              this._wifi
+                .connect(this._availableNetworks.tag('List').element._item, '')
+                .then(() => {})
+            }
+            this._setState('Switch')
           } else if (option === 'Disconnect') {
             this._wifi.disconnect().then(() => {})
             this._setState('Switch')
           }
         }
         $startConnect(password) {
-          this._wifi.connect(this._availableNetworks.tag('List').element._item, password)
+          if (this._availableNetworks.tag('List').element && password != null) {
+            this._wifi.connect(this._availableNetworks.tag('List').element._item, password)
+          } else {
+            this.patch({
+              FailureMessage: {
+                x: (1920 * 2) / 3 + 40,
+                y: 950,
+                text: { text: 'FAILED' },
+              },
+            })
+            setTimeout(() => {
+              this.childList.remove(this.tag('FailureMessage'))
+            }, 2000)
+          }
+          this._setState('Switch')
         }
         $exit() {
           this.tag('PairingScreen').visible = false

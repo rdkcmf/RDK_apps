@@ -157,7 +157,7 @@ export default class SplashScreen extends Lightning.Component {
    */
   _enable() {
     this.remotePaired = true
-    this.hasInternet = false
+    this.hasInternet = true
 
     this._bt = new BluetoothApi()
     this._bt.activate()
@@ -173,10 +173,10 @@ export default class SplashScreen extends Lightning.Component {
         }
       })
     // this.startVideo()
-    var thunderCalls = new ThunderCalls()
-    thunderCalls.checkForInternet().then(result => {
-      this.hasInternet = result
-    })
+    // var thunderCalls = new ThunderCalls()
+    // thunderCalls.checkForInternet().then(result => {
+    //   this.hasInternet = result
+    // })
 
     this._setState('Splashscreen')
   }

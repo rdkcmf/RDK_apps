@@ -160,7 +160,9 @@ export default class BluetoothScreen extends Lightning.Component {
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
     this.renderDeviceList()
   }
-
+  _active() {
+    this._setState('Switch')
+  }
   /**
    * Function to be excuted when the Bluetooth screen is enabled.
    */

@@ -22,6 +22,8 @@ var activatedLightning = false
 var activatedCobalt = false
 var webUrl = ''
 var lightningUrl = ''
+var activatedNative = false
+var nativeUrl = ''
 var cobaltUrl = ''
 const config = {
   host: '127.0.0.1',
@@ -288,6 +290,50 @@ export default class AppApi {
       client: client,
       visible: visible,
     })
+  }
+  /**
+   * Function to launch Native app.
+   * @param {String} url url of app.
+   */
+  launchNative(url) {
+    const childCallsign = 'testApp'
+    if (nativeUrl != url) {
+      thunder
+        .call('org.rdk.RDKShell', 'launchApplication', {
+          client: childCallsign,
+          uri: url,
+          mimeType: 'application/native'
+        })
+        .then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          })
+          thunder.call('org.rdk.RDKShell', 'setFocus', {
+            client: childCallsign,
+          })
+        })
+        .catch(err => {
+          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+        })
+    } else {
+      thunder.call('org.rdk.RDKShell', 'moveToFront', {
+        client: childCallsign,
+      })
+      thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
+    }
+    nativeUrl = url
+    activatedNative = true
+  }
+
+
+
+/**
+   * Function to kill native app.
+   */
+  killNative() {
+    thunder.call('org.rdk.RDKShell', 'kill', { callsign: 'testApp' })
+    activatedNative = false
+    nativeUrl = ''
   }
 
   static pluginStatus(plugin) {
