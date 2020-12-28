@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Router } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Storage } from '@lightningjs/sdk'
 import BluetoothScreen from './BluetoothScreen'
 import WiFiScreen from './WifiScreen'
 
@@ -112,11 +112,13 @@ export default class SettingsScreen extends Lightning.Component {
             default: 1,
           }
           if (
-            key.keyCode == 77 ||
+            (Storage.get('applicationType')=='') &&
+            (key.keyCode == 77 ||
             key.keyCode == 49 ||
             key.keyCode == 36 ||
             key.keyCode == 158 ||
-            (key.keyCode == 73 && key.ctrlKey == true)
+            key.keyCode == 27 ||
+            (key.keyCode == 73 && key.ctrlKey == true))
           ) {
             this._appAnimation = this.animation({
               duration: 0.5,
@@ -131,7 +133,7 @@ export default class SettingsScreen extends Lightning.Component {
             this._appAnimation.on('finish', p => {
               Router.navigate('home')
             })
-          }
+          } else return false;
         }
       },
       class WiFiScreen extends this {
@@ -151,11 +153,13 @@ export default class SettingsScreen extends Lightning.Component {
             default: 1,
           }
           if (
-            key.keyCode == 77 ||
+            (Storage.get('applicationType')=='') &&
+            (key.keyCode == 77 ||
             key.keyCode == 49 ||
             key.keyCode == 36 ||
             key.keyCode == 158 ||
-            (key.keyCode == 73 && key.ctrlKey == true)
+            key.keyCode == 27 ||
+            (key.keyCode == 73 && key.ctrlKey == true))
           ) {
             this._appAnimation = this.animation({
               duration: 0.3,
@@ -170,7 +174,7 @@ export default class SettingsScreen extends Lightning.Component {
             this._appAnimation.on('finish', p => {
               Router.navigate('home')
             })
-          }
+          } else return false;
         }
       },
     ]

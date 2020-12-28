@@ -39,11 +39,20 @@ export default class HomeScreen extends Lightning.Component {
       TopPanel: {
         type: TopPanel,
       },
-      SidePanel: {
-        type: SidePanel,
-      },
-      MainView: {
-        type: MainView,
+      View:{
+        x: 0,
+        y: 200,
+        w: 1920,
+        h: 1080,
+        clipping: true,
+        SidePanel: {
+          type: SidePanel,
+        },
+        MainView: {
+          w:1920,
+          h:1080,
+          type: MainView,
+        },
       },
       Player: { type: AAMPVideoPlayer },
     }
@@ -88,6 +97,7 @@ export default class HomeScreen extends Lightning.Component {
       console.log('Query data is not proper: ' + e)
     }
     this.tag('MainView').appItems = appdetails_format
+    this.tag('MainView').metroApps = this.homeApi.getMetroInfo()
     this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo()
     this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo()
     this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
@@ -218,6 +228,14 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /**
+   * Function to scroll
+   */
+  $scroll(y){
+    this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
+    this.tag('MainView').setSmooth('y',y,{duration:0.5})
+  }
+
+  /**
    * Function to hide the home UI.
    */
   hide() {
@@ -262,12 +280,19 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('Player')
         }
 
+        stopPlayer(){
+          this.zoomIn(0);
+          this._setState('MainView');
+          this.player.stop();
+          this.show();
+        }
+
         _handleKey(key) {
-          if (key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-            this.zoomIn(0)
-            this._setState('MainView')
-            this.player.stop()
-            this.show()
+          if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+            this.stopPlayer()
+          } else if (key.keyCode == 227 || key.keyCode == 179){
+            this.stopPlayer()
+            return false;
           }
         }
       },

@@ -1,5 +1,5 @@
 /**
- * Lightning v2.0.0
+ * Lightning v2.1.2
  *
  * https://github.com/rdkcentral/Lightning
  */
@@ -4932,7 +4932,7 @@
             const cutEx = this._settings.cutEx * precision;
             const cutSy = this._settings.cutSy * precision;
             const cutEy = this._settings.cutEy * precision;
-            const letterSpacing = this._settings.letterSpacing || 0;
+            const letterSpacing = (this._settings.letterSpacing || 0) * precision;
             const textIndent = this._settings.textIndent * precision;
             this.setFontProperties();
             let width = w || (2048 / this.getPrecision());
@@ -8172,7 +8172,7 @@
         _addMethodRouter(member, descriptors, aliases) {
             const code = [
                 "//@ sourceURL=StateMachineRouter.js",
-                "const i = this._stateIndex;"
+                "var i = this._stateIndex;"
             ];
             let cur = aliases[0];
             const supportsSpread = StateMachineType._supportsSpread();
@@ -8235,7 +8235,7 @@
             });
             const code = [
                 "//@ sourceURL=StateMachineRouter.js",
-                "const i = this._stateIndex;"
+                "var i = this._stateIndex;"
             ];
             let cur = aliases[0];
             for (let i = 1, n = aliases.length; i < n; i++) {
@@ -8279,7 +8279,7 @@
             });
             const code = [
                 "//@ sourceURL=StateMachineRouter.js",
-                "const i = this._stateIndex;"
+                "var i = this._stateIndex;"
             ];
             let cur = aliases[0];
             for (let i = 1, n = aliases.length; i < n; i++) {
@@ -8422,7 +8422,7 @@
             this.__signals = undefined;
             this.__passSignals = undefined;
             this.__construct();
-            const func = this.constructor.getTemplateFunc();
+            const func = this.constructor.getTemplateFunc(this);
             func.f(this, func.a);
             this._build();
         }
@@ -8466,12 +8466,12 @@
                 this[`__prop_bindings_${propName}`].push({__obj: obj, __prop: prop, __func: func});
             }
         }
-        static getTemplateFunc() {
+        static getTemplateFunc(ctx) {
             const name = "_templateFunc";
             const hasName = '__has' + name;
             if (this[hasName] !== this) {
                 this[hasName] = this;
-                this[name] = this.parseTemplate(this._template());
+                this[name] = this.parseTemplate(this._template(ctx));
             }
             return this[name];
         }
@@ -8497,10 +8497,10 @@
                         const childCursor = `r${key.replace(/[^a-z0-9]/gi, "") + context.rid}`;
                         let type = value.type ? value.type : Element;
                         if (type === Element) {
-                            loc.push(`const ${childCursor} = element.stage.createElement()`);
+                            loc.push(`var ${childCursor} = element.stage.createElement()`);
                         } else {
                             store.push(type);
-                            loc.push(`const ${childCursor} = new store[${store.length - 1}](${cursor}.stage)`);
+                            loc.push(`var ${childCursor} = new store[${store.length - 1}](${cursor}.stage)`);
                         }
                         loc.push(`${childCursor}.ref = "${key}"`);
                         context.rid++;
@@ -8513,14 +8513,14 @@
                 } else {
                     if (key === "text") {
                         const propKey = cursor + "__text";
-                        loc.push(`const ${propKey} = ${cursor}.enableTextTexture()`);
+                        loc.push(`var ${propKey} = ${cursor}.enableTextTexture()`);
                         this.parseTemplatePropRec(value, context, propKey);
                     } else if (key === "texture" && Utils.isObjectLiteral(value)) {
                         const propKey = cursor + "__texture";
                         const type = value.type;
                         if (type) {
                             store.push(type);
-                            loc.push(`const ${propKey} = new store[${store.length - 1}](${cursor}.stage)`);
+                            loc.push(`var ${propKey} = new store[${store.length - 1}](${cursor}.stage)`);
                             this.parseTemplatePropRec(value, context, propKey);
                             loc.push(`${cursor}["${key}"] = ${propKey}`);
                         } else {
@@ -10504,6 +10504,10 @@
             if (e.data.type === 'config') {
                 this.config = e.data.config;
                 var base = this.config.path;
+                var hasHashPath = /#.*?\//;
+                if(hasHashPath.test(base)){
+                    base = base.replace(/#.*$/,'');
+                }
                 var parts = base.split("/");
                 parts.pop();
                 this._relativeBase = parts.join("/") + "/";

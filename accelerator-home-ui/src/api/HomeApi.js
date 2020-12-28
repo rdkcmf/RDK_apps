@@ -21,6 +21,7 @@ import { tvShowsInfo } from './../../static/data/TvShowsInfo.js'
 import { settingsInfo } from './../../static/data/SettingsInfo.js'
 import { sidePanelInfo } from './../../static/data/SidePanelInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
+import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
 
 /**
  * Class that returns the data required for home screen.
@@ -53,7 +54,18 @@ export default class HomeApi {
   getSidePanelInfo() {
     return sidePanelInfo
   }
+
+  /**
+   * Function to get details of different UI
+   */
   getUIInfo() {
     return uiInfo
+  }
+
+  /**
+   * Function to details of metro apps
+   */
+  getMetroInfo() {
+    return metroAppsInfo
   }
 }

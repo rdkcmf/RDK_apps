@@ -25,7 +25,7 @@ export default class SidePanel extends Lightning.Component {
     return {
       SidePanel: {
         x: 130,
-        y: 200,
+        y: 0,
         w: 240,
         h: 750,
         type: Lightning.components.ListComponent,
@@ -51,7 +51,7 @@ export default class SidePanel extends Lightning.Component {
       return {
         w: 204,
         h: 184,
-        y: index == 0 ? 20 : index == 1 ? 180 : 370,
+        y: index == 0 ? 30 : (index == 1 ? 115 :(index == 2 ? 260 : 470)),
         type: SidePanelItem,
         data: info,
         focus: 0.7,
@@ -74,7 +74,7 @@ export default class SidePanel extends Lightning.Component {
       return {
         w: 204,
         h: 184,
-        y: index == 0 ? 20 : index == 1 ? 180 : 370,
+        y: index == 0 ? 25 : (index == 1 ? 105 :(index == 2 ? 260 : 470)),
         type: SidePanelItem,
         data: info,
         focus: 0.7,
@@ -113,6 +113,12 @@ export default class SidePanel extends Lightning.Component {
       class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
+            if(this.indexVal==3){
+              this.fireAncestors('$scroll',-200)
+            }
+            else{
+              this.fireAncestors('$scroll',0)
+            }
             return this.tag('SidePanel').items[this.indexVal]
           }
         }
@@ -129,7 +135,7 @@ export default class SidePanel extends Lightning.Component {
               this.indexVal = this.indexVal - 1
             }
             return this.tag('SidePanel').items[this.indexVal]
-          }
+          } else return false;
         }
       },
     ]

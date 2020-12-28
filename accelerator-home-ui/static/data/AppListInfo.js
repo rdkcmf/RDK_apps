@@ -27,12 +27,6 @@ export var appListInfo = [
     url: '/images/apps/youtube.png',
   },
   {
-    displayName: 'AppStore',
-    applicationType: 'Lightning',
-    uri: 'https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d',
-    url: '/images/apps/metrological.jpg',
-  },
-  {
     displayName: 'Test Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/3.0.70/index.html',

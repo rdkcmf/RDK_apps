@@ -1,5 +1,5 @@
 /**
- * Lightning v2.0.0
+ * Lightning v2.1.2
  *
  * https://github.com/rdkcentral/Lightning
  */
@@ -7262,7 +7262,7 @@
         var cutEx = this._settings.cutEx * precision;
         var cutSy = this._settings.cutSy * precision;
         var cutEy = this._settings.cutEy * precision;
-        var letterSpacing = this._settings.letterSpacing || 0;
+        var letterSpacing = (this._settings.letterSpacing || 0) * precision;
         var textIndent = this._settings.textIndent * precision;
         this.setFontProperties();
         var width = w || 2048 / this.getPrecision();
@@ -11780,7 +11780,7 @@
     }, {
       key: "_addMethodRouter",
       value: function _addMethodRouter(member, descriptors, aliases) {
-        var code = ["//@ sourceURL=StateMachineRouter.js", "const i = this._stateIndex;"];
+        var code = ["//@ sourceURL=StateMachineRouter.js", "var i = this._stateIndex;"];
         var cur = aliases[0];
 
         var supportsSpread = StateMachineType._supportsSpread();
@@ -11867,7 +11867,7 @@
             aliases[index] = null;
           }
         }.bind(this));
-        var code = ["//@ sourceURL=StateMachineRouter.js", "const i = this._stateIndex;"];
+        var code = ["//@ sourceURL=StateMachineRouter.js", "var i = this._stateIndex;"];
         var cur = aliases[0];
 
         for (var i = 1, n = aliases.length; i < n; i++) {
@@ -11928,7 +11928,7 @@
             aliases[index] = null;
           }
         }.bind(this));
-        var code = ["//@ sourceURL=StateMachineRouter.js", "const i = this._stateIndex;"];
+        var code = ["//@ sourceURL=StateMachineRouter.js", "var i = this._stateIndex;"];
         var cur = aliases[0];
 
         for (var i = 1, n = aliases.length; i < n; i++) {
@@ -12173,7 +12173,7 @@
 
       _this.__construct();
 
-      var func = _this.constructor.getTemplateFunc();
+      var func = _this.constructor.getTemplateFunc(_assertThisInitialized(_this));
 
       func.f(_assertThisInitialized(_this), func.a);
 
@@ -12598,13 +12598,13 @@
       }
     }, {
       key: "getTemplateFunc",
-      value: function getTemplateFunc() {
+      value: function getTemplateFunc(ctx) {
         var name = "_templateFunc";
         var hasName = '__has' + name;
 
         if (this[hasName] !== this) {
           this[hasName] = this;
-          this[name] = this.parseTemplate(this._template());
+          this[name] = this.parseTemplate(this._template(ctx));
         }
 
         return this[name];
@@ -12644,10 +12644,10 @@
               var type = value.type ? value.type : Element;
 
               if (type === Element) {
-                loc.push("const ".concat(childCursor, " = element.stage.createElement()"));
+                loc.push("var ".concat(childCursor, " = element.stage.createElement()"));
               } else {
                 store.push(type);
-                loc.push("const ".concat(childCursor, " = new store[").concat(store.length - 1, "](").concat(cursor, ".stage)"));
+                loc.push("var ".concat(childCursor, " = new store[").concat(store.length - 1, "](").concat(cursor, ".stage)"));
               }
 
               loc.push("".concat(childCursor, ".ref = \"").concat(key, "\""));
@@ -12661,7 +12661,7 @@
           } else {
             if (key === "text") {
               var propKey = cursor + "__text";
-              loc.push("const ".concat(propKey, " = ").concat(cursor, ".enableTextTexture()"));
+              loc.push("var ".concat(propKey, " = ").concat(cursor, ".enableTextTexture()"));
               this.parseTemplatePropRec(value, context, propKey);
             } else if (key === "texture" && Utils.isObjectLiteral(value)) {
               var _propKey = cursor + "__texture";
@@ -12670,7 +12670,7 @@
 
               if (_type) {
                 store.push(_type);
-                loc.push("const ".concat(_propKey, " = new store[").concat(store.length - 1, "](").concat(cursor, ".stage)"));
+                loc.push("var ".concat(_propKey, " = new store[").concat(store.length - 1, "](").concat(cursor, ".stage)"));
                 this.parseTemplatePropRec(value, context, _propKey);
                 loc.push("".concat(cursor, "[\"").concat(key, "\"] = ").concat(_propKey));
               } else {
@@ -15233,6 +15233,12 @@
       if (e.data.type === 'config') {
         this.config = e.data.config;
         var base = this.config.path;
+        var hasHashPath = /#.*?\//;
+
+        if (hasHashPath.test(base)) {
+          base = base.replace(/#.*$/, '');
+        }
+
         var parts = base.split("/");
         parts.pop();
         this._relativeBase = parts.join("/") + "/";

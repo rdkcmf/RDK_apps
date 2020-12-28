@@ -25,6 +25,10 @@ export var sidePanelInfo = [
     url: '/images/sidePanel/menu.png',
   },
   {
+    title: 'Metro Apps',
+    url: '/images/sidePanel/metro.png',
+  },
+  {
     title: 'TV Shows',
     url: '/images/sidePanel/video.png',
   },
