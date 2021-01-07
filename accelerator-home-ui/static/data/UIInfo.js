@@ -26,7 +26,7 @@ export var uiInfo = [
   },
   {
     title: 'TATA',
-    url: 'http://35.154.217.235:8081/ ',
+    url: 'http://35.155.171.121:8088/index.html',
   },
   {
     title: 'EPAM',
