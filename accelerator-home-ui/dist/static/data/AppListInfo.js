@@ -40,7 +40,7 @@ export var appListInfo = [
   },
   {
     displayName: 'Test Prime video',
-    applicationType: '',
+    applicationType: 'Amazon',
     uri: '',
     url: '/images/apps/prime.png',
   },

@@ -20,6 +20,7 @@ import ThunderJS from 'ThunderJS'
 var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
+var activatedAmazon = false
 var webUrl = ''
 var lightningUrl = ''
 var activatedNative = false
@@ -208,6 +209,26 @@ export default class AppApi {
   }
 
   /**
+   * Function to launch Amazon Prime app.
+   */
+  launchAmazon() {
+    const childCallsign = "Amazon";
+    thunder
+      .call("org.rdk.RDKShell", "launch", {
+      callsign: childCallsign,
+      type: childCallsign
+    })
+    .then(() => {
+      thunder.call("org.rdk.RDKShell", "moveToFront", {
+        client: childCallsign
+      });
+      thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
+    })
+    .catch(err => {});
+    activatedAmazon = true;
+  }
+
+  /**
    * Function to launch Resident app.
    * @param {String} url url of app.
    */
@@ -254,6 +275,13 @@ export default class AppApi {
   }
 
   /**
+   * Function to suspend Amazon Prime app.
+   */
+  suspendAmazon() {
+    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Amazon' })
+  }
+
+  /**
    * Function to deactivate html app.
    */
   deactivateWeb() {
@@ -269,6 +297,14 @@ export default class AppApi {
     thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' })
     activatedCobalt = false
     cobaltUrl = ''
+  }
+
+  /**
+   * Function to deactivate Amazon Prime app.
+   */
+  deactivateAmazon() {
+    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Amazon' })
+    activatedAmazon = false
   }
 
   /**
@@ -344,6 +380,8 @@ export default class AppApi {
         return activatedCobalt
       case 'Lightning':
         return activatedLightning
+      case 'Amazon':
+        return activatedAmazon
     }
   }
 }

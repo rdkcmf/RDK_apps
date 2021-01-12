@@ -191,6 +191,8 @@ export default class App extends Router.App {
       case 'Native':
         appApi.killNative();
         break;
+      case 'Amazon':
+        appApi.suspendAmazon();
       default:
         break;
     }

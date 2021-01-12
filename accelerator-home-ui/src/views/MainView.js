@@ -98,7 +98,7 @@ export default class MainView extends Lightning.Component {
     };
     var thunder = ThunderJS(config);
     thunder.on('Controller', 'statechange', notification => {
-      if (notification && notification.callsign == 'Cobalt' && notification.state == 'Deactivation') {
+      if (notification && (notification.callsign == 'Cobalt' || notification.callsign == 'Amazon') && notification.state == 'Deactivation') {
         var appApi = new AppApi();
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
@@ -291,6 +291,9 @@ export default class MainView extends Lightning.Component {
           } else if (Storage.get('applicationType') == 'Native') {
             appApi.launchNative(this.uri);
             appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Amazon') {
+            appApi.launchAmazon();
+            appApi.setVisibility('ResidentApp', false);
           }
         }
         _handleKey(key) {
@@ -318,6 +321,10 @@ export default class MainView extends Lightning.Component {
             } else if (Storage.get('applicationType') == 'Native') {
               Storage.set('applicationType', '');
               appApi.killNative();
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Amazon') {
+              Storage.set('applicationType', '');
+              appApi.suspendAmazon();
               appApi.setVisibility('ResidentApp', true);
             }
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
