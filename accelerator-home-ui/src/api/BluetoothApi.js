@@ -170,6 +170,25 @@ export default class BluetoothApi {
   }
 
   /**
+   * Function to stop scanning for the Bluetooth devices.
+   */
+  stopScan() {
+    return new Promise((resolve, reject) => {
+      this._thunder
+        .call('org.rdk.Bluetooth', 'startScan', {})
+        .then(result => {
+          console.log('stopped scanning : ' + result.success)
+          if (result.success) resolve()
+          else reject()
+        })
+        .catch(err => {
+          console.error('Error', err)
+          reject()
+        })
+    })
+  }
+
+  /**
    * Function returns the discovered Bluetooth devices.
    */
   getDiscoveredDevices() {

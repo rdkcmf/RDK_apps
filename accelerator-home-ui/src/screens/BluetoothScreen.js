@@ -284,6 +284,10 @@ export default class BluetoothScreen extends Lightning.Component {
         }
       },
       class PairingScreen extends this {
+        $enter() {
+          this._disable()
+          this._bt.stopScan()
+        }
         _getFocused() {
           return this.tag('PairingScreen')
         }
@@ -322,6 +326,7 @@ export default class BluetoothScreen extends Lightning.Component {
         }
         $exit() {
           this.tag('PairingScreen').visible = false
+          this._enable()
         }
       },
     ]

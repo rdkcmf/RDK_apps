@@ -346,6 +346,10 @@ export default class WiFiScreen extends Lightning.Component {
         }
       },
       class PairingScreen extends this {
+        $enter() {
+          this._wifi.stopScan()
+          this._disable()
+        }
         _getFocused() {
           return this.tag('PairingScreen')
         }
@@ -383,6 +387,7 @@ export default class WiFiScreen extends Lightning.Component {
         }
         $exit() {
           this.tag('PairingScreen').visible = false
+          this._enable()
         }
       },
     ]
