@@ -45,6 +45,11 @@ export default class App extends Router.App {
 
   _init() {
     this.xcastApi = new XcastApi();
+    this.xcastApi.activate().then(result=>{
+      if(result){
+        this.registerXcastListeners()
+      }
+    })
     var thunder = ThunderJS(config);
     const rdkshellCallsign = 'org.rdk.RDKShell';
     thunder.Controller.activate({ callsign: rdkshellCallsign })
