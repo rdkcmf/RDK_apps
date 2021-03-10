@@ -73,6 +73,22 @@ export default class AppApi {
         .catch(err => {})
     })
   }
+   /**
+   *  Function to get timeZone
+   */
+  getZone() {
+    return new Promise((resolve, reject) => {
+      const systemcCallsign = 'org.rdk.System'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+      .then(() => {
+      thunder
+        .call(systemcCallsign, 'getTimeZoneDST')
+        .then(result => {
+          resolve(result.timeZone)
+        }).catch(err => { resolve(false) })
+        }).catch(err => {})
+    })
+  }
   /**
    * Function to get resolution of the display screen.
    */
