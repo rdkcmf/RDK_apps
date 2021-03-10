@@ -18,7 +18,7 @@
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
 import ThunderJS from 'ThunderJS'
-
+import AppApi from '../api/AppApi'
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
   static _template() {
@@ -52,29 +52,11 @@ export default class TopPanel extends Lightning.Component {
     }
   }
   _init() {
-    this.timeZone = 'America/New_York'
-    const config = {
-      host: '127.0.0.1',
-      port: 9998,
-      default: 1,
-    }
-    var thunder = ThunderJS(config)
-    thunder
-      .call('org.rdk.System', 'getTimeZoneDST')
-      .then(result => {
-        if (result.success) {
-          try {
-            new Date().toLocaleDateString('en-US', { timeZone: result.timeZone })
-            this.timeZone = result.timeZone
-          } catch (err) {
-            this.timeZone = 'America/New_York'
-          }
-        }
-      })
-      .catch(err => {
-        this.timeZone = 'America/New_York'
-      })
-  }
+    this.timeZone = null;
+    new AppApi().getZone().then(function (res) {     
+       this.timeZone = res;
+     }.bind(this)).catch(err => { console.log('Timezone api request error', err) });   
+ }
 
   _build() {
     setInterval(() => {
@@ -86,15 +68,19 @@ export default class TopPanel extends Lightning.Component {
    * Function to update time in home UI.
    */
   updateTime() {
-    let date = new Date()
-    date = new Date(date.toLocaleString('en-US', { timeZone: this.timeZone }))
-    let hours = date.getHours()
-    let minutes = date.getMinutes()
-    let ampm = hours >= 12 ? 'pm' : 'am'
-    hours = hours % 12
-    hours = hours ? hours : 12
-    minutes = minutes < 10 ? '0' + minutes : minutes
-    let strTime = hours + '.' + minutes + ' ' + ampm
-    return strTime
+    if (this.timeZone) {
+      let date = new Date()
+      date = new Date(date.toLocaleString('en-US', { timeZone: this.timeZone }))
+      let hours = date.getHours()
+      let minutes = date.getMinutes()
+      let ampm = hours >= 12 ? 'pm' : 'am'
+      hours = hours % 12
+      hours = hours ? hours : 12
+      minutes = minutes < 10 ? '0' + minutes : minutes
+      let strTime = hours + '.' + minutes + ' ' + ampm
+      return strTime
+    } else {
+      return ""
+    }
   }
 }
