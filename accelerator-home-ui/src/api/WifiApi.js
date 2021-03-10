@@ -45,18 +45,6 @@ export default class Wifi {
       }
       this._thunder = ThunderJS(config)
       this.callsign = 'org.rdk.Wifi'
-      this._thunder.call('Controller', 'activate', { callsign: 'org.rdk.Network' }).then(result => {
-        this._thunder.on('org.rdk.Network', 'onIPAddressStatusChanged', notification => {
-          if (this._events.has('onIPAddressStatusChanged')) {
-            this._events.get('onIPAddressStatusChanged')(notification)
-          }
-        })
-        this._thunder.on('org.rdk.Network','onDefaultInterfaceChanged',notification=>{
-          if (this._events.has('onDefaultInterfaceChanged')) {
-            this._events.get('onDefaultInterfaceChanged')(notification)
-          }
-        })
-      })
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {

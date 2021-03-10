@@ -22,6 +22,7 @@ import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
+import NetworkApi from '../api/NetworkApi'
 
 /** Class for home screen UI */
 export default class HomeScreen extends Lightning.Component {
@@ -52,6 +53,16 @@ export default class HomeScreen extends Lightning.Component {
           w:1920,
           h:1080,
           type: MainView,
+        },
+      },
+      IpAddress: {
+        x: 1850,
+        y: 1060,
+        mount: 1,
+        text: {
+          text: 'IP:NA',
+          textColor: 0xffffffff,
+          fontSize: 30,
         },
       },
       Player: { type: AAMPVideoPlayer },
@@ -104,6 +115,21 @@ export default class HomeScreen extends Lightning.Component {
     this.sidePanelData = this.homeApi.getSidePanelInfo()
     this._setState('SidePanel')
     this.initialLoad = true
+    this.networkApi = new NetworkApi()
+    this.networkApi.activate().then(result=>{
+      if(result){
+        this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
+          if (notification.status == 'ACQUIRED') {
+            this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+          } else if (notification.status == 'LOST') {
+            this.tag('IpAddress').text.text = 'IP:NA'
+          }
+        })
+        this.networkApi.getIP().then(ip=>{
+          this.tag('IpAddress').text.text = 'IP:'+ip
+        })
+      }
+    })
   }
 
   _active() {

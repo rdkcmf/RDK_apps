@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
+import NetworkApi from './../api/NetworkApi'
 import WiFiItem from '../items/WiFiItem'
 import WiFiApi from './../api/WifiApi'
 import WiFiPairingScreen from './WiFiPairingScreen'
@@ -150,37 +151,25 @@ export default class WiFiScreen extends Lightning.Component {
     })
     this.loadingAnimation.play()
     this._wifi = new WiFiApi()
+    this._network  = new NetworkApi()
     this.wifiStatus = false
     this._activateWiFi()
     this._setState('Switch')
-    //this.wifiStatus = true
     if (this.wiFiStatus) {
       this.tag('Networks').visible = true
     }
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
-    const config = {
-      host: '127.0.0.1',
-      port: 9998,
-      default: 1,
-    }
-    var thunder = ThunderJS(config)
-    const systemCallsign = 'org.rdk.System'
-    thunder.Controller.activate({ callsign: systemCallsign })
-      .then(() => {
-        this.displayIp()
-      })
-      .catch(err => {
-        console.log('System Error', err)
-      })
-    this._wifi.registerEvent('onIPAddressStatusChanged', notification => {
-      if (notification.status == 'ACQUIRED') {
-        this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
-      } else if (notification.status == 'LOST') {
-        this.tag('IpAddress').text.text = 'IP:NA'
-      }
-    })
-    this._wifi.registerEvent('onDefaultInterfaceChanged', notification => {
+    this._network.activate().then(result=>{
+      if(result){
+        this._network.registerEvent('onIPAddressStatusChanged', notification => {
+          if (notification.status == 'ACQUIRED') {
+            this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+          } else if (notification.status == 'LOST') {
+            this.tag('IpAddress').text.text = 'IP:NA'
+          }
+        })
+    this._network.registerEvent('onDefaultInterfaceChanged', notification => {
       console.log(notification)
       if (notification.newInterfaceName == 'WIFI') {
         this._wifi.setEnabled(true).then(result => {
@@ -203,23 +192,11 @@ export default class WiFiScreen extends Lightning.Component {
         this._setState('Switch')
       }
     })
-  }
-  displayIp() {
-    const config = {
-      host: '127.0.0.1',
-      port: 9998,
-      default: 1,
-    }
-    var thunder = ThunderJS(config)
-    const systemCallsign = 'org.rdk.System'
-    thunder
-      .call(systemCallsign, 'getDeviceInfo', { params: 'estb_ip' })
-      .then(result => {
-        this.tag('IpAddress').text.text = 'IP:' + result.estb_ip
-      })
-      .catch(err => {
-        console.log('IpAddress Error', err)
-      })
+        this._network.getIP().then(ip=>{
+          this.tag('IpAddress').text.text = 'IP:'+ip
+        })
+      }
+    })
   }
 
   /**
