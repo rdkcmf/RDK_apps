@@ -2,9 +2,12773 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.4.0
- * 
- * Generated: Wed, 10 Mar 2021 09:00:31 GMT
+ *
+ * Generated: Thu, 08 Apr 2021 09:54:41 GMT
  */
 
-var APP_accelerator_home_ui=function(){"use strict";const t={},e={};var i={get(e,i,s){const a=((t={},e)=>{const i=e.split(".");for(let e=0;e<i.length;e++)t=t[i[e]]=void 0!==t[i[e]]?t[i[e]]:{};return"object"==typeof t?Object.keys(t).length?t:void 0:t})(t[e],i);return void 0!==a?a:s},has(t,e){return!!this.get(t,e)},set(i,s){t.user[i]=s,((t,i)=>{e[t]&&e[t].forEach((t=>t(i)))})(i,s)},subscribe(t,i){e[t]=e[t]||[],e[t].push(i)},unsubscribe(t,i){if(i){const s=e[t]&&e[t].findIndex((t=>t===i));s>-1&&e[t].splice(s,1)}else t in e&&(e[t]=[])},clearSubscribers(){for(const t of Object.getOwnPropertyNames(e))delete e[t]}};const prepLog=(t,e)=>["%c"+((e=Array.from(e)).length>1&&"string"==typeof e[0]?e.shift():t),"background-color: "+{Info:"green",Debug:"gray",Warn:"orange",Error:"red"}[t]+"; color: white; padding: 2px 4px; border-radius: 2px",e];var s={info(){i.get("platform","log")&&console.log.apply(console,prepLog("Info",arguments))},debug(){i.get("platform","log")&&console.debug.apply(console,prepLog("Debug",arguments))},error(){i.get("platform","log")&&console.error.apply(console,prepLog("Error",arguments))},warn(){i.get("platform","log")&&console.warn.apply(console,prepLog("Warn",arguments))}};let sendMetric=(t,e,i)=>{s.info("Sending metric",t,e,i)};const errorMetric=(t,e,i,s,a={})=>{sendMetric(t,"error",a={params:a,message:e,code:i,visible:s})},Metric=(t,e,i={})=>e.reduce(((e,s)=>(e[s]=(e,a={})=>{a={...i,...e?{name:e}:{},...a},sendMetric(t,s,a)},e)),{error(e,i,s){errorMetric(t,e,i,s)},event(e,i){sendMetric(t,e,i)}});var a,n=(a={app:["launch","loaded","ready","close"],page:["view","leave"],user:["click","input"],media:["abort","canplay","ended","pause","play","volumechange","waiting","seeking","seeked"]},Object.keys(a).reduce(((t,e)=>(t[e]="media"===e?t=>Metric(e,a[e],{url:t}):Metric(e,a[e]),t)),{error:errorMetric,event:sendMetric})),o={abort:"Abort",canplay:"CanPlay",canplaythrough:"CanPlayThrough",durationchange:"DurationChange",emptied:"Emptied",encrypted:"Encrypted",ended:"Ended",error:"Error",interruptbegin:"InterruptBegin",interruptend:"InterruptEnd",loadeddata:"LoadedData",loadedmetadata:"LoadedMetadata",loadstart:"LoadStart",pause:"Pause",play:"Play",playing:"Playing",progress:"Progress",ratechange:"Ratechange",seeked:"Seeked",seeking:"Seeking",stalled:"Stalled",timeupdate:"TimeUpdate",volumechange:"VolumeChange",waiting:"Waiting"};let r=null;let l,h;var c={asset:t=>l+t,proxyUrl:(t,e={})=>h?h+"?"+makeQueryString(t,e):t,makeQueryString(){return makeQueryString(...arguments)},ensureUrlWithProtocol(){return ensureUrlWithProtocol(...arguments)}};const ensureUrlWithProtocol=t=>/^\/\//.test(t)?window.location.protocol+t:/^(?:https?:)/i.test(t)?t:window.location.origin+t,makeFullStaticPath=(t="/",e)=>(e="/"!==e.charAt(e.length-1)?e+"/":e,/^(?:https?:)?(?:\/\/)/.test(e)||"/"===e.charAt(0)?e:(t=cleanUpPathName(t))+(e="/"!==(e="."===e.charAt(0)?e.substr(1):e).charAt(0)?"/"+e:e)),cleanUpPathName=t=>{if("/"===t.slice(-1))return t.slice(0,-1);const e=t.split("/");return e[e.length-1].indexOf(".")>-1&&e.pop(),e.join("/")},makeQueryString=(t,e={},i="url")=>(e.operator="metrological",e[i]=t,Object.keys(e).map((t=>encodeURIComponent(t)+"="+encodeURIComponent(""+e[t]))).join("&"));var p=window.lng;let mediaUrl=t=>t;p.Component;class localCookie{constructor(t){return t=t||{},this.forceCookies=t.forceCookies||!1,!0===this._checkIfLocalStorageWorks()&&!0!==t.forceCookies?{getItem:this._getItemLocalStorage,setItem:this._setItemLocalStorage,removeItem:this._removeItemLocalStorage,clear:this._clearLocalStorage}:{getItem:this._getItemCookie,setItem:this._setItemCookie,removeItem:this._removeItemCookie,clear:this._clearCookies}}_checkIfLocalStorageWorks(){if("undefined"==typeof localStorage)return!1;try{return localStorage.setItem("feature_test","yes"),"yes"===localStorage.getItem("feature_test")&&(localStorage.removeItem("feature_test"),!0)}catch(t){return!1}}_getItemLocalStorage(t){return window.localStorage.getItem(t)}_setItemLocalStorage(t,e){return window.localStorage.setItem(t,e)}_removeItemLocalStorage(t){return window.localStorage.removeItem(t)}_clearLocalStorage(){return window.localStorage.clear()}_getItemCookie(t){var e=document.cookie.match(RegExp("(?:^|;\\s*)"+function(t){return t.replace(/([.*+?\^${}()|\[\]\/\\])/g,"\\$1")}(t)+"=([^;]*)"));return e&&""===e[1]&&(e[1]=null),e?e[1]:null}_setItemCookie(t,e){var i=new Date,s=new Date(i.getTime()+15768e7);document.cookie=`${t}=${e}; expires=${s.toUTCString()};`}_removeItemCookie(t){document.cookie=`${t}=;Max-Age=-99999999;`}_clearCookies(){document.cookie.split(";").forEach((t=>{document.cookie=t.replace(/^ +/,"").replace(/=.*/,"=;expires=Max-Age=-99999999")}))}}let d,g;const namespacedKey=t=>d?[d,t].join("."):t;var u={get(t){try{return JSON.parse(g.getItem(namespacedKey(t)))}catch(t){return null}},set(t,e){try{return g.setItem(namespacedKey(t),JSON.stringify(e)),!0}catch(t){return!1}},remove(t){g.removeItem(namespacedKey(t))},clear(){d?g.keys().forEach((t=>{0===t.indexOf(d+".")&&g.removeItem(t)})):g.clear()}};const isFunction=t=>"function"==typeof t,isObject=t=>"object"==typeof t&&null!==t,isBoolean=t=>"boolean"==typeof t,isPage=t=>!!(t instanceof p.Element||isComponentConstructor(t)),isComponentConstructor=t=>t.prototype&&"isComponent"in t.prototype,isArray=t=>Array.isArray(t),ucfirst=t=>`${t.charAt(0).toUpperCase()}${t.slice(1)}`,isString=t=>"string"==typeof t,isPromise=(t,e)=>{let i;if(isFunction(t))try{i=t.apply(null)}catch(t){i=t}else i=t;return isObject(i)&&isFunction(i.then)},m={route:Symbol("route"),hash:Symbol("hash"),store:Symbol("store"),fromHistory:Symbol("fromHistory"),expires:Symbol("expires"),resume:Symbol("resume"),backtrack:Symbol("backtrack")},moveOnAxes=(t,e,i,s)=>{const a="x"===t?1920:1080;return new Promise((n=>{i.patch({[`${t}`]:e?-1*a:a,visible:!0,smooth:{[`${t}`]:[0,{duration:.4,delay:.2}]}}),s&&s.patch({[`${t}`]:0,smooth:{[`${t}`]:[e?a:-1*a,{duration:.4,delay:.2}]}}),i.transition(t).on("finish",(()=>{n()}))}))};var y={fade:(t,e)=>new Promise((i=>{t.patch({alpha:0,visible:!0,smooth:{alpha:[1,{duration:.5,delay:.1}]}}),t.transition("alpha").on("finish",(()=>{e&&(e.visible=!1),i()}))})),crossFade:(t,e)=>new Promise((i=>{t.patch({alpha:0,visible:!0,smooth:{alpha:[1,{duration:.5,delay:.1}]}}),e&&e.patch({smooth:{alpha:[0,{duration:.5,delay:.3}]}}),t.transition("alpha").on("finish",(()=>{i()}))})),up:(t,e)=>moveOnAxes("y",0,t,e),down:(t,e)=>moveOnAxes("y",1,t,e),left:(t,e)=>moveOnAxes("x",0,t,e),right:(t,e)=>moveOnAxes("x",1,t,e)},f=function isMergeableObject(t){return function isNonNullObject(t){return!!t&&"object"==typeof t}(t)&&!function isSpecial(t){var e=Object.prototype.toString.call(t);return"[object RegExp]"===e||"[object Date]"===e||function isReactElement(t){return t.$$typeof===v}(t)}(t)};var v="function"==typeof Symbol&&Symbol.for?Symbol.for("react.element"):60103;function cloneUnlessOtherwiseSpecified(t,e){return!1!==e.clone&&e.isMergeableObject(t)?deepmerge(function emptyTarget(t){return Array.isArray(t)?[]:{}}(t),t,e):t}function defaultArrayMerge(t,e,i){return t.concat(e).map((function(t){return cloneUnlessOtherwiseSpecified(t,i)}))}function getKeys(t){return Object.keys(t).concat(function getEnumerableOwnPropertySymbols(t){return Object.getOwnPropertySymbols?Object.getOwnPropertySymbols(t).filter((function(e){return t.propertyIsEnumerable(e)})):[]}(t))}function propertyIsOnObject(t,e){try{return e in t}catch(t){return!1}}function mergeObject(t,e,i){var s={};return i.isMergeableObject(t)&&getKeys(t).forEach((function(e){s[e]=cloneUnlessOtherwiseSpecified(t[e],i)})),getKeys(e).forEach((function(a){(function propertyIsUnsafe(t,e){return propertyIsOnObject(t,e)&&!(Object.hasOwnProperty.call(t,e)&&Object.propertyIsEnumerable.call(t,e))})(t,a)||(propertyIsOnObject(t,a)&&i.isMergeableObject(e[a])?s[a]=function getMergeFunction(t,e){if(!e.customMerge)return deepmerge;var i=e.customMerge(t);return"function"==typeof i?i:deepmerge}(a,i)(t[a],e[a],i):s[a]=cloneUnlessOtherwiseSpecified(e[a],i))})),s}function deepmerge(t,e,i){(i=i||{}).arrayMerge=i.arrayMerge||defaultArrayMerge,i.isMergeableObject=i.isMergeableObject||f,i.cloneUnlessOtherwiseSpecified=cloneUnlessOtherwiseSpecified;var s=Array.isArray(e);return s===Array.isArray(t)?s?i.arrayMerge(t,e,i):mergeObject(t,e,i):cloneUnlessOtherwiseSpecified(e,i)}deepmerge.all=function deepmergeAll(t,e){if(!Array.isArray(t))throw new Error("first argument should be an array");return t.reduce((function(t,i){return deepmerge(t,i,e)}),{})};var _=deepmerge;let S=!1;const deprecated=(t=!1)=>{!0!==t&&!1!==S||console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.","Please consider using the new 'Language'-plugin instead.","https://rdkcentral.github.io/Lightning-SDK/#/plugins/language"].join("\n\n")),S=!0};class LocalizedString extends String{format(...t){const e=t.reduce(((t,e,i)=>t.split(`{${i}}`).join(e)),this);return new LocalizedString(e)}}var w=new class Locale{constructor(){this.__enabled=!1}async load(t){this.__enabled&&await fetch(t).then((t=>t.json())).then((t=>{this.loadFromObject(t)}))}setLanguage(t){deprecated(),this.__enabled=!0,this.language=t}get tr(){return deprecated(!0),this.__trObj[this.language]}loadFromObject(t){deprecated();const e="en";if(-1===Object.keys(t).indexOf(this.language)){if(s.warn("No translations found for: "+this.language),!(Object.keys(t).indexOf(e)>-1)){const t="No translations found for fallback language: en";throw s.error(t),Error(t)}s.warn("Using fallback language: en"),this.language=e}this.__trObj=t;for(const t of Object.values(this.__trObj))for(const e of Object.keys(t))t[e]=new LocalizedString(t[e])}};class VersionLabel extends p.Component{static _template(){return{rect:!0,color:3137370284,h:40,w:100,x:t=>t-50,y:t=>t-50,mount:1,Text:{w:t=>t,h:t=>t,y:5,x:20,text:{fontSize:22,lineHeight:26}}}}_firstActive(){this.tag("Text").text=`APP - v${this.version}\nSDK - v${this.sdkVersion}`,this.tag("Text").loadTexture(),this.w=this.tag("Text").renderWidth+40,this.h=this.tag("Text").renderHeight+5}}class FpsIndicator extends p.Component{static _template(){return{rect:!0,color:4294967295,texture:p.Tools.getRoundRect(80,80,40),h:80,w:80,x:100,y:100,mount:1,Background:{x:3,y:3,texture:p.Tools.getRoundRect(72,72,36),color:4278222848},Counter:{w:t=>t,h:t=>t,y:10,text:{fontSize:32,textAlign:"center"}},Text:{w:t=>t,h:t=>t,y:48,text:{fontSize:15,textAlign:"center",text:"FPS"}}}}_setup(){this.config={log:!1,interval:500,threshold:1,...i.get("platform","showFps")},this.fps=0,this.lastFps=this.fps-this.config.threshold;const fpsCalculator=()=>{this.fps=~~(1/this.stage.dt)};this.stage.on("frameStart",fpsCalculator),this.stage.off("framestart",fpsCalculator),this.interval=setInterval(this.showFps.bind(this),this.config.interval)}_firstActive(){this.showFps()}_detach(){clearInterval(this.interval)}showFps(){if(Math.abs(this.lastFps-this.fps)<=this.config.threshold)return;this.lastFps=this.fps;let t=4278222848;this.fps<=40&&this.fps>20?t=4294944e3:this.fps<=20&&(t=4294901760),this.tag("Background").setSmooth("color",t),this.tag("Counter").text=`${this.fps}`,this.config.log&&s.info("FPS",this.fps)}}let x={},b={},A=null;const setTranslations=t=>{"meta"in t&&(x={...t.meta},delete t.meta),b=t},setLanguage=t=>(A=null,new Promise(((e,i)=>{if(t in b)A=t;else if("map"in x&&t in x.map&&x.map[t]in b)A=x.map[t];else if("default"in x&&x.default in b){A=x.default;const t="Translations for Language "+A+" not found. Using default language "+x.default;s.warn(t),i(t)}else{const t="Translations for Language "+A+" not found.";s.error(t),i(t)}if(A){s.info("Setting language to",A);const t=b[A];if("object"==typeof t)e();else if("string"==typeof t){const a=c.asset(t);fetch(a).then((t=>t.json())).then((t=>{b[A]=t,e()})).catch((t=>{const e="Error while fetching "+a;s.error(e,t),i(e)}))}}}))),T={eventListeners:[],timeouts:[],intervals:[],targets:[]};var k={setTimeout(t,e,...i){const a=setTimeout((()=>{T.timeouts=T.timeouts.filter((t=>t!==a)),t.apply(null,i)}),e,i);return s.info("Set Timeout","ID: "+a),T.timeouts.push(a),a},clearTimeout(t){T.timeouts.indexOf(t)>-1?(T.timeouts=T.timeouts.filter((e=>e!==t)),s.info("Clear Timeout","ID: "+t),clearTimeout(t)):s.error("Clear Timeout","ID "+t+" not found")},clearTimeouts(){T.timeouts.forEach((t=>{this.clearTimeout(t)}))},setInterval(t,e,...i){const a=setInterval((()=>{T.intervals=T.intervals.filter((t=>t!==a)),t.apply(null,i)}),e,i);return s.info("Set Interval","ID: "+a),T.intervals.push(a),a},clearInterval(t){T.intervals.indexOf(t)>-1?(T.intervals=T.intervals.filter((e=>e!==t)),s.info("Clear Interval","ID: "+t),clearInterval(t)):s.error("Clear Interval","ID "+t+" not found")},clearIntervals(){T.intervals.forEach((t=>{this.clearInterval(t)}))},addEventListener(t,e,i){t.addEventListener(e,i);let a=T.targets.indexOf(t)>-1?T.targets.indexOf(t):T.targets.push(t)-1;T.eventListeners[a]=T.eventListeners[a]||{},T.eventListeners[a][e]=T.eventListeners[a][e]||[],T.eventListeners[a][e].push(i),s.info("Add eventListener","Target:",t,"Event: "+e,"Handler:",i)},removeEventListener(t,e,i){const a=T.targets.indexOf(t);a>-1&&T.eventListeners[a]&&T.eventListeners[a][e]&&T.eventListeners[a][e].indexOf(i)>-1?(T.eventListeners[a][e]=T.eventListeners[a][e].filter((t=>t!==i)),s.info("Remove eventListener","Target:",t,"Event: "+e,"Handler:",i),t.removeEventListener(e,i)):s.error("Remove eventListener","Not found","Target",t,"Event: "+e,"Handler",i)},removeEventListeners(t,e){if(t&&e){const i=T.targets.indexOf(t);i>-1&&T.eventListeners[i][e].forEach((i=>{this.removeEventListener(t,e,i)}))}else if(t){const e=T.targets.indexOf(t);e>-1&&Object.keys(T.eventListeners[e]).forEach((e=>{this.removeEventListeners(t,e)}))}else Object.keys(T.eventListeners).forEach((t=>{this.removeEventListeners(T.targets[t])}))},clear(){this.clearTimeouts(),this.clearIntervals(),this.removeEventListeners(),T.eventListeners=[],T.timeouts=[],T.intervals=[],T.targets=[]}},C="3.2.1";let I;const P={stage:{w:1920,h:1080,clearColor:0,canvas2d:!1},debug:!1,defaultFontFace:"RobotoRegular",keys:{8:"Back",13:"Enter",27:"Menu",37:"Left",38:"Up",39:"Right",40:"Down",174:"ChannelDown",175:"ChannelUp",178:"Stop",250:"PlayPause",191:"Search",409:"Search"}};function Application(t,e,a){return class Application extends p.Application{constructor(t){const e=_(P,t);super(e),this.config=e}static _template(){return{w:1920,h:1080}}_setup(){Promise.all([this.loadFonts(t.config&&t.config.fonts||t.getFonts&&t.getFonts()||[]),w.load(t.config&&t.config.locale||t.getLocale&&t.getLocale()),t.language&&this.loadLanguage(t.language())]).then((()=>{n.app.loaded(),I=this.stage.c({ref:"App",type:t,zIndex:1,forceZIndexContext:!!a.showVersion||!!a.showFps}),this.childList.a(I),s.info("App version",this.config.version),s.info("SDK version",C),a.showVersion&&this.childList.a({ref:"VersionLabel",type:VersionLabel,version:this.config.version,sdkVersion:C,zIndex:1}),a.showFps&&this.childList.a({ref:"FpsCounter",type:FpsIndicator,zIndex:1}),super._setup()})).catch(console.error)}_handleBack(){this.closeApp()}_handleExit(){this.closeApp()}closeApp(){s.info("Closing App"),i.clearSubscribers(),k.clear(),a.onClose&&"function"==typeof a.onClose?a.onClose(...arguments):this.close()}close(){s.info("Closing App"),this.childList.remove(this.tag("App")),this.stage.gc(),this.destroy()}loadFonts(t){return new Promise(((e,i)=>{t.map((({family:t,url:e,descriptors:i})=>()=>{const s=new FontFace(t,"url("+e+")",i||{});return document.fonts.add(s),s.load()})).reduce(((t,e)=>t.then((()=>e()))),Promise.resolve(null)).then(e).catch(i)}))}loadLanguage(t){let e=c.asset("translations.json"),i=t;return"object"==typeof i&&(i=t.language||null,e=t.file||e),((t,e=null)=>new Promise(((i,a)=>{fetch(t).then((t=>t.json())).then((t=>{setTranslations(t),"object"==typeof e&&"then"in e&&"function"==typeof e.then?e.then((t=>setLanguage(t).then(i).catch(a))).catch((t=>{s.error(t),a(t)})):setLanguage(e).then(i).catch(a)})).catch((()=>{const e="Language file "+t+" not found";s.error(e),a(e)}))})))(e,i)}set focus(t){this._focussed=t,this._refocus()}_getFocused(){return this._focussed||this.tag("App")}}}720===window.innerHeight&&(P.stage.w=1280,P.stage.h=720,P.stage.precision=.6666666667);class RoutedApp extends p.Component{static _template(){return{Pages:{forceZIndexContext:!0},Loading:{rect:!0,w:1920,h:1080,color:4278190080,visible:!1,zIndex:99,Label:{mount:.5,x:960,y:540,text:{text:"Loading.."}}}}}static _states(){return[class Loading extends(this){$enter(){this.tag("Loading").visible=!0}$exit(){this.tag("Loading").visible=!1}},class Widgets extends(this){$enter(t,e){this._widget=e,this._refocus()}_getFocused(){return this._widget}reload(t){this._widget=t,this._refocus()}_handleKey(){restore()}}]}get pages(){return this.tag("Pages")}get widgets(){return this.tag("Widgets")}_handleBack(){}_captureKey(){}_getFocused(){return getActivePage()}}const R=new Map,L=new Map,E=new Map,D=new Map,N=new Map,move=(t,e,i)=>{if(N.has(t)){const s=N.get(t),a=s.route;if(s.hash=t,isObject(i)&&Object.keys(i).forEach((t=>{s[t]=i[t]})),e.has(a)){const t=e.get(a);t.push(s),e.set(a,t)}else e.set(a,[s]);N.delete(t)}},F={ready:t=>{if(R.has(t)){const e=R.get(t);e.ready=Date.now(),N.set(t,e),R.delete(t)}},stop:t=>{move(t,L,{stop:Date.now()})},error:t=>{move(t,D,{error:Date.now()})},expired:t=>{move(t,E,{expired:Date.now})}};var stats_send=(t,e,s)=>{if(i.get("platform","stats")){if(e||s){if(R.has(t)&&e&&s){R.get(t)[e]=s}}else R.has(t)||R.set(t,{start:Date.now()});if(e&&F[e]){const i=F[e];i&&i.call(null,t)}}};let getHash=()=>document.location.hash,setHash=t=>{document.location.hash=t};let O,M,V,z,$;const B=new Map,K=new Map,j=new Map,U=new Map,W=new Map;let H,q,J,X,Y,Q,G,Z,tt,et=new Map,it=[],st=!1,at=!0,nt=!0;const ot=/\{\/(.*?)\/([igm]{0,3})\}/g,rt=/^[!*$]$/,setupRoutes=t=>{let e=t.bootComponent;st||(J=t.root,isFunction(t.boot)&&boot(t.boot),e&&isPage(e)&&route("@boot-page",t.bootComponent),isBoolean(t.updateHash)&&(at=t.updateHash),isFunction(t.beforeEachRoute)&&(beforeEachRoute=t.beforeEachRoute),st=!0),t.routes.forEach((t=>{route(t.path,t.component||t.hook,t.options),t.widgets&&widget(t.path,t.widgets),isFunction(t.on)&&on(t.path,t.on,t.cache||0),isFunction(t.before)&&before(t.path,t.before,t.cache||0),isFunction(t.after)&&after(t.path,t.after,t.cache||0),isFunction(t.beforeNavigate)&&hook(t.path,t.beforeNavigate)}))},route=(t,e,i)=>{if(t=t.replace(/\/+$/,""),B.has(t)){let i=B.get(t);isArray(i)||(i=[i]);i.filter((t=>isPage(t))).length?isFunction(e)&&!isPage(e)?i.push(e):console.warn(`Page for route('${t}') already exists`):(isFunction(e)||H.get("lazyCreate")||(e=isComponentConstructor(e)?create(e):e,$.a(e)),i.push(e)),B.set(t,i)}else isPage(e)&&(H.get("lazyCreate")||(e=isComponentConstructor(e)?create(e):e,$.a(e))),B.set(t,[e]),i&&j.set(t,i)},widget=(t,e=[])=>{U.has(t)?console.warn(`Widgets already exist for ${t}`):(isArray(e)||(e=[e]),U.set(t,e))},create=t=>{const e=V.c({type:t,visible:!1});return z&&(e.widgets=getWidgetReferences()),e},load=async({route:t,hash:e})=>{let i=!1;const a=new Map(et);try{const n=await loader({hash:e,route:t,routeReg:a});if(n&&n.hash===nt?("Loading"===M.state&&("Widgets"===Z?M._setState("Widgets",[q]):M._setState("")),n.share||await doTransition(n.page,tt)):i=!0,!i)return onRouteFulfilled(n,a),n.page;s.debug("[router]:",`Rejected ${n.hash} because route to ${nt} started`),n.create&&!n.share&&$.remove(n.page)}catch(t){i||(t.create&&!t.share&&$.remove(t.page),handleError(t))}},loader=async({route:t,hash:e,routeReg:i})=>{let s=getPageByRoute(t),a=isComponentConstructor(s),n=!1,o=!1,r=null,l=!1;if(a||i.get(m.backtrack)||mustReuse(t)||(s=s.constructor,a=!0),a)r=create(s),$.a(r),K.has(t)&&(o=!0),l=!0;else{r=s,K.has(t)&&(isPageExpired(s)||s[m.hash]!==e)&&(o=!0),t===(tt&&tt[m.route])&&(n=!0)}r[m.hash]=e,r[m.route]=t;const h={page:r,route:t,hash:e,register:i,create:l,share:n,event:[l?"mounted":"changed"]};try{if(o){const{type:i}=K.get(t);return h.loadType=i,send$1(e,`${i}-start`,Date.now()),await lt[n?"shared":i](h),send$1(e,`${i}-end`,Date.now()),e===nt&&(emit(r,"dataProvided"),h)}return addPersistData(h),h}catch(t){return h.error=t,Promise.reject(h)}},onRouteFulfilled=({page:t,route:e,event:i,hash:a,share:n},o)=>{hashmod(a,"clearHistory")?it.length=0:Q&&!rt.test(e)&&updateHistory(Q);const r=getPageStackLocation(e);if(!isNaN(r)){let i=B.get(e);i[r]=t,B.set(e,i)}i&&emit(t,i),z&&updateWidgets(t),M._refocus(),tt&&!n&&cleanUp(tt,tt[m.route],o),send$1(a,"ready"),tt=t,Y=e,Q=a,s.info("[route]:",e),s.info("[hash]:",a)},lt={on:t=>(Z=M.state||"",M._setState("Loading"),execProvider(t)),after:t=>{try{execProvider(t)}catch(t){}return Promise.resolve()},before:t=>execProvider(t),shared:t=>execProvider(t)},hook=(t,e)=>{W.has(t)||W.set(t,e)},emit=(t,e=[],i={})=>{isArray(e)||(e=[e]),e.forEach((e=>{const s=`_on${ucfirst(e)}`;isFunction(t[s])&&t[s](i)}))},send$1=(t,e,i)=>{stats_send(t,e,i)},handleError=t=>{if(t.page){const e=t.page[m.hash];send$1(e,"e",t.error),t.page[m.expires]=Date.now(),B.has("!")?load({route:"!",hash:e}).then((e=>{e.error={page:t.page,error:t.error},"Loading"===M.state&&M._setState(""),tt!==e&&(tt=e,M._refocus())})):s.error(t.page,t.error)}else console.error(t)},updateHistory=t=>{const e=getMod(t,"store"),i=et.get(m.store);let s=hashmod(t,"preventStorage"),a=!0;if((isBoolean(e)&&!1===e||s)&&(a=!1),i&&a){const e=t.replace(/^\//,""),i=it.indexOf(e);-1===i||H.get("storeSameHash")?it.push(e):it.push(it.splice(i,1)[0])}},mustReuse=t=>{const e=routemod(t,"reuseInstance"),i=H.get("reuseInstance");return isBoolean(e)?e:!(isBoolean(i)&&!1===i)},boot=t=>{X=t},addPersistData=({page:t,route:e,hash:i,register:s=new Map})=>{const a=getValuesFromHash(i,e),n=new Map([...a,...s]),o={};for(let[e,i]of n)t[e]=i,o[e]=i;if(s.size){const e={};for(let[t,i]of s)e[t]=i;t.persist=e}return t.params=o,emit(t,["urlParams"],o),o},execProvider=t=>{const{cb:e,expires:i}=K.get(t.route),s=addPersistData(t);return((t,e)=>!!/^\w*?\s?\(\s?\{.*?\}\s?\)/i.test(t.toString())&&(console.warn([`DEPRECATION: The data-provider for route: ${e} is not correct.`,'"page" is no longer a property of the params object but is now the first function parameter: ',"https://github.com/rdkcentral/Lightning-SDK/blob/feature/router/docs/plugins/router/dataproviding.md#data-providing","It's supported for now but will be removed in a future release."].join("\n")),!0))(e,t.route)?e({page:t.page,...s}).then((()=>{t.page[m.expires]=Date.now()+i})):e(t.page,{...s}).then((()=>{t.page[m.expires]=Date.now()+i}))},doTransition=(t,e=null)=>{let i=t.pageTransition||t.easing;const s=!!(t.smoothIn||t.smoothInOut||i),a=H.get("disableTransitions");if(t.easing&&console.warn("easing() method is deprecated and will be removed. Use pageTransition()"),!s||a)return t.visible=!0,e&&(e.visible=!1),Promise.resolve();if(i){let s;try{s=i.call(t,t,e)}catch(t){s="crossFade"}if(isPromise(s))return s;if(isString(s)){const i=y[s];if(i)return i(t,e)}if(t.smoothIn){const smooth=(e,i,s={})=>new Promise((a=>{t.visible=!0,t.setSmooth(e,i,s),t.transition(e).on("finish",(()=>{a()}))}));return t.smoothIn({pageIn:t,smooth:smooth})}}return y.crossFade(t,e)},updateWidgets=t=>{const e=t[m.route],i=(U.get(e)||[]).map((t=>t.toLowerCase()));z.forEach((e=>{e.visible=-1!==i.indexOf(e.ref.toLowerCase()),e.visible&&emit(e,["activated"],t)})),"Widgets"===M.state&&q&&!q.visible&&M._setState("")},cleanUp=(t,e,i)=>{const s=H.get("lazyDestroy"),a=H.get("destroyOnHistoryBack"),n=read("keepAlive",i);let o=!1;if((read(m.backtrack,i)&&(a||s)||s&&!n)&&(o=!0),o){const i=B.get(e);i[getPageStackLocation(e)]=t._routedType||t.constructor,B.set(e,i),$.remove(t),H.get("gcOnUnload")&&V.gc()}else t.patch({x:0,y:0,scale:1,alpha:1,visible:!1});send$1(t[m.hash],"stop")},isPageExpired=t=>{if(!t[m.expires])return!1;const e=t[m.expires];return Date.now()>=e},getPageByRoute=t=>getPageFromStack(t).item,getPageStackLocation=t=>getPageFromStack(t).index,getPageFromStack=t=>{if(!B.has(t))return!1;let e=-1,i=null,s=B.get(t);Array.isArray(s)||(s=[s]);for(let t=0,a=s.length;t<a;t++)if(isPage(s[t])){e=t,i=s[t];break}return{index:e,item:i}},getFloor=t=>stripRegex(t).split("/").length,stripRegex=(t,e="R")=>(ot.test(t)&&(t=t.replace(ot,e)),t),getRouteByHash=t=>{const e=/(\/?:?[@\w%\s:-]+)/g,i=(t=>{const e=[];for(let[i]of B.entries())getFloor(i)===t&&e.push(i);return e})(getFloor(t)),s=t.match(e)||[],a=/\/:\w+?@@([0-9]+?)@@/,n=/^\/:/;let o=[],r=i.filter((t=>{let i=!0;if(rt.test(t))return!1;if(ot.test(t)){const e=t.match(ot);e&&e.length&&(t=e.reduce(((t,e)=>{const i=o.length;return t=t.replace(e,`@@${i}@@`),o.push(e.substring(1,e.length-1)),t}),t))}const r=t.match(e)||[];for(let t=0,e=r.length;t<e;t++){const e=r[t],l=s[t];if(a.test(e)){const t=a.exec(e)[1],s=o[t],n=/\/([^\/]+)\/([igm]{0,3})/.exec(s);if(n&&n.length){const t=n[1],e=n[2];new RegExp(`^/${t}$`,e).test(l)||(i=!1)}}else{if(n.test(e))continue;l&&e.toLowerCase()!==l.toLowerCase()&&(i=!1)}}return i}));return!!r.length&&(r=r.sort((t=>n.test(t)?-1:1)),r[0])},getValuesFromHash=(t,e)=>{e=stripRegex(e,"");const i=/(\/?:?[\w%\s:-]+)/g,s=t.match(i)||[],a=e.match(i)||[],n=/^\/:([\w-]+)\/?/;return a.reduce(((t,e,i)=>{const a=n.exec(e);return a&&a.length&&t.set(a[1],decodeURIComponent(s[i].replace(/^\//,""))),t}),new Map)};let beforeEachRoute=async(t,e)=>!0;const handleHashChange=async t=>{const e=t||getHash(),i=getRouteByHash(e);let s=await beforeEachRoute(Y,i)||!0;if(W.has(i)){const t=W.get(i);s=await t()||!0}if(isBoolean(s)){if(s)return resolveHashChange(e,i)}else isString(s)?navigate(s):isObject(s)&&navigate(s.path,s.params)},resolveHashChange=(t,e)=>{if(send$1(t),nt=t,e){if(B.has(e)){let i=B.get(e);send$1(t,"route",e),isArray(i)||(i=[i]),i.forEach(((i,s,a)=>{if(isPage(i))load({route:e,hash:t}).then((()=>{M._refocus()}));else if(isPromise(i))i().then((t=>t.default)).then((i=>(a[s]=i,load({route:e,hash:t})))).then((()=>{M._refocus()}));else{const s=getValuesFromHash(t,e),a={};for(const t of s.keys())a[t]=s.get(t);i.call(null,M,{...a})}}))}}else B.has("*")&&load({route:"*",hash:t}).then((()=>{M._refocus()}))},getMod=(t,e)=>{const i=j.get(getRouteByHash(t));if(isObject(i))return i[e]},hashmod=(t,e)=>routemod(getRouteByHash(t),e),routemod=(t,e)=>{if(j.has(t)){return j.get(t)[e]}},read=(t,e)=>!!e.has(t)&&e.get(t),navigate=(t,e,i=!0)=>{let s=getHash();et.clear(),!mustUpdateHash()&&G&&(s=G),isObject(e)?et=(t=>{const e=new Map;return[...Object.keys(t),...Object.getOwnPropertySymbols(t)].forEach((i=>{e.set(i,t[i])})),e})(e):isBoolean(e)&&!e&&(i=e),et.set(m.store,i),s.replace(/^#/,"")!==t?mustUpdateHash()?setHash(t):(G=t,handleHashChange(t)):read("reload",et)&&handleHashChange(s)},step=(t=0)=>{if(!t)return!1;if(it.length){const t=it.splice(it.length-1,1);return navigate(t[0],{[m.backtrack]:!0},!1)}if(H.get("backtrack")){const t=/(\/:?[\w%\s-]+)$/;let e=stripRegex(getHash()),i=getFloor(e);if(i>1)for(;i--;)if(e=e.replace(t,""),getRouteByHash(e))return navigate(e,{[m.backtrack]:!0},!1)}return!!isFunction(M._handleAppClose)&&M._handleAppClose()},capture=({key:t})=>{if("Loading"!==M.state){if(!H.get("numberNavigation"))return!1;if(t=parseInt(t),!isNaN(t)){let e,i=1;for(let s of B.keys()){if(i===t){e=s;break}i++}e&&navigate(e)}return!1}},start=()=>{const t=B.has("@boot-page"),e=getHash(),i=(t=>{const e=/([?&].*)/.exec(t),i={};if(e&&e.length){const t=new URLSearchParams(e[1]);for(const[e,s]of t.entries())i[e]=s;return i}return!1})(e),s=-1!==e.indexOf("@boot-page"),ready=()=>{t?navigate("@boot-page",{[m.resume]:s?J:e||J,reload:!0}):!e&&J?isString(J)?navigate(J):isFunction(J)&&J().then((t=>{navigate(t)})):handleHashChange()};isFunction(X)?X(i).then((()=>{ready()})):ready()},on=(t,e,i=0,s="on")=>{K.has(t)?console.warn(`provider for ${t} already exists`):K.set(t,{cb:e,expires:1e3*i,type:s})},before=(t,e,i=0)=>{on(t,e,i,"before")},after=(t,e,i=0)=>{on(t,e,i,"after")},getWidgetReferences=()=>z.get().reduce(((t,e)=>(t[e.ref.toLowerCase()]=e,t)),{}),focusWidget=t=>{const e=(t=>(t=ucfirst(t),z.getByRef(t)||!1))(t);t&&(q=e,"Widgets"===M.state?M.reload(q):M._setState("Widgets",[q]))},handleRemote=(t,e)=>{"widget"===t?focusWidget(e):"page"===t&&restoreFocus()},restore=()=>{H.get("autoRestoreRemote")&&handleRemote("page")},mustUpdateHash=()=>{const t=H.get("updateHash");return!(isBoolean(t)&&!t||isBoolean(at)&&!at)},restoreFocus=()=>{q=null,M._setState("")},getActivePage=()=>tt&&tt.attached?tt:M;window.addEventListener("hashchange",(()=>{handleHashChange()}));var ht={startRouter:(t,e)=>{let{appInstance:s,routes:a,provider:n=(()=>{}),widgets:o=(()=>{})}=t;e&&isPage(e)&&(M=e),M||(M=s||I),O=M.application,$=O.childList,V=M.stage,H=(()=>{const t=i.get("platform","router"),e=isObject(t);return["backtrack","gcOnUnload","destroyOnHistoryBack","lazyCreate","lazyDestroy","reuseInstance","autoRestoreRemote","numberNavigation","updateHash"].reduce(((s,a)=>(s.set(a,e?t[a]:i.get("platform",a)),s)),new Map)})(),M.pages&&($=M.pages.childList),M.widgets&&M.widgets.children&&(z=M.widgets.childList,z.forEach((t=>t.visible=!1))),M._handleBack=t=>{step(-1),t.preventDefault()},M._captureKey=capture.bind(null),isArray(a)?(setupRoutes(t),start()):isFunction(a)&&(n(),a(),o())},navigate:navigate,root:(t,e,i)=>{J=t.replace(/\/+$/,""),route(t,e,i)},resume:()=>{if(et.has(m.resume)){const t=et.get(m.resume).replace(/^#+/,"");getRouteByHash(t)&&t?navigate(t,!1):J&&navigate(J,!1)}},route:route,on:on,before:before,after:after,boot:boot,step:step,restoreFocus:restoreFocus,focusPage:restoreFocus,focusWidget:focusWidget,handleRemote:handleRemote,start:start,add:setupRoutes,widget:widget,hash:()=>getHash(),getActivePage:getActivePage,getActiveWidget:()=>q,getActiveRoute:()=>Y,getActiveHash:()=>Q,App:RoutedApp,restore:restore};const ct=[{number:1,name:"Metro News 1",description:"New York Cable News Channel",entitled:!0,program:{title:"The Morning Show",description:"New York's best morning show",startTime:new Date(new Date-3e5).toUTCString(),duration:1800,ageRating:0}},{number:2,name:"MTV",description:"Music Television",entitled:!0,program:{title:"Beavis and Butthead",description:"American adult animated sitcom created by Mike Judge",startTime:new Date(new Date-12e5).toUTCString(),duration:2700,ageRating:18}},{number:3,name:"NBC",description:"NBC TV Network",entitled:!1,program:{title:"The Tonight Show Starring Jimmy Fallon",description:"Late-night talk show hosted by Jimmy Fallon on NBC",startTime:new Date(new Date-6e5).toUTCString(),duration:3600,ageRating:10}}],channels=()=>i.get("platform","tv",ct),randomChannel=()=>channels()[~~(channels.length*Math.random())];let pt;const dt={},emit$1=(t,...e)=>{dt[t]&&dt[t].forEach((t=>{t.apply(null,e)}))};let gt={getChannel:()=>(pt||(pt=randomChannel()),new Promise(((t,e)=>{if(pt){const e={...pt};delete e.program,t(e)}else e("No channel found")}))),getProgram:()=>(pt||(pt=randomChannel()),new Promise(((t,e)=>{pt.program?t(pt.program):e("No program found")}))),setChannel:t=>new Promise(((e,i)=>{if(t){const s=channels().find((e=>e.number===t));if(s){pt=s;const t={...pt};delete t.program,emit$1("channelChange",t),e(t)}else i("Channel not found")}else i("No channel number supplied")}))};let ut;var Launch=(e,s,a,n)=>{((e,i)=>{t.app=e,t.platform=i,t.user={}})(s,a),(t=>{l=ensureUrlWithProtocol(makeFullStaticPath(window.location.pathname,t.path||"/")),t.proxyUrl&&(h=ensureUrlWithProtocol(t.proxyUrl))})(a),d=i.get("platform","id"),g=new localCookie,a.plugins&&(a.plugins.profile&&(t=>{t.getInfo,t.setInfo})(a.plugins.profile),a.plugins.metrics&&(t=>{sendMetric=t.sendMetric})(a.plugins.metrics),a.plugins.mediaPlayer&&(t=>{t.mediaUrl&&(mediaUrl=t.mediaUrl)})(a.plugins.mediaPlayer),a.plugins.mediaPlayer&&initVideoPlayer(a.plugins.mediaPlayer),a.plugins.ads&&initAds(a.plugins.ads),a.plugins.router&&(t=>{t.getHash&&(getHash=t.getHash),t.setHash&&(setHash=t.setHash)})(a.plugins.router),a.plugins.tv&&(t=>{gt={},t.getChannel&&"function"==typeof t.getChannel&&(gt.getChannel=t.getChannel),t.getProgram&&"function"==typeof t.getProgram&&(gt.getProgram=t.getProgram),t.setChannel&&"function"==typeof t.setChannel&&(gt.setChannel=t.setChannel),t.emit&&"function"==typeof t.emit&&t.emit(emit$1)})(a.plugins.tv));const o=Application(e,0,a);return ut=new o(s),ut};class VideoTexture extends p.Component{static _template(){return{Video:{alpha:1,visible:!1,pivot:.5,texture:{type:p.textures.StaticTexture,options:{}}}}}set videoEl(t){this._videoEl=t}get videoEl(){return this._videoEl}get videoView(){return this.tag("Video")}get videoTexture(){return this.videoView.texture}get isVisible(){return 1===this.videoView.alpha&&!0===this.videoView.visible}_init(){this._createVideoTexture()}_createVideoTexture(){const t=this.stage.gl,e=t.createTexture();t.bindTexture(t.TEXTURE_2D,e),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MAG_FILTER,t.LINEAR),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_MIN_FILTER,t.LINEAR),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_S,t.CLAMP_TO_EDGE),t.texParameteri(t.TEXTURE_2D,t.TEXTURE_WRAP_T,t.CLAMP_TO_EDGE),this.videoTexture.options={source:e,w:this.videoEl.width,h:this.videoEl.height},this.videoView.w=this.videoEl.width/this.stage.getRenderPrecision(),this.videoView.h=this.videoEl.height/this.stage.getRenderPrecision()}start(){const t=this.stage;this._updateVideoTexture||(this._updateVideoTexture=()=>{if(this.videoTexture.options.source&&this.videoEl.videoWidth&&this.active){const e=t.gl,i=(new Date).getTime(),a=this.videoEl.webkitDecodedFrameCount;if(a?this._lastFrame!==a:this._lastTime<i-30){this._lastTime=i,this._lastFrame=a;try{e.bindTexture(e.TEXTURE_2D,this.videoTexture.options.source),e.pixelStorei(e.UNPACK_PREMULTIPLY_ALPHA_WEBGL,!1),e.texImage2D(e.TEXTURE_2D,0,e.RGBA,e.RGBA,e.UNSIGNED_BYTE,this.videoEl),this._lastFrame=this.videoEl.webkitDecodedFrameCount,this.videoView.visible=!0,this.videoTexture.options.w=this.videoEl.width,this.videoTexture.options.h=this.videoEl.height;const t=this.videoView.w/this.videoView.h,i=this.videoEl.width/this.videoEl.height;t>i?(this.videoView.scaleX=i/t,this.videoView.scaleY=1):(this.videoView.scaleY=t/i,this.videoView.scaleX=1)}catch(t){s.error("texImage2d video",t),this.stop()}this.videoTexture.source.forceRenderUpdate()}}}),this._updatingVideoTexture||(t.on("frameStart",this._updateVideoTexture),this._updatingVideoTexture=!0)}stop(){const t=this.stage;if(t.removeListener("frameStart",this._updateVideoTexture),this._updatingVideoTexture=!1,this.videoView.visible=!1,this.videoTexture.options.source){const e=t.gl;e.bindTexture(e.TEXTURE_2D,this.videoTexture.options.source),e.clearColor(0,0,0,1),e.clear(e.COLOR_BUFFER_BIT)}}position(t,e){this.videoView.patch({smooth:{x:e,y:t}})}size(t,e){this.videoView.patch({smooth:{w:t,h:e}})}show(){this.videoView.setSmooth("alpha",1)}hide(){this.videoView.setSmooth("alpha",0)}}let mt,yt,ft,vt,mediaUrl$1=t=>t,_t=1,St=!1;const initVideoPlayer=t=>{t.mediaUrl&&(mediaUrl$1=t.mediaUrl)};let wt={};const xt={adsEnabled:!1,playing:!1,_playingAds:!1,get playingAds(){return this._playingAds},set playingAds(t){this._playingAds!==t&&(this._playingAds=t,fireOnConsumer(!0===t?"AdStart":"AdEnd"))},skipTime:!1,playAfterSeek:null},bt={play(){xt.playing=!0},pause(){xt.playing=!1},seeked(){!0===xt.playAfterSeek&&At.play(),xt.playAfterSeek=null},abort(){deregisterEventListeners()}},withPrecision=t=>Math.round(_t*t)+"px",fireOnConsumer=(t,e)=>{vt&&(vt.fire("$videoPlayer"+t,e,mt.currentTime),vt.fire("$videoPlayerEvent",t,e,mt.currentTime))},registerEventListeners=()=>{s.info("VideoPlayer","Registering event listeners"),Object.keys(o).forEach((t=>{const handler=e=>{ft&&ft[t]&&"function"==typeof ft[t]&&ft[t]({currentTime:mt.currentTime}),((t,e)=>{bt[t]&&"function"==typeof bt[t]&&bt[t].call(null,t,e)})(t,{videoElement:mt,event:e}),fireOnConsumer(o[t],{videoElement:mt,event:e})};wt[t]=handler,mt.addEventListener(t,handler)}))},deregisterEventListeners=()=>{s.info("VideoPlayer","Deregistering event listeners"),Object.keys(wt).forEach((t=>{mt.removeEventListener(t,wt[t])})),wt={}},At={consumer(t){vt=t},position(t=0,e=0){mt.style.left=withPrecision(e),mt.style.top=withPrecision(t),!0===St&&yt.position(t,e)},size(t=1920,e=1080){mt.style.width=withPrecision(t),mt.style.height=withPrecision(e),mt.width=parseFloat(mt.style.width),mt.height=parseFloat(mt.style.height),!0===St&&yt.size(t,e)},area(t=0,e=1920,i=1080,s=0){this.position(t,s),this.size(e-s,i-t)},open(t,e={}){if(!this.canInteract)return;ft=n.media(t),t=mediaUrl$1(t),this.src==t&&this.clear(),this.hide(),deregisterEventListeners(),mt.setAttribute("src",t),mt.load();const i={enabled:xt.adsEnabled,duration:300};e.videoId&&(i.caid=e.videoId),Ct.get(i,vt).then((e=>{xt.playingAds=!0,e.prerolls().then((()=>{xt.playingAds=!1,registerEventListeners(),this.src!==t&&(mt.setAttribute("src",t),mt.load()),this.show(),setTimeout((()=>{this.play()}))}))}))},reload(){if(!this.canInteract)return;const t=mt.getAttribute("src");this.close(),this.open(t)},close(){Ct.cancel(),xt.playingAds&&(xt.playingAds=!1,Ct.stop(),setTimeout((()=>{this.close()}))),this.canInteract&&(this.clear(),this.hide(),deregisterEventListeners())},clear(){this.canInteract&&(this.pause(),!0===St&&yt.stop(),fireOnConsumer("Clear",{videoElement:mt}),mt.removeAttribute("src"),mt.load())},play(){this.canInteract&&(!0===St&&yt.start(),mt.play())},pause(){this.canInteract&&mt.pause()},playPause(){this.canInteract&&(!0===this.playing?this.pause():this.play())},mute(t=!0){this.canInteract&&(mt.muted=t)},loop(t=!0){mt.loop=t},seek(t){this.canInteract&&this.src&&(null===xt.playAfterSeek&&(xt.playAfterSeek=!!xt.playing),this.pause(),mt.currentTime=Math.max(0,Math.min(t,this.duration-.1)))},skip(t){var e,i;this.canInteract&&(this.src&&(xt.skipTime=(xt.skipTime||mt.currentTime)+t,e=()=>{this.seek(xt.skipTime),xt.skipTime=!1},i=300,clearTimeout(r),r=setTimeout((()=>{e()}),i)))},show(){this.canInteract&&(!0===St?yt.show():(mt.style.display="block",mt.style.visibility="visible"))},hide(){this.canInteract&&(!0===St?yt.hide():(mt.style.display="none",mt.style.visibility="hidden"))},enableAds(t=!0){xt.adsEnabled=t},get duration(){return mt&&(isNaN(mt.duration)?1/0:mt.duration)},get currentTime(){return mt&&mt.currentTime},get muted(){return mt&&mt.muted},get looped(){return mt&&mt.loop},get src(){return mt&&mt.getAttribute("src")},get playing(){return xt.playing},get playingAds(){return xt.playingAds},get canInteract(){return!1===xt.playingAds},get top(){return mt&&parseFloat(mt.style.top)},get left(){return mt&&parseFloat(mt.style.left)},get bottom(){return mt&&parseFloat(mt.style.top-mt.style.height)},get right(){return mt&&parseFloat(mt.style.left-mt.style.width)},get width(){return mt&&parseFloat(mt.style.width)},get height(){return mt&&parseFloat(mt.style.height)},get visible(){return!0===St?yt.isVisible:mt&&"block"===mt.style.display},get adsEnabled(){return xt.adsEnabled},get _videoEl(){return mt}};let Tt;((t,e=(()=>{}))=>{let i=!1;const doSetup=()=>{!1===i&&(e(),i=!0)};Object.keys(t).reduce(((e,i)=>("function"==typeof t[i]?e[i]=function(){return doSetup(),t[i].apply(t,arguments)}:"function"==typeof Object.getOwnPropertyDescriptor(t,i).get?e.__defineGetter__(i,(function(){return doSetup(),Object.getOwnPropertyDescriptor(t,i).get.apply(t)})):"function"==typeof Object.getOwnPropertyDescriptor(t,i).set?e.__defineSetter__(i,(function(){return doSetup(),Object.getOwnPropertyDescriptor(t,i).set.sourceObject[i].apply(t,arguments)})):e[i]=t[i],e)),{})})(At,(()=>{_t=ut&&ut.stage&&ut.stage.getRenderPrecision()||_t,mt=(()=>{const t=document.getElementsByTagName("video");if(t&&t.length)return t[0];{const t=document.createElement("video");return t.setAttribute("id","video-player"),t.setAttribute("width",withPrecision(1920)),t.setAttribute("height",withPrecision(1080)),t.setAttribute("crossorigin","anonymous"),t.style.position="absolute",t.style.zIndex="1",t.style.display="none",t.style.visibility="hidden",t.style.top=withPrecision(0),t.style.left=withPrecision(0),t.style.width=withPrecision(1920),t.style.height=withPrecision(1080),document.body.appendChild(t),t}})(),St=i.get("platform","textureMode",!1),!0===St&&(yt=(()=>{if(!ut.tag("VideoTexture")){const t=ut.stage.c({type:VideoTexture,ref:"VideoTexture",zIndex:0,videoEl:mt});ut.childList.addAt(t,0)}return ut.tag("VideoTexture")})())}));let getAds=()=>Promise.resolve({prerolls:[],midrolls:[],postrolls:[]});const initAds=t=>{t.getAds&&(getAds=t.getAds)},kt={active:!1},playAd=t=>new Promise((e=>{if(!1===kt.active)return s.info("Ad","Skipping add due to inactive state"),e();const i=document.getElementsByTagName("video")[0];i.style.display="block",i.style.visibility="visible",i.src=mediaUrl$1(t.url),i.load();let a,n=null;const cleanup=()=>{Object.keys(o).forEach((t=>i.removeEventListener(t,o[t]))),e()},o={play(){s.info("Ad","Play ad",t.url),fireOnConsumer$1("Play",t),sendBeacon(t.callbacks,"defaultImpression")},ended(){fireOnConsumer$1("Ended",t),sendBeacon(t.callbacks,"complete"),cleanup()},timeupdate(){!n&&i.duration&&(n={firstQuartile:i.duration/4,midPoint:i.duration/2,thirdQuartile:i.duration/4*3},s.info("Ad","Calculated quartiles times",{timeEvents:n})),n&&n.firstQuartile&&i.currentTime>=n.firstQuartile&&(fireOnConsumer$1("FirstQuartile",t),delete n.firstQuartile,sendBeacon(t.callbacks,"firstQuartile")),n&&n.midPoint&&i.currentTime>=n.midPoint&&(fireOnConsumer$1("MidPoint",t),delete n.midPoint,sendBeacon(t.callbacks,"midPoint")),n&&n.thirdQuartile&&i.currentTime>=n.thirdQuartile&&(fireOnConsumer$1("ThirdQuartile",t),delete n.thirdQuartile,sendBeacon(t.callbacks,"thirdQuartile"))},stalled(){fireOnConsumer$1("Stalled",t),a=setTimeout((()=>{cleanup()}),5e3)},canplay(){a&&clearTimeout(a)},error(){fireOnConsumer$1("Error",t),cleanup()},abort(){cleanup()}};Object.keys(o).forEach((t=>i.addEventListener(t,o[t]))),i.play()})),sendBeacon=(t,e)=>{if(t&&t[e])return s.info("Ad","Sending beacon",e,t[e]),t[e].reduce(((t,i)=>t.then((()=>fetch(i).then((t=>{200===t.status?fireOnConsumer$1("Beacon"+e+"Sent"):fireOnConsumer$1("Beacon"+e+"Failed"+t.status)})).catch((()=>{}))))),Promise.resolve(null));s.info("Ad","No callback found for "+e)},fireOnConsumer$1=(t,e)=>{Tt&&(Tt.fire("$ad"+t,e),Tt.fire("$adEvent",t,e))};var Ct={get:(t,e)=>!1===t.enabled?Promise.resolve({prerolls:()=>Promise.resolve()}):(Tt=e,new Promise((e=>{s.info("Ad","Starting session"),getAds(t).then((t=>{s.info("Ad","API result",t),e({prerolls:()=>t.preroll?(kt.active=!0,fireOnConsumer$1("PrerollSlotImpression",t),sendBeacon(t.preroll.callbacks,"slotImpression"),((t=[])=>t.reduce(((t,e)=>t.then((()=>playAd(e)))),Promise.resolve(null)))(t.preroll.ads).then((()=>{fireOnConsumer$1("PrerollSlotEnd",t),sendBeacon(t.preroll.callbacks,"slotEnd"),kt.active=!1}))):Promise.resolve(),midrolls:()=>Promise.resolve(),postrolls:()=>Promise.resolve()})}))}))),cancel(){s.info("Ad","Cancel Ad"),kt.active=!1},stop(){s.info("Ad","Stop Ad"),kt.active=!1;const t=document.getElementsByTagName("video")[0];t.pause(),t.removeAttribute("src")}};p.textures.ImageTexture;p.Component;p.Component;let It=null;"undefined"!=typeof WebSocket&&(It=WebSocket);var Pt=It;const Rt={},Lt={};var notificationListener=t=>{if("string"==typeof t&&(t=JSON.parse(t.normalize().replace(/\\x([0-9A-Fa-f]{2})/g,""))),!t.id&&t.method){const e=Lt[t.method];e&&Array.isArray(e)&&e.length&&e.forEach((e=>{e(t.params)}))}};let Et=null;var connect=t=>new Promise(((e,i)=>{if(Et&&1===Et.readyState)return e(Et);if(Et&&0===Et.readyState){const waitForOpen=()=>{Et.removeEventListener("open",waitForOpen),e(Et)};return Et.addEventListener("open",waitForOpen)}if(null===Et){Et=new Pt((t=>[t&&t.protocol||"ws://",t&&t.host||"localhost",":"+(t&&t.port||80),t&&t.endpoint||"/jsonrpc",t&&t.token?"?token="+t.token:null].join(""))(t),"notification"),Et.addEventListener("message",(e=>{t.debug&&(console.log(" "),console.log("API REPONSE:"),console.log(JSON.stringify(e.data,null,2)),console.log(" ")),(t=>{if("string"==typeof t&&(t=JSON.parse(t.normalize().replace(/\\x([0-9A-Fa-f]{2})/g,""))),t.id){const e=Rt[t.id];e?("result"in t?e.resolve(t.result):e.reject(t.error),delete Rt[t.id]):console.log("no pending request found with id "+t.id)}})(e.data)})),Et.addEventListener("message",(t=>{notificationListener(t.data)})),Et.addEventListener("error",(()=>{notificationListener({method:"client.ThunderJS.events.error"}),Et=null}));const handleConnectClosure=t=>{Et=null,i(t)};Et.addEventListener("close",handleConnectClosure),Et.addEventListener("open",(()=>{notificationListener({method:"client.ThunderJS.events.connect"}),Et.removeEventListener("close",handleConnectClosure),Et.addEventListener("close",(()=>{notificationListener({method:"client.ThunderJS.events.disconnect"}),Et=null})),e(Et)}))}else Et=null,i("Socket error")}));let Dt=0;var API=t=>({request:(e,i,s)=>new Promise(((a,n)=>{const o=(Dt+=1,Dt),r=((t,e,i)=>{let s;return(s=i&&i.version)?s:t&&(t[e]||t.default)||1})(t.versions,e,s),l=((t,e,i,s,a)=>{s&&delete s.version;const n={jsonrpc:"2.0",id:t,method:[e,a,i].join(".")};return(s||!1===s)&&("object"!=typeof s||0!==Object.keys(s).length)&&(n.params=s),n})(o,e,i,s,r);t.debug&&(console.log(" "),console.log("API REQUEST:"),console.log(JSON.stringify(l,null,2)),console.log(" ")),Rt[o]={body:l,resolve:a,reject:n},((t,e)=>connect(t).then((t=>{t.send(JSON.stringify(e))})))(t,l).catch((t=>{n(t)}))}))}),Nt={DeviceInfo:{freeRam(t){return this.call("systeminfo",t).then((t=>t.freeram))},version(t){return this.call("systeminfo",t).then((t=>t.version))}}};function listener(t,e,i,s){const a=this,n=register$1.call(this,t,e,i,s);return{dispose(){const i=makeListenerId(t,e);void 0!==Lt[i]&&(Lt[i].splice(n,1),0===Lt[i].length&&unregister.call(a,t,e,s))}}}const makeListenerId=(t,e)=>["client",t,"events",e].join("."),register$1=function(t,e,i,s){const a=makeListenerId(t,e);if(!Lt[a]&&(Lt[a]=[],"ThunderJS"!==t)){const i="register",n={event:e,id:a.split(".").slice(0,-1).join(".")};this.api.request(t,i,n).catch((t=>{"function"==typeof s&&s(t.message)}))}return Lt[a].push(i),Lt[a].length-1},unregister=function(t,e,i){const s=makeListenerId(t,e);if(delete Lt[s],"ThunderJS"!==t){const a="unregister",n={event:e,id:s.split(".").slice(0,-1).join(".")};this.api.request(t,a,n).catch((t=>{"function"==typeof i&&i(t.message)}))}};let Ft;var thunderJS=t=>(void 0===t.token&&"undefined"!=typeof window&&window.thunder&&"function"==typeof window.thunder.token&&(t.token=window.thunder.token()),Ft=API(t),wrapper({...thunder(t),...Nt}));const thunder=t=>({options:t,plugin:!1,call(){const t=[...arguments];this.plugin&&t[0]!==this.plugin&&t.unshift(this.plugin);const e=t[0],i=t[1];return"function"==typeof this[e][i]?this[e][i](t[2]):this.api.request.apply(this,t)},registerPlugin(t,e){this[t]=wrapper(Object.assign(Object.create(thunder),e,{plugin:t}))},subscribe(){},on(){const t=[...arguments];return-1!==["connect","disconnect","error"].indexOf(t[0])?t.unshift("ThunderJS"):this.plugin&&t[0]!==this.plugin&&t.unshift(this.plugin),listener.apply(this,t)},once(){console.log("todo ...")}}),wrapper=t=>new Proxy(t,{get(t,e){const i=t[e];return"api"===e?Ft:void 0!==i?"function"==typeof i?["on","once","subscribe"].indexOf(e)>-1?function(...t){return i.apply(this,t)}:function(...t){return((t,e)=>{"object"==typeof t&&("object"!=typeof t||t.then&&"function"==typeof t.then)||(t=new Promise(((e,i)=>{t instanceof Error==0?e(t):i(t)})));const i="function"==typeof e[e.length-1]?e[e.length-1]:null;if(!i)return t;t.then((t=>i(null,t))).catch((t=>i(t)))})(i.apply(this,t),t)}:"object"==typeof i?wrapper(Object.assign(Object.create(thunder(t.options)),i,{plugin:e})):i:!1===t.plugin?wrapper(Object.assign(Object.create(thunder(t.options)),{},{plugin:e})):function(...i){return i.unshift(e),t.call.apply(this,i)}}});class ListItem extends p.Component{static _template(){return{Item:{x:30,y:18,Shadow:{alpha:0,color:4289309097},Title:{text:{fontSize:27,textColor:4294967295},mountX:.5,alpha:0},Bg:{},Image:{}}}}_init(){this.data.show&&this.tag("Title").patch({x:this.x_text,y:this.y_text,alpha:1,text:{text:this.data.title}}),this.tag("Title").patch({x:this.x_text,y:this.y_text,text:{text:this.data.displayName}}),this.tag("Shadow").patch({scale:this.unfocus,texture:p.Tools.getShadowRect(this.w,this.h,4,10,0)}),this.tag("Bg").patch({rect:!0,color:4278190080,w:this.w,h:this.h}),this.data.url.startsWith("/images")?this.tag("Image").patch({src:c.asset(this.data.url),w:this.w,h:this.h,scale:this.unfocus}):this.tag("Image").patch({src:this.data.url,w:this.w,h:this.h})}_focus(){this.tag("Bg").scale=this.focus,this.tag("Image").patch({w:this.w,h:this.h,scale:this.focus}),this.tag("Title").patch({x:this.x_text,y:this.y_text,text:{text:this.data.displayName}}),this.tag("Shadow").patch({scale:this.focus,x:-7,y:-7,alpha:1,texture:p.Tools.getShadowRect(this.w+14,this.h+14,4,10,0)}),this.tag("Title").patch({alpha:1}),this.tag("Item").patch({zIndex:1})}_unfocus(){this.tag("Bg").scale=this.unfocus,this.tag("Image").patch({x:0,y:0,w:this.w,h:this.h,scale:this.unfocus}),this.tag("Shadow").patch({scale:this.unfocus,alpha:0}),this.tag("Title").patch({alpha:0}),this.tag("Item").patch({zIndex:0})}}var Ot=!1,Mt=!1,Vt=!1,zt=!1,$t="",Bt="",Kt="";var jt,Ut=thunderJS({host:"127.0.0.1",port:9998,default:1});class AppApi{checkForInternet(){return new Promise(((t,e)=>{let i=0;var poll=()=>{i++,this.getIP().then((e=>{1==e?t(e):i<10?poll():t(!1)}))};poll()}))}getIP(){return new Promise(((t,e)=>{const i="org.rdk.System";Ut.Controller.activate({callsign:i}).then((()=>{Ut.call(i,"getDeviceInfo",{params:"estb_ip"}).then((e=>{t(e.success)})).catch((e=>{t(!1)}))})).catch((t=>{}))}))}getResolution(){return new Promise(((t,e)=>{const i="org.rdk.DisplaySettings";Ut.Controller.activate({callsign:i}).then((()=>{Ut.call(i,"getCurrentResolution",{params:"HDMI0"}).then((e=>{t(e.resolution)})).catch((e=>{t(!1)}))})).catch((t=>{console.log("Display Error",t)}))}))}setResolution(){return new Promise(((t,e)=>{const i="org.rdk.DisplaySettings";Ut.Controller.activate({callsign:i}).then((()=>{Ut.call(i,"setCurrentResolution",{videoDisplay:"HDMI0",resolution:"1080p",persist:!0}).then((e=>{t(e.success)})).catch((e=>{t(!1)}))})).catch((t=>{console.log("Display Error",t)}))}))}launchWeb(t){const e="HtmlApp";$t!=t?Ut.call("org.rdk.RDKShell","launch",{callsign:e,type:e,uri:t}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})})).catch((t=>{})):(Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})),$t=t,Ot=!0}launchLightning(t){const e="LightningApp";Bt!=t?Ut.call("org.rdk.RDKShell","launch",{callsign:e,type:e,uri:t}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})})).catch((t=>{})):(Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})),Bt=t,Mt=!0}launchCobalt(t){const e="Cobalt";Ut.call("org.rdk.RDKShell","launch",{callsign:e,type:e}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})})).catch((t=>{})),Vt=!0}launchAmazon(){const t="Amazon";Ut.call("org.rdk.RDKShell","launch",{callsign:t,type:t}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:t}),Ut.call("org.rdk.RDKShell","setFocus",{client:t})})).catch((t=>{})),zt=!0}launchResident(t){const e="ResidentApp";Ut.call("org.rdk.RDKShell","launch",{callsign:e,type:e,uri:t}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})})).catch((t=>{console.log("org.rdk.RDKShell launch "+JSON.stringify(t))}))}suspendWeb(){$t="",Ut.call("org.rdk.RDKShell","suspend",{callsign:"HtmlApp"})}suspendLightning(){Bt="",Ut.call("org.rdk.RDKShell","suspend",{callsign:"LightningApp"})}suspendCobalt(){Ut.call("org.rdk.RDKShell","suspend",{callsign:"Cobalt"})}suspendAmazon(){Ut.call("org.rdk.RDKShell","suspend",{callsign:"Amazon"})}deactivateWeb(){Ut.call("org.rdk.RDKShell","destroy",{callsign:"HtmlApp"}),Ot=!1,$t=""}deactivateCobalt(){Ut.call("org.rdk.RDKShell","destroy",{callsign:"Cobalt"}),Vt=!1}deactivateAmazon(){Ut.call("org.rdk.RDKShell","destroy",{callsign:"Amazon"}),zt=!1}deactivateLightning(){Ut.call("org.rdk.RDKShell","destroy",{callsign:"LightningApp"}),Mt=!1,Bt=""}setVisibility(t,e){Ut.call("org.rdk.RDKShell","setVisibility",{client:t,visible:e})}launchNative(t){const e="testApp";Kt!=t?Ut.call("org.rdk.RDKShell","launchApplication",{client:e,uri:t,mimeType:"application/native"}).then((()=>{Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})})).catch((t=>{console.log("org.rdk.RDKShell launch "+JSON.stringify(t))})):(Ut.call("org.rdk.RDKShell","moveToFront",{client:e}),Ut.call("org.rdk.RDKShell","setFocus",{client:e})),Kt=t}killNative(){Ut.call("org.rdk.RDKShell","kill",{callsign:"testApp"}),Kt=""}static pluginStatus(t){switch(t){case"WebApp":return Ot;case"Cobalt":return Vt;case"Lightning":return Mt;case"Amazon":return zt}}}class MainView extends p.Component{static _template(){return{MainView:{x:451,y:25,w:1469,h:820,AppList:{x:0,y:0,type:p.components.ListComponent,w:1469,h:209,itemSize:224,roll:!0,rollMax:1469,horizontal:!0,itemScrollOffset:-5,clipping:!0},MetroApps:{x:0,y:184,type:p.components.ListComponent,w:1469,h:209,itemSize:224,roll:!0,rollMax:1469,horizontal:!0,itemScrollOffset:-5,clipping:!0},TVShows:{x:0,y:368,w:1469,h:335,type:p.components.ListComponent,roll:!0,itemSize:448,horizontal:!0,rollMax:1469,clipping:!0},Settings:{x:0,y:678,w:1469,h:335,type:p.components.ListComponent,roll:!0,itemSize:448,horizontal:!0,rollMax:1469,clipping:!0}}}}_init(){this.settingsScreen=!1,this._setState("AppList"),this.indexVal=0;var t=thunderJS({host:"127.0.0.1",port:9998,default:1});t.on("Controller","statechange",(e=>{if(e&&("Cobalt"==e.callsign||"Amazon"==e.callsign)&&"Deactivation"==e.state){var i=new AppApi;u.set("applicationType",""),i.setVisibility("ResidentApp",!0),t.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success"+JSON.stringify(t))})),t.call("org.rdk.RDKShell","setFocus",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp setFocus Success"+JSON.stringify(t))})).catch((t=>{console.log("Error",t)}))}}))}_active(){if(this.settingsScreen){let t=this.parent.parent;this._appAnimation=t.animation({duration:0,repeat:0,stopMethod:"immediate",actions:[{p:"x",v:{0:0,1:-320}},{p:"y",v:{0:0,1:-180}},{p:"scale",v:{0:1,1:1.17}}]}),this._appAnimation.start(),this.settingsScreen=!1}}set appItems(t){this.tag("AppList").items=t.map((t=>({w:204,h:126,type:ListItem,data:t,focus:1.2,unfocus:1,x_text:106,y_text:140}))),this.tag("AppList").start()}set metroApps(t){this.tag("MetroApps").items=t.map((t=>({w:204,h:126,type:ListItem,data:t,focus:1.2,unfocus:1,x_text:106,y_text:140}))),this.tag("MetroApps").start()}set tvShowItems(t){this.tag("TVShows").items=t.map((t=>({w:428,h:252,type:ListItem,data:t,focus:1.08,unfocus:1,x_text:218,y_text:264}))),this.tag("TVShows").start()}set settingsItems(t){this.tag("Settings").items=t.map((t=>({w:428,h:252,type:ListItem,data:t,focus:1.08,unfocus:1,x_text:218,y_text:264}))),this.tag("Settings").start()}set index(t){this.indexVal=t,0==this.indexVal?this._setState("AppList"):1==this.indexVal?this._setState("MetroApps"):2==this.indexVal?this._setState("TVShows"):3==this.indexVal&&this._setState("Settings")}reset(){for(var t=this.tag("AppList").index;t>0;t--)this.tag("AppList").setPrevious();for(t=this.tag("MetroApps").index;t>0;t--)this.tag("MetroApps").setPrevious();for(t=this.tag("TVShows").index;t>0;t--)this.tag("TVShows").setPrevious();for(t=this.tag("Settings").index;t>0;t--)this.tag("Settings").setPrevious()}static _states(){return[class AppList extends(this){_getFocused(){if(this.tag("AppList").length)return this.tag("AppList").element}_handleRight(){if(this.tag("AppList").length-1!=this.tag("AppList").index)return this.tag("AppList").setNext(),this.tag("AppList").element}_handleLeft(){if(0!=this.tag("AppList").index)return this.tag("AppList").setPrevious(),this.tag("AppList").element;this.reset(),this.fireAncestors("$goToSidePanel",0)}_handleDown(){this._setState("MetroApps")}_handleEnter(){var t=new AppApi,e=this.tag("AppList").items[this.tag("AppList").index].data.applicationType;this.uri=this.tag("AppList").items[this.tag("AppList").index].data.uri;t=new AppApi;e=this.tag("AppList").items[this.tag("AppList").index].data.applicationType,u.set("applicationType",e),this.uri=this.tag("AppList").items[this.tag("AppList").index].data.uri,"Cobalt"==u.get("applicationType")?(t.launchCobalt(this.uri),t.setVisibility("ResidentApp",!1)):"WebApp"==u.get("applicationType")?(t.launchWeb(this.uri),t.setVisibility("ResidentApp",!1)):"Lightning"==u.get("applicationType")?(t.launchLightning(this.uri),t.setVisibility("ResidentApp",!1)):"Native"==u.get("applicationType")?(t.launchNative(this.uri),t.setVisibility("ResidentApp",!1)):"Amazon"==u.get("applicationType")&&(t.launchAmazon(),t.setVisibility("ResidentApp",!1))}_handleKey(t){var e=thunderJS({host:"127.0.0.1",port:9998,default:1});if(console.log("_handleKey",t.keyCode),27!=t.keyCode&&77!=t.keyCode&&49!=t.keyCode&&36!=t.keyCode&&158!=t.keyCode)return!1;var i=new AppApi;"Cobalt"==u.get("applicationType")?(u.set("applicationType",""),i.suspendCobalt(),i.setVisibility("ResidentApp",!0)):"WebApp"==u.get("applicationType")?(u.set("applicationType",""),i.deactivateWeb(),i.setVisibility("ResidentApp",!0)):"Lightning"==u.get("applicationType")?(u.set("applicationType",""),i.deactivateLightning(),i.setVisibility("ResidentApp",!0)):"Native"==u.get("applicationType")?(u.set("applicationType",""),i.killNative(),i.setVisibility("ResidentApp",!0)):"Amazon"==u.get("applicationType")&&(u.set("applicationType",""),i.suspendAmazon(),i.setVisibility("ResidentApp",!0)),e.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})),e.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})),e.call("org.rdk.RDKShell","setFocus",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})).catch((t=>{console.log("Error",t)}))}},class MetroApps extends(this){_getFocused(){if(this.tag("MetroApps").length)return this.tag("MetroApps").element}_handleUp(){this._setState("AppList")}_handleRight(){if(this.tag("MetroApps").length-1!=this.tag("MetroApps").index)return this.tag("MetroApps").setNext(),this.tag("MetroApps").element}_handleLeft(){if(0!=this.tag("MetroApps").index)return this.tag("MetroApps").setPrevious(),this.tag("MetroApps").element;this.reset(),this.fireAncestors("$goToSidePanel",1)}_handleDown(){this._setState("TVShows")}_handleEnter(){var t=new AppApi,e=this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType;this.uri=this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri;t=new AppApi;e=this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType,u.set("applicationType",e),this.uri=this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri,"Cobalt"==u.get("applicationType")?(t.launchCobalt(this.uri),t.setVisibility("ResidentApp",!1)):"WebApp"==u.get("applicationType")?(t.launchWeb(this.uri),t.setVisibility("ResidentApp",!1)):"Lightning"==u.get("applicationType")?(t.launchLightning(this.uri),t.setVisibility("ResidentApp",!1)):"Native"==u.get("applicationType")&&(t.launchNative(this.uri),t.setVisibility("ResidentApp",!1))}_handleKey(t){var e=thunderJS({host:"127.0.0.1",port:9998,default:1});if(console.log("_handleKey",t.keyCode),27!=t.keyCode&&77!=t.keyCode&&49!=t.keyCode&&36!=t.keyCode&&158!=t.keyCode)return!1;var i=new AppApi;if("Cobalt"==u.get("applicationType"))u.set("applicationType",""),i.suspendCobalt(),i.setVisibility("ResidentApp",!0);else if("WebApp"==u.get("applicationType"))u.set("applicationType",""),i.deactivateWeb(),i.setVisibility("ResidentApp",!0);else if("Lightning"==u.get("applicationType"))u.set("applicationType",""),i.deactivateLightning(),i.setVisibility("ResidentApp",!0);else{if("Native"!=u.get("applicationType"))return!1;u.set("applicationType",""),i.killNative(),i.setVisibility("ResidentApp",!0)}e.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})),e.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})),e.call("org.rdk.RDKShell","setFocus",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})).catch((t=>{console.log("Error",t)}))}},class TVShows extends(this){_getFocused(){if(this.tag("TVShows").length)return this.tag("TVShows").element}_handleRight(){if(this.tag("TVShows").length-1!=this.tag("TVShows").index)return this.tag("TVShows").setNext(),this.tag("TVShows").element}_handleLeft(){if(0!=this.tag("TVShows").index)return this.tag("TVShows").setPrevious(),this.tag("TVShows").element;this.reset(),this.fireAncestors("$goToSidePanel",2)}_handleUp(){this._setState("MetroApps")}_handleDown(){this._setState("Settings")}_handleEnter(){this.fireAncestors("$goToPlayer")}},class Settings extends(this){$enter(){this.fireAncestors("$scroll",-200)}_getFocused(){if(this.tag("Settings").length)return this.tag("Settings").element}_handleRight(){return this.tag("Settings").length-1!=this.tag("Settings").index&&this.tag("Settings").setNext(),this.tag("Settings").element}_handleLeft(){if(0!=this.tag("Settings").index)return this.tag("Settings").setPrevious(),this.tag("Settings").element;this.reset(),this.fireAncestors("$goToSidePanel",3)}_handleUp(){this._setState("TVShows")}_handleEnter(){this.settingsType=this.tag("Settings").items[this.tag("Settings").index].data.displayName,"Bluetooth"==this.settingsType?(this.settingsScreen=!0,ht.navigate("settings/BluetoothScreen",!1)):"Wi-Fi"==this.settingsType&&(this.settingsScreen=!0,ht.navigate("settings/WiFiScreen",!1))}$exit(){this.fireAncestors("$scroll",0)}}]}}class SidePanelItem extends p.Component{static _template(){return{Item:{Title:{text:{fontSize:27,textColor:4294967295},mountX:.5,alpha:0},Image:{x:0}}}}_init(){this.tag("Title").patch({x:this.x_text,y:this.y_text,text:{text:this.data.title}}),this.tag("Image").patch({src:c.asset(this.data.url),w:this.w,h:this.h,scale:this.unfocus})}_focus(){this.tag("Image").patch({w:this.w,h:this.h,scale:this.focus}),this.tag("Title").patch({alpha:1}),this.tag("Item").patch({zIndex:1})}_unfocus(){this.tag("Image").patch({w:this.w,h:this.h,scale:this.unfocus}),this.tag("Title").patch({alpha:0}),this.tag("Item").patch({zIndex:0})}}class SidePanel extends p.Component{static _template(){return{SidePanel:{x:130,y:0,w:240,h:750,type:p.components.ListComponent,roll:!0,horizontal:!1,invertDirection:!0}}}_init(){this._setState("SidePanel"),this.indexVal=0}set sidePanelItems(t){this.tag("SidePanel").patch({x:130}),this.tag("SidePanel").items=t.map(((t,e)=>(this.data=t,{w:204,h:184,y:0==e?30:1==e?115:2==e?260:470,type:SidePanelItem,data:t,focus:.7,unfocus:.6,x_text:100,y_text:160,text_focus:1.1,text_unfocus:.9}))),this.tag("SidePanel").start()}set resetSidePanelItems(t){this.tag("SidePanel").patch({x:90}),this.tag("SidePanel").items=t.map(((t,e)=>({w:204,h:184,y:0==e?25:1==e?105:2==e?260:470,type:SidePanelItem,data:t,focus:.7,unfocus:.4,x_text:100,y_text:160,text_focus:1.1,text_unfocus:.9}))),this.tag("SidePanel").start()}set scale(t){this.tag("SidePanel").patch({scale:t})}set x(t){this.tag("SidePanel").patch({x:t})}set index(t){this.indexVal=t}static _states(){return[class SidePanel extends(this){_getFocused(){if(this.tag("SidePanel").length)return 3==this.indexVal?this.fireAncestors("$scroll",-200):this.fireAncestors("$scroll",0),this.tag("SidePanel").items[this.indexVal]}_handleKey(t){if(39!=t.keyCode&&13!=t.keyCode)return 40==t.keyCode?(this.tag("SidePanel").length-1!=this.indexVal&&(this.indexVal=this.indexVal+1),this.tag("SidePanel").items[this.indexVal]):38==t.keyCode&&(0!=this.indexVal&&(this.indexVal=this.indexVal-1),this.tag("SidePanel").items[this.indexVal]);this.fireAncestors("$goToMainView",this.indexVal)}}]}}class TopPanel extends p.Component{static _template(){return{TopPanel:{x:90,y:60,w:1740,h:120,Mic:{x:120,y:60,mountY:.5,src:c.asset("/images/topPanel/mic.png"),w:60,h:60},Search:{x:250,y:60,mountY:.5,text:{text:"Search TV shows, movies and more",fontSize:33}},Time:{x:1500,y:60,mountY:.5,text:{text:"",fontSize:38}}}}}_init(){this.timeZone="America/New_York";thunderJS({host:"127.0.0.1",port:9998,default:1}).call("org.rdk.System","getTimeZoneDST").then((t=>{if(t.success)try{(new Date).toLocaleDateString("en-US",{timeZone:t.timeZone}),this.timeZone=t.timeZone}catch(t){this.timeZone="America/New_York"}})).catch((t=>{this.timeZone="America/New_York"}))}_build(){setInterval((()=>{this.tag("Time").patch({text:{text:this.updateTime()}})}),1e3)}updateTime(){let t=new Date;t=new Date(t.toLocaleString("en-US",{timeZone:this.timeZone}));let e=t.getHours(),i=t.getMinutes(),s=e>=12?"pm":"am";return e%=12,e=e||12,i=i<10?"0"+i:i,e+"."+i+" "+s}}class PlayerControls extends p.Component{static _template(){return{rect:!0,w:1920,h:410,color:1076176426,Title:{x:90,y:15},Subtitle:{x:90,y:88.5},NetworkLogo:{x:1740,y:82.5},TimeBar:{x:90,y:163.5,texture:p.Tools.getRoundRect(1740,6,6,0,0,!0,2163143155)},ProgressBar:{x:90,y:163.5},CurrentTime:{x:90,y:184.5},TotalTime:{x:1680,y:184.5},Buttons:{x:820,y:240,children:[{src:c.asset("images/player/rewind.png"),x:17,y:17},{src:c.asset("images/player/pause-focus.png"),x:17,y:17},{src:c.asset("images/player/fast-forward.png"),x:17,y:17}].map(((t,e)=>({x:100*e,texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4287532686),ControlIcon:{x:t.x,y:t.y,texture:p.Tools.getSvgTexture(t.src,50,50)}})))},Audio:{x:90,y:240,texture:p.Tools.getRoundRect(240,90,6,0,0,!0,4287532686),AudioOptions:{x:0,y:25,w:240,h:90,text:{fontSize:30,text:"Audio Options",textColor:4294967295,textAlign:"center"}}},Extras:{x:1700,y:240,texture:p.Tools.getRoundRect(130,90,6,0,0,!0,4287532686),ExtrasOptions:{x:0,y:25,w:130,h:90,text:{fontSize:30,text:"Extras",textColor:4294967295,textAlign:"center"}}}}}_init(){this.videoDuration=0,this.tag("Buttons").children[0].patch({alpha:.4}),this.tag("Buttons").children[2].patch({alpha:.4}),this.tag("Audio").patch({alpha:.4}),this.tag("Extras").patch({alpha:.4})}_focus(){this._index=1,this.toggle=!1,this._setState("PlayPause")}_unfocus(){this._setState("Hidden"),clearTimeout(jt)}set title(t){this.tag("Title").patch({text:{fontSize:52.5,textAlign:"center",text:t}})}set subtitle(t){this.tag("Subtitle").patch({text:{fontSize:36,textAlign:"center",text:t}})}set logoPath(t){this.tag("NetworkLogo").patch({src:t})}set duration(t){this.videoDuration=t,this.tag("TotalTime").patch({text:{fontSize:33,textAlign:"center",text:this.SecondsTohhmmss(t)}})}set currentTime(t){this.tag("CurrentTime").patch({text:{fontSize:33,textAlign:"center",text:this.SecondsTohhmmss(t)}}),this.tag("ProgressBar").patch({texture:p.Tools.getRoundRect(1740*t/this.videoDuration,6,6,0,0,!0,4294967295),SeekBar:{x:1740*t/this.videoDuration,y:-12,texture:p.Tools.getRoundRect(30,30,15,0,0,!0,4294967295)}})}SecondsTohhmmss(t){return this.hours=Math.floor(t/3600),this.minutes=Math.floor((t-3600*this.hours)/60),this.seconds=t-3600*this.hours-60*this.minutes,this.seconds=Math.round(t)-3600*this.hours-60*this.minutes,this.result=this.hours<10?"0"+this.hours:this.hours,this.result+=":"+(this.minutes<10?"0"+this.minutes:this.minutes),this.result+=":"+(this.seconds<10?"0"+this.seconds:this.seconds),this.result}hidePlayerControls(){this.signal("hide")}reset(t="play"){if(this._setState("PlayPause"),"pause"===t||"stop"===t)return this.tag("Buttons").children[1].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/play-focus.png"),50,50),x:17}),void(this.toggle=1);this.tag("Buttons").children[1].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/pause-focus.png"),50,50),x:17}),this.toggle=0}timer(){clearTimeout(jt),jt=setTimeout(this.hidePlayerControls.bind(this),5e3)}static _states(){return[class AudioOptions extends(this){$enter(){this.timer(),this.tag("Audio").patch({texture:p.Tools.getRoundRect(240,90,6,0,0,!0,4294967295),scale:1.1}),this.tag("Audio").tag("AudioOptions").color=4278190080}$exit(){this.tag("Audio").patch({texture:p.Tools.getRoundRect(240,90,6,0,0,!0,4287532686),scale:1}),this.tag("Audio").tag("AudioOptions").color=4294967295}_handleRight(){this._setState("Rewind")}_getFocused(){this.timer()}},class PlayPause extends(this){$enter(){this.focus=this.toggle?c.asset("images/player/play-focus.png"):c.asset("images/player/pause-focus.png"),this.timer(),this.tag("Buttons").children[1].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4294967295),scale:1.1}),this.tag("Buttons").children[1].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(this.focus,50,50)})}$exit(){this.unfocus=this.toggle?c.asset("images/player/play.png"):c.asset("images/player/pause.png"),this.tag("Buttons").children[1].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4287532686),scale:1}),this.tag("Buttons").children[1].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(this.unfocus,50,50)})}_handleEnter(){this.toggle?this.signal("play"):this.signal("pause"),this.toggle=!this.toggle,this.focus=this.toggle?c.asset("images/player/play-focus.png"):c.asset("images/player/pause-focus.png"),this.timer(),this.tag("Buttons").children[1].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4294967295)}),this.tag("Buttons").children[1].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(this.focus,50,50)})}_handleRight(){}_handleLeft(){}_getFocused(){this.timer()}},class Forward extends(this){$enter(){this.timer(),this.tag("Buttons").children[2].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4294967295),scale:1.1}),this.tag("Buttons").children[2].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/fast-forward-focus.png"),50,50)})}$exit(){this.tag("Buttons").children[2].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4287532686),scale:1}),this.tag("Buttons").children[2].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/fast-forward.png"),50,50)})}_handleRight(){this._setState("Extras")}_handleLeft(){this._setState("PlayPause")}_handleEnter(){this.signal("fastfwd")}_getFocused(){this.timer()}},class Rewind extends(this){$enter(){this.timer(),this.tag("Buttons").children[0].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4294967295),scale:1.1}),this.tag("Buttons").children[0].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/rewind-focus.png"),50,50)})}$exit(){this.tag("Buttons").children[0].patch({texture:p.Tools.getRoundRect(80,80,40,0,0,!0,4287532686),scale:1}),this.tag("Buttons").children[0].tag("ControlIcon").patch({texture:p.Tools.getSvgTexture(c.asset("images/player/rewind.png"),50,50)})}_handleLeft(){this._setState("AudioOptions")}_handleRight(){this._setState("PlayPause")}_handleEnter(){this.signal("fastrwd")}_getFocused(){this.timer()}},class Extras extends(this){$enter(){this.tag("Extras").patch({texture:p.Tools.getRoundRect(130,90,6,0,0,!0,4294967295),scale:1.1}),this.tag("Extras").tag("ExtrasOptions").color=4278190080,this.timer()}_handleLeft(){this._setState("Forward")}_getFocused(){this.timer()}$exit(){this.tag("Extras").patch({texture:p.Tools.getRoundRect(130,90,6,0,0,!0,4287532686),scale:1}),this.tag("Extras").tag("ExtrasOptions").color=4294967295}},class Hidden extends(this){_getFocused(){}}]}}class AAMPVideoPlayer extends p.Component{static _template(){return{PlayerControls:{type:PlayerControls,x:0,y:810,alpha:0,signals:{pause:"pause",play:"play",hide:"hidePlayerControls",fastfwd:"fastfwd",fastrwd:"fastrwd"}}}}_init(){this.x=0,this.y=0,this.w=0,this.h=0,this.videoEl=document.createElement("video"),this.videoEl.setAttribute("id","video-player"),this.videoEl.style.position="absolute",this.videoEl.style.zIndex="1",this.videoEl.setAttribute("width","100%"),this.videoEl.setAttribute("height","100%"),this.videoEl.setAttribute("src","placeholder.mp4"),this.videoEl.setAttribute("type","video/ave"),document.body.appendChild(this.videoEl),this.playbackSpeeds=[-16,-8,-4,-2,1,2,4,8,16],this.playerStatesEnum={idle:0,initializing:1,playing:8,paused:6,seeking:7},this.player=null,this.playbackRateIndex=this.playbackSpeeds.indexOf(1),this.defaultInitConfig={initialBitrate:25e5,offset:0,networkTimeout:10,preferredAudioLanguage:"en",liveOffset:15,drmConfig:null}}setVideoRect(t,e,i,s){this.x=t,this.y=e,this.w=i,this.h=s;var a=.67*t,n=.67*e,o=.67*i,r=.67*s;this.player.setVideoRect(a,n,o,r)}_playbackStateChanged(t){switch(t.state){case this.player.playerStatesEnum.idle:this.playerState=this.player.playerStatesEnum.idle;break;case this.player.playerStatesEnum.initializing:this.playerState=this.player.playerStatesEnum.initializing;break;case this.player.playerStatesEnum.playing:this.playerState=this.player.playerStatesEnum.playing;break;case this.player.playerStatesEnum.paused:this.playerState=this.player.playerStatesEnum.paused;break;case this.player.playerStatesEnum.seeking:this.playerState=this.player.playerStatesEnum.seeking}}_mediaEndReached(){this.load(this.videoInfo),this.setVideoRect(this.x,this.y,this.w,this.h)}_mediaSpeedChanged(){}_bitrateChanged(){}_mediaPlaybackFailed(){this.load(this.videoInfo)}_mediaProgressUpdate(t){this.position=t.positionMiliseconds/1e3,this.tag("PlayerControls").currentTime=this.position}_mediaPlaybackStarted(){}_mediaDurationChanged(){}createPlayer(){null!==this.player&&(this.destroy(),this.player=null);try{this.player=new AAMPMediaPlayer,this.player.addEventListener("playbackStateChanged",this._playbackStateChanged),this.player.addEventListener("playbackCompleted",this._mediaEndReached.bind(this)),this.player.addEventListener("playbackSpeedChanged",this._mediaSpeedChanged),this.player.addEventListener("bitrateChanged",this._bitrateChanged),this.player.addEventListener("playbackFailed",this._mediaPlaybackFailed.bind(this)),this.player.addEventListener("playbackProgressUpdate",this._mediaProgressUpdate.bind(this)),this.player.addEventListener("playbackStarted",this._mediaPlaybackStarted.bind(this)),this.player.addEventListener("durationChanged",this._mediaDurationChanged),this.playerState=this.playerStatesEnum.idle}catch(t){console.error("AAMPMediaPlayer is not defined")}}load(t){this.createPlayer(),this.videoInfo=t,this.configObj=this.defaultInitConfig,this.configObj.drmConfig=this.videoInfo.drmConfig,this.player.initConfig(this.configObj),this.player.load(t.url),this.tag("PlayerControls").title=t.title,this.tag("PlayerControls").subtitle=t.subtitle,this.tag("PlayerControls").logoPath=t.logoPath,this.tag("PlayerControls").duration=this.player.getDurationSec(),this.tag("PlayerControls").currentTime=0,this.play()}play(){this.player.play(),this.playbackRateIndex=this.playbackSpeeds.indexOf(1)}pause(){this.player.pause()}stop(){this.player.stop(),this.hidePlayerControls()}fastfwd(){this.playbackRateIndex<this.playbackSpeeds.length-1&&this.playbackRateIndex++,this.rate=this.playbackSpeeds[this.playbackRateIndex],this.player.setPlaybackRate(this.rate)}fastrwd(){this.playbackRateIndex>0&&this.playbackRateIndex--,this.rate=this.playbackSpeeds[this.playbackRateIndex],this.player.setPlaybackRate(this.rate)}getPlayer(){return this.player}destroy(){this.player.getCurrentState()!==this.playerStatesEnum.idle&&this.player.stop(),this.player.removeEventListener("playbackStateChanged",this._playbackStateChanged),this.player.removeEventListener("playbackCompleted",this._mediaEndReached),this.player.removeEventListener("playbackSpeedChanged",this._mediaSpeedChanged),this.player.removeEventListener("bitrateChanged",this._bitrateChanged),this.player.removeEventListener("playbackFailed",this._mediaPlaybackFailed.bind(this)),this.player.removeEventListener("playbackProgressUpdate",this._mediaProgressUpdate.bind(this)),this.player.removeEventListener("playbackStarted",this._mediaPlaybackStarted.bind(this)),this.player.removeEventListener("durationChanged",this._mediaDurationChanged),this.player.release(),this.player=null,this.hidePlayerControls()}hidePlayerControls(){this.tag("PlayerControls").setSmooth("y",1080,{duration:.7}),this.tag("PlayerControls").setSmooth("alpha",0,{duration:.7}),this._setState("HideControls")}showPlayerControls(){this.tag("PlayerControls").reset(),this.tag("PlayerControls").setSmooth("alpha",1),this.tag("PlayerControls").setSmooth("y",675,{duration:.7}),this._setState("ShowControls"),this.timeout=setTimeout(this.hidePlayerControls.bind(this),5e3)}_handleDown(){this.tag("PlayerControls").setSmooth("alpha",1,{duration:1}),this.tag("PlayerControls").setSmooth("y",675,{duration:1}),this._setState("ShowControls"),clearTimeout(this.timeout)}_handleUp(){this.hidePlayerControls(),this._setState("HideControls")}static _states(){return[class ShowControls extends(this){_getFocused(){return this.tag("PlayerControls")}},class HideControls extends(this){_getFocused(){}}]}}var Wt=[{displayName:"Test Youtube",applicationType:"Cobalt",uri:"https://www.youtube.com/tv",url:"/images/apps/youtube.png"},{displayName:"Test Xumo",applicationType:"WebApp",uri:"https://x1box-app.xumo.com/3.0.70/index.html",url:"/images/apps/xumo.png"},{displayName:"Bluetooth Audio",applicationType:"Lightning",uri:"https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html",url:"/images/apps/netflix.png"},{displayName:"Test Prime video",applicationType:"Amazon",uri:"",url:"/images/apps/prime.png"}],Ht=[{displayName:"Fantasy-Island",url:"/images/tvShows/fantasy-island.jpg"},{displayName:"Onward",url:"/images/tvShows/onward.jpg"},{displayName:"Let it Snow",url:"/images/tvShows/let-it-snow.png"},{displayName:"Do Little",url:"/images/tvShows/do-little.jpg"},{displayName:"Summerland",url:"/images/tvShows/summerland.jpg"}],qt=[{displayName:"Bluetooth",url:"/images/settings/bluetooth.jpg"},{displayName:"Wi-Fi",url:"/images/settings/wifi.jpg"}],Jt=[{title:"Apps",url:"/images/sidePanel/menu.png"},{title:"Metro Apps",url:"/images/sidePanel/metro.png"},{title:"TV Shows",url:"/images/sidePanel/video.png"},{title:"Settings",url:"/images/sidePanel/settings.png"}],Xt=[{title:"DEFAULT",url:""},{title:"TATA",url:"http://35.155.171.121:8088/index.html"},{title:"EPAM",url:"https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html"}],Yt=[{displayName:"CNN",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"},{displayName:"VimeoRelease",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"},{displayName:"WeatherNetwork",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"},{displayName:"EuroNews",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"},{displayName:"AccuWeather",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"},{displayName:"BaebleMusic",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"},{displayName:"Aljazeera",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"},{displayName:"GuessThatCity",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"},{displayName:"Radioline",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"},{displayName:"WallStreetJournal",applicationType:"Lightning",uri:"https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",url:"http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"}];class HomeApi{getAppListInfo(){return Wt}getTVShowsInfo(){return Ht}getSettingsInfo(){return qt}getSidePanelInfo(){return Jt}getUIInfo(){return Xt}getMetroInfo(){return Yt}}class Network{constructor(){this._events=new Map;this._thunder=thunderJS({host:"127.0.0.1",port:9998,default:1}),this.callsign="org.rdk.Network"}activate(){return new Promise(((t,e)=>{this._thunder.call("Controller","activate",{callsign:this.callsign}).then((e=>{this._thunder.on(this.callsign,"onIPAddressStatusChanged",(t=>{this._events.has("onIPAddressStatusChanged")&&this._events.get("onIPAddressStatusChanged")(t)})),this._thunder.on(this.callsign,"onDefaultInterfaceChanged",(t=>{this._events.has("onDefaultInterfaceChanged")&&this._events.get("onDefaultInterfaceChanged")(t)})),console.log("Activation success"),t(!0)}))}))}registerEvent(t,e){this._events.set(t,e)}getIP(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"getStbIp").then((i=>{i.success&&(console.log(i),t(i.ip)),e(!1)})).catch((t=>{e(t)}))}))}}class HomeScreen extends p.Component{static _template(){return{Background:{w:1920,h:1080,src:c.asset("images/tvShows/background.jpg"),alpha:1},TopPanel:{type:TopPanel},View:{x:0,y:200,w:1920,h:1080,clipping:!0,SidePanel:{type:SidePanel},MainView:{w:1920,h:1080,type:MainView}},IpAddress:{x:1850,y:1060,mount:1,text:{text:"IP:NA",textColor:4294967295,fontSize:30}},Player:{type:AAMPVideoPlayer}}}_init(){this.homeApi=new HomeApi;var t=this.homeApi.getAppListInfo();var e=new window.URLSearchParams(window.location.search).get("data");console.log(e);var i=[],s=[];try{if(null!=e&&JSON.parse(e).hasOwnProperty("applications")){i=JSON.parse(e).applications;for(var a=0;a<i.length;a++)i[a].hasOwnProperty("displayName")&&i[a].hasOwnProperty("uri")&&i[a].hasOwnProperty("applicationType")&&i[a].hasOwnProperty("url")&&(s.push(i[a]));for(a=0;a<t.length;a++)s.push(t[a])}else s=t}catch(e){s=t,console.log("Query data is not proper: "+e)}this.tag("MainView").appItems=s,this.tag("MainView").metroApps=this.homeApi.getMetroInfo(),this.tag("MainView").tvShowItems=this.homeApi.getTVShowsInfo(),this.tag("MainView").settingsItems=this.homeApi.getSettingsInfo(),this.tag("SidePanel").sidePanelItems=this.homeApi.getSidePanelInfo(),this.sidePanelData=this.homeApi.getSidePanelInfo(),this._setState("SidePanel"),this.initialLoad=!0,this.networkApi=new Network,this.networkApi.activate().then((t=>{t&&(this.networkApi.registerEvent("onIPAddressStatusChanged",(t=>{"ACQUIRED"==t.status?this.tag("IpAddress").text.text="IP:"+t.ip4Address:"LOST"==t.status&&(this.tag("IpAddress").text.text="IP:NA")})),this.networkApi.getIP().then((t=>{this.tag("IpAddress").text.text="IP:"+t})))}))}_active(){if(this.initialLoad){let t=this;this._homeAnimation=t.animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"scale",v:{0:5,1:1}},{p:"x",v:{0:-1920,1:0}},{p:"y",v:{0:-1080,1:0}}]}),this._homeAnimation.start(),this.initialLoad=!1}}play(){this.player=this.tag("Player");try{this.player.load({title:"Parkour event",subtitle:"m3u8",url:"https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8",drmConfig:null}),this.zoomOut(.1),this.hide(),this._setState("Playing"),this.player.setVideoRect(0,0,1920,1080)}catch(t){this._setState("MainView"),console.error("Playback Failed "+t)}}zoomIn(t){this._sidePanelAnimation=this.tag("SidePanel").animation({duration:t,repeat:0,stopMethod:"immediate",actions:[{p:"x",v:{0:130,1:280}}]}),this._sidePanelAnimation.start(),this.tag("SidePanel").resetSidePanelItems=this.sidePanelData;this._appAnimation=this.animation({duration:t,repeat:0,stopMethod:"immediate",actions:[{p:"x",v:{0:0,1:-320}},{p:"y",v:{0:0,1:-180}},{p:"scale",v:{0:1,1:1.17}}]}),this._appAnimation.start()}zoomOut(t){this._sidePanelAnimation=this.tag("SidePanel").animation({duration:t,repeat:0,stopMethod:"immediate",actions:[{p:"x",v:{0:280,1:130}}]}),this._sidePanelAnimation.start(),this.tag("SidePanel").sidePanelItems=this.sidePanelData;this._appAnimation=this.animation({duration:t,repeat:0,stopMethod:"immediate",actions:[{p:"x",v:{0:-320,1:0}},{p:"y",v:{0:-180,1:0}},{p:"scale",v:{0:1.17,1:1}}]}),this._appAnimation.start()}$goToSidePanel(t){this.zoomOut(.7),this.tag("SidePanel").index=t,this._setState("SidePanel")}$goToMainView(t){this.zoomIn(.7),this.tag("MainView").index=t,this._setState("MainView")}$goToPlayer(){this._setState("Player"),this.play()}$scroll(t){this.tag("SidePanel").setSmooth("y",t,{duration:.5}),this.tag("MainView").setSmooth("y",t,{duration:.5})}hide(){this.tag("Background").patch({alpha:0}),this.tag("MainView").patch({alpha:0}),this.tag("TopPanel").patch({alpha:0}),this.tag("SidePanel").patch({alpha:0})}show(){this.tag("Background").patch({alpha:1}),this.tag("MainView").patch({alpha:1}),this.tag("TopPanel").patch({alpha:1}),this.tag("SidePanel").patch({alpha:1})}static _states(){return[class TopPanel extends(this){_getFocused(){return this.tag("TopPanel")}},class SidePanel extends(this){_getFocused(){return this.tag("SidePanel")}},class MainView extends(this){_getFocused(){return this.tag("MainView")}},class Playing extends(this){_getFocused(){return this.tag("Player")}stopPlayer(){this.zoomIn(0),this._setState("MainView"),this.player.stop(),this.show()}_handleKey(t){if(27==t.keyCode||77==t.keyCode||49==t.keyCode||36==t.keyCode||158==t.keyCode)this.stopPlayer();else if(227==t.keyCode||179==t.keyCode)return this.stopPlayer(),!1}}]}}class BluetoothApi{constructor(){console.log("Bluetooth constructor"),this._events=new Map,this._devices=[],this._pairedDevices=[],this._connectedDevices=[]}activate(){return new Promise(((t,e)=>{this._thunder=thunderJS({host:"127.0.0.1",port:9998,default:1}),this.callsign="org.rdk.Bluetooth",this._thunder.call("Controller","activate",{callsign:this.callsign}).then((e=>{console.log("Bluetooth activated",e),this._thunder.on(this.callsign,"onDiscoveredDevice",(t=>{console.log("onDiscoveredDevice "+JSON.stringify(t)),this.getDiscoveredDevices().then((()=>{this._events.get("onDiscoveredDevice")(t)}))})),this._thunder.on(this.callsign,"onStatusChanged",(t=>{console.log("onStatusChanged "+t.newStatus),"PAIRING_CHANGE"===t.newStatus?this.getPairedDevices().then((()=>{this._events.get("onPairingChange")(t)})):"CONNECTION_CHANGE"===t.newStatus?this.getConnectedDevices().then((()=>{this._events.get("onConnectionChange")(t)})):"DISCOVERY_STARTED"===t.newStatus?this.getConnectedDevices().then((()=>{this._events.get("onDiscoveryStarted")()})):"DISCOVERY_COMPLETED"===t.newStatus&&this.getConnectedDevices().then((()=>{this._events.get("onDiscoveryCompleted")()}))})),this._thunder.on(this.callsign,"onPairingRequest",(t=>{console.log("onPairingRequest "+JSON.stringify(t)),this._events.get("onPairingRequest")(t)})),this._thunder.on(this.callsign,"onRequestFailed",(t=>{console.log("onRequestFailed "+JSON.stringify(t)),this._events.get("onRequestFailed")(t)})),this._thunder.on(this.callsign,"onConnectionRequest",(t=>{console.log("onConnectionRequest "+JSON.stringify(t)),this._events.get("onConnectionRequest")(t)})),t("Blutooth activated")})).catch((t=>{console.error("Activation failure",t),e("Bluetooth activation failed",t)}))}))}registerEvent(t,e){this._events.set(t,e)}deactivate(){this._events=new Map,this._thunder=null}disable(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","disable").then((e=>{console.log(JSON.stringify(e)),t(e)})).catch((t=>{console.error(`Can't disable : ${t}`),e()}))}))}enable(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","enable").then((e=>{console.log(JSON.stringify(e)),t(e)})).catch((t=>{console.error(`Can't enable : ${t}`),e()}))}))}startScan(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","startScan",{timeout:"10",profile:"KEYBOARD,MOUSE,JOYSTICK"}).then((i=>{console.log("scanning : "+i.success),i.success?t():e()})).catch((t=>{console.error("Error",t),e()}))}))}stopScan(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","startScan",{}).then((i=>{console.log("stopped scanning : "+i.success),i.success?t():e()})).catch((t=>{console.error("Error",t),e()}))}))}getDiscoveredDevices(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","getDiscoveredDevices").then((e=>{console.log(JSON.stringify(e)),this._devices=e.discoveredDevices,t(e.discoveredDevices)})).catch((t=>{console.error(`Can't get discovered devices : ${t}`),e()}))}))}get discoveredDevices(){return this._devices}getPairedDevices(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","getPairedDevices").then((e=>{console.log(JSON.stringify(e)),this._pairedDevices=e.pairedDevices,t(e.pairedDevices)})).catch((t=>{console.error(`Can't get paired devices : ${t}`),e()}))}))}get pairedDevices(){return this._pairedDevices}getConnectedDevices(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","getConnectedDevices").then((e=>{console.log(JSON.stringify(e)),this._connectedDevices=e.connectedDevices,t(e.connectedDevices)})).catch((t=>{console.error(`Can't get connected devices : ${t}`),e()}))}))}get connectedDevices(){return this._connectedDevices}connect(t,e){return new Promise(((i,s)=>{console.log(t),this._thunder.call("org.rdk.Bluetooth","connect",{deviceID:t,deviceType:e,profile:e}).then((t=>{console.log("connected : "+t.success),i(t.success)})).catch((t=>{console.error("Connection failed",t),s()}))}))}disconnect(t,e){return console.log(t),new Promise(((i,s)=>{this._thunder.call("org.rdk.Bluetooth","disconnect",{deviceID:t,deviceType:e}).then((t=>{console.log("disconnected : "+t.success),t.success?i(!0):s()})).catch((t=>{console.error("disconnect failed",t),s()}))}))}unpair(t){return new Promise(((e,i)=>{this._thunder.call("org.rdk.Bluetooth","unpair",{deviceID:t}).then((t=>{console.log("unpaired : "+t.success),t.success?e():i()})).catch((t=>{console.error("unpair failed",t),i()}))}))}pair(t){return new Promise(((e,i)=>{this._thunder.call("org.rdk.Bluetooth","pair",{deviceID:t}).then((t=>{console.log("paired : "+t.success),t.success?e():i()})).catch((t=>{console.error("Error on pairing",t),i()}))}))}respondToEvent(t,e,i){return new Promise(((s,a)=>{this._thunder.call("org.rdk.Bluetooth","respondToEvent",{deviceID:t,eventType:e,responseValue:i}).then((t=>{console.log("responded to event : "+t.success),t.success?s():a()})).catch((t=>{console.error("Error on respondToEvent",t),a()}))}))}getName(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Bluetooth","getName").then((e=>{t(e.name)}))}))}}var Qt=4294967295,Gt=4294967295,Zt=4290822336,te=4294967295;class Item extends p.Component{static _template(){return{Item:{w:200,h:65,rect:!0,color:Zt,shader:{type:p.shaders.RoundedRectangle,radius:9}}}}set item(t){this._item=t,this.tag("Item").patch({Name:{x:100,y:32.5,mount:.5,text:{text:t.title,textColor:4294967295,fontSize:35}}})}set width(t){this.tag("Item").w=t}set height(t){this.tag("Item").h=t}_focus(){this.tag("Item").scale=1.1}_unfocus(){this.tag("Item").scale=1}}class SplashScreen extends p.Component{static _template(){return{Splashscreen:{w:1920,h:1080,alpha:0,Cache:{w:0,h:0,x:-1920,src:c.asset("images/tvShows/background.jpg")},Img:{mount:.5,x:960,y:540,src:c.asset("images/RDKLogo.png")}},SplashVideo:{w:1920,h:1080,alpha:0,Player:{type:AAMPVideoPlayer,w:1920,h:1080,x:0,y:0}},AutoRemotePair:{w:1920,h:1080,src:c.asset("images/tvShows/background.jpg"),alpha:0,Title:{w:1600,y:474,text:{fontSize:55,textAlign:"center",text:"Pair Your Remote",textColor:4294967295}},Description:{w:1300,y:550,x:150,text:{fontSize:35,textAlign:"center",maxLines:2,text:"Please put the remote in pairing mode, scanning will start in a minute",textColor:4293256677}},LoadingIcon:{x:750,y:600,alpha:0,src:c.asset("images/loading.png")},RemoteImg:{x:1300,y:300,src:c.asset("images/remote.png")}},ConnectivityScreen:{w:1920,h:1080,src:c.asset("images/tvShows/background.jpg"),alpha:0,Title:{w:1920,y:325,text:{fontSize:55,textAlign:"center",text:"You're not connected to the internet",textColor:4294967295}},Description:{w:1920,y:400,text:{fontSize:35,textAlign:"center",maxLines:2,text:"Please connect to either a wired connection or a WiFi Network, For WiFi network press home and then go to settings",wordWrapWidth:1400,textColor:4293256677}}},UISwitch:{w:1920,h:1080,src:c.asset("images/tvShows/background.jpg"),alpha:0,Title:{x:960,y:400,mountX:.5,text:{fontSize:55,textAlign:"center",text:"Choose your UI",textColor:4294967295}},UIList:{x:980,y:500,type:p.components.ListComponent,w:672,h:100,itemSize:224,roll:!0,mountX:.5}}}}_enable(){this.remotePaired=!0,this.hasInternet=!0,this._bt=new BluetoothApi,this._bt.activate(),this._bt.getPairedDevices().then((()=>this._bt.getConnectedDevices())).then((()=>{let t=this._bt.pairedDevices,e=this._bt.connectedDevices;0==t.length&&0==e.length&&(this.remotePaired=!1)})),this._setState("Splashscreen")}_disable(){this._bt&&this._bt.deactivate(),this.player&&this.player.stop()}_init(){this.appApi=new AppApi;var t=new HomeApi;this.tag("UISwitch.UIList").items=t.getUIInfo().map(((t,e)=>({ref:"UI"+e,w:204,h:100,type:Item,item:t})))}startVideo(){this.player=this.tag("SplashVideo.Player");try{this.player.load({title:"",subtitle:"",image:"",url:"https://rdkwiki.com/rdk-apps/splash/splash.MOV",drmConfig:null})}catch(t){this.player=null,console.log("###########",t)}}static _states(){return[class Splashscreen extends(this){$enter(){this.tag("Splashscreen").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:0,1:1}}]}).start(),this.screenTimeout=setTimeout((()=>{this._setState("SplashVideo")}),5e3)}_handleKey(t){83==t.keyCode&&this._setState("UISwitch")}$exit(){this.tag("Splashscreen").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:1,1:0}}]}).start(),window.clearTimeout(this.screenTimeout)}},class SplashVideo extends(this){$enter(){this.tag("SplashVideo").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:0,1:1}}]}).start(),this.startVideo(),this.timeout=setTimeout((()=>{0==this.remotePaired?this._setState("AutoRemotePair"):0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}),5e3)}$exit(){const t=this.tag("SplashVideo").animation({duration:1,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:1,1:0}}]});t.on("finish",(t=>{this.player&&this.player.stop()})),t.start(),window.clearTimeout(this.timeout)}_handleKey(t){83==t.keyCode&&this._setState("UISwitch")}},class ConnectivityScreen extends(this){$enter(){this.tag("ConnectivityScreen").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:0,1:1}},{p:"x",v:{0:1e3,1:0}}]}).start(),setTimeout((()=>{ht.navigate("home")}),5e3)}$exit(){this.tag("ConnectivityScreen").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:1,1:0}}]}).start()}_handleKey(){ht.navigate("home")}},class AutoRemotePair extends(this){$enter(){const t=this.tag("AutoRemotePair").animation({duration:1,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:0,1:1}},{p:"x",v:{0:1e3,1:0}}]});var e=!1,i=setTimeout((()=>{e||(this.tag("AutoRemotePair.Description").text="Please put the remote in pairing mode, No Bluetooth device found"),setTimeout((()=>{0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}),1e3)}),1e4),error=()=>{this.tag("AutoRemotePair.Description").text="Please put the remote in pairing mode, , No Bluetooth device found",setTimeout((()=>{0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}),1e3)};t.start(),setTimeout((()=>{this.tag("AutoRemotePair.Description").text="Please put the remote in pairing mode, Scanning...";this.tag("AutoRemotePair.LoadingIcon").animation({duration:1,repeat:-1,stopMethod:"immediate",stopDelay:.2,actions:[{p:"rotation",v:{sm:0,0:0,1:2*Math.PI}}]}).play(),this.tag("AutoRemotePair.LoadingIcon").alpha=1,this._bt.startScan(),this._bt.registerEvent("onDiscoveredDevice",(()=>{let t=this._bt.discoveredDevices;t.length>0?this._bt.pair(t[0].deviceID):error()}))}),5e3),this._bt.registerEvent("onPairingChange",(()=>{let t=this._bt.pairedDevices;t.length>0?this._bt.connect(t[0].deviceID,t[0].deviceType):setTimeout((()=>{this._bt.getPairedDevices().then((()=>{let t=this._bt.pairedDevices;t.length>0?this._bt.connect(t[0].deviceID,t[0].deviceType):error()}))}),2e3)})),this._bt.registerEvent("onConnectionChange",(()=>{let t=this._bt.connectedDevices;t.length>0?(this.tag("AutoRemotePair.Description").text="Please put the remote in pairing mode, Connected to "+t[0].name,e=!0,clearTimeout(i),setTimeout((()=>{0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}),2e3)):setTimeout((()=>{this._bt.getConnectedDevices().then((()=>{let t=this._bt.connectedDevices;t.length>0?(this.tag("AutoRemotePair.Description").text="Please put the remote in pairing mode, Connected to "+t[0].name,e=!0,clearTimeout(i),setTimeout((()=>{0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}),2e3)):error()}))}),2e3)}))}$exit(){this.tag("AutoRemotePair").animation({duration:1,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:1,1:0}}]}).start()}},class UISwitch extends(this){$enter(){this.tag("UISwitch").animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:0,1:1}},{p:"x",v:{0:1e3,1:0}}]}).start()}_getFocused(){return this.tag("UISwitch.UIList").element}_handleRight(){if(this.tag("UISwitch.UIList").length-1!=this.tag("UISwitch.UIList").index)return this.tag("UISwitch.UIList").setNext(),this.tag("UISwitch.UIList").element}_handleLeft(){if(this.tag("UISwitch.UIList").index>0)return this.tag("UISwitch.UIList").setPrevious(),this.tag("UISwitch.UIList").element}_handleEnter(){"DEFAULT"!=this.tag("UISwitch.UIList").element._item.title?this.appApi.launchResident(this.tag("UISwitch.UIList").element._item.url):0==this.remotePaired?this._setState("AutoRemotePair"):0==this.hasInternet?this._setState("ConnectivityScreen"):ht.navigate("home")}$exit(){this.tag("UISwitch").animation({duration:1,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:1,1:0}}]}).start()}}]}}class SettingsItem extends p.Component{static _template(){return{Item:{w:570,h:65,rect:!0,color:0,shader:{type:p.shaders.RoundedRectangle,radius:9}}}}set item(t){this._item=t,this.tag("Item").patch({Left:{x:10,y:this.tag("Item").h/2,mountY:.5,text:{text:t,fontSize:25,textColor:Qt}}})}set width(t){this.tag("Item").w=t}set height(t){this.tag("Item").h=t}_focus(){this.tag("Item").color=Zt}_unfocus(){this.tag("Item").color=0}}class BluetoothItem extends SettingsItem{static _template(){return{Item:{w:570,h:65,rect:!0,color:0,shader:{type:p.shaders.RoundedRectangle,radius:9}}}}set item(t){this._item=t,this.connected=t.connected?"Connected":"Not Connected",this.status=t.paired?this.connected:"Not Paired",this.tag("Item").patch({Left:{x:10,y:32.5,mountY:.5,text:{text:t.name,fontSize:25,textColor:Qt}},Right:{x:560,mountX:1,y:32.5,mountY:.5,flex:{direction:"row"},Text:{x:0,flexItem:{},text:{text:this.status,fontSize:25}},Info:{color:4278190335,flexItem:{marginLeft:10},texture:p.Tools.getSvgTexture(c.asset("images/info.png"),32.5,32.5)}}}),"Connected"==this.status?this.tag("Item.Right.Info").visible=!1:this.tag("Item.Right.Info").visible=!0}_focus(){this.tag("Item").color=Zt}_unfocus(){this.tag("Item").color=0}}class BluetoothPairingScreen extends p.Component{static _template(){return{PairingScreen:{x:0,y:0,w:640,h:1080,rect:!0,color:4281747025},Title:{x:20,y:100,text:{text:"",fontSize:30,textColor:Gt}},List:{x:20,y:150,type:p.components.ListComponent,w:640,h:400,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0},Status:{x:20,y:500,Text:{text:{text:"Enter the below code in your Bluetooth device and press enter",wordWrapWidth:570,fontSize:30}},Code:{x:0,y:60,text:{text:""}},visible:!1}}}set item(t){this.tag("Status").visible=!1,this.tag("Title").text=t.name;var e=[];this._item=t,e=t.paired?t.connected?["Disconnect","Unpair","Cancel"]:["Connect","Unpair","Cancel"]:["Pair","Cancel"],this.tag("List").items=e.map(((t,e)=>({ref:t,w:640,h:65,type:SettingsItem,item:t})))}set code(t){this.tag("Status.Code").text.text=t,this.tag("Status").visible=!0}_getFocused(){return this.tag("List").element}_handleDown(){this.tag("List").setNext()}_handleUp(){this.tag("List").setPrevious()}_handleEnter(){this.fireAncestors("$pressEnter",this.tag("List").element.ref)}}class BluetoothScreen extends p.Component{static _template(){return{Title:{x:1600,y:50,text:{text:"Bluetooth",textColor:te},mountX:.5},Switch:{x:1300,y:150,rect:!0,shader:{type:p.shaders.RoundedRectangle,radius:9},color:12632256,w:570,h:50,Text:{x:0,text:{text:"Bluetooth",textColor:Gt}},Button:{x:560,y:10,mountX:1,src:c.asset("images/switch-on.png")}},Name:{x:1300,y:200,text:{text:"Now discoverable as",textColor:Qt,fontSize:20}},Networks:{x:1280,y:250,flex:{direction:"column"},PairedNetworks:{flexItem:{margin:20},w:640,h:30,Title:{text:{text:"My Devices",textColor:Gt,fontSize:30}},List:{x:0,y:65,type:p.components.ListComponent,w:640,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0}},AvailableNetworks:{flexItem:{margin:20,marginTop:30},w:640,h:30,Title:{text:{text:"Other Devices",textColor:Gt,fontSize:30}},Loader:{x:250,y:-10,w:50,h:50,color:4278190080,src:c.asset("images/loader.png"),visible:!1},List:{x:0,y:65,w:640,h:100,type:p.components.ListComponent,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0}},visible:!1},PairingScreen:{x:1280,y:0,w:640,h:1080,visible:!1,type:BluetoothPairingScreen},Message:{x:1320,y:950,text:{text:""}}}}_init(){this.loadingAnimation=this.tag("Networks.AvailableNetworks.Loader").animation({duration:1,repeat:-1,stopMethod:"immediate",stopDelay:.2,actions:[{p:"rotation",v:{sm:0,0:0,1:2*Math.PI}}]}),this.loadingAnimation.play(),this._bt=new BluetoothApi,this._bluetooth=!0,this._activateBluetooth(),this._setState("Switch"),this._bluetooth=!0,this._bluetooth&&(this.tag("Networks").visible=!0),this._pairedNetworks=this.tag("Networks.PairedNetworks"),this._availableNetworks=this.tag("Networks.AvailableNetworks"),this.renderDeviceList()}_active(){this._setState("Switch")}_enable(){this._bluetooth&&this._bt.startScan(),this.scanTimer=setInterval((()=>{this._bluetooth&&this._bt.startScan()}),15e3)}_disable(){clearInterval(this.scanTimer)}renderDeviceList(){this._bt.getPairedDevices().then((t=>{this._pairedList=t,this._pairedNetworks.h=65*this._pairedList.length+30,this._pairedNetworks.tag("List").h=65*this._pairedList.length,this._pairedNetworks.tag("List").items=this._pairedList.map(((t,e)=>(t.paired=!0,{ref:"Paired"+e,w:640,h:65,type:BluetoothItem,item:t})))})),this._bt.getDiscoveredDevices().then((t=>{this._discoveredList=t,this._otherList=this._discoveredList.filter((e=>{if(!e.paired)return!(t=this._pairedList.map((t=>t.deviceID))).includes(e.deviceID)&&e})),this._availableNetworks.h=65*this._otherList.length+30,this._availableNetworks.tag("List").h=65*this._otherList.length,this._availableNetworks.tag("List").items=this._otherList.map(((t,e)=>({ref:"Other"+e,w:640,h:65,type:BluetoothItem,item:t})))}))}static _states(){return[class Switch extends(this){$enter(){this.tag("Switch").color=Zt}$exit(){this.tag("Switch").color=12632256}_handleDown(){this._bluetooth&&(this._pairedNetworks.tag("List").length>0?this._setState("PairedDevices"):this._availableNetworks.tag("List").length>0&&this._setState("AvailableDevices"))}_handleEnter(){this.switch()}},class PairedDevices extends(this){$enter(){}_getFocused(){return this._pairedNetworks.tag("List").element}_handleDown(){this._navigate("MyDevices","down")}_handleUp(){this._navigate("MyDevices","up")}_handleEnter(){this.tag("PairingScreen").visible=!0,this.tag("PairingScreen").item=this._pairedNetworks.tag("List").element._item,this._setState("PairingScreen")}},class AvailableDevices extends(this){$enter(){}_getFocused(){return this._availableNetworks.tag("List").element}_handleDown(){this._navigate("AvailableDevices","down")}_handleUp(){this._navigate("AvailableDevices","up")}_handleEnter(){this.tag("PairingScreen").visible=!0,this.tag("PairingScreen").item=this._availableNetworks.tag("List").element._item,this._setState("PairingScreen")}},class PairingScreen extends(this){$enter(){this._disable(),this._bt.stopScan()}_getFocused(){return this.tag("PairingScreen")}$pressEnter(t){"Cancel"===t?this._setState("Switch"):"Pair"===t?this._bt.pair(this._availableNetworks.tag("List").element._item.deviceID).then((()=>{})):"Connect"===t?this._bt.connect(this._pairedNetworks.tag("List").element._item.deviceID,this._pairedNetworks.tag("List").element._item.deviceType).then((t=>{t||(this.tag("Message").text="CONNECTION FAILED",this._setState("Switch")),setTimeout((()=>{this.tag("Message").text=""}),2e3)})):"Disconnect"===t?(this._bt.disconnect(this._pairedNetworks.tag("List").element._item.deviceID,this._pairedNetworks.tag("List").element._item.deviceType).then((()=>{})),this._setState("Switch")):"Unpair"===t&&(this._bt.unpair(this._pairedNetworks.tag("List").element._item.deviceID).then((()=>{})),this._setState("Switch"))}$exit(){this.tag("PairingScreen").visible=!1,this._enable()}}]}_navigate(t,e){let i;"MyDevices"===t?i=this._pairedNetworks.tag("List"):"AvailableDevices"===t&&(i=this._availableNetworks.tag("List")),"down"===e?i.index<i.length-1?i.setNext():i.index==i.length-1&&"MyDevices"===t&&this._availableNetworks.tag("List").length>0&&this._setState("AvailableDevices"):"up"===e&&(i.index>0?i.setPrevious():0==i.index&&("AvailableDevices"===t&&this._pairedNetworks.tag("List").length>0?this._setState("PairedDevices"):this._setState("Switch")))}switch(){this._bluetooth?this._bt.disable().then((t=>{t.success&&(this._bluetooth=!1,this.tag("Networks").visible=!1,this.tag("Switch.Button").src=c.asset("images/switch-off.png"))})):this._bt.enable().then((t=>{t.success&&(this._bluetooth=!0,this.tag("Networks").visible=!0,this.tag("Switch.Button").src=c.asset("images/switch-on.png"),this.renderDeviceList(),this._bt.startScan())}))}_activateBluetooth(){this._bt.activate().then((()=>{this._bt.registerEvent("onDiscoveredDevice",(()=>{this.renderDeviceList()})),this._bt.registerEvent("onPairingChange",(t=>{this._bt.startScan(),this.renderDeviceList(),this._setState("Switch")})),this._bt.registerEvent("onPairingRequest",(t=>{"true"===t.pinRequired&&t.pinValue?this.tag("PairingScreen").code=t.pinValue:this.respondToPairingRequest(t.deviceID,"ACCEPTED")})),this._bt.registerEvent("onConnectionChange",(t=>{this._bt.startScan(),console.log("CONNECTION CHANGED"+JSON.stringify(t)),this.renderDeviceList(),this._setState("Switch"),t.connected?this.tag("Message").text="CONNECTION SUCCESS":this.tag("Message").text="CONNECTION FAILED",setTimeout((()=>{this.tag("Message").text=""}),2e3)})),this._bt.registerEvent("onDiscoveryCompleted",(()=>{this.tag("Networks.AvailableNetworks.Loader").visible=!1,this.renderDeviceList()})),this._bt.registerEvent("onDiscoveryStarted",(()=>{this.tag("Networks.AvailableNetworks.Loader").visible=!0})),this._bt.registerEvent("onRequestFailed",(t=>{this._bt.startScan(),this.renderDeviceList(),this._setState("Switch"),this.tag("Message").text=t.newStatus,setTimeout((()=>{this.tag("Message").text=""}),2e3)})),this._bt.getName().then((t=>{this.tag("Name").text.text=`Now discoverable as "${t}"`}))}))}respondToPairingRequest(t,e){this._bt.respondToEvent(t,"onPairingRequest",e)}}class WiFiItem extends SettingsItem{static _template(){return{Item:{w:570,h:65,rect:!0,color:0,shader:{type:p.shaders.RoundedRectangle,radius:9}}}}set item(t){this._item=t,this.status=t.connected?"Connected":"Not Connected",this.tag("Item").patch({Left:{x:10,y:32.5,mountY:.5,text:{text:t.ssid,fontSize:25,textColor:Qt}},Right:{x:560,mountX:1,y:32.5,mountY:.5,flex:{direction:"row"},Lock:{color:4278190080,flexItem:{marginLeft:10},texture:p.Tools.getSvgTexture(c.asset("images/wifi-lock.png"),32.5,32.5)},Icon:{color:4278190080,flexItem:{marginLeft:10},texture:p.Tools.getSvgTexture(c.asset("images/wifi-icon.png"),32.5,32.5)},Info:{color:4278190080,flexItem:{marginLeft:10},texture:p.Tools.getSvgTexture(c.asset("images/info.png"),32.5,32.5)}}}),"0"==t.security||"15"==t.security?this.tag("Item.Right.Lock").visible=!1:this.tag("Item.Right.Lock").visible=!0}_focus(){this.tag("Item").color=Zt}_unfocus(){this.tag("Item").color=0}}const ee=1;class Wifi{constructor(){this._events=new Map}activate(){return new Promise(((t,e)=>{this._thunder=thunderJS({host:"127.0.0.1",port:9998,default:1}),this.callsign="org.rdk.Wifi",this._thunder.call("Controller","activate",{callsign:this.callsign}).then((e=>{console.log("Wifi activated",e),this.getCurrentState().then((t=>{t===ee&&this.setEnabled(!0)})),this._thunder.on(this.callsign,"onWIFIStateChanged",(t=>{console.log("onWIFIStateChanged: "+t.state),this._events.has("onWIFIStateChanged")&&this._events.get("onWIFIStateChanged")(t)})),this._thunder.on(this.callsign,"onError",(t=>{console.log("Error: "+t),this._events.has("onError")&&this._events.get("onError")(t)})),this._thunder.on(this.callsign,"onAvailableSSIDs",(t=>{console.log("AvailableSSIDs: "+JSON.stringify(t)),!1===t.moreData&&(this.stopScan(),t.ssids=t.ssids.filter(((e,i)=>t.ssids.findIndex((t=>t.ssid===e.ssid))===i)),this._events.has("onAvailableSSIDs")&&this._events.get("onAvailableSSIDs")(t))})),t(e)})).catch((t=>{console.error(`Wifi activation failed: ${t}`),e(t)}))}))}registerEvent(t,e){this._events.set(t,e)}deactivate(){this._events=new Map,this._thunder=null}getConnectedSSID(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"getConnectedSSID").then((e=>{console.log("ConnectedSSID: "+e.ssid),t(e)})).catch((t=>{console.error(`getConnectedSSID fail: ${t}`),e(t)}))}))}discoverSSIDs(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"startScan",{incremental:!1,ssid:"",frequency:""}).then((e=>{console.log("startScan success"),t(e)})).catch((t=>{console.error(`startScan fail: ${t}`),e(t)}))}))}stopScan(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"stopScan").then((e=>{console.log("stopScan success"),t(e)})).catch((t=>{console.error(`stopScan fail: ${t}`),e(t)}))}))}connect(t,e){return new Promise(((i,s)=>{this.disconnect().then((()=>{console.log(`connect SSID ${t.ssid}`),this._thunder.call(this.callsign,"connect",{ssid:t.ssid,passphrase:e,securityMode:t.security}).then((e=>{console.log(`connected SSID ${t.ssid}`),i(e)})).catch((t=>{console.error(`Connection failed: ${t}`),s(t)}))}),s)}))}disconnect(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"disconnect",{}).then((e=>{console.log("WiFi disconnected: "+JSON.stringify(e)),t(e)}),(t=>{console.error(`Can't disconnect WiFi: ${t}`),e(t)}))}))}getCurrentState(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"getCurrentState").then((e=>{console.log(`WiFi state: ${e.state}`),t(e.state)})).catch((t=>{console.error(`Can't get WiFi state: ${t}`),e(t)}))}))}setEnabled(t){return new Promise(((e,i)=>{this._thunder.call(this.callsign,"setEnabled",{enable:t}).then((t=>{e(t)})).catch((t=>{i(t)}))}))}getPaired(){return new Promise(((t,e)=>{this._thunder.call(this.callsign,"getPairedSSID",{}).then((e=>{t(e)})).catch((t=>{console.error(`Can't get paired: ${t}`),e(t)}))}))}getDefaultInterface(){return new Promise(((t,e)=>{this._thunder.call("org.rdk.Network","getDefaultInterface",{}).then((e=>{t(e)})).catch((t=>{e(t)}))}))}setInterface(t,e){return new Promise(((i,s)=>{this._thunder.call("org.rdk.Network","setInterfaceEnabled",{interface:t,persist:!0,enabled:e}).then((t=>{i(t)})).catch((t=>{s(t)}))}))}setDefaultInterface(t,e){return new Promise(((i,s)=>{this._thunder.call("org.rdk.Network","setDefaultInterface",{interface:t,persist:e}).then((t=>{i(t)})).catch((t=>{s(t)}))}))}}class Keypad extends p.Component{static _template(){return{Wrapper:{flex:{direction:"row"}}}}set items(t){this._scroll=!0,this.tag("Wrapper").children=t,this._index=0,t.length>0?this._setState("Filled"):this._setState("Empty")}set wrap(t){if(t){let t=this.tag("Wrapper");t.w=428,t.h=56,this.tag("Wrapper").patch({flex:{direction:"row",wrap:!0}})}this._wrap=!0}get items(){return this.tag("Wrapper").children}get currentItem(){return this.items[this._index]}get length(){return this.items.length}set orientation(t){this._orientation=t,"horizontal"===t?this.tag("Wrapper").patch({flex:{direction:"row"}}):this.tag("Wrapper").patch({flex:{direction:"column"}})}get orientation(){return this._orientation||"horizontal"}set jump(t){this._jump=t}get jump(){return this._jump||!1}set jumpToStart(t){this._jumpToStart=t}get jumpToStart(){return void 0!==this._jumpToStart?this._jumpToStart:this.jump}set jumpToEnd(t){this._jumpToEnd=t}get jumpToEnd(){return void 0!==this._jumpToEnd?this._jumpToEnd:this.jump}_navigate(t){if(this._prevY=this.currentItem.finalY,this.orientation,"right"===t||"left"===t||"up"===t||"down"===t){const e=this.items.length,i=this._index;let s=i+1;if(("left"===t||"up"===t&&!1===this._wrap)&&(s=i-1),"up"===t&&!0===this._wrap){let t=Math.floor(this.tag("Wrapper").w/this.currentItem.finalW),e=i-t;s=i-t>=0?e:-1}if("down"===t&&!0===this._wrap){let t=i+Math.floor(this.tag("Wrapper").w/this.currentItem.finalW);if(s=t<e?t:-1,-1==s)return this.fireAncestors("$listEnd")}if(s<0)return this.fireAncestors("$listStart");if(s>-1&&s<e)this._index=s;else{if(!(this.jump||this.jumpToStart||this.jumpToEnd))return!1;s<0&&this.jumpToEnd?this._index=s+e:s===e&&this.jumpToStart&&(this._index=0)}i!==this._index&&this.indexChanged({index:this._index,previousIndex:i})}}setIndex(t){if(t>-1&&t<this.items.length){const e=this._index;this._index=t,this.indexChanged({index:this._index,previousIndex:e})}}indexChanged(t){this.signal("indexChanged",t)}_getFocused(){return this}_construct(){this._index=0}_init(){this._setState("Empty")}static _states(){return[class Empty extends(this){},class Filled extends(this){_getFocused(){return this.currentItem}_handleRight(){return this._navigate("right")}_handleLeft(){return this._navigate("left")}_handleUp(){return this._navigate("up")}_handleDown(){return this._navigate("down")}}]}}class Key extends p.Component{_construct(){this._keyType="alphanum",this._fontSize=36}static _template(){return{Border:{w:this.width,h:this.height,type:p.components.BorderComponent,colorBorder:4278190080}}}set item(t){this._key=t,this.tag("Border").w=this.w,this.tag("Border").h=this.h,this.tag("Border").colorBorder=4278190080,this.tag("Border").content={Focus:{rect:!0,w:this.w,h:this.h,color:12632256},Key:{x:this.w/2,y:this.h/2,mount:.5,text:{text:t,fontSize:this._fontSize,fontFace:"Light"}}},"delete"==this._keyType&&(this.tag("Border").content={Key:{src:c.asset("images/del.png"),zIndex:10}})}set keyType(t){this._keyType=t}set fontSize(t){this._fontSize=t}_focus(){this.tag("Border").content={Focus:{color:4290822336},Key:{color:4278190080}},this.tag("Border").colorBorder=4290822336}_unfocus(){this.tag("Border").content={Focus:{color:12632256},Key:{color:4294967295}},this.tag("Border").colorBorder=4278190080}_handleEnter(){this.fireAncestors("$pressedKey",this._key,this._keyType)}}class KeyDetails{getAlphabet(){return"abcdefghijklmnopqrstuvwxyz  ".split("")}getSymbols(){return"1234567890+/:;()$$@\"'.,?!#*-".split("")}}class SelectionKey extends Key{set item(t){this._key=t}_init(){this._arr=[[25,0,0,25],[0,0,0,0],[0,25,25,0]],this.patch({Bg:{x:0,y:0,texture:p.Tools.getRoundRect(143,53,this._arr[this._keyType],1,4278190080,!0,0)},Text:{x:this.w/2,y:this.h/2,mount:.5,text:{text:this._key,fontSize:24,textColor:4294967295,fontFace:"Regular"}}})}_focus(){this.tag("Text").text.fontStyle="Bold",this.tag("Text").text.textColor=4278190080,this.patch({Bg:{x:0,y:0,texture:p.Tools.getRoundRect(143,56,this._arr[this._keyType],0,4290822336,!0,4290822336)}})}_unfocus(){this.tag("Text").text.fontStyle="normal",this.tag("Text").text.textColor=4294967295,this.patch({Bg:{x:0,y:0,texture:p.Tools.getRoundRect(143,53,this._arr[this._keyType],1,4278190080,!0,0)}})}}class WiFiPasswordScreen extends p.Component{_construct(){this._width=428,this._height=56,this._radius=28,this._strokeWidth=2,this.keySpace=5}static _template(){return{}}_init(){this._api=new KeyDetails,this.patch({src:c.asset("images/tvShows/background.jpg"),w:440,h:560,Entry:{x:4,y:10,texture:p.Tools.getRoundRect(this._width,this._height,this._radius,this._strokeWidth,4279966491,!0,10855845),Text:{x:20,y:this._height/2+5,mountY:.5,text:{text:"Password",fontSize:18,fontFace:"Light",textColor:4289045925}},Pwd:{x:130,y:this._height/2+5,mountY:.5,text:{text:"",fontSize:24,fontFace:"Light",textColor:4290822336,wordWrapWidth:this._width-130,wordWrap:!1,textOverflow:"ellipsis"}}},Selection:{x:4,y:this._height+21,texture:p.Tools.getRoundRect(this._width,this._height,this._radius,this._strokeWidth,1776411,!0,10855845),Types:{type:p.components.ListComponent,itemSize:143,w:this._width,h:this._height,clipping:!0,roll:!0,zIndex:10}},Keypad:{x:9,y:2*(this._height+21),w:this._width,wrap:!0,type:Keypad},FunctionalKeys:{x:9,y:5*(this._height+21)+15,w:this._width,wrap:!0,type:Keypad},Submit:{x:4,y:5*(this._height+21)+15+61,texture:p.Tools.getRoundRect(this._width,this._height,this._radius,this._strokeWidth,4279966491,!0,10855845),Text:{x:this._width/2,y:this._height/2,mount:.5,text:{text:"Submit",fontSize:24,fontFace:"Light",textColor:4294967295}}}}),this.setKeypad("abc");let t={ref:"Keyclear",w:117,h:56,type:Key,fontSize:24,item:"CLEAR",keyType:"clear",flexItem:{marginRight:5,marginBottom:5}},e={ref:"Keyspace",w:178,h:56,type:Key,fontSize:24,item:"Space",keyType:"space",flexItem:{marginRight:5,marginBottom:5}},i={ref:"Keydel",w:117,h:56,keyType:"delete",type:Key,fontSize:24,item:"",flexItem:{marginRight:5,marginBottom:5}};this.tag("FunctionalKeys").items=[t,e,i],this.tag("Selection.Types").items=["abc","ABC","#+-"].map(((t,e)=>({ref:"Item",w:this._width/3,h:this._height,fontSize:24,keyType:e,item:t,type:SelectionKey,clipping:!0})))}_active(){this.tag("Selection.Types").start(),this._setState("Selection")}_inactive(){this.tag("Entry.Pwd").text.text=""}$pressedKey(t,e){console.log(t);let i=this.tag("Entry.Pwd");"alphanum"===e?i.text.text=i.text.text+t:"clear"===e?i.text.text="":"space"===e?i.text.text=i.text.text+" ":"delete"===e&&(i.text.text=i.text.text.substring(0,i.text.text.length-1))}setKeypad(t){let e=[];"abc"===t?e=this._api.getAlphabet():"#+-"===t?e=this._api.getSymbols():"ABC"===t&&(e=this._api.getAlphabet().map((t=>t.toUpperCase()))),this.tag("Keypad").items=[],this.tag("Keypad").items=e.map((t=>({ref:"Key"+t,w:56,h:56,type:Key,item:t,flexItem:{marginRight:5,marginBottom:5}})))}static _states(){return[class Selection extends(this){$enter(){this.setKeypad(this.tag("Selection.Types").element._key)}_getFocused(){return this.tag("Selection.Types").element}_handleRight(){this.tag("Selection.Types").index<this.tag("Selection.Types").length-1&&(this.tag("Selection.Types").setNext(),this.setKeypad(this.tag("Selection.Types").element._key))}_handleLeft(){0!=this.tag("Selection.Types").index&&(this.tag("Selection.Types").setPrevious(),this.setKeypad(this.tag("Selection.Types").element._key))}_handleDown(){this._setState("Keypad")}},class Keypad extends(this){_getFocused(){return this.tag("Keypad")}$listEnd(){this._setState("Function")}$listStart(){this._setState("Selection")}},class Function extends(this){_getFocused(){return this.tag("FunctionalKeys")}_handleUp(){this._setState("Keypad")}$listEnd(){console.log("down"),this._setState("Submit")}$listStart(){this._setState("Keypad")}},class Submit extends(this){$enter(){this.patch({Submit:{x:0,y:5*(this._height+21)+15+61,texture:p.Tools.getRoundRect(this._width,this._height,this._radius,this._strokeWidth,12632256,!0,4290822336)}}),this.tag("Submit.Text").text.textColor=4278190080}$exit(){this.patch({Submit:{x:0,y:5*(this._height+21)+15+61,texture:p.Tools.getRoundRect(this._width,this._height,this._radius,this._strokeWidth,4279966491,!0,12632256)}}),this.tag("Submit.Text").text.textColor=4294967295}_handleEnter(){this.fireAncestors("$password",this.tag("Entry.Pwd").text.text)}_handleUp(){console.log("Up"),this._setState("Function")}_handleLeft(){this._setState("Function")}}]}}class BluetoothPairingScreen$1 extends p.Component{static _template(){return{PairingScreen:{x:0,y:0,w:640,h:1080,rect:!0,color:4281747025},Title:{x:20,y:100,text:{text:"",fontSize:30,textColor:Gt}},List:{x:20,y:150,type:p.components.ListComponent,w:640,h:400,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0},Password:{type:WiFiPasswordScreen,x:320,y:350,mountX:.5,w:428,h:56,alpha:0}}}set item(t){this.tag("Title").text=t.ssid;var e=[];this._item=t,e=t.connected?["Disconnect","Cancel"]:["Connect","Cancel"],this.tag("List").items=e.map(((t,e)=>({ref:t,w:640,h:65,type:SettingsItem,item:t}))),this._setState("Pair")}static _states(){return[class Password extends(this){$enter(){this.tag("Password").alpha=1}_getFocused(){return this.tag("Password")}$password(t){this.fireAncestors("$startConnect",t)}$exit(){this.tag("Password").alpha=0}_handleKey(t){if(27!=t.keyCode&&77!=t.keyCode&&49!=t.keyCode&&158!=t.keyCode)return!1;this._setState("Pair")}},class Pair extends(this){$enter(){}_getFocused(){return this.tag("List").element}_handleDown(){this.tag("List").setNext()}_handleUp(){this.tag("List").setPrevious()}_handleEnter(){"Connect"==this.tag("List").element.ref&&"0"!=this._item.security?this._setState("Password"):this.fireAncestors("$pressEnter",this.tag("List").element.ref)}}]}}class WiFiScreen extends p.Component{static _template(){return{Title:{x:1600,y:50,text:{text:"Wi-Fi",textColor:te},mountX:.5},Switch:{x:1300,y:150,rect:!0,shader:{type:p.shaders.RoundedRectangle,radius:9},color:12632256,w:570,h:50,Text:{x:0,text:{text:"Wi-Fi",textColor:Gt}},Button:{x:560,y:10,mountX:1,src:c.asset("images/switch-off.png")}},Networks:{x:1280,y:250,flex:{direction:"column"},PairedNetworks:{flexItem:{margin:20},w:640,h:30,Title:{text:{text:"My Network",textColor:Gt,fontSize:30}},List:{x:0,y:65,type:p.components.ListComponent,w:640,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0}},AvailableNetworks:{flexItem:{margin:20,marginTop:30},w:640,h:30,Title:{text:{text:"Other Networks",textColor:Gt,fontSize:30}},Loader:{x:250,y:-10,w:50,h:50,color:4278190080,src:c.asset("images/loader.png"),visible:!1},List:{x:0,y:65,w:640,h:100,type:p.components.ListComponent,itemSize:65,horizontal:!1,invertDirection:!0,roll:!0}},visible:!1},PairingScreen:{x:1280,y:0,w:640,h:1080,visible:!1,type:BluetoothPairingScreen$1},IpAddress:{x:1820,y:920,mountX:1,mountY:0,text:{text:"IP:NA",textColor:Gt,fontSize:30}}}}_active(){this._setState("Switch")}_init(){this.loadingAnimation=this.tag("Networks.AvailableNetworks.Loader").animation({duration:1,repeat:-1,stopMethod:"immediate",stopDelay:.2,actions:[{p:"rotation",v:{sm:0,0:0,1:2*Math.PI}}]}),this.loadingAnimation.play(),this._wifi=new Wifi,this._network=new Network,this.wifiStatus=!1,this._activateWiFi(),this._setState("Switch"),this.wiFiStatus&&(this.tag("Networks").visible=!0),this._pairedNetworks=this.tag("Networks.PairedNetworks"),this._availableNetworks=this.tag("Networks.AvailableNetworks"),this._network.activate().then((t=>{t&&(this._network.registerEvent("onIPAddressStatusChanged",(t=>{"ACQUIRED"==t.status?this.tag("IpAddress").text.text="IP:"+t.ip4Address:"LOST"==t.status&&(this.tag("IpAddress").text.text="IP:NA")})),this._network.registerEvent("onDefaultInterfaceChanged",(t=>{console.log(t),"WIFI"==t.newInterfaceName?this._wifi.setEnabled(!0).then((t=>{t.success&&(this.wifiStatus=!0,this.tag("Networks").visible=!0,this.tag("Switch.Button").src=c.asset("images/switch-on.png"),this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0)})):"ETHERNET"!=t.newInterfaceName&&"WIFI"!=t.oldInterfaceName||(this._wifi.disconnect(),this.wifiStatus=!1,this.tag("Networks").visible=!1,this.tag("Switch.Button").src=c.asset("images/switch-off.png"),this._setState("Switch"))})),this._network.getIP().then((t=>{this.tag("IpAddress").text.text="IP:"+t})))}))}_enable(){this.wifiStatus&&(this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0),this.scanTimer=setInterval((()=>{this.wifiStatus&&(this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0)}),5e3)}_disable(){clearInterval(this.scanTimer)}renderDeviceList(t){this._wifi.getConnectedSSID().then((e=>{""!=e.ssid?this._pairedList=[e]:this._pairedList=[],this._pairedNetworks.h=65*this._pairedList.length+30,this._pairedNetworks.tag("List").h=65*this._pairedList.length,this._pairedNetworks.tag("List").items=this._pairedList.map(((t,e)=>(t.connected=!0,{ref:"Paired"+e,w:640,h:65,type:WiFiItem,item:t}))),this._otherList=t.filter((t=>!(e=this._pairedList.map((t=>t.ssid))).includes(t.ssid)&&t)),this._availableNetworks.h=65*this._otherList.length+30,this._availableNetworks.tag("List").h=65*this._otherList.length,this._availableNetworks.tag("List").items=this._otherList.map(((t,e)=>(t.connected=!1,{ref:"Other"+e,w:640,h:65,type:WiFiItem,item:t})))}))}static _states(){return[class Switch extends(this){$enter(){this.tag("Switch").color=Zt}$exit(){this.tag("Switch").color=12632256}_handleDown(){this.wifiStatus&&(this._pairedNetworks.tag("List").length>0?this._setState("PairedDevices"):this._availableNetworks.tag("List").length>0&&this._setState("AvailableDevices"))}_handleEnter(){this.switch()}},class PairedDevices extends(this){$enter(){}_getFocused(){return this._pairedNetworks.tag("List").element}_handleDown(){this._navigate("MyDevices","down")}_handleUp(){this._navigate("MyDevices","up")}_handleEnter(){this.tag("PairingScreen").visible=!0,this.tag("PairingScreen").item=this._pairedNetworks.tag("List").element._item,this._setState("PairingScreen")}},class AvailableDevices extends(this){$enter(){}_getFocused(){return this._availableNetworks.tag("List").element}_handleDown(){this._navigate("AvailableDevices","down")}_handleUp(){this._navigate("AvailableDevices","up")}_handleEnter(){this.tag("PairingScreen").visible=!0,this.tag("PairingScreen").item=this._availableNetworks.tag("List").element._item,this._setState("PairingScreen")}},class PairingScreen extends(this){$enter(){this._wifi.stopScan(),this._disable()}_getFocused(){return this.tag("PairingScreen")}$pressEnter(t){"Cancel"===t?this._setState("Switch"):"Connect"===t?(this._availableNetworks.tag("List").element&&this._wifi.connect(this._availableNetworks.tag("List").element._item,"").then((()=>{})),this._setState("Switch")):"Disconnect"===t&&(this._wifi.disconnect().then((()=>{})),this._setState("Switch"))}$startConnect(t){this._availableNetworks.tag("List").element&&null!=t?this._wifi.connect(this._availableNetworks.tag("List").element._item,t):(this.patch({FailureMessage:{x:1320,y:950,text:{text:"FAILED"}}}),setTimeout((()=>{this.childList.remove(this.tag("FailureMessage"))}),2e3)),this._setState("Switch")}$exit(){this.tag("PairingScreen").visible=!1,this._enable()}}]}_navigate(t,e){let i;"MyDevices"===t?i=this._pairedNetworks.tag("List"):"AvailableDevices"===t&&(i=this._availableNetworks.tag("List")),"down"===e?i.index<i.length-1?i.setNext():i.index==i.length-1&&"MyDevices"===t&&this._availableNetworks.tag("List").length>0&&this._setState("AvailableDevices"):"up"===e&&(i.index>0?i.setPrevious():0==i.index&&("AvailableDevices"===t&&this._pairedNetworks.tag("List").length>0?this._setState("PairedDevices"):this._setState("Switch")))}switch(){this.wifiStatus?this._wifi.setInterface("ETHERNET",!0).then((t=>{t.success&&this._wifi.setDefaultInterface("ETHERNET",!0).then((t=>{t.success&&(this._wifi.disconnect(),this.wifiStatus=!1,this.tag("Networks").visible=!1,this.tag("Switch.Button").src=c.asset("images/switch-off.png"))}))})):this._wifi.setInterface("WIFI",!0).then((t=>{t.success&&this._wifi.setDefaultInterface("WIFI",!1).then((t=>{t.success&&this._wifi.setEnabled(!0).then((t=>{t.success&&(this.wifiStatus=!0,this.tag("Networks").visible=!0,this.tag("Switch.Button").src=c.asset("images/switch-on.png"),this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0)}))}))}))}_activateWiFi(){this._wifi.activate().then((()=>{this._wifi.getDefaultInterface().then((t=>{"WIFI"==t.interface&&this.switch()}))})),this.tag("Networks.AvailableNetworks.Loader").visible=!0,this._wifi.registerEvent("onWIFIStateChanged",(t=>{2!==t.state&&5!==t.state||(this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0),this._setState("Switch")})),this._wifi.registerEvent("onError",(t=>{this._wifi.discoverSSIDs(),this.tag("Networks.AvailableNetworks.Loader").visible=!0,4==t.code&&(this.patch({FailureMessage:{x:1320,y:950,text:{text:"INCORRECT PASSWORD"}}}),setTimeout((()=>{this.childList.remove(this.tag("FailureMessage"))}),2e3)),this._setState("Switch")})),this._wifi.registerEvent("onAvailableSSIDs",(t=>{this.tag("Networks.AvailableNetworks.Loader").visible=!1,this.renderDeviceList(t.ssids)}))}}class SettingsScreen extends p.Component{static _template(){return{Background:{w:1920,h:1080,src:c.asset("images/tvShows/background.jpg")},Sidebar:{x:1280,y:0,w:640,h:1080,rect:!0,color:4281747025},WiFiScreen:{type:WiFiScreen,visible:!1},BluetoothScreen:{type:BluetoothScreen,visible:!1}}}_enable(){this._appAnimation=this.animation({duration:.3,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:.5,1:1}},{p:"y",v:{0:1080,1:0}}]}),this._appAnimation.start()}_disable(){this._appAnimation=this.animation({duration:.3,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:.5,1:1}},{p:"y",v:{0:0,1:1080}}]}),this._appAnimation.start()}set screen(t){this._setState(t)}set params(t){null!=t.animation&&t.animation.start()}static _states(){return[class BluetoothScreen extends(this){$enter(){this.tag("BluetoothScreen").visible=!0}_getFocused(){return this.tag("BluetoothScreen")}$exit(){this.tag("BluetoothScreen").visible=!1}_handleKey(t){if(""!=u.get("applicationType")||77!=t.keyCode&&49!=t.keyCode&&36!=t.keyCode&&158!=t.keyCode&&27!=t.keyCode&&(73!=t.keyCode||1!=t.ctrlKey))return!1;this._appAnimation=this.animation({duration:.5,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:.5,1:1}},{p:"y",v:{0:0,1:1080}}]}),this._appAnimation.start(),this._appAnimation.on("finish",(t=>{ht.navigate("home")}))}},class WiFiScreen extends(this){$enter(){this.tag("WiFiScreen").visible=!0}_getFocused(){return this.tag("WiFiScreen")}$exit(){this.tag("WiFiScreen").visible=!1}_handleKey(t){if(""!=u.get("applicationType")||77!=t.keyCode&&49!=t.keyCode&&36!=t.keyCode&&158!=t.keyCode&&27!=t.keyCode&&(73!=t.keyCode||1!=t.ctrlKey))return!1;this._appAnimation=this.animation({duration:.3,repeat:0,stopMethod:"immediate",actions:[{p:"alpha",v:{0:.5,1:1}},{p:"y",v:{0:0,1:1080}}]}),this._appAnimation.start(),this._appAnimation.on("finish",(t=>{ht.navigate("home")}))}}]}}class Error$1 extends p.Component{static _template(){return{rect:!0,w:1920,h:1080,color:4290184710,Label:{x:100,y:100,text:{text:"Error",fontSize:22}}}}_handleEnter(){ht.navigate("home")}_focus(){console.log("focus error page")}set error(t){const{page:e,error:i}=t;console.log(e,i);const s=`\nerror while loading page: ${e.constructor.name}\npress enter to navigate to home\n--\nloaded via hash: ${e[Symbol.for("hash")]}\nresulted in route: ${e[Symbol.for("route")]}\n--\n${i.toString()}`;this.tag("Label").text=s}pageTransition(){return"up"}}var ie={root:"home",routes:[{path:"home",component:HomeScreen,before:()=>(console.log("before home!"),Promise.resolve()),cache:10},{path:"settings/:screen",options:{preventStorage:!0,clearHistory:!0,reuseInstance:!0},component:SettingsScreen,cache:10},{path:"splash",component:SplashScreen,options:{preventStorage:!0,clearHistory:!0,reuseInstance:!1},cache:10},{path:"!",component:Error$1},{path:"*",component:HomeScreen}]};class XcastApi{constructor(){console.log("Xcast constructor"),this._events=new Map}activate(){return new Promise(((t,e)=>{this._thunder=thunderJS({host:"127.0.0.1",port:9998,default:1}),this.callsign="org.rdk.Xcast",this._thunder.call("Controller","activate",{callsign:this.callsign}).then((i=>{console.log(i),console.log("Xcast activation success"),this._thunder.call("org.rdk.Xcast","getEnabled").then((e=>{e.success?(console.log("Xcast enabled"),this._thunder.on(this.callsign,"onApplicationLaunchRequest",(t=>{console.log("onApplicationLaunchRequest "+JSON.stringify(t)),this._events.has("onApplicationLaunchRequest")&&this._events.get("onApplicationLaunchRequest")(t)})),this._thunder.on(this.callsign,"onApplicationHideRequest",(t=>{console.log("onApplicationHideRequest "+JSON.stringify(t)),this._events.has("onApplicationHideRequest")&&this._events.get("onApplicationHideRequest")(t)})),this._thunder.on(this.callsign,"onApplicationResumeRequest",(t=>{console.log("onApplicationResumeRequest "+JSON.stringify(t)),this._events.has("onApplicationResumeRequest")&&this._events.get("onApplicationResumeRequest")(t)})),this._thunder.on(this.callsign,"onApplicationStopRequest",(t=>{console.log("onApplicationStopRequest "+JSON.stringify(t)),this._events.has("onApplicationStopRequest")&&this._events.get("onApplicationStopRequest")(t)})),t(!0)):console.log("Xcast enabled failed")})).catch((t=>{console.error("Enabling failure",t),e("Xcast enabling failed",t)}))})).catch((t=>{console.error("Activation failure",t),e("Xcast activation failed",t)}))}))}registerEvent(t,e){this._events.set(t,e)}deactivate(){this._events=new Map,this._thunder=null}onApplicationStateChanged(t){return new Promise(((e,i)=>{console.log("Notifying back"),this._thunder.call("org.rdk.Xcast","onApplicationStateChanged",t).then((t=>{console.log(t),e(t)}))}))}static supportedApps(){return{AmazonInstantVideo:"Amazon",YouTube:"Cobalt"}}}const se={host:"127.0.0.1",port:9998,default:1};var ae=thunderJS(se),ne=new AppApi;class App extends ht.App{static getFonts(){return[{family:"Regular",url:c.asset("fonts/Roboto-Regular.ttf")}]}_setup(){ht.startRouter(ie,this),document.onkeydown=t=>{8==t.keyCode&&t.preventDefault()}}_init(){this.xcastApi=new XcastApi,this.xcastApi.activate().then((t=>{t&&this.registerXcastListeners()}));var t=thunderJS(se);const e="org.rdk.RDKShell";t.Controller.activate({callsign:e}).then((t=>{console.log("Successfully activated RDK Shell")})).catch((t=>{console.log("Error",t)})).then((e=>{t.call("org.rdk.RDKShell","setFocus",{client:"ResidentApp"})})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:27,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:77,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:36,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:49,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:158,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:227,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)})).then((i=>{t.call(e,"addKeyIntercept",{client:"ResidentApp",keyCode:179,modifiers:[]}).then((t=>{console.log("addKeyIntercept success")})).catch((t=>{console.log("Error",t)}))})).catch((t=>{console.log("Error",t)}))}deactivateChildApp(t){var e=new AppApi;switch(t){case"WebApp":e.deactivateWeb();break;case"Cobalt":e.suspendCobalt();break;case"Lightning":e.deactivateLightning();break;case"Native":e.killNative();break;case"Amazon":e.suspendAmazon()}}registerXcastListeners(){this.xcastApi.registerEvent("onApplicationLaunchRequest",(t=>{if(console.log("Received a launch request "+JSON.stringify(t)),this.xcastApps(t.applicationName)){let e=this.xcastApps(t.applicationName);if(console.log("Launch "+this.xcastApps(t.applicationName)),"Amazon"==e&&"Amazon"!=u.get("applicationType")){this.deactivateChildApp(u.get("applicationType")),ne.launchAmazon(),u.set("applicationType","Amazon"),ne.setVisibility("ResidentApp",!1);let e={applicationName:t.applicationName,state:"running"};this.xcastApi.onApplicationStateChanged(e)}else if("Cobalt"==e&&"Cobalt"!=u.get("applicationType")){this.deactivateChildApp(u.get("applicationType")),ne.launchCobalt(),u.set("applicationType","Cobalt"),ne.setVisibility("ResidentApp",!1);let e={applicationName:t.applicationName,state:"running"};this.xcastApi.onApplicationStateChanged(e)}}})),this.xcastApi.registerEvent("onApplicationHideRequest",(t=>{if(console.log("Received a hide request "+JSON.stringify(t)),this.xcastApps(t.applicationName)){let e=this.xcastApps(t.applicationName);if(console.log("Hide "+this.xcastApps(t.applicationName)),"Amazon"===e&&"Amazon"===u.get("applicationType")){ne.suspendAmazon();let e={applicationName:t.applicationName,state:"stopped"};this.xcastApi.onApplicationStateChanged(e)}else if("Cobalt"===e&&"Cobalt"===u.get("applicationType")){ne.suspendCobalt();let e={applicationName:t.applicationName,state:"stopped"};this.xcastApi.onApplicationStateChanged(e)}u.set("applicationType",""),ne.setVisibility("ResidentApp",!0),ae.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")}))}})),this.xcastApi.registerEvent("onApplicationResumeRequest",(t=>{if(console.log("Received a resume request "+JSON.stringify(t)),this.xcastApps(t.applicationName)){let e=this.xcastApps(t.applicationName);if(console.log("Resume "+this.xcastApps(t.applicationName)),"Amazon"==e&&"Amazon"!=u.get("applicationType")){this.deactivateChildApp(u.get("applicationType")),ne.launchAmazon(),u.set("applicationType","Amazon"),ne.setVisibility("ResidentApp",!1);let e={applicationName:t.applicationName,state:"running"};this.xcastApi.onApplicationStateChanged(e)}else if("Cobalt"==e&&"Cobalt"!=u.get("applicationType")){this.deactivateChildApp(u.get("applicationType")),ne.launchCobalt(),u.set("applicationType","Cobalt"),ne.setVisibility("ResidentApp",!1);let e={applicationName:t.applicationName,state:"running"};this.xcastApi.onApplicationStateChanged(e)}}})),this.xcastApi.registerEvent("onApplicationStopRequest",(t=>{if(console.log("Received a stop request "+JSON.stringify(t)),this.xcastApps(t.applicationName)){console.log("Stop "+this.xcastApps(t.applicationName));let e=this.xcastApps(t.applicationName);if("Amazon"===e&&"Amazon"===u.get("applicationType")){ne.deactivateAmazon(),u.set("applicationType",""),ne.setVisibility("ResidentApp",!0),ae.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")}));let e={applicationName:t.applicationName,state:"stopped"};this.xcastApi.onApplicationStateChanged(e)}else if("Cobalt"===e&&"Cobalt"===u.get("applicationType")){ne.deactivateCobalt(),u.set("applicationType",""),ne.setVisibility("ResidentApp",!0),ae.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")}));let e={applicationName:t.applicationName,state:"stopped"};this.xcastApi.onApplicationStateChanged(e)}}})),this.xcastApi.registerEvent("onApplicationStateRequest",(t=>{if(console.log("Received a state request "+JSON.stringify(t)),this.xcastApps(t.applicationName)){let e=this.xcastApps(t.applicationName),i=AppApi.pluginStatus(e),s={applicationName:t.applicationName,state:"stopped"};i&&(s.status="running"),this.xcastApi.onApplicationStateChanged(s),console.log("State of "+this.xcastApps(t.applicationName))}}))}xcastApps(t){return!!Object.keys(XcastApi.supportedApps()).includes(t)&&XcastApi.supportedApps()[t]}_handleKey(t){if(227==t.keyCode){this.deactivateChildApp(u.get("applicationType")),ne.launchWeb("https://ott-app.dstv.com/"),u.set("applicationType","WebApp"),ne.setVisibility("ResidentApp",!1)}else 179==t.keyCode&&"Cobalt"!=u.get("applicationType")?(this.deactivateChildApp(u.get("applicationType")),ne.launchCobalt(),u.set("applicationType","Cobalt"),ne.setVisibility("ResidentApp",!1)):27!=t.keyCode&&77!=t.keyCode&&49!=t.keyCode&&36!=t.keyCode&&158!=t.keyCode||(this.deactivateChildApp(u.get("applicationType")),u.set("applicationType",""),ne.setVisibility("ResidentApp",!0),ae.call("org.rdk.RDKShell","moveToFront",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})),ae.call("org.rdk.RDKShell","setFocus",{client:"ResidentApp"}).then((t=>{console.log("ResidentApp moveToFront Success")})).catch((t=>{console.log("Error",t)})))}}return function index(){return Launch(App,...arguments)}}();
+var APP_accelerator_home_ui = (function () {
+  'use strict';
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const settings = {};
+  const subscribers = {};
+
+  const initSettings = (appSettings, platformSettings) => {
+    settings['app'] = appSettings;
+    settings['platform'] = platformSettings;
+    settings['user'] = {};
+  };
+
+  const publish = (key, value) => {
+    subscribers[key] && subscribers[key].forEach(subscriber => subscriber(value));
+  };
+
+  const dotGrab = (obj = {}, key) => {
+    const keys = key.split('.');
+    for (let i = 0; i < keys.length; i++) {
+      obj = obj[keys[i]] = obj[keys[i]] !== undefined ? obj[keys[i]] : {};
+    }
+    return typeof obj === 'object' ? (Object.keys(obj).length ? obj : undefined) : obj
+  };
+
+  var Settings = {
+    get(type, key, fallback = undefined) {
+      const val = dotGrab(settings[type], key);
+      return val !== undefined ? val : fallback
+    },
+    has(type, key) {
+      return !!this.get(type, key)
+    },
+    set(key, value) {
+      settings['user'][key] = value;
+      publish(key, value);
+    },
+    subscribe(key, callback) {
+      subscribers[key] = subscribers[key] || [];
+      subscribers[key].push(callback);
+    },
+    unsubscribe(key, callback) {
+      if (callback) {
+        const index = subscribers[key] && subscribers[key].findIndex(cb => cb === callback);
+        index > -1 && subscribers[key].splice(index, 1);
+      } else {
+        if (key in subscribers) {
+          subscribers[key] = [];
+        }
+      }
+    },
+    clearSubscribers() {
+      for (const key of Object.getOwnPropertyNames(subscribers)) {
+        delete subscribers[key];
+      }
+    },
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const prepLog = (type, args) => {
+    const colors = {
+      Info: 'green',
+      Debug: 'gray',
+      Warn: 'orange',
+      Error: 'red',
+    };
+
+    args = Array.from(args);
+    return [
+      '%c' + (args.length > 1 && typeof args[0] === 'string' ? args.shift() : type),
+      'background-color: ' + colors[type] + '; color: white; padding: 2px 4px; border-radius: 2px',
+      args,
+    ]
+  };
+
+  var Log = {
+    info() {
+      Settings.get('platform', 'log') && console.log.apply(console, prepLog('Info', arguments));
+    },
+    debug() {
+      Settings.get('platform', 'log') && console.debug.apply(console, prepLog('Debug', arguments));
+    },
+    error() {
+      Settings.get('platform', 'log') && console.error.apply(console, prepLog('Error', arguments));
+    },
+    warn() {
+      Settings.get('platform', 'log') && console.warn.apply(console, prepLog('Warn', arguments));
+    },
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let sendMetric = (type, event, params) => {
+    Log.info('Sending metric', type, event, params);
+  };
+
+  const initMetrics = config => {
+    sendMetric = config.sendMetric;
+  };
+
+  // available metric per category
+  const metrics$1 = {
+    app: ['launch', 'loaded', 'ready', 'close'],
+    page: ['view', 'leave'],
+    user: ['click', 'input'],
+    media: [
+      'abort',
+      'canplay',
+      'ended',
+      'pause',
+      'play',
+      // with some videos there occur almost constant suspend events ... should investigate
+      // 'suspend',
+      'volumechange',
+      'waiting',
+      'seeking',
+      'seeked',
+    ],
+  };
+
+  // error metric function (added to each category)
+  const errorMetric = (type, message, code, visible, params = {}) => {
+    params = { params, ...{ message, code, visible } };
+    sendMetric(type, 'error', params);
+  };
+
+  const Metric = (type, events, options = {}) => {
+    return events.reduce(
+      (obj, event) => {
+        obj[event] = (name, params = {}) => {
+          params = { ...options, ...(name ? { name } : {}), ...params };
+          sendMetric(type, event, params);
+        };
+        return obj
+      },
+      {
+        error(message, code, params) {
+          errorMetric(type, message, code, params);
+        },
+        event(name, params) {
+          sendMetric(type, name, params);
+        },
+      }
+    )
+  };
+
+  const Metrics = types => {
+    return Object.keys(types).reduce(
+      (obj, type) => {
+        // media metric works a bit different!
+        // it's a function that accepts a url and returns an object with the available metrics
+        // url is automatically passed as a param in every metric
+        type === 'media'
+          ? (obj[type] = url => Metric(type, types[type], { url }))
+          : (obj[type] = Metric(type, types[type]));
+        return obj
+      },
+      { error: errorMetric, event: sendMetric }
+    )
+  };
+
+  var Metrics$1 = Metrics(metrics$1);
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  var events$1 = {
+    abort: 'Abort',
+    canplay: 'CanPlay',
+    canplaythrough: 'CanPlayThrough',
+    durationchange: 'DurationChange',
+    emptied: 'Emptied',
+    encrypted: 'Encrypted',
+    ended: 'Ended',
+    error: 'Error',
+    interruptbegin: 'InterruptBegin',
+    interruptend: 'InterruptEnd',
+    loadeddata: 'LoadedData',
+    loadedmetadata: 'LoadedMetadata',
+    loadstart: 'LoadStart',
+    pause: 'Pause',
+    play: 'Play',
+    playing: 'Playing',
+    progress: 'Progress',
+    ratechange: 'Ratechange',
+    seeked: 'Seeked',
+    seeking: 'Seeking',
+    stalled: 'Stalled',
+    // suspend: 'Suspend', // this one is called a looooot for some videos
+    timeupdate: 'TimeUpdate',
+    volumechange: 'VolumeChange',
+    waiting: 'Waiting',
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  var autoSetupMixin = (sourceObject, setup = () => {}) => {
+    let ready = false;
+
+    const doSetup = () => {
+      if (ready === false) {
+        setup();
+        ready = true;
+      }
+    };
+
+    return Object.keys(sourceObject).reduce((obj, key) => {
+      if (typeof sourceObject[key] === 'function') {
+        obj[key] = function() {
+          doSetup();
+          return sourceObject[key].apply(sourceObject, arguments)
+        };
+      } else if (typeof Object.getOwnPropertyDescriptor(sourceObject, key).get === 'function') {
+        obj.__defineGetter__(key, function() {
+          doSetup();
+          return Object.getOwnPropertyDescriptor(sourceObject, key).get.apply(sourceObject)
+        });
+      } else if (typeof Object.getOwnPropertyDescriptor(sourceObject, key).set === 'function') {
+        obj.__defineSetter__(key, function() {
+          doSetup();
+          return Object.getOwnPropertyDescriptor(sourceObject, key).set.sourceObject[key].apply(
+            sourceObject,
+            arguments
+          )
+        });
+      } else {
+        obj[key] = sourceObject[key];
+      }
+      return obj
+    }, {})
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let timeout$1 = null;
+
+  var easeExecution = (cb, delay) => {
+    clearTimeout(timeout$1);
+    timeout$1 = setTimeout(() => {
+      cb();
+    }, delay);
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let basePath;
+  let proxyUrl;
+
+  const initUtils = config => {
+    basePath = ensureUrlWithProtocol(makeFullStaticPath(window.location.pathname, config.path || '/'));
+
+    if (config.proxyUrl) {
+      proxyUrl = ensureUrlWithProtocol(config.proxyUrl);
+    }
+  };
+
+  var Utils = {
+    asset(relPath) {
+      return basePath + relPath
+    },
+    proxyUrl(url, options = {}) {
+      return proxyUrl ? proxyUrl + '?' + makeQueryString(url, options) : url
+    },
+    makeQueryString() {
+      return makeQueryString(...arguments)
+    },
+    // since imageworkers don't work without protocol
+    ensureUrlWithProtocol() {
+      return ensureUrlWithProtocol(...arguments)
+    },
+  };
+
+  const ensureUrlWithProtocol = url => {
+    if (/^\/\//.test(url)) {
+      return window.location.protocol + url
+    }
+    if (!/^(?:https?:)/i.test(url)) {
+      return window.location.origin + url
+    }
+    return url
+  };
+
+  const makeFullStaticPath = (pathname = '/', path) => {
+    // ensure path has traling slash
+    path = path.charAt(path.length - 1) !== '/' ? path + '/' : path;
+
+    // if path is URL, we assume it's already the full static path, so we just return it
+    if (/^(?:https?:)?(?:\/\/)/.test(path)) {
+      return path
+    }
+
+    if (path.charAt(0) === '/') {
+      return path
+    } else {
+      // cleanup the pathname (i.e. remove possible index.html)
+      pathname = cleanUpPathName(pathname);
+
+      // remove possible leading dot from path
+      path = path.charAt(0) === '.' ? path.substr(1) : path;
+      // ensure path has leading slash
+      path = path.charAt(0) !== '/' ? '/' + path : path;
+      return pathname + path
+    }
+  };
+
+  const cleanUpPathName = pathname => {
+    if (pathname.slice(-1) === '/') return pathname.slice(0, -1)
+    const parts = pathname.split('/');
+    if (parts[parts.length - 1].indexOf('.') > -1) parts.pop();
+    return parts.join('/')
+  };
+
+  const makeQueryString = (url, options = {}, type = 'url') => {
+    // add operator as an option
+    options.operator = 'metrological'; // Todo: make this configurable (via url?)
+    // add type (= url or qr) as an option, with url as the value
+    options[type] = url;
+
+    return Object.keys(options)
+      .map(key => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent('' + options[key])
+      })
+      .join('&')
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const initProfile = config => {
+    config.getInfo;
+    config.setInfo;
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  var Lightning = window.lng;
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const events = [
+    'timeupdate',
+    'error',
+    'ended',
+    'loadeddata',
+    'canplay',
+    'play',
+    'playing',
+    'pause',
+    'loadstart',
+    'seeking',
+    'seeked',
+    'encrypted',
+  ];
+
+  let mediaUrl$1 = url => url;
+
+  const initMediaPlayer = config => {
+    if (config.mediaUrl) {
+      mediaUrl$1 = config.mediaUrl;
+    }
+  };
+
+  class Mediaplayer extends Lightning.Component {
+    _construct() {
+      this._skipRenderToTexture = false;
+      this._metrics = null;
+      this._textureMode = Settings.get('platform', 'textureMode') || false;
+      Log.info('Texture mode: ' + this._textureMode);
+      console.warn(
+        [
+          "The 'MediaPlayer'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.",
+          "Please consider using the new 'VideoPlayer'-plugin instead.",
+          'https://rdkcentral.github.io/Lightning-SDK/#/plugins/videoplayer',
+        ].join('\n\n')
+      );
+    }
+
+    static _template() {
+      return {
+        Video: {
+          VideoWrap: {
+            VideoTexture: {
+              visible: false,
+              pivot: 0.5,
+              texture: { type: Lightning.textures.StaticTexture, options: {} },
+            },
+          },
+        },
+      }
+    }
+
+    set skipRenderToTexture(v) {
+      this._skipRenderToTexture = v;
+    }
+
+    get textureMode() {
+      return this._textureMode
+    }
+
+    get videoView() {
+      return this.tag('Video')
+    }
+
+    _init() {
+      //re-use videotag if already there
+      const videoEls = document.getElementsByTagName('video');
+      if (videoEls && videoEls.length > 0) this.videoEl = videoEls[0];
+      else {
+        this.videoEl = document.createElement('video');
+        this.videoEl.setAttribute('id', 'video-player');
+        this.videoEl.style.position = 'absolute';
+        this.videoEl.style.zIndex = '1';
+        this.videoEl.style.display = 'none';
+        this.videoEl.setAttribute('width', '100%');
+        this.videoEl.setAttribute('height', '100%');
+
+        this.videoEl.style.visibility = this.textureMode ? 'hidden' : 'visible';
+        document.body.appendChild(this.videoEl);
+      }
+      if (this.textureMode && !this._skipRenderToTexture) {
+        this._createVideoTexture();
+      }
+
+      this.eventHandlers = [];
+    }
+
+    _registerListeners() {
+      events.forEach(event => {
+        const handler = e => {
+          if (this._metrics && this._metrics[event] && typeof this._metrics[event] === 'function') {
+            this._metrics[event]({ currentTime: this.videoEl.currentTime });
+          }
+          this.fire(event, { videoElement: this.videoEl, event: e });
+        };
+        this.eventHandlers.push(handler);
+        this.videoEl.addEventListener(event, handler);
+      });
+    }
+
+    _deregisterListeners() {
+      Log.info('Deregistering event listeners MediaPlayer');
+      events.forEach((event, index) => {
+        this.videoEl.removeEventListener(event, this.eventHandlers[index]);
+      });
+      this.eventHandlers = [];
+    }
+
+    _attach() {
+      this._registerListeners();
+    }
+
+    _detach() {
+      this._deregisterListeners();
+      this.close();
+    }
+
+    _createVideoTexture() {
+      const stage = this.stage;
+
+      const gl = stage.gl;
+      const glTexture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, glTexture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+      this.videoTexture.options = { source: glTexture, w: this.videoEl.width, h: this.videoEl.height };
+    }
+
+    _startUpdatingVideoTexture() {
+      if (this.textureMode && !this._skipRenderToTexture) {
+        const stage = this.stage;
+        if (!this._updateVideoTexture) {
+          this._updateVideoTexture = () => {
+            if (this.videoTexture.options.source && this.videoEl.videoWidth && this.active) {
+              const gl = stage.gl;
+
+              const currentTime = new Date().getTime();
+
+              // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
+              // We'll fallback to fixed 30fps in this case.
+              const frameCount = this.videoEl.webkitDecodedFrameCount;
+
+              const mustUpdate = frameCount
+                ? this._lastFrame !== frameCount
+                : this._lastTime < currentTime - 30;
+
+              if (mustUpdate) {
+                this._lastTime = currentTime;
+                this._lastFrame = frameCount;
+                try {
+                  gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
+                  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+                  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.videoEl);
+                  this._lastFrame = this.videoEl.webkitDecodedFrameCount;
+                  this.videoTextureView.visible = true;
+
+                  this.videoTexture.options.w = this.videoEl.videoWidth;
+                  this.videoTexture.options.h = this.videoEl.videoHeight;
+                  const expectedAspectRatio = this.videoTextureView.w / this.videoTextureView.h;
+                  const realAspectRatio = this.videoEl.videoWidth / this.videoEl.videoHeight;
+                  if (expectedAspectRatio > realAspectRatio) {
+                    this.videoTextureView.scaleX = realAspectRatio / expectedAspectRatio;
+                    this.videoTextureView.scaleY = 1;
+                  } else {
+                    this.videoTextureView.scaleY = expectedAspectRatio / realAspectRatio;
+                    this.videoTextureView.scaleX = 1;
+                  }
+                } catch (e) {
+                  Log.error('texImage2d video', e);
+                  this._stopUpdatingVideoTexture();
+                  this.videoTextureView.visible = false;
+                }
+                this.videoTexture.source.forceRenderUpdate();
+              }
+            }
+          };
+        }
+        if (!this._updatingVideoTexture) {
+          stage.on('frameStart', this._updateVideoTexture);
+          this._updatingVideoTexture = true;
+        }
+      }
+    }
+
+    _stopUpdatingVideoTexture() {
+      if (this.textureMode) {
+        const stage = this.stage;
+        stage.removeListener('frameStart', this._updateVideoTexture);
+        this._updatingVideoTexture = false;
+        this.videoTextureView.visible = false;
+
+        if (this.videoTexture.options.source) {
+          const gl = stage.gl;
+          gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
+          gl.clearColor(0, 0, 0, 1);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        }
+      }
+    }
+
+    updateSettings(settings = {}) {
+      // The Component that 'consumes' the media player.
+      this._consumer = settings.consumer;
+
+      if (this._consumer && this._consumer.getMediaplayerSettings) {
+        // Allow consumer to add settings.
+        settings = Object.assign(settings, this._consumer.getMediaplayerSettings());
+      }
+
+      if (!Lightning.Utils.equalValues(this._stream, settings.stream)) {
+        if (settings.stream && settings.stream.keySystem) {
+          navigator
+            .requestMediaKeySystemAccess(
+              settings.stream.keySystem.id,
+              settings.stream.keySystem.config
+            )
+            .then(keySystemAccess => {
+              return keySystemAccess.createMediaKeys()
+            })
+            .then(createdMediaKeys => {
+              return this.videoEl.setMediaKeys(createdMediaKeys)
+            })
+            .then(() => {
+              if (settings.stream && settings.stream.src) this.open(settings.stream.src);
+            })
+            .catch(() => {
+              console.error('Failed to set up MediaKeys');
+            });
+        } else if (settings.stream && settings.stream.src) {
+          // This is here to be backwards compatible, will be removed
+          // in future sdk release
+          if (Settings.get('app', 'hls')) {
+            if (!window.Hls) {
+              window.Hls = class Hls {
+                static isSupported() {
+                  console.warn('hls-light not included');
+                  return false
+                }
+              };
+            }
+            if (window.Hls.isSupported()) {
+              if (!this._hls) this._hls = new window.Hls({ liveDurationInfinity: true });
+              this._hls.loadSource(settings.stream.src);
+              this._hls.attachMedia(this.videoEl);
+              this.videoEl.style.display = 'block';
+            }
+          } else {
+            this.open(settings.stream.src);
+          }
+        } else {
+          this.close();
+        }
+        this._stream = settings.stream;
+      }
+
+      this._setHide(settings.hide);
+      this._setVideoArea(settings.videoPos);
+    }
+
+    _setHide(hide) {
+      if (this.textureMode) {
+        this.tag('Video').setSmooth('alpha', hide ? 0 : 1);
+      } else {
+        this.videoEl.style.visibility = hide ? 'hidden' : 'visible';
+      }
+    }
+
+    open(url, settings = { hide: false, videoPosition: null }) {
+      // prep the media url to play depending on platform (mediaPlayerplugin)
+      url = mediaUrl$1(url);
+      this._metrics = Metrics$1.media(url);
+      Log.info('Playing stream', url);
+      if (this.application.noVideo) {
+        Log.info('noVideo option set, so ignoring: ' + url);
+        return
+      }
+      // close the video when opening same url as current (effectively reloading)
+      if (this.videoEl.getAttribute('src') === url) {
+        this.close();
+      }
+      this.videoEl.setAttribute('src', url);
+
+      // force hide, then force show (in next tick!)
+      // (fixes comcast playback rollover issue)
+      this.videoEl.style.visibility = 'hidden';
+      this.videoEl.style.display = 'none';
+
+      setTimeout(() => {
+        this.videoEl.style.display = 'block';
+        this.videoEl.style.visibility = 'visible';
+      });
+
+      this._setHide(settings.hide);
+      this._setVideoArea(settings.videoPosition || [0, 0, 1920, 1080]);
+    }
+
+    close() {
+      // We need to pause first in order to stop sound.
+      this.videoEl.pause();
+      this.videoEl.removeAttribute('src');
+
+      // force load to reset everything without errors
+      this.videoEl.load();
+
+      this._clearSrc();
+
+      this.videoEl.style.display = 'none';
+    }
+
+    playPause() {
+      if (this.isPlaying()) {
+        this.doPause();
+      } else {
+        this.doPlay();
+      }
+    }
+
+    get muted() {
+      return this.videoEl.muted
+    }
+
+    set muted(v) {
+      this.videoEl.muted = v;
+    }
+
+    get loop() {
+      return this.videoEl.loop
+    }
+
+    set loop(v) {
+      this.videoEl.loop = v;
+    }
+
+    isPlaying() {
+      return this._getState() === 'Playing'
+    }
+
+    doPlay() {
+      this.videoEl.play();
+    }
+
+    doPause() {
+      this.videoEl.pause();
+    }
+
+    reload() {
+      var url = this.videoEl.getAttribute('src');
+      this.close();
+      this.videoEl.src = url;
+    }
+
+    getPosition() {
+      return Promise.resolve(this.videoEl.currentTime)
+    }
+
+    setPosition(pos) {
+      this.videoEl.currentTime = pos;
+    }
+
+    getDuration() {
+      return Promise.resolve(this.videoEl.duration)
+    }
+
+    seek(time, absolute = false) {
+      if (absolute) {
+        this.videoEl.currentTime = time;
+      } else {
+        this.videoEl.currentTime += time;
+      }
+    }
+
+    get videoTextureView() {
+      return this.tag('Video').tag('VideoTexture')
+    }
+
+    get videoTexture() {
+      return this.videoTextureView.texture
+    }
+
+    _setVideoArea(videoPos) {
+      if (Lightning.Utils.equalValues(this._videoPos, videoPos)) {
+        return
+      }
+
+      this._videoPos = videoPos;
+
+      if (this.textureMode) {
+        this.videoTextureView.patch({
+          smooth: {
+            x: videoPos[0],
+            y: videoPos[1],
+            w: videoPos[2] - videoPos[0],
+            h: videoPos[3] - videoPos[1],
+          },
+        });
+      } else {
+        const precision = this.stage.getRenderPrecision();
+        this.videoEl.style.left = Math.round(videoPos[0] * precision) + 'px';
+        this.videoEl.style.top = Math.round(videoPos[1] * precision) + 'px';
+        this.videoEl.style.width = Math.round((videoPos[2] - videoPos[0]) * precision) + 'px';
+        this.videoEl.style.height = Math.round((videoPos[3] - videoPos[1]) * precision) + 'px';
+      }
+    }
+
+    _fireConsumer(event, args) {
+      if (this._consumer) {
+        this._consumer.fire(event, args);
+      }
+    }
+
+    _equalInitData(buf1, buf2) {
+      if (!buf1 || !buf2) return false
+      if (buf1.byteLength != buf2.byteLength) return false
+      const dv1 = new Int8Array(buf1);
+      const dv2 = new Int8Array(buf2);
+      for (let i = 0; i != buf1.byteLength; i++) if (dv1[i] != dv2[i]) return false
+      return true
+    }
+
+    error(args) {
+      this._fireConsumer('$mediaplayerError', args);
+      this._setState('');
+      return ''
+    }
+
+    loadeddata(args) {
+      this._fireConsumer('$mediaplayerLoadedData', args);
+    }
+
+    play(args) {
+      this._fireConsumer('$mediaplayerPlay', args);
+    }
+
+    playing(args) {
+      this._fireConsumer('$mediaplayerPlaying', args);
+      this._setState('Playing');
+    }
+
+    canplay(args) {
+      this.videoEl.play();
+      this._fireConsumer('$mediaplayerStart', args);
+    }
+
+    loadstart(args) {
+      this._fireConsumer('$mediaplayerLoad', args);
+    }
+
+    seeked() {
+      this._fireConsumer('$mediaplayerSeeked', {
+        currentTime: this.videoEl.currentTime,
+        duration: this.videoEl.duration || 1,
+      });
+    }
+
+    seeking() {
+      this._fireConsumer('$mediaplayerSeeking', {
+        currentTime: this.videoEl.currentTime,
+        duration: this.videoEl.duration || 1,
+      });
+    }
+
+    durationchange(args) {
+      this._fireConsumer('$mediaplayerDurationChange', args);
+    }
+
+    encrypted(args) {
+      const video = args.videoElement;
+      const event = args.event;
+      // FIXME: Double encrypted events need to be properly filtered by Gstreamer
+      if (video.mediaKeys && !this._equalInitData(this._previousInitData, event.initData)) {
+        this._previousInitData = event.initData;
+        this._fireConsumer('$mediaplayerEncrypted', args);
+      }
+    }
+
+    static _states() {
+      return [
+        class Playing extends this {
+          $enter() {
+            this._startUpdatingVideoTexture();
+          }
+          $exit() {
+            this._stopUpdatingVideoTexture();
+          }
+          timeupdate() {
+            this._fireConsumer('$mediaplayerProgress', {
+              currentTime: this.videoEl.currentTime,
+              duration: this.videoEl.duration || 1,
+            });
+          }
+          ended(args) {
+            this._fireConsumer('$mediaplayerEnded', args);
+            this._setState('');
+          }
+          pause(args) {
+            this._fireConsumer('$mediaplayerPause', args);
+            this._setState('Playing.Paused');
+          }
+          _clearSrc() {
+            this._fireConsumer('$mediaplayerStop', {});
+            this._setState('');
+          }
+          static _states() {
+            return [class Paused extends this {}]
+          }
+        },
+      ]
+    }
+  }
+
+  class localCookie{constructor(e){return e=e||{},this.forceCookies=e.forceCookies||!1,!0===this._checkIfLocalStorageWorks()&&!0!==e.forceCookies?{getItem:this._getItemLocalStorage,setItem:this._setItemLocalStorage,removeItem:this._removeItemLocalStorage,clear:this._clearLocalStorage}:{getItem:this._getItemCookie,setItem:this._setItemCookie,removeItem:this._removeItemCookie,clear:this._clearCookies}}_checkIfLocalStorageWorks(){if("undefined"==typeof localStorage)return !1;try{return localStorage.setItem("feature_test","yes"),"yes"===localStorage.getItem("feature_test")&&(localStorage.removeItem("feature_test"),!0)}catch(e){return !1}}_getItemLocalStorage(e){return window.localStorage.getItem(e)}_setItemLocalStorage(e,t){return window.localStorage.setItem(e,t)}_removeItemLocalStorage(e){return window.localStorage.removeItem(e)}_clearLocalStorage(){return window.localStorage.clear()}_getItemCookie(e){var t=document.cookie.match(RegExp("(?:^|;\\s*)"+function(e){return e.replace(/([.*+?\^${}()|\[\]\/\\])/g,"\\$1")}(e)+"=([^;]*)"));return t&&""===t[1]&&(t[1]=null),t?t[1]:null}_setItemCookie(e,t){var o=new Date,r=new Date(o.getTime()+15768e7);document.cookie=`${e}=${t}; expires=${r.toUTCString()};`;}_removeItemCookie(e){document.cookie=`${e}=;Max-Age=-99999999;`;}_clearCookies(){document.cookie.split(";").forEach(e=>{document.cookie=e.replace(/^ +/,"").replace(/=.*/,"=;expires=Max-Age=-99999999");});}}
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let namespace;
+  let lc;
+
+  const initStorage = () => {
+    namespace = Settings.get('platform', 'id');
+    // todo: pass options (for example to force the use of cookies)
+    lc = new localCookie();
+  };
+
+  const namespacedKey = key => (namespace ? [namespace, key].join('.') : key);
+
+  var Storage = {
+    get(key) {
+      try {
+        return JSON.parse(lc.getItem(namespacedKey(key)))
+      } catch (e) {
+        return null
+      }
+    },
+    set(key, value) {
+      try {
+        lc.setItem(namespacedKey(key), JSON.stringify(value));
+        return true
+      } catch (e) {
+        return false
+      }
+    },
+    remove(key) {
+      lc.removeItem(namespacedKey(key));
+    },
+    clear() {
+      if (namespace) {
+        lc.keys().forEach(key => {
+          // remove the item if in the namespace
+          key.indexOf(namespace + '.') === 0 ? lc.removeItem(key) : null;
+        });
+      } else {
+        lc.clear();
+      }
+    },
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const isFunction = v => {
+    return typeof v === 'function'
+  };
+
+  const isObject = v => {
+    return typeof v === 'object' && v !== null
+  };
+
+  const isBoolean = v => {
+    return typeof v === 'boolean'
+  };
+
+  const isPage = v => {
+    if (v instanceof Lightning.Element || isComponentConstructor(v)) {
+      return true
+    }
+    return false
+  };
+
+  const isComponentConstructor = type => {
+    return type.prototype && 'isComponent' in type.prototype
+  };
+
+  const isArray = v => {
+    return Array.isArray(v)
+  };
+
+  const ucfirst = v => {
+    return `${v.charAt(0).toUpperCase()}${v.slice(1)}`
+  };
+
+  const isString = v => {
+    return typeof v === 'string'
+  };
+
+  const isPromise = (method, args) => {
+    let result;
+    if (isFunction(method)) {
+      try {
+        result = method.apply(null);
+      } catch (e) {
+        result = e;
+      }
+    } else {
+      result = method;
+    }
+    return isObject(result) && isFunction(result.then)
+  };
+
+  const getConfigMap = () => {
+    const routerSettings = Settings.get('platform', 'router');
+    const isObj = isObject(routerSettings);
+    return [
+      'backtrack',
+      'gcOnUnload',
+      'destroyOnHistoryBack',
+      'lazyCreate',
+      'lazyDestroy',
+      'reuseInstance',
+      'autoRestoreRemote',
+      'numberNavigation',
+      'updateHash',
+    ].reduce((config, key) => {
+      config.set(key, isObj ? routerSettings[key] : Settings.get('platform', key));
+      return config
+    }, new Map())
+  };
+
+  const incorrectParams = (cb, route) => {
+    const isIncorrect = /^\w*?\s?\(\s?\{.*?\}\s?\)/i;
+    if (isIncorrect.test(cb.toString())) {
+      console.warn(
+        [
+          `DEPRECATION: The data-provider for route: ${route} is not correct.`,
+          '"page" is no longer a property of the params object but is now the first function parameter: ',
+          'https://github.com/rdkcentral/Lightning-SDK/blob/feature/router/docs/plugins/router/dataproviding.md#data-providing',
+          "It's supported for now but will be removed in a future release.",
+        ].join('\n')
+      );
+      return true
+    }
+    return false
+  };
+
+  const getQueryStringParams = hash => {
+    const getQuery = /([?&].*)/;
+    const matches = getQuery.exec(hash);
+    const params = {};
+
+    if (matches && matches.length) {
+      const urlParams = new URLSearchParams(matches[1]);
+      for (const [key, value] of urlParams.entries()) {
+        params[key] = value;
+      }
+      return params
+    }
+    return false
+  };
+
+  const symbols = {
+    route: Symbol('route'),
+    hash: Symbol('hash'),
+    store: Symbol('store'),
+    fromHistory: Symbol('fromHistory'),
+    expires: Symbol('expires'),
+    resume: Symbol('resume'),
+    backtrack: Symbol('backtrack'),
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const fade = (i, o) => {
+    return new Promise(resolve => {
+      i.patch({
+        alpha: 0,
+        visible: true,
+        smooth: {
+          alpha: [1, { duration: 0.5, delay: 0.1 }],
+        },
+      });
+      // resolve on y finish
+      i.transition('alpha').on('finish', () => {
+        if (o) {
+          o.visible = false;
+        }
+        resolve();
+      });
+    })
+  };
+
+  const crossFade = (i, o) => {
+    return new Promise(resolve => {
+      i.patch({
+        alpha: 0,
+        visible: true,
+        smooth: {
+          alpha: [1, { duration: 0.5, delay: 0.1 }],
+        },
+      });
+      if (o) {
+        o.patch({
+          smooth: {
+            alpha: [0, { duration: 0.5, delay: 0.3 }],
+          },
+        });
+      }
+      // resolve on y finish
+      i.transition('alpha').on('finish', () => {
+        resolve();
+      });
+    })
+  };
+
+  const moveOnAxes = (axis, direction, i, o) => {
+    const bounds = axis === 'x' ? 1920 : 1080;
+    return new Promise(resolve => {
+      i.patch({
+        [`${axis}`]: direction ? bounds * -1 : bounds,
+        visible: true,
+        smooth: {
+          [`${axis}`]: [0, { duration: 0.4, delay: 0.2 }],
+        },
+      });
+      // out is optional
+      if (o) {
+        o.patch({
+          [`${axis}`]: 0,
+          smooth: {
+            [`${axis}`]: [direction ? bounds : bounds * -1, { duration: 0.4, delay: 0.2 }],
+          },
+        });
+      }
+      // resolve on y finish
+      i.transition(axis).on('finish', () => {
+        resolve();
+      });
+    })
+  };
+
+  const up = (i, o) => {
+    return moveOnAxes('y', 0, i, o)
+  };
+
+  const down = (i, o) => {
+    return moveOnAxes('y', 1, i, o)
+  };
+
+  const left = (i, o) => {
+    return moveOnAxes('x', 0, i, o)
+  };
+
+  const right = (i, o) => {
+    return moveOnAxes('x', 1, i, o)
+  };
+
+  var Transitions = {
+    fade,
+    crossFade,
+    up,
+    down,
+    left,
+    right,
+  };
+
+  var isMergeableObject = function isMergeableObject(value) {
+  	return isNonNullObject(value)
+  		&& !isSpecial(value)
+  };
+
+  function isNonNullObject(value) {
+  	return !!value && typeof value === 'object'
+  }
+
+  function isSpecial(value) {
+  	var stringValue = Object.prototype.toString.call(value);
+
+  	return stringValue === '[object RegExp]'
+  		|| stringValue === '[object Date]'
+  		|| isReactElement(value)
+  }
+
+  // see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+  var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+  var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+  function isReactElement(value) {
+  	return value.$$typeof === REACT_ELEMENT_TYPE
+  }
+
+  function emptyTarget(val) {
+  	return Array.isArray(val) ? [] : {}
+  }
+
+  function cloneUnlessOtherwiseSpecified(value, options) {
+  	return (options.clone !== false && options.isMergeableObject(value))
+  		? deepmerge(emptyTarget(value), value, options)
+  		: value
+  }
+
+  function defaultArrayMerge(target, source, options) {
+  	return target.concat(source).map(function(element) {
+  		return cloneUnlessOtherwiseSpecified(element, options)
+  	})
+  }
+
+  function getMergeFunction(key, options) {
+  	if (!options.customMerge) {
+  		return deepmerge
+  	}
+  	var customMerge = options.customMerge(key);
+  	return typeof customMerge === 'function' ? customMerge : deepmerge
+  }
+
+  function getEnumerableOwnPropertySymbols(target) {
+  	return Object.getOwnPropertySymbols
+  		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
+  			return target.propertyIsEnumerable(symbol)
+  		})
+  		: []
+  }
+
+  function getKeys(target) {
+  	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
+  }
+
+  function propertyIsOnObject(object, property) {
+  	try {
+  		return property in object
+  	} catch(_) {
+  		return false
+  	}
+  }
+
+  // Protects from prototype poisoning and unexpected merging up the prototype chain.
+  function propertyIsUnsafe(target, key) {
+  	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+  		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+  			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
+  }
+
+  function mergeObject(target, source, options) {
+  	var destination = {};
+  	if (options.isMergeableObject(target)) {
+  		getKeys(target).forEach(function(key) {
+  			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+  		});
+  	}
+  	getKeys(source).forEach(function(key) {
+  		if (propertyIsUnsafe(target, key)) {
+  			return
+  		}
+
+  		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
+  			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+  		} else {
+  			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+  		}
+  	});
+  	return destination
+  }
+
+  function deepmerge(target, source, options) {
+  	options = options || {};
+  	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+  	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+  	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+  	// implementations can use it. The caller may not replace it.
+  	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
+
+  	var sourceIsArray = Array.isArray(source);
+  	var targetIsArray = Array.isArray(target);
+  	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+  	if (!sourceAndTargetTypesMatch) {
+  		return cloneUnlessOtherwiseSpecified(source, options)
+  	} else if (sourceIsArray) {
+  		return options.arrayMerge(target, source, options)
+  	} else {
+  		return mergeObject(target, source, options)
+  	}
+  }
+
+  deepmerge.all = function deepmergeAll(array, options) {
+  	if (!Array.isArray(array)) {
+  		throw new Error('first argument should be an array')
+  	}
+
+  	return array.reduce(function(prev, next) {
+  		return deepmerge(prev, next, options)
+  	}, {})
+  };
+
+  var deepmerge_1 = deepmerge;
+
+  var cjs = deepmerge_1;
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let warned = false;
+  const deprecated = (force = false) => {
+    if (force === true || warned === false) {
+      console.warn(
+        [
+          "The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.",
+          "Please consider using the new 'Language'-plugin instead.",
+          'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language',
+        ].join('\n\n')
+      );
+    }
+    warned = true;
+  };
+  class Locale {
+    constructor() {
+      this.__enabled = false;
+    }
+
+    /**
+     * Loads translation object from external json file.
+     *
+     * @param {String} path Path to resource.
+     * @return {Promise}
+     */
+    async load(path) {
+      if (!this.__enabled) {
+        return
+      }
+
+      await fetch(path)
+        .then(resp => resp.json())
+        .then(resp => {
+          this.loadFromObject(resp);
+        });
+    }
+
+    /**
+     * Sets language used by module.
+     *
+     * @param {String} lang
+     */
+    setLanguage(lang) {
+      deprecated();
+      this.__enabled = true;
+      this.language = lang;
+    }
+
+    /**
+     * Returns reference to translation object for current language.
+     *
+     * @return {Object}
+     */
+    get tr() {
+      deprecated(true);
+      return this.__trObj[this.language]
+    }
+
+    /**
+     * Loads translation object from existing object (binds existing object).
+     *
+     * @param {Object} trObj
+     */
+    loadFromObject(trObj) {
+      deprecated();
+      const fallbackLanguage = 'en';
+      if (Object.keys(trObj).indexOf(this.language) === -1) {
+        Log.warn('No translations found for: ' + this.language);
+        if (Object.keys(trObj).indexOf(fallbackLanguage) > -1) {
+          Log.warn('Using fallback language: ' + fallbackLanguage);
+          this.language = fallbackLanguage;
+        } else {
+          const error = 'No translations found for fallback language: ' + fallbackLanguage;
+          Log.error(error);
+          throw Error(error)
+        }
+      }
+
+      this.__trObj = trObj;
+      for (const lang of Object.values(this.__trObj)) {
+        for (const str of Object.keys(lang)) {
+          lang[str] = new LocalizedString(lang[str]);
+        }
+      }
+    }
+  }
+
+  /**
+   * Extended string class used for localization.
+   */
+  class LocalizedString extends String {
+    /**
+     * Returns formatted LocalizedString.
+     * Replaces each placeholder value (e.g. {0}, {1}) with corresponding argument.
+     *
+     * E.g.:
+     * > new LocalizedString('{0} and {1} and {0}').format('A', 'B');
+     * A and B and A
+     *
+     * @param  {...any} args List of arguments for placeholders.
+     */
+    format(...args) {
+      const sub = args.reduce((string, arg, index) => string.split(`{${index}}`).join(arg), this);
+      return new LocalizedString(sub)
+    }
+  }
+
+  var Locale$1 = new Locale();
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  class VersionLabel extends Lightning.Component {
+    static _template() {
+      return {
+        rect: true,
+        color: 0xbb0078ac,
+        h: 40,
+        w: 100,
+        x: w => w - 50,
+        y: h => h - 50,
+        mount: 1,
+        Text: {
+          w: w => w,
+          h: h => h,
+          y: 5,
+          x: 20,
+          text: {
+            fontSize: 22,
+            lineHeight: 26,
+          },
+        },
+      }
+    }
+
+    _firstActive() {
+      this.tag('Text').text = `APP - v${this.version}\nSDK - v${this.sdkVersion}`;
+      this.tag('Text').loadTexture();
+      this.w = this.tag('Text').renderWidth + 40;
+      this.h = this.tag('Text').renderHeight + 5;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class FpsIndicator extends Lightning.Component {
+    static _template() {
+      return {
+        rect: true,
+        color: 0xffffffff,
+        texture: Lightning.Tools.getRoundRect(80, 80, 40),
+        h: 80,
+        w: 80,
+        x: 100,
+        y: 100,
+        mount: 1,
+        Background: {
+          x: 3,
+          y: 3,
+          texture: Lightning.Tools.getRoundRect(72, 72, 36),
+          color: 0xff008000,
+        },
+        Counter: {
+          w: w => w,
+          h: h => h,
+          y: 10,
+          text: {
+            fontSize: 32,
+            textAlign: 'center',
+          },
+        },
+        Text: {
+          w: w => w,
+          h: h => h,
+          y: 48,
+          text: {
+            fontSize: 15,
+            textAlign: 'center',
+            text: 'FPS',
+          },
+        },
+      }
+    }
+
+    _setup() {
+      this.config = {
+        ...{
+          log: false,
+          interval: 500,
+          threshold: 1,
+        },
+        ...Settings.get('platform', 'showFps'),
+      };
+
+      this.fps = 0;
+      this.lastFps = this.fps - this.config.threshold;
+
+      const fpsCalculator = () => {
+        this.fps = ~~(1 / this.stage.dt);
+      };
+      this.stage.on('frameStart', fpsCalculator);
+      this.stage.off('framestart', fpsCalculator);
+      this.interval = setInterval(this.showFps.bind(this), this.config.interval);
+    }
+
+    _firstActive() {
+      this.showFps();
+    }
+
+    _detach() {
+      clearInterval(this.interval);
+    }
+
+    showFps() {
+      if (Math.abs(this.lastFps - this.fps) <= this.config.threshold) return
+      this.lastFps = this.fps;
+      // green
+      let bgColor = 0xff008000;
+      // orange
+      if (this.fps <= 40 && this.fps > 20) bgColor = 0xffffa500;
+      // red
+      else if (this.fps <= 20) bgColor = 0xffff0000;
+
+      this.tag('Background').setSmooth('color', bgColor);
+      this.tag('Counter').text = `${this.fps}`;
+
+      this.config.log && Log.info('FPS', this.fps);
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let meta = {};
+  let translations = {};
+  let language = null;
+
+  const initLanguage = (file, language = null) => {
+    return new Promise((resolve, reject) => {
+      fetch(file)
+        .then(response => response.json())
+        .then(json => {
+          setTranslations(json);
+          // set language (directly or in a promise)
+          typeof language === 'object' && 'then' in language && typeof language.then === 'function'
+            ? language
+                .then(lang =>
+                  setLanguage(lang)
+                    .then(resolve)
+                    .catch(reject)
+                )
+                .catch(e => {
+                  Log.error(e);
+                  reject(e);
+                })
+            : setLanguage(language)
+                .then(resolve)
+                .catch(reject);
+        })
+        .catch(() => {
+          const error = 'Language file ' + file + ' not found';
+          Log.error(error);
+          reject(error);
+        });
+    })
+  };
+
+  const setTranslations = obj => {
+    if ('meta' in obj) {
+      meta = { ...obj.meta };
+      delete obj.meta;
+    }
+    translations = obj;
+  };
+
+  const setLanguage = lng => {
+    language = null;
+
+    return new Promise((resolve, reject) => {
+      if (lng in translations) {
+        language = lng;
+      } else {
+        if ('map' in meta && lng in meta.map && meta.map[lng] in translations) {
+          language = meta.map[lng];
+        } else if ('default' in meta && meta.default in translations) {
+          language = meta.default;
+          const error =
+            'Translations for Language ' +
+            language +
+            ' not found. Using default language ' +
+            meta.default;
+          Log.warn(error);
+          reject(error);
+        } else {
+          const error = 'Translations for Language ' + language + ' not found.';
+          Log.error(error);
+          reject(error);
+        }
+      }
+
+      if (language) {
+        Log.info('Setting language to', language);
+
+        const translationsObj = translations[language];
+        if (typeof translationsObj === 'object') {
+          resolve();
+        } else if (typeof translationsObj === 'string') {
+          const url = Utils.asset(translationsObj);
+
+          fetch(url)
+            .then(response => response.json())
+            .then(json => {
+              // save the translations for this language (to prevent loading twice)
+              translations[language] = json;
+              resolve();
+            })
+            .catch(e => {
+              const error = 'Error while fetching ' + url;
+              Log.error(error, e);
+              reject(error);
+            });
+        }
+      }
+    })
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const registry = {
+    eventListeners: [],
+    timeouts: [],
+    intervals: [],
+    targets: [],
+  };
+
+  var Registry = {
+    // Timeouts
+    setTimeout(cb, timeout, ...params) {
+      const timeoutId = setTimeout(
+        () => {
+          registry.timeouts = registry.timeouts.filter(id => id !== timeoutId);
+          cb.apply(null, params);
+        },
+        timeout,
+        params
+      );
+      Log.info('Set Timeout', 'ID: ' + timeoutId);
+      registry.timeouts.push(timeoutId);
+      return timeoutId
+    },
+
+    clearTimeout(timeoutId) {
+      if (registry.timeouts.indexOf(timeoutId) > -1) {
+        registry.timeouts = registry.timeouts.filter(id => id !== timeoutId);
+        Log.info('Clear Timeout', 'ID: ' + timeoutId);
+        clearTimeout(timeoutId);
+      } else {
+        Log.error('Clear Timeout', 'ID ' + timeoutId + ' not found');
+      }
+    },
+
+    clearTimeouts() {
+      registry.timeouts.forEach(timeoutId => {
+        this.clearTimeout(timeoutId);
+      });
+    },
+
+    // Intervals
+    setInterval(cb, interval, ...params) {
+      const intervalId = setInterval(
+        () => {
+          registry.intervals = registry.intervals.filter(id => id !== intervalId);
+          cb.apply(null, params);
+        },
+        interval,
+        params
+      );
+      Log.info('Set Interval', 'ID: ' + intervalId);
+      registry.intervals.push(intervalId);
+      return intervalId
+    },
+
+    clearInterval(intervalId) {
+      if (registry.intervals.indexOf(intervalId) > -1) {
+        registry.intervals = registry.intervals.filter(id => id !== intervalId);
+        Log.info('Clear Interval', 'ID: ' + intervalId);
+        clearInterval(intervalId);
+      } else {
+        Log.error('Clear Interval', 'ID ' + intervalId + ' not found');
+      }
+    },
+
+    clearIntervals() {
+      registry.intervals.forEach(intervalId => {
+        this.clearInterval(intervalId);
+      });
+    },
+
+    // Event listeners
+    addEventListener(target, event, handler) {
+      target.addEventListener(event, handler);
+      let targetIndex =
+        registry.targets.indexOf(target) > -1
+          ? registry.targets.indexOf(target)
+          : registry.targets.push(target) - 1;
+
+      registry.eventListeners[targetIndex] = registry.eventListeners[targetIndex] || {};
+      registry.eventListeners[targetIndex][event] = registry.eventListeners[targetIndex][event] || [];
+      registry.eventListeners[targetIndex][event].push(handler);
+      Log.info('Add eventListener', 'Target:', target, 'Event: ' + event, 'Handler:', handler);
+    },
+
+    removeEventListener(target, event, handler) {
+      const targetIndex = registry.targets.indexOf(target);
+      if (
+        targetIndex > -1 &&
+        registry.eventListeners[targetIndex] &&
+        registry.eventListeners[targetIndex][event] &&
+        registry.eventListeners[targetIndex][event].indexOf(handler) > -1
+      ) {
+        registry.eventListeners[targetIndex][event] = registry.eventListeners[targetIndex][
+          event
+        ].filter(fn => fn !== handler);
+        Log.info('Remove eventListener', 'Target:', target, 'Event: ' + event, 'Handler:', handler);
+        target.removeEventListener(event, handler);
+      } else {
+        Log.error(
+          'Remove eventListener',
+          'Not found',
+          'Target',
+          target,
+          'Event: ' + event,
+          'Handler',
+          handler
+        );
+      }
+    },
+
+    // if `event` is omitted, removes all registered event listeners for target
+    // if `target` is also omitted, removes all registered event listeners
+    removeEventListeners(target, event) {
+      if (target && event) {
+        const targetIndex = registry.targets.indexOf(target);
+        if (targetIndex > -1) {
+          registry.eventListeners[targetIndex][event].forEach(handler => {
+            this.removeEventListener(target, event, handler);
+          });
+        }
+      } else if (target) {
+        const targetIndex = registry.targets.indexOf(target);
+        if (targetIndex > -1) {
+          Object.keys(registry.eventListeners[targetIndex]).forEach(_event => {
+            this.removeEventListeners(target, _event);
+          });
+        }
+      } else {
+        Object.keys(registry.eventListeners).forEach(targetIndex => {
+          this.removeEventListeners(registry.targets[targetIndex]);
+        });
+      }
+    },
+
+    // Clear everything (to be called upon app close for proper cleanup)
+    clear() {
+      this.clearTimeouts();
+      this.clearIntervals();
+      this.removeEventListeners();
+      registry.eventListeners = [];
+      registry.timeouts = [];
+      registry.intervals = [];
+      registry.targets = [];
+    },
+  };
+
+  var version = "3.2.1";
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let AppInstance;
+
+  const defaultOptions = {
+    stage: { w: 1920, h: 1080, clearColor: 0x00000000, canvas2d: false },
+    debug: false,
+    defaultFontFace: 'RobotoRegular',
+    keys: {
+      8: 'Back',
+      13: 'Enter',
+      27: 'Menu',
+      37: 'Left',
+      38: 'Up',
+      39: 'Right',
+      40: 'Down',
+      174: 'ChannelDown',
+      175: 'ChannelUp',
+      178: 'Stop',
+      250: 'PlayPause',
+      191: 'Search', // Use "/" for keyboard
+      409: 'Search',
+    },
+  };
+
+  if (window.innerHeight === 720) {
+    defaultOptions.stage['w'] = 1280;
+    defaultOptions.stage['h'] = 720;
+    defaultOptions.stage['precision'] = 0.6666666667;
+  }
+
+  function Application(App, appData, platformSettings) {
+    return class Application extends Lightning.Application {
+      constructor(options) {
+        const config = cjs(defaultOptions, options);
+        super(config);
+        this.config = config;
+      }
+
+      static _template() {
+        return {
+          w: 1920,
+          h: 1080,
+        }
+      }
+
+      _setup() {
+        Promise.all([
+          this.loadFonts((App.config && App.config.fonts) || (App.getFonts && App.getFonts()) || []),
+          // to be deprecated
+          Locale$1.load((App.config && App.config.locale) || (App.getLocale && App.getLocale())),
+          App.language && this.loadLanguage(App.language()),
+        ])
+          .then(() => {
+            Metrics$1.app.loaded();
+
+            AppInstance = this.stage.c({
+              ref: 'App',
+              type: App,
+              zIndex: 1,
+              forceZIndexContext: !!platformSettings.showVersion || !!platformSettings.showFps,
+            });
+
+            this.childList.a(AppInstance);
+
+            Log.info('App version', this.config.version);
+            Log.info('SDK version', version);
+
+            if (platformSettings.showVersion) {
+              this.childList.a({
+                ref: 'VersionLabel',
+                type: VersionLabel,
+                version: this.config.version,
+                sdkVersion: version,
+                zIndex: 1,
+              });
+            }
+
+            if (platformSettings.showFps) {
+              this.childList.a({
+                ref: 'FpsCounter',
+                type: FpsIndicator,
+                zIndex: 1,
+              });
+            }
+
+            super._setup();
+          })
+          .catch(console.error);
+      }
+
+      _handleBack() {
+        this.closeApp();
+      }
+
+      _handleExit() {
+        this.closeApp();
+      }
+
+      closeApp() {
+        Log.info('Closing App');
+
+        Settings.clearSubscribers();
+        Registry.clear();
+
+        if (platformSettings.onClose && typeof platformSettings.onClose === 'function') {
+          platformSettings.onClose(...arguments);
+        } else {
+          this.close();
+        }
+      }
+
+      close() {
+        Log.info('Closing App');
+        this.childList.remove(this.tag('App'));
+
+        // force texture garbage collect
+        this.stage.gc();
+        this.destroy();
+      }
+
+      loadFonts(fonts) {
+        return new Promise((resolve, reject) => {
+          fonts
+            .map(({ family, url, descriptors }) => () => {
+              const fontFace = new FontFace(family, 'url(' + url + ')', descriptors || {});
+              document.fonts.add(fontFace);
+              return fontFace.load()
+            })
+            .reduce((promise, method) => {
+              return promise.then(() => method())
+            }, Promise.resolve(null))
+            .then(resolve)
+            .catch(reject);
+        })
+      }
+
+      loadLanguage(config) {
+        let file = Utils.asset('translations.json');
+        let language = config;
+
+        if (typeof language === 'object') {
+          language = config.language || null;
+          file = config.file || file;
+        }
+
+        return initLanguage(file, language)
+      }
+
+      set focus(v) {
+        this._focussed = v;
+        this._refocus();
+      }
+
+      _getFocused() {
+        return this._focussed || this.tag('App')
+      }
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  class RoutedApp extends Lightning.Component {
+    static _template() {
+      return {
+        Pages: {
+          forceZIndexContext: true,
+        },
+        /**
+         * This is a default Loading page that will be made visible
+         * during data-provider on() you CAN override in child-class
+         */
+        Loading: {
+          rect: true,
+          w: 1920,
+          h: 1080,
+          color: 0xff000000,
+          visible: false,
+          zIndex: 99,
+          Label: {
+            mount: 0.5,
+            x: 960,
+            y: 540,
+            text: {
+              text: 'Loading..',
+            },
+          },
+        },
+      }
+    }
+
+    static _states() {
+      return [
+        class Loading extends this {
+          $enter() {
+            this.tag('Loading').visible = true;
+          }
+
+          $exit() {
+            this.tag('Loading').visible = false;
+          }
+        },
+        class Widgets extends this {
+          $enter(args, widget) {
+            // store widget reference
+            this._widget = widget;
+
+            // since it's possible that this behaviour
+            // is non-remote driven we force a recalculation
+            // of the focuspath
+            this._refocus();
+          }
+
+          _getFocused() {
+            // we delegate focus to selected widget
+            // so it can consume remotecontrol presses
+            return this._widget
+          }
+
+          // if we want to widget to widget focus delegation
+          reload(widget) {
+            this._widget = widget;
+            this._refocus();
+          }
+
+          _handleKey() {
+            restore();
+          }
+        },
+      ]
+    }
+
+    /**
+     * Return location where pages need to be stored
+     */
+    get pages() {
+      return this.tag('Pages')
+    }
+
+    /**
+     * Tell router where widgets are stored
+     */
+    get widgets() {
+      return this.tag('Widgets')
+    }
+
+    /**
+     * we MUST register _handleBack method so the Router
+     * can override it
+     * @private
+     */
+    _handleBack() {}
+
+    /**
+     * we MUST register _captureKey for dev quick-navigation
+     * (via keyboard 1-9)
+     */
+    _captureKey() {}
+
+    /**
+     * We MUST return Router.activePage() so the new Page
+     * can listen to the remote-control.
+     */
+    _getFocused() {
+      return getActivePage()
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const running = new Map();
+  const resolved = new Map();
+  const expired = new Map();
+  const rejected = new Map();
+  const active = new Map();
+
+  const send$1 = (hash, key, value) => {
+    if (!Settings.get('platform', 'stats')) {
+      return
+    }
+    if (!key && !value) {
+      if (!running.has(hash)) {
+        running.set(hash, {
+          start: Date.now(),
+        });
+      }
+    } else {
+      if (running.has(hash)) {
+        if (key && value) {
+          const payload = running.get(hash);
+          payload[key] = value;
+        }
+      }
+    }
+    if (key && commands[key]) {
+      const command = commands[key];
+      if (command) {
+        command.call(null, hash);
+      }
+    }
+  };
+
+  const move = (hash, bucket, args) => {
+    if (active.has(hash)) {
+      const payload = active.get(hash);
+      const route = payload.route;
+
+      // we group by route so store
+      // the hash in the payload
+      payload.hash = hash;
+
+      if (isObject(args)) {
+        Object.keys(args).forEach(prop => {
+          payload[prop] = args[prop];
+        });
+      }
+      if (bucket.has(route)) {
+        const records = bucket.get(route);
+        records.push(payload);
+        bucket.set(route, records);
+      } else {
+        // we add by route and group all
+        // resolved hashes against that route
+        bucket.set(route, [payload]);
+      }
+      active.delete(hash);
+    }
+  };
+
+  const commands = {
+    ready: hash => {
+      if (running.has(hash)) {
+        const payload = running.get(hash);
+        payload.ready = Date.now();
+        active.set(hash, payload);
+
+        running.delete(hash);
+      }
+    },
+    stop: hash => {
+      move(hash, resolved, {
+        stop: Date.now(),
+      });
+    },
+    error: hash => {
+      move(hash, rejected, {
+        error: Date.now(),
+      });
+    },
+    expired: hash => {
+      move(hash, expired, {
+        expired: Date.now,
+      });
+    },
+  };
+
+  const output = (label, bucket) => {
+    Log.info(`Output: ${label}`, bucket);
+    for (let [route, records] of bucket.entries()) {
+      Log.debug(`route: ${route}`, records);
+    }
+  };
+
+  let getStats = () => {
+    output('Resolved', resolved);
+    output('Expired', expired);
+    output('Rejected', rejected);
+    output('Expired', expired);
+    output('Still active', active);
+    output('Still running', running);
+  };
+
+  var stats = {
+    send: send$1,
+    getStats,
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let getHash = () => {
+    return document.location.hash
+  };
+
+  let setHash = url => {
+    document.location.hash = url;
+  };
+
+  const initRouter = config => {
+    if (config.getHash) {
+      getHash = config.getHash;
+    }
+    if (config.setHash) {
+      setHash = config.setHash;
+    }
+  };
+
+  /*
+  rouThor ==[x]
+   */
+
+  // instance of Lightning.Application
+  let application;
+
+  //instance of Lightning.Component
+  let app;
+
+  let stage;
+  let widgetsHost;
+  let pagesHost;
+
+  const pages = new Map();
+  const providers = new Map();
+  const modifiers = new Map();
+  const widgetsPerRoute = new Map();
+  const routeHooks = new Map();
+
+  let register$1 = new Map();
+  let routerConfig;
+
+  // widget that has focus
+  let activeWidget;
+  let rootHash;
+  let bootRequest;
+  let history = [];
+  let initialised = false;
+  let activeRoute;
+  let activeHash;
+  let updateHash = true;
+  let forcedHash;
+  let lastHash = true;
+  let previousState;
+
+  // page that has focus
+  let activePage;
+  const hasRegex = /\{\/(.*?)\/([igm]{0,3})\}/g;
+  const isWildcard = /^[!*$]$/;
+
+  /**
+   * Setup Page router
+   * @param config - route config object
+   * @param instance - instance of the app
+   */
+  const startRouter = (config, instance) => {
+    // backwards compatible
+    let { appInstance, routes, provider = () => {}, widgets = () => {} } = config;
+
+    if (instance && isPage(instance)) {
+      app = instance;
+    }
+
+    if (!app) {
+      app = appInstance || AppInstance;
+    }
+
+    application = app.application;
+    pagesHost = application.childList;
+    stage = app.stage;
+    routerConfig = getConfigMap();
+
+    // test if required to host pages in a different child
+    if (app.pages) {
+      pagesHost = app.pages.childList;
+    }
+
+    // test if app uses widgets
+    if (app.widgets && app.widgets.children) {
+      widgetsHost = app.widgets.childList;
+      // hide all widgets on boot
+      widgetsHost.forEach(w => (w.visible = false));
+    }
+
+    // register step back handler
+    app._handleBack = e => {
+      step(-1);
+      e.preventDefault();
+    };
+
+    // register step back handler
+    app._captureKey = capture.bind(null);
+
+    if (isArray(routes)) {
+      setupRoutes(config);
+      start();
+    } else if (isFunction(routes)) {
+      // register route data bindings
+      provider();
+      // register routes
+      routes();
+      // register widgets
+      widgets();
+    }
+  };
+
+  const setupRoutes = routesConfig => {
+    let bootPage = routesConfig.bootComponent;
+
+    if (!initialised) {
+      rootHash = routesConfig.root;
+      if (isFunction(routesConfig.boot)) {
+        boot(routesConfig.boot);
+      }
+      if (bootPage && isPage(bootPage)) {
+        route('@boot-page', routesConfig.bootComponent);
+      }
+      if (isBoolean(routesConfig.updateHash)) {
+        updateHash = routesConfig.updateHash;
+      }
+      if (isFunction(routesConfig.beforeEachRoute)) {
+        beforeEachRoute = routesConfig.beforeEachRoute;
+      }
+      initialised = true;
+    }
+
+    routesConfig.routes.forEach(r => {
+      route(r.path, r.component || r.hook, r.options);
+      if (r.widgets) {
+        widget(r.path, r.widgets);
+      }
+      if (isFunction(r.on)) {
+        on(r.path, r.on, r.cache || 0);
+      }
+      if (isFunction(r.before)) {
+        before(r.path, r.before, r.cache || 0);
+      }
+      if (isFunction(r.after)) {
+        after(r.path, r.after, r.cache || 0);
+      }
+      if (isFunction(r.beforeNavigate)) {
+        hook(r.path, r.beforeNavigate);
+      }
+    });
+  };
+
+  /**
+   * create a new route
+   * @param route - {string}
+   * @param type - {(Lightning.Component|Function()*)}
+   * @param modifiers - {Object{}} - preventStorage | clearHistory | storeLast
+   */
+  const route = (route, type, config) => {
+    route = route.replace(/\/+$/, '');
+    // if the route is defined we try to push
+    // the new type on to the stack
+    if (pages.has(route)) {
+      let stack = pages.get(route);
+      if (!isArray(stack)) {
+        stack = [stack];
+      }
+
+      // iterate stack and look if there is page instance
+      // attached to the route
+      const hasPage = stack.filter(o => isPage(o));
+      if (hasPage.length) {
+        // only allow multiple functions for route
+        if (isFunction(type) && !isPage(type)) {
+          stack.push(type);
+        } else {
+          console.warn(`Page for route('${route}') already exists`);
+        }
+      } else {
+        if (isFunction(type)) {
+          stack.push(type);
+        } else {
+          if (!routerConfig.get('lazyCreate')) {
+            type = isComponentConstructor(type) ? create(type) : type;
+            pagesHost.a(type);
+          }
+          stack.push(type);
+        }
+      }
+      pages.set(route, stack);
+    } else {
+      if (isPage(type)) {
+        // if flag lazy eq false we (test) and create
+        // correct component and add it to the childList
+        if (!routerConfig.get('lazyCreate')) {
+          type = isComponentConstructor(type) ? create(type) : type;
+          pagesHost.a(type);
+        }
+      }
+
+      // if lazy we just store the constructor or function
+      pages.set(route, [type]);
+
+      // store router modifiers
+      if (config) {
+        modifiers.set(route, config);
+      }
+    }
+  };
+
+  /**
+   * create a route and define it as root.
+   * Upon boot we will automatically point browser hash
+   * to the defined route
+   * @param route - {string}
+   * @param type - {(Lightning.Component|Function()*)}
+   */
+  const root = (url, type, config) => {
+    rootHash = url.replace(/\/+$/, '');
+    route(url, type, config);
+  };
+
+  /**
+   * Define the widgets that need to become visible per route
+   * @param url
+   * @param widgets
+   */
+  const widget = (url, widgets = []) => {
+    if (!widgetsPerRoute.has(url)) {
+      if (!isArray(widgets)) {
+        widgets = [widgets];
+      }
+      widgetsPerRoute.set(url, widgets);
+    } else {
+      console.warn(`Widgets already exist for ${url}`);
+    }
+  };
+
+  const create = type => {
+    const page = stage.c({ type, visible: false });
+    // if the app has widgets we make them available
+    // as an object on the app instance
+    if (widgetsHost) {
+      page.widgets = getWidgetReferences();
+    }
+
+    return page
+  };
+
+  /**
+   * The actual loading of the component
+   * @param {String} route - the route blueprint, used for data provider look up
+   * @param {String} hash - current hash we're routing to
+   * */
+  const load = async ({ route, hash }) => {
+    let expired = false;
+    // for now we maintain one instance of the
+    // navigation register and create a local copy
+    // that we hand over to the loader
+    const routeReg = new Map(register$1);
+    try {
+      const payload = await loader({ hash, route, routeReg });
+      if (payload && payload.hash === lastHash) {
+        // in case of on() providing we need to reset
+        // app state;
+        if (app.state === 'Loading') {
+          if (previousState === 'Widgets') {
+            app._setState('Widgets', [activeWidget]);
+          } else {
+            app._setState('');
+          }
+        }
+        // Do page transition if instance
+        // is not shared between the routes
+        if (!payload.share) {
+          await doTransition(payload.page, activePage);
+        }
+      } else {
+        expired = true;
+      }
+      // on expired we only cleanup
+      if (expired) {
+        Log.debug('[router]:', `Rejected ${payload.hash} because route to ${lastHash} started`);
+        if (payload.create && !payload.share) {
+          // remove from render-tree
+          pagesHost.remove(payload.page);
+        }
+      } else {
+        onRouteFulfilled(payload, routeReg);
+        // resolve promise
+        return payload.page
+      }
+    } catch (payload) {
+      if (!expired) {
+        if (payload.create && !payload.share) {
+          // remove from render-tree
+          pagesHost.remove(payload.page);
+        }
+        handleError(payload);
+      }
+    }
+  };
+
+  const loader = async ({ route, hash, routeReg: register }) => {
+    let type = getPageByRoute(route);
+    let isConstruct = isComponentConstructor(type);
+    let sharedInstance = false;
+    let provide = false;
+    let page = null;
+    let isCreated = false;
+
+    // if it's an instance bt we're not coming back from
+    // history we test if we can re-use this instance
+    if (!isConstruct && !register.get(symbols.backtrack)) {
+      if (!mustReuse(route)) {
+        type = type.constructor;
+        isConstruct = true;
+      }
+    }
+
+    // If type is not a constructor
+    if (!isConstruct) {
+      page = type;
+      // if we have have a data route for current page
+      if (providers.has(route)) {
+        if (isPageExpired(type) || type[symbols.hash] !== hash) {
+          provide = true;
+        }
+      }
+      let currentRoute = activePage && activePage[symbols.route];
+      // if the new route is equal to the current route it means that both
+      // route share the Component instance and stack location / since this case
+      // is conflicting with the way before() and after() loading works we flag it,
+      // and check platform settings in we want to re-use instance
+      if (route === currentRoute) {
+        sharedInstance = true;
+      }
+    } else {
+      page = create(type);
+      pagesHost.a(page);
+      // test if need to request data provider
+      if (providers.has(route)) {
+        provide = true;
+      }
+      isCreated = true;
+    }
+
+    // we store hash and route as properties on the page instance
+    // that way we can easily calculate new behaviour on page reload
+    page[symbols.hash] = hash;
+    page[symbols.route] = route;
+
+    const payload = {
+      page,
+      route,
+      hash,
+      register,
+      create: isCreated,
+      share: sharedInstance,
+      event: [isCreated ? 'mounted' : 'changed'],
+    };
+
+    try {
+      if (provide) {
+        const { type: loadType } = providers.get(route);
+        // update payload
+        payload.loadType = loadType;
+
+        // update statistics
+        send(hash, `${loadType}-start`, Date.now());
+        await triggers[sharedInstance ? 'shared' : loadType](payload);
+        send(hash, `${loadType}-end`, Date.now());
+
+        if (hash !== lastHash) {
+          return false
+        } else {
+          emit$1(page, 'dataProvided');
+          // resolve promise
+          return payload
+        }
+      } else {
+        addPersistData(payload);
+        return payload
+      }
+    } catch (e) {
+      payload.error = e;
+      return Promise.reject(payload)
+    }
+  };
+
+  /**
+   * Will be called when a new navigate() request has completed
+   * and has not been expired due to it's async nature
+   * @param page
+   * @param route
+   * @param event
+   * @param hash
+   * @param register
+   */
+  const onRouteFulfilled = ({ page, route, event, hash, share }, register) => {
+    // clean up history if modifier is set
+    if (hashmod(hash, 'clearHistory')) {
+      history.length = 0;
+    } else if (activeHash && !isWildcard.test(route)) {
+      updateHistory(activeHash);
+    }
+
+    // we only update the stackLocation if a route
+    // is not expired before it resolves
+    const location = getPageStackLocation(route);
+
+    if (!isNaN(location)) {
+      let stack = pages.get(route);
+      stack[location] = page;
+      pages.set(route, stack);
+    }
+
+    if (event) {
+      emit$1(page, event);
+    }
+
+    // only update widgets if we have a host
+    if (widgetsHost) {
+      updateWidgets(page);
+    }
+
+    // force refocus of the app
+    app._refocus();
+
+    // we want to clean up if there is an
+    // active page that is not being shared
+    // between current and previous route
+    if (activePage && !share) {
+      cleanUp(activePage, activePage[symbols.route], register);
+    }
+
+    // flag this navigation cycle as ready
+    send(hash, 'ready');
+
+    activePage = page;
+    activeRoute = route;
+    activeHash = hash;
+
+    Log.info('[route]:', route);
+    Log.info('[hash]:', hash);
+  };
+
+  const triggerAfter = args => {
+    // after() we execute the provider
+    // and resolve immediately
+    try {
+      execProvider(args);
+    } catch (e) {
+      // we fail silently
+    }
+    return Promise.resolve()
+  };
+
+  const triggerBefore = args => {
+    // before() we continue only when data resolved
+    return execProvider(args)
+  };
+
+  const triggerOn = args => {
+    // on() we need to place the app in
+    // a Loading state and recover from it
+    // on resolve
+    previousState = app.state || '';
+    app._setState('Loading');
+    return execProvider(args)
+  };
+
+  const triggerShared = args => {
+    return execProvider(args)
+  };
+
+  const triggers = {
+    on: triggerOn,
+    after: triggerAfter,
+    before: triggerBefore,
+    shared: triggerShared,
+  };
+
+  const hook = (route, handler) => {
+    if (!routeHooks.has(route)) {
+      routeHooks.set(route, handler);
+    }
+  };
+
+  const emit$1 = (page, events = [], params = {}) => {
+    if (!isArray(events)) {
+      events = [events];
+    }
+    events.forEach(e => {
+      const event = `_on${ucfirst(e)}`;
+      if (isFunction(page[event])) {
+        page[event](params);
+      }
+    });
+  };
+
+  const send = (hash, key, value) => {
+    stats.send(hash, key, value);
+  };
+
+  const handleError = args => {
+    if (!args.page) {
+      console.error(args);
+    } else {
+      const hash = args.page[symbols.hash];
+      // flag this navigation cycle as rejected
+      send(hash, 'e', args.error);
+      // force expire
+      args.page[symbols.expires] = Date.now();
+      if (pages.has('!')) {
+        load({ route: '!', hash }).then(errorPage => {
+          errorPage.error = { page: args.page, error: args.error };
+          // on() loading type will force the app to go
+          // in a loading state so on error we need to
+          // go back to root state
+          if (app.state === 'Loading') {
+            app._setState('');
+          }
+          // make sure we delegate focus to the error page
+          if (activePage !== errorPage) {
+            activePage = errorPage;
+            app._refocus();
+          }
+        });
+      } else {
+        Log.error(args.page, args.error);
+      }
+    }
+  };
+
+  const updateHistory = hash => {
+    const storeHash = getMod(hash, 'store');
+    const regStore = register$1.get(symbols.store);
+    let configPrevent = hashmod(hash, 'preventStorage');
+    let configStore = true;
+
+    if ((isBoolean(storeHash) && storeHash === false) || configPrevent) {
+      configStore = false;
+    }
+
+    if (regStore && configStore) {
+      const toStore = hash.replace(/^\//, '');
+      const location = history.indexOf(toStore);
+      // store hash if it's not a part of history or flag for
+      // storage of same hash is true
+      if (location === -1 || routerConfig.get('storeSameHash')) {
+        history.push(toStore);
+      } else {
+        // if we visit the same route we want to sync history
+        history.push(history.splice(location, 1)[0]);
+      }
+    }
+  };
+
+  const mustReuse = route => {
+    const mod = routemod(route, 'reuseInstance');
+    const config = routerConfig.get('reuseInstance');
+
+    // route always has final decision
+    if (isBoolean(mod)) {
+      return mod
+    }
+    return !(isBoolean(config) && config === false)
+  };
+
+  const boot = cb => {
+    bootRequest = cb;
+  };
+
+  const addPersistData = ({ page, route, hash, register = new Map() }) => {
+    const urlValues = getValuesFromHash(hash, route);
+    const pageData = new Map([...urlValues, ...register]);
+    const params = {};
+
+    // make dynamic url data available to the page
+    // as instance properties
+    for (let [name, value] of pageData) {
+      page[name] = value;
+      params[name] = value;
+    }
+
+    // check navigation register for persistent data
+    if (register.size) {
+      const obj = {};
+      for (let [k, v] of register) {
+        obj[k] = v;
+      }
+      page.persist = obj;
+    }
+
+    // make url data and persist data available
+    // via params property
+    page.params = params;
+    emit$1(page, ['urlParams'], params);
+
+    return params
+  };
+
+  const execProvider = args => {
+    const { cb, expires } = providers.get(args.route);
+    const params = addPersistData(args);
+    /**
+     * In the first version of the Router, a reference to the page is made
+     * available to the callback function as property of {params}.
+     * Since this is error prone (named url parts are also being spread inside this object)
+     * we made the page reference the first parameter and url values the second.
+     * -
+     * We keep it backwards compatible for now but a warning is showed in the console.
+     */
+    if (incorrectParams(cb, args.route)) {
+      // keep page as params property backwards compatible for now
+      return cb({ page: args.page, ...params }).then(() => {
+        args.page[symbols.expires] = Date.now() + expires;
+      })
+    } else {
+      return cb(args.page, { ...params }).then(() => {
+        args.page[symbols.expires] = Date.now() + expires;
+      })
+    }
+  };
+
+  /**
+   * execute transition between new / old page and
+   * toggle the defined widgets
+   * @todo: platform override default transition
+   * @param pageIn
+   * @param pageOut
+   */
+  const doTransition = (pageIn, pageOut = null) => {
+    let transition = pageIn.pageTransition || pageIn.easing;
+
+    const hasCustomTransitions = !!(pageIn.smoothIn || pageIn.smoothInOut || transition);
+    const transitionsDisabled = routerConfig.get('disableTransitions');
+
+    if (pageIn.easing) {
+      console.warn('easing() method is deprecated and will be removed. Use pageTransition()');
+    }
+    // default behaviour is a visibility toggle
+    if (!hasCustomTransitions || transitionsDisabled) {
+      pageIn.visible = true;
+      if (pageOut) {
+        pageOut.visible = false;
+      }
+      return Promise.resolve()
+    }
+
+    if (transition) {
+      let type;
+      try {
+        type = transition.call(pageIn, pageIn, pageOut);
+      } catch (e) {
+        type = 'crossFade';
+      }
+
+      if (isPromise(type)) {
+        return type
+      }
+
+      if (isString(type)) {
+        const fn = Transitions[type];
+        if (fn) {
+          return fn(pageIn, pageOut)
+        }
+      }
+
+      // keep backwards compatible for now
+      if (pageIn.smoothIn) {
+        // provide a smooth function that resolves itself
+        // on transition finish
+        const smooth = (p, v, args = {}) => {
+          return new Promise(resolve => {
+            pageIn.visible = true;
+            pageIn.setSmooth(p, v, args);
+            pageIn.transition(p).on('finish', () => {
+              resolve();
+            });
+          })
+        };
+        return pageIn.smoothIn({ pageIn, smooth })
+      }
+    }
+
+    return Transitions.crossFade(pageIn, pageOut)
+  };
+
+  /**
+   * update the visibility of the available widgets
+   * for the current page / route
+   * @param page
+   */
+  const updateWidgets = page => {
+    const route = page[symbols.route];
+
+    // force lowercase lookup
+    const configured = (widgetsPerRoute.get(route) || []).map(ref => ref.toLowerCase());
+
+    widgetsHost.forEach(widget => {
+      widget.visible = configured.indexOf(widget.ref.toLowerCase()) !== -1;
+      if (widget.visible) {
+        emit$1(widget, ['activated'], page);
+      }
+    });
+    if (app.state === 'Widgets' && activeWidget && !activeWidget.visible) {
+      app._setState('');
+    }
+  };
+
+  const cleanUp = (page, route, register) => {
+    const lazyDestroy = routerConfig.get('lazyDestroy');
+    const destroyOnBack = routerConfig.get('destroyOnHistoryBack');
+    const keepAlive = read('keepAlive', register);
+    const isFromHistory = read(symbols.backtrack, register);
+    let doCleanup = false;
+
+    if (isFromHistory && (destroyOnBack || lazyDestroy)) {
+      doCleanup = true;
+    } else if (lazyDestroy && !keepAlive) {
+      doCleanup = true;
+    }
+
+    if (doCleanup) {
+      // in lazy create mode we store constructor
+      // and remove the actual page from host
+      const stack = pages.get(route);
+      const location = getPageStackLocation(route);
+
+      // grab original class constructor if statemachine routed
+      // else store constructor
+      stack[location] = page._routedType || page.constructor;
+      pages.set(route, stack);
+
+      // actual remove of page from memory
+      pagesHost.remove(page);
+
+      // force texture gc() if configured
+      // so we can cleanup textures in the same tick
+      if (routerConfig.get('gcOnUnload')) {
+        stage.gc();
+      }
+    } else {
+      // If we're not removing the page we need to
+      // reset it's properties
+      page.patch({
+        x: 0,
+        y: 0,
+        scale: 1,
+        alpha: 1,
+        visible: false,
+      });
+    }
+    send(page[symbols.hash], 'stop');
+  };
+
+  /**
+   * Test if page passed cache-time
+   * @param page
+   * @returns {boolean}
+   */
+  const isPageExpired = page => {
+    if (!page[symbols.expires]) {
+      return false
+    }
+
+    const expires = page[symbols.expires];
+    const now = Date.now();
+
+    return now >= expires
+  };
+
+  const getPageByRoute = route => {
+    return getPageFromStack(route).item
+  };
+
+  /**
+   * Returns the current location of a page constructor or
+   * page instance for a route
+   * @param route
+   */
+  const getPageStackLocation = route => {
+    return getPageFromStack(route).index
+  };
+
+  const getPageFromStack = route => {
+    if (!pages.has(route)) {
+      return false
+    }
+
+    let index = -1;
+    let item = null;
+    let stack = pages.get(route);
+    if (!Array.isArray(stack)) {
+      stack = [stack];
+    }
+
+    for (let i = 0, j = stack.length; i < j; i++) {
+      if (isPage(stack[i])) {
+        index = i;
+        item = stack[i];
+        break
+      }
+    }
+
+    return { index, item }
+  };
+
+  /**
+   * Simple route length calculation
+   * @param route {string}
+   * @returns {number} - floor
+   */
+  const getFloor = route => {
+    return stripRegex(route).split('/').length
+  };
+
+  /**
+   * Test if a route is part regular expressed
+   * and replace it for a simple character
+   * @param route
+   * @returns {*}
+   */
+  const stripRegex = (route, char = 'R') => {
+    // if route is part regular expressed we replace
+    // the regular expression for a character to
+    // simplify floor calculation and backtracking
+    if (hasRegex.test(route)) {
+      route = route.replace(hasRegex, char);
+    }
+    return route
+  };
+
+  /**
+   * return all stored routes that live on the same floor
+   * @param floor
+   * @returns {Array}
+   */
+  const getRoutesByFloor = floor => {
+    const matches = [];
+    // simple filter of level candidates
+    for (let [route] of pages.entries()) {
+      if (getFloor(route) === floor) {
+        matches.push(route);
+      }
+    }
+    return matches
+  };
+
+  /**
+   * return a matching route by provided hash
+   * hash: home/browse/12 will match:
+   * route: home/browse/:categoryId
+   * @param hash {string}
+   * @returns {string|boolean} - route
+   */
+  const getRouteByHash = hash => {
+    const getUrlParts = /(\/?:?[@\w%\s:-]+)/g;
+    // grab possible candidates from stored routes
+    const candidates = getRoutesByFloor(getFloor(hash));
+    // break hash down in chunks
+    const hashParts = hash.match(getUrlParts) || [];
+    // test if the part of the hash has a replace
+    // regex lookup id
+    const hasLookupId = /\/:\w+?@@([0-9]+?)@@/;
+    const isNamedGroup = /^\/:/;
+
+    // to simplify the route matching and prevent look around
+    // in our getUrlParts regex we get the regex part from
+    // route candidate and store them so that we can reference
+    // them when we perform the actual regex against hash
+    let regexStore = [];
+
+    let matches = candidates.filter(route => {
+      let isMatching = true;
+
+      if (isWildcard.test(route)) {
+        return false
+      }
+
+      // replace regex in route with lookup id => @@{storeId}@@
+      if (hasRegex.test(route)) {
+        const regMatches = route.match(hasRegex);
+        if (regMatches && regMatches.length) {
+          route = regMatches.reduce((fullRoute, regex) => {
+            const lookupId = regexStore.length;
+            fullRoute = fullRoute.replace(regex, `@@${lookupId}@@`);
+            regexStore.push(regex.substring(1, regex.length - 1));
+            return fullRoute
+          }, route);
+        }
+      }
+
+      const routeParts = route.match(getUrlParts) || [];
+
+      for (let i = 0, j = routeParts.length; i < j; i++) {
+        const routePart = routeParts[i];
+        const hashPart = hashParts[i];
+
+        // Since we support catch-all and regex driven name groups
+        // we first test for regex lookup id and see if the regex
+        // matches the value from the hash
+        if (hasLookupId.test(routePart)) {
+          const routeMatches = hasLookupId.exec(routePart);
+          const storeId = routeMatches[1];
+          const routeRegex = regexStore[storeId];
+
+          // split regex and modifiers so we can use both
+          // to create a new RegExp
+          // eslint-disable-next-line
+          const regMatches = /\/([^\/]+)\/([igm]{0,3})/.exec(routeRegex);
+
+          if (regMatches && regMatches.length) {
+            const expression = regMatches[1];
+            const modifiers = regMatches[2];
+
+            const regex = new RegExp(`^/${expression}$`, modifiers);
+
+            if (!regex.test(hashPart)) {
+              isMatching = false;
+            }
+          }
+        } else if (isNamedGroup.test(routePart)) {
+          // we kindly skip namedGroups because this is dynamic
+          // we only need to the static and regex drive parts
+          continue
+        } else if (hashPart && routePart.toLowerCase() !== hashPart.toLowerCase()) {
+          isMatching = false;
+        }
+      }
+      return isMatching
+    });
+
+    if (matches.length) {
+      // we give prio to static routes over dynamic
+      matches = matches.sort(a => {
+        return isNamedGroup.test(a) ? -1 : 1
+      });
+      return matches[0]
+    }
+
+    return false
+  };
+
+  /**
+   * Extract dynamic values from location hash and return a namedgroup
+   * of key (from route) value (from hash) pairs
+   * @param hash {string} - the actual location hash
+   * @param route {string} - the route as defined in route
+   */
+  const getValuesFromHash = (hash, route) => {
+    // replace the regex definition from the route because
+    // we already did the matching part
+    route = stripRegex(route, '');
+
+    const getUrlParts = /(\/?:?[\w%\s:-]+)/g;
+    const hashParts = hash.match(getUrlParts) || [];
+    const routeParts = route.match(getUrlParts) || [];
+    const getNamedGroup = /^\/:([\w-]+)\/?/;
+
+    return routeParts.reduce((storage, value, index) => {
+      const match = getNamedGroup.exec(value);
+      if (match && match.length) {
+        storage.set(match[1], decodeURIComponent(hashParts[index].replace(/^\//, '')));
+      }
+      return storage
+    }, new Map())
+  };
+
+  /**
+   * Will be called before a route starts, can be overridden
+   * via routes config
+   * @param from - route we came from
+   * @param to - route we navigate to
+   * @returns {Promise<*>}
+   */
+  let beforeEachRoute = async (from, to) => {
+    return true
+  };
+
+  const handleHashChange = async override => {
+    const hash = override || getHash();
+    const route = getRouteByHash(hash);
+
+    let result = (await beforeEachRoute(activeRoute, route)) || true;
+
+    // test if a local hook is configured for the route
+    if (routeHooks.has(route)) {
+      const handler = routeHooks.get(route);
+      result = (await handler()) || true;
+    }
+
+    if (isBoolean(result)) {
+      // only if resolve value is explicitly true
+      // we continue the current route request
+      if (result) {
+        return resolveHashChange(hash, route)
+      }
+    } else if (isString(result)) {
+      navigate(result);
+    } else if (isObject(result)) {
+      navigate(result.path, result.params);
+    }
+  };
+
+  const resolveHashChange = (hash, route) => {
+    // add a new record for page statistics
+    send(hash);
+
+    // store last requested hash so we can
+    // prevent a route that resolved later
+    // from displaying itself
+    lastHash = hash;
+
+    if (route) {
+      // would be strange if this fails but we do check
+      if (pages.has(route)) {
+        let stored = pages.get(route);
+        send(hash, 'route', route);
+
+        if (!isArray(stored)) {
+          stored = [stored];
+        }
+
+        stored.forEach((type, idx, stored) => {
+          if (isPage(type)) {
+            load({ route, hash }).then(() => {
+              app._refocus();
+            });
+          } else if (isPromise(type)) {
+            type()
+              .then(contents => {
+                return contents.default
+              })
+              .then(module => {
+                // flag dynamic as loaded
+                stored[idx] = module;
+
+                return load({ route, hash })
+              })
+              .then(() => {
+                app._refocus();
+              });
+          } else {
+            const urlParams = getValuesFromHash(hash, route);
+            const params = {};
+            for (const key of urlParams.keys()) {
+              params[key] = urlParams.get(key);
+            }
+
+            // invoke
+            type.call(null, app, { ...params });
+          }
+        });
+      }
+    } else {
+      if (pages.has('*')) {
+        load({ route: '*', hash }).then(() => {
+          app._refocus();
+        });
+      }
+    }
+  };
+
+  const getMod = (hash, key) => {
+    const config = modifiers.get(getRouteByHash(hash));
+    if (isObject(config)) {
+      return config[key]
+    }
+  };
+
+  const hashmod = (hash, key) => {
+    return routemod(getRouteByHash(hash), key)
+  };
+
+  const routemod = (route, key) => {
+    if (modifiers.has(route)) {
+      const config = modifiers.get(route);
+      return config[key]
+    }
+  };
+
+  const read = (flag, register) => {
+    if (register.has(flag)) {
+      return register.get(flag)
+    }
+    return false
+  };
+
+  const createRegister = flags => {
+    const reg = new Map()
+    // store user defined and router
+    // defined flags in register
+    ;[...Object.keys(flags), ...Object.getOwnPropertySymbols(flags)].forEach(key => {
+      reg.set(key, flags[key]);
+    });
+    return reg
+  };
+
+  const navigate = (url, args, store = true) => {
+    let hash = getHash();
+
+    // for now we use one register instance and create a local
+    // copy for the loader
+    register$1.clear();
+
+    if (!mustUpdateHash() && forcedHash) {
+      hash = forcedHash;
+    }
+
+    if (isObject(args)) {
+      register$1 = createRegister(args);
+    } else if (isBoolean(args) && !args) {
+      // if explicit set to false we don't want
+      // to store the route
+      store = args;
+    }
+
+    // we only store complete routes, so we set
+    // a special register flag
+    register$1.set(symbols.store, store);
+
+    if (hash.replace(/^#/, '') !== url) {
+      if (!mustUpdateHash()) {
+        forcedHash = url;
+        handleHashChange(url);
+      } else {
+        setHash(url);
+      }
+    } else if (read('reload', register$1)) {
+      handleHashChange(hash);
+    }
+  };
+
+  /**
+   * Directional step in history
+   * @param direction
+   */
+  const step = (direction = 0) => {
+    if (!direction) {
+      return false
+    }
+
+    // is we still have routes in our history
+    // we splice the last of and navigate to that route
+    if (history.length) {
+      // for now we only support history back
+      const route = history.splice(history.length - 1, 1);
+      return navigate(route[0], { [symbols.backtrack]: true }, false)
+    } else if (routerConfig.get('backtrack')) {
+      const hashLastPart = /(\/:?[\w%\s-]+)$/;
+      let hash = stripRegex(getHash());
+      let floor = getFloor(hash);
+
+      // test if we got deeplinked
+      if (floor > 1) {
+        while (floor--) {
+          // strip of last part
+          hash = hash.replace(hashLastPart, '');
+          // if we have a configured route
+          // we navigate to it
+          if (getRouteByHash(hash)) {
+            return navigate(hash, { [symbols.backtrack]: true }, false)
+          }
+        }
+      }
+    }
+
+    if (isFunction(app._handleAppClose)) {
+      return app._handleAppClose()
+    }
+
+    return false
+  };
+
+  const capture = ({ key }) => {
+    // in Loading state we want to stop propagation
+    // by returning undefined
+    if (app.state === 'Loading') {
+      return
+    }
+
+    // if not set we want to continue propagation
+    // by explicitly returning false
+    if (!routerConfig.get('numberNavigation')) {
+      return false
+    }
+    key = parseInt(key);
+    if (!isNaN(key)) {
+      let match;
+      let idx = 1;
+      for (let route of pages.keys()) {
+        if (idx === key) {
+          match = route;
+          break
+        } else {
+          idx++;
+        }
+      }
+      if (match) {
+        navigate(match);
+      }
+    }
+    return false
+  };
+
+  // start translating url
+  const start = () => {
+    const bootKey = '@boot-page';
+    const hasBootPage = pages.has('@boot-page');
+    const hash = getHash();
+    const params = getQueryStringParams(hash);
+
+    // if we refreshed the boot-page we don't want to
+    // redirect to this page so we force rootHash load
+    const isDirectLoad = hash.indexOf(bootKey) !== -1;
+    const ready = () => {
+      if (hasBootPage) {
+        navigate('@boot-page', {
+          [symbols.resume]: isDirectLoad ? rootHash : hash || rootHash,
+          reload: true,
+        });
+      } else if (!hash && rootHash) {
+        if (isString(rootHash)) {
+          navigate(rootHash);
+        } else if (isFunction(rootHash)) {
+          rootHash().then(url => {
+            navigate(url);
+          });
+        }
+      } else {
+        handleHashChange();
+      }
+    };
+    if (isFunction(bootRequest)) {
+      bootRequest(params).then(() => {
+        ready();
+      });
+    } else {
+      ready();
+    }
+  };
+
+  /**
+   * Data binding to a route will invoke a loading screen
+   * @param {String} route - the route
+   * @param {Function} cb - must return a promise
+   * @param {Number} expires - seconds after first time active that data expires
+   * @param {String} type - page loading type
+   */
+  const on = (route, cb, expires = 0, type = 'on') => {
+    if (providers.has(route)) {
+      console.warn(`provider for ${route} already exists`);
+    } else {
+      providers.set(route, {
+        cb,
+        expires: expires * 1000,
+        type,
+      });
+    }
+  };
+
+  /**
+   * Request data binding for a route before
+   * the page loads (active page will stay visible)
+   * @param route
+   * @param cb
+   * @param expires
+   */
+  const before = (route, cb, expires = 0) => {
+    on(route, cb, expires, 'before');
+  };
+
+  /**
+   * Request data binding for a route after the page has
+   * been loaded
+   * @param route
+   * @param cb
+   * @param expires
+   */
+  const after = (route, cb, expires = 0) => {
+    on(route, cb, expires, 'after');
+  };
+
+  const getWidgetReferences = () => {
+    return widgetsHost.get().reduce((storage, widget) => {
+      const key = widget.ref.toLowerCase();
+      storage[key] = widget;
+      return storage
+    }, {})
+  };
+
+  const getWidgetByName = name => {
+    name = ucfirst(name);
+    return widgetsHost.getByRef(name) || false
+  };
+
+  /**
+   * delegate app focus to a on-screen widget
+   * @param name - {string}
+   */
+  const focusWidget = name => {
+    const widget = getWidgetByName(name);
+    if (name) {
+      // store reference
+      activeWidget = widget;
+      // somewhat experimental
+      if (app.state === 'Widgets') {
+        app.reload(activeWidget);
+      } else {
+        app._setState('Widgets', [activeWidget]);
+      }
+    }
+  };
+
+  const handleRemote = (type, name) => {
+    if (type === 'widget') {
+      focusWidget(name);
+    } else if (type === 'page') {
+      restoreFocus();
+    }
+  };
+
+  /**
+   * Resume Router's page loading process after
+   * the BootComponent became visible;
+   */
+  const resume = () => {
+    if (register$1.has(symbols.resume)) {
+      const hash = register$1.get(symbols.resume).replace(/^#+/, '');
+      if (getRouteByHash(hash) && hash) {
+        navigate(hash, false);
+      } else if (rootHash) {
+        navigate(rootHash, false);
+      }
+    }
+  };
+
+  const restore = () => {
+    if (routerConfig.get('autoRestoreRemote')) {
+      handleRemote('page');
+    }
+  };
+
+  const hash = () => {
+    return getHash()
+  };
+
+  const mustUpdateHash = () => {
+    // we need support to either turn change hash off
+    // per platform or per app
+    const updateConfig = routerConfig.get('updateHash');
+    return !((isBoolean(updateConfig) && !updateConfig) || (isBoolean(updateHash) && !updateHash))
+  };
+
+  const restoreFocus = () => {
+    activeWidget = null;
+    app._setState('');
+  };
+
+  const getActivePage = () => {
+    if (activePage && activePage.attached) {
+      return activePage
+    } else {
+      return app
+    }
+  };
+
+  const getActiveRoute = () => {
+    return activeRoute
+  };
+
+  const getActiveHash = () => {
+    return activeHash
+  };
+
+  const getActiveWidget = () => {
+    return activeWidget
+  };
+
+  // listen to url changes
+  window.addEventListener('hashchange', () => {
+    handleHashChange();
+  });
+
+  // export API
+  var Router = {
+    startRouter,
+    navigate,
+    root,
+    resume,
+    route,
+    on,
+    before,
+    after,
+    boot,
+    step,
+    restoreFocus,
+    focusPage: restoreFocus,
+    focusWidget,
+    handleRemote,
+    start,
+    add: setupRoutes,
+    widget,
+    hash,
+    getActivePage,
+    getActiveWidget,
+    getActiveRoute,
+    getActiveHash,
+    App: RoutedApp,
+    restore,
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  const defaultChannels = [
+    {
+      number: 1,
+      name: 'Metro News 1',
+      description: 'New York Cable News Channel',
+      entitled: true,
+      program: {
+        title: 'The Morning Show',
+        description: "New York's best morning show",
+        startTime: new Date(new Date() - 60 * 5 * 1000).toUTCString(), // started 5 minutes ago
+        duration: 60 * 30, // 30 minutes
+        ageRating: 0,
+      },
+    },
+    {
+      number: 2,
+      name: 'MTV',
+      description: 'Music Television',
+      entitled: true,
+      program: {
+        title: 'Beavis and Butthead',
+        description: 'American adult animated sitcom created by Mike Judge',
+        startTime: new Date(new Date() - 60 * 20 * 1000).toUTCString(), // started 20 minutes ago
+        duration: 60 * 45, // 45 minutes
+        ageRating: 18,
+      },
+    },
+    {
+      number: 3,
+      name: 'NBC',
+      description: 'NBC TV Network',
+      entitled: false,
+      program: {
+        title: 'The Tonight Show Starring Jimmy Fallon',
+        description: 'Late-night talk show hosted by Jimmy Fallon on NBC',
+        startTime: new Date(new Date() - 60 * 10 * 1000).toUTCString(), // started 10 minutes ago
+        duration: 60 * 60, // 1 hour
+        ageRating: 10,
+      },
+    },
+  ];
+
+  const channels = () => Settings.get('platform', 'tv', defaultChannels);
+
+  const randomChannel = () => channels()[~~(channels.length * Math.random())];
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let currentChannel;
+  const callbacks = {};
+
+  const emit = (event, ...args) => {
+    callbacks[event] &&
+      callbacks[event].forEach(cb => {
+        cb.apply(null, args);
+      });
+  };
+
+  // local mock methods
+  let methods = {
+    getChannel() {
+      if (!currentChannel) currentChannel = randomChannel();
+      return new Promise((resolve, reject) => {
+        if (currentChannel) {
+          const channel = { ...currentChannel };
+          delete channel.program;
+          resolve(channel);
+        } else {
+          reject('No channel found');
+        }
+      })
+    },
+    getProgram() {
+      if (!currentChannel) currentChannel = randomChannel();
+      return new Promise((resolve, reject) => {
+        currentChannel.program ? resolve(currentChannel.program) : reject('No program found');
+      })
+    },
+    setChannel(number) {
+      return new Promise((resolve, reject) => {
+        if (number) {
+          const newChannel = channels().find(c => c.number === number);
+          if (newChannel) {
+            currentChannel = newChannel;
+            const channel = { ...currentChannel };
+            delete channel.program;
+            emit('channelChange', channel);
+            resolve(channel);
+          } else {
+            reject('Channel not found');
+          }
+        } else {
+          reject('No channel number supplied');
+        }
+      })
+    },
+  };
+
+  const initTV = config => {
+    methods = {};
+    if (config.getChannel && typeof config.getChannel === 'function') {
+      methods.getChannel = config.getChannel;
+    }
+    if (config.getProgram && typeof config.getProgram === 'function') {
+      methods.getProgram = config.getProgram;
+    }
+    if (config.setChannel && typeof config.setChannel === 'function') {
+      methods.setChannel = config.setChannel;
+    }
+    if (config.emit && typeof config.emit === 'function') {
+      config.emit(emit);
+    }
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let ApplicationInstance;
+
+  var Launch = (App, appSettings, platformSettings, appData) => {
+    initSettings(appSettings, platformSettings);
+
+    initUtils(platformSettings);
+    initStorage();
+
+    // Initialize plugins
+    if (platformSettings.plugins) {
+      platformSettings.plugins.profile && initProfile(platformSettings.plugins.profile);
+      platformSettings.plugins.metrics && initMetrics(platformSettings.plugins.metrics);
+      platformSettings.plugins.mediaPlayer && initMediaPlayer(platformSettings.plugins.mediaPlayer);
+      platformSettings.plugins.mediaPlayer && initVideoPlayer(platformSettings.plugins.mediaPlayer);
+      platformSettings.plugins.ads && initAds(platformSettings.plugins.ads);
+      platformSettings.plugins.router && initRouter(platformSettings.plugins.router);
+      platformSettings.plugins.tv && initTV(platformSettings.plugins.tv);
+    }
+
+    const app = Application(App, appData, platformSettings);
+    ApplicationInstance = new app(appSettings);
+    return ApplicationInstance
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  class VideoTexture extends Lightning.Component {
+    static _template() {
+      return {
+        Video: {
+          alpha: 1,
+          visible: false,
+          pivot: 0.5,
+          texture: { type: Lightning.textures.StaticTexture, options: {} },
+        },
+      }
+    }
+
+    set videoEl(v) {
+      this._videoEl = v;
+    }
+
+    get videoEl() {
+      return this._videoEl
+    }
+
+    get videoView() {
+      return this.tag('Video')
+    }
+
+    get videoTexture() {
+      return this.videoView.texture
+    }
+
+    get isVisible() {
+      return this.videoView.alpha === 1 && this.videoView.visible === true
+    }
+
+    _init() {
+      this._createVideoTexture();
+    }
+
+    _createVideoTexture() {
+      const stage = this.stage;
+
+      const gl = stage.gl;
+      const glTexture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, glTexture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      this.videoTexture.options = { source: glTexture, w: this.videoEl.width, h: this.videoEl.height };
+
+      this.videoView.w = this.videoEl.width / this.stage.getRenderPrecision();
+      this.videoView.h = this.videoEl.height / this.stage.getRenderPrecision();
+    }
+
+    start() {
+      const stage = this.stage;
+      if (!this._updateVideoTexture) {
+        this._updateVideoTexture = () => {
+          if (this.videoTexture.options.source && this.videoEl.videoWidth && this.active) {
+            const gl = stage.gl;
+
+            const currentTime = new Date().getTime();
+
+            // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
+            // We'll fallback to fixed 30fps in this case.
+            const frameCount = this.videoEl.webkitDecodedFrameCount;
+
+            const mustUpdate = frameCount
+              ? this._lastFrame !== frameCount
+              : this._lastTime < currentTime - 30;
+
+            if (mustUpdate) {
+              this._lastTime = currentTime;
+              this._lastFrame = frameCount;
+              try {
+                gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.videoEl);
+                this._lastFrame = this.videoEl.webkitDecodedFrameCount;
+                this.videoView.visible = true;
+
+                this.videoTexture.options.w = this.videoEl.width;
+                this.videoTexture.options.h = this.videoEl.height;
+                const expectedAspectRatio = this.videoView.w / this.videoView.h;
+                const realAspectRatio = this.videoEl.width / this.videoEl.height;
+
+                if (expectedAspectRatio > realAspectRatio) {
+                  this.videoView.scaleX = realAspectRatio / expectedAspectRatio;
+                  this.videoView.scaleY = 1;
+                } else {
+                  this.videoView.scaleY = expectedAspectRatio / realAspectRatio;
+                  this.videoView.scaleX = 1;
+                }
+              } catch (e) {
+                Log.error('texImage2d video', e);
+                this.stop();
+              }
+              this.videoTexture.source.forceRenderUpdate();
+            }
+          }
+        };
+      }
+      if (!this._updatingVideoTexture) {
+        stage.on('frameStart', this._updateVideoTexture);
+        this._updatingVideoTexture = true;
+      }
+    }
+
+    stop() {
+      const stage = this.stage;
+      stage.removeListener('frameStart', this._updateVideoTexture);
+      this._updatingVideoTexture = false;
+      this.videoView.visible = false;
+
+      if (this.videoTexture.options.source) {
+        const gl = stage.gl;
+        gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }
+    }
+
+    position(top, left) {
+      this.videoView.patch({
+        smooth: {
+          x: left,
+          y: top,
+        },
+      });
+    }
+
+    size(width, height) {
+      this.videoView.patch({
+        smooth: {
+          w: width,
+          h: height,
+        },
+      });
+    }
+
+    show() {
+      this.videoView.setSmooth('alpha', 1);
+    }
+
+    hide() {
+      this.videoView.setSmooth('alpha', 0);
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let mediaUrl = url => url;
+  let videoEl;
+  let videoTexture;
+  let metrics;
+  let consumer$1;
+  let precision = 1;
+  let textureMode = false;
+
+  const initVideoPlayer = config => {
+    if (config.mediaUrl) {
+      mediaUrl = config.mediaUrl;
+    }
+  };
+
+  // todo: add this in a 'Registry' plugin
+  // to be able to always clean this up on app close
+  let eventHandlers = {};
+
+  const state$1 = {
+    adsEnabled: false,
+    playing: false,
+    _playingAds: false,
+    get playingAds() {
+      return this._playingAds
+    },
+    set playingAds(val) {
+      if (this._playingAds !== val) {
+        this._playingAds = val;
+        fireOnConsumer$1(val === true ? 'AdStart' : 'AdEnd');
+      }
+    },
+    skipTime: false,
+    playAfterSeek: null,
+  };
+
+  const hooks = {
+    play() {
+      state$1.playing = true;
+    },
+    pause() {
+      state$1.playing = false;
+    },
+    seeked() {
+      state$1.playAfterSeek === true && videoPlayerPlugin.play();
+      state$1.playAfterSeek = null;
+    },
+    abort() {
+      deregisterEventListeners();
+    },
+  };
+
+  const withPrecision = val => Math.round(precision * val) + 'px';
+
+  const fireOnConsumer$1 = (event, args) => {
+    if (consumer$1) {
+      consumer$1.fire('$videoPlayer' + event, args, videoEl.currentTime);
+      consumer$1.fire('$videoPlayerEvent', event, args, videoEl.currentTime);
+    }
+  };
+
+  const fireHook = (event, args) => {
+    hooks[event] && typeof hooks[event] === 'function' && hooks[event].call(null, event, args);
+  };
+
+  const setupVideoTag = () => {
+    const videoEls = document.getElementsByTagName('video');
+    if (videoEls && videoEls.length) {
+      return videoEls[0]
+    } else {
+      const videoEl = document.createElement('video');
+      videoEl.setAttribute('id', 'video-player');
+      videoEl.setAttribute('width', withPrecision(1920));
+      videoEl.setAttribute('height', withPrecision(1080));
+      videoEl.setAttribute('crossorigin', 'anonymous');
+      videoEl.style.position = 'absolute';
+      videoEl.style.zIndex = '1';
+      videoEl.style.display = 'none';
+      videoEl.style.visibility = 'hidden';
+      videoEl.style.top = withPrecision(0);
+      videoEl.style.left = withPrecision(0);
+      videoEl.style.width = withPrecision(1920);
+      videoEl.style.height = withPrecision(1080);
+      document.body.appendChild(videoEl);
+      return videoEl
+    }
+  };
+
+  const setUpVideoTexture = () => {
+    if (!ApplicationInstance.tag('VideoTexture')) {
+      const el = ApplicationInstance.stage.c({
+        type: VideoTexture,
+        ref: 'VideoTexture',
+        zIndex: 0,
+        videoEl,
+      });
+      ApplicationInstance.childList.addAt(el, 0);
+    }
+    return ApplicationInstance.tag('VideoTexture')
+  };
+
+  const registerEventListeners = () => {
+    Log.info('VideoPlayer', 'Registering event listeners');
+    Object.keys(events$1).forEach(event => {
+      const handler = e => {
+        // Fire a metric for each event (if it exists on the metrics object)
+        if (metrics && metrics[event] && typeof metrics[event] === 'function') {
+          metrics[event]({ currentTime: videoEl.currentTime });
+        }
+        // fire an internal hook
+        fireHook(event, { videoElement: videoEl, event: e });
+
+        // fire the event (with human friendly event name) to the consumer of the VideoPlayer
+        fireOnConsumer$1(events$1[event], { videoElement: videoEl, event: e });
+      };
+
+      eventHandlers[event] = handler;
+      videoEl.addEventListener(event, handler);
+    });
+  };
+
+  const deregisterEventListeners = () => {
+    Log.info('VideoPlayer', 'Deregistering event listeners');
+    Object.keys(eventHandlers).forEach(event => {
+      videoEl.removeEventListener(event, eventHandlers[event]);
+    });
+    eventHandlers = {};
+  };
+
+  const videoPlayerPlugin = {
+    consumer(component) {
+      consumer$1 = component;
+    },
+
+    position(top = 0, left = 0) {
+      videoEl.style.left = withPrecision(left);
+      videoEl.style.top = withPrecision(top);
+      if (textureMode === true) {
+        videoTexture.position(top, left);
+      }
+    },
+
+    size(width = 1920, height = 1080) {
+      videoEl.style.width = withPrecision(width);
+      videoEl.style.height = withPrecision(height);
+      videoEl.width = parseFloat(videoEl.style.width);
+      videoEl.height = parseFloat(videoEl.style.height);
+      if (textureMode === true) {
+        videoTexture.size(width, height);
+      }
+    },
+
+    area(top = 0, right = 1920, bottom = 1080, left = 0) {
+      this.position(top, left);
+      this.size(right - left, bottom - top);
+    },
+
+    open(url, details = {}) {
+      if (!this.canInteract) return
+      metrics = Metrics$1.media(url);
+      // prep the media url to play depending on platform
+      url = mediaUrl(url);
+
+      // if url is same as current clear (which is effectively a reload)
+      if (this.src == url) {
+        this.clear();
+      }
+
+      this.hide();
+      deregisterEventListeners();
+
+      // preload the video to get duration (for ads)
+      //.. currently actually not working because loadedmetadata didn't work reliably on Sky boxes
+      videoEl.setAttribute('src', url);
+      videoEl.load();
+
+      // const onLoadedMetadata = () => {
+      // videoEl.removeEventListener('loadedmetadata', onLoadedMetadata)
+      const config = { enabled: state$1.adsEnabled, duration: 300 }; // this.duration ||
+      if (details.videoId) {
+        config.caid = details.videoId;
+      }
+      Ads.get(config, consumer$1).then(ads => {
+        state$1.playingAds = true;
+        ads.prerolls().then(() => {
+          state$1.playingAds = false;
+          registerEventListeners();
+          if (this.src !== url) {
+            videoEl.setAttribute('src', url);
+            videoEl.load();
+          }
+          this.show();
+          setTimeout(() => {
+            this.play();
+          });
+        });
+      });
+      // }
+
+      // videoEl.addEventListener('loadedmetadata', onLoadedMetadata)
+    },
+
+    reload() {
+      if (!this.canInteract) return
+      const url = videoEl.getAttribute('src');
+      this.close();
+      this.open(url);
+    },
+
+    close() {
+      Ads.cancel();
+      if (state$1.playingAds) {
+        state$1.playingAds = false;
+        Ads.stop();
+        // call self in next tick
+        setTimeout(() => {
+          this.close();
+        });
+      }
+      if (!this.canInteract) return
+      this.clear();
+      this.hide();
+      deregisterEventListeners();
+    },
+
+    clear() {
+      if (!this.canInteract) return
+      // pause the video first to disable sound
+      this.pause();
+      if (textureMode === true) videoTexture.stop();
+      fireOnConsumer$1('Clear', { videoElement: videoEl });
+      videoEl.removeAttribute('src');
+      videoEl.load();
+    },
+
+    play() {
+      if (!this.canInteract) return
+      if (textureMode === true) videoTexture.start();
+      videoEl.play();
+    },
+
+    pause() {
+      if (!this.canInteract) return
+      videoEl.pause();
+    },
+
+    playPause() {
+      if (!this.canInteract) return
+      this.playing === true ? this.pause() : this.play();
+    },
+
+    mute(muted = true) {
+      if (!this.canInteract) return
+      videoEl.muted = muted;
+    },
+
+    loop(looped = true) {
+      videoEl.loop = looped;
+    },
+
+    seek(time) {
+      if (!this.canInteract) return
+      if (!this.src) return
+      // define whether should continue to play after seek is complete (in seeked hook)
+      if (state$1.playAfterSeek === null) {
+        state$1.playAfterSeek = !!state$1.playing;
+      }
+      // pause before actually seeking
+      this.pause();
+      // currentTime always between 0 and the duration of the video (minus 0.1s to not set to the final frame and stall the video)
+      videoEl.currentTime = Math.max(0, Math.min(time, this.duration - 0.1));
+    },
+
+    skip(seconds) {
+      if (!this.canInteract) return
+      if (!this.src) return
+
+      state$1.skipTime = (state$1.skipTime || videoEl.currentTime) + seconds;
+      easeExecution(() => {
+        this.seek(state$1.skipTime);
+        state$1.skipTime = false;
+      }, 300);
+    },
+
+    show() {
+      if (!this.canInteract) return
+      if (textureMode === true) {
+        videoTexture.show();
+      } else {
+        videoEl.style.display = 'block';
+        videoEl.style.visibility = 'visible';
+      }
+    },
+
+    hide() {
+      if (!this.canInteract) return
+      if (textureMode === true) {
+        videoTexture.hide();
+      } else {
+        videoEl.style.display = 'none';
+        videoEl.style.visibility = 'hidden';
+      }
+    },
+
+    enableAds(enabled = true) {
+      state$1.adsEnabled = enabled;
+    },
+
+    /* Public getters */
+    get duration() {
+      return videoEl && (isNaN(videoEl.duration) ? Infinity : videoEl.duration)
+    },
+
+    get currentTime() {
+      return videoEl && videoEl.currentTime
+    },
+
+    get muted() {
+      return videoEl && videoEl.muted
+    },
+
+    get looped() {
+      return videoEl && videoEl.loop
+    },
+
+    get src() {
+      return videoEl && videoEl.getAttribute('src')
+    },
+
+    get playing() {
+      return state$1.playing
+    },
+
+    get playingAds() {
+      return state$1.playingAds
+    },
+
+    get canInteract() {
+      // todo: perhaps add an extra flag wether we allow interactions (i.e. pauze, mute, etc.) during ad playback
+      return state$1.playingAds === false
+    },
+
+    get top() {
+      return videoEl && parseFloat(videoEl.style.top)
+    },
+
+    get left() {
+      return videoEl && parseFloat(videoEl.style.left)
+    },
+
+    get bottom() {
+      return videoEl && parseFloat(videoEl.style.top - videoEl.style.height)
+    },
+
+    get right() {
+      return videoEl && parseFloat(videoEl.style.left - videoEl.style.width)
+    },
+
+    get width() {
+      return videoEl && parseFloat(videoEl.style.width)
+    },
+
+    get height() {
+      return videoEl && parseFloat(videoEl.style.height)
+    },
+
+    get visible() {
+      if (textureMode === true) {
+        return videoTexture.isVisible
+      } else {
+        return videoEl && videoEl.style.display === 'block'
+      }
+    },
+
+    get adsEnabled() {
+      return state$1.adsEnabled
+    },
+
+    // prefixed with underscore to indicate 'semi-private'
+    // because it's not recommended to interact directly with the video element
+    get _videoEl() {
+      return videoEl
+    },
+  };
+
+  autoSetupMixin(videoPlayerPlugin, () => {
+    precision =
+      (ApplicationInstance &&
+        ApplicationInstance.stage &&
+        ApplicationInstance.stage.getRenderPrecision()) ||
+      precision;
+
+    videoEl = setupVideoTag();
+
+    textureMode = Settings.get('platform', 'textureMode', false);
+    if (textureMode === true) {
+      videoTexture = setUpVideoTexture();
+    }
+  });
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let consumer;
+
+  let getAds = () => {
+    // todo: enable some default ads during development, maybe from the settings.json
+    return Promise.resolve({
+      prerolls: [],
+      midrolls: [],
+      postrolls: [],
+    })
+  };
+
+  const initAds = config => {
+    if (config.getAds) {
+      getAds = config.getAds;
+    }
+  };
+
+  const state = {
+    active: false,
+  };
+
+  const playSlot = (slot = []) => {
+    return slot.reduce((promise, ad) => {
+      return promise.then(() => {
+        return playAd(ad)
+      })
+    }, Promise.resolve(null))
+  };
+
+  const playAd = ad => {
+    return new Promise(resolve => {
+      if (state.active === false) {
+        Log.info('Ad', 'Skipping add due to inactive state');
+        return resolve()
+      }
+      // is it safe to rely on videoplayer plugin already created the video tag?
+      const videoEl = document.getElementsByTagName('video')[0];
+      videoEl.style.display = 'block';
+      videoEl.style.visibility = 'visible';
+      videoEl.src = mediaUrl(ad.url);
+      videoEl.load();
+
+      let timeEvents = null;
+      let timeout;
+
+      const cleanup = () => {
+        // remove all listeners
+        Object.keys(handlers).forEach(handler =>
+          videoEl.removeEventListener(handler, handlers[handler])
+        );
+        resolve();
+      };
+      const handlers = {
+        play() {
+          Log.info('Ad', 'Play ad', ad.url);
+          fireOnConsumer('Play', ad);
+          sendBeacon(ad.callbacks, 'defaultImpression');
+        },
+        ended() {
+          fireOnConsumer('Ended', ad);
+          sendBeacon(ad.callbacks, 'complete');
+          cleanup();
+        },
+        timeupdate() {
+          if (!timeEvents && videoEl.duration) {
+            // calculate when to fire the time based events (now that duration is known)
+            timeEvents = {
+              firstQuartile: videoEl.duration / 4,
+              midPoint: videoEl.duration / 2,
+              thirdQuartile: (videoEl.duration / 4) * 3,
+            };
+            Log.info('Ad', 'Calculated quartiles times', { timeEvents });
+          }
+          if (
+            timeEvents &&
+            timeEvents.firstQuartile &&
+            videoEl.currentTime >= timeEvents.firstQuartile
+          ) {
+            fireOnConsumer('FirstQuartile', ad);
+            delete timeEvents.firstQuartile;
+            sendBeacon(ad.callbacks, 'firstQuartile');
+          }
+          if (timeEvents && timeEvents.midPoint && videoEl.currentTime >= timeEvents.midPoint) {
+            fireOnConsumer('MidPoint', ad);
+            delete timeEvents.midPoint;
+            sendBeacon(ad.callbacks, 'midPoint');
+          }
+          if (
+            timeEvents &&
+            timeEvents.thirdQuartile &&
+            videoEl.currentTime >= timeEvents.thirdQuartile
+          ) {
+            fireOnConsumer('ThirdQuartile', ad);
+            delete timeEvents.thirdQuartile;
+            sendBeacon(ad.callbacks, 'thirdQuartile');
+          }
+        },
+        stalled() {
+          fireOnConsumer('Stalled', ad);
+          timeout = setTimeout(() => {
+            cleanup();
+          }, 5000); // make timeout configurable
+        },
+        canplay() {
+          timeout && clearTimeout(timeout);
+        },
+        error() {
+          fireOnConsumer('Error', ad);
+          cleanup();
+        },
+        // this doesn't work reliably on sky box, moved logic to timeUpdate event
+        // loadedmetadata() {
+        //   // calculate when to fire the time based events (now that duration is known)
+        //   timeEvents = {
+        //     firstQuartile: videoEl.duration / 4,
+        //     midPoint: videoEl.duration / 2,
+        //     thirdQuartile: (videoEl.duration / 4) * 3,
+        //   }
+        // },
+        abort() {
+          cleanup();
+        },
+        // todo: pause, resume, mute, unmute beacons
+      };
+      // add all listeners
+      Object.keys(handlers).forEach(handler => videoEl.addEventListener(handler, handlers[handler]));
+
+      videoEl.play();
+    })
+  };
+
+  const sendBeacon = (callbacks, event) => {
+    if (callbacks && callbacks[event]) {
+      Log.info('Ad', 'Sending beacon', event, callbacks[event]);
+      return callbacks[event].reduce((promise, url) => {
+        return promise.then(() =>
+          fetch(url)
+            // always resolve, also in case of a fetch error (so we don't block firing the rest of the beacons for this event)
+            // note: for fetch failed http responses don't throw an Error :)
+            .then(response => {
+              if (response.status === 200) {
+                fireOnConsumer('Beacon' + event + 'Sent');
+              } else {
+                fireOnConsumer('Beacon' + event + 'Failed' + response.status);
+              }
+            })
+            .catch(() => {
+            })
+        )
+      }, Promise.resolve(null))
+    } else {
+      Log.info('Ad', 'No callback found for ' + event);
+    }
+  };
+
+  const fireOnConsumer = (event, args) => {
+    if (consumer) {
+      consumer.fire('$ad' + event, args);
+      consumer.fire('$adEvent', event, args);
+    }
+  };
+
+  var Ads = {
+    get(config, videoPlayerConsumer) {
+      if (config.enabled === false) {
+        return Promise.resolve({
+          prerolls() {
+            return Promise.resolve()
+          },
+        })
+      }
+      consumer = videoPlayerConsumer;
+
+      return new Promise(resolve => {
+        Log.info('Ad', 'Starting session');
+        getAds(config).then(ads => {
+          Log.info('Ad', 'API result', ads);
+          resolve({
+            prerolls() {
+              if (ads.preroll) {
+                state.active = true;
+                fireOnConsumer('PrerollSlotImpression', ads);
+                sendBeacon(ads.preroll.callbacks, 'slotImpression');
+                return playSlot(ads.preroll.ads).then(() => {
+                  fireOnConsumer('PrerollSlotEnd', ads);
+                  sendBeacon(ads.preroll.callbacks, 'slotEnd');
+                  state.active = false;
+                })
+              }
+              return Promise.resolve()
+            },
+            midrolls() {
+              return Promise.resolve()
+            },
+            postrolls() {
+              return Promise.resolve()
+            },
+          });
+        });
+      })
+    },
+    cancel() {
+      Log.info('Ad', 'Cancel Ad');
+      state.active = false;
+    },
+    stop() {
+      Log.info('Ad', 'Stop Ad');
+      state.active = false;
+      // fixme: duplication
+      const videoEl = document.getElementsByTagName('video')[0];
+      videoEl.pause();
+      videoEl.removeAttribute('src');
+    },
+  };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  class ScaledImageTexture extends Lightning.textures.ImageTexture {
+    constructor(stage) {
+      super(stage);
+      this._scalingOptions = undefined;
+    }
+
+    set options(options) {
+      this.resizeMode = this._scalingOptions = options;
+    }
+
+    _getLookupId() {
+      return `${this._src}-${this._scalingOptions.type}-${this._scalingOptions.w}-${this._scalingOptions.h}`
+    }
+
+    getNonDefaults() {
+      const obj = super.getNonDefaults();
+      if (this._src) {
+        obj.src = this._src;
+      }
+      return obj
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  class PinInput extends Lightning.Component {
+    static _template() {
+      return {
+        w: 120,
+        h: 150,
+        rect: true,
+        color: 0xff949393,
+        alpha: 0.5,
+        shader: { type: Lightning.shaders.RoundedRectangle, radius: 10 },
+        Nr: {
+          w: w => w,
+          y: 24,
+          text: {
+            text: '',
+            textColor: 0xff333333,
+            fontSize: 80,
+            textAlign: 'center',
+            verticalAlign: 'middle',
+          },
+        },
+      }
+    }
+
+    set index(v) {
+      this.x = v * (120 + 24);
+    }
+
+    set nr(v) {
+      this._timeout && clearTimeout(this._timeout);
+
+      if (v) {
+        this.setSmooth('alpha', 1);
+      } else {
+        this.setSmooth('alpha', 0.5);
+      }
+
+      this.tag('Nr').patch({
+        text: {
+          text: (v && v.toString()) || '',
+          fontSize: v === '*' ? 120 : 80,
+        },
+      });
+
+      if (v && v !== '*') {
+        this._timeout = setTimeout(() => {
+          this._timeout = null;
+          this.nr = '*';
+        }, 750);
+      }
+    }
+  }
+
+  class PinDialog extends Lightning.Component {
+    static _template() {
+      return {
+        w: w => w,
+        h: h => h,
+        rect: true,
+        color: 0xdd000000,
+        alpha: 0.000001,
+        Dialog: {
+          w: 648,
+          h: 320,
+          y: h => (h - 320) / 2,
+          x: w => (w - 648) / 2,
+          rect: true,
+          color: 0xdd333333,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 10 },
+          Info: {
+            y: 24,
+            x: 48,
+            text: { text: 'Please enter your PIN', fontSize: 32 },
+          },
+          Msg: {
+            y: 260,
+            x: 48,
+            text: { text: '', fontSize: 28, textColor: 0xffffffff },
+          },
+          Code: {
+            x: 48,
+            y: 96,
+          },
+        },
+      }
+    }
+
+    _init() {
+      const children = [];
+      for (let i = 0; i < 4; i++) {
+        children.push({
+          type: PinInput,
+          index: i,
+        });
+      }
+
+      this.tag('Code').children = children;
+    }
+
+    get pin() {
+      if (!this._pin) this._pin = '';
+      return this._pin
+    }
+
+    set pin(v) {
+      if (v.length <= 4) {
+        const maskedPin = new Array(Math.max(v.length - 1, 0)).fill('*', 0, v.length - 1);
+        v.length && maskedPin.push(v.length > this._pin.length ? v.slice(-1) : '*');
+        for (let i = 0; i < 4; i++) {
+          this.tag('Code').children[i].nr = maskedPin[i] || '';
+        }
+        this._pin = v;
+      }
+    }
+
+    get msg() {
+      if (!this._msg) this._msg = '';
+      return this._msg
+    }
+
+    set msg(v) {
+      this._timeout && clearTimeout(this._timeout);
+
+      this._msg = v;
+      if (this._msg) {
+        this.tag('Msg').text = this._msg;
+        this.tag('Info').setSmooth('alpha', 0.5);
+        this.tag('Code').setSmooth('alpha', 0.5);
+      } else {
+        this.tag('Msg').text = '';
+        this.tag('Info').setSmooth('alpha', 1);
+        this.tag('Code').setSmooth('alpha', 1);
+      }
+      this._timeout = setTimeout(() => {
+        this.msg = '';
+      }, 2000);
+    }
+
+    _firstActive() {
+      this.setSmooth('alpha', 1);
+    }
+
+    _handleKey(event) {
+      if (this.msg) {
+        this.msg = false;
+      } else {
+        const val = parseInt(event.key);
+        if (val > -1) {
+          this.pin += val;
+        }
+      }
+    }
+
+    _handleBack() {
+      if (this.msg) {
+        this.msg = false;
+      } else {
+        if (this.pin.length) {
+          this.pin = this.pin.slice(0, this.pin.length - 1);
+        } else {
+          Pin.hide();
+          this.resolve(false);
+        }
+      }
+    }
+
+    _handleEnter() {
+      if (this.msg) {
+        this.msg = false;
+      } else {
+        Pin.submit(this.pin)
+          .then(val => {
+            this.msg = 'Unlocking ...';
+            setTimeout(() => {
+              Pin.hide();
+            }, 1000);
+            this.resolve(val);
+          })
+          .catch(e => {
+            this.msg = e;
+            this.reject(e);
+          });
+      }
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  // only used during local development
+  let unlocked = false;
+
+  let submit = pin => {
+    return new Promise((resolve, reject) => {
+      if (pin.toString() === Settings.get('platform', 'pin', '0000').toString()) {
+        unlocked = true;
+        resolve(unlocked);
+      } else {
+        reject('Incorrect pin');
+      }
+    })
+  };
+
+  let check = () => {
+    return new Promise(resolve => {
+      resolve(unlocked);
+    })
+  };
+
+  let pinDialog = null;
+
+  // Public API
+  var Pin = {
+    show() {
+      return new Promise((resolve, reject) => {
+        pinDialog = ApplicationInstance.stage.c({
+          ref: 'PinDialog',
+          type: PinDialog,
+          resolve,
+          reject,
+        });
+        ApplicationInstance.childList.a(pinDialog);
+        ApplicationInstance.focus = pinDialog;
+      })
+    },
+    hide() {
+      ApplicationInstance.focus = null;
+      ApplicationInstance.children = ApplicationInstance.children.map(
+        child => child !== pinDialog && child
+      );
+      pinDialog = null;
+    },
+    submit(pin) {
+      return new Promise((resolve, reject) => {
+        try {
+          submit(pin)
+            .then(resolve)
+            .catch(reject);
+        } catch (e) {
+          reject(e);
+        }
+      })
+    },
+    unlocked() {
+      return new Promise((resolve, reject) => {
+        try {
+          check()
+            .then(resolve)
+            .catch(reject);
+        } catch (e) {
+          reject(e);
+        }
+      })
+    },
+    locked() {
+      return new Promise((resolve, reject) => {
+        try {
+          check()
+            .then(unlocked => resolve(!!!unlocked))
+            .catch(reject);
+        } catch (e) {
+          reject(e);
+        }
+      })
+    },
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+
+  let ws = null;
+  if (typeof WebSocket !== 'undefined') {
+    ws = WebSocket;
+  }
+  var ws_1 = ws;
+
+  const requestsQueue = {};
+  const listeners = {};
+
+  var requestQueueResolver = data => {
+    if (typeof data === 'string') {
+      data = JSON.parse(data.normalize().replace(/\\x([0-9A-Fa-f]{2})/g, ''));
+    }
+    if (data.id) {
+      const request = requestsQueue[data.id];
+      if (request) {
+        if ('result' in data) request.resolve(data.result);
+        else request.reject(data.error);
+        delete requestsQueue[data.id];
+      } else {
+        console.log('no pending request found with id ' + data.id);
+      }
+    }
+  };
+
+  var notificationListener = data => {
+    if (typeof data === 'string') {
+      data = JSON.parse(data.normalize().replace(/\\x([0-9A-Fa-f]{2})/g, ''));
+    }
+    if (!data.id && data.method) {
+      const callbacks = listeners[data.method];
+      if (callbacks && Array.isArray(callbacks) && callbacks.length) {
+        callbacks.forEach(callback => {
+          callback(data.params);
+        });
+      }
+    }
+  };
+
+  const protocol = 'ws://';
+  const host = 'localhost';
+  const endpoint = '/jsonrpc';
+  const port = 80;
+  var makeWebsocketAddress = options => {
+    return [
+      (options && options.protocol) || protocol,
+      (options && options.host) || host,
+      ':' + ((options && options.port) || port),
+      (options && options.endpoint) || endpoint,
+      options && options.token ? '?token=' + options.token : null,
+    ].join('')
+  };
+
+  const protocols = 'notification';
+  let socket = null;
+  var connect = options => {
+    return new Promise((resolve, reject) => {
+      if (socket && socket.readyState === 1) return resolve(socket)
+      if (socket && socket.readyState === 0) {
+        const waitForOpen = () => {
+          socket.removeEventListener('open', waitForOpen);
+          resolve(socket);
+        };
+        return socket.addEventListener('open', waitForOpen)
+      }
+      if (socket === null) {
+        socket = new ws_1(makeWebsocketAddress(options), protocols);
+        socket.addEventListener('message', message => {
+          if (options.debug) {
+            console.log(' ');
+            console.log('API REPONSE:');
+            console.log(JSON.stringify(message.data, null, 2));
+            console.log(' ');
+          }
+          requestQueueResolver(message.data);
+        });
+        socket.addEventListener('message', message => {
+          notificationListener(message.data);
+        });
+        socket.addEventListener('error', () => {
+          notificationListener({
+            method: 'client.ThunderJS.events.error',
+          });
+          socket = null;
+        });
+        const handleConnectClosure = event => {
+          socket = null;
+          reject(event);
+        };
+        socket.addEventListener('close', handleConnectClosure);
+        socket.addEventListener('open', () => {
+          notificationListener({
+            method: 'client.ThunderJS.events.connect',
+          });
+          socket.removeEventListener('close', handleConnectClosure);
+          socket.addEventListener('close', () => {
+            notificationListener({
+              method: 'client.ThunderJS.events.disconnect',
+            });
+            socket = null;
+          });
+          resolve(socket);
+        });
+      } else {
+        socket = null;
+        reject('Socket error');
+      }
+    })
+  };
+
+  var makeBody = (requestId, plugin, method, params, version) => {
+    params ? delete params.version : null;
+    const body = {
+      jsonrpc: '2.0',
+      id: requestId,
+      method: [plugin, version, method].join('.'),
+    };
+    params || params === false
+      ?
+        typeof params === 'object' && Object.keys(params).length === 0
+        ? null
+        : (body.params = params)
+      : null;
+    return body
+  };
+
+  var getVersion = (versionsConfig, plugin, params) => {
+    const defaultVersion = 1;
+    let version;
+    if ((version = params && params.version)) {
+      return version
+    }
+    return versionsConfig
+      ? versionsConfig[plugin] || versionsConfig.default || defaultVersion
+      : defaultVersion
+  };
+
+  let id = 0;
+  var makeId = () => {
+    id = id + 1;
+    return id
+  };
+
+  var execRequest = (options, body) => {
+    return connect(options).then(connection => {
+      connection.send(JSON.stringify(body));
+    })
+  };
+
+  var API = options => {
+    return {
+      request(plugin, method, params) {
+        return new Promise((resolve, reject) => {
+          const requestId = makeId();
+          const version = getVersion(options.versions, plugin, params);
+          const body = makeBody(requestId, plugin, method, params, version);
+          if (options.debug) {
+            console.log(' ');
+            console.log('API REQUEST:');
+            console.log(JSON.stringify(body, null, 2));
+            console.log(' ');
+          }
+          requestsQueue[requestId] = {
+            body,
+            resolve,
+            reject,
+          };
+          execRequest(options, body).catch(e => {
+            reject(e);
+          });
+        })
+      },
+    }
+  };
+
+  var DeviceInfo = {
+    freeRam(params) {
+      return this.call('systeminfo', params).then(res => {
+        return res.freeram
+      })
+    },
+    version(params) {
+      return this.call('systeminfo', params).then(res => {
+        return res.version
+      })
+    },
+  };
+
+  var plugins = {
+    DeviceInfo,
+  };
+
+  function listener(plugin, event, callback, errorCallback) {
+    const thunder = this;
+    const index = register.call(this, plugin, event, callback, errorCallback);
+    return {
+      dispose() {
+        const listener_id = makeListenerId(plugin, event);
+        if (listeners[listener_id] === undefined) return
+        listeners[listener_id].splice(index, 1);
+        if (listeners[listener_id].length === 0) {
+          unregister.call(thunder, plugin, event, errorCallback);
+        }
+      },
+    }
+  }
+  const makeListenerId = (plugin, event) => {
+    return ['client', plugin, 'events', event].join('.')
+  };
+  const register = function(plugin, event, callback, errorCallback) {
+    const listener_id = makeListenerId(plugin, event);
+    if (!listeners[listener_id]) {
+      listeners[listener_id] = [];
+      if (plugin !== 'ThunderJS') {
+        const method = 'register';
+        const request_id = listener_id
+          .split('.')
+          .slice(0, -1)
+          .join('.');
+        const params = {
+          event,
+          id: request_id,
+        };
+        this.api.request(plugin, method, params).catch(e => {
+          if (typeof errorCallback === 'function') errorCallback(e.message);
+        });
+      }
+    }
+    listeners[listener_id].push(callback);
+    return listeners[listener_id].length - 1
+  };
+  const unregister = function(plugin, event, errorCallback) {
+    const listener_id = makeListenerId(plugin, event);
+    delete listeners[listener_id];
+    if (plugin !== 'ThunderJS') {
+      const method = 'unregister';
+      const request_id = listener_id
+        .split('.')
+        .slice(0, -1)
+        .join('.');
+      const params = {
+        event,
+        id: request_id,
+      };
+      this.api.request(plugin, method, params).catch(e => {
+        if (typeof errorCallback === 'function') errorCallback(e.message);
+      });
+    }
+  };
+
+  let api;
+  var thunderJS = options => {
+    if (
+      options.token === undefined &&
+      typeof window !== 'undefined' &&
+      window.thunder &&
+      typeof window.thunder.token === 'function'
+    ) {
+      options.token = window.thunder.token();
+    }
+    api = API(options);
+    return wrapper({ ...thunder$2(options), ...plugins })
+  };
+  const resolve = (result, args) => {
+    if (
+      typeof result !== 'object' ||
+      (typeof result === 'object' && (!result.then || typeof result.then !== 'function'))
+    ) {
+      result = new Promise((resolve, reject) => {
+        result instanceof Error === false ? resolve(result) : reject(result);
+      });
+    }
+    const cb = typeof args[args.length - 1] === 'function' ? args[args.length - 1] : null;
+    if (cb) {
+      result.then(res => cb(null, res)).catch(err => cb(err));
+    } else {
+      return result
+    }
+  };
+  const thunder$2 = options => ({
+    options,
+    plugin: false,
+    call() {
+      const args = [...arguments];
+      if (this.plugin) {
+        if (args[0] !== this.plugin) {
+          args.unshift(this.plugin);
+        }
+      }
+      const plugin = args[0];
+      const method = args[1];
+      if (typeof this[plugin][method] == 'function') {
+        return this[plugin][method](args[2])
+      }
+      return this.api.request.apply(this, args)
+    },
+    registerPlugin(name, plugin) {
+      this[name] = wrapper(Object.assign(Object.create(thunder$2), plugin, { plugin: name }));
+    },
+    subscribe() {
+    },
+    on() {
+      const args = [...arguments];
+      if (['connect', 'disconnect', 'error'].indexOf(args[0]) !== -1) {
+        args.unshift('ThunderJS');
+      } else {
+        if (this.plugin) {
+          if (args[0] !== this.plugin) {
+            args.unshift(this.plugin);
+          }
+        }
+      }
+      return listener.apply(this, args)
+    },
+    once() {
+      console.log('todo ...');
+    },
+  });
+  const wrapper = obj => {
+    return new Proxy(obj, {
+      get(target, propKey) {
+        const prop = target[propKey];
+        if (propKey === 'api') {
+          return api
+        }
+        if (typeof prop !== 'undefined') {
+          if (typeof prop === 'function') {
+            if (['on', 'once', 'subscribe'].indexOf(propKey) > -1) {
+              return function(...args) {
+                return prop.apply(this, args)
+              }
+            }
+            return function(...args) {
+              return resolve(prop.apply(this, args), args)
+            }
+          }
+          if (typeof prop === 'object') {
+            return wrapper(
+              Object.assign(Object.create(thunder$2(target.options)), prop, { plugin: propKey })
+            )
+          }
+          return prop
+        } else {
+          if (target.plugin === false) {
+            return wrapper(
+              Object.assign(Object.create(thunder$2(target.options)), {}, { plugin: propKey })
+            )
+          }
+          return function(...args) {
+            args.unshift(propKey);
+            return target.call.apply(this, args)
+          }
+        }
+      },
+    })
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render items in main view.
+   */
+  class ListItem extends Lightning.Component {
+    /**
+     * Function to render various elements in the main view item.
+     */
+    static _template() {
+      return {
+        Item: {
+          x: 30,
+          y: 18,
+          Shadow: {
+            alpha: 0,
+            color: 0xffa9a9a9,
+          },
+          Title: {
+            text: {
+              fontSize: 27,
+              textColor: 0xffffffff,
+            },
+            mountX: 0.5,
+            alpha: 0,
+          },
+          Bg: {},
+          Image: {},
+        },
+      }
+    }
+
+    _init() {
+      if (this.data.show) {
+        this.tag('Title').patch({
+          x: this.x_text,
+          y: this.y_text,
+          alpha: 1,
+          text: { text: this.data.title },
+        });
+      }
+      this.tag('Title').patch({
+        x: this.x_text,
+        y: this.y_text,
+        text: { text: this.data.displayName },
+      });
+      this.tag('Shadow').patch({
+        scale: this.unfocus,
+        texture: Lightning.Tools.getShadowRect(this.w, this.h, 4, 10, 0),
+      });
+      this.tag('Bg').patch({
+        rect: true,
+        color: 0xff000000,
+        w: this.w,
+        h: this.h,
+      });
+      if (this.data.url.startsWith('/images')) {
+        this.tag('Image').patch({
+          src: Utils.asset(this.data.url),
+          w: this.w,
+          h: this.h,
+          scale: this.unfocus,
+        });
+      } else {
+        this.tag('Image').patch({ src: this.data.url, w: this.w, h: this.h });
+      }
+    }
+
+    /**
+     * Function to change properties of item during focus.
+     */
+    _focus() {
+      this.tag('Bg').scale = this.focus;
+      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus });
+      this.tag('Title').patch({
+        x: this.x_text,
+        y: this.y_text,
+        text: { text: this.data.displayName },
+      });
+      this.tag('Shadow').patch({
+        scale: this.focus,
+        x: -7,
+        y: -7,
+        alpha: 1,
+        texture: Lightning.Tools.getShadowRect(this.w + 14, this.h + 14, 4, 10, 0),
+      });
+      this.tag('Title').patch({ alpha: 1 });
+      this.tag('Item').patch({ zIndex: 1 });
+    }
+
+    /**
+     * Function to change properties of item during unfocus.
+     */
+    _unfocus() {
+      this.tag('Bg').scale = this.unfocus;
+      this.tag('Image').patch({ x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus });
+      this.tag('Shadow').patch({ scale: this.unfocus, alpha: 0 });
+      this.tag('Title').patch({ alpha: 0 });
+      this.tag('Item').patch({ zIndex: 0 });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  var activatedWeb = false;
+  var activatedLightning = false;
+  var activatedCobalt = false;
+  var activatedAmazon = false;
+  var webUrl = '';
+  var lightningUrl = '';
+  var nativeUrl = '';
+  const config$1 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1,
+  };
+  var thunder$1 = thunderJS(config$1);
+  /**
+   * Class that contains functions which commuicates with thunder API's
+   */
+  class AppApi {
+    checkForInternet() {
+      return new Promise((resolve, reject) => {
+        let i = 0;
+        var poll = () => {
+          i++;
+          this.getIP().then(result => {
+            if (result == true) {
+              resolve(result);
+            } else if (i < 10) poll();
+            else resolve(false);
+          });
+        };
+        poll();
+      })
+    }
+
+    /**
+     * Function to launch Html app.
+     * @param {String} url url of app.
+     */
+    getIP() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.System';
+        thunder$1.Controller.activate({ callsign: systemcCallsign })
+          .then(() => {
+            thunder$1
+              .call(systemcCallsign, 'getDeviceInfo', { params: 'estb_ip' })
+              .then(result => {
+                resolve(result.success);
+              })
+              .catch(err => {
+                resolve(false);
+              });
+          })
+          .catch(err => {});
+      })
+    }
+     /**
+     *  Function to get timeZone
+     */
+    getZone() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.System';
+        thunder$1.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+        thunder$1
+          .call(systemcCallsign, 'getTimeZoneDST')
+          .then(result => {
+            resolve(result.timeZone);
+          }).catch(err => { resolve(false); });
+          }).catch(err => {});
+      })
+    }
+    /**
+     * Function to get resolution of the display screen.
+     */
+    getResolution() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$1.Controller.activate({ callsign: systemcCallsign })
+          .then(() => {
+            thunder$1
+              .call(systemcCallsign, 'getCurrentResolution', { params: 'HDMI0' })
+              .then(result => {
+                resolve(result.resolution);
+              })
+              .catch(err => {
+                resolve(false);
+              });
+          })
+          .catch(err => {
+            console.log('Display Error', err);
+          });
+      })
+    }
+
+    /**
+     * Function to set the display resolution.
+     */
+    setResolution() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$1.Controller.activate({ callsign: systemcCallsign })
+          .then(() => {
+            thunder$1
+              .call(systemcCallsign, 'setCurrentResolution', {
+                videoDisplay: 'HDMI0',
+                resolution: '1080p',
+                persist: true,
+              })
+              .then(result => {
+                resolve(result.success);
+              })
+              .catch(err => {
+                resolve(false);
+              });
+          })
+          .catch(err => {
+            console.log('Display Error', err);
+          });
+      })
+    }
+
+    /**
+     * Function to launch Html app.
+     * @param {String} url url of app.
+     */
+    launchWeb(url) {
+      const childCallsign = 'HtmlApp';
+      if (webUrl != url) {
+        thunder$1
+          .call('org.rdk.RDKShell', 'launch', {
+            callsign: childCallsign,
+            type: childCallsign,
+            uri: url,
+          })
+          .then(() => {
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign,
+            });
+            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+              client: childCallsign,
+            });
+          })
+          .catch(err => {});
+      } else {
+        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
+        });
+        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+      }
+      webUrl = url;
+      activatedWeb = true;
+    }
+
+    /**
+     * Function to launch Lightning app.
+     * @param {String} url url of app.
+     */
+    launchLightning(url) {
+      const childCallsign = 'LightningApp';
+      if (lightningUrl != url) {
+        thunder$1
+          .call('org.rdk.RDKShell', 'launch', {
+            callsign: childCallsign,
+            type: childCallsign,
+            uri: url,
+          })
+          .then(() => {
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign,
+            });
+            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+              client: childCallsign,
+            });
+          })
+          .catch(err => {});
+      } else {
+        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
+        });
+        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+      }
+      lightningUrl = url;
+      activatedLightning = true;
+    }
+
+    /**
+     * Function to launch Cobalt app.
+     * @param {String} url url of app.
+     */
+    launchCobalt(url) {
+      const childCallsign = 'Cobalt';
+      thunder$1
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: childCallsign,
+        })
+        .then(() => {
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+        })
+        .catch(err => {});
+      activatedCobalt = true;
+    }
+
+    /**
+     * Function to launch Amazon Prime app.
+     */
+    launchAmazon() {
+      const childCallsign = "Amazon";
+      thunder$1
+        .call("org.rdk.RDKShell", "launch", {
+        callsign: childCallsign,
+        type: childCallsign
+      })
+      .then(() => {
+        thunder$1.call("org.rdk.RDKShell", "moveToFront", {
+          client: childCallsign
+        });
+        thunder$1.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
+      })
+      .catch(err => {});
+      activatedAmazon = true;
+    }
+
+    /**
+     * Function to launch Resident app.
+     * @param {String} url url of app.
+     */
+    launchResident(url) {
+      const childCallsign = 'ResidentApp';
+      thunder$1
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: childCallsign,
+          uri: url,
+        })
+        .then(() => {
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+        })
+        .catch(err => {
+          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+        });
+    }
+
+    /**
+     * Function to suspend html app.
+     */
+    suspendWeb() {
+      webUrl = '';
+      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'HtmlApp' });
+    }
+
+    /**
+     * Function to suspend lightning app.
+     */
+    suspendLightning() {
+      lightningUrl = '';
+      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'LightningApp' });
+    }
+
+    /**
+     * Function to suspend cobalt app.
+     */
+    suspendCobalt() {
+      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' });
+    }
+
+    /**
+     * Function to suspend Amazon Prime app.
+     */
+    suspendAmazon() {
+      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'Amazon' });
+    }
+
+    /**
+     * Function to deactivate html app.
+     */
+    deactivateWeb() {
+      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'HtmlApp' });
+      activatedWeb = false;
+      webUrl = '';
+    }
+
+    /**
+     * Function to deactivate cobalt app.
+     */
+    deactivateCobalt() {
+      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' });
+      activatedCobalt = false;
+    }
+
+    /**
+     * Function to deactivate Amazon Prime app.
+     */
+    deactivateAmazon() {
+      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'Amazon' });
+      activatedAmazon = false;
+    }
+
+    /**
+     * Function to deactivate lightning app.
+     */
+    deactivateLightning() {
+      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'LightningApp' });
+      activatedLightning = false;
+      lightningUrl = '';
+    }
+
+    /**
+     * Function to set visibility to client apps.
+     * @param {client} client client app.
+     * @param {visible} visible value of visibility.
+     */
+    setVisibility(client, visible) {
+      thunder$1.call('org.rdk.RDKShell', 'setVisibility', {
+        client: client,
+        visible: visible,
+      });
+    }
+    /**
+     * Function to launch Native app.
+     * @param {String} url url of app.
+     */
+    launchNative(url) {
+      const childCallsign = 'testApp';
+      if (nativeUrl != url) {
+        thunder$1
+          .call('org.rdk.RDKShell', 'launchApplication', {
+            client: childCallsign,
+            uri: url,
+            mimeType: 'application/native'
+          })
+          .then(() => {
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign,
+            });
+            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+              client: childCallsign,
+            });
+          })
+          .catch(err => {
+            console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+          });
+      } else {
+        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
+        });
+        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+      }
+      nativeUrl = url;
+    }
+
+
+
+  /**
+     * Function to kill native app.
+     */
+    killNative() {
+      thunder$1.call('org.rdk.RDKShell', 'kill', { callsign: 'testApp' });
+      nativeUrl = '';
+    }
+
+    static pluginStatus(plugin) {
+      switch (plugin) {
+        case 'WebApp':
+          return activatedWeb
+        case 'Cobalt':
+          return activatedCobalt
+        case 'Lightning':
+          return activatedLightning
+        case 'Amazon':
+          return activatedAmazon
+      }
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for main view component in home UI */
+  class MainView extends Lightning.Component {
+    /**
+     * Function to render various elements in main view.
+     */
+    static _template() {
+      return {
+        MainView: {
+          x: 451,
+          y: 25,
+          w: 1469,
+          h: 820,
+          AppList: {
+            x: 0,
+            y: 0,
+            type: Lightning.components.ListComponent,
+            w: 1469,
+            h: 209,
+            itemSize: 204 + 20,
+            roll: true,
+            rollMax: 1469,
+            horizontal: true,
+            itemScrollOffset: -5,
+            clipping: true,
+          },
+          MetroApps: {
+            x: 0,
+            y: 184,
+            type: Lightning.components.ListComponent,
+            w: 1469,
+            h: 209,
+            itemSize: 204 + 20,
+            roll: true,
+            rollMax: 1469,
+            horizontal: true,
+            itemScrollOffset: -5,
+            clipping: true,
+          },
+          TVShows: {
+            x: 0,
+            y: 184 + 184,
+            w: 1469,
+            h: 335,
+            type: Lightning.components.ListComponent,
+            roll: true,
+            itemSize: 428 + 20,
+            horizontal: true,
+            rollMax: 1444 + 25,
+            clipping: true,
+          },
+          Settings: {
+            x: 0,
+            y: 494 + 184,
+            w: 1469,
+            h: 335,
+            type: Lightning.components.ListComponent,
+            roll: true,
+            itemSize: 428 + 20,
+            horizontal: true,
+            rollMax: 1469,
+            clipping: true,
+          },
+        },
+      }
+    }
+
+    _init() {
+      this.settingsScreen = false;
+      this._setState('AppList');
+      this.indexVal = 0;
+      const config = {
+        host: '192.168.2.69',
+        port: 9998,
+        default: 1,
+      };
+      var thunder = thunderJS(config);
+      thunder.on('Controller', 'statechange', notification => {
+        if (notification && (notification.callsign == 'Cobalt' || notification.callsign == 'Amazon') && notification.state == 'Deactivation') {
+          var appApi = new AppApi();
+          Storage.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+          });
+          thunder
+            .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+            .then(result => {
+              console.log('ResidentApp setFocus Success' + JSON.stringify(result));
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        }
+      });
+    }
+
+    _active() {
+      if (this.settingsScreen) {
+        let app = this.parent.parent;
+        this._appAnimation = app.animation({
+          duration: 0,
+          repeat: 0,
+          stopMethod: 'immediate',
+          actions: [
+            { p: 'x', v: { 0: 0, 1: -320 } },
+            { p: 'y', v: { 0: 0, 1: -180 } },
+            { p: 'scale', v: { 0: 1, 1: 1.17 } },
+          ],
+        });
+        this._appAnimation.start();
+        this.settingsScreen = false;
+      }
+    }
+
+    /**
+     * Function to set details of items in app list.
+     */
+    set appItems(items) {
+      this.tag('AppList').items = items.map(info => {
+        return {
+          w: 204,
+          h: 126,
+          type: ListItem,
+          data: info,
+          focus: 1.2,
+          unfocus: 1,
+          x_text: 106,
+          y_text: 140,
+        }
+      });
+      this.tag('AppList').start();
+    }
+
+    set metroApps(items) {
+      this.tag('MetroApps').items = items.map(info => {
+        return {
+          w: 204,
+          h: 126,
+          type: ListItem,
+          data: info,
+          focus: 1.2,
+          unfocus: 1,
+          x_text: 106,
+          y_text: 140,
+        }
+      });
+      this.tag('MetroApps').start();
+    }
+
+    /**
+     * Function to set details of items in tv shows list.
+     */
+    set tvShowItems(items) {
+      this.tag('TVShows').items = items.map(info => {
+        return {
+          w: 428,
+          h: 252,
+          type: ListItem,
+          data: info,
+          focus: 1.08,
+          unfocus: 1,
+          x_text: 218,
+          y_text: 264,
+        }
+      });
+      this.tag('TVShows').start();
+    }
+
+    /**
+     * Function to set details of items in settings list
+     */
+    set settingsItems(items) {
+      this.tag('Settings').items = items.map(info => {
+        return {
+          w: 428,
+          h: 252,
+          type: ListItem,
+          data: info,
+          focus: 1.08,
+          unfocus: 1,
+          x_text: 218,
+          y_text: 264,
+        }
+      });
+      this.tag('Settings').start();
+    }
+
+    /**
+     * Function to set the state in main view.
+     */
+    set index(index) {
+      this.indexVal = index;
+      if (this.indexVal == 0) {
+        this._setState('AppList');
+      } else if (this.indexVal == 1) {
+        this._setState('MetroApps');
+      } else if (this.indexVal == 2) {
+        this._setState('TVShows');
+      } else if (this.indexVal == 3) {
+        this._setState('Settings');
+      }
+    }
+
+    /**
+     * Function to reset the main view rows to initial state.
+     */
+    reset() {
+      for (var i = this.tag('AppList').index; i > 0; i--) {
+        this.tag('AppList').setPrevious();
+      }
+      for (var i = this.tag('MetroApps').index; i > 0; i--) {
+        this.tag('MetroApps').setPrevious();
+      }
+      for (var i = this.tag('TVShows').index; i > 0; i--) {
+        this.tag('TVShows').setPrevious();
+      }
+      for (var i = this.tag('Settings').index; i > 0; i--) {
+        this.tag('Settings').setPrevious();
+      }
+    }
+
+    /**
+     * Function to define various states needed for main view.
+     */
+    static _states() {
+      return [
+        class AppList extends this {
+          _getFocused() {
+            if (this.tag('AppList').length) {
+              return this.tag('AppList').element
+            }
+          }
+          _handleRight() {
+            if (this.tag('AppList').length - 1 != this.tag('AppList').index) {
+              this.tag('AppList').setNext();
+              return this.tag('AppList').element
+            }
+          }
+          _handleLeft() {
+            if (0 != this.tag('AppList').index) {
+              this.tag('AppList').setPrevious();
+              return this.tag('AppList').element
+            } else {
+              this.reset();
+              this.fireAncestors('$goToSidePanel', 0);
+            }
+          }
+          _handleDown() {
+            this._setState('MetroApps');
+          }
+          _handleEnter() {
+            var appApi = new AppApi();
+            var applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+            this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
+            var appApi = new AppApi();
+            applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+            Storage.set('applicationType', applicationType);
+            this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
+            if (Storage.get('applicationType') == 'Cobalt') {
+              appApi.launchCobalt(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'WebApp') {
+              appApi.launchWeb(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Lightning') {
+              appApi.launchLightning(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Native') {
+              appApi.launchNative(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Amazon') {
+              appApi.launchAmazon();
+              appApi.setVisibility('ResidentApp', false);
+            }
+          }
+          _handleKey(key) {
+            const config = {
+              host: '127.0.0.1',
+              port: 9998,
+              default: 1,
+            };
+            var thunder = thunderJS(config);
+            console.log('_handleKey', key.keyCode);
+            var appApi = new AppApi();
+            if (key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
+              if (Storage.get('applicationType') == 'Cobalt') {
+                Storage.set('applicationType', '');
+                appApi.suspendCobalt();
+                appApi.setVisibility('ResidentApp', true);
+              }
+            } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+              if (Storage.get('applicationType') == 'WebApp') {
+                Storage.set('applicationType', '');
+                appApi.deactivateWeb();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Lightning') {
+                Storage.set('applicationType', '');
+                appApi.deactivateLightning();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Native') {
+                Storage.set('applicationType', '');
+                appApi.killNative();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Amazon') {
+                Storage.set('applicationType', '');
+                appApi.suspendAmazon();
+                appApi.setVisibility('ResidentApp', true);
+              }
+              thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp moveToFront Success');
+              });
+              thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp moveToFront Success');
+              });
+              thunder
+                .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+                .then(result => {
+                  console.log('ResidentApp moveToFront Success');
+                })
+                .catch(err => {
+                  console.log('Error', err);
+                });
+            } else return false
+          }
+        },
+        class MetroApps extends this {
+          _getFocused() {
+            if (this.tag('MetroApps').length) {
+              return this.tag('MetroApps').element
+            }
+          }
+          _handleUp() {
+            this._setState('AppList');
+          }
+          _handleRight() {
+            if (this.tag('MetroApps').length - 1 != this.tag('MetroApps').index) {
+              this.tag('MetroApps').setNext();
+              return this.tag('MetroApps').element
+            }
+          }
+          _handleLeft() {
+            if (0 != this.tag('MetroApps').index) {
+              this.tag('MetroApps').setPrevious();
+              return this.tag('MetroApps').element
+            } else {
+              this.reset();
+              this.fireAncestors('$goToSidePanel', 1);
+            }
+          }
+          _handleDown() {
+            this._setState('TVShows');
+          }
+          _handleEnter() {
+            var appApi = new AppApi();
+            var applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
+            this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
+            var appApi = new AppApi();
+            applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
+            Storage.set('applicationType', applicationType);
+            this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
+            if (Storage.get('applicationType') == 'Cobalt') {
+              appApi.launchCobalt(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'WebApp') {
+              appApi.launchWeb(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Lightning') {
+              appApi.launchLightning(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Native') {
+              appApi.launchNative(this.uri);
+              appApi.setVisibility('ResidentApp', false);
+            }
+          }
+          _handleKey(key) {
+            const config = {
+              host: '192.168.2.69',
+              port: 9998,
+              default: 1,
+            };
+            var thunder = thunderJS(config);
+            var appApi = new AppApi();
+            console.log('_handleKey', key.keyCode);
+            if(key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
+              if (Storage.get('applicationType') == 'Cobalt') {
+                Storage.set('applicationType', '');
+                appApi.suspendCobalt();
+                appApi.setVisibility('ResidentApp', true);
+              }
+            } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+              if (Storage.get('applicationType') == 'WebApp') {
+                Storage.set('applicationType', '');
+                appApi.deactivateWeb();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Lightning') {
+                Storage.set('applicationType', '');
+                appApi.deactivateLightning();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Native') {
+                Storage.set('applicationType', '');
+                appApi.killNative();
+                appApi.setVisibility('ResidentApp', true);
+              } else return false;
+              thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp moveToFront Success');
+              });
+              thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp moveToFront Success');
+              });
+              thunder
+                .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+                .then(result => {
+                  console.log('ResidentApp moveToFront Success');
+                })
+                .catch(err => {
+                  console.log('Error', err);
+                });
+            } else return false;
+          }
+        },
+        class TVShows extends this {
+          _getFocused() {
+            if (this.tag('TVShows').length) {
+              return this.tag('TVShows').element
+            }
+          }
+          _handleRight() {
+            if (this.tag('TVShows').length - 1 != this.tag('TVShows').index) {
+              this.tag('TVShows').setNext();
+              return this.tag('TVShows').element
+            }
+          }
+          _handleLeft() {
+            if (0 != this.tag('TVShows').index) {
+              this.tag('TVShows').setPrevious();
+              return this.tag('TVShows').element
+            } else {
+              this.reset();
+              this.fireAncestors('$goToSidePanel', 2);
+            }
+          }
+          _handleUp() {
+            this._setState('MetroApps');
+          }
+          _handleDown() {
+            this._setState('Settings');
+          }
+          _handleEnter() {
+            this.fireAncestors('$goToPlayer');
+          }
+        },
+        class Settings extends this {
+          $enter() {
+            this.fireAncestors('$scroll', -200);
+          }
+          _getFocused() {
+            if (this.tag('Settings').length) {
+              return this.tag('Settings').element
+            }
+          }
+          _handleRight() {
+            if (this.tag('Settings').length - 1 != this.tag('Settings').index) {
+              this.tag('Settings').setNext();
+            }
+            return this.tag('Settings').element
+          }
+          _handleLeft() {
+            if (0 != this.tag('Settings').index) {
+              this.tag('Settings').setPrevious();
+              return this.tag('Settings').element
+            } else {
+              this.reset();
+              this.fireAncestors('$goToSidePanel', 3);
+            }
+          }
+          _handleUp() {
+            this._setState('TVShows');
+          }
+          _handleEnter() {
+            this.settingsType = this.tag('Settings').items[
+              this.tag('Settings').index
+            ].data.displayName;
+
+            if (this.settingsType == 'Bluetooth') {
+              this.settingsScreen = true;
+              Router.navigate('settings/BluetoothScreen', false);
+            } else if (this.settingsType == 'Wi-Fi') {
+              this.settingsScreen = true;
+              Router.navigate('settings/WiFiScreen', false);
+            }
+          }
+          $exit() {
+            this.fireAncestors('$scroll', 0);
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render items in side panel.
+   */
+  class SidePanelItem extends Lightning.Component {
+    /**
+     * Function to render various elements in the side panel item.
+     */
+    static _template() {
+      return {
+        Item: {
+          Title: {
+            text: {
+              fontSize: 27,
+              textColor: 0xffffffff,
+            },
+            mountX: 0.5,
+            alpha: 0,
+          },
+          Image: {
+            x: 0,
+          },
+        },
+      }
+    }
+
+    _init() {
+      this.tag('Title').patch({ x: this.x_text, y: this.y_text, text: { text: this.data.title } });
+      this.tag('Image').patch({
+        src: Utils.asset(this.data.url),
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus,
+      });
+    }
+
+    /**
+     * Function to change properties of item during focus.
+     */
+    _focus() {
+      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus });
+      this.tag('Title').patch({ alpha: 1 });
+      this.tag('Item').patch({ zIndex: 1 });
+    }
+
+    /**
+     * Function to change properties of item during unfocus.
+     */
+    _unfocus() {
+      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus });
+      this.tag('Title').patch({ alpha: 0 });
+      this.tag('Item').patch({ zIndex: 0 });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for side panel in home UI */
+  class SidePanel extends Lightning.Component {
+    static _template() {
+      return {
+        SidePanel: {
+          x: 130,
+          y: 0,
+          w: 240,
+          h: 750,
+          type: Lightning.components.ListComponent,
+          roll: true,
+          horizontal: false,
+          invertDirection: true,
+        },
+      }
+    }
+
+    _init() {
+      this._setState('SidePanel');
+      this.indexVal = 0;
+    }
+
+    /**
+     * Function to set items in side panel.
+     */
+    set sidePanelItems(items) {
+      this.tag('SidePanel').patch({ x: 130 });
+      this.tag('SidePanel').items = items.map((info, index) => {
+        this.data = info;
+        return {
+          w: 204,
+          h: 184,
+          y: index == 0 ? 30 : (index == 1 ? 115 :(index == 2 ? 260 : 470)),
+          type: SidePanelItem,
+          data: info,
+          focus: 0.7,
+          unfocus: 0.6,
+          x_text: 100,
+          y_text: 160,
+          text_focus: 1.1,
+          text_unfocus: 0.9,
+        }
+      });
+      this.tag('SidePanel').start();
+    }
+
+    /**
+     * Function to reset items in side panel.
+     */
+    set resetSidePanelItems(items) {
+      this.tag('SidePanel').patch({ x: 90 });
+      this.tag('SidePanel').items = items.map((info, index) => {
+        return {
+          w: 204,
+          h: 184,
+          y: index == 0 ? 25 : (index == 1 ? 105 :(index == 2 ? 260 : 470)),
+          type: SidePanelItem,
+          data: info,
+          focus: 0.7,
+          unfocus: 0.4,
+          x_text: 100,
+          y_text: 160,
+          text_focus: 1.1,
+          text_unfocus: 0.9,
+        }
+      });
+      this.tag('SidePanel').start();
+    }
+    /**
+     * Function to set scaling to side panel.
+     */
+    set scale(scale) {
+      this.tag('SidePanel').patch({ scale: scale });
+    }
+
+    /**
+     * Function to set x coordinate of side panel.
+     */
+    set x(x) {
+      this.tag('SidePanel').patch({ x: x });
+    }
+
+    /**
+     * Function to set index value of side panel.
+     */
+    set index(index) {
+      this.indexVal = index;
+    }
+
+    static _states() {
+      return [
+        class SidePanel extends this {
+          _getFocused() {
+            if (this.tag('SidePanel').length) {
+              if(this.indexVal==3){
+                this.fireAncestors('$scroll',-200);
+              }
+              else {
+                this.fireAncestors('$scroll',0);
+              }
+              return this.tag('SidePanel').items[this.indexVal]
+            }
+          }
+          _handleKey(key) {
+            if (key.keyCode == 39 || key.keyCode == 13) {
+              this.fireAncestors('$goToMainView', this.indexVal);
+            } else if (key.keyCode == 40) {
+              if (this.tag('SidePanel').length - 1 != this.indexVal) {
+                this.indexVal = this.indexVal + 1;
+              }
+              return this.tag('SidePanel').items[this.indexVal]
+            } else if (key.keyCode == 38) {
+              if (0 != this.indexVal) {
+                this.indexVal = this.indexVal - 1;
+              }
+              return this.tag('SidePanel').items[this.indexVal]
+            } else return false;
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /** Class for top panel in home UI */
+  class TopPanel extends Lightning.Component {
+    static _template() {
+      return {
+        TopPanel: {
+          x: 90,
+          y: 60,
+          w: 1740,
+          h: 120,
+          Mic: {
+            x: 120,
+            y: 60,
+            mountY: 0.5,
+            src: Utils.asset('/images/topPanel/mic.png'),
+            w: 60,
+            h: 60,
+          },
+          Search: {
+            x: 250,
+            y: 60,
+            mountY: 0.5,
+            text: { text: 'Search TV shows, movies and more', fontSize: 33 },
+          },
+          Time: {
+            x: 1500,
+            y: 60,
+            mountY: 0.5,
+            text: { text: '', fontSize: 38 },
+          },
+        },
+      }
+    }
+    _init() {
+      this.timeZone = null;
+      new AppApi().getZone().then(function (res) {     
+         this.timeZone = res;
+       }.bind(this)).catch(err => { console.log('Timezone api request error', err); });   
+   }
+
+    _build() {
+      setInterval(() => {
+        this.tag('Time').patch({ text: { text: this.updateTime() } });
+      }, 1000);
+    }
+
+    /**
+     * Function to update time in home UI.
+     */
+    updateTime() {
+      if (this.timeZone) {
+        let date = new Date();
+        date = new Date(date.toLocaleString('en-US', { timeZone: this.timeZone }));
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        let strTime = hours + '.' + minutes + ' ' + ampm;
+        return strTime
+      } else {
+        return ""
+      }
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Variable to store the timer
+   */
+  var timeout;
+
+  /**
+   * Class to render the UI controls for the video player.
+   */
+  class PlayerControls extends Lightning.Component {
+    /**
+     * Function to create components for the player controls.
+     */
+    static _template() {
+      return {
+        rect: true,
+        w: 1920,
+        h: 410,
+        color: 0x4025262a,
+        Title: {
+          x: 90,
+          y: 15,
+        },
+        Subtitle: {
+          x: 90,
+          y: 88.5,
+        },
+        NetworkLogo: {
+          x: 1740,
+          y: 82.5,
+        },
+        TimeBar: {
+          x: 90,
+          y: 163.5,
+          texture: Lightning.Tools.getRoundRect(1740, 6, 6, 0, 0, true, 0x80eef1f3),
+        },
+        ProgressBar: {
+          x: 90,
+          y: 163.5,
+        },
+        CurrentTime: {
+          x: 90,
+          y: 184.5,
+        },
+        TotalTime: {
+          x: 1680,
+          y: 184.5,
+        },
+        Buttons: {
+          x: 820,
+          y: 240,
+          children: [
+            { src: Utils.asset('images/player/rewind.png'), x: 17, y: 17 },
+            { src: Utils.asset('images/player/pause-focus.png'), x: 17, y: 17 },
+            { src: Utils.asset('images/player/fast-forward.png'), x: 17, y: 17 },
+          ].map((item, idx) => ({
+            x: idx * 100,
+            texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+            ControlIcon: {
+              x: item.x,
+              y: item.y,
+              texture: Lightning.Tools.getSvgTexture(item.src, 50, 50),
+            },
+          })),
+        },
+        Audio: {
+          x: 90,
+          y: 240,
+          texture: Lightning.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xff8e8e8e),
+          AudioOptions: {
+            x: 0,
+            y: 25,
+            w: 240,
+            h: 90,
+            text: {
+              fontSize: 30,
+              text: 'Audio Options',
+              textColor: 0xffffffff,
+              textAlign: 'center',
+            },
+          },
+        },
+        Extras: {
+          x: 1700,
+          y: 240,
+          texture: Lightning.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xff8e8e8e),
+          ExtrasOptions: {
+            x: 0,
+            y: 25,
+            w: 130,
+            h: 90,
+            text: {
+              fontSize: 30,
+              text: 'Extras',
+              textColor: 0xffffffff,
+              textAlign: 'center',
+            },
+          },
+        },
+      }
+    }
+
+    _init() {
+      /**
+       * Variable to store the duration of the video content.
+       */
+      this.videoDuration = 0;
+      this.tag('Buttons').children[0].patch({
+            alpha: 0.4
+      });
+      this.tag('Buttons').children[2].patch({
+        alpha: 0.4
+      });
+      this.tag('Audio').patch({
+        alpha: 0.4
+      });
+      this.tag('Extras').patch({
+        alpha: 0.4
+      });
+    }
+
+    /**
+     * Function to set focus to player controls when the player controls are shown.
+     */
+    _focus() {
+      this._index = 1;
+      this.toggle = false;
+      this._setState('PlayPause');
+    }
+
+    /**
+     * Function to handle the player controls when they are hidden.
+     */
+    _unfocus() {
+      this._setState('Hidden');
+      clearTimeout(timeout);
+    }
+
+    /**
+     * Function to set the title in the video controls.
+     * @param {String} title title to be displayed in video controls.
+     */
+    set title(title) {
+      this.tag('Title').patch({
+        text: {
+          fontSize: 52.5,
+          textAlign: 'center',
+          text: title,
+        },
+      });
+    }
+
+    /**
+     * Function to set the subtitle in the video control menu.
+     * @param {String} subtitle sub title to be displayed.
+     */
+    set subtitle(subtitle) {
+      this.tag('Subtitle').patch({
+        text: {
+          fontSize: 36,
+          textAlign: 'center',
+          text: subtitle,
+        },
+      });
+    }
+
+    /**
+     * Function to set the network logo in the video control menu.
+     * @param {String} logoPath path to the logo.
+     */
+    set logoPath(logoPath) {
+      this.tag('NetworkLogo').patch({ src: logoPath });
+    }
+
+    /**
+     * Function to set the duration of the video.
+     * @param {String} duration video duration to be set.
+     */
+    set duration(duration) {
+      this.videoDuration = duration;
+      this.tag('TotalTime').patch({
+        text: {
+          fontSize: 33,
+          textAlign: 'center',
+          text: this.SecondsTohhmmss(duration),
+        },
+      });
+    }
+
+    /**
+     * Function to set the current video time.
+     * @param {String} currentTime current time to be set.
+     */
+    set currentTime(currentTime) {
+      this.tag('CurrentTime').patch({
+        text: {
+          fontSize: 33,
+          textAlign: 'center',
+          text: this.SecondsTohhmmss(currentTime),
+        },
+      });
+      this.tag('ProgressBar').patch({
+        texture: Lightning.Tools.getRoundRect(
+          (1740 * currentTime) / this.videoDuration,
+          6,
+          6,
+          0,
+          0,
+          true,
+          0xffffffff
+        ),
+        SeekBar: {
+          x: (1740 * currentTime) / this.videoDuration,
+          y: -12,
+          texture: Lightning.Tools.getRoundRect(30, 30, 15, 0, 0, true, 0xffffffff),
+        },
+      });
+    }
+
+    /**
+     * Function to convert time in seconds to hh:mm:ss format.
+     * @param {String} totalSeconds time in seconds.
+     */
+    SecondsTohhmmss(totalSeconds) {
+      this.hours = Math.floor(totalSeconds / 3600);
+      this.minutes = Math.floor((totalSeconds - this.hours * 3600) / 60);
+      this.seconds = totalSeconds - this.hours * 3600 - this.minutes * 60;
+      this.seconds = Math.round(totalSeconds) - this.hours * 3600 - this.minutes * 60;
+      this.result = this.hours < 10 ? '0' + this.hours : this.hours;
+      this.result += ':' + (this.minutes < 10 ? '0' + this.minutes : this.minutes);
+      this.result += ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds);
+      return this.result
+    }
+
+    /**
+     * Function to hide player controls.
+     */
+    hidePlayerControls() {
+      this.signal('hide');
+    }
+
+    /**
+     * Function to reset the player controls.
+     */
+    reset(state = 'play') {
+      this._setState('PlayPause');
+      if (state === 'pause' || state === 'stop') {
+        this.tag('Buttons')
+          .children[1].tag('ControlIcon')
+          .patch({
+            texture: Lightning.Tools.getSvgTexture(
+              Utils.asset('images/player/play-focus.png'),
+              50,
+              50
+            ),
+            x: 17,
+          });
+        this.toggle = 1;
+        return
+      }
+      this.tag('Buttons')
+        .children[1].tag('ControlIcon')
+        .patch({
+          texture: Lightning.Tools.getSvgTexture(
+            Utils.asset('images/player/pause-focus.png'),
+            50,
+            50
+          ),
+          x: 17,
+        });
+      this.toggle = 0;
+    }
+
+    /**
+     * Timer function to track the inactivity of the player controls.
+     */
+    timer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
+    }
+
+    /**
+     * Function that defines the different states of the player controls.
+     */
+    static _states() {
+      return [
+        class AudioOptions extends this {
+          $enter() {
+            this.timer();
+            this.tag('Audio').patch({
+              texture: Lightning.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xffffffff),
+              scale: 1.1,
+            });
+            this.tag('Audio').tag('AudioOptions').color = 0xff000000;
+          }
+          $exit() {
+            this.tag('Audio').patch({
+              texture: Lightning.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xff8e8e8e),
+              scale: 1,
+            });
+            this.tag('Audio').tag('AudioOptions').color = 0xffffffff;
+          }
+          _handleRight() {
+            this._setState('Rewind');
+          }
+          _getFocused() {
+            this.timer();
+          }
+        },
+
+        class PlayPause extends this {
+          $enter() {
+            this.focus = this.toggle
+              ? Utils.asset('images/player/play-focus.png')
+              : Utils.asset('images/player/pause-focus.png');
+            this.timer();
+            this.tag('Buttons').children[1].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+              scale: 1.1,
+            });
+            this.tag('Buttons')
+              .children[1].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
+              });
+          }
+          $exit() {
+            this.unfocus = this.toggle
+              ? Utils.asset('images/player/play.png')
+              : Utils.asset('images/player/pause.png');
+            this.tag('Buttons').children[1].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+              scale: 1,
+            });
+            this.tag('Buttons')
+              .children[1].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(this.unfocus, 50, 50)
+              });
+          }
+          _handleEnter() {
+            if (this.toggle) {
+              this.signal('play');
+            } else {
+              this.signal('pause');
+            }
+            this.toggle = !this.toggle;
+            this.focus = this.toggle
+              ? Utils.asset('images/player/play-focus.png')
+              : Utils.asset('images/player/pause-focus.png');
+            this.timer();
+            this.tag('Buttons').children[1].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+            });
+            this.tag('Buttons')
+              .children[1].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
+              });
+          }
+          _handleRight() {
+            // this._setState('Forward')
+          }
+          _handleLeft() {
+            // this._setState('Rewind')
+          }
+          _getFocused() {
+            this.timer();
+          }
+        },
+
+        class Forward extends this {
+          $enter() {
+            this.timer();
+            this.tag('Buttons').children[2].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+              scale: 1.1,
+            });
+            this.tag('Buttons')
+              .children[2].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(
+                  Utils.asset('images/player/fast-forward-focus.png'),
+                  50,
+                  50
+                ),
+              });
+          }
+          $exit() {
+            this.tag('Buttons').children[2].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+              scale: 1,
+            });
+            this.tag('Buttons')
+              .children[2].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(
+                  Utils.asset('images/player/fast-forward.png'),
+                  50,
+                  50
+                ),
+              });
+          }
+          _handleRight() {
+            this._setState('Extras');
+          }
+          _handleLeft() {
+            this._setState('PlayPause');
+          }
+          _handleEnter() {
+            this.signal('fastfwd');
+          }
+          _getFocused() {
+            this.timer();
+          }
+        },
+
+        class Rewind extends this {
+          $enter() {
+            this.timer();
+            this.tag('Buttons').children[0].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+              scale: 1.1,
+            });
+            this.tag('Buttons')
+              .children[0].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(
+                  Utils.asset('images/player/rewind-focus.png'),
+                  50,
+                  50
+                ),
+              });
+          }
+          $exit() {
+            this.tag('Buttons').children[0].patch({
+              texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+              scale: 1,
+            });
+            this.tag('Buttons')
+              .children[0].tag('ControlIcon')
+              .patch({
+                texture: Lightning.Tools.getSvgTexture(
+                  Utils.asset('images/player/rewind.png'),
+                  50,
+                  50
+                ),
+              });
+          }
+          _handleLeft() {
+            this._setState('AudioOptions');
+          }
+          _handleRight() {
+            this._setState('PlayPause');
+          }
+          _handleEnter() {
+            this.signal('fastrwd');
+          }
+          _getFocused() {
+            this.timer();
+          }
+        },
+
+        class Extras extends this {
+          $enter() {
+            this.tag('Extras').patch({
+              texture: Lightning.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xffffffff),
+              scale: 1.1,
+            });
+            this.tag('Extras').tag('ExtrasOptions').color = 0xff000000;
+            this.timer();
+          }
+          _handleLeft() {
+            this._setState('Forward');
+          }
+          _getFocused() {
+            this.timer();
+          }
+          $exit() {
+            this.tag('Extras').patch({
+              texture: Lightning.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xff8e8e8e),
+              scale: 1,
+            });
+            this.tag('Extras').tag('ExtrasOptions').color = 0xffffffff;
+          }
+        },
+        class Hidden extends this {
+          _getFocused() {}
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render AAMP video player.
+   */
+  class AAMPVideoPlayer extends Lightning.Component {
+    /**
+     * Function to render player controls.
+     */
+    static _template() {
+      return {
+        PlayerControls: {
+          type: PlayerControls,
+          x: 0,
+          y: 810,
+          alpha: 0,
+          signals: {
+            pause: 'pause',
+            play: 'play',
+            hide: 'hidePlayerControls',
+            fastfwd: 'fastfwd',
+            fastrwd: 'fastrwd',
+          },
+        },
+      }
+    }
+
+    _init() {
+      this.x = 0;
+      this.y = 0;
+      this.w = 0;
+      this.h = 0;
+      this.videoEl = document.createElement('video');
+      this.videoEl.setAttribute('id', 'video-player');
+      this.videoEl.style.position = 'absolute';
+      this.videoEl.style.zIndex = '1';
+      this.videoEl.setAttribute('width', '100%');
+      this.videoEl.setAttribute('height', '100%');
+      this.videoEl.setAttribute('src', 'placeholder.mp4');
+      this.videoEl.setAttribute('type', 'video/ave');
+      document.body.appendChild(this.videoEl);
+      this.playbackSpeeds = [-16, -8, -4, -2, 1, 2, 4, 8, 16];
+      this.playerStatesEnum = { idle: 0, initializing: 1, playing: 8, paused: 6, seeking: 7 };
+      this.player = null;
+      this.playbackRateIndex = this.playbackSpeeds.indexOf(1);
+      this.defaultInitConfig = {
+        initialBitrate: 2500000,
+        offset: 0,
+        networkTimeout: 10,
+        preferredAudioLanguage: 'en',
+        liveOffset: 15,
+        drmConfig: null,
+      };
+    }
+
+    /**
+     * Function to set video coordinates.
+     * @param {int} x x position of video
+     * @param {int} y y position of video
+     * @param {int} w width of video
+     * @param {int} h height of video
+     */
+    setVideoRect(x, y, w, h) {
+      this.x = x;
+      this.y = y;
+      this.w = w;
+      this.h = h;
+      var xPos = 0.67 * x;
+      var yPos = 0.67 * y;
+      var wPos = 0.67 * w;
+      var hPos = 0.67 * h;
+      this.player.setVideoRect(xPos, yPos, wPos, hPos);
+    }
+
+    /**
+     * Event handler to store the current playback state.
+     * @param  event playback state of the video.
+     */
+    _playbackStateChanged(event) {
+      switch (event.state) {
+        case this.player.playerStatesEnum.idle:
+          this.playerState = this.player.playerStatesEnum.idle;
+          break
+        case this.player.playerStatesEnum.initializing:
+          this.playerState = this.player.playerStatesEnum.initializing;
+          break
+        case this.player.playerStatesEnum.playing:
+          this.playerState = this.player.playerStatesEnum.playing;
+          break
+        case this.player.playerStatesEnum.paused:
+          this.playerState = this.player.playerStatesEnum.paused;
+          break
+        case this.player.playerStatesEnum.seeking:
+          this.playerState = this.player.playerStatesEnum.seeking;
+          break
+      }
+    }
+
+    /**
+     * Event handler to handle the event of completion of a video playback.
+     */
+    _mediaEndReached() {
+      this.load(this.videoInfo);
+      this.setVideoRect(this.x, this.y, this.w, this.h);
+    }
+
+    /**
+     * Event handler to handle the event of changing the playback speed.
+     */
+    _mediaSpeedChanged() {}
+
+    /**
+     * Event handler to handle the event of bit rate change.
+     */
+    _bitrateChanged() {}
+
+    /**
+     * Function to handle the event of playback failure.
+     */
+    _mediaPlaybackFailed() {
+      this.load(this.videoInfo);
+    }
+
+    /**
+     * Function to handle the event of playback progress.
+     * @param event playback event.
+     */
+    _mediaProgressUpdate(event) {
+      this.position = event.positionMiliseconds / 1000;
+      this.tag('PlayerControls').currentTime = this.position;
+    }
+
+    /**
+     * Function to handle the event of starting the playback.
+     */
+    _mediaPlaybackStarted() {
+      // this.tag('PlayerControls').reset()
+      // this.tag('PlayerControls').setSmooth('alpha', 1)
+      // this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
+      // this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
+    }
+
+    /**
+     * Function to handle the event of change in the duration of the playback content.
+     */
+    _mediaDurationChanged() {}
+
+    /**
+     * Function to create the video player instance for video playback and its initial settings.
+     */
+    createPlayer() {
+      if (this.player !== null) {
+        this.destroy();
+        this.player = null;
+      }
+
+      try {
+        this.player = new AAMPMediaPlayer();
+        this.player.addEventListener('playbackStateChanged', this._playbackStateChanged);
+        this.player.addEventListener('playbackCompleted', this._mediaEndReached.bind(this));
+        this.player.addEventListener('playbackSpeedChanged', this._mediaSpeedChanged);
+        this.player.addEventListener('bitrateChanged', this._bitrateChanged);
+        this.player.addEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this));
+        this.player.addEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this));
+        this.player.addEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this));
+        this.player.addEventListener('durationChanged', this._mediaDurationChanged);
+        this.playerState = this.playerStatesEnum.idle;
+      } catch (error) {
+        console.error('AAMPMediaPlayer is not defined');
+      }
+    }
+
+    /**
+     * Loads the player with video URL.
+     * @param videoInfo the url and the info regarding the video like title.
+     */
+    load(videoInfo) {
+      this.createPlayer();
+      this.videoInfo = videoInfo;
+      this.configObj = this.defaultInitConfig;
+      this.configObj.drmConfig = this.videoInfo.drmConfig;
+      this.player.initConfig(this.configObj);
+      this.player.load(videoInfo.url);
+
+      this.tag('PlayerControls').title = videoInfo.title;
+      this.tag('PlayerControls').subtitle = videoInfo.subtitle;
+      this.tag('PlayerControls').logoPath = videoInfo.logoPath;
+      this.tag('PlayerControls').duration = this.player.getDurationSec();
+      this.tag('PlayerControls').currentTime = 0;
+      this.play();
+    }
+
+    /**
+     * Starts playback when enough data is buffered at play head.
+     */
+    play() {
+      this.player.play();
+      this.playbackRateIndex = this.playbackSpeeds.indexOf(1);
+    }
+
+    /**
+     * Pauses playback.
+     */
+    pause() {
+      this.player.pause();
+    }
+
+    /**
+     * Stop playback and free resources.
+     */
+    stop() {
+      this.player.stop();
+      this.hidePlayerControls();
+    }
+
+    /**
+     * Function to perform fast forward of the video content.
+     */
+    fastfwd() {
+      if (this.playbackRateIndex < this.playbackSpeeds.length - 1) {
+        this.playbackRateIndex++;
+      }
+      this.rate = this.playbackSpeeds[this.playbackRateIndex];
+      this.player.setPlaybackRate(this.rate);
+    }
+
+    /**
+     * Function to perform fast rewind of the video content.
+     */
+    fastrwd() {
+      if (this.playbackRateIndex > 0) {
+        this.playbackRateIndex--;
+      }
+      this.rate = this.playbackSpeeds[this.playbackRateIndex];
+      this.player.setPlaybackRate(this.rate);
+    }
+
+    /**
+     * Function that returns player instance.
+     * @returns player instance.
+     */
+    getPlayer() {
+      return this.player
+    }
+
+    /**
+     * Function to release the video player instance when not in use.
+     */
+    destroy() {
+      if (this.player.getCurrentState() !== this.playerStatesEnum.idle) {
+        this.player.stop();
+      }
+      this.player.removeEventListener('playbackStateChanged', this._playbackStateChanged);
+      this.player.removeEventListener('playbackCompleted', this._mediaEndReached);
+      this.player.removeEventListener('playbackSpeedChanged', this._mediaSpeedChanged);
+      this.player.removeEventListener('bitrateChanged', this._bitrateChanged);
+      this.player.removeEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this));
+      this.player.removeEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this));
+      this.player.removeEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this));
+      this.player.removeEventListener('durationChanged', this._mediaDurationChanged);
+      this.player.release();
+      this.player = null;
+      this.hidePlayerControls();
+    }
+
+    /**
+     * Function to hide the player controls.
+     */
+    hidePlayerControls() {
+      this.tag('PlayerControls').setSmooth('y', 1080, { duration: 0.7 });
+      this.tag('PlayerControls').setSmooth('alpha', 0, { duration: 0.7 });
+      this._setState('HideControls');
+    }
+
+    /**
+     * Function to show the player controls.
+     */
+    showPlayerControls() {
+      this.tag('PlayerControls').reset();
+      this.tag('PlayerControls').setSmooth('alpha', 1);
+      this.tag('PlayerControls').setSmooth('y', 675, { duration: 0.7 });
+      this._setState('ShowControls');
+      this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
+    }
+    /**
+     * Function to display player controls on down key press.
+     */
+    _handleDown() {
+      this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 });
+      this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 });
+      this._setState('ShowControls');
+      clearTimeout(this.timeout);
+    }
+
+    /**
+     *Function to hide player control on up key press.
+     */
+    _handleUp() {
+      this.hidePlayerControls();
+      this._setState('HideControls');
+    }
+    /**
+     * Function to define the different states of the video player.
+     */
+    static _states() {
+      return [
+        class ShowControls extends this {
+          _getFocused() {
+            return this.tag('PlayerControls')
+          }
+        },
+        class HideControls extends this {
+          _getFocused() {}
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+  var appListInfo = [
+    {
+      displayName: 'Test Youtube',
+      applicationType: 'Cobalt',
+      uri: 'https://www.youtube.com/tv',
+      url: '/images/apps/youtube.png',
+    },
+    {
+      displayName: 'Test Xumo',
+      applicationType: 'WebApp',
+      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+      url: '/images/apps/xumo.png',
+    },
+    {
+      displayName: 'Bluetooth Audio',
+      applicationType: 'Lightning',
+      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+      url: '/images/apps/netflix.png',
+    },
+    {
+      displayName: 'Test Prime video',
+      applicationType: 'Amazon',
+      uri: '',
+      url: '/images/apps/prime.png',
+    },
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for tv shows listings.
+   */
+  var tvShowsInfo = [
+    {
+      displayName: 'Fantasy-Island',
+      url: '/images/tvShows/fantasy-island.jpg',
+    },
+    {
+      displayName: 'Onward',
+      url: '/images/tvShows/onward.jpg',
+    },
+    {
+      displayName: 'Let it Snow',
+      url: '/images/tvShows/let-it-snow.png',
+    },
+    {
+      displayName: 'Do Little',
+      url: '/images/tvShows/do-little.jpg',
+    },
+    {
+      displayName: 'Summerland',
+      url: '/images/tvShows/summerland.jpg',
+    },
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for settings listings.
+   */
+  var settingsInfo = [
+    {
+      displayName: 'Bluetooth',
+      url: '/images/settings/bluetooth.jpg',
+    },
+    {
+      displayName: 'Wi-Fi',
+      url: '/images/settings/wifi.jpg',
+    },
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for listings in side panel.
+   */
+  var sidePanelInfo = [
+    {
+      title: 'Apps',
+      url: '/images/sidePanel/menu.png',
+    },
+    {
+      title: 'Metro Apps',
+      url: '/images/sidePanel/metro.png',
+    },
+    {
+      title: 'TV Shows',
+      url: '/images/sidePanel/video.png',
+    },
+    {
+      title: 'Settings',
+      url: '/images/sidePanel/settings.png',
+    },
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for UI selection.
+   */
+  var uiInfo = [
+    {
+      title: 'DEFAULT',
+      url: '',
+    },
+    {
+      title: 'TATA',
+      url: 'http://35.155.171.121:8088/index.html',
+    },
+    {
+      title: 'EPAM',
+      url: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+    },
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for metro app listings.
+   */
+  var metroAppsInfo = [
+    {
+      displayName: "CNN",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
+      url: "/images/metroApps/Test-01.png"
+    },
+    {
+      displayName: "VimeoRelease",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
+      url: "/images/metroApps/Test-02.png"
+    },
+    {
+      displayName: "WeatherNetwork",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
+      url: "/images/metroApps/Test-03.png"
+    },
+    {
+      displayName: "EuroNews",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
+      url: "/images/metroApps/Test-04.png"
+    },
+    {
+      displayName: "AccuWeather",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
+      url: "/images/metroApps/Test-05.png"
+    },
+    {
+      displayName: "BaebleMusic",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
+      url: "/images/metroApps/Test-06.png"
+    },
+    {
+      displayName: "Aljazeera",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
+      url: "/images/metroApps/Test-07.png"
+    },
+    {
+      displayName: "GuessThatCity",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
+      url: "/images/metroApps/Test-08.png"
+    },
+    {
+      displayName: "Radioline",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
+      url: "/images/metroApps/Test-09.png"
+    },
+    {
+      displayName: "WallStreetJournal",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
+      url: "/images/metroApps/Test-10.png"
+    }
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class that returns the data required for home screen.
+   */
+  class HomeApi {
+    /**
+     * Function to get details for app listing.
+     */
+    getAppListInfo() {
+      return appListInfo
+    }
+
+    /**
+     * Function to get details for tv shows listings.
+     */
+    getTVShowsInfo() {
+      return tvShowsInfo
+    }
+
+    /**
+     * Function to get details for settings listings.
+     */
+    getSettingsInfo() {
+      return settingsInfo
+    }
+
+    /**
+     * Function to get details for side panel.
+     */
+    getSidePanelInfo() {
+      return sidePanelInfo
+    }
+
+    /**
+     * Function to get details of different UI
+     */
+    getUIInfo() {
+      return uiInfo
+    }
+
+    /**
+     * Function to details of metro apps
+     */
+    getMetroInfo() {
+      return metroAppsInfo
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class Network {
+    constructor() {
+      this._events = new Map();
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1,
+      };
+      this._thunder = thunderJS(config);
+      this.callsign = 'org.rdk.Network';
+    }
+
+    /**
+     * Function to activate network plugin
+     */
+    activate() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('Controller', 'activate', { callsign: this.callsign }).then(result => {
+          this._thunder.on(this.callsign, 'onIPAddressStatusChanged', notification => {
+            if (this._events.has('onIPAddressStatusChanged')) {
+              this._events.get('onIPAddressStatusChanged')(notification);
+            }
+          });
+          this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
+            if (this._events.has('onDefaultInterfaceChanged')) {
+              this._events.get('onDefaultInterfaceChanged')(notification);
+            }
+          });
+          console.log('Activation success');
+          resolve(true);
+        });
+      });
+    }
+
+    /**
+     *Register events and event listeners.
+     * @param {string} eventId
+     * @param {function} callback
+     *
+     */
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+
+    /**
+     * Function to return the IP of the default interface.
+     */
+    getIP() {
+      return new Promise((resolve,reject)=>{
+          this._thunder.call(this.callsign,'getStbIp').then(result=>{
+              if(result.success){
+                  console.log(result);
+                  resolve(result.ip);
+              }
+              reject(false);
+          }).catch(err=>{
+              reject(err);
+          });
+      })
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for home screen UI */
+  class HomeScreen extends Lightning.Component {
+    /**
+     * Function to render various elements in home screen.
+     */
+    static _template() {
+      return {
+        Background: {
+          w: 1920,
+          h: 1080,
+          src: Utils.asset('images/tvShows/background.jpg'),
+          alpha: 1,
+        },
+        TopPanel: {
+          type: TopPanel,
+        },
+        View:{
+          x: 0,
+          y: 200,
+          w: 1920,
+          h: 1080,
+          clipping: true,
+          SidePanel: {
+            type: SidePanel,
+          },
+          MainView: {
+            w:1920,
+            h:1080,
+            type: MainView,
+          },
+        },
+        IpAddress: {
+          x: 1850,
+          y: 1060,
+          mount: 1,
+          text: {
+            text: 'IP:NA',
+            textColor: 0xffffffff,
+            fontSize: 30,
+          },
+        },
+        Player: { type: AAMPVideoPlayer },
+      }
+    }
+
+    _init() {
+      this.homeApi = new HomeApi();
+      var appItems = this.homeApi.getAppListInfo();
+      const URL_PARAMS = new window.URLSearchParams(window.location.search);
+      var data = URL_PARAMS.get('data');
+      console.log(data);
+      var prop_apps = 'applications';
+      var prop_displayname = 'displayName';
+      var prop_uri = 'uri';
+      var prop_apptype = 'applicationType';
+      var prop_url = 'url';
+      var appdetails = [];
+      var appdetails_format = [];
+      var usbApps = 0;
+      try {
+        if (data != null && JSON.parse(data).hasOwnProperty(prop_apps)) {
+          appdetails = JSON.parse(data).applications;
+          for (var i = 0; i < appdetails.length; i++) {
+            if (
+              appdetails[i].hasOwnProperty(prop_displayname) &&
+              appdetails[i].hasOwnProperty(prop_uri) &&
+              appdetails[i].hasOwnProperty(prop_apptype) &&
+              appdetails[i].hasOwnProperty(prop_url)
+            ) {
+              appdetails_format.push(appdetails[i]);
+              usbApps++;
+            }
+          }
+          for (var i = 0; i < appItems.length; i++) {
+            appdetails_format.push(appItems[i]);
+          }
+        } else {
+          appdetails_format = appItems;
+        }
+      } catch (e) {
+        appdetails_format = appItems;
+        console.log('Query data is not proper: ' + e);
+      }
+      this.tag('MainView').appItems = appdetails_format;
+      this.tag('MainView').metroApps = this.homeApi.getMetroInfo();
+      this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo();
+      this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo();
+      this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo();
+      this.sidePanelData = this.homeApi.getSidePanelInfo();
+      this._setState('SidePanel');
+      this.initialLoad = true;
+      this.networkApi = new Network();
+      this.networkApi.activate().then(result=>{
+        if(result){
+          this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
+            if (notification.status == 'ACQUIRED') {
+              this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
+            } else if (notification.status == 'LOST') {
+              this.tag('IpAddress').text.text = 'IP:NA';
+            }
+          });
+          this.networkApi.getIP().then(ip=>{
+            this.tag('IpAddress').text.text = 'IP:'+ip;
+          });
+        }
+      });
+    }
+
+    _active() {
+      if (this.initialLoad) {
+        let home = this;
+        this._homeAnimation = home.animation({
+          duration: 0.5,
+          repeat: 0,
+          stopMethod: 'immediate',
+          actions: [
+            { p: 'scale', v: { 0: 5, 1: 1 } },
+            { p: 'x', v: { 0: -1920, 1: 0 } },
+            { p: 'y', v: { 0: -1080, 1: 0 } },
+          ],
+        });
+        this._homeAnimation.start();
+        this.initialLoad = false;
+      }
+    }
+
+    /**
+     * Function to start video playback.
+     */
+    play() {
+      this.player = this.tag('Player');
+      try {
+        this.player.load({
+          title: 'Parkour event',
+          subtitle: 'm3u8',
+          url:
+            'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+          drmConfig: null,
+        });
+        this.zoomOut(0.1);
+        this.hide();
+        this._setState('Playing');
+        this.player.setVideoRect(0, 0, 1920, 1080);
+      } catch (error) {
+        this._setState('MainView');
+        console.error('Playback Failed ' + error);
+      }
+    }
+
+    /**
+     * Function to zoom in main view of home UI.
+     */
+    zoomIn(duration) {
+      this._sidePanelAnimation = this.tag('SidePanel').animation({
+        duration: duration,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [{ p: 'x', v: { 0: 130, 1: 280 } }],
+      });
+      this._sidePanelAnimation.start();
+      this.tag('SidePanel').resetSidePanelItems = this.sidePanelData;
+      let app = this;
+      this._appAnimation = app.animation({
+        duration: duration,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [
+          { p: 'x', v: { 0: 0, 1: -320 } },
+          { p: 'y', v: { 0: 0, 1: -180 } },
+          { p: 'scale', v: { 0: 1, 1: 1.17 } },
+        ],
+      });
+      this._appAnimation.start();
+    }
+
+    /**
+     * Function to zoom out main view of home UI.
+     */
+    zoomOut(duration) {
+      this._sidePanelAnimation = this.tag('SidePanel').animation({
+        duration: duration,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [{ p: 'x', v: { 0: 280, 1: 130 } }],
+      });
+      this._sidePanelAnimation.start();
+      this.tag('SidePanel').sidePanelItems = this.sidePanelData;
+      let app = this;
+      this._appAnimation = app.animation({
+        duration: duration,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [
+          { p: 'x', v: { 0: -320, 1: 0 } },
+          { p: 'y', v: { 0: -180, 1: 0 } },
+          { p: 'scale', v: { 0: 1.17, 1: 1 } },
+        ],
+      });
+      this._appAnimation.start();
+    }
+
+    /**
+     * Fireancestor to set the state to side panel.
+     * @param {index} index index value of side panel item.
+     */
+    $goToSidePanel(index) {
+      this.zoomOut(0.7);
+      this.tag('SidePanel').index = index;
+      this._setState('SidePanel');
+    }
+
+    /**
+     * Fireancestor to set the state to main view.
+     * @param {index} index index value of main view row.
+     */
+    $goToMainView(index) {
+      this.zoomIn(0.7);
+      this.tag('MainView').index = index;
+      this._setState('MainView');
+    }
+
+    /**
+     * Fireancestor to set the state to player.
+     */
+    $goToPlayer() {
+      this._setState('Player');
+      this.play();
+    }
+
+    /**
+     * Function to scroll
+     */
+    $scroll(y){
+      this.tag('SidePanel').setSmooth('y',y,{duration:0.5});
+      this.tag('MainView').setSmooth('y',y,{duration:0.5});
+    }
+
+    /**
+     * Function to hide the home UI.
+     */
+    hide() {
+      this.tag('Background').patch({ alpha: 0 });
+      this.tag('MainView').patch({ alpha: 0 });
+      this.tag('TopPanel').patch({ alpha: 0 });
+      this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    /**
+     * Function to show home UI.
+     */
+    show() {
+      this.tag('Background').patch({ alpha: 1 });
+      this.tag('MainView').patch({ alpha: 1 });
+      this.tag('TopPanel').patch({ alpha: 1 });
+      this.tag('SidePanel').patch({ alpha: 1 });
+    }
+
+    /**
+     * Function to define various states needed for home screen.
+     */
+    static _states() {
+      return [
+        class TopPanel extends this {
+          _getFocused() {
+            return this.tag('TopPanel')
+          }
+        },
+        class SidePanel extends this {
+          _getFocused() {
+            return this.tag('SidePanel')
+          }
+        },
+        class MainView extends this {
+          _getFocused() {
+            return this.tag('MainView')
+          }
+        },
+        class Playing extends this {
+          _getFocused() {
+            return this.tag('Player')
+          }
+
+          stopPlayer(){
+            this.zoomIn(0);
+            this._setState('MainView');
+            this.player.stop();
+            this.show();
+          }
+
+          _handleKey(key) {
+            if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+              this.stopPlayer();
+            } else if (key.keyCode == 227 || key.keyCode == 179){
+              this.stopPlayer();
+              return false;
+            }
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Bluetooth thunder plugin apis.
+   */
+
+  class BluetoothApi {
+    constructor() {
+      console.log('Bluetooth constructor');
+      this._events = new Map();
+      this._devices = [];
+      this._pairedDevices = [];
+      this._connectedDevices = [];
+    }
+
+    /**
+     * Function to activate the Bluetooth plugin
+     */
+    activate() {
+      return new Promise((resolve, reject) => {
+        const config = {
+          host: '127.0.0.1',
+          port: 9998,
+          default: 1,
+        };
+        this._thunder = thunderJS(config);
+        this.callsign = 'org.rdk.Bluetooth';
+        this._thunder
+          .call('Controller', 'activate', { callsign: this.callsign })
+          .then(result => {
+            console.log('Bluetooth activated', result);
+            this._thunder.on(this.callsign, 'onDiscoveredDevice', notification => {
+              console.log('onDiscoveredDevice ' + JSON.stringify(notification));
+              this.getDiscoveredDevices().then(() => {
+                this._events.get('onDiscoveredDevice')(notification);
+              });
+            });
+            this._thunder.on(this.callsign, 'onStatusChanged', notification => {
+              console.log('onStatusChanged ' + notification.newStatus);
+              if (notification.newStatus === 'PAIRING_CHANGE') {
+                this.getPairedDevices().then(() => {
+                  this._events.get('onPairingChange')(notification);
+                });
+              } else if (notification.newStatus === 'CONNECTION_CHANGE') {
+                this.getConnectedDevices().then(() => {
+                  this._events.get('onConnectionChange')(notification);
+                });
+              } else if (notification.newStatus === 'DISCOVERY_STARTED') {
+                this.getConnectedDevices().then(() => {
+                  this._events.get('onDiscoveryStarted')();
+                });
+              } else if (notification.newStatus === 'DISCOVERY_COMPLETED') {
+                this.getConnectedDevices().then(() => {
+                  this._events.get('onDiscoveryCompleted')();
+                });
+              }
+            });
+            this._thunder.on(this.callsign, 'onPairingRequest', notification => {
+              console.log('onPairingRequest ' + JSON.stringify(notification));
+              this._events.get('onPairingRequest')(notification);
+            });
+            this._thunder.on(this.callsign, 'onRequestFailed', notification => {
+              console.log('onRequestFailed ' + JSON.stringify(notification));
+              this._events.get('onRequestFailed')(notification);
+            });
+            this._thunder.on(this.callsign, 'onConnectionRequest', notification => {
+              console.log('onConnectionRequest ' + JSON.stringify(notification));
+              this._events.get('onConnectionRequest')(notification);
+            });
+            resolve('Blutooth activated');
+          })
+          .catch(err => {
+            console.error('Activation failure', err);
+            reject('Bluetooth activation failed', err);
+          });
+      })
+    }
+
+    /**
+     *
+     * @param {string} eventId
+     * @param {function} callback
+     * Function to register the events for the Bluetooth plugin.
+     */
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+
+    /**
+     * Function to deactivate the Bluetooth plugin.
+     */
+    deactivate() {
+      this._events = new Map();
+      this._thunder = null;
+    }
+
+    /**
+     * Function to disable the Bluetooth stack.
+     */
+    disable() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'disable')
+          .then(result => {
+            console.log(JSON.stringify(result));
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`Can't disable : ${err}`);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to enable the Bluetooth stack.
+     */
+    enable() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'enable')
+          .then(result => {
+            console.log(JSON.stringify(result));
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`Can't enable : ${err}`);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to start scanning for the Bluetooth devices.
+     */
+    startScan() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'startScan', {
+            timeout: '10',
+            profile: 'KEYBOARD,MOUSE,JOYSTICK',
+          })
+          .then(result => {
+            console.log('scanning : ' + result.success);
+            if (result.success) resolve();
+            else reject();
+          })
+          .catch(err => {
+            console.error('Error', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to stop scanning for the Bluetooth devices.
+     */
+    stopScan() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'startScan', {})
+          .then(result => {
+            console.log('stopped scanning : ' + result.success);
+            if (result.success) resolve();
+            else reject();
+          })
+          .catch(err => {
+            console.error('Error', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function returns the discovered Bluetooth devices.
+     */
+    getDiscoveredDevices() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'getDiscoveredDevices')
+          .then(result => {
+            console.log(JSON.stringify(result));
+            this._devices = result.discoveredDevices;
+            resolve(result.discoveredDevices);
+          })
+          .catch(err => {
+            console.error(`Can't get discovered devices : ${err}`);
+            reject();
+          });
+      })
+    }
+    get discoveredDevices() {
+      return this._devices
+    }
+
+    /**
+     * Function returns the paired Bluetooth devices.
+     */
+    getPairedDevices() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'getPairedDevices')
+          .then(result => {
+            console.log(JSON.stringify(result));
+            this._pairedDevices = result.pairedDevices;
+            resolve(result.pairedDevices);
+          })
+          .catch(err => {
+            console.error(`Can't get paired devices : ${err}`);
+            reject();
+          });
+      })
+    }
+    get pairedDevices() {
+      return this._pairedDevices
+    }
+
+    /**
+     * Function returns the connected Bluetooth devices.
+     */
+    getConnectedDevices() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'getConnectedDevices')
+          .then(result => {
+            console.log(JSON.stringify(result));
+            this._connectedDevices = result.connectedDevices;
+            resolve(result.connectedDevices);
+          })
+          .catch(err => {
+            console.error(`Can't get connected devices : ${err}`);
+            reject();
+          });
+      })
+    }
+
+    get connectedDevices() {
+      return this._connectedDevices
+    }
+
+    /**
+     *
+     * Function to connect a Bluetooth device.
+     * @param {number} deviceID Device ID of the Bluetoth client.
+     * @param {string} deviceType Device type of the Bluetooth client.
+     */
+    connect(deviceID, deviceType) {
+      return new Promise((resolve, reject) => {
+        console.log(deviceID);
+        this._thunder
+          .call('org.rdk.Bluetooth', 'connect', {
+            deviceID: deviceID,
+            deviceType: deviceType,
+            profile: deviceType,
+          })
+          .then(result => {
+            console.log('connected : ' + result.success);
+            resolve(result.success);
+          })
+          .catch(err => {
+            console.error('Connection failed', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to disconnect a Bluetooth device.
+     *@param {number} deviceID Device ID of the Bluetoth client.
+     *@param {string} deviceType Device type of the Bluetooth client.
+     */
+    disconnect(deviceID, deviceType) {
+      console.log(deviceID);
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'disconnect', {
+            deviceID: deviceID,
+            deviceType: deviceType,
+          })
+          .then(result => {
+            console.log('disconnected : ' + result.success);
+            if (result.success) resolve(true);
+            else reject();
+          })
+          .catch(err => {
+            console.error('disconnect failed', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to unpair a Bluetooth device.
+     * @param {number} deviceId
+     */
+    unpair(deviceId) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'unpair', { deviceID: deviceId })
+          .then(result => {
+            console.log('unpaired : ' + result.success);
+            if (result.success) resolve();
+            else reject();
+          })
+          .catch(err => {
+            console.error('unpair failed', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to pair a Bluetooth device.
+     * @param {number} deviceId
+     */
+    pair(deviceId) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'pair', { deviceID: deviceId })
+          .then(result => {
+            console.log('paired : ' + result.success);
+            if (result.success) resolve();
+            else reject();
+          })
+          .catch(err => {
+            console.error('Error on pairing', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to respond to client the Bluetooth event.
+     * @param {number} deviceID Device ID of the Bluetooth client.
+     * @param {string} eventType Name of the event.
+     * @param {string} responseValue Response sent to the Bluetooth client.
+     */
+    respondToEvent(deviceID, eventType, responseValue) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Bluetooth', 'respondToEvent', {
+            deviceID: deviceID,
+            eventType: eventType,
+            responseValue: responseValue,
+          })
+          .then(result => {
+            console.log('responded to event : ' + result.success);
+            if (result.success) resolve();
+            else reject();
+          })
+          .catch(err => {
+            console.error('Error on respondToEvent', err);
+            reject();
+          });
+      })
+    }
+
+    /**
+     * Function to get the discoverable name of the Bluetooth plugin.
+     */
+    getName() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('org.rdk.Bluetooth', 'getName').then(result => {
+          resolve(result.name);
+        });
+      })
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**Color constants */
+  var COLORS = {
+    textColor: 0xffffffff,
+    titleColor: 0xffffffff,
+    hightlightColor: 0xffc0c0c0,
+    headingColor: 0xffffffff,
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for rendering items in UI list.
+   */
+  class Item extends Lightning.Component {
+    static _template() {
+      return {
+        Item: {
+          w: 200,
+          h: 65,
+          rect: true,
+          color: COLORS.hightlightColor,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        },
+      }
+    }
+
+    /**
+     * Function to set contents for an item in UI list.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Name: {
+          x: 100,
+          y: 32.5,
+          mount: 0.5,
+          text: { text: item.title, textColor: 0xffffffff, fontSize: 35 },
+        },
+      });
+    }
+
+    /**
+     * Set width of the item.
+     */
+    set width(width) {
+      this.tag('Item').w = width;
+    }
+
+    /**
+     * Set height of the item.
+     */
+    set height(height) {
+      this.tag('Item').h = height;
+    }
+
+    _focus() {
+      this.tag('Item').scale = 1.1;
+    }
+
+    _unfocus() {
+      this.tag('Item').scale = 1;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for splash screen.
+   */
+  class SplashScreen extends Lightning.Component {
+    static _template() {
+      return {
+        Splashscreen: {
+          w: 1920,
+          h: 1080,
+          alpha: 0,
+          //just to cache the image
+          Cache: {
+            w: 0,
+            h: 0,
+            x: -1920,
+            src: Utils.asset('images/tvShows/background.jpg'),
+          },
+          Img: {
+            mount: 0.5,
+            x: 1920 / 2,
+            y: 1080 / 2,
+            src: Utils.asset('images/RDKLogo.png'),
+          },
+        },
+        SplashVideo: {
+          w: 1920,
+          h: 1080,
+          alpha: 0,
+          Player: { type: AAMPVideoPlayer, w: 1920, h: 1080, x: 0, y: 0 },
+        },
+        AutoRemotePair: {
+          w: 1920,
+          h: 1080,
+          src: Utils.asset('images/tvShows/background.jpg'),
+          alpha: 0,
+          Title: {
+            w: 1600,
+            y: 474,
+            text: {
+              fontSize: 55,
+              textAlign: 'center',
+              text: 'Pair Your Remote',
+              textColor: 0xffffffff,
+            },
+          },
+          Description: {
+            w: 1300,
+            y: 550,
+            x: 150,
+            text: {
+              fontSize: 35,
+              textAlign: 'center',
+              maxLines: 2,
+              text: 'Please put the remote in pairing mode, scanning will start in a minute',
+
+              textColor: 0xffe5e5e5,
+            },
+          },
+          LoadingIcon: {
+            x: 750,
+            y: 600,
+            alpha: 0,
+            src: Utils.asset('images/loading.png'),
+          },
+          RemoteImg: {
+            x: 1300,
+            y: 300,
+            src: Utils.asset('images/remote.png'),
+          },
+        },
+        ConnectivityScreen: {
+          w: 1920,
+          h: 1080,
+          src: Utils.asset('images/tvShows/background.jpg'),
+          alpha: 0,
+          Title: {
+            w: 1920,
+            y: 325,
+            text: {
+              fontSize: 55,
+              textAlign: 'center',
+              text: "You're not connected to the internet",
+              textColor: 0xffffffff,
+            },
+          },
+          Description: {
+            w: 1920,
+            y: 400,
+            text: {
+              fontSize: 35,
+              textAlign: 'center',
+              maxLines: 2,
+              text:
+                'Please connect to either a wired connection or a WiFi Network, For WiFi network press home and then go to settings',
+              wordWrapWidth: 1400,
+              textColor: 0xffe5e5e5,
+            },
+          },
+        },
+        UISwitch: {
+          w: 1920,
+          h: 1080,
+          src: Utils.asset('images/tvShows/background.jpg'),
+          alpha: 0,
+          Title: {
+            x: 1920 / 2,
+            y: 400,
+            mountX: 0.5,
+            text: {
+              fontSize: 55,
+              textAlign: 'center',
+              text: 'Choose your UI',
+              textColor: 0xffffffff,
+            },
+          },
+          UIList: {
+            x: 1920 / 2 + 20,
+            y: 500,
+            type: Lightning.components.ListComponent,
+            w: 224 * 3,
+            h: 100,
+            itemSize: 204 + 20,
+            roll: true,
+            mountX: 0.5,
+          },
+        },
+      }
+    }
+    /**
+     * Function to be excuted when the Bluetooth screen is enabled.
+     */
+    _enable() {
+      this.remotePaired = true;
+      this.hasInternet = true;
+
+      this._bt = new BluetoothApi();
+      this._bt.activate();
+      this._bt
+        .getPairedDevices()
+        .then(() => this._bt.getConnectedDevices())
+        .then(() => {
+          let paired = this._bt.pairedDevices;
+          let connected = this._bt.connectedDevices;
+
+          if (paired.length == 0 && connected.length == 0) {
+            this.remotePaired = false;
+          }
+        });
+      // this.startVideo()
+      // var thunderCalls = new ThunderCalls()
+      // thunderCalls.checkForInternet().then(result => {
+      //   this.hasInternet = result
+      // })
+
+      this._setState('Splashscreen');
+    }
+    /**
+     * Function to be executed when the Bluetooth screen is disabled from the screen.
+     */
+    _disable() {
+      if (this._bt) this._bt.deactivate();
+      if (this.player) this.player.stop();
+    }
+
+    _init() {
+      this.appApi = new AppApi();
+      var homeApi = new HomeApi();
+      this.tag('UISwitch.UIList').items = homeApi.getUIInfo().map((item, index) => {
+        return {
+          ref: 'UI' + index,
+          w: 204,
+          h: 100,
+          type: Item,
+          item: item,
+        }
+      });
+    }
+    /**
+     * Function to startVideo.
+     */
+    startVideo() {
+      this.player = this.tag('SplashVideo.Player');
+      try {
+        this.player.load({
+          title: '',
+          subtitle: '',
+          image: '',
+          url: 'https://rdkwiki.com/rdk-apps/splash/splash.MOV',
+          drmConfig: null,
+        });
+        //this.player.setVideoRect(0, 0, 1280, 720)
+        // this.player.pause()
+      } catch (error) {
+        this.player = null;
+        console.log('###########', error);
+      }
+    }
+
+    /**
+     * Function to handle the different states of the app.
+     */
+    static _states() {
+      return [
+        class Splashscreen extends this {
+          $enter() {
+            const myAnimation = this.tag('Splashscreen').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 0, 1: 1 } }],
+            });
+            myAnimation.start();
+
+            this.screenTimeout = setTimeout(() => {
+              this._setState('SplashVideo');
+            }, 5000);
+          }
+          _handleKey(event) {
+            if (event.keyCode == 83) this._setState('UISwitch');
+          }
+          $exit() {
+            const myAnimation = this.tag('Splashscreen').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            });
+            myAnimation.start();
+            window.clearTimeout(this.screenTimeout);
+          }
+        },
+        class SplashVideo extends this {
+          $enter() {
+            const myAnimation = this.tag('SplashVideo').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 0, 1: 1 } }],
+            });
+            myAnimation.start();
+            this.startVideo();
+            this.timeout = setTimeout(() => {
+              if (this.remotePaired == false) this._setState('AutoRemotePair');
+              else if (this.hasInternet == false) this._setState('ConnectivityScreen');
+              else Router.navigate('home');
+            }, 5000);
+          }
+          $exit() {
+            const myAnimation = this.tag('SplashVideo').animation({
+              duration: 1,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            });
+            myAnimation.on('finish', p => {
+              if (this.player) this.player.stop();
+            });
+            myAnimation.start();
+            window.clearTimeout(this.timeout);
+          }
+          _handleKey(event) {
+            if (event.keyCode == 83) this._setState('UISwitch');
+          }
+        },
+        class ConnectivityScreen extends this {
+          $enter() {
+            const myAnimation = this.tag('ConnectivityScreen').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [
+                { p: 'alpha', v: { 0: 0, 1: 1 } },
+                { p: 'x', v: { 0: 1000, 1: 0 } },
+              ],
+            });
+            myAnimation.start();
+            setTimeout(() => {
+              Router.navigate('home');
+            }, 5000);
+          }
+          $exit() {
+            const myAnimation = this.tag('ConnectivityScreen').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            });
+            myAnimation.start();
+          }
+          _handleKey() {
+            Router.navigate('home');
+          }
+        },
+        class AutoRemotePair extends this {
+          $enter() {
+            const myAnimation = this.tag('AutoRemotePair').animation({
+              duration: 1,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [
+                { p: 'alpha', v: { 0: 0, 1: 1 } },
+                { p: 'x', v: { 0: 1000, 1: 0 } },
+              ],
+            });
+            var connected = false;
+            var timer = setTimeout(() => {
+              if (!connected)
+                this.tag('AutoRemotePair.Description').text =
+                  'Please put the remote in pairing mode, No Bluetooth device found';
+              setTimeout(() => {
+                if (this.hasInternet == false) this._setState('ConnectivityScreen');
+                else Router.navigate('home');
+              }, 1000);
+            }, 10000);
+            var error = () => {
+              this.tag('AutoRemotePair.Description').text =
+                'Please put the remote in pairing mode, , No Bluetooth device found';
+              setTimeout(() => {
+                if (this.hasInternet == false) this._setState('ConnectivityScreen');
+                else Router.navigate('home');
+              }, 1000);
+            };
+            myAnimation.start();
+            setTimeout(() => {
+              this.tag('AutoRemotePair.Description').text =
+                'Please put the remote in pairing mode, Scanning...';
+              const rotateAnimation = this.tag('AutoRemotePair.LoadingIcon').animation({
+                duration: 1,
+                repeat: -1,
+                stopMethod: 'immediate',
+                stopDelay: 0.2,
+                actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
+              });
+              rotateAnimation.play();
+              this.tag('AutoRemotePair.LoadingIcon').alpha = 1;
+              this._bt.startScan();
+              this._bt.registerEvent('onDiscoveredDevice', () => {
+                let discovered = this._bt.discoveredDevices;
+                if (discovered.length > 0) {
+                  this._bt.pair(discovered[0].deviceID);
+                } else {
+                  error();
+                }
+              });
+            }, 5000);
+            this._bt.registerEvent('onPairingChange', () => {
+              let pairedDevices = this._bt.pairedDevices;
+              if (pairedDevices.length > 0) {
+                this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType);
+              } else {
+                setTimeout(() => {
+                  this._bt.getPairedDevices().then(() => {
+                    let pairedDevices = this._bt.pairedDevices;
+                    if (pairedDevices.length > 0) {
+                      this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType);
+                    } else {
+                      error();
+                    }
+                  });
+                }, 2000);
+              }
+            });
+            this._bt.registerEvent('onConnectionChange', () => {
+              let connectedDevices = this._bt.connectedDevices;
+              if (connectedDevices.length > 0) {
+                this.tag('AutoRemotePair.Description').text =
+                  'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name;
+                connected = true;
+                clearTimeout(timer);
+                setTimeout(() => {
+                  if (this.hasInternet == false) this._setState('ConnectivityScreen');
+                  else Router.navigate('home');
+                }, 2000);
+              } else {
+                setTimeout(() => {
+                  this._bt.getConnectedDevices().then(() => {
+                    let connectedDevices = this._bt.connectedDevices;
+                    if (connectedDevices.length > 0) {
+                      this.tag('AutoRemotePair.Description').text =
+                        'Please put the remote in pairing mode, Connected to ' +
+                        connectedDevices[0].name;
+                      connected = true;
+                      clearTimeout(timer);
+                      setTimeout(() => {
+                        if (this.hasInternet == false) this._setState('ConnectivityScreen');
+                        else Router.navigate('home');
+                      }, 2000);
+                    } else {
+                      error();
+                    }
+                  });
+                }, 2000);
+              }
+            });
+          }
+          $exit() {
+            const myAnimation = this.tag('AutoRemotePair').animation({
+              duration: 1,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            });
+            myAnimation.start();
+          }
+        },
+        class UISwitch extends this {
+          $enter() {
+            const myAnimation = this.tag('UISwitch').animation({
+              duration: 0.5,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [
+                { p: 'alpha', v: { 0: 0, 1: 1 } },
+                { p: 'x', v: { 0: 1000, 1: 0 } },
+              ],
+            });
+            myAnimation.start();
+          }
+          _getFocused() {
+            return this.tag('UISwitch.UIList').element
+          }
+          _handleRight() {
+            if (this.tag('UISwitch.UIList').length - 1 != this.tag('UISwitch.UIList').index) {
+              this.tag('UISwitch.UIList').setNext();
+              return this.tag('UISwitch.UIList').element
+            }
+          }
+          _handleLeft() {
+            if (this.tag('UISwitch.UIList').index > 0) {
+              this.tag('UISwitch.UIList').setPrevious();
+              return this.tag('UISwitch.UIList').element
+            }
+          }
+          _handleEnter() {
+            if (this.tag('UISwitch.UIList').element._item.title != 'DEFAULT') {
+              this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.url);
+            } else {
+              if (this.remotePaired == false) this._setState('AutoRemotePair');
+              else if (this.hasInternet == false) this._setState('ConnectivityScreen');
+              else Router.navigate('home');
+            }
+          }
+          $exit() {
+            const myAnimation = this.tag('UISwitch').animation({
+              duration: 1,
+              repeat: 0,
+              stopMethod: 'immediate',
+              actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            });
+            myAnimation.start();
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for rendering items in Settings screen.
+   */
+  class SettingsItem extends Lightning.Component {
+    static _template() {
+      return {
+        Item: {
+          w: 1920 / 3 - 70,
+          h: 65,
+          rect: true,
+          color: 0x00000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        },
+      }
+    }
+
+    /**
+     * Function to set contents for an item in settings screen.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Left: {
+          x: 10,
+          y: this.tag('Item').h / 2,
+          mountY: 0.5,
+          text: { text: item, fontSize: 25, textColor: COLORS.textColor },
+        },
+      });
+    }
+
+    /**
+     * Set width of the item.
+     */
+    set width(width) {
+      this.tag('Item').w = width;
+    }
+
+    /**
+     * Set height of the item.
+     */
+    set height(height) {
+      this.tag('Item').h = height;
+    }
+
+    _focus() {
+      this.tag('Item').color = COLORS.hightlightColor;
+    }
+
+    _unfocus() {
+      this.tag('Item').color = 0x00000000;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for the item in the Bluetooth screen.
+   */
+  class BluetoothItem extends SettingsItem {
+    static _template() {
+      return {
+        Item: {
+          w: 1920 / 3 - 70,
+          h: 65,
+          rect: true,
+          color: 0x00000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        },
+      }
+    }
+
+    /**
+     * Function to set contents of an item in the Bluetooth screen.
+     */
+    set item(item) {
+      this._item = item;
+      this.connected = item.connected ? 'Connected' : 'Not Connected';
+      this.status = item.paired ? this.connected : 'Not Paired';
+      this.tag('Item').patch({
+        Left: {
+          x: 10,
+          y: 32.5,
+          mountY: 0.5,
+          text: { text: item.name, fontSize: 25, textColor: COLORS.textColor },
+        },
+
+        Right: {
+          x: 1920 / 3 - 80,
+          mountX: 1,
+          y: 32.5,
+          mountY: 0.5,
+          flex: { direction: 'row' },
+          Text: { x: 0, flexItem: {}, text: { text: this.status, fontSize: 25 } },
+          Info: {
+            color: 0xff0000ff,
+            flexItem: { marginLeft: 10 },
+            texture: Lightning.Tools.getSvgTexture(Utils.asset('images/info.png'), 32.5, 32.5),
+          },
+        },
+      });
+      if (this.status == 'Connected') {
+        this.tag('Item.Right.Info').visible = false;
+      } else {
+        this.tag('Item.Right.Info').visible = true;
+      }
+    }
+
+    _focus() {
+      this.tag('Item').color = COLORS.hightlightColor;
+    }
+
+    _unfocus() {
+      this.tag('Item').color = 0x00000000;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for pairing screen for the Bluetooth.
+   */
+  class BluetoothPairingScreen$1 extends Lightning.Component {
+    static _template() {
+      return {
+        PairingScreen: {
+          x: 0,
+          y: 0,
+          w: 1920 / 3,
+          h: 1080,
+          rect: true,
+          color: 0xff364651,
+        },
+        Title: {
+          x: 20,
+          y: 100,
+          text: { text: '', fontSize: 30, textColor: COLORS.titleColor },
+        },
+        List: {
+          x: 20,
+          y: 150,
+          type: Lightning.components.ListComponent,
+          w: 1920 / 3,
+          h: 400,
+          itemSize: 65,
+          horizontal: false,
+          invertDirection: true,
+          roll: true,
+        },
+        Status: {
+          x: 20,
+          y: 500,
+          Text: {
+            text: {
+              text: 'Enter the below code in your Bluetooth device and press enter',
+              wordWrapWidth: 1920 / 3 - 70,
+              fontSize: 30,
+            },
+          },
+          Code: {
+            x: 0,
+            y: 60,
+            text: { text: '' },
+          },
+          visible: false,
+        },
+      }
+    }
+    set item(item) {
+      this.tag('Status').visible = false;
+      this.tag('Title').text = item.name;
+      var options = [];
+      this._item = item;
+      if (item.paired) {
+        if (item.connected) {
+          options = ['Disconnect', 'Unpair', 'Cancel'];
+        } else {
+          options = ['Connect', 'Unpair', 'Cancel'];
+        }
+      } else {
+        options = ['Pair', 'Cancel'];
+      }
+      this.tag('List').items = options.map((item, index) => {
+        return {
+          ref: item,
+          w: 1920 / 3,
+          h: 65,
+          type: SettingsItem,
+          item: item,
+        }
+      });
+    }
+
+    set code(code) {
+      this.tag('Status.Code').text.text = code;
+      this.tag('Status').visible = true;
+    }
+
+    _getFocused() {
+      return this.tag('List').element
+    }
+
+    _handleDown() {
+      this.tag('List').setNext();
+    }
+
+    _handleUp() {
+      this.tag('List').setPrevious();
+    }
+
+    _handleEnter() {
+      this.fireAncestors('$pressEnter', this.tag('List').element.ref);
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for Bluetooth screen.
+   */
+  class BluetoothScreen extends Lightning.Component {
+    static _template() {
+      return {
+        Title: {
+          x: 1920 - 1920 / 3 + 1920 / 6,
+          y: 50,
+          text: { text: 'Bluetooth', textColor: COLORS.headingColor },
+          mountX: 0.5,
+        },
+        Switch: {
+          x: 1920 - 1920 / 3 + 20,
+          y: 150,
+          rect: true,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+          color: 0x00c0c0c0,
+          w: 1920 / 3 - 70,
+          h: 50,
+          Text: {
+            x: 0,
+            text: { text: 'Bluetooth', textColor: COLORS.titleColor },
+          },
+          Button: {
+            x: 1920 / 3 - 80,
+            y: 10,
+            mountX: 1,
+            src: Utils.asset('images/switch-on.png'),
+          },
+        },
+        Name: {
+          x: 1920 - 1920 / 3 + 20,
+          y: 200,
+          text: {
+            text: 'Now discoverable as',
+            textColor: COLORS.textColor,
+            fontSize: 20,
+          },
+        },
+        Networks: {
+          x: 1920 - 1920 / 3,
+          y: 250,
+          flex: { direction: 'column' },
+          PairedNetworks: {
+            flexItem: { margin: 20 },
+            w: 1920 / 3,
+            h: 30,
+            Title: {
+              text: {
+                text: 'My Devices',
+                textColor: COLORS.titleColor,
+                fontSize: 30,
+              },
+            },
+            List: {
+              x: 0,
+              y: 65,
+              type: Lightning.components.ListComponent,
+              w: 1920 / 3,
+              itemSize: 65,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+            },
+          },
+          AvailableNetworks: {
+            flexItem: { margin: 20, marginTop: 30 },
+            w: 1920 / 3,
+            h: 30,
+            Title: {
+              text: {
+                text: 'Other Devices',
+                textColor: COLORS.titleColor,
+                fontSize: 30,
+              },
+            },
+            Loader: {
+              x: 250,
+              y: -10,
+              w: 50,
+              h: 50,
+              color: 0xff000000,
+              src: Utils.asset('images/loader.png'),
+              visible: false,
+            },
+
+            List: {
+              x: 0,
+              y: 65,
+              w: 1920 / 3,
+              h: 100,
+              type: Lightning.components.ListComponent,
+              itemSize: 65,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+            },
+          },
+          visible: false,
+        },
+        PairingScreen: {
+          x: 1920 - 1920 / 3,
+          y: 0,
+          w: 1920 / 3,
+          h: 1080,
+          visible: false,
+          type: BluetoothPairingScreen$1,
+        },
+        Message: {
+          x: 1920 - 1920 / 3 + 40,
+          y: 950,
+          text: { text: '' },
+        },
+      }
+    }
+
+    _init() {
+      this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
+        duration: 1,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
+      });
+      this.loadingAnimation.play();
+      this._bt = new BluetoothApi();
+      this._bluetooth = true;
+      this._activateBluetooth();
+      this._setState('Switch');
+      this._bluetooth = true;
+      if (this._bluetooth) {
+        this.tag('Networks').visible = true;
+      }
+      this._pairedNetworks = this.tag('Networks.PairedNetworks');
+      this._availableNetworks = this.tag('Networks.AvailableNetworks');
+      this.renderDeviceList();
+    }
+    _active() {
+      this._setState('Switch');
+    }
+    /**
+     * Function to be excuted when the Bluetooth screen is enabled.
+     */
+    _enable() {
+      if (this._bluetooth) {
+        this._bt.startScan();
+      }
+      this.scanTimer = setInterval(() => {
+        if (this._bluetooth) {
+          this._bt.startScan();
+        }
+      }, 15000);
+    }
+
+    /**
+     * Function to be executed when the Bluetooth screen is disabled from the screen.
+     */
+    _disable() {
+      clearInterval(this.scanTimer);
+    }
+
+    /**
+     * Function to render list of Bluetooth devices
+     */
+    renderDeviceList() {
+      this._bt.getPairedDevices().then(result => {
+        this._pairedList = result;
+        this._pairedNetworks.h = this._pairedList.length * 65 + 30;
+        this._pairedNetworks.tag('List').h = this._pairedList.length * 65;
+        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+          item.paired = true;
+          return {
+            ref: 'Paired' + index,
+            w: 1920 / 3,
+            h: 65,
+            type: BluetoothItem,
+            item: item,
+          }
+        });
+      });
+      this._bt.getDiscoveredDevices().then(result => {
+        this._discoveredList = result;
+        this._otherList = this._discoveredList.filter(device => {
+          if (!device.paired) {
+            result = this._pairedList.map(a => a.deviceID);
+            if (result.includes(device.deviceID)) {
+              return false
+            } else return device
+          }
+        });
+        this._availableNetworks.h = this._otherList.length * 65 + 30;
+        this._availableNetworks.tag('List').h = this._otherList.length * 65;
+        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
+          return {
+            ref: 'Other' + index,
+            w: 1920 / 3,
+            h: 65,
+            type: BluetoothItem,
+            item: item,
+          }
+        });
+      });
+    }
+
+    static _states() {
+      return [
+        class Switch extends this {
+          $enter() {
+            this.tag('Switch').color = COLORS.hightlightColor;
+          }
+          $exit() {
+            this.tag('Switch').color = 0x00c0c0c0;
+          }
+          _handleDown() {
+            if (this._bluetooth) {
+              if (this._pairedNetworks.tag('List').length > 0) {
+                this._setState('PairedDevices');
+              } else if (this._availableNetworks.tag('List').length > 0) {
+                this._setState('AvailableDevices');
+              }
+            }
+          }
+          _handleEnter() {
+            this.switch();
+          }
+        },
+        class PairedDevices extends this {
+          $enter() {}
+          _getFocused() {
+            return this._pairedNetworks.tag('List').element
+          }
+          _handleDown() {
+            this._navigate('MyDevices', 'down');
+          }
+          _handleUp() {
+            this._navigate('MyDevices', 'up');
+          }
+          _handleEnter() {
+            this.tag('PairingScreen').visible = true;
+            this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item;
+            this._setState('PairingScreen');
+          }
+        },
+        class AvailableDevices extends this {
+          $enter() {}
+          _getFocused() {
+            return this._availableNetworks.tag('List').element
+          }
+          _handleDown() {
+            this._navigate('AvailableDevices', 'down');
+          }
+          _handleUp() {
+            this._navigate('AvailableDevices', 'up');
+          }
+          _handleEnter() {
+            this.tag('PairingScreen').visible = true;
+            this.tag('PairingScreen').item = this._availableNetworks.tag('List').element._item;
+            this._setState('PairingScreen');
+          }
+        },
+        class PairingScreen extends this {
+          $enter() {
+            this._disable();
+            this._bt.stopScan();
+          }
+          _getFocused() {
+            return this.tag('PairingScreen')
+          }
+          $pressEnter(option) {
+            if (option === 'Cancel') {
+              this._setState('Switch');
+            } else if (option === 'Pair') {
+              this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => {});
+            } else if (option === 'Connect') {
+              this._bt
+                .connect(
+                  this._pairedNetworks.tag('List').element._item.deviceID,
+                  this._pairedNetworks.tag('List').element._item.deviceType
+                )
+                .then(result => {
+                  if (!result) {
+                    this.tag('Message').text = 'CONNECTION FAILED';
+                    this._setState('Switch');
+                  }
+                  setTimeout(() => {
+                    this.tag('Message').text = '';
+                  }, 2000);
+                });
+            } else if (option === 'Disconnect') {
+              this._bt
+                .disconnect(
+                  this._pairedNetworks.tag('List').element._item.deviceID,
+                  this._pairedNetworks.tag('List').element._item.deviceType
+                )
+                .then(() => {});
+              this._setState('Switch');
+            } else if (option === 'Unpair') {
+              this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => {});
+              this._setState('Switch');
+            }
+          }
+          $exit() {
+            this.tag('PairingScreen').visible = false;
+            this._enable();
+          }
+        },
+      ]
+    }
+
+    /**
+     * Function to navigate through the lists in the screen.
+     * @param {string} listname
+     * @param {string} dir
+     */
+    _navigate(listname, dir) {
+      let list;
+      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');
+      else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();
+        else if (list.index == list.length - 1) {
+          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
+            this._setState('AvailableDevices');
+          }
+        }
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();
+        else if (list.index == 0) {
+          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
+            this._setState('PairedDevices');
+          } else {
+            this._setState('Switch');
+          }
+        }
+      }
+    }
+
+    /**
+     * Function to turn on and off Bluetooth.
+     */
+    switch() {
+      if (this._bluetooth) {
+        this._bt.disable().then(result => {
+          if (result.success) {
+            this._bluetooth = false;
+            this.tag('Networks').visible = false;
+            this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+          }
+        });
+      } else {
+        this._bt.enable().then(result => {
+          if (result.success) {
+            this._bluetooth = true;
+            this.tag('Networks').visible = true;
+            this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+            this.renderDeviceList();
+            this._bt.startScan();
+          }
+        });
+      }
+    }
+
+    /**
+     * Function to activate Bluetooth plugin.
+     */
+    _activateBluetooth() {
+      this._bt.activate().then(() => {
+        this._bt.registerEvent('onDiscoveredDevice', () => {
+          this.renderDeviceList();
+        });
+        this._bt.registerEvent('onPairingChange', status => {
+          this._bt.startScan();
+          this.renderDeviceList();
+          this._setState('Switch');
+        });
+        this._bt.registerEvent('onPairingRequest', notification => {
+          if (notification.pinRequired === 'true' && notification.pinValue) {
+            //this.fireAncestors('$rerenderDeviceOptions', notification.pinValue)
+            this.tag('PairingScreen').code = notification.pinValue;
+          } else {
+            this.respondToPairingRequest(notification.deviceID, 'ACCEPTED');
+          }
+        });
+        this._bt.registerEvent('onConnectionChange', notification => {
+          this._bt.startScan();
+          console.log('CONNECTION CHANGED' + JSON.stringify(notification));
+          this.renderDeviceList();
+          this._setState('Switch');
+          if (notification.connected) {
+            this.tag('Message').text = 'CONNECTION SUCCESS';
+          } else {
+            this.tag('Message').text = 'CONNECTION FAILED';
+          }
+          setTimeout(() => {
+            this.tag('Message').text = '';
+          }, 2000);
+        });
+        this._bt.registerEvent('onDiscoveryCompleted', () => {
+          this.tag('Networks.AvailableNetworks.Loader').visible = false;
+          this.renderDeviceList();
+        });
+        this._bt.registerEvent('onDiscoveryStarted', () => {
+          this.tag('Networks.AvailableNetworks.Loader').visible = true;
+        });
+        this._bt.registerEvent('onRequestFailed', notification => {
+          this._bt.startScan();
+          this.renderDeviceList();
+          this._setState('Switch');
+          this.tag('Message').text = notification.newStatus;
+          setTimeout(() => {
+            this.tag('Message').text = '';
+          }, 2000);
+        });
+        //this._bt.startScan()
+        this._bt.getName().then(name => {
+          this.tag('Name').text.text = `Now discoverable as "${name}"`;
+        });
+        // this._bluetooth = true
+        // this.tag('Networks').visible = true
+        // this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
+        // this.renderDeviceList()
+      });
+    }
+
+    /**
+     * Function to respond to Bluetooth client.
+     * @param {number} deviceID
+     * @param {string} responseValue
+     */
+    respondToPairingRequest(deviceID, responseValue) {
+      this._bt.respondToEvent(deviceID, 'onPairingRequest', responseValue);
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class WiFiItem extends SettingsItem {
+    static _template() {
+      return {
+        Item: {
+          w: 1920 / 3 - 70,
+          h: 65,
+          rect: true,
+          color: 0x00000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        },
+      }
+    }
+
+    /**
+     * Function to set contents of an item in the Bluetooth screen.
+     */
+    set item(item) {
+      this._item = item;
+      this.status = item.connected ? 'Connected' : 'Not Connected';
+      this.tag('Item').patch({
+        Left: {
+          x: 10,
+          y: 32.5,
+          mountY: 0.5,
+          text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor },
+        },
+
+        Right: {
+          x: 1920 / 3 - 80,
+          mountX: 1,
+          y: 32.5,
+          mountY: 0.5,
+          flex: { direction: 'row' },
+          Lock: {
+            color: 0xff000000,
+            flexItem: { marginLeft: 10 },
+            texture: Lightning.Tools.getSvgTexture(Utils.asset('images/wifi-lock.png'), 32.5, 32.5),
+          },
+          Icon: {
+            color: 0xff000000,
+            flexItem: { marginLeft: 10 },
+            texture: Lightning.Tools.getSvgTexture(Utils.asset('images/wifi-icon.png'), 32.5, 32.5),
+          },
+          Info: {
+            color: 0xff000000,
+            flexItem: { marginLeft: 10 },
+            texture: Lightning.Tools.getSvgTexture(Utils.asset('images/info.png'), 32.5, 32.5),
+          },
+        },
+      });
+      if (item.security == '0' || item.security == '15') {
+        this.tag('Item.Right.Lock').visible = false;
+      } else {
+        this.tag('Item.Right.Lock').visible = true;
+      }
+    }
+
+    _focus() {
+      this.tag('Item').color = COLORS.hightlightColor;
+    }
+
+    _unfocus() {
+      this.tag('Item').color = 0x00000000;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  const WiFiState = {
+    UNINSTALLED: 0,
+    DISABLED: 1,
+    DISCONNECTED: 2,
+    PAIRING: 3,
+    CONNECTING: 4,
+    CONNECTED: 5,
+    FAILED: 6,
+  };
+
+  class Wifi {
+    constructor() {
+      this._events = new Map();
+    }
+
+    /**
+     * Function to activate the wifi plugin.
+     */
+    activate() {
+      return new Promise((resolve, reject) => {
+        const config = {
+          host: '127.0.0.1',
+          port: 9998,
+          default: 1,
+        };
+        this._thunder = thunderJS(config);
+        this.callsign = 'org.rdk.Wifi';
+        this._thunder
+          .call('Controller', 'activate', { callsign: this.callsign })
+          .then(result => {
+            console.log('Wifi activated', result);
+
+            this.getCurrentState().then(state => {
+              if (state === WiFiState.DISABLED) {
+                this.setEnabled(true);
+              }
+            });
+
+            this._thunder.on(this.callsign, 'onWIFIStateChanged', notification => {
+              console.log('onWIFIStateChanged: ' + notification.state);
+              if (this._events.has('onWIFIStateChanged')) {
+                this._events.get('onWIFIStateChanged')(notification);
+              }
+            });
+            this._thunder.on(this.callsign, 'onError', notification => {
+              console.log('Error: ' + notification);
+              if (this._events.has('onError')) {
+                this._events.get('onError')(notification);
+              }
+            });
+
+            this._thunder.on(this.callsign, 'onAvailableSSIDs', notification => {
+              console.log('AvailableSSIDs: ' + JSON.stringify(notification));
+              if (notification.moreData === false) {
+                this.stopScan();
+                notification.ssids = notification.ssids.filter(
+                  (item, pos) => notification.ssids.findIndex(e => e.ssid === item.ssid) === pos
+                );
+                if (this._events.has('onAvailableSSIDs')) {
+                  this._events.get('onAvailableSSIDs')(notification);
+                }
+              }
+            });
+
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`Wifi activation failed: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     *Register events and event listeners.
+     * @param {string} eventId
+     * @param {function} callback
+     *
+     */
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+
+    /**
+     * Deactivates wifi plugin.
+     */
+    deactivate() {
+      this._events = new Map();
+      this._thunder = null;
+    }
+
+    /**
+     * Returns connected SSIDs
+     */
+    getConnectedSSID() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'getConnectedSSID')
+          .then(result => {
+            console.log('ConnectedSSID: ' + result.ssid);
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`getConnectedSSID fail: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     * Start scanning for available wifi.
+     */
+    discoverSSIDs() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'startScan', { incremental: false, ssid: '', frequency: '' })
+          .then(result => {
+            console.log('startScan success');
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`startScan fail: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     * Stops scanning for networks.
+     */
+    stopScan() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'stopScan')
+          .then(result => {
+            console.log('stopScan success');
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`stopScan fail: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     * Function to connect to an SSID
+     * @param {object} device
+     * @param {string} passphrase
+     */
+    connect(device, passphrase) {
+      return new Promise((resolve, reject) => {
+        this.disconnect().then(() => {
+          console.log(`connect SSID ${device.ssid}`);
+          this._thunder
+            .call(this.callsign, 'connect', {
+              ssid: device.ssid,
+              passphrase: passphrase,
+              securityMode: device.security,
+            })
+            .then(result => {
+              console.log(`connected SSID ${device.ssid}`);
+              resolve(result);
+            })
+            .catch(err => {
+              console.error(`Connection failed: ${err}`);
+              reject(err);
+            });
+        }, reject);
+      })
+    }
+
+    /**
+     * Function to disconnect from the SSID.
+     */
+    disconnect() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, 'disconnect', {}).then(
+          result => {
+            console.log('WiFi disconnected: ' + JSON.stringify(result));
+            resolve(result);
+          },
+          err => {
+            console.error(`Can't disconnect WiFi: ${err}`);
+            reject(err);
+          }
+        );
+      })
+    }
+
+    /**
+     * Returns current state of the Wi-Fi plugin.
+     */
+    getCurrentState() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'getCurrentState')
+          .then(result => {
+            console.log(`WiFi state: ${result.state}`);
+            resolve(result.state);
+          })
+          .catch(err => {
+            console.error(`Can't get WiFi state: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     * Enables/Disables the Wi-Fi.
+     * @param {bool} bool
+     */
+    setEnabled(bool) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'setEnabled', { enable: bool })
+          .then(result => {
+            resolve(result);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      })
+    }
+
+    /**
+     * Function to get paired SSID.
+     */
+    getPaired() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call(this.callsign, 'getPairedSSID', {})
+          .then(result => {
+            resolve(result);
+          })
+          .catch(err => {
+            console.error(`Can't get paired: ${err}`);
+            reject(err);
+          });
+      })
+    }
+    getDefaultInterface() {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Network', 'getDefaultInterface', {})
+          .then(result => {
+            resolve(result);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      })
+    }
+    setInterface(inter, bool) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Network', 'setInterfaceEnabled', {
+            interface: inter,
+            persist: true,
+            enabled: bool,
+          })
+          .then(result => {
+            resolve(result);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      })
+    }
+    setDefaultInterface(interfaceName, bool) {
+      return new Promise((resolve, reject) => {
+        this._thunder
+          .call('org.rdk.Network', 'setDefaultInterface', {
+            interface: interfaceName,
+            persist: bool,
+          })
+          .then(result => {
+            resolve(result);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      })
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render the keypad for the wifi screen.
+   */
+  class Keypad extends Lightning.Component {
+    static _template() {
+      return {
+        Wrapper: {
+          flex: { direction: 'row' },
+        },
+      }
+    }
+
+    /**
+     * Function to add items to the list.
+     */
+    set items(items) {
+      this._scroll = true;
+      this.tag('Wrapper').children = items;
+      this._index = 0;
+      if (items.length > 0) {
+        this._setState('Filled');
+      } else {
+        this._setState('Empty');
+      }
+    }
+
+    set wrap(bool) {
+      if (bool) {
+        let wrapper = this.tag('Wrapper');
+        wrapper.w = 428;
+        wrapper.h = 56;
+        this.tag('Wrapper').patch({
+          flex: { direction: 'row', wrap: true },
+        });
+      }
+      this._wrap = true;
+    }
+    get items() {
+      return this.tag('Wrapper').children
+    }
+
+    get currentItem() {
+      return this.items[this._index]
+    }
+
+    get length() {
+      return this.items.length
+    }
+
+    set orientation(v) {
+      this._orientation = v;
+      if (v === 'horizontal') {
+        this.tag('Wrapper').patch({ flex: { direction: 'row' } });
+      } else {
+        this.tag('Wrapper').patch({ flex: { direction: 'column' } });
+      }
+    }
+
+    get orientation() {
+      return this._orientation || 'horizontal'
+    }
+
+    set jump(bool) {
+      this._jump = bool;
+    }
+
+    get jump() {
+      return this._jump || false
+    }
+
+    set jumpToStart(bool) {
+      this._jumpToStart = bool;
+    }
+
+    get jumpToStart() {
+      return this._jumpToStart !== undefined ? this._jumpToStart : this.jump
+    }
+
+    set jumpToEnd(bool) {
+      this._jumpToEnd = bool;
+    }
+
+    get jumpToEnd() {
+      return this._jumpToEnd !== undefined ? this._jumpToEnd : this.jump
+    }
+
+    _navigate(dir) {
+      this._prevY = this.currentItem.finalY;
+      this.orientation;
+      if (dir === 'right' || dir === 'left' || dir === 'up' || dir === 'down') {
+        const length = this.items.length;
+        const currentIndex = this._index;
+        let targetIndex = currentIndex + 1;
+        if (dir === 'left' || (dir === 'up' && this._wrap === false)) {
+          targetIndex = currentIndex - 1;
+        }
+        if (dir === 'up' && this._wrap === true) {
+          let n = Math.floor(this.tag('Wrapper').w / this.currentItem.finalW);
+          let pos = currentIndex - n;
+          targetIndex = currentIndex - n >= 0 ? pos : -1;
+        }
+        if (dir === 'down' && this._wrap === true) {
+          let n = Math.floor(this.tag('Wrapper').w / this.currentItem.finalW);
+          let pos = currentIndex + n;
+          targetIndex = pos < length ? pos : -1;
+          if (targetIndex == -1) return this.fireAncestors('$listEnd')
+        }
+        if (targetIndex < 0) {
+          return this.fireAncestors('$listStart')
+        }
+        if (targetIndex > -1 && targetIndex < length) {
+          this._index = targetIndex;
+        } else if (this.jump || this.jumpToStart || this.jumpToEnd) {
+          if (targetIndex < 0 && this.jumpToEnd) {
+            this._index = targetIndex + length;
+          } else if (targetIndex === length && this.jumpToStart) {
+            this._index = 0;
+          }
+        } else {
+          return false
+        }
+
+        if (currentIndex !== this._index) {
+          this.indexChanged({ index: this._index, previousIndex: currentIndex });
+        }
+      }
+      //return false
+    }
+
+    setIndex(targetIndex) {
+      if (targetIndex > -1 && targetIndex < this.items.length) {
+        const currentIndex = this._index;
+        this._index = targetIndex;
+        this.indexChanged({ index: this._index, previousIndex: currentIndex });
+      }
+    }
+
+    indexChanged(event) {
+      this.signal('indexChanged', event);
+    }
+
+    _getFocused() {
+      return this
+    }
+
+    _construct() {
+      this._index = 0;
+    }
+
+    _init() {
+      this._setState('Empty');
+    }
+
+    static _states() {
+      return [
+        class Empty extends this {},
+        class Filled extends this {
+          _getFocused() {
+            return this.currentItem
+          }
+          _handleRight() {
+            return this._navigate('right')
+          }
+
+          _handleLeft() {
+            return this._navigate('left')
+          }
+
+          _handleUp() {
+            return this._navigate('up')
+          }
+
+          _handleDown() {
+            return this._navigate('down')
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render the key for wifi screen
+   */
+  class Key extends Lightning.Component {
+    _construct() {
+      this._keyType = 'alphanum';
+      this._fontSize = 36;
+    }
+    static _template() {
+      return {
+        Border: {
+          w: this.width,
+          h: this.height,
+          type: Lightning.components.BorderComponent,
+          colorBorder: 0xff000000,
+        },
+      }
+    }
+    set item(item) {
+      this._key = item;
+      this.tag('Border').w = this.w;
+      this.tag('Border').h = this.h;
+      this.tag('Border').colorBorder = 0xff000000;
+      this.tag('Border').content = {
+        Focus: {
+          rect: true,
+          w: this.w,
+          h: this.h,
+          color: 0x00c0c0c0,
+        },
+
+        Key: {
+          x: this.w / 2,
+          y: this.h / 2,
+          mount: 0.5,
+          text: { text: item, fontSize: this._fontSize, fontFace: 'Light' },
+        },
+      };
+      if (this._keyType == 'delete') {
+        this.tag('Border').content = {
+          Key: {
+            src: Utils.asset('images/del.png'),
+            zIndex: 10,
+          },
+        };
+      }
+    }
+    set keyType(type) {
+      this._keyType = type;
+    }
+    set fontSize(size) {
+      this._fontSize = size;
+    }
+    _focus() {
+      this.tag('Border').content = {
+        Focus: { color: 0xffc0c0c0 },
+        Key: {
+          color: 0xff000000,
+        },
+      };
+      this.tag('Border').colorBorder = 0xffc0c0c0;
+    }
+    _unfocus() {
+      this.tag('Border').content = {
+        Focus: { color: 0x00c0c0c0 },
+        Key: {
+          color: 0xffffffff,
+        },
+      };
+      this.tag('Border').colorBorder = 0xff000000;
+    }
+    _handleEnter() {
+      this.fireAncestors('$pressedKey', this._key, this._keyType);
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class that contains the data for the keypad.
+   */
+  class KeyDetails {
+    getAlphabet() {
+      let alphabet = 'abcdefghijklmnopqrstuvwxyz  '.split('');
+      return alphabet
+    }
+    getSymbols() {
+      let symbols = '1234567890+/:;()$$@"\'.,?!#*-'.split('');
+      return symbols
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render the key for type selection
+   */
+  class SelectionKey extends Key {
+    set item(item) {
+      this._key = item;
+    }
+    _init() {
+      this._arr = [
+        [25, 0, 0, 25],
+        [0, 0, 0, 0],
+        [0, 25, 25, 0],
+      ];
+      this.patch({
+        Bg: {
+          x: 0,
+          y: 0,
+          texture: Lightning.Tools.getRoundRect(
+            143,
+            53,
+            this._arr[this._keyType],
+            1,
+            0xff000000,
+            true,
+            0x00000000
+          ),
+        },
+        Text: {
+          x: this.w / 2,
+          y: this.h / 2,
+          mount: 0.5,
+          text: { text: this._key, fontSize: 24, textColor: 0xffffffff, fontFace: 'Regular' },
+        },
+      });
+    }
+
+    _focus() {
+      this.tag('Text').text.fontStyle = 'Bold';
+      this.tag('Text').text.textColor = 0xff000000;
+      this.patch({
+        Bg: {
+          x: 0,
+          y: 0,
+          texture: Lightning.Tools.getRoundRect(
+            143,
+            56,
+            this._arr[this._keyType],
+            0,
+            0xffc0c0c0,
+            true,
+            0xffc0c0c0
+          ),
+        },
+      });
+    }
+
+    _unfocus() {
+      this.tag('Text').text.fontStyle = 'normal';
+      this.tag('Text').text.textColor = 0xffffffff;
+      this.patch({
+        Bg: {
+          x: 0,
+          y: 0,
+          texture: Lightning.Tools.getRoundRect(
+            143,
+            53,
+            this._arr[this._keyType],
+            1,
+            0xff000000,
+            true,
+            0x00000000
+          ),
+        },
+      });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class to render the wifi password screen.
+   */
+  class WiFiPasswordScreen extends Lightning.Component {
+    _construct() {
+      this._width = 428;
+      this._height = 56;
+      this._radius = 28;
+      this._strokeWidth = 2;
+      this.keySpace = 5;
+    }
+    static _template() {
+      return {}
+    }
+    _init() {
+      this._api = new KeyDetails();
+
+      this.patch({
+        src: Utils.asset('images/tvShows/background.jpg'),
+        w: 440,
+        h: 560,
+        Entry: {
+          x: 4,
+          y: 10,
+          texture: Lightning.Tools.getRoundRect(
+            this._width,
+            this._height,
+            this._radius,
+            this._strokeWidth,
+            0xff1b1b1b,
+            true,
+            0x00a5a5a5
+          ),
+          Text: {
+            x: 20,
+            y: this._height / 2 + 5,
+            mountY: 0.5,
+            text: { text: 'Password', fontSize: 18, fontFace: 'Light', textColor: 0xffa5a5a5 },
+          },
+          Pwd: {
+            x: 130,
+            y: this._height / 2 + 5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 24,
+              fontFace: 'Light',
+              textColor: 0xffc0c0c0,
+              wordWrapWidth: this._width - 130,
+              wordWrap: false,
+              textOverflow: 'ellipsis',
+            },
+          },
+        },
+        Selection: {
+          x: 4,
+          y: this._height + 21,
+          texture: Lightning.Tools.getRoundRect(
+            this._width,
+            this._height,
+            this._radius,
+            this._strokeWidth,
+            0x001b1b1b,
+            true,
+            0x00a5a5a5
+          ),
+          Types: {
+            type: Lightning.components.ListComponent,
+            itemSize: 143,
+            w: this._width,
+            h: this._height,
+            clipping: true,
+            roll: true,
+            zIndex: 10,
+          },
+        },
+        Keypad: {
+          x: 9,
+          y: (this._height + 21) * 2,
+          w: this._width,
+          wrap: true,
+          type: Keypad,
+        },
+        FunctionalKeys: {
+          x: 9,
+          y: (this._height + 21) * 5 + 15,
+          w: this._width,
+          wrap: true,
+          type: Keypad,
+        },
+        Submit: {
+          x: 4,
+          y: (this._height + 21) * 5 + 15 + 61,
+          texture: Lightning.Tools.getRoundRect(
+            this._width,
+            this._height,
+            this._radius,
+            this._strokeWidth,
+            0xff1b1b1b,
+            true,
+            0x00a5a5a5
+          ),
+          Text: {
+            x: this._width / 2,
+            y: this._height / 2,
+            mount: 0.5,
+            text: { text: 'Submit', fontSize: 24, fontFace: 'Light', textColor: 0xffffffff },
+          },
+        },
+      });
+      this.setKeypad('abc');
+      let clear = {
+        ref: 'Keyclear',
+        w: 117,
+        h: 56,
+        type: Key,
+        fontSize: 24,
+        item: 'CLEAR',
+        keyType: 'clear',
+        flexItem: { marginRight: 5, marginBottom: 5 },
+      };
+      let space = {
+        ref: 'Keyspace',
+        w: 178,
+        h: 56,
+        type: Key,
+        fontSize: 24,
+        item: 'Space',
+        keyType: 'space',
+        flexItem: { marginRight: 5, marginBottom: 5 },
+      };
+      let del = {
+        ref: 'Keydel',
+        w: 117,
+        h: 56,
+        keyType: 'delete',
+        type: Key,
+        fontSize: 24,
+        item: '',
+        flexItem: { marginRight: 5, marginBottom: 5 },
+      };
+      this.tag('FunctionalKeys').items = [clear, space, del];
+      this.tag('Selection.Types').items = ['abc', 'ABC', '#+-'].map((item, index) => {
+        return {
+          ref: 'Item',
+          w: this._width / 3,
+          h: this._height,
+          fontSize: 24,
+          keyType: index,
+          item: item,
+          type: SelectionKey,
+          clipping: true,
+          //keyType: 'selection' + index,
+        }
+      });
+    }
+    _active() {
+      this.tag('Selection.Types').start();
+      this._setState('Selection');
+    }
+    _inactive() {
+      this.tag('Entry.Pwd').text.text = '';
+    }
+    $pressedKey(key, keyType) {
+      console.log(key);
+      let pwd = this.tag('Entry.Pwd');
+      if (keyType === 'alphanum') {
+        pwd.text.text = pwd.text.text + key;
+      } else if (keyType === 'clear') {
+        pwd.text.text = '';
+      } else if (keyType === 'space') {
+        pwd.text.text = pwd.text.text + ' ';
+      } else if (keyType === 'delete') {
+        pwd.text.text = pwd.text.text.substring(0, pwd.text.text.length - 1);
+      }
+    }
+    setKeypad(type) {
+      let data = [];
+      if (type === 'abc') data = this._api.getAlphabet();
+      else if (type === '#+-') data = this._api.getSymbols();
+      else if (type === 'ABC') {
+        data = this._api.getAlphabet().map(i => {
+          return i.toUpperCase()
+        });
+      }
+      this.tag('Keypad').items = [];
+      this.tag('Keypad').items = data.map(index => {
+        return {
+          ref: 'Key' + index,
+          w: 56,
+          h: 56,
+          type: Key,
+          item: index,
+          flexItem: { marginRight: 5, marginBottom: 5 },
+        }
+      });
+    }
+    static _states() {
+      return [
+        class Selection extends this {
+          $enter() {
+            this.setKeypad(this.tag('Selection.Types').element._key);
+          }
+          _getFocused() {
+            return this.tag('Selection.Types').element
+          }
+          _handleRight() {
+            if (this.tag('Selection.Types').index < this.tag('Selection.Types').length - 1) {
+              this.tag('Selection.Types').setNext();
+              this.setKeypad(this.tag('Selection.Types').element._key);
+            }
+          }
+          _handleLeft() {
+            if (this.tag('Selection.Types').index != 0) {
+              this.tag('Selection.Types').setPrevious();
+              this.setKeypad(this.tag('Selection.Types').element._key);
+            }
+          }
+          _handleDown() {
+            this._setState('Keypad');
+          }
+        },
+        class Keypad extends this {
+          _getFocused() {
+            return this.tag('Keypad')
+          }
+          $listEnd() {
+            this._setState('Function');
+          }
+          $listStart() {
+            this._setState('Selection');
+          }
+        },
+        class Function extends this {
+          _getFocused() {
+            return this.tag('FunctionalKeys')
+          }
+          _handleUp() {
+            this._setState('Keypad');
+          }
+          $listEnd() {
+            console.log('down');
+            this._setState('Submit');
+          }
+          $listStart() {
+            this._setState('Keypad');
+          }
+        },
+        class Submit extends this {
+          $enter() {
+            this.patch({
+              Submit: {
+                x: 0,
+                y: (this._height + 21) * 5 + 15 + 61,
+                texture: Lightning.Tools.getRoundRect(
+                  this._width,
+                  this._height,
+                  this._radius,
+                  this._strokeWidth,
+                  0x00c0c0c0,
+                  true,
+                  0xffc0c0c0
+                ),
+              },
+            });
+            this.tag('Submit.Text').text.textColor = 0xff000000;
+          }
+          $exit() {
+            this.patch({
+              Submit: {
+                x: 0,
+                y: (this._height + 21) * 5 + 15 + 61,
+                texture: Lightning.Tools.getRoundRect(
+                  this._width,
+                  this._height,
+                  this._radius,
+                  this._strokeWidth,
+                  0xff1b1b1b,
+                  true,
+                  0x00c0c0c0
+                ),
+              },
+            });
+            this.tag('Submit.Text').text.textColor = 0xffffffff;
+          }
+          _handleEnter() {
+            this.fireAncestors('$password', this.tag('Entry.Pwd').text.text);
+          }
+          _handleUp() {
+            console.log('Up');
+            this._setState('Function');
+          }
+          _handleLeft() {
+            this._setState('Function');
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class BluetoothPairingScreen extends Lightning.Component {
+    static _template() {
+      return {
+        PairingScreen: {
+          x: 0,
+          y: 0,
+          w: 1920 / 3,
+          h: 1080,
+          rect: true,
+          color: 0xff364651,
+        },
+        Title: {
+          x: 20,
+          y: 100,
+          text: { text: '', fontSize: 30, textColor: COLORS.titleColor },
+        },
+        List: {
+          x: 20,
+          y: 150,
+          type: Lightning.components.ListComponent,
+          w: 1920 / 3,
+          h: 400,
+          itemSize: 65,
+          horizontal: false,
+          invertDirection: true,
+          roll: true,
+        },
+        Password: {
+          type: WiFiPasswordScreen,
+          x: 1920 / 3 / 2,
+          y: 350,
+          mountX: 0.5,
+          w: 428,
+          h: 56,
+          alpha: 0,
+        },
+      }
+    }
+    set item(item) {
+      this.tag('Title').text = item.ssid;
+      var options = [];
+      this._item = item;
+      if (item.connected) {
+        options = ['Disconnect', 'Cancel'];
+      } else {
+        options = ['Connect', 'Cancel'];
+      }
+
+      this.tag('List').items = options.map((item, index) => {
+        return {
+          ref: item,
+          w: 1920 / 3,
+          h: 65,
+          type: SettingsItem,
+          item: item,
+        }
+      });
+      this._setState('Pair');
+    }
+
+    static _states() {
+      return [
+        class Password extends this {
+          $enter() {
+            this.tag('Password').alpha = 1;
+          }
+          _getFocused() {
+            return this.tag('Password')
+          }
+          $password(password) {
+            this.fireAncestors('$startConnect', password);
+          }
+          $exit() {
+            this.tag('Password').alpha = 0;
+          }
+          _handleKey(event) {
+            if (
+              event.keyCode == 27 ||
+              event.keyCode == 77 ||
+              event.keyCode == 49 ||
+              event.keyCode == 158
+            ) {
+              this._setState('Pair');
+            } else return false
+          }
+        },
+        class Pair extends this {
+          $enter() {}
+          _getFocused() {
+            return this.tag('List').element
+          }
+          _handleDown() {
+            this.tag('List').setNext();
+          }
+          _handleUp() {
+            this.tag('List').setPrevious();
+          }
+          _handleEnter() {
+            if (this.tag('List').element.ref == 'Connect' && this._item.security != '0') {
+              this._setState('Password');
+            } else {
+              this.fireAncestors('$pressEnter', this.tag('List').element.ref);
+            }
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for WiFi screen.
+   */
+  class WiFiScreen extends Lightning.Component {
+    static _template() {
+      return {
+        Title: {
+          x: 1920 - 1920 / 3 + 1920 / 6,
+          y: 50,
+          text: { text: 'Wi-Fi', textColor: COLORS.headingColor },
+          mountX: 0.5,
+        },
+        Switch: {
+          x: 1920 - 1920 / 3 + 20,
+          y: 150,
+          rect: true,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+          color: 0x00c0c0c0,
+          w: 1920 / 3 - 70,
+          h: 50,
+          Text: {
+            x: 0,
+            text: { text: 'Wi-Fi', textColor: COLORS.titleColor },
+          },
+          Button: {
+            x: 1920 / 3 - 80,
+            y: 10,
+            mountX: 1,
+            src: Utils.asset('images/switch-off.png'),
+          },
+        },
+        Networks: {
+          x: 1920 - 1920 / 3,
+          y: 250,
+          flex: { direction: 'column' },
+          PairedNetworks: {
+            flexItem: { margin: 20 },
+            w: 1920 / 3,
+            h: 30,
+            Title: {
+              text: {
+                text: 'My Network',
+                textColor: COLORS.titleColor,
+                fontSize: 30,
+              },
+            },
+            List: {
+              x: 0,
+              y: 65,
+              type: Lightning.components.ListComponent,
+              w: 1920 / 3,
+              itemSize: 65,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+            },
+          },
+          AvailableNetworks: {
+            flexItem: { margin: 20, marginTop: 30 },
+            w: 1920 / 3,
+            h: 30,
+            Title: {
+              text: {
+                text: 'Other Networks',
+                textColor: COLORS.titleColor,
+                fontSize: 30,
+              },
+            },
+            Loader: {
+              x: 250,
+              y: -10,
+              w: 50,
+              h: 50,
+              color: 0xff000000,
+              src: Utils.asset('images/loader.png'),
+              visible: false,
+            },
+
+            List: {
+              x: 0,
+              y: 65,
+              w: 1920 / 3,
+              h: 100,
+              type: Lightning.components.ListComponent,
+              itemSize: 65,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+            },
+          },
+          visible: false,
+        },
+        PairingScreen: {
+          x: 1920 - 1920 / 3,
+          y: 0,
+          w: 1920 / 3,
+          h: 1080,
+          visible: false,
+          type: BluetoothPairingScreen,
+        },
+        IpAddress: {
+          x: 1820,
+          y: 920,
+          mountX: 1,
+          mountY: 0,
+          text: {
+            text: 'IP:NA',
+            textColor: COLORS.titleColor,
+            fontSize: 30,
+          },
+        },
+      }
+    }
+    _active() {
+      this._setState('Switch');
+    }
+
+    _init() {
+      this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
+        duration: 1,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
+      });
+      this.loadingAnimation.play();
+      this._wifi = new Wifi();
+      this._network  = new Network();
+      this.wifiStatus = false;
+      this._activateWiFi();
+      this._setState('Switch');
+      if (this.wiFiStatus) {
+        this.tag('Networks').visible = true;
+      }
+      this._pairedNetworks = this.tag('Networks.PairedNetworks');
+      this._availableNetworks = this.tag('Networks.AvailableNetworks');
+      this._network.activate().then(result=>{
+        if(result){
+          this._network.registerEvent('onIPAddressStatusChanged', notification => {
+            if (notification.status == 'ACQUIRED') {
+              this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
+            } else if (notification.status == 'LOST') {
+              this.tag('IpAddress').text.text = 'IP:NA';
+            }
+          });
+      this._network.registerEvent('onDefaultInterfaceChanged', notification => {
+        console.log(notification);
+        if (notification.newInterfaceName == 'WIFI') {
+          this._wifi.setEnabled(true).then(result => {
+            if (result.success) {
+              this.wifiStatus = true;
+              this.tag('Networks').visible = true;
+              this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+              this._wifi.discoverSSIDs();
+              this.tag('Networks.AvailableNetworks.Loader').visible = true;
+            }
+          });
+        } else if (
+          notification.newInterfaceName == 'ETHERNET' ||
+          notification.oldInterfaceName == 'WIFI'
+        ) {
+          this._wifi.disconnect();
+          this.wifiStatus = false;
+          this.tag('Networks').visible = false;
+          this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+          this._setState('Switch');
+        }
+      });
+          this._network.getIP().then(ip=>{
+            this.tag('IpAddress').text.text = 'IP:'+ip;
+          });
+        }
+      });
+    }
+
+    /**
+     * Function to be executed when the Wi-Fi screen is enabled.
+     */
+    _enable() {
+      if (this.wifiStatus) {
+        this._wifi.discoverSSIDs();
+        this.tag('Networks.AvailableNetworks.Loader').visible = true;
+      }
+      this.scanTimer = setInterval(() => {
+        if (this.wifiStatus) {
+          this._wifi.discoverSSIDs();
+          this.tag('Networks.AvailableNetworks.Loader').visible = true;
+        }
+      }, 5000);
+    }
+
+    /**
+     * Function to be executed when the Wi-Fi screen is disabled.
+     */
+    _disable() {
+      clearInterval(this.scanTimer);
+    }
+
+    /**
+     * Function to render list of Wi-Fi networks.
+     */
+    renderDeviceList(ssids) {
+      this._wifi.getConnectedSSID().then(result => {
+        if (result.ssid != '') {
+          this._pairedList = [result];
+        } else {
+          this._pairedList = [];
+        }
+        this._pairedNetworks.h = this._pairedList.length * 65 + 30;
+        this._pairedNetworks.tag('List').h = this._pairedList.length * 65;
+        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+          item.connected = true;
+          return {
+            ref: 'Paired' + index,
+            w: 1920 / 3,
+            h: 65,
+            type: WiFiItem,
+            item: item,
+          }
+        });
+
+        this._otherList = ssids.filter(device => {
+          result = this._pairedList.map(a => a.ssid);
+          if (result.includes(device.ssid)) {
+            return false
+          } else return device
+        });
+        this._availableNetworks.h = this._otherList.length * 65 + 30;
+        this._availableNetworks.tag('List').h = this._otherList.length * 65;
+        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
+          item.connected = false;
+          return {
+            ref: 'Other' + index,
+            w: 1920 / 3,
+            h: 65,
+            type: WiFiItem,
+            item: item,
+          }
+        });
+      });
+    }
+
+    static _states() {
+      return [
+        class Switch extends this {
+          $enter() {
+            this.tag('Switch').color = COLORS.hightlightColor;
+          }
+          $exit() {
+            this.tag('Switch').color = 0x00c0c0c0;
+          }
+          _handleDown() {
+            if (this.wifiStatus) {
+              if (this._pairedNetworks.tag('List').length > 0) {
+                this._setState('PairedDevices');
+              } else if (this._availableNetworks.tag('List').length > 0) {
+                this._setState('AvailableDevices');
+              }
+            }
+          }
+          _handleEnter() {
+            this.switch();
+          }
+        },
+        class PairedDevices extends this {
+          $enter() {}
+          _getFocused() {
+            return this._pairedNetworks.tag('List').element
+          }
+          _handleDown() {
+            this._navigate('MyDevices', 'down');
+          }
+          _handleUp() {
+            this._navigate('MyDevices', 'up');
+          }
+          _handleEnter() {
+            this.tag('PairingScreen').visible = true;
+            this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item;
+            this._setState('PairingScreen');
+          }
+        },
+        class AvailableDevices extends this {
+          $enter() {}
+          _getFocused() {
+            return this._availableNetworks.tag('List').element
+          }
+          _handleDown() {
+            this._navigate('AvailableDevices', 'down');
+          }
+          _handleUp() {
+            this._navigate('AvailableDevices', 'up');
+          }
+          _handleEnter() {
+            this.tag('PairingScreen').visible = true;
+            this.tag('PairingScreen').item = this._availableNetworks.tag('List').element._item;
+            this._setState('PairingScreen');
+          }
+        },
+        class PairingScreen extends this {
+          $enter() {
+            this._wifi.stopScan();
+            this._disable();
+          }
+          _getFocused() {
+            return this.tag('PairingScreen')
+          }
+          $pressEnter(option) {
+            if (option === 'Cancel') {
+              this._setState('Switch');
+            } else if (option === 'Connect') {
+              if (this._availableNetworks.tag('List').element) {
+                this._wifi
+                  .connect(this._availableNetworks.tag('List').element._item, '')
+                  .then(() => {});
+              }
+              this._setState('Switch');
+            } else if (option === 'Disconnect') {
+              this._wifi.disconnect().then(() => {});
+              this._setState('Switch');
+            }
+          }
+          $startConnect(password) {
+            if (this._availableNetworks.tag('List').element && password != null) {
+              this._wifi.connect(this._availableNetworks.tag('List').element._item, password);
+            } else {
+              this.patch({
+                FailureMessage: {
+                  x: (1920 * 2) / 3 + 40,
+                  y: 950,
+                  text: { text: 'FAILED' },
+                },
+              });
+              setTimeout(() => {
+                this.childList.remove(this.tag('FailureMessage'));
+              }, 2000);
+            }
+            this._setState('Switch');
+          }
+          $exit() {
+            this.tag('PairingScreen').visible = false;
+            this._enable();
+          }
+        },
+      ]
+    }
+
+    /**
+     * Function to navigate through the lists in the screen.
+     * @param {string} listname
+     * @param {string} dir
+     */
+    _navigate(listname, dir) {
+      let list;
+      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');
+      else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();
+        else if (list.index == list.length - 1) {
+          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
+            this._setState('AvailableDevices');
+          }
+        }
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();
+        else if (list.index == 0) {
+          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
+            this._setState('PairedDevices');
+          } else {
+            this._setState('Switch');
+          }
+        }
+      }
+    }
+
+    /**
+     * Function to turn on and off Wi-Fi.
+     */
+    switch() {
+      if (this.wifiStatus) {
+        this._wifi.setInterface('ETHERNET', true).then(result => {
+          if (result.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.disconnect();
+                this.wifiStatus = false;
+                this.tag('Networks').visible = false;
+                this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+              }
+            });
+          }
+        });
+      } else {
+        this._wifi.setInterface('WIFI', true).then(result => {
+          if (result.success) {
+            this._wifi.setDefaultInterface('WIFI', false).then(result => {
+              if (result.success) {
+                this._wifi.setEnabled(true).then(result => {
+                  if (result.success) {
+                    this.wifiStatus = true;
+                    this.tag('Networks').visible = true;
+                    this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+                    this._wifi.discoverSSIDs();
+                    this.tag('Networks.AvailableNetworks.Loader').visible = true;
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+
+    /**
+     * Function to activate Wi-Fi plugin.
+     */
+    _activateWiFi() {
+      this._wifi.activate().then(() => {
+        this._wifi.getDefaultInterface().then(result => {
+          if (result.interface == 'WIFI') {
+            this.switch();
+          }
+        });
+      });
+      //this._wifi.discoverSSIDs()
+      this.tag('Networks.AvailableNetworks.Loader').visible = true;
+      this._wifi.registerEvent('onWIFIStateChanged', notification => {
+        if (notification.state === 2 || notification.state === 5) {
+          this._wifi.discoverSSIDs();
+          this.tag('Networks.AvailableNetworks.Loader').visible = true;
+        }
+        this._setState('Switch');
+      });
+      this._wifi.registerEvent('onError', notification => {
+        this._wifi.discoverSSIDs();
+        this.tag('Networks.AvailableNetworks.Loader').visible = true;
+        if (notification.code == 4) {
+          this.patch({
+            FailureMessage: {
+              x: (1920 * 2) / 3 + 40,
+              y: 950,
+              text: { text: 'INCORRECT PASSWORD' },
+            },
+          });
+          setTimeout(() => {
+            this.childList.remove(this.tag('FailureMessage'));
+          }, 2000);
+        }
+        this._setState('Switch');
+      });
+      this._wifi.registerEvent('onAvailableSSIDs', notification => {
+        this.tag('Networks.AvailableNetworks.Loader').visible = false;
+        this.renderDeviceList(notification.ssids);
+      });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for settings screen.
+   */
+
+  class SettingsScreen extends Lightning.Component {
+    static _template() {
+      return {
+        Background: {
+          w: 1920,
+          h: 1080,
+          src: Utils.asset('images/tvShows/background.jpg'),
+        },
+        Sidebar: {
+          x: 1920 - 1920 / 3,
+          y: 0,
+          w: 1920 / 3,
+          h: 1080,
+          rect: true,
+          color: 0xff364651,
+        },
+        WiFiScreen: {
+          type: WiFiScreen,
+          visible: false,
+        },
+        BluetoothScreen: {
+          type: BluetoothScreen,
+          visible: false,
+        },
+      }
+    }
+
+    //   /**
+    //  * Function to be excuted when the Bluetooth screen is enabled.
+    //  */
+    _enable() {
+      this._appAnimation = this.animation({
+        duration: 0.3,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [
+          { p: 'alpha', v: { 0: 0.5, 1: 1 } },
+          { p: 'y', v: { 0: 1080, 1: 0 } },
+        ],
+      });
+      this._appAnimation.start();
+    }
+
+    // /**
+    //  * Function to be executed when the Bluetooth screen is disabled from the screen.
+    //  */
+    _disable() {
+      this._appAnimation = this.animation({
+        duration: 0.3,
+        repeat: 0,
+        stopMethod: 'immediate',
+        actions: [
+          { p: 'alpha', v: { 0: 0.5, 1: 1 } },
+          { p: 'y', v: { 0: 0, 1: 1080 } },
+        ],
+      });
+      this._appAnimation.start();
+    }
+
+    set screen(screen) {
+      this._setState(screen);
+    }
+
+    set params(args) {
+      if (args.animation != undefined) {
+        args.animation.start();
+      }
+    }
+
+    static _states() {
+      return [
+        class BluetoothScreen extends this {
+          $enter() {
+            this.tag('BluetoothScreen').visible = true;
+          }
+          _getFocused() {
+            return this.tag('BluetoothScreen')
+          }
+          $exit() {
+            this.tag('BluetoothScreen').visible = false;
+          }
+          _handleKey(key) {
+            if (
+              (Storage.get('applicationType')=='') &&
+              (key.keyCode == 77 ||
+              key.keyCode == 49 ||
+              key.keyCode == 36 ||
+              key.keyCode == 158 ||
+              key.keyCode == 27 ||
+              (key.keyCode == 73 && key.ctrlKey == true))
+            ) {
+              this._appAnimation = this.animation({
+                duration: 0.5,
+                repeat: 0,
+                stopMethod: 'immediate',
+                actions: [
+                  { p: 'alpha', v: { 0: 0.5, 1: 1 } },
+                  { p: 'y', v: { 0: 0, 1: 1080 } },
+                ],
+              });
+              this._appAnimation.start();
+              this._appAnimation.on('finish', p => {
+                Router.navigate('home');
+              });
+            } else return false;
+          }
+        },
+        class WiFiScreen extends this {
+          $enter() {
+            this.tag('WiFiScreen').visible = true;
+          }
+          _getFocused() {
+            return this.tag('WiFiScreen')
+          }
+          $exit() {
+            this.tag('WiFiScreen').visible = false;
+          }
+          _handleKey(key) {
+            if (
+              (Storage.get('applicationType')=='') &&
+              (key.keyCode == 77 ||
+              key.keyCode == 49 ||
+              key.keyCode == 36 ||
+              key.keyCode == 158 ||
+              key.keyCode == 27 ||
+              (key.keyCode == 73 && key.ctrlKey == true))
+            ) {
+              this._appAnimation = this.animation({
+                duration: 0.3,
+                repeat: 0,
+                stopMethod: 'immediate',
+                actions: [
+                  { p: 'alpha', v: { 0: 0.5, 1: 1 } },
+                  { p: 'y', v: { 0: 0, 1: 1080 } },
+                ],
+              });
+              this._appAnimation.start();
+              this._appAnimation.on('finish', p => {
+                Router.navigate('home');
+              });
+            } else return false;
+          }
+        },
+      ]
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class Error$1 extends Lightning.Component {
+    static _template() {
+      return {
+        rect: true,
+        w: 1920,
+        h: 1080,
+        color: 0xffb70606,
+        Label: {
+          x: 100,
+          y: 100,
+          text: {
+            text: 'Error',
+            fontSize: 22,
+          },
+        },
+      }
+    }
+
+    _handleEnter() {
+      Router.navigate('home');
+    }
+
+    _focus() {
+      console.log('focus error page');
+    }
+
+    set error(obj) {
+      const { page, error } = obj;
+      console.log(page, error);
+
+      const errorMessage = `
+error while loading page: ${page.constructor.name}
+press enter to navigate to home
+--
+loaded via hash: ${page[Symbol.for('hash')]}
+resulted in route: ${page[Symbol.for('route')]}
+--
+${error.toString()}`;
+
+      this.tag('Label').text = errorMessage;
+    }
+
+    pageTransition() {
+      return 'up'
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  var routes = {
+    root: 'home',
+    routes: [
+      {
+        path: 'home',
+        component: HomeScreen,
+        before() {
+          console.log('before home!');
+          return Promise.resolve()
+        },
+        cache: 10,
+      },
+      {
+        path: 'settings/:screen',
+        options: {
+          preventStorage: true,
+          clearHistory: true,
+          reuseInstance: true
+        },
+        component: SettingsScreen,
+        cache: 10,
+      },
+      {
+        path: 'splash',
+        component: SplashScreen,
+        options: {
+          preventStorage: true,
+          clearHistory: true,
+          reuseInstance: false
+        },
+        cache: 10,
+      },
+      {
+        path: '!',
+        component: Error$1,
+      },
+      {
+        path: '*',
+        component: HomeScreen,
+      },
+    ],
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Xcast thunder plugin apis.
+   */
+
+  class XcastApi {
+    constructor() {
+      console.log('Xcast constructor');
+      this._events = new Map();
+    }
+
+    /**
+     * Function to activate the Xcast plugin
+     */
+    activate() {
+      return new Promise((resolve, reject) => {
+        const config = {
+          host: '127.0.0.1',
+          port: 9998,
+          default: 1,
+        };
+        this._thunder = thunderJS(config);
+        this.callsign = 'org.rdk.Xcast';
+        this._thunder
+          .call('Controller', 'activate', { callsign: this.callsign })
+          .then(result => {
+            console.log(result);
+            console.log('Xcast activation success');
+            this._thunder
+              .call('org.rdk.Xcast', 'getEnabled')
+              .then(result => {
+                if (result.success) {
+                  console.log('Xcast enabled');
+                  this._thunder.on(this.callsign, 'onApplicationLaunchRequest', notification => {
+                    console.log('onApplicationLaunchRequest ' + JSON.stringify(notification));
+                    if (this._events.has('onApplicationLaunchRequest')) {
+                      this._events.get('onApplicationLaunchRequest')(notification);
+                    }
+                  });
+                  this._thunder.on(this.callsign, 'onApplicationHideRequest', notification => {
+                    console.log('onApplicationHideRequest ' + JSON.stringify(notification));
+                    if (this._events.has('onApplicationHideRequest')) {
+                      this._events.get('onApplicationHideRequest')(notification);
+                    }
+                  });
+                  this._thunder.on(this.callsign, 'onApplicationResumeRequest', notification => {
+                    console.log('onApplicationResumeRequest ' + JSON.stringify(notification));
+                    if (this._events.has('onApplicationResumeRequest')) {
+                      this._events.get('onApplicationResumeRequest')(notification);
+                    }
+                  });
+                  this._thunder.on(this.callsign, 'onApplicationStopRequest', notification => {
+                    console.log('onApplicationStopRequest ' + JSON.stringify(notification));
+                    if (this._events.has('onApplicationStopRequest')) {
+                      this._events.get('onApplicationStopRequest')(notification);
+                    }
+                  });
+                  resolve(true);
+                } else {
+                  console.log('Xcast enabled failed');
+                }
+              })
+              .catch(err => {
+                console.error('Enabling failure', err);
+                reject('Xcast enabling failed', err);
+              });
+          })
+          .catch(err => {
+            console.error('Activation failure', err);
+            reject('Xcast activation failed', err);
+          });
+      });
+    }
+
+    /**
+     *
+     * @param {string} eventId
+     * @param {function} callback
+     * Function to register the events for the Xcast plugin.
+     */
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+
+    /**
+     * Function to deactivate the Xcast plugin.
+     */
+    deactivate() {
+      this._events = new Map();
+      this._thunder = null;
+    }
+
+    /**
+     * Function to notify the state of the app.
+     */
+    onApplicationStateChanged(params) {
+      return new Promise((resolve, reject) => {
+        console.log('Notifying back');
+        this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
+          console.log(result);
+          resolve(result);
+        });
+      });
+    }
+
+    static supportedApps() {
+      var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt' };
+      return xcastApps;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  const config = {
+    host: '192.168.2.69',
+    port: 9998,
+    default: 1,
+  };
+  var thunder = thunderJS(config);
+  var appApi = new AppApi();
+
+  class App extends Router.App {
+    static getFonts() {
+      return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') }];
+    }
+    _setup() {
+      Router.startRouter(routes, this);
+      document.onkeydown = e => {
+        if (e.keyCode == 8) {
+          e.preventDefault();
+        }
+      };
+    }
+
+    _init() {
+      this.xcastApi = new XcastApi();
+      this.xcastApi.activate().then(result=>{
+        if(result){
+          this.registerXcastListeners();
+        }
+      });
+      var thunder = thunderJS(config);
+      const rdkshellCallsign = 'org.rdk.RDKShell';
+      thunder.Controller.activate({ callsign: rdkshellCallsign })
+        .then(result => {
+          console.log('Successfully activated RDK Shell');
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 27,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 77,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 36,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 49,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 158,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 227,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 179,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        });
+    }
+
+    deactivateChildApp(plugin) {
+      var appApi = new AppApi();
+      switch (plugin) {
+        case 'WebApp':
+          appApi.deactivateWeb();
+          break;
+        case 'Cobalt':
+          appApi.suspendCobalt();
+          break;
+        case 'Lightning':
+          appApi.deactivateLightning();
+          break;
+        case 'Native':
+          appApi.killNative();
+          break;
+        case 'Amazon':
+          appApi.suspendAmazon();
+      }
+    }
+
+    /**
+     * Function to register event listeners for Xcast plugin.
+     */
+    registerXcastListeners() {
+      this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
+        console.log('Received a launch request ' + JSON.stringify(notification));
+        if (this.xcastApps(notification.applicationName)) {
+          let applicationName = this.xcastApps(notification.applicationName);
+          console.log('Launch ' + this.xcastApps(notification.applicationName));
+          if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchAmazon();
+            Storage.set('applicationType', 'Amazon');
+            appApi.setVisibility('ResidentApp', false);
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchCobalt();
+            Storage.set('applicationType', 'Cobalt');
+            appApi.setVisibility('ResidentApp', false);
+            let params = {
+              applicationName: notification.applicationName,
+              state: 'running',
+            };
+            this.xcastApi.onApplicationStateChanged(params);
+          }
+        }
+      });
+      this.xcastApi.registerEvent('onApplicationHideRequest', notification => {
+        console.log('Received a hide request ' + JSON.stringify(notification));
+        if (this.xcastApps(notification.applicationName)) {
+          let applicationName = this.xcastApps(notification.applicationName);
+          console.log('Hide ' + this.xcastApps(notification.applicationName));
+          if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
+            appApi.suspendAmazon();
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
+            appApi.suspendCobalt();
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          }
+          Storage.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+            console.log('ResidentApp moveToFront Success');
+          });
+        }
+      });
+      this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
+        console.log('Received a resume request ' + JSON.stringify(notification));
+        if (this.xcastApps(notification.applicationName)) {
+          let applicationName = this.xcastApps(notification.applicationName);
+          console.log('Resume ' + this.xcastApps(notification.applicationName));
+          if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchAmazon();
+            Storage.set('applicationType', 'Amazon');
+            appApi.setVisibility('ResidentApp', false);
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchCobalt();
+            Storage.set('applicationType', 'Cobalt');
+            appApi.setVisibility('ResidentApp', false);
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          }
+        }
+      });
+      this.xcastApi.registerEvent('onApplicationStopRequest', notification => {
+        console.log('Received a stop request ' + JSON.stringify(notification));
+        if (this.xcastApps(notification.applicationName)) {
+          console.log('Stop ' + this.xcastApps(notification.applicationName));
+          let applicationName = this.xcastApps(notification.applicationName);
+          if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
+            appApi.deactivateAmazon();
+            Storage.set('applicationType', '');
+            appApi.setVisibility('ResidentApp', true);
+            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+              console.log('ResidentApp moveToFront Success');
+            });
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
+            appApi.deactivateCobalt();
+            Storage.set('applicationType', '');
+            appApi.setVisibility('ResidentApp', true);
+            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+              console.log('ResidentApp moveToFront Success');
+            });
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          }
+        }
+      });
+      this.xcastApi.registerEvent('onApplicationStateRequest', notification => {
+        console.log('Received a state request ' + JSON.stringify(notification));
+        if (this.xcastApps(notification.applicationName)) {
+          let applicationName = this.xcastApps(notification.applicationName);
+          let status = AppApi.pluginStatus(applicationName);
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          if (status) {
+            params.status = 'running';
+          }
+          this.xcastApi.onApplicationStateChanged(params);
+          console.log('State of ' + this.xcastApps(notification.applicationName));
+        }
+      });
+    }
+
+    /**
+     * Function to get the plugin name for the application name.
+     * @param {string} app App instance.
+     */
+    xcastApps(app) {
+      if (Object.keys(XcastApi.supportedApps()).includes(app)) {
+        return XcastApi.supportedApps()[app];
+      } else return false;
+    }
+
+    _handleKey(key) {
+      if (key.keyCode == 227) {
+        var showMax = 'https://ott-app.dstv.com/';
+        this.deactivateChildApp(Storage.get('applicationType'));
+        appApi.launchWeb(showMax);
+        Storage.set('applicationType', 'WebApp');
+        appApi.setVisibility('ResidentApp', false);
+      } else if (key.keyCode == 179 && Storage.get('applicationType') != 'Cobalt') {
+        this.deactivateChildApp(Storage.get('applicationType'));
+        appApi.launchCobalt();
+        Storage.set('applicationType', 'Cobalt');
+        appApi.setVisibility('ResidentApp', false);
+      } else if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+        this.deactivateChildApp(Storage.get('applicationType'));
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+          console.log('ResidentApp moveToFront Success');
+        });
+        thunder
+          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+          .then(result => {
+            console.log('ResidentApp moveToFront Success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      }
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  function index() {
+    return Launch(App, ...arguments)
+  }
+
+  return index;
+
+}());
 //# sourceMappingURL=appBundle.js.map

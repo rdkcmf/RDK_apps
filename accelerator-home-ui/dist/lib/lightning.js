@@ -1,5 +1,5 @@
 /**
- * Lightning v2.1.2
+ * Lightning v2.3.0
  *
  * https://github.com/rdkcentral/Lightning
  */
@@ -4242,15 +4242,26 @@
                 }
             }
         }
+        once(name, listener) {
+            const wrapper = (arg1, arg2, arg3) => {
+                listener(arg1, arg2, arg3);
+                this.off(name, wrapper);
+            };
+            wrapper.__originalFunc = listener;
+            this.on(name, wrapper);
+        }
         has(name, listener) {
             if (this._hasEventListeners) {
                 const current = this._eventFunction[name];
                 if (current) {
                     if (current === EventEmitter.combiner) {
                         const listeners = this._eventListeners[name];
-                        let index = listeners.indexOf(listener);
-                        return (index >= 0);
-                    } else if (this._eventFunction[name] === listener) {
+                        for (const l of listeners) {
+                            if (l === listener || l.__originalFunc == listener) {
+                                return true;
+                            }
+                        }
+                    } else if (this._eventFunction[name] === listener || this._eventFunction[name].__originalFunc === listener) {
                         return true;
                     }
                 }
@@ -4267,11 +4278,15 @@
                         if (index >= 0) {
                             listeners.splice(index, 1);
                         }
+                        index = listeners.map((l) => l.__originalFunc).indexOf(listener);
+                        if (index >= 0) {
+                            listeners.splice(index, 1);
+                        }
                         if (listeners.length === 1) {
                             this._eventFunction[name] = listeners[0];
                             this._eventListeners[name] = undefined;
                         }
-                    } else if (this._eventFunction[name] === listener) {
+                    } else if (this._eventFunction[name] === listener || this._eventFunction[name].__originalFunc === listener) {
                         this._eventFunction[name] = undefined;
                     }
                 }
@@ -4302,9 +4317,8 @@
                         return 1;
                     }
                 }
-            } else {
-                return 0;
             }
+            return 0;
         }
         removeAllListeners(name) {
             if (this._hasEventListeners) {
@@ -4316,13 +4330,14 @@
     EventEmitter.combiner = function(object, name, arg1, arg2, arg3) {
         const listeners = object._eventListeners[name];
         if (listeners) {
-            listeners.forEach((listener) => {
+            for (const listener of [...listeners]) {
                 listener(arg1, arg2, arg3);
-            });
+            }
         }
     };
     EventEmitter.addAsMixin = function(cls) {
         cls.prototype.on = EventEmitter.prototype.on;
+        cls.prototype.once = EventEmitter.prototype.once;
         cls.prototype.has = EventEmitter.prototype.has;
         cls.prototype.off = EventEmitter.prototype.off;
         cls.prototype.removeListener = EventEmitter.prototype.removeListener;
@@ -5013,7 +5028,8 @@
             if (h) {
                 height = h;
             } else {
-                height = lineHeight * (lines.length - 1) + 0.5 * fontSize + Math.max(lineHeight, fontSize) + offsetY;
+                const baselineOffset = (this._settings.textBaseline != 'bottom') ? 0.5 * fontSize : 0;
+                height = lineHeight * (lines.length - 1) + baselineOffset + Math.max(lineHeight, fontSize) + offsetY;
             }
             if (offsetY === null) {
                 offsetY = fontSize;
@@ -5185,10 +5201,8 @@
                         result += ' ' + words[j];
                     }
                 }
-                if (result) {
-                    resultLines.push(result);
-                    result = '';
-                }
+                resultLines.push(result);
+                result = '';
                 allLines = allLines.concat(resultLines);
                 if (i < lines.length - 1) {
                     realNewlines.push(allLines.length);
@@ -8449,21 +8463,24 @@
         __bindProperty(propObj, targetObj, targetProp) {
             const obj = targetObj;
             const prop = targetProp;
-            const propName = propObj.__name;
-            const func = propObj.__func ? propObj.__func : (context) => context[propName];
-            if (!this.hasOwnProperty(propName)) {
-                this[`__prop_bindings_${propName}`] = [{__obj: obj, __prop: prop, __func: func}];
-                Object.defineProperty(this, propName, {
-                    set: (value) => {
-                        this[`__prop_${propName}`] = value;
-                        for (const {__obj, __prop, __func} of this[`__prop_bindings_${propName}`]) {
-                            __obj[__prop] = __func(this);
-                        }
-                    },
-                    get: () => this[`__prop_${propName}`]
-                });
-            } else {
-                this[`__prop_bindings_${propName}`].push({__obj: obj, __prop: prop, __func: func});
+            const propDependencies = Array.isArray(propObj.__name) ? propObj.__name : [propObj.__name];
+            for (let i = 0; i < propDependencies.length; i++) {
+                const propName = propDependencies[i];
+                const func = propObj.__func ? propObj.__func : (context) => context[propName];
+                if (!this.hasOwnProperty(propName)) {
+                    this[`__prop_bindings_${propName}`] = [{__obj: obj, __prop: prop, __func: func}];
+                    Object.defineProperty(this, propName, {
+                        set: (value) => {
+                            this[`__prop_${propName}`] = value;
+                            for (const {__obj, __prop, __func} of this[`__prop_bindings_${propName}`]) {
+                                __obj[__prop] = __func(this);
+                            }
+                        },
+                        get: () => this[`__prop_${propName}`]
+                    });
+                } else {
+                    this[`__prop_bindings_${propName}`].push({__obj: obj, __prop: prop, __func: func});
+                }
             }
         }
         static getTemplateFunc(ctx) {
@@ -8514,7 +8531,17 @@
                     if (key === "text") {
                         const propKey = cursor + "__text";
                         loc.push(`var ${propKey} = ${cursor}.enableTextTexture()`);
-                        this.parseTemplatePropRec(value, context, propKey);
+                        if (value.__propertyBinding === true) {
+                            store.push(value);
+                            loc.push(`element.__bindProperty(store[${store.length - 1}], ${cursor}, "${key}")`);
+                        } else {
+                            this.parseTemplatePropRec(value, context, propKey);
+                        }
+                    } else if (key === "shader" && Utils.isObjectLiteral(value)) {
+                        const shaderCursor = `${cursor}["shader"]`;
+                        store.push(value);
+                        loc.push(`${cursor}["${key}"] = store[${store.length - 1}]`);
+                        this.parsePropertyBindings(value, context, shaderCursor);
                     } else if (key === "texture" && Utils.isObjectLiteral(value)) {
                         const propKey = cursor + "__texture";
                         const type = value.type;
@@ -8564,6 +8591,20 @@
                         loc.push(`${cursor}["${key}"] = store[${store.length - 1}]`);
                     } else {
                         loc.push(`${cursor}["${key}"] = ${JSON.stringify(value)}`);
+                    }
+                }
+            });
+        }
+        static parsePropertyBindings(obj, context, cursor) {
+            const store = context.store;
+            const loc = context.loc;
+            const keys = Object.keys(obj);
+            keys.forEach(key => {
+                if (key !== "type") {
+                    const value = obj[key];
+                    if (Utils.isObjectLiteral(value) && value.__propertyBinding === true) {
+                        store.push(value);
+                        loc.push(`element.__bindProperty(store[${store.length - 1}], ${cursor}, "${key}")`);
                     }
                 }
             });
@@ -8740,6 +8781,9 @@
                     if (fireEvent) {
                         if (fireEvent === true) {
                             fireEvent = event;
+                        }
+                        if (Utils.isFunction(fireEvent)) {
+                            return fireEvent(...args);
                         }
                         if (signalParent._hasMethod(fireEvent)) {
                             return signalParent[fireEvent](...args);
@@ -15770,15 +15814,32 @@
     class RoundedRectangleShader extends DefaultShader {
         constructor(context) {
             super(context);
+            this._blend = 0;
             this._radius = [1, 1, 1, 1];
             this._stroke = 0;
+            this._fc = 0x00ffffff;
             this._fillColor = this._getNormalizedColor(0xffffffff);
             this._strokeColor = this._getNormalizedColor(0x00ffffff);
         }
+        set blend(p) {
+            this._blend = Math.min(Math.max(p, 0), 1);
+        }
         set radius(v) {
-            if (Array.isArray(v)) {
-                this._radius = v;
-            } else {
+            if(Array.isArray(v)) {
+                if(v.length === 2) {
+                    this._radius = [v[0], v[1], v[0], v[1]];
+                }
+                else if(v.length === 3) {
+                    this._radius = [v[0], v[1], v[2], this._radius[3]];
+                }
+                else if (v.length === 4) {
+                    this._radius = v;
+                }
+                else {
+                    this._radius = [v[0], v[0], v[0], v[0]];
+                }
+            }
+            else {
                 this._radius = [v, v, v, v];
             }
             this.redraw();
@@ -15786,24 +15847,63 @@
         get radius() {
             return this._radius;
         }
+        set topLeft(num) {
+            this._radius[0] = num;
+            this.redraw();
+        }
+        get topLeft() {
+            return this._radius[0];
+        }
+        set topRight(num) {
+            this._radius[1] = num;
+            this.redraw();
+        }
+        get topRight() {
+            return this._radius[1];
+        }
+        set bottomRight(num) {
+            this._radius[2] = num;
+            this.redraw();
+        }
+        get bottomRight() {
+            return this._radius[2];
+        }
+        set bottomLeft(num) {
+            this._radius[3] = num;
+            this.redraw();
+        }
+        get bottomLeft() {
+            return this._radius[4];
+        }
         set strokeColor(argb) {
+            this._sc = argb;
             this._strokeColor = this._getNormalizedColor(argb);
             this.redraw();
         }
+        get strokeColor() {
+            return this._sc;
+        }
         set fillColor(argb) {
+            this._fc = argb;
             this._fillColor = this._getNormalizedColor(argb);
             this.redraw();
+        }
+        get fillColor() {
+            return this._fc;
         }
         set stroke(num) {
             this._stroke = num;
             this.redraw();
+        }
+        get stroke() {
+            return this._stroke;
         }
         _getNormalizedColor(color) {
             const col = StageUtils.getRgbaComponentsNormalized(color);
             col[0] *= col[3];
             col[1] *= col[3];
             col[2] *= col[3];
-            return col;
+            return new Float32Array(col);
         }
         setupUniforms(operation) {
             super.setupUniforms(operation);
@@ -15811,8 +15911,10 @@
             const renderPrecision = this.ctx.stage.getRenderPrecision();
             const _radius = this._radius.map((r) => (r + 0.5) * renderPrecision);
             this._setUniform('radius', new Float32Array(_radius), this.gl.uniform4fv);
-            this._setUniform('strokeColor', new Float32Array(this._strokeColor), this.gl.uniform4fv);
-            this._setUniform('fillColor', new Float32Array(this._fillColor), this.gl.uniform4fv);
+            this._setUniform('alpha', operation.getElementCore(0).renderContext.alpha, this.gl.uniform1f);
+            this._setUniform('blend', this._blend, this.gl.uniform1f);
+            this._setUniform('strokeColor', this._strokeColor, this.gl.uniform4fv);
+            this._setUniform('fillColor', this._fillColor, this.gl.uniform4fv);
             this._setUniform('stroke',  this._stroke * renderPrecision, this.gl.uniform1f);
             this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
         }
@@ -15860,6 +15962,9 @@
     uniform float stroke;
     uniform vec4 strokeColor;
     uniform vec4 fillColor;
+    uniform float alpha;
+    uniform float fill;
+    uniform float blend;
     
     float boxDist(vec2 p, vec2 size, float radius){
         size -= vec2(radius);
@@ -15878,9 +15983,7 @@
     }
 
     void main() {
-        vec4 color = texture2D(uSampler, vTextureCoord) * vColor;
         vec2 halfRes = 0.5 * resolution.xy;
-
         float r = 0.0;
         if (vTextureCoord.x < 0.5 && vTextureCoord.y < 0.5) {
             r = radius[0];
@@ -15891,10 +15994,142 @@
         } else {
             r = radius[3];
         }
-
+        
         float b = boxDist(vTextureCoord.xy * resolution - halfRes, halfRes - 0.005, r);
-        vec4 tex = mix(vec4(0.0), color * fillColor, fillMask(b));
-        gl_FragColor = mix(tex, vColor * strokeColor, innerBorderMask(b, stroke));
+        vec4 tex = texture2D(uSampler, vTextureCoord) * vColor;
+        vec4 blend = mix(vec4(1.0) * alpha, tex, blend);     
+        vec4 layer1 = mix(vec4(0.0), tex * fillColor, fillMask(b));
+        gl_FragColor = mix(layer1, blend * strokeColor, innerBorderMask(b, stroke));
+    }
+`;
+
+    class FadeOutShader extends DefaultShader {
+        constructor(context) {
+            super(context);
+            this._fade = [0, 0, 0, 0];
+        }
+        set top(num) {
+            this._fade[0] = num;
+            this.redraw();
+        }
+        get top() {
+            return this._fade[0];
+        }
+        set right(num) {
+            this._fade[1] = num;
+            this.redraw();
+        }
+        get right() {
+            return this._fade[1];
+        }
+        set bottom(num) {
+            this._fade[2] = num;
+            this.redraw();
+        }
+        get bottom() {
+            return this._fade[2];
+        }
+        set left(num) {
+            this._fade[3] = num;
+            this.redraw();
+        }
+        get left() {
+            return this._fade[3];
+        }
+        set fade(v) {
+            if(Array.isArray(v)) {
+                if(v.length === 2) {
+                    this._fade = [v[0], v[1], v[0], v[1]];
+                }
+                else if(v.length === 3) {
+                    this._fade = [v[0], v[1], v[2], this._fade[3]];
+                }
+                else if (v.length === 4) {
+                    this._fade = v;
+                }
+                else {
+                    this._fade = [v[0], v[0], v[0], v[0]];
+                }
+            }
+            else {
+                this._fade = [v, v, v, v];
+            }
+            this.redraw();
+        }
+        get fade() {
+            return this._fade;
+        }
+        setupUniforms(operation) {
+            super.setupUniforms(operation);
+            const owner = operation.shaderOwner;
+            const renderPrecision = this.ctx.stage.getRenderPrecision();
+            const fade = this._fade.map((f) => f * renderPrecision);
+            this._setUniform('fade',  new Float32Array(fade), this.gl.uniform4fv);
+            this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
+        }
+    }
+    FadeOutShader.fragmentShaderSource = `
+    #ifdef GL_ES
+    # ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    # else
+    precision lowp float;
+    # endif
+    #endif
+    varying vec2 vTextureCoord;
+    varying vec4 vColor;
+    uniform sampler2D uSampler;
+    uniform vec2 resolution;
+    uniform vec4 fade;
+    
+    void main() {
+        vec4 color = texture2D(uSampler, vTextureCoord) * vColor;
+        vec2 halfRes = 0.5 * resolution.xy;
+        vec2 point = vTextureCoord.xy * resolution.xy;
+        
+        vec2 pos1;
+        vec2 pos2;
+        vec2 d;
+        float c;
+        float t = 0.0;
+             
+        if(fade[0] > 0.0) {
+            pos1 = vec2(point.x, point.y);
+            pos2 = vec2(point.x, point.y + fade[0]);
+            d = pos2 - pos1;
+            c = dot(pos1, d) / dot(d, d);
+            t = smoothstep(0.0, 1.0, clamp(c, 0.0, 1.0));
+            color = mix(vec4(0.0), color, t);
+        }
+        
+        if(fade[1] > 0.0) {
+            vec2 pos1 = vec2(point.x - resolution.x - fade[1], vTextureCoord.y);
+            vec2 pos2 = vec2(point.x - resolution.x, vTextureCoord.y);
+            d = pos1 - pos2;
+            c = dot(pos2, d) / dot(d, d);
+            t = smoothstep(0.0, 1.0, clamp(c, 0.0, 1.0));
+            color = mix(vec4(0.0), color, t);
+        }
+        
+        if(fade[2] > 0.0) {
+            vec2 pos1 = vec2(vTextureCoord.x, point.y - resolution.y - fade[2]);
+            vec2 pos2 = vec2(vTextureCoord.x, point.y - resolution.y);
+            d = pos1 - pos2;
+            c = dot(pos2, d) / dot(d, d);
+            t = smoothstep(0.0, 1.0, clamp(c, 0.0, 1.0));
+            color = mix(vec4(0.0), color, t);
+        }
+        
+        if(fade[3] > 0.0) {
+            pos1 = vec2(point.x, point.y);
+            pos2 = vec2(point.x + fade[3], point.y);
+            d = pos2 - pos1;
+            c = dot(pos1, d) / dot(d, d);
+            t = smoothstep(0.0, 1.0, clamp(c, 0.0, 1.0));
+            color = mix(vec4(0.0), color, t);
+        }
+        
+        gl_FragColor = color;
     }
 `;
 
@@ -15903,29 +16138,36 @@
             super(context);
             this._magnitude = 1.3;
             this._intensity = 0.7;
-            this._pivotX = 0.5;
-            this._pivotY = 0.5;
+            this._pivot = [0.5, 0.5];
         }
         setupUniforms(operation) {
             super.setupUniforms(operation);
             this._setUniform("magnitude", this._magnitude , this.gl.uniform1f);
             this._setUniform("intensity", this._intensity, this.gl.uniform1f);
-            this._setUniform("pivotX", this._pivotX, this.gl.uniform1f);
-            this._setUniform("pivotY", this._pivotY, this.gl.uniform1f);
+            this._setUniform('pivot', new Float32Array(this._pivot), this.gl.uniform2fv);
+            this.redraw();
+        }
+        set pivot(v) {
+            if(Array.isArray(v)) {
+                this._pivot = v;
+            }
+            else {
+                this._pivot = [v, v];
+            }
             this.redraw();
         }
         get pivotX() {
-            return this._pivotX;
+            return this._pivot[0];
         }
         set pivotX(v) {
-            this._pivotX = v;
+            this._pivot[0] = v;
             this.redraw();
         }
         get pivotY() {
-            return this._pivotY;
+            return this._pivot[1];
         }
         set pivotY(v) {
-            this._pivotY = v;
+            this._pivot[1] = v;
             this.redraw();
         }
         get intensity() {
@@ -15958,11 +16200,9 @@
 
     uniform float magnitude;
     uniform float intensity;
-    uniform float pivotX;
-    uniform float pivotY;
+    uniform vec2 pivot;
 
     void main() {
-        vec2 pivot = vec2(pivotX, pivotY);
         vec2 uv = vTextureCoord.xy - pivot + vec2(0.5);
         uv.x = clamp(uv.x, 0.0, 1.0);
         uv.y = clamp(uv.y, 0.0, 1.0);
@@ -16218,26 +16458,18 @@
     class RadialGradientShader extends DefaultShader {
         constructor(context) {
             super(context);
-            this._x = 0;
-            this._y = 0;
-            this.color = 0xFFFF0000;
-            this._radiusX = 100;
-            this._radiusY = 100;
-        }
-        set x(v) {
-            this._x = v;
-            this.redraw();
-        }
-        set y(v) {
-            this._y = v;
-            this.redraw();
+            this._pivot = [0, 0];
+            this._ic = 0xffffffff;
+            this._normalizedIC = this._getNormalizedColor(this._ic);
+            this._oc = 0x00ffffff;
+            this._normalizedOC = this._getNormalizedColor(this._oc);
+            this._radius = 0;
         }
         set radiusX(v) {
-            this._radiusX = v;
-            this.redraw();
+            this.radius = v;
         }
         get radiusX() {
-            return this._radiusX;
+            return this._radius;
         }
         set radiusY(v) {
             this._radiusY = v;
@@ -16247,59 +16479,97 @@
             return this._radiusY;
         }
         set radius(v) {
-            this.radiusX = v;
-            this.radiusY = v;
+            this._radius = v;
+            this.redraw();
+        }
+        set innerColor(argb) {
+            this._ic = argb;
+            this._normalizedIC = this._getNormalizedColor(argb);
+            this.redraw();
+        }
+        get innerColor() {
+            return this._ic;
+        }
+        set outerColor(argb) {
+            this._oc = argb;
+            this._normalizedOC = this._getNormalizedColor(argb);
+            this.redraw();
+        }
+        set color(argb) {
+            this.innerColor = argb;
         }
         get color() {
-            return this._color;
+            return this.innerColor;
         }
-        set color(v) {
-            if (this._color !== v) {
-                const col = StageUtils.getRgbaComponentsNormalized(v);
-                col[0] = col[0] * col[3];
-                col[1] = col[1] * col[3];
-                col[2] = col[2] * col[3];
-                this._rawColor = new Float32Array(col);
-                this.redraw();
-                this._color = v;
+        get outerColor() {
+            return this._ic;
+        }
+        set x(f) {
+            this._x = f;
+            this.redraw();
+        }
+        set y(f) {
+            this._y = f;
+            this.redraw();
+        }
+        set pivot(v) {
+            if(Array.isArray(v) && v.length === 2) {
+                this._pivot = v;
             }
+            else if(Array.isArray(v)) {
+                this._pivot = [v[0], v[1] || v[0]];
+            }
+            else {
+                this._pivot = [v, v];
+            }
+            this.redraw();
+        }
+        get pivot() {
+            return this._pivot[0];
+        }
+        set pivotY(f) {
+            this._pivot[1] = f;
+            this.redraw();
+        }
+        get pivotY() {
+            return this._pivot[1];
+        }
+        set pivotX(f) {
+            this._pivot[0] = f;
+            this.redraw();
+        }
+        get pivotX() {
+            return this._pivot[0];
+        }
+        _getNormalizedColor(color) {
+            const col = StageUtils.getRgbaComponentsNormalized(color);
+            col[0] *= col[3];
+            col[1] *= col[3];
+            col[2] *= col[3];
+            return new Float32Array(col);
         }
         setupUniforms(operation) {
             super.setupUniforms(operation);
-            const rtc = operation.getNormalRenderTextureCoords(this._x, this._y);
-            this._setUniform("center", new Float32Array(rtc), this.gl.uniform2fv);
-            this._setUniform("radius", 2 * this._radiusX / operation.getRenderWidth(), this.gl.uniform1f);
-            this._setUniform("alpha", operation.getElementCore(0).renderContext.alpha, this.gl.uniform1f);
-            this._setUniform("color", this._rawColor, this.gl.uniform4fv);
-            this._setUniform("aspectRatio", (this._radiusX/this._radiusY) * operation.getRenderHeight()/operation.getRenderWidth(), this.gl.uniform1f);
+            const owner = operation.shaderOwner;
+            if(this._x) {
+                this._pivot[0] = this._x / owner.w;
+            }
+            if(this._y) {
+                this._pivot[1] = this._y / owner.h;
+            }
+            if(this._radius === 0) {
+                this._radius = owner.w * 0.5;
+            }
+            this._setUniform('innerColor', this._normalizedIC, this.gl.uniform4fv);
+            this._setUniform('fill', StageUtils.getRgbaComponentsNormalized(this._oc)[3], this.gl.uniform1f);
+            this._setUniform('outerColor', this._normalizedOC, this.gl.uniform4fv);
+            this._setUniform('pivot', new Float32Array(this._pivot),  this.gl.uniform2fv);
+            this._setUniform('resolution', new Float32Array([owner._w, owner._h]),  this.gl.uniform2fv);
+            this._setUniform('alpha', operation.getElementCore(0).renderContext.alpha, this.gl.uniform1f);
+            this._setUniform('radius',  this._radius, this.gl.uniform1f);
+            this._setUniform('radiusY',  (this._radiusY || this._radius), this.gl.uniform1f);
         }
     }
-    RadialGradientShader.vertexShaderSource = `
-    #ifdef GL_ES
-    # ifdef GL_FRAGMENT_PRECISION_HIGH
-    precision highp float;
-    # else
-    precision lowp float;
-    # endif
-    #endif
-    attribute vec2 aVertexPosition;
-    attribute vec2 aTextureCoord;
-    attribute vec4 aColor;
-    uniform vec2 projection;
-    uniform vec2 center;
-    uniform float aspectRatio;
-    varying vec2 pos;
-    varying vec2 vTextureCoord;
-    varying vec4 vColor;
-    void main(void){
-        gl_Position = vec4(aVertexPosition.x * projection.x - 1.0, aVertexPosition.y * -abs(projection.y) + 1.0, 0.0, 1.0);
-        vTextureCoord = aTextureCoord;
-        vColor = aColor;
-        gl_Position.y = -sign(projection.y) * gl_Position.y;
-        pos = gl_Position.xy - center;
-        pos.y = pos.y * aspectRatio;
-    }
-`;
     RadialGradientShader.fragmentShaderSource = `
     #ifdef GL_ES
     # ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -16308,16 +16578,28 @@
     precision lowp float;
     # endif
     #endif
+    
+    #define PI 3.14159265359
+    
     varying vec2 vTextureCoord;
     varying vec4 vColor;
-    varying vec2 pos;
     uniform sampler2D uSampler;
+    uniform vec2 resolution;
+    uniform vec2 pivot;
+    uniform vec4 innerColor;
+    uniform vec4 outerColor;
     uniform float radius;
-    uniform vec4 color;
+    uniform float radiusY;
     uniform float alpha;
-    void main(void){
-        float dist = length(pos);
-        gl_FragColor = mix(color * alpha, texture2D(uSampler, vTextureCoord) * vColor, min(1.0, dist / radius));
+    uniform float fill;
+    uniform float aspectRatio;
+    
+    void main() {
+        vec2 point = vTextureCoord.xy * resolution;
+        vec2 projection = vec2(pivot.x * resolution.x, pivot.y * resolution.y);
+        float d = length((point - projection) / vec2(radius * 2.0, radiusY * 2.0));
+        vec4 color = mix(texture2D(uSampler, vTextureCoord) * vColor, outerColor * alpha, fill);
+        gl_FragColor = mix(innerColor * alpha, color, smoothstep(0.0, 1.0, d));
     }
 `;
 
@@ -16674,6 +16956,263 @@
     }
 `;
 
+    class MagnifierShader extends DefaultShader {
+    	constructor(context) {
+    	  super(context);
+    	  this._x = 0;
+    	  this._y = 0;
+    	  this._w = 0;
+    	  this._h = 0;
+    	  this._radius = 0;
+    	  this._magnification = 0.6;
+    	}
+    	get x() {
+    	  return this._x;
+    	}
+    	set x(v) {
+    	  this._x = v;
+    	  this.redraw();
+    	}
+    	get y() {
+    	  return this._y;
+    	}
+    	set y(v) {
+    	  this._y = v;
+    	  this.redraw();
+    	}
+    	get w() {
+    	  return this._w;
+    	}
+    	set w(v) {
+    	  this._w = v;
+    	  this.redraw();
+    	}
+    	get h() {
+    	  return this._h;
+    	}
+    	set h(v) {
+    	  this._h = v;
+    	  this.redraw();
+    	}
+    	get magnification() {
+    	  return this._magnification;
+    	}
+    	set magnification(v) {
+    	  this._magnification = v;
+    	  this.redraw();
+    	}
+    	get radius() {
+    	  return this._radius;
+    	}
+    	set radius(v) {
+    	  this._radius = v;
+    	  this.redraw();
+    	}
+    	setupUniforms(operation) {
+    	  super.setupUniforms(operation);
+    	  const owner = operation.shaderOwner;
+    	  const renderPrecision = this.ctx.stage.getRenderPrecision();
+    	  this._setUniform('x', this._x * renderPrecision, this.gl.uniform1f);
+    	  this._setUniform('y', this._y * renderPrecision, this.gl.uniform1f);
+    	  this._setUniform('w', this._w * renderPrecision, this.gl.uniform1f);
+    	  this._setUniform('h', this._h * renderPrecision, this.gl.uniform1f);
+    	  this._setUniform('magnification', this._magnification, this.gl.uniform1f);
+    	  this._setUniform(
+    		'radius',
+    		(this._radius + 0.5) * renderPrecision,
+    		this.gl.uniform1f
+    	  );
+    	  this._setUniform(
+    		'resolution',
+    		new Float32Array([
+    		  owner._w * renderPrecision,
+    		  owner._h * renderPrecision
+    		]),
+    		this.gl.uniform2fv
+    	  );
+    	}
+    	useDefault() {
+    	  return this._w === 0 && this._h === 0;
+    	}
+      }
+      MagnifierShader.vertexShaderSource = DefaultShader.vertexShaderSource;
+      MagnifierShader.fragmentShaderSource = `
+	  #ifdef GL_ES
+		# ifdef GL_FRAGMENT_PRECISION_HIGH
+		precision highp float;
+		# else
+		precision lowp float;
+		# endif
+	  #endif
+
+	  varying vec2 vTextureCoord;
+	  varying vec4 vColor;
+	  uniform sampler2D uSampler;
+	  uniform float x;
+	  uniform float y;
+	  uniform float w;
+	  uniform float h;
+	  uniform vec2 resolution;
+	  uniform float radius;
+	  uniform float magnification;
+  
+	  float roundBox(vec2 p, vec2 b, float r) {
+		  float d = length(max(abs(p)-b+r, 0.1))-r;
+		  return smoothstep(1.0, 0.0, d);
+	  }
+
+	  float inside(vec2 v) {
+		vec2 s = step(vec2(0.0, 0.0), v) - step(vec2(1.0, 1.0), v);
+		return s.x * s.y;   
+      }
+  
+	  void main(void) {
+		vec4 color = texture2D(uSampler, vTextureCoord);
+		vec2 pos = vTextureCoord.xy * resolution - vec2(x, y) - vec2(w, h) / 2.0;
+		vec2 size = vec2(w, h) / 2.0;
+		float b = roundBox(pos, size, radius);
+		vec2 pos2 = (vTextureCoord.xy * magnification * resolution + vec2(x, y) * magnification) / resolution;
+		gl_FragColor = mix(color, texture2D(uSampler, pos2) * inside(pos2), b) * vColor;
+	  }
+  `;
+
+    class SpinnerShader2 extends DefaultShader {
+        constructor(context) {
+            super(context);
+            this._period = 1;
+            this._stroke = 0;
+            this._showDot = true;
+            this._clockwise = true;
+            this._bc = 0xff000000;
+            this._normalizedBC = this._getNormalizedColor(this._bc);
+            this._c = 0xffffffff;
+            this._normalizedC = this._getNormalizedColor(this._c);
+        }
+        set radius(v) {
+            if(v === 0) {
+                v = 1;
+            }
+            this._radius = v;
+        }
+        set stroke(value) {
+            this._stroke = Math.abs(value);
+        }
+        get stroke() {
+            return this._stroke;
+        }
+        set color(argb) {
+            this._c = argb;
+            this._normalizedC = this._getNormalizedColor(argb);
+        }
+        get color() {
+            return this._c;
+        }
+        set backgroundColor(argb) {
+            this._bc = argb;
+            this._normalizedBC = this._getNormalizedColor(argb);
+        }
+        get backgroundColor() {
+            return this._sc;
+        }
+        set showDot(bool) {
+            this._showDot = bool;
+        }
+        get showDot() {
+            return this._showDot;
+        }
+        set clockwise(bool) {
+            this._clockwise = bool;
+        }
+        get clockwise() {
+            return this._clockwise;
+        }
+        set period(v) {
+            this._period = v;
+        }
+        get period() {
+            return this._period;
+        }
+        _getNormalizedColor(color) {
+            const col = StageUtils.getRgbaComponentsNormalized(color);
+            col[0] *= col[3];
+            col[1] *= col[3];
+            col[2] *= col[3];
+            return new Float32Array(col);
+        }
+        setupUniforms(operation) {
+            super.setupUniforms(operation);
+            const owner = operation.shaderOwner;
+            const radius = this._radius || (owner._w / 2);
+            if(this._stroke === 0) {
+                this._stroke = radius * 0.33;
+            }
+            this._setUniform('resolution', new Float32Array([owner._w, owner._h]),  this.gl.uniform2fv);
+            this._setUniform('color', this._normalizedC, this.gl.uniform4fv);
+            this._setUniform('backgroundColor', this._normalizedBC, this.gl.uniform4fv);
+            this._setUniform('stroke',  this._stroke, this.gl.uniform1f);
+            this._setUniform('radius',  radius, this.gl.uniform1f);
+            this._setUniform('direction',  this._clockwise ? -1 : 1, this.gl.uniform1f);
+            this._setUniform('showDot', !!this._showDot, this.gl.uniform1f);
+            this._setUniform('time', Date.now() - SpinnerShader2.spinSync, this.gl.uniform1f);
+            this._setUniform('period', this._period, this.gl.uniform1f);
+            this._setUniform('alpha', operation.getElementCore(0).renderContext.alpha, this.gl.uniform1f);
+            if(this._sc !== this._bc || this._stroke !== radius * 0.5) {
+                this.redraw();
+            }
+        }
+    }
+    SpinnerShader2.spinSync = Date.now();
+    SpinnerShader2.fragmentShaderSource = `
+    #ifdef GL_ES
+    # ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    # else
+    precision lowp float;
+    # endif
+    #endif
+    
+    #define PI 3.14159265359
+    
+    varying vec2 vTextureCoord;
+    varying vec4 vColor;
+    
+    uniform sampler2D uSampler;
+    uniform vec2 resolution;
+    uniform vec4 color;
+    uniform vec4 backgroundColor;
+    uniform float direction;
+    uniform float radius;
+    uniform float time;
+    uniform float stroke;
+    uniform float showDot;
+    uniform float period;
+    uniform float alpha;
+    
+    float circleDist(vec2 p, float radius){
+        return length(p) - radius;
+    }
+    
+    float fillMask(float dist){
+        return clamp(-dist, 0.0, 1.0);
+    }
+    
+    void main() {
+        vec2 halfRes = 0.5 * resolution.xy;
+        vec2 center = vTextureCoord.xy * resolution - halfRes;
+        
+        float c = max(-circleDist(center, radius - stroke), circleDist(center, radius));
+        float rot = -(time / 1000.0 / period) * 6.0 * direction;
+        center *= mat2(cos(rot), sin(rot), -sin(rot), cos(rot));
+        
+        float a = direction * atan(center.x, center.y) * PI * 0.05 + 0.45;
+        
+        float strokeRad = stroke * 0.5;
+        a = mix(a, max(a, fillMask(circleDist(vec2(center.x, center.y + (radius - strokeRad)), strokeRad))), showDot);
+        vec4 base = mix(vec4(0.0), backgroundColor * alpha, fillMask(c));
+        gl_FragColor = mix(base, color * alpha, fillMask(c) * a);
+    }
+`;
+
     const lightning = {
         Application,
         Component,
@@ -16698,12 +17237,15 @@
             Pixelate: PixelateShader,
             RadialFilter: RadialFilterShader,
             RoundedRectangle: RoundedRectangleShader,
+            Spinner2: SpinnerShader2,
+            FadeOut: FadeOutShader,
             Hole: HoleShader,
             Vignette: VignetteShader,
             Spinner: SpinnerShader,
             RadialGradient: RadialGradientShader,
             Light3d: Light3dShader,
             Perspective: PerspectiveShader,
+            Magnifier: MagnifierShader,
             WebGLShader,
             WebGLDefaultShader: DefaultShader,
             C2dShader,

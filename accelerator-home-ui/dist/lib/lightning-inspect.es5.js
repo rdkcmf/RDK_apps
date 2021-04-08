@@ -682,6 +682,18 @@
         val(this, 'src', this.src, null);
       }
     });
+    Element.prototype.$testId = null;
+    Object.defineProperty(Element.prototype, 'testId', {
+      get: function get() {
+        return this.$testId;
+      },
+      set: function set(v) {
+        if (this.$testId !== v) {
+          this.$testId = v;
+          val(this, 'data-testid', v, null);
+        }
+      }
+    });
 
     var checkColors = function checkColors(elementRenderer) {
       var element = elementRenderer._element;

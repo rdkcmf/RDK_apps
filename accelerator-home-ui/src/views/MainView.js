@@ -61,7 +61,7 @@ export default class MainView extends Lightning.Component {
         },
         TVShows: {
           x: 0,
-          y: 184+184,
+          y: 184 + 184,
           w: 1469,
           h: 335,
           type: Lightning.components.ListComponent,
@@ -73,7 +73,7 @@ export default class MainView extends Lightning.Component {
         },
         Settings: {
           x: 0,
-          y: 494+184,
+          y: 494 + 184,
           w: 1469,
           h: 335,
           type: Lightning.components.ListComponent,
@@ -154,7 +154,7 @@ export default class MainView extends Lightning.Component {
     this.tag('AppList').start()
   }
 
-  set metroApps(items){
+  set metroApps(items) {
     this.tag('MetroApps').items = items.map(info => {
       return {
         w: 204,
@@ -219,7 +219,7 @@ export default class MainView extends Lightning.Component {
       this._setState('MetroApps')
     } else if (this.indexVal == 2) {
       this._setState('TVShows')
-    } else if(this.indexVal == 3) {
+    } else if (this.indexVal == 3) {
       this._setState('Settings')
     }
   }
@@ -304,13 +304,15 @@ export default class MainView extends Lightning.Component {
           };
           var thunder = ThunderJS(config);
           console.log('_handleKey', key.keyCode);
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             var appApi = new AppApi();
+          if (key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
             if (Storage.get('applicationType') == 'Cobalt') {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'WebApp') {
+            }
+          } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+            if (Storage.get('applicationType') == 'WebApp') {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
               appApi.setVisibility('ResidentApp', true);
@@ -341,7 +343,7 @@ export default class MainView extends Lightning.Component {
               .catch(err => {
                 console.log('Error', err)
               })
-          }else return false
+          } else return false
         }
       },
       class MetroApps extends this {
@@ -400,14 +402,16 @@ export default class MainView extends Lightning.Component {
             default: 1,
           };
           var thunder = ThunderJS(config);
+          var appApi = new AppApi();
           console.log('_handleKey', key.keyCode);
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-            var appApi = new AppApi();
+          if(key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
             if (Storage.get('applicationType') == 'Cobalt') {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'WebApp') {
+            }
+          } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+            if (Storage.get('applicationType') == 'WebApp') {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
               appApi.setVisibility('ResidentApp', true);
@@ -469,8 +473,8 @@ export default class MainView extends Lightning.Component {
         }
       },
       class Settings extends this {
-        $enter(){
-          this.fireAncestors('$scroll',-200)
+        $enter() {
+          this.fireAncestors('$scroll', -200)
         }
         _getFocused() {
           if (this.tag('Settings').length) {
@@ -508,8 +512,8 @@ export default class MainView extends Lightning.Component {
             Router.navigate('settings/WiFiScreen', false)
           }
         }
-        $exit(){
-          this.fireAncestors('$scroll',0)
+        $exit() {
+          this.fireAncestors('$scroll', 0)
         }
       },
     ]
