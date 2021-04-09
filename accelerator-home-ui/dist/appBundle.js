@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.4.0
  *
- * Generated: Thu, 08 Apr 2021 09:54:41 GMT
+ * Generated: Fri, 09 Apr 2021 09:02:14 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6223,7 +6223,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('AppList');
       this.indexVal = 0;
       const config = {
-        host: '192.168.2.69',
+        host: '192.168.2.96',
         port: 9998,
         default: 1,
       };
@@ -6435,8 +6435,8 @@ var APP_accelerator_home_ui = (function () {
             };
             var thunder = thunderJS(config);
             console.log('_handleKey', key.keyCode);
-            var appApi = new AppApi();
-            if (key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
+              var appApi = new AppApi();
+            if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               if (Storage.get('applicationType') == 'Cobalt') {
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
@@ -6528,14 +6528,14 @@ var APP_accelerator_home_ui = (function () {
           }
           _handleKey(key) {
             const config = {
-              host: '192.168.2.69',
+              host: '127.0.0.1',
               port: 9998,
               default: 1,
             };
             var thunder = thunderJS(config);
             var appApi = new AppApi();
             console.log('_handleKey', key.keyCode);
-            if(key.ctrlKey && key.keyCode == 77) { // To minimise  application when user pressed control+m 
+            if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               if (Storage.get('applicationType') == 'Cobalt') {
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
@@ -12408,7 +12408,7 @@ ${error.toString()}`;
    **/
 
   const config = {
-    host: '192.168.2.69',
+    host: '192.168.2.96',
     port: 9998,
     default: 1,
   };
