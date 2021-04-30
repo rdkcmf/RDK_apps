@@ -141,6 +141,13 @@ export default class WiFiScreen extends Lightning.Component {
     this._setState('Switch')
   }
 
+  
+  _focus(){
+    new NetworkApi().getIP().then(ip=>{
+      this.tag('IpAddress').text.text = 'IP:'+ip
+    })
+  }
+
   _init() {
     this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
       duration: 1,
@@ -192,9 +199,7 @@ export default class WiFiScreen extends Lightning.Component {
         this._setState('Switch')
       }
     })
-        this._network.getIP().then(ip=>{
-          this.tag('IpAddress').text.text = 'IP:'+ip
-        })
+
       }
     })
   }
