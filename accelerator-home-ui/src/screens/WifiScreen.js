@@ -382,17 +382,36 @@ export default class WiFiScreen extends Lightning.Component {
    */
   _navigate(listname, dir) {
     let list
+    let findex = 4;
+    let list_element_h = 65;
+
     if (listname === 'MyDevices') list = this._pairedNetworks.tag('List')
     else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List')
     if (dir === 'down') {
-      if (list.index < list.length - 1) list.setNext()
+      if (list.index < list.length - 1) {
+        if (listname === 'AvailableDevices') {
+          if (list.index > findex) {
+            list.y = list.y - list_element_h;
+            list.getElement(((list.index - 1) - findex)).visible = false;
+          }
+        }
+        list.setNext()
+      }
       else if (list.index == list.length - 1) {
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }
       }
     } else if (dir === 'up') {
-      if (list.index > 0) list.setPrevious()
+      if (list.index > 0) {
+        if (listname === 'AvailableDevices') {
+          if (list.y < list_element_h) {
+            list.y = list.y + list_element_h;
+            list.getElement((list.index - 2) - findex).visible = true;
+          }
+        }
+        list.setPrevious();
+      }
       else if (list.index == 0) {
         if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
           this._setState('PairedDevices')
