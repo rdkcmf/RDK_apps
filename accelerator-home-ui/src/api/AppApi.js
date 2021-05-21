@@ -21,6 +21,7 @@ var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
 var activatedAmazon = false
+var activatedNetflix = false
 var webUrl = ''
 var lightningUrl = ''
 var activatedNative = false
@@ -225,10 +226,10 @@ export default class AppApi {
   }
 
   /**
-   * Function to launch Amazon Prime app.
+   * Function to launch Netflix/Amazon Prime app.
    */
-  launchAmazon() {
-    const childCallsign = "Amazon";
+  launchPremiumApp(childCallsign) {
+    // const childCallsign = "Amazon";
     thunder
       .call("org.rdk.RDKShell", "launch", {
       callsign: childCallsign,
@@ -241,7 +242,7 @@ export default class AppApi {
       thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
     })
     .catch(err => {});
-    activatedAmazon = true;
+    childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
   }
 
   /**
@@ -290,11 +291,12 @@ export default class AppApi {
     thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' })
   }
 
+  
   /**
-   * Function to suspend Amazon Prime app.
+   * Function to suspend Netflix/Amazon Prime app.
    */
-  suspendAmazon() {
-    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Amazon' })
+  suspendPremiumApp(appName) {
+    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: appName })
   }
 
   /**
@@ -316,12 +318,12 @@ export default class AppApi {
   }
 
   /**
-   * Function to deactivate Amazon Prime app.
+   * Function to deactivate Netflix/Amazon Prime app.
    */
-  deactivateAmazon() {
-    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Amazon' })
-    activatedAmazon = false
-  }
+     deactivateNativeApp(appName) {
+      thunder.call('org.rdk.RDKShell', 'destroy', { callsign: appName })
+      appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
+    }
 
   /**
    * Function to deactivate lightning app.
@@ -398,6 +400,8 @@ export default class AppApi {
         return activatedLightning
       case 'Amazon':
         return activatedAmazon
+      case 'Netflix':
+        return activatedNetflix
     }
   }
 }
