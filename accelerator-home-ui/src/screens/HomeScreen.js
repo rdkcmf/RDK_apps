@@ -23,6 +23,12 @@ import TopPanel from '../views/TopPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
+import AppApi from './../api/AppApi';
+
+var powerState = 'ON';
+var audio_mute = false;
+var audio_volume = 50;
+var appApi = new AppApi();
 
 /** Class for home screen UI */
 export default class HomeScreen extends Lightning.Component {
@@ -130,6 +136,75 @@ export default class HomeScreen extends Lightning.Component {
         })
       }
     })
+  }
+
+  _captureKey(key) {
+    console.log(" _captureKey home screen : " + key.keyCode)
+    if (key.keyCode == 112)  {
+
+      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+      if (powerState == 'ON') {
+        appApi.standby("STANDBY").then(res => {
+          powerState = 'STANDBY'
+        })
+        return true
+      } else if (powerState == 'STANDBY') {
+        appApi.standby("ON").then(res => {
+          powerState = 'ON';
+        })
+        return true
+      }
+
+    } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
+
+      console.log("___________DEEP_SLEEP_______________________F12")
+      appApi.standby("DEEP_SLEEP").then(res => {
+        powerState = 'DEEP_SLEEP'
+      })
+      return true
+
+    } else if (key.keyCode == 118 || key.keyCode == 113) {
+
+      let value = !audio_mute;
+      appApi.audio_mute(value).then(res => {
+        console.log("__________AUDIO_MUTE_______________________F7")
+        console.log(JSON.stringify(res, 3, null));
+
+        if (res.success == true) {
+          audio_mute = value;
+        }
+        console.log("audio_mute:" + audio_mute);
+      })
+      return true
+
+    } else if (key.keyCode == 175) {
+
+      audio_volume += 10;
+      if (audio_volume > 100) { audio_volume = 100 }
+
+      let value = "" + audio_volume;
+      appApi.setVolumeLevel(value).then(res => {
+        console.log("__________AUDIO_VOLUME_________Numberpad key plus")
+        console.log(JSON.stringify(res, 3, null));
+        console.log("setVolumeLevel:" + audio_volume);
+      })
+      return true
+
+    } else if (key.keyCode == 174) {
+
+      audio_volume -= 10;
+      if (audio_volume < 0) { audio_volume = 0 }
+      let value = "" + audio_volume;
+
+      appApi.setVolumeLevel(value).then(res => {
+        console.log("__________AUDIO_VOLUME____________Numberpad key minus")
+        console.log(JSON.stringify(res, 3, null));
+        console.log("setVolumeLevel:" + audio_volume);
+      })
+      return true
+    }
+
+    return false
   }
 
   _active() {

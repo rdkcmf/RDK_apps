@@ -404,4 +404,71 @@ export default class AppApi {
         return activatedNetflix
     }
   }
+
+    standby(value) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
+        .then(result => {
+          console.log("############ standby ##############" + value)
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          resolve(false)
+        })
+    })
+  }
+
+    audio_mute(value) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+        .then(result => {
+          console.log("############ audio_mute ##############" + value)
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
+    setVolumeLevel(value) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
+        .then(result => {
+          console.log("############ setVolumeLevel ############" + value)
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
+   getVolumeLevel() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
+        .then(result => {
+          console.log("############ getVolumeLevel ############")
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
 }
