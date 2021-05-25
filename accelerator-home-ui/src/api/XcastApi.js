@@ -73,6 +73,12 @@ export default class XcastApi {
                     this._events.get('onApplicationStopRequest')(notification);
                   }
                 });
+                this._thunder.on(this.callsign, 'onApplicationStateRequest', notification => {
+                  console.log('onApplicationStateRequest ' + JSON.stringify(notification));
+                  if (this._events.has('onApplicationStateRequest')) {
+                    this._events.get('onApplicationStateRequest')(notification);
+                  }
+                });
                 resolve(true);
               } else {
                 console.log('Xcast enabled failed');
@@ -122,7 +128,7 @@ export default class XcastApi {
   }
 
   static supportedApps() {
-    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt' };
+    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
     return xcastApps;
   }
 }

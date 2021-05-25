@@ -33,9 +33,9 @@ export var appListInfo = [
     url: '/images/apps/xumo.png',
   },
   {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+    displayName: 'Test Netflix',
+    applicationType: 'Netflix',
+    uri: '',
     url: '/images/apps/netflix.png',
   },
   {
@@ -44,4 +44,11 @@ export var appListInfo = [
     uri: '',
     url: '/images/apps/prime.png',
   },
+  {
+    displayName: 'Bluetooth Audio',
+    applicationType: 'Lightning',
+    uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+    url: '/images/apps/netflix.png',
+  },
+  
 ]

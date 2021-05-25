@@ -292,7 +292,10 @@ export default class MainView extends Lightning.Component {
             appApi.launchNative(this.uri);
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
-            appApi.launchAmazon();
+            appApi.launchPremiumApp('Amazon');
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Netflix') {
+            appApi.launchPremiumApp('Netflix');
             appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -326,7 +329,11 @@ export default class MainView extends Lightning.Component {
               appApi.setVisibility('ResidentApp', true);
             } else if (Storage.get('applicationType') == 'Amazon') {
               Storage.set('applicationType', '');
-              appApi.suspendAmazon();
+              appApi.suspendPremiumApp('Amazon');
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Netflix') {
+              Storage.set('applicationType', '');
+              appApi.suspendPremiumApp('Netflix');
               appApi.setVisibility('ResidentApp', true);
             }
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {

@@ -202,7 +202,9 @@ export default class App extends Router.App {
         appApi.killNative();
         break;
       case 'Amazon':
-        appApi.suspendAmazon();
+        appApi.suspendPremiumApp('Amazon');
+      case 'Netflix':
+        appApi.suspendPremiumApp('Netflix')
       default:
         break;
     }
@@ -219,8 +221,15 @@ export default class App extends Router.App {
         console.log('Launch ' + this.xcastApps(notification.applicationName));
         if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchAmazon();
+          appApi.launchPremiumApp('Amazon');
           Storage.set('applicationType', 'Amazon');
+          appApi.setVisibility('ResidentApp', false);
+          let params = { applicationName: notification.applicationName, state: 'running' };
+          this.xcastApi.onApplicationStateChanged(params);
+        } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
+          this.deactivateChildApp(Storage.get('applicationType'));
+          appApi.launchPremiumApp('Netflix');
+          Storage.set('applicationType', 'Netflix');
           appApi.setVisibility('ResidentApp', false);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
@@ -243,7 +252,11 @@ export default class App extends Router.App {
         let applicationName = this.xcastApps(notification.applicationName);
         console.log('Hide ' + this.xcastApps(notification.applicationName));
         if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
-          appApi.suspendAmazon();
+          appApi.suspendPremiumApp('Amazon');
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          this.xcastApi.onApplicationStateChanged(params);
+        } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
+          appApi.suspendPremiumApp('Netflix');
           let params = { applicationName: notification.applicationName, state: 'stopped' };
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
@@ -265,7 +278,14 @@ export default class App extends Router.App {
         console.log('Resume ' + this.xcastApps(notification.applicationName));
         if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchAmazon();
+          appApi.launchPremiumApp('Amazon');
+          Storage.set('applicationType', 'Amazon');
+          appApi.setVisibility('ResidentApp', false);
+          let params = { applicationName: notification.applicationName, state: 'running' };
+          this.xcastApi.onApplicationStateChanged(params);
+        } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
+          this.deactivateChildApp(Storage.get('applicationType'));
+          appApi.launchPremiumApp('Netflix');
           Storage.set('applicationType', 'Amazon');
           appApi.setVisibility('ResidentApp', false);
           let params = { applicationName: notification.applicationName, state: 'running' };
@@ -286,7 +306,16 @@ export default class App extends Router.App {
         console.log('Stop ' + this.xcastApps(notification.applicationName));
         let applicationName = this.xcastApps(notification.applicationName);
         if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
-          appApi.deactivateAmazon();
+          appApi.deactivateNativeApp('Amazon');
+          Storage.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+            console.log('ResidentApp moveToFront Success');
+          });
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          this.xcastApi.onApplicationStateChanged(params);
+        } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
+          appApi.deactivateNativeApp('Netflix');
           Storage.set('applicationType', '');
           appApi.setVisibility('ResidentApp', true);
           thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
