@@ -1,9 +1,9 @@
 /**
  * App version: 1.0.0
  * SDK version: 3.2.1
- * CLI version: 2.4.0
- *
- * Generated: Fri, 09 Apr 2021 09:02:14 GMT
+ * CLI version: 2.5.0
+ * 
+ * Generated: Fri, 28 May 2021 12:05:26 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -471,15 +471,13 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
-    config.getInfo;
-    config.setInfo;
   };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-   * Copyright 2020 RDK Management
+   * Copyright 2020 Metrological
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -5244,7 +5242,7 @@ var APP_accelerator_home_ui = (function () {
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-   * Copyright 2020 RDK Management
+   * Copyright 2020 Metrological
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -5757,6 +5755,7 @@ var APP_accelerator_home_ui = (function () {
   var activatedLightning = false;
   var activatedCobalt = false;
   var activatedAmazon = false;
+  var activatedNetflix = false;
   var webUrl = '';
   var lightningUrl = '';
   var nativeUrl = '';
@@ -5959,10 +5958,10 @@ var APP_accelerator_home_ui = (function () {
     }
 
     /**
-     * Function to launch Amazon Prime app.
+     * Function to launch Netflix/Amazon Prime app.
      */
-    launchAmazon() {
-      const childCallsign = "Amazon";
+    launchPremiumApp(childCallsign) {
+      // const childCallsign = "Amazon";
       thunder$1
         .call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
@@ -5975,7 +5974,7 @@ var APP_accelerator_home_ui = (function () {
         thunder$1.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
       .catch(err => {});
-      activatedAmazon = true;
+      childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
     }
 
     /**
@@ -6024,11 +6023,12 @@ var APP_accelerator_home_ui = (function () {
       thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' });
     }
 
+    
     /**
-     * Function to suspend Amazon Prime app.
+     * Function to suspend Netflix/Amazon Prime app.
      */
-    suspendAmazon() {
-      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'Amazon' });
+    suspendPremiumApp(appName) {
+      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: appName });
     }
 
     /**
@@ -6049,12 +6049,12 @@ var APP_accelerator_home_ui = (function () {
     }
 
     /**
-     * Function to deactivate Amazon Prime app.
+     * Function to deactivate Netflix/Amazon Prime app.
      */
-    deactivateAmazon() {
-      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'Amazon' });
-      activatedAmazon = false;
-    }
+       deactivateNativeApp(appName) {
+        thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: appName });
+        appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
+      }
 
     /**
      * Function to deactivate lightning app.
@@ -6129,6 +6129,8 @@ var APP_accelerator_home_ui = (function () {
           return activatedLightning
         case 'Amazon':
           return activatedAmazon
+        case 'Netflix':
+          return activatedNetflix
       }
     }
   }
@@ -6223,7 +6225,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('AppList');
       this.indexVal = 0;
       const config = {
-        host: '192.168.2.96',
+        host: '127.0.0.1',
         port: 9998,
         default: 1,
       };
@@ -6423,7 +6425,10 @@ var APP_accelerator_home_ui = (function () {
               appApi.launchNative(this.uri);
               appApi.setVisibility('ResidentApp', false);
             } else if (Storage.get('applicationType') == 'Amazon') {
-              appApi.launchAmazon();
+              appApi.launchPremiumApp('Amazon');
+              appApi.setVisibility('ResidentApp', false);
+            } else if (Storage.get('applicationType') == 'Netflix') {
+              appApi.launchPremiumApp('Netflix');
               appApi.setVisibility('ResidentApp', false);
             }
           }
@@ -6457,7 +6462,11 @@ var APP_accelerator_home_ui = (function () {
                 appApi.setVisibility('ResidentApp', true);
               } else if (Storage.get('applicationType') == 'Amazon') {
                 Storage.set('applicationType', '');
-                appApi.suspendAmazon();
+                appApi.suspendPremiumApp('Amazon');
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Netflix') {
+                Storage.set('applicationType', '');
+                appApi.suspendPremiumApp('Netflix');
                 appApi.setVisibility('ResidentApp', true);
               }
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
@@ -7831,9 +7840,9 @@ var APP_accelerator_home_ui = (function () {
       url: '/images/apps/xumo.png',
     },
     {
-      displayName: 'Bluetooth Audio',
-      applicationType: 'Lightning',
-      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+      displayName: 'Test Netflix',
+      applicationType: 'Netflix',
+      uri: '',
       url: '/images/apps/netflix.png',
     },
     {
@@ -7842,6 +7851,13 @@ var APP_accelerator_home_ui = (function () {
       uri: '',
       url: '/images/apps/prime.png',
     },
+    {
+      displayName: 'Bluetooth Audio',
+      applicationType: 'Lightning',
+      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+      url: '/images/apps/netflix.png',
+    },
+    
   ];
 
   /**
@@ -11623,6 +11639,13 @@ var APP_accelerator_home_ui = (function () {
       this._setState('Switch');
     }
 
+    
+    _focus(){
+      new Network().getIP().then(ip=>{
+        this.tag('IpAddress').text.text = 'IP:'+ip;
+      });
+    }
+
     _init() {
       this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
         duration: 1,
@@ -11674,9 +11697,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Switch');
         }
       });
-          this._network.getIP().then(ip=>{
-            this.tag('IpAddress').text.text = 'IP:'+ip;
-          });
+
         }
       });
     }
@@ -11859,17 +11880,36 @@ var APP_accelerator_home_ui = (function () {
      */
     _navigate(listname, dir) {
       let list;
+      let findex = 4;
+      let list_element_h = 65;
+
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');
       else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
       if (dir === 'down') {
-        if (list.index < list.length - 1) list.setNext();
+        if (list.index < list.length - 1) {
+          if (listname === 'AvailableDevices') {
+            if (list.index > findex) {
+              list.y = list.y - list_element_h;
+              list.getElement(((list.index - 1) - findex)).visible = false;
+            }
+          }
+          list.setNext();
+        }
         else if (list.index == list.length - 1) {
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
         }
       } else if (dir === 'up') {
-        if (list.index > 0) list.setPrevious();
+        if (list.index > 0) {
+          if (listname === 'AvailableDevices') {
+            if (list.y < list_element_h) {
+              list.y = list.y + list_element_h;
+              list.getElement((list.index - 2) - findex).visible = true;
+            }
+          }
+          list.setPrevious();
+        }
         else if (list.index == 0) {
           if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
             this._setState('PairedDevices');
@@ -12334,6 +12374,12 @@ ${error.toString()}`;
                       this._events.get('onApplicationStopRequest')(notification);
                     }
                   });
+                  this._thunder.on(this.callsign, 'onApplicationStateRequest', notification => {
+                    console.log('onApplicationStateRequest ' + JSON.stringify(notification));
+                    if (this._events.has('onApplicationStateRequest')) {
+                      this._events.get('onApplicationStateRequest')(notification);
+                    }
+                  });
                   resolve(true);
                 } else {
                   console.log('Xcast enabled failed');
@@ -12383,7 +12429,7 @@ ${error.toString()}`;
     }
 
     static supportedApps() {
-      var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt' };
+      var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
       return xcastApps;
     }
   }
@@ -12408,7 +12454,7 @@ ${error.toString()}`;
    **/
 
   const config = {
-    host: '192.168.2.96',
+    host: '127.0.0.1',
     port: 9998,
     default: 1,
   };
@@ -12587,7 +12633,9 @@ ${error.toString()}`;
           appApi.killNative();
           break;
         case 'Amazon':
-          appApi.suspendAmazon();
+          appApi.suspendPremiumApp('Amazon');
+        case 'Netflix':
+          appApi.suspendPremiumApp('Netflix');
       }
     }
 
@@ -12602,8 +12650,15 @@ ${error.toString()}`;
           console.log('Launch ' + this.xcastApps(notification.applicationName));
           if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchAmazon();
+            appApi.launchPremiumApp('Amazon');
             Storage.set('applicationType', 'Amazon');
+            appApi.setVisibility('ResidentApp', false);
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchPremiumApp('Netflix');
+            Storage.set('applicationType', 'Netflix');
             appApi.setVisibility('ResidentApp', false);
             let params = { applicationName: notification.applicationName, state: 'running' };
             this.xcastApi.onApplicationStateChanged(params);
@@ -12626,7 +12681,11 @@ ${error.toString()}`;
           let applicationName = this.xcastApps(notification.applicationName);
           console.log('Hide ' + this.xcastApps(notification.applicationName));
           if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
-            appApi.suspendAmazon();
+            appApi.suspendPremiumApp('Amazon');
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
+            appApi.suspendPremiumApp('Netflix');
             let params = { applicationName: notification.applicationName, state: 'stopped' };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
@@ -12648,7 +12707,14 @@ ${error.toString()}`;
           console.log('Resume ' + this.xcastApps(notification.applicationName));
           if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchAmazon();
+            appApi.launchPremiumApp('Amazon');
+            Storage.set('applicationType', 'Amazon');
+            appApi.setVisibility('ResidentApp', false);
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchPremiumApp('Netflix');
             Storage.set('applicationType', 'Amazon');
             appApi.setVisibility('ResidentApp', false);
             let params = { applicationName: notification.applicationName, state: 'running' };
@@ -12669,7 +12735,16 @@ ${error.toString()}`;
           console.log('Stop ' + this.xcastApps(notification.applicationName));
           let applicationName = this.xcastApps(notification.applicationName);
           if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
-            appApi.deactivateAmazon();
+            appApi.deactivateNativeApp('Amazon');
+            Storage.set('applicationType', '');
+            appApi.setVisibility('ResidentApp', true);
+            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+              console.log('ResidentApp moveToFront Success');
+            });
+            let params = { applicationName: notification.applicationName, state: 'stopped' };
+            this.xcastApi.onApplicationStateChanged(params);
+          } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
+            appApi.deactivateNativeApp('Netflix');
             Storage.set('applicationType', '');
             appApi.setVisibility('ResidentApp', true);
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
