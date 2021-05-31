@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  * 
- * Generated: Fri, 28 May 2021 12:05:26 GMT
+ * Generated: Mon, 31 May 2021 14:55:44 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6133,6 +6133,73 @@ var APP_accelerator_home_ui = (function () {
           return activatedNetflix
       }
     }
+
+      standby(value) {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
+          .then(result => {
+            console.log("############ standby ##############" + value);
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            resolve(false);
+          });
+      })
+    }
+
+      audio_mute(value) {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+          .then(result => {
+            console.log("############ audio_mute ##############" + value);
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
+      setVolumeLevel(value) {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
+          .then(result => {
+            console.log("############ setVolumeLevel ############" + value);
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
+     getVolumeLevel() {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
+          .then(result => {
+            console.log("############ getVolumeLevel ############");
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
   }
 
   /**
@@ -8262,6 +8329,11 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
+  var powerState = 'ON';
+  var audio_mute = false;
+  var audio_volume = 50;
+  var appApi$1 = new AppApi();
+
   /** Class for home screen UI */
   class HomeScreen extends Lightning.Component {
     /**
@@ -8368,6 +8440,75 @@ var APP_accelerator_home_ui = (function () {
           });
         }
       });
+    }
+
+    _captureKey(key) {
+      console.log(" _captureKey home screen : " + key.keyCode);
+      if (key.keyCode == 112)  {
+
+        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+        if (powerState == 'ON') {
+          appApi$1.standby("STANDBY").then(res => {
+            powerState = 'STANDBY';
+          });
+          return true
+        } else if (powerState == 'STANDBY') {
+          appApi$1.standby("ON").then(res => {
+            powerState = 'ON';
+          });
+          return true
+        }
+
+      } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
+
+        console.log("___________DEEP_SLEEP_______________________F12");
+        appApi$1.standby("DEEP_SLEEP").then(res => {
+          powerState = 'DEEP_SLEEP';
+        });
+        return true
+
+      } else if (key.keyCode == 118 || key.keyCode == 113) {
+
+        let value = !audio_mute;
+        appApi$1.audio_mute(value).then(res => {
+          console.log("__________AUDIO_MUTE_______________________F7");
+          console.log(JSON.stringify(res, 3, null));
+
+          if (res.success == true) {
+            audio_mute = value;
+          }
+          console.log("audio_mute:" + audio_mute);
+        });
+        return true
+
+      } else if (key.keyCode == 175) {
+
+        audio_volume += 10;
+        if (audio_volume > 100) { audio_volume = 100; }
+
+        let value = "" + audio_volume;
+        appApi$1.setVolumeLevel(value).then(res => {
+          console.log("__________AUDIO_VOLUME_________Numberpad key plus");
+          console.log(JSON.stringify(res, 3, null));
+          console.log("setVolumeLevel:" + audio_volume);
+        });
+        return true
+
+      } else if (key.keyCode == 174) {
+
+        audio_volume -= 10;
+        if (audio_volume < 0) { audio_volume = 0; }
+        let value = "" + audio_volume;
+
+        appApi$1.setVolumeLevel(value).then(res => {
+          console.log("__________AUDIO_VOLUME____________Numberpad key minus");
+          console.log(JSON.stringify(res, 3, null));
+          console.log("setVolumeLevel:" + audio_volume);
+        });
+        return true
+      }
+
+      return false
     }
 
     _active() {
