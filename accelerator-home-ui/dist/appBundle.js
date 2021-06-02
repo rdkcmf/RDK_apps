@@ -2,8 +2,8 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- * 
- * Generated: Mon, 31 May 2021 14:55:44 GMT
+ *
+ * Generated: Wed, 02 Jun 2021 14:21:18 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -471,6 +471,8 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
+    config.getInfo;
+    config.setInfo;
   };
 
   /*
@@ -6508,8 +6510,8 @@ var APP_accelerator_home_ui = (function () {
             var thunder = thunderJS(config);
             console.log('_handleKey', key.keyCode);
               var appApi = new AppApi();
-            if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               if (Storage.get('applicationType') == 'Cobalt') {
+                if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
@@ -6611,8 +6613,8 @@ var APP_accelerator_home_ui = (function () {
             var thunder = thunderJS(config);
             var appApi = new AppApi();
             console.log('_handleKey', key.keyCode);
-            if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-              if (Storage.get('applicationType') == 'Cobalt') {
+            if (Storage.get('applicationType') == 'Cobalt') {
+                if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
@@ -12654,6 +12656,142 @@ ${error.toString()}`;
         .catch(err => {
           console.log('Error', err);
         })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 112,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 116,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 118,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 175,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 174,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 113,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 228,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 142,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })      
         .then(result => {
           thunder
             .call(rdkshellCallsign, 'addKeyIntercept', {

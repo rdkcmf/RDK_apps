@@ -86,6 +86,142 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
+            keyCode: 112,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 116,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 118,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 175,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 174,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 113,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 228,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 142,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
             keyCode: 77,
             modifiers: [],
           })

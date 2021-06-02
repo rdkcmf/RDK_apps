@@ -308,8 +308,8 @@ export default class MainView extends Lightning.Component {
           var thunder = ThunderJS(config);
           console.log('_handleKey', key.keyCode);
             var appApi = new AppApi();
-          if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
             if (Storage.get('applicationType') == 'Cobalt') {
+              if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
@@ -411,8 +411,8 @@ export default class MainView extends Lightning.Component {
           var thunder = ThunderJS(config);
           var appApi = new AppApi();
           console.log('_handleKey', key.keyCode);
-          if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-            if (Storage.get('applicationType') == 'Cobalt') {
+          if (Storage.get('applicationType') == 'Cobalt') {
+              if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
