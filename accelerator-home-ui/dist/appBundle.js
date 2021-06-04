@@ -2,8 +2,8 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- *
- * Generated: Wed, 02 Jun 2021 14:21:18 GMT
+ * 
+ * Generated: Fri, 04 Jun 2021 13:55:04 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -479,7 +479,7 @@ var APP_accelerator_home_ui = (function () {
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-   * Copyright 2020 Metrological
+   * Copyright 2020 RDK Management
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -5689,6 +5689,7 @@ var APP_accelerator_home_ui = (function () {
         w: this.w,
         h: this.h,
       });
+     if(this.data.url) {
       if (this.data.url.startsWith('/images')) {
         this.tag('Image').patch({
           src: Utils.asset(this.data.url),
@@ -5699,6 +5700,7 @@ var APP_accelerator_home_ui = (function () {
       } else {
         this.tag('Image').patch({ src: this.data.url, w: this.w, h: this.h });
       }
+     }
     }
 
     /**
@@ -8184,6 +8186,8 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
+  var partnerApps=[];
+
   /**
    * Class that returns the data required for home screen.
    */
@@ -8228,6 +8232,21 @@ var APP_accelerator_home_ui = (function () {
      */
     getMetroInfo() {
       return metroAppsInfo
+    }
+
+    /**
+     * Function to store partner app details.
+     * @param {obj} data Partner app details.
+     */
+    setPartnerAppsInfo(data) {
+      partnerApps = data;
+    }
+
+    /**
+     *Function to return partner app details.
+     */
+    getPartnerAppsInfo() {
+      return partnerApps
     }
   }
 
@@ -8384,14 +8403,12 @@ var APP_accelerator_home_ui = (function () {
     _init() {
       this.homeApi = new HomeApi();
       var appItems = this.homeApi.getAppListInfo();
-      const URL_PARAMS = new window.URLSearchParams(window.location.search);
-      var data = URL_PARAMS.get('data');
+      var data = this.homeApi.getPartnerAppsInfo();
       console.log(data);
       var prop_apps = 'applications';
       var prop_displayname = 'displayName';
       var prop_uri = 'uri';
       var prop_apptype = 'applicationType';
-      var prop_url = 'url';
       var appdetails = [];
       var appdetails_format = [];
       var usbApps = 0;
@@ -8402,8 +8419,8 @@ var APP_accelerator_home_ui = (function () {
             if (
               appdetails[i].hasOwnProperty(prop_displayname) &&
               appdetails[i].hasOwnProperty(prop_uri) &&
-              appdetails[i].hasOwnProperty(prop_apptype) &&
-              appdetails[i].hasOwnProperty(prop_url)
+              appdetails[i].hasOwnProperty(prop_apptype) //&&
+              //appdetails[i].hasOwnProperty(prop_url)
             ) {
               appdetails_format.push(appdetails[i]);
               usbApps++;
@@ -8448,7 +8465,7 @@ var APP_accelerator_home_ui = (function () {
       console.log(" _captureKey home screen : " + key.keyCode);
       if (key.keyCode == 112)  {
 
-        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
           appApi$1.standby("STANDBY").then(res => {
             powerState = 'STANDBY';
@@ -12401,6 +12418,11 @@ ${error.toString()}`;
    **/
 
   var routes = {
+    boot: (queryParam) => {
+      let homeApi = new HomeApi();
+      homeApi.setPartnerAppsInfo(queryParam.data);
+      return Promise.resolve()
+    },
     root: 'home',
     routes: [
       {
@@ -12791,7 +12813,7 @@ ${error.toString()}`;
         })
         .catch(err => {
           console.log('Error', err);
-        })      
+        })
         .then(result => {
           thunder
             .call(rdkshellCallsign, 'addKeyIntercept', {

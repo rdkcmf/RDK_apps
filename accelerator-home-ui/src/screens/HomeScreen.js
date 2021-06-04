@@ -78,8 +78,7 @@ export default class HomeScreen extends Lightning.Component {
   _init() {
     this.homeApi = new HomeApi()
     var appItems = this.homeApi.getAppListInfo()
-    const URL_PARAMS = new window.URLSearchParams(window.location.search)
-    var data = URL_PARAMS.get('data')
+    var data = this.homeApi.getPartnerAppsInfo()
     console.log(data)
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
@@ -96,8 +95,7 @@ export default class HomeScreen extends Lightning.Component {
           if (
             appdetails[i].hasOwnProperty(prop_displayname) &&
             appdetails[i].hasOwnProperty(prop_uri) &&
-            appdetails[i].hasOwnProperty(prop_apptype) &&
-            appdetails[i].hasOwnProperty(prop_url)
+            appdetails[i].hasOwnProperty(prop_apptype)
           ) {
             appdetails_format.push(appdetails[i])
             usbApps++
@@ -142,7 +140,7 @@ export default class HomeScreen extends Lightning.Component {
     console.log(" _captureKey home screen : " + key.keyCode)
     if (key.keyCode == 112)  {
 
-      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         appApi.standby("STANDBY").then(res => {
           powerState = 'STANDBY'

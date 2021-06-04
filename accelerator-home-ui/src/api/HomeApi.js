@@ -23,6 +23,8 @@ import { sidePanelInfo } from './../../static/data/SidePanelInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
 import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
 
+var partnerApps=[]
+
 /**
  * Class that returns the data required for home screen.
  */
@@ -67,5 +69,20 @@ export default class HomeApi {
    */
   getMetroInfo() {
     return metroAppsInfo
+  }
+
+  /**
+   * Function to store partner app details.
+   * @param {obj} data Partner app details.
+   */
+  setPartnerAppsInfo(data) {
+    partnerApps = data
+  }
+
+  /**
+   *Function to return partner app details.
+   */
+  getPartnerAppsInfo() {
+    return partnerApps
   }
 }

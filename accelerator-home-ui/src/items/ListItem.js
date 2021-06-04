@@ -72,6 +72,7 @@ export default class ListItem extends Lightning.Component {
       w: this.w,
       h: this.h,
     })
+   if(this.data.url) {
     if (this.data.url.startsWith('/images')) {
       this.tag('Image').patch({
         src: Utils.asset(this.data.url),
@@ -82,6 +83,7 @@ export default class ListItem extends Lightning.Component {
     } else {
       this.tag('Image').patch({ src: this.data.url, w: this.w, h: this.h })
     }
+   }
   }
 
   /**
