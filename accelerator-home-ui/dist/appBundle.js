@@ -2,8 +2,8 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- * 
- * Generated: Fri, 04 Jun 2021 13:55:04 GMT
+ *
+ * Generated: Wed, 16 Jun 2021 04:24:31 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -479,7 +479,7 @@ var APP_accelerator_home_ui = (function () {
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-   * Copyright 2020 RDK Management
+   * Copyright 2020 Metrological
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -6512,13 +6512,8 @@ var APP_accelerator_home_ui = (function () {
             var thunder = thunderJS(config);
             console.log('_handleKey', key.keyCode);
               var appApi = new AppApi();
-              if (Storage.get('applicationType') == 'Cobalt') {
-                if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-                Storage.set('applicationType', '');
-                appApi.suspendCobalt();
-                appApi.setVisibility('ResidentApp', true);
-              }
-            } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+
+            if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
               if (Storage.get('applicationType') == 'WebApp') {
                 Storage.set('applicationType', '');
                 appApi.deactivateWeb();
@@ -6539,7 +6534,12 @@ var APP_accelerator_home_ui = (function () {
                 Storage.set('applicationType', '');
                 appApi.suspendPremiumApp('Netflix');
                 appApi.setVisibility('ResidentApp', true);
+              }else if(Storage.get('applicationType') == 'Cobalt'){
+                Storage.set('applicationType', '');
+                appApi.suspendCobalt();
+                appApi.setVisibility('ResidentApp', true);
               }
+              
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
                 console.log('ResidentApp moveToFront Success');
               });
@@ -7028,6 +7028,221 @@ var APP_accelerator_home_ui = (function () {
         return ""
       }
     }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**Color constants */
+  var COLORS = {
+    textColor: 0xffffffff,
+    titleColor: 0xffffffff,
+    hightlightColor: 0xffc0c0c0,
+    headingColor: 0xffffffff,
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for rendering items in UI list.
+   */
+  class Item extends Lightning.Component {
+    static _template() {
+      return {
+        Item: {
+          w: 200,
+          h: 65,
+          rect: true,
+          color: COLORS.hightlightColor,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        },
+      }
+    }
+
+    /**
+     * Function to set contents for an item in UI list.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Name: {
+          x: 100,
+          y: 32.5,
+          mount: 0.5,
+          text: { text: item.title, textColor: 0xffffffff, fontSize: 35 },
+        },
+      });
+    }
+
+    /**
+     * Set width of the item.
+     */
+    set width(width) {
+      this.tag('Item').w = width;
+    }
+
+    /**
+     * Set height of the item.
+     */
+    set height(height) {
+      this.tag('Item').h = height;
+    }
+
+    _focus() {
+      this.tag('Item').scale = 1.1;
+    }
+
+    _unfocus() {
+      this.tag('Item').scale = 1;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for top panel in home UI */
+  class ShutdownPanel extends Lightning.Component {
+    static _template() {
+      return {
+        Bg: {
+          rect: true,
+          x: 660 * -1,
+          y: 385 * -1,
+          w: 1920,
+          h: 1080,
+          color: 0x33000000,
+        },
+        Border: {
+          rect: true,
+          w: 610,
+          h: 310,
+          color: 0xFF000000,
+          alpha: 0.5,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 }
+        },
+        Box: {
+          rect: true,
+          w: 600,
+          h: 300,
+          color: 0xFF000055,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 }
+        },
+        LightSleepbtn: {
+          rect: true,
+          x: 150,
+          y: 60,
+          w: 300,
+          h: 80,
+          color: 0xFF0000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 },
+          Txt: {
+            x: 60,
+            y: 15,
+            text: { text: 'Light Sleep', fontSize: 33 }
+          }
+        },
+        DeepSleepbtn: {
+          rect: true,
+          x: 150,
+          y: 170,
+          w: 300,
+          h: 80,
+          color: 0xFF0000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 },
+          Txt: {
+            x: 60,
+            y: 15,
+            text: { text: 'Deep Sleep', fontSize: 33 }
+          }
+        },
+      }
+    }
+
+
+
+    _init() {
+      console.log("Shutdown panel init..");
+      this.tag('LightSleepbtn').color = '0Xff0000AA';
+      this.power_state = 'LightSleepbtn';
+
+    }
+
+    _handleEnter() {
+      console.log(" current focus :" + this.power_state);
+      if (this.power_state == 'LightSleepbtn') {
+        this.fireAncestors('$standby', 'STANDBY');
+      } else if (this.power_state == 'DeepSleepbtn') {
+        this.fireAncestors('$standby', 'DEEP_SLEEP');
+
+      }
+
+    }
+
+    _handleDown() {
+      this.tag('DeepSleepbtn').color = '0Xff0000AA';
+      this.tag('LightSleepbtn').color = '0xFF0000000';
+      this.power_state = 'DeepSleepbtn';
+
+    }
+
+    _handleUp() {
+      this.tag('LightSleepbtn').color = '0Xff0000AA';
+      this.tag('DeepSleepbtn').color = '0xFF0000000';
+      this.power_state = 'LightSleepbtn';
+    }
+
+    _handleBack() {
+      this.fireAncestors('$standby', 'Back');
+    }
+
   }
 
   /**
@@ -8354,6 +8569,7 @@ var APP_accelerator_home_ui = (function () {
   var audio_mute = false;
   var audio_volume = 50;
   var appApi$1 = new AppApi();
+  var last_state = '';
 
   /** Class for home screen UI */
   class HomeScreen extends Lightning.Component {
@@ -8397,6 +8613,16 @@ var APP_accelerator_home_ui = (function () {
           },
         },
         Player: { type: AAMPVideoPlayer },
+
+        ShutdownPanel: {
+          type: ShutdownPanel,
+          x: 660,
+          y: 385,
+          signals: { select: true },
+          alpha: 0
+        }
+
+
       }
     }
 
@@ -8419,8 +8645,7 @@ var APP_accelerator_home_ui = (function () {
             if (
               appdetails[i].hasOwnProperty(prop_displayname) &&
               appdetails[i].hasOwnProperty(prop_uri) &&
-              appdetails[i].hasOwnProperty(prop_apptype) //&&
-              //appdetails[i].hasOwnProperty(prop_url)
+              appdetails[i].hasOwnProperty(prop_apptype)
             ) {
               appdetails_format.push(appdetails[i]);
               usbApps++;
@@ -8463,13 +8688,13 @@ var APP_accelerator_home_ui = (function () {
 
     _captureKey(key) {
       console.log(" _captureKey home screen : " + key.keyCode);
-      if (key.keyCode == 112)  {
+      if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
 
         //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
-          appApi$1.standby("STANDBY").then(res => {
-            powerState = 'STANDBY';
-          });
+          last_state = this._getState();
+          this._setState('ShutdownPanel');
+
           return true
         } else if (powerState == 'STANDBY') {
           appApi$1.standby("ON").then(res => {
@@ -8478,7 +8703,7 @@ var APP_accelerator_home_ui = (function () {
           return true
         }
 
-      } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
+      } else if (key.keyCode == 228 ) {
 
         console.log("___________DEEP_SLEEP_______________________F12");
         appApi$1.standby("DEEP_SLEEP").then(res => {
@@ -8659,6 +8884,30 @@ var APP_accelerator_home_ui = (function () {
       this.tag('MainView').setSmooth('y',y,{duration:0.5});
     }
 
+
+
+    $standby(value) {
+      if (value == 'Back') {
+        this._setState(last_state);
+      } else {
+        if (powerState == 'ON') {
+          appApi$1.standby(value).then(res => {
+            if (res.success) {
+              powerState = 'STANDBY';
+            }
+            this._setState(last_state);
+          });
+          return true
+        }
+      }
+    }
+
+
+
+
+
+
+
     /**
      * Function to hide the home UI.
      */
@@ -8694,6 +8943,21 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('SidePanel')
           }
         },
+
+        class ShutdownPanel extends this {
+          $enter() {
+            this.tag('ShutdownPanel').setSmooth('alpha', 1);
+          }
+          $exit() {
+            this.tag('ShutdownPanel').setSmooth('alpha', 0);
+          }
+          _getFocused() {
+            return this.tag('ShutdownPanel')
+          }
+
+        },
+
+
         class MainView extends this {
           _getFocused() {
             return this.tag('MainView')
@@ -9106,105 +9370,6 @@ var APP_accelerator_home_ui = (function () {
           resolve(result.name);
         });
       })
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**Color constants */
-  var COLORS = {
-    textColor: 0xffffffff,
-    titleColor: 0xffffffff,
-    hightlightColor: 0xffc0c0c0,
-    headingColor: 0xffffffff,
-  };
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class for rendering items in UI list.
-   */
-  class Item extends Lightning.Component {
-    static _template() {
-      return {
-        Item: {
-          w: 200,
-          h: 65,
-          rect: true,
-          color: COLORS.hightlightColor,
-          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
-        },
-      }
-    }
-
-    /**
-     * Function to set contents for an item in UI list.
-     */
-    set item(item) {
-      this._item = item;
-      this.tag('Item').patch({
-        Name: {
-          x: 100,
-          y: 32.5,
-          mount: 0.5,
-          text: { text: item.title, textColor: 0xffffffff, fontSize: 35 },
-        },
-      });
-    }
-
-    /**
-     * Set width of the item.
-     */
-    set width(width) {
-      this.tag('Item').w = width;
-    }
-
-    /**
-     * Set height of the item.
-     */
-    set height(height) {
-      this.tag('Item').h = height;
-    }
-
-    _focus() {
-      this.tag('Item').scale = 1.1;
-    }
-
-    _unfocus() {
-      this.tag('Item').scale = 1;
     }
   }
 
