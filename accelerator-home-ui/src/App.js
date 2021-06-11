@@ -65,6 +65,27 @@ export default class App extends Router.App {
       .catch(err => {
         console.log('Error', err);
       })
+
+
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 173,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+
+
       .then(result => {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {

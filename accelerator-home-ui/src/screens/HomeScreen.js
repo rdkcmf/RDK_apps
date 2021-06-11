@@ -187,7 +187,7 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
 
-    } else if (key.keyCode == 118 || key.keyCode == 113) {
+    } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
       let value = !audio_mute;
       appApi.audio_mute(value).then(res => {
