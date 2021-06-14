@@ -24,30 +24,69 @@ export default class TopPanel extends Lightning.Component {
   static _template() {
     return {
       TopPanel: {
-        x: 90,
-        y: 60,
-        w: 1740,
-        h: 120,
+        x: 0,
+        y: 0,
+        w: 1920,
+        h: 171,
         Mic: {
-          x: 120,
-          y: 60,
+          x: 80,
+          y: 100,
           mountY: 0.5,
-          src: Utils.asset('/images/topPanel/mic.png'),
-          w: 60,
-          h: 60,
+          src: Utils.asset('/images/topPanel/mic_new.png'),
+          w: 70,
+          h: 70,
         },
         Search: {
-          x: 250,
-          y: 60,
+          x: 200,
+          y: 105,
           mountY: 0.5,
-          text: { text: 'Search TV shows, movies and more', fontSize: 33 },
+          text: { text: 'Search TV shows, movies and more...', fontSize: 42 },
+          w: 600,
+          h: 50,
+          alpha:0.5,
+        },
+        Settings: {
+          x: 1445,
+          y: 100,
+          mountY: 0.5,
+          src: Utils.asset('/images/topPanel/settings_new.png'),
+          w: 70,
+          h: 70,
         },
         Time: {
-          x: 1500,
-          y: 60,
+          x: 1550,
+          y: 105,
           mountY: 0.5,
-          text: { text: '', fontSize: 38 },
+          text: { text: '', fontSize: 48 },
+          w: 160,
+          h: 60,
         },
+        Day: {
+          x: 1740,
+          y: 95,
+          mountY: 0.5,
+          text: { text: '', fontSize: 32 },
+          w: 95,
+          h: 32,
+        },
+        Date: {
+          x: 1741,
+          y: 115,
+          mountY: 0.5,
+          text: { text: '', fontSize: 22 },
+          w: 95,
+          h: 22,
+        },
+        Border:{
+          x: 80,
+          y: 170,
+          mountY: 0.5,
+          RoundRectangle: {
+            zIndex: 2,
+            texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
+          },
+         alpha:0.4
+        }
       },
     }
   }
@@ -60,7 +99,12 @@ export default class TopPanel extends Lightning.Component {
 
   _build() {
     setInterval(() => {
-      this.tag('Time').patch({ text: { text: this.updateTime() } })
+    let _date = this.updateTime()
+      if (this.timeZone){
+        this.tag('Time').patch({ text: { text: _date.strTime }})
+        this.tag('Day').patch({ text: { text: _date.strDay }})
+        this.tag('Date').patch({ text: { text: _date.strDate }})
+      } 
     }, 1000)
   }
 
@@ -71,14 +115,26 @@ export default class TopPanel extends Lightning.Component {
     if (this.timeZone) {
       let date = new Date()
       date = new Date(date.toLocaleString('en-US', { timeZone: this.timeZone }))
+
+      // get day
+      let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let strDay = days[date.getDay()]; 
+      console.log('Current day == '+strDay)
+    
+      // get month
+      let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      let strMonth = month[date.getMonth()]
+
+      let strDate = date.toLocaleDateString('en-US', {day: '2-digit'})+ ' ' +strMonth+ ' ' +date.getFullYear()
+      console.log('Current day == '+strDate)
       let hours = date.getHours()
       let minutes = date.getMinutes()
       let ampm = hours >= 12 ? 'pm' : 'am'
       hours = hours % 12
       hours = hours ? hours : 12
       minutes = minutes < 10 ? '0' + minutes : minutes
-      let strTime = hours + '.' + minutes + ' ' + ampm
-      return strTime
+      let strTime = hours + ':' + minutes + ' ' + ampm
+      return {strTime, strDay, strDate}
     } else {
       return ""
     }

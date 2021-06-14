@@ -2,8 +2,8 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- *
- * Generated: Wed, 02 Jun 2021 14:21:18 GMT
+ * 
+ * Generated: Mon, 14 Jun 2021 10:36:35 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -471,8 +471,6 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
-    config.getInfo;
-    config.setInfo;
   };
 
   /*
@@ -5645,93 +5643,206 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         Item: {
-          x: 30,
+          x: 0,
           y: 18,
-          Shadow: {
-            alpha: 0,
-            color: 0xffa9a9a9,
-          },
-          Title: {
-            text: {
-              fontSize: 27,
-              textColor: 0xffffffff,
-            },
-            mountX: 0.5,
-            alpha: 0,
-          },
-          Bg: {},
           Image: {},
+          Info: {},
         },
       }
     }
 
     _init() {
-      if (this.data.show) {
-        this.tag('Title').patch({
-          x: this.x_text,
-          y: this.y_text,
-          alpha: 1,
-          text: { text: this.data.title },
-        });
-      }
-      this.tag('Title').patch({
-        x: this.x_text,
-        y: this.y_text,
-        text: { text: this.data.displayName },
-      });
-      this.tag('Shadow').patch({
-        scale: this.unfocus,
-        texture: Lightning.Tools.getShadowRect(this.w, this.h, 4, 10, 0),
-      });
-      this.tag('Bg').patch({
-        rect: true,
-        color: 0xff000000,
-        w: this.w,
-        h: this.h,
-      });
       if (this.data.url.startsWith('/images')) {
         this.tag('Image').patch({
-          src: Utils.asset(this.data.url),
+          rtt: true,
           w: this.w,
           h: this.h,
+          shader: {
+            type: lng.shaders.RoundedRectangle,
+            radius: 20
+          },
+          src: Utils.asset(this.data.url),
           scale: this.unfocus,
         });
       } else {
-        this.tag('Image').patch({ src: this.data.url, w: this.w, h: this.h });
+        this.tag('Image').patch({
+          rtt: true,
+          w: this.w,
+          h: this.h,
+          src: this.data.url,
+          Inner: {
+            shader: {
+              type: lng.shaders.RoundedRectangle,
+              radius: 20
+            },
+          }
+        });
       }
+      /* Used static data for develpment purpose ,
+      it wil replaced with Dynamic data once implimetation is completed.*/
+      this.tag('Info').patch({
+        rect: true,
+        color: 0xff141F31,
+        x: this.x,
+        y: this.y + this.h + 30,
+        w: this.w,
+        h: 140,
+        alpha: 0,
+        PlayIcon: {
+          x: this.x + 20,
+          y: this.y + 20,
+          texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/play_icon_new.png'), 50, 50),
+          Label: {
+            x: this.x + 65,
+            y: this.y + 10,
+            text: { text: this.data.displayName, fontSize: 25, maxLines: 2, wordWrapWidth: 150 },
+          }
+        },
+        IMDb: {
+          x: this.x + 25,
+          y: this.y + 90,
+          texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/IMDb.png'), 45, 30),
+          Rating: {
+            x: this.x + 65,
+            y: this.y,
+            text: { text: '8.8/10', fontSize: 20, maxLines: 2, wordWrapWidth: 150 },
+          },
+          Ua: {
+            text: { text: '16+', fontSize: 18 },
+            x: this.x + 135,
+            y: this.y,
+            RoundRectangle: {
+              zIndex: 2,
+              texture: lng.Tools.getRoundRect(30, 20, 4, 3, 0xffff00ff, false, 0xff00ffff),
+            },
+          },
+          Duration: {
+            x: this.x + 190,
+            y: this.y,
+            text: { text: '2h 30m', fontSize: 20, maxLines: 2, wordWrapWidth: 150 },
+          }
+        }
+      });
     }
 
     /**
      * Function to change properties of item during focus.
      */
     _focus() {
-      this.tag('Bg').scale = this.focus;
-      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus });
-      this.tag('Title').patch({
-        x: this.x_text,
-        y: this.y_text,
-        text: { text: this.data.displayName },
+      this.tag('Image').patch({
+        x: this.x, w: this.w, h: this.h, scale: this.focus, shader: {
+          type: lng.shaders.RoundRectangle,
+          radius: 0
+        }
       });
-      this.tag('Shadow').patch({
-        scale: this.focus,
-        x: -7,
-        y: -7,
-        alpha: 1,
-        texture: Lightning.Tools.getShadowRect(this.w + 14, this.h + 14, 4, 10, 0),
-      });
-      this.tag('Title').patch({ alpha: 1 });
-      this.tag('Item').patch({ zIndex: 1 });
+
+      this.tag('Info').alpha = 1;
+      this.tag('Info').patch({ smooth: { x: this.x, w: this.w, h: 140, scale: this.focus } });
+      this.tag('Item').patch({ smooth: { zIndex: 1, y: this.y - 65, } });
     }
 
     /**
      * Function to change properties of item during unfocus.
      */
     _unfocus() {
-      this.tag('Bg').scale = this.unfocus;
-      this.tag('Image').patch({ x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus });
-      this.tag('Shadow').patch({ scale: this.unfocus, alpha: 0 });
-      this.tag('Title').patch({ alpha: 0 });
-      this.tag('Item').patch({ zIndex: 0 });
+      this.tag('Image').patch({
+        x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
+          type: lng.shaders.RoundedRectangle,
+          radius: 20
+        }
+      });
+      this.tag('Item').patch({ smooth: { zIndex: 0, y: this.y + 20 } });
+      this.tag('Info').alpha = 0;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class to render items in main view.
+   */
+
+  class AppListItem extends Lightning.Component {
+    /**
+     * Function to render various elements in the main view item.
+     */
+    static _template() {
+      return {
+        Item: {
+          x: 0,
+          y: 18,
+          Image: {
+          },
+        },
+      }
+    }
+
+    _init() {
+
+      if (this.data.url.startsWith('/images')) {
+        this.tag('Image').patch({
+          w: this.w,
+          h: this.h,
+          src: Utils.asset(this.data.url),
+          shader: {
+            type: lng.shaders.RoundedRectangle,
+            radius: 20
+          },
+          scale: this.unfocus,
+        });
+      } else {
+        this.tag('Image').patch({
+          shader: {
+            type: lng.shaders.RoundedRectangle,
+            radius: 20
+          }, src: this.data.url, w: this.w, h: this.h
+        });
+
+      }
+    }
+
+    /**
+     * Function to change properties of item during focus.
+     */
+
+    _focus() {
+      this.tag('Image').patch({
+        x: this.x, w: this.w, h: this.h, scale: this.focus, 
+        shader: {
+          type: lng.shaders.RoundedRectangle,
+          radius: 20
+        }
+      });
+      this.tag('Item').patch({smooth: { zIndex: 1 }});
+    }
+
+    /**
+     * Function to change properties of item during unfocus.
+     */
+    _unfocus() {
+      this.tag('Image').patch({
+        x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
+          type: lng.shaders.RoundedRectangle,
+          radius: 20
+        }
+      });
+      this.tag('Item').patch({ smooth: { zIndex: 0 }} );
     }
   }
 
@@ -6223,6 +6334,52 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
+  /**
+   * Class to render items in Arrow Icon Item.
+   */
+  class ArrowIconItem extends Lightning.Component {
+    /**
+     * Function to render Arrow Icon elements in the Main View.
+     */
+    static _template() {
+      return {
+        Item: {
+          Image: {
+            x: 0,
+            alpha: 1,
+          },
+        },
+      }
+    }
+
+    _init() {
+      this.tag('Image').patch({
+        src: Utils.asset(this.data.url),
+        w: this.w,
+        h: this.h,
+      });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
   /** Class for main view component in home UI */
   class MainView extends Lightning.Component {
     /**
@@ -6231,59 +6388,110 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         MainView: {
-          x: 451,
-          y: 25,
-          w: 1469,
-          h: 820,
+          x: 0,
+          y: 0,
+          w: 1765,
+          h: 1080,
+          clipping: true,
+          Text1: {
+            x: 20,
+            y: 50,
+            w: 91,
+            text: {
+              fontSize: 40,
+              text: 'Apps',
+              fontStyle: 'normal',
+              textColor: 0xFFFFFFFF,
+            },
+            zIndex: 0
+          },
+
           AppList: {
             x: 0,
-            y: 0,
+            y: 137,
+            flex: { direction: 'row', paddingLeft: 20, wrap: false },
             type: Lightning.components.ListComponent,
-            w: 1469,
-            h: 209,
-            itemSize: 204 + 20,
+            w: 1745,
+            h: 300,
+            itemSize: 257,
             roll: true,
-            rollMax: 1469,
+            rollMax: 1745,
             horizontal: true,
             itemScrollOffset: -5,
-            clipping: true,
+            clipping: false,
           },
+          Text2: {
+            x: 20,
+            y: 338,
+            text: {
+              fontSize: 40,
+              text: 'Metro Apps',
+              fontStyle: 'normal',
+              textColor: 0xFFFFFFFF,
+            },
+          },
+
           MetroApps: {
             x: 0,
-            y: 184,
+            y: 410,
             type: Lightning.components.ListComponent,
-            w: 1469,
-            h: 209,
-            itemSize: 204 + 20,
+            flex: { direction: 'row', paddingLeft: 20, wrap: false },
+            w: 1745,
+            h: 400,
+            itemSize: 328,
             roll: true,
-            rollMax: 1469,
+            rollMax: 1745,
             horizontal: true,
-            itemScrollOffset: -5,
-            clipping: true,
+            itemScrollOffset: -4,
+            clipping: false,
+          },
+          Text3: {
+            x: 20,
+            y: 665,
+            text: {
+              fontSize: 40,
+              text: 'TVShows',
+              fontStyle: 'normal',
+              textColor: 0xFFFFFFFF,
+            },
           },
           TVShows: {
             x: 0,
-            y: 184 + 184,
-            w: 1469,
-            h: 335,
+            y: 735,
+            w: 1745,
+            h: 400,
             type: Lightning.components.ListComponent,
+            flex: { direction: 'row', paddingLeft: 20, wrap: false },
             roll: true,
-            itemSize: 428 + 20,
+            itemSize: 328,
+            rollMax: 1745,
             horizontal: true,
-            rollMax: 1444 + 25,
-            clipping: true,
+            itemScrollOffset: -4,
+            clipping: false,
           },
-          Settings: {
+
+          RightArrow: {
             x: 0,
-            y: 494 + 184,
-            w: 1469,
-            h: 335,
+            y: 0,
+            w: 70,
+            h: 750,
             type: Lightning.components.ListComponent,
             roll: true,
-            itemSize: 428 + 20,
-            horizontal: true,
-            rollMax: 1469,
-            clipping: true,
+            horizontal: false,
+            invertDirection: true,
+            alpha: 0.9,
+          },
+
+          LeftArrow: {
+            x: 20,
+            y: 0,
+            w: 70,
+            h: 750,
+            type: Lightning.components.ListComponent,
+            roll: true,
+            horizontal: false,
+            invertDirection: true,
+            alpha: 0.9,
           },
         },
       }
@@ -6343,9 +6551,9 @@ var APP_accelerator_home_ui = (function () {
     set appItems(items) {
       this.tag('AppList').items = items.map(info => {
         return {
-          w: 204,
-          h: 126,
-          type: ListItem,
+          w: 235,
+          h: 136,
+          type: AppListItem,
           data: info,
           focus: 1.2,
           unfocus: 1,
@@ -6355,12 +6563,48 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('AppList').start();
     }
+    /**
+    * Function to set details of items in right Icons list.
+    * 
+    */
+    set rightArrowIcons(items) {
+      this.tag('RightArrow').items = items.map((info, index) => {
+        this.data = info;
+        return {
+          w: index == 0 ? 30 : 45,
+          h: index == 0 ? 60 : 90,
+          x: index == 0 ? 1735 : (index == 1 ? 1720 : (index == 2 ? 1720 : 0)),
+          y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+          type: ArrowIconItem,
+          data: info,
+        }
+      });
+      this.tag('RightArrow').start();
+    }
+    /**
+    * Function to set details of items in left Icons list.
+    * 
+    */
+    set leftArrowIcons(items) {
+      this.tag('LeftArrow').patch({ x: 20 });
+      this.tag('LeftArrow').items = items.map((info, index) => {
+        this.data = info;
+        return {
+          w: index == 0 ? 30 : 45,
+          h: index == 0 ? 60 : 90,
+          y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+          type: ArrowIconItem,
+          data: info,
+        }
+      });
+      this.tag('LeftArrow').start();
+    }
 
     set metroApps(items) {
-      this.tag('MetroApps').items = items.map(info => {
+      this.tag('MetroApps').items = items.map((info, index) => {
         return {
-          w: 204,
-          h: 126,
+          w: 308,
+          h: 200,
           type: ListItem,
           data: info,
           focus: 1.2,
@@ -6378,11 +6622,11 @@ var APP_accelerator_home_ui = (function () {
     set tvShowItems(items) {
       this.tag('TVShows').items = items.map(info => {
         return {
-          w: 428,
-          h: 252,
+          w: 308,
+          h: 200,
           type: ListItem,
           data: info,
-          focus: 1.08,
+          focus: 1.2,
           unfocus: 1,
           x_text: 218,
           y_text: 264,
@@ -6391,24 +6635,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TVShows').start();
     }
 
-    /**
-     * Function to set details of items in settings list
-     */
-    set settingsItems(items) {
-      this.tag('Settings').items = items.map(info => {
-        return {
-          w: 428,
-          h: 252,
-          type: ListItem,
-          data: info,
-          focus: 1.08,
-          unfocus: 1,
-          x_text: 218,
-          y_text: 264,
-        }
-      });
-      this.tag('Settings').start();
-    }
 
     /**
      * Function to set the state in main view.
@@ -6422,7 +6648,7 @@ var APP_accelerator_home_ui = (function () {
       } else if (this.indexVal == 2) {
         this._setState('TVShows');
       } else if (this.indexVal == 3) {
-        this._setState('Settings');
+        this._setState('RightArrow');
       }
     }
 
@@ -6438,9 +6664,6 @@ var APP_accelerator_home_ui = (function () {
       }
       for (var i = this.tag('TVShows').index; i > 0; i--) {
         this.tag('TVShows').setPrevious();
-      }
-      for (var i = this.tag('Settings').index; i > 0; i--) {
-        this.tag('Settings').setPrevious();
       }
     }
 
@@ -6465,9 +6688,6 @@ var APP_accelerator_home_ui = (function () {
             if (0 != this.tag('AppList').index) {
               this.tag('AppList').setPrevious();
               return this.tag('AppList').element
-            } else {
-              this.reset();
-              this.fireAncestors('$goToSidePanel', 0);
             }
           }
           _handleDown() {
@@ -6509,9 +6729,9 @@ var APP_accelerator_home_ui = (function () {
             };
             var thunder = thunderJS(config);
             console.log('_handleKey', key.keyCode);
-              var appApi = new AppApi();
-              if (Storage.get('applicationType') == 'Cobalt') {
-                if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
+            var appApi = new AppApi();
+            if (Storage.get('applicationType') == 'Cobalt') {
+              if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
@@ -6576,7 +6796,7 @@ var APP_accelerator_home_ui = (function () {
               return this.tag('MetroApps').element
             } else {
               this.reset();
-              this.fireAncestors('$goToSidePanel', 1);
+
             }
           }
           _handleDown() {
@@ -6614,7 +6834,7 @@ var APP_accelerator_home_ui = (function () {
             var appApi = new AppApi();
             console.log('_handleKey', key.keyCode);
             if (Storage.get('applicationType') == 'Cobalt') {
-                if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
+              if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
@@ -6651,6 +6871,9 @@ var APP_accelerator_home_ui = (function () {
           }
         },
         class TVShows extends this {
+          $enter() {
+            this.fireAncestors('$scroll', -300);
+          }
           _getFocused() {
             if (this.tag('TVShows').length) {
               return this.tag('TVShows').element
@@ -6666,279 +6889,23 @@ var APP_accelerator_home_ui = (function () {
             if (0 != this.tag('TVShows').index) {
               this.tag('TVShows').setPrevious();
               return this.tag('TVShows').element
-            } else {
-              this.reset();
-              this.fireAncestors('$goToSidePanel', 2);
             }
           }
           _handleUp() {
             this._setState('MetroApps');
           }
-          _handleDown() {
-            this._setState('Settings');
-          }
           _handleEnter() {
             this.fireAncestors('$goToPlayer');
-          }
-        },
-        class Settings extends this {
-          $enter() {
-            this.fireAncestors('$scroll', -200);
-          }
-          _getFocused() {
-            if (this.tag('Settings').length) {
-              return this.tag('Settings').element
-            }
-          }
-          _handleRight() {
-            if (this.tag('Settings').length - 1 != this.tag('Settings').index) {
-              this.tag('Settings').setNext();
-            }
-            return this.tag('Settings').element
-          }
-          _handleLeft() {
-            if (0 != this.tag('Settings').index) {
-              this.tag('Settings').setPrevious();
-              return this.tag('Settings').element
-            } else {
-              this.reset();
-              this.fireAncestors('$goToSidePanel', 3);
-            }
-          }
-          _handleUp() {
-            this._setState('TVShows');
-          }
-          _handleEnter() {
-            this.settingsType = this.tag('Settings').items[
-              this.tag('Settings').index
-            ].data.displayName;
-
-            if (this.settingsType == 'Bluetooth') {
-              this.settingsScreen = true;
-              Router.navigate('settings/BluetoothScreen', false);
-            } else if (this.settingsType == 'Wi-Fi') {
-              this.settingsScreen = true;
-              Router.navigate('settings/WiFiScreen', false);
-            }
           }
           $exit() {
             this.fireAncestors('$scroll', 0);
           }
         },
-      ]
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class to render items in side panel.
-   */
-  class SidePanelItem extends Lightning.Component {
-    /**
-     * Function to render various elements in the side panel item.
-     */
-    static _template() {
-      return {
-        Item: {
-          Title: {
-            text: {
-              fontSize: 27,
-              textColor: 0xffffffff,
-            },
-            mountX: 0.5,
-            alpha: 0,
-          },
-          Image: {
-            x: 0,
-          },
+        class RightArrow extends this {
+          //TODO
         },
-      }
-    }
-
-    _init() {
-      this.tag('Title').patch({ x: this.x_text, y: this.y_text, text: { text: this.data.title } });
-      this.tag('Image').patch({
-        src: Utils.asset(this.data.url),
-        w: this.w,
-        h: this.h,
-        scale: this.unfocus,
-      });
-    }
-
-    /**
-     * Function to change properties of item during focus.
-     */
-    _focus() {
-      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus });
-      this.tag('Title').patch({ alpha: 1 });
-      this.tag('Item').patch({ zIndex: 1 });
-    }
-
-    /**
-     * Function to change properties of item during unfocus.
-     */
-    _unfocus() {
-      this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus });
-      this.tag('Title').patch({ alpha: 0 });
-      this.tag('Item').patch({ zIndex: 0 });
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /** Class for side panel in home UI */
-  class SidePanel extends Lightning.Component {
-    static _template() {
-      return {
-        SidePanel: {
-          x: 130,
-          y: 0,
-          w: 240,
-          h: 750,
-          type: Lightning.components.ListComponent,
-          roll: true,
-          horizontal: false,
-          invertDirection: true,
-        },
-      }
-    }
-
-    _init() {
-      this._setState('SidePanel');
-      this.indexVal = 0;
-    }
-
-    /**
-     * Function to set items in side panel.
-     */
-    set sidePanelItems(items) {
-      this.tag('SidePanel').patch({ x: 130 });
-      this.tag('SidePanel').items = items.map((info, index) => {
-        this.data = info;
-        return {
-          w: 204,
-          h: 184,
-          y: index == 0 ? 30 : (index == 1 ? 115 :(index == 2 ? 260 : 470)),
-          type: SidePanelItem,
-          data: info,
-          focus: 0.7,
-          unfocus: 0.6,
-          x_text: 100,
-          y_text: 160,
-          text_focus: 1.1,
-          text_unfocus: 0.9,
-        }
-      });
-      this.tag('SidePanel').start();
-    }
-
-    /**
-     * Function to reset items in side panel.
-     */
-    set resetSidePanelItems(items) {
-      this.tag('SidePanel').patch({ x: 90 });
-      this.tag('SidePanel').items = items.map((info, index) => {
-        return {
-          w: 204,
-          h: 184,
-          y: index == 0 ? 25 : (index == 1 ? 105 :(index == 2 ? 260 : 470)),
-          type: SidePanelItem,
-          data: info,
-          focus: 0.7,
-          unfocus: 0.4,
-          x_text: 100,
-          y_text: 160,
-          text_focus: 1.1,
-          text_unfocus: 0.9,
-        }
-      });
-      this.tag('SidePanel').start();
-    }
-    /**
-     * Function to set scaling to side panel.
-     */
-    set scale(scale) {
-      this.tag('SidePanel').patch({ scale: scale });
-    }
-
-    /**
-     * Function to set x coordinate of side panel.
-     */
-    set x(x) {
-      this.tag('SidePanel').patch({ x: x });
-    }
-
-    /**
-     * Function to set index value of side panel.
-     */
-    set index(index) {
-      this.indexVal = index;
-    }
-
-    static _states() {
-      return [
-        class SidePanel extends this {
-          _getFocused() {
-            if (this.tag('SidePanel').length) {
-              if(this.indexVal==3){
-                this.fireAncestors('$scroll',-200);
-              }
-              else {
-                this.fireAncestors('$scroll',0);
-              }
-              return this.tag('SidePanel').items[this.indexVal]
-            }
-          }
-          _handleKey(key) {
-            if (key.keyCode == 39 || key.keyCode == 13) {
-              this.fireAncestors('$goToMainView', this.indexVal);
-            } else if (key.keyCode == 40) {
-              if (this.tag('SidePanel').length - 1 != this.indexVal) {
-                this.indexVal = this.indexVal + 1;
-              }
-              return this.tag('SidePanel').items[this.indexVal]
-            } else if (key.keyCode == 38) {
-              if (0 != this.indexVal) {
-                this.indexVal = this.indexVal - 1;
-              }
-              return this.tag('SidePanel').items[this.indexVal]
-            } else return false;
-          }
+        class LeftArrow extends this {
+          //TODO
         },
       ]
     }
@@ -6967,30 +6934,69 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         TopPanel: {
-          x: 90,
-          y: 60,
-          w: 1740,
-          h: 120,
+          x: 0,
+          y: 0,
+          w: 1920,
+          h: 171,
           Mic: {
-            x: 120,
-            y: 60,
+            x: 80,
+            y: 100,
             mountY: 0.5,
-            src: Utils.asset('/images/topPanel/mic.png'),
-            w: 60,
-            h: 60,
+            src: Utils.asset('/images/topPanel/mic_new.png'),
+            w: 70,
+            h: 70,
           },
           Search: {
-            x: 250,
-            y: 60,
+            x: 200,
+            y: 105,
             mountY: 0.5,
-            text: { text: 'Search TV shows, movies and more', fontSize: 33 },
+            text: { text: 'Search TV shows, movies and more...', fontSize: 42 },
+            w: 600,
+            h: 50,
+            alpha:0.5,
+          },
+          Settings: {
+            x: 1445,
+            y: 100,
+            mountY: 0.5,
+            src: Utils.asset('/images/topPanel/settings_new.png'),
+            w: 70,
+            h: 70,
           },
           Time: {
-            x: 1500,
-            y: 60,
+            x: 1550,
+            y: 105,
             mountY: 0.5,
-            text: { text: '', fontSize: 38 },
+            text: { text: '', fontSize: 48 },
+            w: 160,
+            h: 60,
           },
+          Day: {
+            x: 1740,
+            y: 95,
+            mountY: 0.5,
+            text: { text: '', fontSize: 32 },
+            w: 95,
+            h: 32,
+          },
+          Date: {
+            x: 1741,
+            y: 115,
+            mountY: 0.5,
+            text: { text: '', fontSize: 22 },
+            w: 95,
+            h: 22,
+          },
+          Border:{
+            x: 80,
+            y: 170,
+            mountY: 0.5,
+            RoundRectangle: {
+              zIndex: 2,
+              texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
+            },
+           alpha:0.4
+          }
         },
       }
     }
@@ -7003,7 +7009,12 @@ var APP_accelerator_home_ui = (function () {
 
     _build() {
       setInterval(() => {
-        this.tag('Time').patch({ text: { text: this.updateTime() } });
+      let _date = this.updateTime();
+        if (this.timeZone){
+          this.tag('Time').patch({ text: { text: _date.strTime }});
+          this.tag('Day').patch({ text: { text: _date.strDay }});
+          this.tag('Date').patch({ text: { text: _date.strDate }});
+        } 
       }, 1000);
     }
 
@@ -7014,14 +7025,26 @@ var APP_accelerator_home_ui = (function () {
       if (this.timeZone) {
         let date = new Date();
         date = new Date(date.toLocaleString('en-US', { timeZone: this.timeZone }));
+
+        // get day
+        let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        let strDay = days[date.getDay()]; 
+        console.log('Current day == '+strDay);
+      
+        // get month
+        let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let strMonth = month[date.getMonth()];
+
+        let strDate = date.toLocaleDateString('en-US', {day: '2-digit'})+ ' ' +strMonth+ ' ' +date.getFullYear();
+        console.log('Current day == '+strDate);
         let hours = date.getHours();
         let minutes = date.getMinutes();
         let ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
         hours = hours ? hours : 12;
         minutes = minutes < 10 ? '0' + minutes : minutes;
-        let strTime = hours + '.' + minutes + ' ' + ampm;
-        return strTime
+        let strTime = hours + ':' + minutes + ' ' + ampm;
+        return {strTime, strDay, strDate}
       } else {
         return ""
       }
@@ -7925,8 +7948,7 @@ var APP_accelerator_home_ui = (function () {
       applicationType: 'Lightning',
       uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
       url: '/images/apps/netflix.png',
-    },
-    
+    }
   ];
 
   /**
@@ -8064,20 +8086,112 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
   /**
+   * Class which contains data for app listings.
+   */
+  var rightArrowInfo = [
+
+      {
+          url: '/images/right-small.png',
+      },
+
+      {
+          url: '/images/right-small.png',
+      },
+
+      {
+          url: '/images/right-small.png',
+      },
+
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+  var leftArrowInfo = [
+     {
+        url: '/images/left-small.png',
+     },
+
+     {
+        url: '/images/left-small.png',
+     },
+     {
+        url: '/images/left-small.png',
+     },
+
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
    * Class which contains data for UI selection.
    */
-  var uiInfo = [
+   var uiInfo = [
     {
       title: 'DEFAULT',
-      url: '',
+      url: '/images/splash/DefaultUI.png',
+      uri: '',
+    },
+    {
+      title: 'LIVE',
+      url: '/images/splash/LiveTv.png',
+      uri: 'http://35.155.171.121:8088/index.html',
+
     },
     {
       title: 'TATA',
-      url: 'http://35.155.171.121:8088/index.html',
+      url: '/images/splash/TataElxsi.png',
+      uri: 'http://35.155.171.121:8088/index.html',
+
     },
     {
       title: 'EPAM',
-      url: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+      url: '/images/splash/Epam.png',
+      uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+    },
+    {
+      title: 'NEW',
+      url: '/images/splash/NewUi.png',
+      uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+    },
+    {
+      title: 'COMINGSOON',
+      url: '/images/splash/ComingSoon.png',
+      uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
     },
   ];
 
@@ -8184,6 +8298,8 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
+  var partnerApps=[];
+
   /**
    * Class that returns the data required for home screen.
    */
@@ -8229,6 +8345,34 @@ var APP_accelerator_home_ui = (function () {
     getMetroInfo() {
       return metroAppsInfo
     }
+
+    /**
+     * Function to store partner app details.
+     * @param {obj} data Partner app details.
+     */
+    setPartnerAppsInfo(data) {
+      partnerApps = data;
+    }
+
+    /**
+     *Function to return partner app details.
+     */
+    getPartnerAppsInfo() {
+      return partnerApps
+    }
+    /**
+    * Function to details of right arrow
+    */
+    getRightArrowInfo() {
+      return rightArrowInfo
+    }
+    /**
+      * Function to details of left arrow
+      */
+    getLeftArrowInfo() {
+      return leftArrowInfo
+    }
+    
   }
 
   /**
@@ -8346,24 +8490,21 @@ var APP_accelerator_home_ui = (function () {
         Background: {
           w: 1920,
           h: 1080,
-          src: Utils.asset('images/tvShows/background.jpg'),
+          src: Utils.asset('images/tvShows/background_new.jpg'),
           alpha: 1,
         },
         TopPanel: {
           type: TopPanel,
         },
-        View:{
-          x: 0,
-          y: 200,
-          w: 1920,
-          h: 1080,
+        View: {
+          x: 80,
+          y: 171,
+          w: 1994,
+          h: 919,
           clipping: true,
-          SidePanel: {
-            type: SidePanel,
-          },
           MainView: {
-            w:1920,
-            h:1080,
+            w: 1994,
+            h: 919,
             type: MainView,
           },
         },
@@ -8384,14 +8525,12 @@ var APP_accelerator_home_ui = (function () {
     _init() {
       this.homeApi = new HomeApi();
       var appItems = this.homeApi.getAppListInfo();
-      const URL_PARAMS = new window.URLSearchParams(window.location.search);
-      var data = URL_PARAMS.get('data');
+      var data = this.homeApi.getPartnerAppsInfo();
       console.log(data);
       var prop_apps = 'applications';
       var prop_displayname = 'displayName';
       var prop_uri = 'uri';
       var prop_apptype = 'applicationType';
-      var prop_url = 'url';
       var appdetails = [];
       var appdetails_format = [];
       var usbApps = 0;
@@ -8402,8 +8541,7 @@ var APP_accelerator_home_ui = (function () {
             if (
               appdetails[i].hasOwnProperty(prop_displayname) &&
               appdetails[i].hasOwnProperty(prop_uri) &&
-              appdetails[i].hasOwnProperty(prop_apptype) &&
-              appdetails[i].hasOwnProperty(prop_url)
+              appdetails[i].hasOwnProperty(prop_apptype)
             ) {
               appdetails_format.push(appdetails[i]);
               usbApps++;
@@ -8423,13 +8561,14 @@ var APP_accelerator_home_ui = (function () {
       this.tag('MainView').metroApps = this.homeApi.getMetroInfo();
       this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo();
       this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo();
-      this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo();
-      this.sidePanelData = this.homeApi.getSidePanelInfo();
-      this._setState('SidePanel');
+      this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo();
+      this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo();
+
+      this._setState('MainView');
       this.initialLoad = true;
       this.networkApi = new Network();
-      this.networkApi.activate().then(result=>{
-        if(result){
+      this.networkApi.activate().then(result => {
+        if (result) {
           this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
             if (notification.status == 'ACQUIRED') {
               this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
@@ -8437,8 +8576,8 @@ var APP_accelerator_home_ui = (function () {
               this.tag('IpAddress').text.text = 'IP:NA';
             }
           });
-          this.networkApi.getIP().then(ip=>{
-            this.tag('IpAddress').text.text = 'IP:'+ip;
+          this.networkApi.getIP().then(ip => {
+            this.tag('IpAddress').text.text = 'IP:' + ip;
           });
         }
       });
@@ -8446,9 +8585,9 @@ var APP_accelerator_home_ui = (function () {
 
     _captureKey(key) {
       console.log(" _captureKey home screen : " + key.keyCode);
-      if (key.keyCode == 112)  {
+      if (key.keyCode == 112) {
 
-        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
           appApi$1.standby("STANDBY").then(res => {
             powerState = 'STANDBY';
@@ -8460,7 +8599,6 @@ var APP_accelerator_home_ui = (function () {
           });
           return true
         }
-
       } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
 
         console.log("___________DEEP_SLEEP_______________________F12");
@@ -8468,9 +8606,7 @@ var APP_accelerator_home_ui = (function () {
           powerState = 'DEEP_SLEEP';
         });
         return true
-
       } else if (key.keyCode == 118 || key.keyCode == 113) {
-
         let value = !audio_mute;
         appApi$1.audio_mute(value).then(res => {
           console.log("__________AUDIO_MUTE_______________________F7");
@@ -8482,12 +8618,9 @@ var APP_accelerator_home_ui = (function () {
           console.log("audio_mute:" + audio_mute);
         });
         return true
-
       } else if (key.keyCode == 175) {
-
         audio_volume += 10;
         if (audio_volume > 100) { audio_volume = 100; }
-
         let value = "" + audio_volume;
         appApi$1.setVolumeLevel(value).then(res => {
           console.log("__________AUDIO_VOLUME_________Numberpad key plus");
@@ -8495,13 +8628,10 @@ var APP_accelerator_home_ui = (function () {
           console.log("setVolumeLevel:" + audio_volume);
         });
         return true
-
       } else if (key.keyCode == 174) {
-
         audio_volume -= 10;
         if (audio_volume < 0) { audio_volume = 0; }
         let value = "" + audio_volume;
-
         appApi$1.setVolumeLevel(value).then(res => {
           console.log("__________AUDIO_VOLUME____________Numberpad key minus");
           console.log(JSON.stringify(res, 3, null));
@@ -8509,7 +8639,6 @@ var APP_accelerator_home_ui = (function () {
         });
         return true
       }
-
       return false
     }
 
@@ -8555,68 +8684,6 @@ var APP_accelerator_home_ui = (function () {
     }
 
     /**
-     * Function to zoom in main view of home UI.
-     */
-    zoomIn(duration) {
-      this._sidePanelAnimation = this.tag('SidePanel').animation({
-        duration: duration,
-        repeat: 0,
-        stopMethod: 'immediate',
-        actions: [{ p: 'x', v: { 0: 130, 1: 280 } }],
-      });
-      this._sidePanelAnimation.start();
-      this.tag('SidePanel').resetSidePanelItems = this.sidePanelData;
-      let app = this;
-      this._appAnimation = app.animation({
-        duration: duration,
-        repeat: 0,
-        stopMethod: 'immediate',
-        actions: [
-          { p: 'x', v: { 0: 0, 1: -320 } },
-          { p: 'y', v: { 0: 0, 1: -180 } },
-          { p: 'scale', v: { 0: 1, 1: 1.17 } },
-        ],
-      });
-      this._appAnimation.start();
-    }
-
-    /**
-     * Function to zoom out main view of home UI.
-     */
-    zoomOut(duration) {
-      this._sidePanelAnimation = this.tag('SidePanel').animation({
-        duration: duration,
-        repeat: 0,
-        stopMethod: 'immediate',
-        actions: [{ p: 'x', v: { 0: 280, 1: 130 } }],
-      });
-      this._sidePanelAnimation.start();
-      this.tag('SidePanel').sidePanelItems = this.sidePanelData;
-      let app = this;
-      this._appAnimation = app.animation({
-        duration: duration,
-        repeat: 0,
-        stopMethod: 'immediate',
-        actions: [
-          { p: 'x', v: { 0: -320, 1: 0 } },
-          { p: 'y', v: { 0: -180, 1: 0 } },
-          { p: 'scale', v: { 0: 1.17, 1: 1 } },
-        ],
-      });
-      this._appAnimation.start();
-    }
-
-    /**
-     * Fireancestor to set the state to side panel.
-     * @param {index} index index value of side panel item.
-     */
-    $goToSidePanel(index) {
-      this.zoomOut(0.7);
-      this.tag('SidePanel').index = index;
-      this._setState('SidePanel');
-    }
-
-    /**
      * Fireancestor to set the state to main view.
      * @param {index} index index value of main view row.
      */
@@ -8637,29 +8704,31 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to scroll
      */
-    $scroll(y){
-      this.tag('SidePanel').setSmooth('y',y,{duration:0.5});
-      this.tag('MainView').setSmooth('y',y,{duration:0.5});
+    $scroll(y) {
+      // this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
+      this.tag('MainView').setSmooth('y', y, { duration: 0.5 });
     }
 
     /**
      * Function to hide the home UI.
      */
     hide() {
-      this.tag('Background').patch({ alpha: 0 });
-      this.tag('MainView').patch({ alpha: 0 });
-      this.tag('TopPanel').patch({ alpha: 0 });
-      this.tag('SidePanel').patch({ alpha: 0 });
+      this.tag('Background').patch({ smooth : {alpha: 0 }});
+      this.tag('MainView').patch({ smooth : { alpha: 0 }});
+      this.tag('TopPanel').patch({ smooth : { alpha: 0 }});
+      this.tag('rightArrowIcons').patch({ smooth : { alpha: 0 }});
+      this.tag('leftArrowIcons').patch({ smooth : { alpha: 0 }});
     }
 
     /**
-     * Function to show home UI.
+       * Function to show home UI.
      */
     show() {
-      this.tag('Background').patch({ alpha: 1 });
-      this.tag('MainView').patch({ alpha: 1 });
-      this.tag('TopPanel').patch({ alpha: 1 });
-      this.tag('SidePanel').patch({ alpha: 1 });
+      this.tag('Background').patch({ smooth : { alpha: 1 }});
+      this.tag('MainView').patch({ smooth : { alpha: 1 }});
+      this.tag('TopPanel').patch({ smooth : { alpha: 1 }});
+      this.tag('rightArrowIcons').patch({ smooth : { alpha: 1 }});
+      this.tag('leftArrowIcons').patch({ smooth : { alpha: 1 }});
     }
 
     /**
@@ -8672,11 +8741,6 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('TopPanel')
           }
         },
-        class SidePanel extends this {
-          _getFocused() {
-            return this.tag('SidePanel')
-          }
-        },
         class MainView extends this {
           _getFocused() {
             return this.tag('MainView')
@@ -8687,7 +8751,7 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('Player')
           }
 
-          stopPlayer(){
+          stopPlayer() {
             this.zoomIn(0);
             this._setState('MainView');
             this.player.stop();
@@ -8695,9 +8759,9 @@ var APP_accelerator_home_ui = (function () {
           }
 
           _handleKey(key) {
-            if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+            if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
               this.stopPlayer();
-            } else if (key.keyCode == 227 || key.keyCode == 179){
+            } else if (key.keyCode == 227 || key.keyCode == 179) {
               this.stopPlayer();
               return false;
             }
@@ -9110,86 +9174,53 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /**Color constants */
-  var COLORS = {
-    textColor: 0xffffffff,
-    titleColor: 0xffffffff,
-    hightlightColor: 0xffc0c0c0,
-    headingColor: 0xffffffff,
-  };
 
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class for rendering items in UI list.
-   */
-  class Item extends Lightning.Component {
-    static _template() {
-      return {
-        Item: {
-          w: 200,
-          h: 65,
-          rect: true,
-          color: COLORS.hightlightColor,
-          shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
-        },
-      }
-    }
-
-    /**
-     * Function to set contents for an item in UI list.
-     */
-    set item(item) {
-      this._item = item;
-      this.tag('Item').patch({
-        Name: {
-          x: 100,
-          y: 32.5,
-          mount: 0.5,
-          text: { text: item.title, textColor: 0xffffffff, fontSize: 35 },
-        },
-      });
-    }
-
-    /**
-     * Set width of the item.
-     */
-    set width(width) {
-      this.tag('Item').w = width;
-    }
-
-    /**
-     * Set height of the item.
-     */
-    set height(height) {
-      this.tag('Item').h = height;
-    }
-
-    _focus() {
-      this.tag('Item').scale = 1.1;
-    }
-
-    _unfocus() {
-      this.tag('Item').scale = 1;
-    }
-  }
+   /**
+    * Class for rendering items in UI list.
+    */
+   class Item extends Lightning.Component {
+     static _template() {
+       return {
+         Item: {
+           w: 300,
+           h: 150,
+           rect: true,
+           color: 0xFFDBEBFF,
+           shader: { type: Lightning.shaders.RoundedRectangle, radius: 10 },
+         },
+         OperatorLogo: {},
+       }
+     }
+   
+     /**
+      * Function to set contents for an item in UI list.
+      */
+     set item(item) {
+       this._item = item;
+       this.tag('OperatorLogo').patch({
+        Logo: {
+           w: 300,
+           h: 150,
+           zIndex: 3,
+           src: Utils.asset(this._item.url),
+           }
+       });
+     }
+   
+     _focus() {
+       this.tag('Item').zIndex = 2;
+       this.tag('Item').scale = 1.2;
+       this.tag('Item').color = 0xFFFFFFFF; 
+       this.tag('OperatorLogo').patch({
+       });
+     }
+   
+     _unfocus() {
+       this.tag('Item').zIndex = 1;
+       this.tag('Item').scale = 1;
+       this.tag('Item').color = 0xFFDBEBFF;
+     }
+   }
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -9219,19 +9250,20 @@ var APP_accelerator_home_ui = (function () {
         Splashscreen: {
           w: 1920,
           h: 1080,
-          alpha: 0,
+          alpha: 1,
+          src: Utils.asset('/images/splash/Splash-Background.jpg'),
           //just to cache the image
           Cache: {
             w: 0,
             h: 0,
             x: -1920,
-            src: Utils.asset('images/tvShows/background.jpg'),
+            src: Utils.asset('/images/splash/Splash-Background.jpg'),
           },
           Img: {
             mount: 0.5,
             x: 1920 / 2,
             y: 1080 / 2,
-            src: Utils.asset('images/RDKLogo.png'),
+            src: Utils.asset('/images/splash/RDK-Logo.png'),
           },
         },
         SplashVideo: {
@@ -9243,7 +9275,7 @@ var APP_accelerator_home_ui = (function () {
         AutoRemotePair: {
           w: 1920,
           h: 1080,
-          src: Utils.asset('images/tvShows/background.jpg'),
+          src: Utils.asset('/images/splash/Splash-Background.jpg'),
           alpha: 0,
           Title: {
             w: 1600,
@@ -9264,7 +9296,6 @@ var APP_accelerator_home_ui = (function () {
               textAlign: 'center',
               maxLines: 2,
               text: 'Please put the remote in pairing mode, scanning will start in a minute',
-
               textColor: 0xffe5e5e5,
             },
           },
@@ -9283,7 +9314,7 @@ var APP_accelerator_home_ui = (function () {
         ConnectivityScreen: {
           w: 1920,
           h: 1080,
-          src: Utils.asset('images/tvShows/background.jpg'),
+          src: Utils.asset('/images/splash/Splash-Background.jpg'),
           alpha: 0,
           Title: {
             w: 1920,
@@ -9310,28 +9341,29 @@ var APP_accelerator_home_ui = (function () {
           },
         },
         UISwitch: {
+          rect: true,
           w: 1920,
           h: 1080,
-          src: Utils.asset('images/tvShows/background.jpg'),
+          color: 0xff20344D,
           alpha: 0,
           Title: {
             x: 1920 / 2,
-            y: 400,
+            y: 350,
             mountX: 0.5,
             text: {
               fontSize: 55,
               textAlign: 'center',
-              text: 'Choose your UI',
+              text: 'Choose a Service',
               textColor: 0xffffffff,
             },
           },
           UIList: {
-            x: 1920 / 2 + 20,
+            x: 1920 / 2 - 20,
             y: 500,
             type: Lightning.components.ListComponent,
-            w: 224 * 3,
-            h: 100,
-            itemSize: 204 + 20,
+            w: 300 * 5,
+            h: 150,
+            itemSize: 300 + 20,
             roll: true,
             mountX: 0.5,
           },
@@ -9358,11 +9390,6 @@ var APP_accelerator_home_ui = (function () {
             this.remotePaired = false;
           }
         });
-      // this.startVideo()
-      // var thunderCalls = new ThunderCalls()
-      // thunderCalls.checkForInternet().then(result => {
-      //   this.hasInternet = result
-      // })
 
       this._setState('Splashscreen');
     }
@@ -9380,8 +9407,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('UISwitch.UIList').items = homeApi.getUIInfo().map((item, index) => {
         return {
           ref: 'UI' + index,
-          w: 204,
-          h: 100,
+          w: 300,
+          h: 150,
           type: Item,
           item: item,
         }
@@ -9400,8 +9427,7 @@ var APP_accelerator_home_ui = (function () {
           url: 'https://rdkwiki.com/rdk-apps/splash/splash.MOV',
           drmConfig: null,
         });
-        //this.player.setVideoRect(0, 0, 1280, 720)
-        // this.player.pause()
+        
       } catch (error) {
         this.player = null;
         console.log('###########', error);
@@ -9422,6 +9448,16 @@ var APP_accelerator_home_ui = (function () {
               actions: [{ p: 'alpha', v: { 0: 0, 1: 1 } }],
             });
             myAnimation.start();
+            const myAnimationLogo = this.tag('Img').animation({
+              duration: 4,
+              repeat: 0,
+              timingFunction: 'ease-in',
+              actions: [
+                { p: 'x', v: { 0: { v: 0, sm: 0.5 }, 1: 950 } },
+                { p: 'y', v: { 0: { v: 0, sm: 0.5 }, 1: 550 } },
+              ]
+            });
+            myAnimationLogo.start();
 
             this.screenTimeout = setTimeout(() => {
               this._setState('SplashVideo');
@@ -9459,7 +9495,7 @@ var APP_accelerator_home_ui = (function () {
           }
           $exit() {
             const myAnimation = this.tag('SplashVideo').animation({
-              duration: 1,
+              duration: 0.5,
               repeat: 0,
               stopMethod: 'immediate',
               actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
@@ -9629,6 +9665,26 @@ var APP_accelerator_home_ui = (function () {
             myAnimation.start();
           }
           _getFocused() {
+            console.log('get focused called');
+            let _tagEle = this.tag('UISwitch.UIList').element;
+            let _tag = this.tag('UISwitch');
+            let bgColor = '';
+            console.log('get focused called with ele and tag ' + _tagEle + "== " + _tag+" ::bgColor ::" +bgColor);
+            if (_tagEle._item.title == 'LIVE') {
+                bgColor = 0xFF445263;
+            } else if (_tagEle._item.title == 'TATA') {
+                bgColor = 0xFF3097A7;
+            } else if (_tagEle._item.title == 'EPAM') {
+                bgColor = 0xFF39C2D7;
+            } else if (_tagEle._item.title == 'NEW') {
+                bgColor = 0xFF141E30;
+            } else if (_tagEle._item.title == 'COMINGSOON') {
+                bgColor = 0xFF485E76;
+            } else if (_tagEle._item.title == 'DEFAULT') {
+                bgColor = 0xff20344D;
+            }
+
+            this.tag('UISwitch').patch({smooth: { color: bgColor}});
             return this.tag('UISwitch.UIList').element
           }
           _handleRight() {
@@ -9645,7 +9701,7 @@ var APP_accelerator_home_ui = (function () {
           }
           _handleEnter() {
             if (this.tag('UISwitch.UIList').element._item.title != 'DEFAULT') {
-              this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.url);
+              this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.uri);
             } else {
               if (this.remotePaired == false) this._setState('AutoRemotePair');
               else if (this.hasInternet == false) this._setState('ConnectivityScreen');
@@ -9665,6 +9721,32 @@ var APP_accelerator_home_ui = (function () {
       ]
     }
   }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**Color constants */
+  var COLORS = {
+    textColor: 0xffffffff,
+    titleColor: 0xffffffff,
+    hightlightColor: 0xffc0c0c0,
+    headingColor: 0xffffffff,
+  };
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -12401,6 +12483,11 @@ ${error.toString()}`;
    **/
 
   var routes = {
+    boot: (queryParam) => {
+      let homeApi = new HomeApi();
+      homeApi.setPartnerAppsInfo(queryParam.data);
+      return Promise.resolve()
+    },
     root: 'home',
     routes: [
       {
@@ -12791,7 +12878,7 @@ ${error.toString()}`;
         })
         .catch(err => {
           console.log('Error', err);
-        })      
+        })
         .then(result => {
           thunder
             .call(rdkshellCallsign, 'addKeyIntercept', {

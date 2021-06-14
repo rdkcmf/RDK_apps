@@ -16,10 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Router, Storage, Utils } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
+import AppListItem from '../items/AppListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
+import ArrowIconItem from '../items/ArrowIconlItem.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -29,59 +31,110 @@ export default class MainView extends Lightning.Component {
   static _template() {
     return {
       MainView: {
-        x: 451,
-        y: 25,
-        w: 1469,
-        h: 820,
+        x: 0,
+        y: 0,
+        w: 1765,
+        h: 1080,
+        clipping: true,
+        Text1: {
+          x: 20,
+          y: 50,
+          w: 91,
+          text: {
+            fontSize: 40,
+            text: 'Apps',
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
+          zIndex: 0
+        },
+
         AppList: {
           x: 0,
-          y: 0,
+          y: 137,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
           type: Lightning.components.ListComponent,
-          w: 1469,
-          h: 209,
-          itemSize: 204 + 20,
+          w: 1745,
+          h: 300,
+          itemSize: 257,
           roll: true,
-          rollMax: 1469,
+          rollMax: 1745,
           horizontal: true,
           itemScrollOffset: -5,
-          clipping: true,
+          clipping: false,
         },
+        Text2: {
+          x: 20,
+          y: 338,
+          text: {
+            fontSize: 40,
+            text: 'Metro Apps',
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
+        },
+
         MetroApps: {
           x: 0,
-          y: 184,
+          y: 410,
           type: Lightning.components.ListComponent,
-          w: 1469,
-          h: 209,
-          itemSize: 204 + 20,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 400,
+          itemSize: 328,
           roll: true,
-          rollMax: 1469,
+          rollMax: 1745,
           horizontal: true,
-          itemScrollOffset: -5,
-          clipping: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text3: {
+          x: 20,
+          y: 665,
+          text: {
+            fontSize: 40,
+            text: 'TVShows',
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
         },
         TVShows: {
           x: 0,
-          y: 184 + 184,
-          w: 1469,
-          h: 335,
+          y: 735,
+          w: 1745,
+          h: 400,
           type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
           roll: true,
-          itemSize: 428 + 20,
+          itemSize: 328,
+          rollMax: 1745,
           horizontal: true,
-          rollMax: 1444 + 25,
-          clipping: true,
+          itemScrollOffset: -4,
+          clipping: false,
         },
-        Settings: {
+
+        RightArrow: {
           x: 0,
-          y: 494 + 184,
-          w: 1469,
-          h: 335,
+          y: 0,
+          w: 70,
+          h: 750,
           type: Lightning.components.ListComponent,
           roll: true,
-          itemSize: 428 + 20,
-          horizontal: true,
-          rollMax: 1469,
-          clipping: true,
+          horizontal: false,
+          invertDirection: true,
+          alpha: 0.9,
+        },
+
+        LeftArrow: {
+          x: 20,
+          y: 0,
+          w: 70,
+          h: 750,
+          type: Lightning.components.ListComponent,
+          roll: true,
+          horizontal: false,
+          invertDirection: true,
+          alpha: 0.9,
         },
       },
     }
@@ -141,9 +194,9 @@ export default class MainView extends Lightning.Component {
   set appItems(items) {
     this.tag('AppList').items = items.map(info => {
       return {
-        w: 204,
-        h: 126,
-        type: ListItem,
+        w: 235,
+        h: 136,
+        type: AppListItem,
         data: info,
         focus: 1.2,
         unfocus: 1,
@@ -153,12 +206,48 @@ export default class MainView extends Lightning.Component {
     })
     this.tag('AppList').start()
   }
+  /**
+  * Function to set details of items in right Icons list.
+  * 
+  */
+  set rightArrowIcons(items) {
+    this.tag('RightArrow').items = items.map((info, index) => {
+      this.data = info
+      return {
+        w: index == 0 ? 30 : 45,
+        h: index == 0 ? 60 : 90,
+        x: index == 0 ? 1735 : (index == 1 ? 1720 : (index == 2 ? 1720 : 0)),
+        y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+        type: ArrowIconItem,
+        data: info,
+      }
+    })
+    this.tag('RightArrow').start()
+  }
+  /**
+  * Function to set details of items in left Icons list.
+  * 
+  */
+  set leftArrowIcons(items) {
+    this.tag('LeftArrow').patch({ x: 20 })
+    this.tag('LeftArrow').items = items.map((info, index) => {
+      this.data = info
+      return {
+        w: index == 0 ? 30 : 45,
+        h: index == 0 ? 60 : 90,
+        y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+        type: ArrowIconItem,
+        data: info,
+      }
+    })
+    this.tag('LeftArrow').start()
+  }
 
   set metroApps(items) {
-    this.tag('MetroApps').items = items.map(info => {
+    this.tag('MetroApps').items = items.map((info, index) => {
       return {
-        w: 204,
-        h: 126,
+        w: 308,
+        h: 200,
         type: ListItem,
         data: info,
         focus: 1.2,
@@ -176,11 +265,11 @@ export default class MainView extends Lightning.Component {
   set tvShowItems(items) {
     this.tag('TVShows').items = items.map(info => {
       return {
-        w: 428,
-        h: 252,
+        w: 308,
+        h: 200,
         type: ListItem,
         data: info,
-        focus: 1.08,
+        focus: 1.2,
         unfocus: 1,
         x_text: 218,
         y_text: 264,
@@ -189,24 +278,6 @@ export default class MainView extends Lightning.Component {
     this.tag('TVShows').start()
   }
 
-  /**
-   * Function to set details of items in settings list
-   */
-  set settingsItems(items) {
-    this.tag('Settings').items = items.map(info => {
-      return {
-        w: 428,
-        h: 252,
-        type: ListItem,
-        data: info,
-        focus: 1.08,
-        unfocus: 1,
-        x_text: 218,
-        y_text: 264,
-      }
-    })
-    this.tag('Settings').start()
-  }
 
   /**
    * Function to set the state in main view.
@@ -220,7 +291,7 @@ export default class MainView extends Lightning.Component {
     } else if (this.indexVal == 2) {
       this._setState('TVShows')
     } else if (this.indexVal == 3) {
-      this._setState('Settings')
+      this._setState('RightArrow')
     }
   }
 
@@ -236,9 +307,6 @@ export default class MainView extends Lightning.Component {
     }
     for (var i = this.tag('TVShows').index; i > 0; i--) {
       this.tag('TVShows').setPrevious()
-    }
-    for (var i = this.tag('Settings').index; i > 0; i--) {
-      this.tag('Settings').setPrevious()
     }
   }
 
@@ -263,9 +331,6 @@ export default class MainView extends Lightning.Component {
           if (0 != this.tag('AppList').index) {
             this.tag('AppList').setPrevious()
             return this.tag('AppList').element
-          } else {
-            this.reset()
-            this.fireAncestors('$goToSidePanel', 0)
           }
         }
         _handleDown() {
@@ -307,9 +372,9 @@ export default class MainView extends Lightning.Component {
           };
           var thunder = ThunderJS(config);
           console.log('_handleKey', key.keyCode);
-            var appApi = new AppApi();
-            if (Storage.get('applicationType') == 'Cobalt') {
-              if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
+          var appApi = new AppApi();
+          if (Storage.get('applicationType') == 'Cobalt') {
+            if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
@@ -374,7 +439,7 @@ export default class MainView extends Lightning.Component {
             return this.tag('MetroApps').element
           } else {
             this.reset()
-            this.fireAncestors('$goToSidePanel', 1)
+
           }
         }
         _handleDown() {
@@ -412,7 +477,7 @@ export default class MainView extends Lightning.Component {
           var appApi = new AppApi();
           console.log('_handleKey', key.keyCode);
           if (Storage.get('applicationType') == 'Cobalt') {
-              if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
+            if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
@@ -449,6 +514,9 @@ export default class MainView extends Lightning.Component {
         }
       },
       class TVShows extends this {
+        $enter() {
+          this.fireAncestors('$scroll', -300)
+        }
         _getFocused() {
           if (this.tag('TVShows').length) {
             return this.tag('TVShows').element
@@ -464,64 +532,23 @@ export default class MainView extends Lightning.Component {
           if (0 != this.tag('TVShows').index) {
             this.tag('TVShows').setPrevious()
             return this.tag('TVShows').element
-          } else {
-            this.reset()
-            this.fireAncestors('$goToSidePanel', 2)
           }
         }
         _handleUp() {
           this._setState('MetroApps')
         }
-        _handleDown() {
-          this._setState('Settings')
-        }
         _handleEnter() {
           this.fireAncestors('$goToPlayer')
-        }
-      },
-      class Settings extends this {
-        $enter() {
-          this.fireAncestors('$scroll', -200)
-        }
-        _getFocused() {
-          if (this.tag('Settings').length) {
-            return this.tag('Settings').element
-          }
-        }
-        _handleRight() {
-          if (this.tag('Settings').length - 1 != this.tag('Settings').index) {
-            this.tag('Settings').setNext()
-          }
-          return this.tag('Settings').element
-        }
-        _handleLeft() {
-          if (0 != this.tag('Settings').index) {
-            this.tag('Settings').setPrevious()
-            return this.tag('Settings').element
-          } else {
-            this.reset()
-            this.fireAncestors('$goToSidePanel', 3)
-          }
-        }
-        _handleUp() {
-          this._setState('TVShows')
-        }
-        _handleEnter() {
-          this.settingsType = this.tag('Settings').items[
-            this.tag('Settings').index
-          ].data.displayName
-
-          if (this.settingsType == 'Bluetooth') {
-            this.settingsScreen = true
-            Router.navigate('settings/BluetoothScreen', false)
-          } else if (this.settingsType == 'Wi-Fi') {
-            this.settingsScreen = true
-            Router.navigate('settings/WiFiScreen', false)
-          }
         }
         $exit() {
           this.fireAncestors('$scroll', 0)
         }
+      },
+      class RightArrow extends this {
+        //TODO
+      },
+      class LeftArrow extends this {
+        //TODO
       },
     ]
   }

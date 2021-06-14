@@ -19,35 +19,16 @@
 /**
  * Class which contains data for app listings.
  */
-export var appListInfo = [
-  {
-    displayName: 'Test Youtube',
-    applicationType: 'Cobalt',
-    uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.png',
-  },
-  {
-    displayName: 'Test Xumo',
-    applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/xumo.png',
-  },
-  {
-    displayName: 'Test Netflix',
-    applicationType: 'Netflix',
-    uri: '',
-    url: '/images/apps/netflix.png',
-  },
-  {
-    displayName: 'Test Prime video',
-    applicationType: 'Amazon',
-    uri: '',
-    url: '/images/apps/prime.png',
-  },
-  {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/netflix.png',
-  }
+export var leftArrowInfo = [
+   {
+      url: '/images/left-small.png',
+   },
+
+   {
+      url: '/images/left-small.png',
+   },
+   {
+      url: '/images/left-small.png',
+   },
+
 ]

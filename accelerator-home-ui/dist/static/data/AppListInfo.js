@@ -49,6 +49,5 @@ export var appListInfo = [
     applicationType: 'Lightning',
     uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
     url: '/images/apps/netflix.png',
-  },
-  
+  }
 ]

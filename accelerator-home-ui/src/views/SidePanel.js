@@ -45,7 +45,7 @@ export default class SidePanel extends Lightning.Component {
    * Function to set items in side panel.
    */
   set sidePanelItems(items) {
-    this.tag('SidePanel').patch({ x: 130 })
+    this.tag('SidePanel').patch({ x: 0 })
     this.tag('SidePanel').items = items.map((info, index) => {
       this.data = info
       return {
@@ -69,7 +69,7 @@ export default class SidePanel extends Lightning.Component {
    * Function to reset items in side panel.
    */
   set resetSidePanelItems(items) {
-    this.tag('SidePanel').patch({ x: 90 })
+    this.tag('SidePanel').patch({ x: 0 })
     this.tag('SidePanel').items = items.map((info, index) => {
       return {
         w: 204,

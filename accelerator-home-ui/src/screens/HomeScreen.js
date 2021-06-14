@@ -18,7 +18,6 @@
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
 import MainView from '../views/MainView.js'
-import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
@@ -40,24 +39,21 @@ export default class HomeScreen extends Lightning.Component {
       Background: {
         w: 1920,
         h: 1080,
-        src: Utils.asset('images/tvShows/background.jpg'),
+        src: Utils.asset('images/tvShows/background_new.jpg'),
         alpha: 1,
       },
       TopPanel: {
         type: TopPanel,
       },
-      View:{
-        x: 0,
-        y: 200,
-        w: 1920,
-        h: 1080,
+      View: {
+        x: 80,
+        y: 171,
+        w: 1994,
+        h: 919,
         clipping: true,
-        SidePanel: {
-          type: SidePanel,
-        },
         MainView: {
-          w:1920,
-          h:1080,
+          w: 1994,
+          h: 919,
           type: MainView,
         },
       },
@@ -78,8 +74,7 @@ export default class HomeScreen extends Lightning.Component {
   _init() {
     this.homeApi = new HomeApi()
     var appItems = this.homeApi.getAppListInfo()
-    const URL_PARAMS = new window.URLSearchParams(window.location.search)
-    var data = URL_PARAMS.get('data')
+    var data = this.homeApi.getPartnerAppsInfo()
     console.log(data)
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
@@ -96,8 +91,7 @@ export default class HomeScreen extends Lightning.Component {
           if (
             appdetails[i].hasOwnProperty(prop_displayname) &&
             appdetails[i].hasOwnProperty(prop_uri) &&
-            appdetails[i].hasOwnProperty(prop_apptype) &&
-            appdetails[i].hasOwnProperty(prop_url)
+            appdetails[i].hasOwnProperty(prop_apptype)
           ) {
             appdetails_format.push(appdetails[i])
             usbApps++
@@ -117,13 +111,14 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').metroApps = this.homeApi.getMetroInfo()
     this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo()
     this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo()
-    this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
-    this.sidePanelData = this.homeApi.getSidePanelInfo()
-    this._setState('SidePanel')
+    this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo()
+    this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo()
+
+    this._setState('MainView')
     this.initialLoad = true
     this.networkApi = new NetworkApi()
-    this.networkApi.activate().then(result=>{
-      if(result){
+    this.networkApi.activate().then(result => {
+      if (result) {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
@@ -131,8 +126,8 @@ export default class HomeScreen extends Lightning.Component {
             this.tag('IpAddress').text.text = 'IP:NA'
           }
         })
-        this.networkApi.getIP().then(ip=>{
-          this.tag('IpAddress').text.text = 'IP:'+ip
+        this.networkApi.getIP().then(ip => {
+          this.tag('IpAddress').text.text = 'IP:' + ip
         })
       }
     })
@@ -140,9 +135,9 @@ export default class HomeScreen extends Lightning.Component {
 
   _captureKey(key) {
     console.log(" _captureKey home screen : " + key.keyCode)
-    if (key.keyCode == 112)  {
+    if (key.keyCode == 112) {
 
-      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON 
+      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         appApi.standby("STANDBY").then(res => {
           powerState = 'STANDBY'
@@ -154,7 +149,6 @@ export default class HomeScreen extends Lightning.Component {
         })
         return true
       }
-
     } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
 
       console.log("___________DEEP_SLEEP_______________________F12")
@@ -162,9 +156,7 @@ export default class HomeScreen extends Lightning.Component {
         powerState = 'DEEP_SLEEP'
       })
       return true
-
     } else if (key.keyCode == 118 || key.keyCode == 113) {
-
       let value = !audio_mute;
       appApi.audio_mute(value).then(res => {
         console.log("__________AUDIO_MUTE_______________________F7")
@@ -176,12 +168,9 @@ export default class HomeScreen extends Lightning.Component {
         console.log("audio_mute:" + audio_mute);
       })
       return true
-
     } else if (key.keyCode == 175) {
-
       audio_volume += 10;
       if (audio_volume > 100) { audio_volume = 100 }
-
       let value = "" + audio_volume;
       appApi.setVolumeLevel(value).then(res => {
         console.log("__________AUDIO_VOLUME_________Numberpad key plus")
@@ -189,13 +178,10 @@ export default class HomeScreen extends Lightning.Component {
         console.log("setVolumeLevel:" + audio_volume);
       })
       return true
-
     } else if (key.keyCode == 174) {
-
       audio_volume -= 10;
       if (audio_volume < 0) { audio_volume = 0 }
       let value = "" + audio_volume;
-
       appApi.setVolumeLevel(value).then(res => {
         console.log("__________AUDIO_VOLUME____________Numberpad key minus")
         console.log(JSON.stringify(res, 3, null));
@@ -203,7 +189,6 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
     }
-
     return false
   }
 
@@ -249,68 +234,6 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /**
-   * Function to zoom in main view of home UI.
-   */
-  zoomIn(duration) {
-    this._sidePanelAnimation = this.tag('SidePanel').animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [{ p: 'x', v: { 0: 130, 1: 280 } }],
-    })
-    this._sidePanelAnimation.start()
-    this.tag('SidePanel').resetSidePanelItems = this.sidePanelData
-    let app = this
-    this._appAnimation = app.animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [
-        { p: 'x', v: { 0: 0, 1: -320 } },
-        { p: 'y', v: { 0: 0, 1: -180 } },
-        { p: 'scale', v: { 0: 1, 1: 1.17 } },
-      ],
-    })
-    this._appAnimation.start()
-  }
-
-  /**
-   * Function to zoom out main view of home UI.
-   */
-  zoomOut(duration) {
-    this._sidePanelAnimation = this.tag('SidePanel').animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [{ p: 'x', v: { 0: 280, 1: 130 } }],
-    })
-    this._sidePanelAnimation.start()
-    this.tag('SidePanel').sidePanelItems = this.sidePanelData
-    let app = this
-    this._appAnimation = app.animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [
-        { p: 'x', v: { 0: -320, 1: 0 } },
-        { p: 'y', v: { 0: -180, 1: 0 } },
-        { p: 'scale', v: { 0: 1.17, 1: 1 } },
-      ],
-    })
-    this._appAnimation.start()
-  }
-
-  /**
-   * Fireancestor to set the state to side panel.
-   * @param {index} index index value of side panel item.
-   */
-  $goToSidePanel(index) {
-    this.zoomOut(0.7)
-    this.tag('SidePanel').index = index
-    this._setState('SidePanel')
-  }
-
-  /**
    * Fireancestor to set the state to main view.
    * @param {index} index index value of main view row.
    */
@@ -331,29 +254,31 @@ export default class HomeScreen extends Lightning.Component {
   /**
    * Function to scroll
    */
-  $scroll(y){
-    this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
-    this.tag('MainView').setSmooth('y',y,{duration:0.5})
+  $scroll(y) {
+    // this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
+    this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
   }
 
   /**
    * Function to hide the home UI.
    */
   hide() {
-    this.tag('Background').patch({ alpha: 0 })
-    this.tag('MainView').patch({ alpha: 0 })
-    this.tag('TopPanel').patch({ alpha: 0 })
-    this.tag('SidePanel').patch({ alpha: 0 })
+    this.tag('Background').patch({ smooth : {alpha: 0 }})
+    this.tag('MainView').patch({ smooth : { alpha: 0 }})
+    this.tag('TopPanel').patch({ smooth : { alpha: 0 }})
+    this.tag('rightArrowIcons').patch({ smooth : { alpha: 0 }})
+    this.tag('leftArrowIcons').patch({ smooth : { alpha: 0 }})
   }
 
   /**
-   * Function to show home UI.
+     * Function to show home UI.
    */
   show() {
-    this.tag('Background').patch({ alpha: 1 })
-    this.tag('MainView').patch({ alpha: 1 })
-    this.tag('TopPanel').patch({ alpha: 1 })
-    this.tag('SidePanel').patch({ alpha: 1 })
+    this.tag('Background').patch({ smooth : { alpha: 1 }})
+    this.tag('MainView').patch({ smooth : { alpha: 1 }})
+    this.tag('TopPanel').patch({ smooth : { alpha: 1 }})
+    this.tag('rightArrowIcons').patch({ smooth : { alpha: 1 }})
+    this.tag('leftArrowIcons').patch({ smooth : { alpha: 1 }})
   }
 
   /**
@@ -366,11 +291,6 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('TopPanel')
         }
       },
-      class SidePanel extends this {
-        _getFocused() {
-          return this.tag('SidePanel')
-        }
-      },
       class MainView extends this {
         _getFocused() {
           return this.tag('MainView')
@@ -381,7 +301,7 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('Player')
         }
 
-        stopPlayer(){
+        stopPlayer() {
           this.zoomIn(0);
           this._setState('MainView');
           this.player.stop();
@@ -389,9 +309,9 @@ export default class HomeScreen extends Lightning.Component {
         }
 
         _handleKey(key) {
-          if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             this.stopPlayer()
-          } else if (key.keyCode == 227 || key.keyCode == 179){
+          } else if (key.keyCode == 227 || key.keyCode == 179) {
             this.stopPlayer()
             return false;
           }

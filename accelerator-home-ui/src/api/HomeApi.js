@@ -20,8 +20,12 @@ import { appListInfo } from './../../static/data/AppListInfo.js'
 import { tvShowsInfo } from './../../static/data/TvShowsInfo.js'
 import { settingsInfo } from './../../static/data/SettingsInfo.js'
 import { sidePanelInfo } from './../../static/data/SidePanelInfo.js'
+import { rightArrowInfo } from './../../static/data/RightArrowInfo.js'
+import { leftArrowInfo } from './../../static/data/LeftArrowInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
 import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
+
+var partnerApps=[]
 
 /**
  * Class that returns the data required for home screen.
@@ -68,4 +72,32 @@ export default class HomeApi {
   getMetroInfo() {
     return metroAppsInfo
   }
+
+  /**
+   * Function to store partner app details.
+   * @param {obj} data Partner app details.
+   */
+  setPartnerAppsInfo(data) {
+    partnerApps = data
+  }
+
+  /**
+   *Function to return partner app details.
+   */
+  getPartnerAppsInfo() {
+    return partnerApps
+  }
+  /**
+  * Function to details of right arrow
+  */
+  getRightArrowInfo() {
+    return rightArrowInfo
+  }
+  /**
+    * Function to details of left arrow
+    */
+  getLeftArrowInfo() {
+    return leftArrowInfo
+  }
+  
 }

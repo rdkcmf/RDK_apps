@@ -19,17 +19,37 @@
 /**
  * Class which contains data for UI selection.
  */
-export var uiInfo = [
+ export var uiInfo = [
   {
     title: 'DEFAULT',
-    url: '',
+    url: '/images/splash/DefaultUI.png',
+    uri: '',
+  },
+  {
+    title: 'LIVE',
+    url: '/images/splash/LiveTv.png',
+    uri: 'http://35.155.171.121:8088/index.html',
+
   },
   {
     title: 'TATA',
-    url: 'http://35.155.171.121:8088/index.html',
+    url: '/images/splash/TataElxsi.png',
+    uri: 'http://35.155.171.121:8088/index.html',
+
   },
   {
     title: 'EPAM',
-    url: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+    url: '/images/splash/Epam.png',
+    uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+  },
+  {
+    title: 'NEW',
+    url: '/images/splash/NewUi.png',
+    uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
+  },
+  {
+    title: 'COMINGSOON',
+    url: '/images/splash/ComingSoon.png',
+    uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
   },
 ]

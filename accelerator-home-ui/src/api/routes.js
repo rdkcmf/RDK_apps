@@ -20,8 +20,14 @@ import Home from './../screens/HomeScreen'
 import SplashScreen from './../screens/SplashScreen'
 import Settings from './../screens/SettingsScreen'
 import Error from './../screens/Error'
+import HomeApi from '../api/HomeApi.js'
 
 export default {
+  boot: (queryParam) => {
+    let homeApi = new HomeApi()
+    homeApi.setPartnerAppsInfo(queryParam.data)
+    return Promise.resolve()
+  },
   root: 'home',
   routes: [
     {
