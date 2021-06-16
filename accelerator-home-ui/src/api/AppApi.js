@@ -346,6 +346,28 @@ export default class AppApi {
     })
   }
   /**
+   * Function to set the configuration of premium apps.
+   * @param {appName} Name of the application
+   * @param {config_data} config_data configuration data
+   */
+
+  configureApplication(appName, config_data) {
+    let plugin = 'Controller';
+    let method = 'configuration@'+appName;
+    return new Promise((resolve, reject) => {
+    thunder.call(plugin, method).then((res) => {
+      res.querystring = config_data;
+      thunder.call(plugin, method, res).then((resp) => {
+        resolve(true);
+      }).catch((err) => {
+        resolve(true);
+      })
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+  }
+  /**
    * Function to launch Native app.
    * @param {String} url url of app.
    */

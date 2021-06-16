@@ -479,7 +479,11 @@ var APP_accelerator_home_ui = (function () {
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
+<<<<<<< HEAD
    * Copyright 2020 Metrological
+=======
+   * Copyright 2020 RDK Management
+>>>>>>> REFPLTV-895-Add Netflix support to residentapp UI
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -6079,6 +6083,28 @@ var APP_accelerator_home_ui = (function () {
         client: client,
         visible: visible,
       });
+    }
+    /**
+     * Function to set the configuration of premium apps.
+     * @param {appName} Name of the application
+     * @param {config_data} config_data configuration data
+     */
+
+    configureApplication(appName, config_data) {
+      let plugin = 'Controller';
+      let method = 'configuration@'+appName;
+      return new Promise((resolve, reject) => {
+      thunder$1.call(plugin, method).then((res) => {
+        res.querystring = config_data;
+        thunder$1.call(plugin, method, res).then((resp) => {
+          resolve(true);
+        }).catch((err) => {
+          resolve(true);
+        });
+      }).catch((err) => {
+        reject(err);
+      });
+    })
     }
     /**
      * Function to launch Native app.
@@ -12759,7 +12785,7 @@ ${error.toString()}`;
     }
 
     static supportedApps() {
-      var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
+      var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' };
       return xcastApps;
     }
   }
@@ -13122,12 +13148,19 @@ ${error.toString()}`;
             let params = { applicationName: notification.applicationName, state: 'running' };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
-            this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Netflix');
-            Storage.set('applicationType', 'Netflix');
-            appApi.setVisibility('ResidentApp', false);
-            let params = { applicationName: notification.applicationName, state: 'running' };
-            this.xcastApi.onApplicationStateChanged(params);
+            appApi.configureApplication('Netflix', notification.parameters).then((res) => {
+              this.deactivateChildApp(Storage.get('applicationType'));
+              appApi.launchPremiumApp('Netflix');
+              Storage.set('applicationType', 'Netflix');
+              appApi.setVisibility('ResidentApp', false);
+              if(AppApi.pluginStatus('Netflix')){
+              let params = { applicationName: notification.applicationName, state: 'running' };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+            }).catch((err) => {
+              console.log('Error while launching '+applicationName+ ', Err: '+JSON.stringify(err));
+            });
+            
           } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
             this.deactivateChildApp(Storage.get('applicationType'));
             appApi.launchCobalt();
