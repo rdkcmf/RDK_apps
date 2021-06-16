@@ -19,6 +19,9 @@
 import { Lightning, Utils } from '@lightningjs/sdk'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi'
+import store from '../redux.js'
+
+
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
   static _template() {
@@ -48,15 +51,54 @@ export default class TopPanel extends Lightning.Component {
           mountY: 0.5,
           text: { text: '', fontSize: 38 },
         },
+        AudioListenSymbol: {
+          x: 90,
+          y: 65,
+          mountY: 0.5,
+          src: Utils.asset('/images/topPanel/animation_mic.png'),
+          w: 100,
+          h: 100,
+          visible: false,
+        }
       },
     }
   }
   _init() {
     this.timeZone = null;
-    new AppApi().getZone().then(function (res) {     
-       this.timeZone = res;
-     }.bind(this)).catch(err => { console.log('Timezone api request error', err) });   
- }
+    this.audiointerval = null;
+    new AppApi().getZone().then(function (res) {
+      this.timeZone = res;
+    }.bind(this)).catch(err => { console.log('Timezone api request error', err) });
+
+
+    function render() {
+      if (store.getState() == 'ACTION_LISTEN_STOP') {
+        this.tag('AudioListenSymbol').visible = false;
+        clearInterval(this.audiointerval);
+        this.audiointerval = null;
+      } else if (store.getState() == 'ACTION_LISTEN_START') {
+        if (!this.audiointerval) {
+          this.tag('AudioListenSymbol').visible = true;
+          let mode = 1;
+          this.audiointerval = setInterval(function () {
+            if (mode % 2 == 0) {
+              this.tag('AudioListenSymbol').w = 105;
+              this.tag('AudioListenSymbol').h = 105;
+            } else {
+              this.tag('AudioListenSymbol').w = 100;
+              this.tag('AudioListenSymbol').h = 100
+            }
+            mode++;
+            if (mode > 20) { mode = 0; };
+          }.bind(this), 250);
+        }
+      }
+    }
+
+    store.subscribe(render.bind(this));
+
+
+  }
 
   _build() {
     setInterval(() => {

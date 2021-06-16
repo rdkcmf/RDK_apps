@@ -25,6 +25,7 @@ import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './../api/AppApi';
+import store from '../redux.js'
 
 var powerState = 'ON';
 var audio_mute = false;
@@ -44,9 +45,6 @@ export default class HomeScreen extends Lightning.Component {
         h: 1080,
         src: Utils.asset('images/tvShows/background.jpg'),
         alpha: 1,
-      },
-      TopPanel: {
-        type: TopPanel,
       },
       View:{
         x: 0,
@@ -81,9 +79,10 @@ export default class HomeScreen extends Lightning.Component {
         y: 385,
         signals: { select: true },
         alpha: 0
-      }
-
-
+      },
+      TopPanel: {
+        type: TopPanel,
+      },
     }
   }
 
@@ -148,10 +147,24 @@ export default class HomeScreen extends Lightning.Component {
     })
   }
 
+  _captureKeyRelease(key){
+      if (key.keyCode == 120 || key.keyCode == 217) {
+        store.dispatch({ type: 'ACTION_LISTEN_STOP' })
+      //app launch code need add here.
+      return true
+    }
+  }
+
+
   _captureKey(key) {
     console.log(" _captureKey home screen : " + key.keyCode)
-    if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
 
+    if (key.keyCode == 120 || key.keyCode == 217) {
+      store.dispatch({ type: 'ACTION_LISTEN_START' })
+      return true
+    }
+
+    if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
       //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         last_state = this._getState();
