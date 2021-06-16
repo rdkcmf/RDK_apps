@@ -309,7 +309,10 @@ export default class MainView extends Lightning.Component {
           console.log('_handleKey', key.keyCode);
             var appApi = new AppApi();
 
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+            // Detecting Ctrl
+            var _key = key.keyCode;
+            var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
+          if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
             if (Storage.get('applicationType') == 'WebApp') {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
@@ -334,7 +337,7 @@ export default class MainView extends Lightning.Component {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            }
+            } else return false
             
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
               console.log('ResidentApp moveToFront Success');
@@ -350,7 +353,7 @@ export default class MainView extends Lightning.Component {
               .catch(err => {
                 console.log('Error', err)
               })
-          } else return false
+          };
         }
       },
       class MetroApps extends this {
@@ -411,13 +414,10 @@ export default class MainView extends Lightning.Component {
           var thunder = ThunderJS(config);
           var appApi = new AppApi();
           console.log('_handleKey', key.keyCode);
-          if (Storage.get('applicationType') == 'Cobalt') {
-              if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            }
-          } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+          // Detecting Ctrl
+          var _key = key.keyCode;
+          var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
+          if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
             if (Storage.get('applicationType') == 'WebApp') {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
@@ -430,7 +430,11 @@ export default class MainView extends Lightning.Component {
               Storage.set('applicationType', '');
               appApi.killNative();
               appApi.setVisibility('ResidentApp', true);
-            } else return false;
+            } else if(Storage.get('applicationType') == 'Cobalt'){
+              Storage.set('applicationType', '');
+              appApi.suspendCobalt();
+              appApi.setVisibility('ResidentApp', true);
+            } else return false
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
               console.log('ResidentApp moveToFront Success');
             });
@@ -445,7 +449,7 @@ export default class MainView extends Lightning.Component {
               .catch(err => {
                 console.log('Error', err)
               })
-          } else return false;
+          }
         }
       },
       class TVShows extends this {

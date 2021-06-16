@@ -479,11 +479,7 @@ var APP_accelerator_home_ui = (function () {
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-<<<<<<< HEAD
-   * Copyright 2020 Metrological
-=======
    * Copyright 2020 RDK Management
->>>>>>> REFPLTV-895-Add Netflix support to residentapp UI
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
