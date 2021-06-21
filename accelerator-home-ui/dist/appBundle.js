@@ -2,11 +2,11 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- *
- * Generated: Wed, 16 Jun 2021 04:24:31 GMT
+ * 
+ * Generated: Mon, 21 Jun 2021 14:43:10 GMT
  */
 
-var APP_accelerator_home_ui = (function () {
+var APP_accelerator_home_ui = (function (redux) {
   'use strict';
 
   /*
@@ -471,15 +471,13 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
-    config.getInfo;
-    config.setInfo;
   };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
    * following copyright and licenses apply:
    *
-   * Copyright 2020 RDK Management
+   * Copyright 2020 Metrological
    *
    * Licensed under the Apache License, Version 2.0 (the License);
    * you may not use this file except in compliance with the License.
@@ -6535,7 +6533,10 @@ var APP_accelerator_home_ui = (function () {
             console.log('_handleKey', key.keyCode);
               var appApi = new AppApi();
 
-            if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+              // Detecting Ctrl
+              var _key = key.keyCode;
+              var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
+            if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
               if (Storage.get('applicationType') == 'WebApp') {
                 Storage.set('applicationType', '');
                 appApi.deactivateWeb();
@@ -6560,7 +6561,7 @@ var APP_accelerator_home_ui = (function () {
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
-              }
+              } else return false
               
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
                 console.log('ResidentApp moveToFront Success');
@@ -6576,8 +6577,7 @@ var APP_accelerator_home_ui = (function () {
                 .catch(err => {
                   console.log('Error', err);
                 });
-            } else return false
-          }
+            }        }
         },
         class MetroApps extends this {
           _getFocused() {
@@ -6637,13 +6637,10 @@ var APP_accelerator_home_ui = (function () {
             var thunder = thunderJS(config);
             var appApi = new AppApi();
             console.log('_handleKey', key.keyCode);
-            if (Storage.get('applicationType') == 'Cobalt') {
-                if((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-                Storage.set('applicationType', '');
-                appApi.suspendCobalt();
-                appApi.setVisibility('ResidentApp', true);
-              }
-            } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+            // Detecting Ctrl
+            var _key = key.keyCode;
+            var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
+            if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
               if (Storage.get('applicationType') == 'WebApp') {
                 Storage.set('applicationType', '');
                 appApi.deactivateWeb();
@@ -6656,7 +6653,11 @@ var APP_accelerator_home_ui = (function () {
                 Storage.set('applicationType', '');
                 appApi.killNative();
                 appApi.setVisibility('ResidentApp', true);
-              } else return false;
+              } else if(Storage.get('applicationType') == 'Cobalt'){
+                Storage.set('applicationType', '');
+                appApi.suspendCobalt();
+                appApi.setVisibility('ResidentApp', true);
+              } else return false
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
                 console.log('ResidentApp moveToFront Success');
               });
@@ -6671,7 +6672,7 @@ var APP_accelerator_home_ui = (function () {
                 .catch(err => {
                   console.log('Error', err);
                 });
-            } else return false;
+            }
           }
         },
         class TVShows extends this {
@@ -6968,6 +6969,25 @@ var APP_accelerator_home_ui = (function () {
     }
   }
 
+  function counter(state, action) {
+
+    if (typeof state === 'undefined') {
+      return 0
+    }
+    switch (action.type) {
+      case 'ACTION_LISTEN_START':
+        return "ACTION_LISTEN_START"
+      case 'ACTION_LISTEN_STOP':
+        return "ACTION_LISTEN_STOP"
+      default:
+        return state
+    }
+
+  }
+
+
+  let store = redux.createStore(counter);
+
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -6986,6 +7006,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
+
   /** Class for top panel in home UI */
   class TopPanel extends Lightning.Component {
     static _template() {
@@ -7015,15 +7037,53 @@ var APP_accelerator_home_ui = (function () {
             mountY: 0.5,
             text: { text: '', fontSize: 38 },
           },
+          AudioListenSymbol: {
+            x: 90,
+            y: 65,
+            mountY: 0.5,
+            src: Utils.asset('/images/topPanel/animation_mic.png'),
+            w: 100,
+            h: 100,
+            visible: false,
+          }
         },
       }
     }
     _init() {
       this.timeZone = null;
-      new AppApi().getZone().then(function (res) {     
-         this.timeZone = res;
-       }.bind(this)).catch(err => { console.log('Timezone api request error', err); });   
-   }
+      this.audiointerval = null;
+      new AppApi().getZone().then(function (res) {
+        this.timeZone = res;
+      }.bind(this)).catch(err => { console.log('Timezone api request error', err); });
+
+
+      function render() {
+        if (store.getState() == 'ACTION_LISTEN_STOP') {
+          this.tag('AudioListenSymbol').visible = false;
+          clearInterval(this.audiointerval);
+          this.audiointerval = null;
+        } else if (store.getState() == 'ACTION_LISTEN_START') {
+          if (!this.audiointerval) {
+            this.tag('AudioListenSymbol').visible = true;
+            let mode = 1;
+            this.audiointerval = setInterval(function () {
+              if (mode % 2 == 0) {
+                this.tag('AudioListenSymbol').w = 105;
+                this.tag('AudioListenSymbol').h = 105;
+              } else {
+                this.tag('AudioListenSymbol').w = 100;
+                this.tag('AudioListenSymbol').h = 100;
+              }
+              mode++;
+              if (mode > 20) { mode = 0; }          }.bind(this), 250);
+          }
+        }
+      }
+
+      store.subscribe(render.bind(this));
+
+
+    }
 
     _build() {
       setInterval(() => {
@@ -8131,6 +8191,87 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
+  class Network {
+    constructor() {
+      this._events = new Map();
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1,
+      };
+      this._thunder = thunderJS(config);
+      this.callsign = 'org.rdk.Network';
+    }
+
+    /**
+     * Function to activate network plugin
+     */
+    activate() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('Controller', 'activate', { callsign: this.callsign }).then(result => {
+          this._thunder.on(this.callsign, 'onIPAddressStatusChanged', notification => {
+            if (this._events.has('onIPAddressStatusChanged')) {
+              this._events.get('onIPAddressStatusChanged')(notification);
+            }
+          });
+          this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
+            if (this._events.has('onDefaultInterfaceChanged')) {
+              this._events.get('onDefaultInterfaceChanged')(notification);
+            }
+          });
+          console.log('Activation success');
+          resolve(true);
+        });
+      });
+    }
+
+    /**
+     *Register events and event listeners.
+     * @param {string} eventId
+     * @param {function} callback
+     *
+     */
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+
+    /**
+     * Function to return the IP of the default interface.
+     */
+    getIP() {
+      return new Promise((resolve,reject)=>{
+          this._thunder.call(this.callsign,'getStbIp').then(result=>{
+              if(result.success){
+                  console.log(result);
+                  resolve(result.ip);
+              }
+              reject(false);
+          }).catch(err=>{
+              reject(err);
+          });
+      })
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   /**
    * Class which contains data for app listings.
    */
@@ -8346,6 +8487,90 @@ var APP_accelerator_home_ui = (function () {
       displayName: "CNN",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
+    },
+    {
+      displayName: "VimeoRelease",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
+    },
+    {
+      displayName: "WeatherNetwork",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
+    },
+    {
+      displayName: "EuroNews",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
+    },
+    {
+      displayName: "AccuWeather",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
+    },
+    {
+      displayName: "BaebleMusic",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
+    },
+    {
+      displayName: "Aljazeera",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
+    },
+    {
+      displayName: "GuessThatCity",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
+    },
+    {
+      displayName: "Radioline",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
+    },
+    {
+      displayName: "WallStreetJournal",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
+    }
+  ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for metro app listings.
+   */
+  var metroAppsInfoOffline = [
+    {
+      displayName: "CNN",
+      applicationType: "Lightning",
+      uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
       url: "/images/metroApps/Test-01.png"
     },
     {
@@ -8423,7 +8648,24 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
-  var partnerApps=[];
+  var partnerApps = [];
+
+  /**
+   * Get the ip address.
+   */
+
+  var IpAddress1 = '';
+  var IpAddress2 = '';
+
+  var networkApi = new Network();
+  networkApi.getIP().then(ip => {
+    IpAddress1 = ip;
+  });
+
+  var appApi$2 = new AppApi();
+  appApi$2.getIP().then(ip => {
+    IpAddress2 = ip;
+  });
 
   /**
    * Class that returns the data required for home screen.
@@ -8468,7 +8710,15 @@ var APP_accelerator_home_ui = (function () {
      * Function to details of metro apps
      */
     getMetroInfo() {
-      return metroAppsInfo
+      let metroAppsMetaData;
+
+      if (IpAddress1 || IpAddress2) {
+        metroAppsMetaData = metroAppsInfo;
+      } else {
+        metroAppsMetaData = metroAppsInfoOffline;
+      }
+
+      return metroAppsMetaData
     }
 
     /**
@@ -8484,87 +8734,6 @@ var APP_accelerator_home_ui = (function () {
      */
     getPartnerAppsInfo() {
       return partnerApps
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  class Network {
-    constructor() {
-      this._events = new Map();
-      const config = {
-        host: '127.0.0.1',
-        port: 9998,
-        default: 1,
-      };
-      this._thunder = thunderJS(config);
-      this.callsign = 'org.rdk.Network';
-    }
-
-    /**
-     * Function to activate network plugin
-     */
-    activate() {
-      return new Promise((resolve, reject) => {
-        this._thunder.call('Controller', 'activate', { callsign: this.callsign }).then(result => {
-          this._thunder.on(this.callsign, 'onIPAddressStatusChanged', notification => {
-            if (this._events.has('onIPAddressStatusChanged')) {
-              this._events.get('onIPAddressStatusChanged')(notification);
-            }
-          });
-          this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
-            if (this._events.has('onDefaultInterfaceChanged')) {
-              this._events.get('onDefaultInterfaceChanged')(notification);
-            }
-          });
-          console.log('Activation success');
-          resolve(true);
-        });
-      });
-    }
-
-    /**
-     *Register events and event listeners.
-     * @param {string} eventId
-     * @param {function} callback
-     *
-     */
-    registerEvent(eventId, callback) {
-      this._events.set(eventId, callback);
-    }
-
-    /**
-     * Function to return the IP of the default interface.
-     */
-    getIP() {
-      return new Promise((resolve,reject)=>{
-          this._thunder.call(this.callsign,'getStbIp').then(result=>{
-              if(result.success){
-                  console.log(result);
-                  resolve(result.ip);
-              }
-              reject(false);
-          }).catch(err=>{
-              reject(err);
-          });
-      })
     }
   }
 
@@ -8606,10 +8775,7 @@ var APP_accelerator_home_ui = (function () {
           src: Utils.asset('images/tvShows/background.jpg'),
           alpha: 1,
         },
-        TopPanel: {
-          type: TopPanel,
-        },
-        View:{
+        View: {
           x: 0,
           y: 200,
           w: 1920,
@@ -8619,8 +8785,8 @@ var APP_accelerator_home_ui = (function () {
             type: SidePanel,
           },
           MainView: {
-            w:1920,
-            h:1080,
+            w: 1920,
+            h: 1080,
             type: MainView,
           },
         },
@@ -8642,9 +8808,10 @@ var APP_accelerator_home_ui = (function () {
           y: 385,
           signals: { select: true },
           alpha: 0
-        }
-
-
+        },
+        TopPanel: {
+          type: TopPanel,
+        },
       }
     }
 
@@ -8692,26 +8859,41 @@ var APP_accelerator_home_ui = (function () {
       this._setState('SidePanel');
       this.initialLoad = true;
       this.networkApi = new Network();
-      this.networkApi.activate().then(result=>{
-        if(result){
+      this.networkApi.activate().then(result => {
+        if (result) {
           this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
             if (notification.status == 'ACQUIRED') {
               this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
+              location.reload(true);
             } else if (notification.status == 'LOST') {
               this.tag('IpAddress').text.text = 'IP:NA';
             }
           });
-          this.networkApi.getIP().then(ip=>{
-            this.tag('IpAddress').text.text = 'IP:'+ip;
+          this.networkApi.getIP().then(ip => {
+            this.tag('IpAddress').text.text = 'IP:' + ip;
           });
         }
       });
     }
 
+    _captureKeyRelease(key) {
+      if (key.keyCode == 120 || key.keyCode == 217) {
+        store.dispatch({ type: 'ACTION_LISTEN_STOP' });
+        //app launch code need add here.
+        return true
+      }
+    }
+
+
     _captureKey(key) {
       console.log(" _captureKey home screen : " + key.keyCode);
-      if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
 
+      if (key.keyCode == 120 || key.keyCode == 217) {
+        store.dispatch({ type: 'ACTION_LISTEN_START' });
+        return true
+      }
+
+      if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
         //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
           last_state = this._getState();
@@ -8725,7 +8907,7 @@ var APP_accelerator_home_ui = (function () {
           return true
         }
 
-      } else if (key.keyCode == 228 ) {
+      } else if (key.keyCode == 228) {
 
         console.log("___________DEEP_SLEEP_______________________F12");
         appApi$1.standby("DEEP_SLEEP").then(res => {
@@ -8901,9 +9083,9 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to scroll
      */
-    $scroll(y){
-      this.tag('SidePanel').setSmooth('y',y,{duration:0.5});
-      this.tag('MainView').setSmooth('y',y,{duration:0.5});
+    $scroll(y) {
+      this.tag('SidePanel').setSmooth('y', y, { duration: 0.5 });
+      this.tag('MainView').setSmooth('y', y, { duration: 0.5 });
     }
 
 
@@ -8990,7 +9172,7 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('Player')
           }
 
-          stopPlayer(){
+          stopPlayer() {
             this.zoomIn(0);
             this._setState('MainView');
             this.player.stop();
@@ -8998,9 +9180,9 @@ var APP_accelerator_home_ui = (function () {
           }
 
           _handleKey(key) {
-            if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+            if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
               this.stopPlayer();
-            } else if (key.keyCode == 227 || key.keyCode == 179){
+            } else if (key.keyCode == 227 || key.keyCode == 179) {
               this.stopPlayer();
               return false;
             }
@@ -13340,5 +13522,5 @@ ${error.toString()}`;
 
   return index;
 
-}());
+}(redux));
 //# sourceMappingURL=appBundle.js.map

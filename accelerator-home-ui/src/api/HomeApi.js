@@ -16,14 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+
+import NetworkApi from '../api/NetworkApi'
+import AppApi from './AppApi'
 import { appListInfo } from './../../static/data/AppListInfo.js'
 import { tvShowsInfo } from './../../static/data/TvShowsInfo.js'
 import { settingsInfo } from './../../static/data/SettingsInfo.js'
 import { sidePanelInfo } from './../../static/data/SidePanelInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
 import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
+import { metroAppsInfoOffline } from "./../../static/data/MetroAppsInfoOffline.js"
 
-var partnerApps=[]
+var partnerApps = []
+
+/**
+ * Get the ip address.
+ */
+
+var IpAddress1 = ''
+var IpAddress2 = ''
+
+var networkApi = new NetworkApi()
+networkApi.getIP().then(ip => {
+  IpAddress1 = ip
+})
+
+var appApi = new AppApi()
+appApi.getIP().then(ip => {
+  IpAddress2 = ip
+})
 
 /**
  * Class that returns the data required for home screen.
@@ -68,7 +89,15 @@ export default class HomeApi {
    * Function to details of metro apps
    */
   getMetroInfo() {
-    return metroAppsInfo
+    let metroAppsMetaData
+
+    if (IpAddress1 || IpAddress2) {
+      metroAppsMetaData = metroAppsInfo
+    } else {
+      metroAppsMetaData = metroAppsInfoOffline
+    }
+
+    return metroAppsMetaData
   }
 
   /**

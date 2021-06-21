@@ -46,7 +46,7 @@ export default class HomeScreen extends Lightning.Component {
         src: Utils.asset('images/tvShows/background.jpg'),
         alpha: 1,
       },
-      View:{
+      View: {
         x: 0,
         y: 200,
         w: 1920,
@@ -56,8 +56,8 @@ export default class HomeScreen extends Lightning.Component {
           type: SidePanel,
         },
         MainView: {
-          w:1920,
-          h:1080,
+          w: 1920,
+          h: 1080,
           type: MainView,
         },
       },
@@ -131,25 +131,26 @@ export default class HomeScreen extends Lightning.Component {
     this._setState('SidePanel')
     this.initialLoad = true
     this.networkApi = new NetworkApi()
-    this.networkApi.activate().then(result=>{
-      if(result){
+    this.networkApi.activate().then(result => {
+      if (result) {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+            location.reload(true);
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
           }
         })
-        this.networkApi.getIP().then(ip=>{
-          this.tag('IpAddress').text.text = 'IP:'+ip
+        this.networkApi.getIP().then(ip => {
+          this.tag('IpAddress').text.text = 'IP:' + ip
         })
       }
     })
   }
 
-  _captureKeyRelease(key){
-      if (key.keyCode == 120 || key.keyCode == 217) {
-        store.dispatch({ type: 'ACTION_LISTEN_STOP' })
+  _captureKeyRelease(key) {
+    if (key.keyCode == 120 || key.keyCode == 217) {
+      store.dispatch({ type: 'ACTION_LISTEN_STOP' })
       //app launch code need add here.
       return true
     }
@@ -178,7 +179,7 @@ export default class HomeScreen extends Lightning.Component {
         return true
       }
 
-    } else if (key.keyCode == 228 ) {
+    } else if (key.keyCode == 228) {
 
       console.log("___________DEEP_SLEEP_______________________F12")
       appApi.standby("DEEP_SLEEP").then(res => {
@@ -354,9 +355,9 @@ export default class HomeScreen extends Lightning.Component {
   /**
    * Function to scroll
    */
-  $scroll(y){
-    this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
-    this.tag('MainView').setSmooth('y',y,{duration:0.5})
+  $scroll(y) {
+    this.tag('SidePanel').setSmooth('y', y, { duration: 0.5 })
+    this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
   }
 
 
@@ -443,7 +444,7 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('Player')
         }
 
-        stopPlayer(){
+        stopPlayer() {
           this.zoomIn(0);
           this._setState('MainView');
           this.player.stop();
@@ -451,9 +452,9 @@ export default class HomeScreen extends Lightning.Component {
         }
 
         _handleKey(key) {
-          if ( key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             this.stopPlayer()
-          } else if (key.keyCode == 227 || key.keyCode == 179){
+          } else if (key.keyCode == 227 || key.keyCode == 179) {
             this.stopPlayer()
             return false;
           }
