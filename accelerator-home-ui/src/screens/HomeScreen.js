@@ -122,6 +122,7 @@ export default class HomeScreen extends Lightning.Component {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+            location.reload(true);
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
           }

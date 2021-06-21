@@ -43,7 +43,7 @@ export default class TopPanel extends Lightning.Component {
           text: { text: 'Search TV shows, movies and more...', fontSize: 42 },
           w: 600,
           h: 50,
-          alpha:0.5,
+          alpha: 0.5,
         },
         Settings: {
           x: 1445,
@@ -77,7 +77,7 @@ export default class TopPanel extends Lightning.Component {
           w: 95,
           h: 22,
         },
-        Border:{
+        Border: {
           x: 80,
           y: 170,
           mountY: 0.5,
@@ -85,26 +85,26 @@ export default class TopPanel extends Lightning.Component {
             zIndex: 2,
             texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
           },
-         alpha:0.4
+          alpha: 0.4
         }
       },
     }
   }
   _init() {
     this.timeZone = null;
-    new AppApi().getZone().then(function (res) {     
-       this.timeZone = res;
-     }.bind(this)).catch(err => { console.log('Timezone api request error', err) });   
- }
+    new AppApi().getZone().then(function (res) {
+      this.timeZone = res;
+    }.bind(this)).catch(err => { console.log('Timezone api request error', err) });
+  }
 
   _build() {
     setInterval(() => {
-    let _date = this.updateTime()
-      if (this.timeZone){
-        this.tag('Time').patch({ text: { text: _date.strTime }})
-        this.tag('Day').patch({ text: { text: _date.strDay }})
-        this.tag('Date').patch({ text: { text: _date.strDate }})
-      } 
+      let _date = this.updateTime()
+      if (this.timeZone) {
+        this.tag('Time').patch({ text: { text: _date.strTime } })
+        this.tag('Day').patch({ text: { text: _date.strDay } })
+        this.tag('Date').patch({ text: { text: _date.strDate } })
+      }
     }, 1000)
   }
 
@@ -118,15 +118,15 @@ export default class TopPanel extends Lightning.Component {
 
       // get day
       let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      let strDay = days[date.getDay()]; 
-      console.log('Current day == '+strDay)
-    
+      let strDay = days[date.getDay()];
+      console.log('Current day == ' + strDay)
+
       // get month
       let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       let strMonth = month[date.getMonth()]
 
-      let strDate = date.toLocaleDateString('en-US', {day: '2-digit'})+ ' ' +strMonth+ ' ' +date.getFullYear()
-      console.log('Current day == '+strDate)
+      let strDate = date.toLocaleDateString('en-US', { day: '2-digit' }) + ' ' + strMonth + ' ' + date.getFullYear()
+      console.log('Current day == ' + strDate)
       let hours = date.getHours()
       let minutes = date.getMinutes()
       let ampm = hours >= 12 ? 'pm' : 'am'
@@ -134,7 +134,7 @@ export default class TopPanel extends Lightning.Component {
       hours = hours ? hours : 12
       minutes = minutes < 10 ? '0' + minutes : minutes
       let strTime = hours + ':' + minutes + ' ' + ampm
-      return {strTime, strDay, strDate}
+      return { strTime, strDay, strDate }
     } else {
       return ""
     }
