@@ -434,11 +434,15 @@ export default class MainView extends Lightning.Component {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            } else return false
+            }  else {
+              appApi.zorder("moveToFront","foreground");
+              return false;
+            }
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
               console.log('ResidentApp moveToFront Success');
             });
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+              appApi.zorder("moveToFront","foreground");
               console.log('ResidentApp moveToFront Success');
             });
             thunder

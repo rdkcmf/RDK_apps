@@ -156,6 +156,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -188,6 +192,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -218,6 +226,10 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(()=>{
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
@@ -238,6 +250,10 @@ export default class AppApi {
     .then(() => {
       thunder.call("org.rdk.RDKShell", "moveToFront", {
         client: childCallsign
+      }).then(()=>{
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client:'foreground' ,
+        })
       });
       thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
     })
@@ -260,12 +276,54 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(()=>{
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
+  }
+
+
+
+  launchforeground() {
+    const childCallsign = 'foreground'
+    thunder
+      .call('org.rdk.RDKShell', 'launch', {
+        callsign: childCallsign,
+        type: 'HtmlApp',
+        uri: 'http://127.0.0.1:50050/foreground/',
+      })
+      .then(() => {
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
+        })
+        thunder.call('org.rdk.RDKShell', 'setFocus', {
+          client: 'ResidentApp',
+        })
+        thunder.call('org.rdk.RDKShell', 'setVisibility', {
+          client: 'foreground',
+          visible: false,
+        })
+      })
+      .catch(err => { })      
+      .catch(err => {
+        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+      })
+  }
+
+  zorder(value,cli) {
+   console.log("#################zorder###################");
+    thunder.call('org.rdk.RDKShell',value , { client: cli })
+      .then(result => {
+        console.log(client+":"+value+'  Success');
+        resolve(result)
+      }).catch(err => { resolve(false) });
+
   }
 
   /**
