@@ -501,5 +501,22 @@ export default class WiFiScreen extends Lightning.Component {
       this.tag('Networks.AvailableNetworks.Loader').visible = false
       this.renderDeviceList(notification.ssids)
     })
+
+    this._wifi.registerEvent('onInterfaceStatusChanged', notification => {
+     if(notification.enabled){
+      this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
+      this._wifi.discoverSSIDs();
+      this.wifiStatus = true;
+      this.tag('Networks').visible = true
+      this.tag('Networks.AvailableNetworks.Loader').visible = true
+     }else{
+      this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
+      this._wifi.disconnect();
+      this.wifiStatus = false;
+      this.tag('Networks').visible = false
+      this.tag('Networks.AvailableNetworks.Loader').visible = false
+     }
+    })
+
   }
 }
