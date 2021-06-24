@@ -46,7 +46,7 @@ export default class SplashScreen extends Lightning.Component {
           mount: 0.5,
           x: 1920 / 2,
           y: 1080 / 2,
-          src: Utils.asset('/images/splash/RDK-Logo.png'),
+          src: Utils.asset('/images/splash/RDKLogo.png'),
         },
       },
       SplashVideo: {
