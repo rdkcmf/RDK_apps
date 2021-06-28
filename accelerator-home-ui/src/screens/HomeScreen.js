@@ -23,6 +23,7 @@ import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './../api/AppApi';
+import store from '../redux.js'
 
 var powerState = 'ON';
 var audio_mute = false;
@@ -36,12 +37,19 @@ export default class HomeScreen extends Lightning.Component {
    */
   static _template() {
     return {
-      Background: {
+      BackgroundImage: {
         w: 1920,
         h: 1080,
-        src: Utils.asset('images/tvShows/background_new.jpg'),
-        alpha: 1,
+        alpha: 0.8,
       },
+      BackgroundColor: {
+        w: 1920,
+        h: 1080,
+        alpha: 0.8,
+        rect: true,
+        color: 0xFF000000
+      },
+
       TopPanel: {
         type: TopPanel,
       },
@@ -134,15 +142,28 @@ export default class HomeScreen extends Lightning.Component {
     })
   }
 
+  _captureKeyRelease(key) {
+    if (key.keyCode == 120 || key.keyCode == 217) {
+      store.dispatch({ type: 'ACTION_LISTEN_STOP' })
+      //app launch code need add here.
+      return true
+    }
+  }
+
   _captureKey(key) {
     console.log(" _captureKey home screen : " + key.keyCode)
-    if (key.keyCode == 112) {
 
+    if (key.keyCode == 120 || key.keyCode == 217) {
+      store.dispatch({ type: 'ACTION_LISTEN_START' })
+      return true
+    }
+
+    if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
       //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
-        appApi.standby("STANDBY").then(res => {
-          powerState = 'STANDBY'
-        })
+        last_state = this._getState();
+        this._setState('ShutdownPanel')
+
         return true
       } else if (powerState == 'STANDBY') {
         appApi.standby("ON").then(res => {
@@ -150,14 +171,17 @@ export default class HomeScreen extends Lightning.Component {
         })
         return true
       }
-    } else if (key.keyCode == 228 || key.keyCode == 116 || key.keyCode == 142) {
+
+    } else if (key.keyCode == 228) {
 
       console.log("___________DEEP_SLEEP_______________________F12")
       appApi.standby("DEEP_SLEEP").then(res => {
         powerState = 'DEEP_SLEEP'
       })
       return true
+
     } else if (key.keyCode == 118 || key.keyCode == 113) {
+
       let value = !audio_mute;
       appApi.audio_mute(value).then(res => {
         console.log("__________AUDIO_MUTE_______________________F7")
@@ -169,9 +193,12 @@ export default class HomeScreen extends Lightning.Component {
         console.log("audio_mute:" + audio_mute);
       })
       return true
+
     } else if (key.keyCode == 175) {
+
       audio_volume += 10;
       if (audio_volume > 100) { audio_volume = 100 }
+
       let value = "" + audio_volume;
       appApi.setVolumeLevel(value).then(res => {
         console.log("__________AUDIO_VOLUME_________Numberpad key plus")
@@ -179,10 +206,13 @@ export default class HomeScreen extends Lightning.Component {
         console.log("setVolumeLevel:" + audio_volume);
       })
       return true
+
     } else if (key.keyCode == 174) {
+
       audio_volume -= 10;
       if (audio_volume < 0) { audio_volume = 0 }
       let value = "" + audio_volume;
+
       appApi.setVolumeLevel(value).then(res => {
         console.log("__________AUDIO_VOLUME____________Numberpad key minus")
         console.log(JSON.stringify(res, 3, null));
@@ -190,8 +220,10 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
     }
+
     return false
   }
+
 
   _active() {
     if (this.initialLoad) {
@@ -239,11 +271,37 @@ export default class HomeScreen extends Lightning.Component {
    * @param {index} index index value of main view row.
    */
   $goToMainView(index) {
-    this.zoomIn(0.7)
+    // this.zoomIn(0.7)
     this.tag('MainView').index = index
     this._setState('MainView')
   }
 
+  /**
+* Fireancestor to set the state to side panel.
+* @param {index} index index value of Top panel item.
+*/
+  $goToTopPanel(index) {
+    // this.zoomOut(0.7)
+    console.log('go to top panel')
+    this.tag('TopPanel').index = index
+    this._setState('TopPanel')
+  }
+  $changeBackgroundImageOnFocus(image) {
+    this.tag('BackgroundImage').patch({
+      smooth: {
+        src: Utils.asset(image),
+        //  x: [0, { duration: 2.5, delay: 0.5, timingFunction: 'ease-out' }]
+      }
+    });
+  }
+  $changeBackgroundImageOnNonFocus(image) {
+    this.tag('BackgroundImage').patch({
+      //  x:-1920
+    })
+
+    //this.tag('BackgroundImage').patch({ smooth: {src: Utils.asset(image), x: [0, { duration: 2.5, delay: 1, timingFunction: 'ease-out' }] } });
+
+  }
   /**
    * Fireancestor to set the state to player.
    */
@@ -264,22 +322,22 @@ export default class HomeScreen extends Lightning.Component {
    * Function to hide the home UI.
    */
   hide() {
-    this.tag('Background').patch({ smooth : {alpha: 0 }})
-    this.tag('MainView').patch({ smooth : { alpha: 0 }})
-    this.tag('TopPanel').patch({ smooth : { alpha: 0 }})
-    this.tag('rightArrowIcons').patch({ smooth : { alpha: 0 }})
-    this.tag('leftArrowIcons').patch({ smooth : { alpha: 0 }})
+    this.tag('BackgroundImage').patch({ smooth: { alpha: 0 } })
+    this.tag('MainView').patch({ smooth: { alpha: 0 } })
+    this.tag('TopPanel').patch({ smooth: { alpha: 0 } })
+    this.tag('rightArrowIcons').patch({ smooth: { alpha: 0 } })
+    this.tag('leftArrowIcons').patch({ smooth: { alpha: 0 } })
   }
 
   /**
      * Function to show home UI.
    */
   show() {
-    this.tag('Background').patch({ smooth : { alpha: 1 }})
-    this.tag('MainView').patch({ smooth : { alpha: 1 }})
-    this.tag('TopPanel').patch({ smooth : { alpha: 1 }})
-    this.tag('rightArrowIcons').patch({ smooth : { alpha: 1 }})
-    this.tag('leftArrowIcons').patch({ smooth : { alpha: 1 }})
+    this.tag('BackgroundImage').patch({ smooth: { alpha: 1 } })
+    this.tag('MainView').patch({ smooth: { alpha: 1 } })
+    this.tag('TopPanel').patch({ smooth: { alpha: 1 } })
+    this.tag('rightArrowIcons').patch({ smooth: { alpha: 1 } })
+    this.tag('leftArrowIcons').patch({ smooth: { alpha: 1 } })
   }
 
   /**

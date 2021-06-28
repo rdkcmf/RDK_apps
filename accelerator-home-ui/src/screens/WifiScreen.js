@@ -30,34 +30,18 @@ import { COLORS } from './../colors/Colors'
 export default class WiFiScreen extends Lightning.Component {
   static _template() {
     return {
-      Title: {
-        x: 1920 - 1920 / 3 + 1920 / 6,
-        y: 50,
-        text: { text: 'Wi-Fi', textColor: COLORS.headingColor },
-        mountX: 0.5,
-      },
       Switch: {
-        x: 1920 - 1920 / 3 + 20,
-        y: 150,
-        rect: true,
-        shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
-        color: 0x00c0c0c0,
-        w: 1920 / 3 - 70,
-        h: 50,
-        Text: {
-          x: 0,
-          text: { text: 'Wi-Fi', textColor: COLORS.titleColor },
-        },
+        x: 825,
+        y: 310,
         Button: {
-          x: 1920 / 3 - 80,
-          y: 10,
-          mountX: 1,
-          src: Utils.asset('images/switch-off.png'),
+          h: 60,
+          w: 180,
+          src: Utils.asset('images/switch-on-new.png'),
         },
       },
       Networks: {
-        x: 1920 - 1920 / 3,
-        y: 250,
+        x: 900,
+        y: 450,
         flex: { direction: 'column' },
         PairedNetworks: {
           flexItem: { margin: 20 },
@@ -101,7 +85,6 @@ export default class WiFiScreen extends Lightning.Component {
             src: Utils.asset('images/loader.png'),
             visible: false,
           },
-
           List: {
             x: 0,
             y: 65,
@@ -138,14 +121,35 @@ export default class WiFiScreen extends Lightning.Component {
     }
   }
   _active() {
-    this._setState('Switch')
+    this._setState('Button')
   }
 
-  
-  _focus(){
-    new NetworkApi().getIP().then(ip=>{
-      this.tag('IpAddress').text.text = 'IP:'+ip
+  _focus() {
+    new NetworkApi().getIP().then(ip => {
+      this.tag('IpAddress').text.text = 'IP:' + ip
     })
+  }
+
+  toggleBtnAnimationX() {
+    const lilLightningAnimation = this.tag('Button').animation({
+      duration: 1,
+      repeat: 0,
+      actions: [
+        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+      ]
+    });
+    lilLightningAnimation.start();
+  }
+
+  toggleBtnAnimationY() {
+    const lilLightningAnimation = this.tag('Button').animation({
+      duration: 1,
+      repeat: 0,
+      actions: [
+        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+      ]
+    });
+    lilLightningAnimation.start();
   }
 
   _init() {
@@ -158,48 +162,48 @@ export default class WiFiScreen extends Lightning.Component {
     })
     this.loadingAnimation.play()
     this._wifi = new WiFiApi()
-    this._network  = new NetworkApi()
+    this._network = new NetworkApi()
     this.wifiStatus = false
+    this._wifiIcon = true
     this._activateWiFi()
-    this._setState('Switch')
     if (this.wiFiStatus) {
       this.tag('Networks').visible = true
     }
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
-    this._network.activate().then(result=>{
-      if(result){
+    this._network.activate().then(result => {
+      if (result) {
         this._network.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+            location.reload(true);
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
           }
         })
-    this._network.registerEvent('onDefaultInterfaceChanged', notification => {
-      console.log(notification)
-      if (notification.newInterfaceName == 'WIFI') {
-        this._wifi.setEnabled(true).then(result => {
-          if (result.success) {
-            this.wifiStatus = true
-            this.tag('Networks').visible = true
-            this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
-            this._wifi.discoverSSIDs()
-            this.tag('Networks.AvailableNetworks.Loader').visible = true
+        this._network.registerEvent('onDefaultInterfaceChanged', notification => {
+          console.log(notification)
+          if (notification.newInterfaceName == 'WIFI') {
+            this._wifi.setEnabled(true).then(result => {
+              if (result.success) {
+                this.wifiStatus = true
+                this.tag('Networks').visible = true
+                this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
+                this._wifi.discoverSSIDs()
+                this.tag('Networks.AvailableNetworks.Loader').visible = true
+              }
+            })
+          } else if (
+            notification.newInterfaceName == 'ETHERNET' ||
+            notification.oldInterfaceName == 'WIFI'
+          ) {
+            this._wifi.disconnect()
+            this.wifiStatus = false
+            this.tag('Networks').visible = false
+            this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
+            this._setState('Switch')
           }
         })
-      } else if (
-        notification.newInterfaceName == 'ETHERNET' ||
-        notification.oldInterfaceName == 'WIFI'
-      ) {
-        this._wifi.disconnect()
-        this.wifiStatus = false
-        this.tag('Networks').visible = false
-        this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
-        this._setState('Switch')
-      }
-    })
-
       }
     })
   }
@@ -208,16 +212,7 @@ export default class WiFiScreen extends Lightning.Component {
    * Function to be executed when the Wi-Fi screen is enabled.
    */
   _enable() {
-    if (this.wifiStatus) {
-      this._wifi.discoverSSIDs()
-      this.tag('Networks.AvailableNetworks.Loader').visible = true
-    }
-    this.scanTimer = setInterval(() => {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs()
-        this.tag('Networks.AvailableNetworks.Loader').visible = true
-      }
-    }, 5000)
+    // Todo
   }
 
   /**
@@ -270,9 +265,58 @@ export default class WiFiScreen extends Lightning.Component {
       })
     })
   }
+  switchOnOff() {
+    console.log('onnnnnnnnffffffffffff' + this._bluetoothIcon)
+    if (this._wifiIcon) {
+      this.tag('Switch.Button').src = Utils.asset('images/switch-on-new.png')
+      this.toggleBtnAnimationX()
+      this.tag('Button').patch({
+        src: Utils.asset('images/switch-on-new.png')
+      })
+    } else if (!this._wifiIcon) {
+      //this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
+      this.toggleBtnAnimationY()
+      this.tag('Button').patch({
+        src: Utils.asset('images/switch-off-new.png')
+      })
+    }
+  }
 
   static _states() {
     return [
+      class Button extends this{
+        $enter() {
+          console.log('Button enter')
+
+        }
+        $exit() {
+          console.log('Botton exit')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+        }
+        _getFocused() {
+          console.log('switch button')
+          this.tag('Button').patch({
+            h: 70,
+            w: 200
+          })
+        }
+        _handleEnter() {
+          console.log('enterrr')
+          this._wifiIcon = !this._wifiIcon
+          this.switchOnOff()
+        }
+        _handleLeft() {
+          console.log('handle left bluetooth')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+          this.fireAncestors('$goToSideMenubar', 1)
+        }
+      },
       class Switch extends this {
         $enter() {
           this.tag('Switch').color = COLORS.hightlightColor
@@ -289,12 +333,17 @@ export default class WiFiScreen extends Lightning.Component {
             }
           }
         }
+
+        _handleLeft() {
+          console.log('handle left Wifi')
+          this.fireAncestors('$goToSideMenubar', 1)
+        }
         _handleEnter() {
           this.switch()
         }
       },
       class PairedDevices extends this {
-        $enter() {}
+        $enter() { }
         _getFocused() {
           return this._pairedNetworks.tag('List').element
         }
@@ -311,7 +360,7 @@ export default class WiFiScreen extends Lightning.Component {
         }
       },
       class AvailableDevices extends this {
-        $enter() {}
+        $enter() { }
         _getFocused() {
           return this._availableNetworks.tag('List').element
         }
@@ -342,11 +391,11 @@ export default class WiFiScreen extends Lightning.Component {
             if (this._availableNetworks.tag('List').element) {
               this._wifi
                 .connect(this._availableNetworks.tag('List').element._item, '')
-                .then(() => {})
+                .then(() => { })
             }
             this._setState('Switch')
           } else if (option === 'Disconnect') {
-            this._wifi.disconnect().then(() => {})
+            this._wifi.disconnect().then(() => { })
             this._setState('Switch')
           }
         }

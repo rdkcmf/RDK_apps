@@ -126,5 +126,4 @@ export default class HomeApi {
   getLeftArrowInfo() {
     return leftArrowInfo
   }
-
 }

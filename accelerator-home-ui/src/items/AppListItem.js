@@ -20,7 +20,6 @@ import { Lightning, Utils } from '@lightningjs/sdk'
 /**
  * Class to render items in main view.
  */
-
 export default class AppListItem extends Lightning.Component {
   /**
    * Function to render various elements in the main view item.
@@ -45,7 +44,7 @@ export default class AppListItem extends Lightning.Component {
         src: Utils.asset(this.data.url),
         shader: {
           type: lng.shaders.RoundedRectangle,
-          radius: 20
+          radius: 10
         },
         scale: this.unfocus,
       })
@@ -53,10 +52,9 @@ export default class AppListItem extends Lightning.Component {
       this.tag('Image').patch({
         shader: {
           type: lng.shaders.RoundedRectangle,
-          radius: 20
+          radius: 10
         }, src: this.data.url, w: this.w, h: this.h
       })
-
     }
   }
 
@@ -66,13 +64,13 @@ export default class AppListItem extends Lightning.Component {
 
   _focus() {
     this.tag('Image').patch({
-      x: this.x, w: this.w, h: this.h, scale: this.focus, 
+      x: this.x, w: this.w, h: this.h, scale: this.focus,
       shader: {
         type: lng.shaders.RoundedRectangle,
-        radius: 20
+        radius: 10
       }
     })
-    this.tag('Item').patch({smooth: { zIndex: 1 }})
+    this.tag('Item').patch({ smooth: { zIndex: 1 } })
   }
 
   /**
@@ -82,9 +80,9 @@ export default class AppListItem extends Lightning.Component {
     this.tag('Image').patch({
       x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
         type: lng.shaders.RoundedRectangle,
-        radius: 20
+        radius: 10
       }
     })
-    this.tag('Item').patch({ smooth: { zIndex: 0 }} )
+    this.tag('Item').patch({ smooth: { zIndex: 0 } })
   }
 }

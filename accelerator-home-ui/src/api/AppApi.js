@@ -71,23 +71,23 @@ export default class AppApi {
               resolve(false)
             })
         })
-        .catch(err => {})
+        .catch(err => { })
     })
   }
-   /**
-   *  Function to get timeZone
-   */
+  /**
+  *  Function to get timeZone
+  */
   getZone() {
     return new Promise((resolve, reject) => {
       const systemcCallsign = 'org.rdk.System'
       thunder.Controller.activate({ callsign: systemcCallsign })
-      .then(() => {
-      thunder
-        .call(systemcCallsign, 'getTimeZoneDST')
-        .then(result => {
-          resolve(result.timeZone)
-        }).catch(err => { resolve(false) })
-        }).catch(err => {})
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'getTimeZoneDST')
+            .then(result => {
+              resolve(result.timeZone)
+            }).catch(err => { resolve(false) })
+        }).catch(err => { })
     })
   }
   /**
@@ -161,7 +161,7 @@ export default class AppApi {
             client: childCallsign,
           })
         })
-        .catch(err => {})
+        .catch(err => { })
     } else {
       thunder.call('org.rdk.RDKShell', 'moveToFront', {
         client: childCallsign,
@@ -193,7 +193,7 @@ export default class AppApi {
             client: childCallsign,
           })
         })
-        .catch(err => {})
+        .catch(err => { })
     } else {
       thunder.call('org.rdk.RDKShell', 'moveToFront', {
         client: childCallsign,
@@ -221,7 +221,7 @@ export default class AppApi {
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
-      .catch(err => {})
+      .catch(err => { })
     activatedCobalt = true
   }
 
@@ -232,16 +232,16 @@ export default class AppApi {
     // const childCallsign = "Amazon";
     thunder
       .call("org.rdk.RDKShell", "launch", {
-      callsign: childCallsign,
-      type: childCallsign
-    })
-    .then(() => {
-      thunder.call("org.rdk.RDKShell", "moveToFront", {
-        client: childCallsign
-      });
-      thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
-    })
-    .catch(err => {});
+        callsign: childCallsign,
+        type: childCallsign
+      })
+      .then(() => {
+        thunder.call("org.rdk.RDKShell", "moveToFront", {
+          client: childCallsign
+        });
+        thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
+      })
+      .catch(err => { });
     childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
   }
 
@@ -291,7 +291,7 @@ export default class AppApi {
     thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' })
   }
 
-  
+
   /**
    * Function to suspend Netflix/Amazon Prime app.
    */
@@ -320,10 +320,10 @@ export default class AppApi {
   /**
    * Function to deactivate Netflix/Amazon Prime app.
    */
-     deactivateNativeApp(appName) {
-      thunder.call('org.rdk.RDKShell', 'destroy', { callsign: appName })
-      appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
-    }
+  deactivateNativeApp(appName) {
+    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: appName })
+    appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
+  }
 
   /**
    * Function to deactivate lightning app.
@@ -381,9 +381,9 @@ export default class AppApi {
 
 
 
-/**
-   * Function to kill native app.
-   */
+  /**
+     * Function to kill native app.
+     */
   killNative() {
     thunder.call('org.rdk.RDKShell', 'kill', { callsign: 'testApp' })
     activatedNative = false
@@ -405,7 +405,7 @@ export default class AppApi {
     }
   }
 
-    standby(value) {
+  standby(value) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
@@ -420,7 +420,7 @@ export default class AppApi {
     })
   }
 
-    audio_mute(value) {
+  audio_mute(value) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
@@ -437,7 +437,7 @@ export default class AppApi {
     })
   }
 
-    setVolumeLevel(value) {
+  setVolumeLevel(value) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
@@ -454,7 +454,7 @@ export default class AppApi {
     })
   }
 
-   getVolumeLevel() {
+  getVolumeLevel() {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })

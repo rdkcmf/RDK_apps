@@ -18,6 +18,7 @@
  **/
 import { Lightning } from '@lightningjs/sdk'
 import SidePanelItem from '../items/SidePanelItem.js'
+import HomeApi from '../api/HomeApi.js'
 
 /** Class for side panel in home UI */
 export default class SidePanel extends Lightning.Component {
@@ -37,6 +38,10 @@ export default class SidePanel extends Lightning.Component {
   }
 
   _init() {
+    console.log('Side Panel init')
+    this.homeApi = new HomeApi()
+    this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
+    this.sidePanelData = this.homeApi.getSidePanelInfo()
     this._setState('SidePanel')
     this.indexVal = 0
   }
@@ -51,7 +56,7 @@ export default class SidePanel extends Lightning.Component {
       return {
         w: 204,
         h: 184,
-        y: index == 0 ? 30 : (index == 1 ? 115 :(index == 2 ? 260 : 470)),
+        y: index == 0 ? 30 : (index == 1 ? 115 : (index == 2 ? 260 : 470)),
         type: SidePanelItem,
         data: info,
         focus: 0.7,
@@ -74,7 +79,7 @@ export default class SidePanel extends Lightning.Component {
       return {
         w: 204,
         h: 184,
-        y: index == 0 ? 25 : (index == 1 ? 105 :(index == 2 ? 260 : 470)),
+        y: index == 0 ? 25 : (index == 1 ? 105 : (index == 2 ? 260 : 470)),
         type: SidePanelItem,
         data: info,
         focus: 0.7,
@@ -113,11 +118,11 @@ export default class SidePanel extends Lightning.Component {
       class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
-            if(this.indexVal==3){
-              this.fireAncestors('$scroll',-200)
+            if (this.indexVal == 3) {
+              this.fireAncestors('$scroll', -200)
             }
-            else{
-              this.fireAncestors('$scroll',0)
+            else {
+              this.fireAncestors('$scroll', 0)
             }
             return this.tag('SidePanel').items[this.indexVal]
           }

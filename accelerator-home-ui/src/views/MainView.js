@@ -37,7 +37,7 @@ export default class MainView extends Lightning.Component {
         h: 1080,
         clipping: true,
         Text1: {
-          x: 20,
+          x: 10,
           y: 50,
           w: 91,
           text: {
@@ -48,7 +48,6 @@ export default class MainView extends Lightning.Component {
           },
           zIndex: 0
         },
-
         AppList: {
           x: 0,
           y: 137,
@@ -64,7 +63,7 @@ export default class MainView extends Lightning.Component {
           clipping: false,
         },
         Text2: {
-          x: 20,
+          x: 10,
           y: 338,
           text: {
             fontSize: 40,
@@ -73,7 +72,6 @@ export default class MainView extends Lightning.Component {
             textColor: 0xFFFFFFFF,
           },
         },
-
         MetroApps: {
           x: 0,
           y: 410,
@@ -89,7 +87,7 @@ export default class MainView extends Lightning.Component {
           clipping: false,
         },
         Text3: {
-          x: 20,
+          x: 10,
           y: 665,
           text: {
             fontSize: 40,
@@ -112,11 +110,10 @@ export default class MainView extends Lightning.Component {
           itemScrollOffset: -4,
           clipping: false,
         },
-
         RightArrow: {
           x: 0,
           y: 0,
-          w: 70,
+          w: 25,
           h: 750,
           type: Lightning.components.ListComponent,
           roll: true,
@@ -124,11 +121,10 @@ export default class MainView extends Lightning.Component {
           invertDirection: true,
           alpha: 0.9,
         },
-
         LeftArrow: {
-          x: 20,
+          x: 0,
           y: 0,
-          w: 70,
+          w: 25,
           h: 750,
           type: Lightning.components.ListComponent,
           roll: true,
@@ -214,10 +210,10 @@ export default class MainView extends Lightning.Component {
     this.tag('RightArrow').items = items.map((info, index) => {
       this.data = info
       return {
-        w: index == 0 ? 30 : 45,
-        h: index == 0 ? 60 : 90,
-        x: index == 0 ? 1735 : (index == 1 ? 1720 : (index == 2 ? 1720 : 0)),
-        y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+        w: index == 0 ? 20 : 25,
+        h: index == 0 ? 30 : 35,
+        x: 1735,
+        y: index == 0 ? 210 : (index == 1 ? 405 : (index == 2 ? 635 : 0)),
         type: ArrowIconItem,
         data: info,
       }
@@ -229,13 +225,13 @@ export default class MainView extends Lightning.Component {
   * 
   */
   set leftArrowIcons(items) {
-    this.tag('LeftArrow').patch({ x: 20 })
+    this.tag('LeftArrow').patch({ x: 25 })
     this.tag('LeftArrow').items = items.map((info, index) => {
       this.data = info
       return {
-        w: index == 0 ? 30 : 45,
-        h: index == 0 ? 60 : 90,
-        y: index == 0 ? 190 : (index == 1 ? 380 : (index == 2 ? 600 : 0)),
+        w: index == 0 ? 20 : 25,
+        h: index == 0 ? 30 : 35,
+        y: index == 0 ? 205 : (index == 1 ? 405 : (index == 2 ? 635 : 0)),
         type: ArrowIconItem,
         data: info,
       }
@@ -278,7 +274,6 @@ export default class MainView extends Lightning.Component {
     this.tag('TVShows').start()
   }
 
-
   /**
    * Function to set the state in main view.
    */
@@ -318,23 +313,30 @@ export default class MainView extends Lightning.Component {
       class AppList extends this {
         _getFocused() {
           if (this.tag('AppList').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('AppList').element.data.url)
             return this.tag('AppList').element
           }
         }
         _handleRight() {
           if (this.tag('AppList').length - 1 != this.tag('AppList').index) {
             this.tag('AppList').setNext()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('AppList').element.data.url)
             return this.tag('AppList').element
           }
         }
         _handleLeft() {
           if (0 != this.tag('AppList').index) {
             this.tag('AppList').setPrevious()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('AppList').element.data.url)
             return this.tag('AppList').element
           }
         }
         _handleDown() {
           this._setState('MetroApps')
+        }
+        _handleUp() {
+          console.log('handle up')
+          this.fireAncestors('$goToTopPanel', 0)
         }
         _handleEnter() {
           var appApi = new AppApi();
@@ -421,6 +423,7 @@ export default class MainView extends Lightning.Component {
       class MetroApps extends this {
         _getFocused() {
           if (this.tag('MetroApps').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('MetroApps').element.data.url)
             return this.tag('MetroApps').element
           }
         }
@@ -430,12 +433,14 @@ export default class MainView extends Lightning.Component {
         _handleRight() {
           if (this.tag('MetroApps').length - 1 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setNext()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('MetroApps').element.data.url)
             return this.tag('MetroApps').element
           }
         }
         _handleLeft() {
           if (0 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setPrevious()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('MetroApps').element.data.url)
             return this.tag('MetroApps').element
           } else {
             this.reset()
@@ -519,18 +524,22 @@ export default class MainView extends Lightning.Component {
         }
         _getFocused() {
           if (this.tag('TVShows').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('TVShows').element.data.url)
+
             return this.tag('TVShows').element
           }
         }
         _handleRight() {
           if (this.tag('TVShows').length - 1 != this.tag('TVShows').index) {
             this.tag('TVShows').setNext()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('TVShows').element.data.url)
             return this.tag('TVShows').element
           }
         }
         _handleLeft() {
           if (0 != this.tag('TVShows').index) {
             this.tag('TVShows').setPrevious()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('TVShows').element.data.url)
             return this.tag('TVShows').element
           }
         }

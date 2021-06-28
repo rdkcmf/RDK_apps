@@ -20,7 +20,6 @@ import ThunderJS from 'ThunderJS';
 /**
  * Class for Xcast thunder plugin apis.
  */
-
 export default class XcastApi {
   constructor() {
     console.log('Xcast constructor');

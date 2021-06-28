@@ -44,7 +44,7 @@ export default class ListItem extends Lightning.Component {
         h: this.h,
         shader: {
           type: lng.shaders.RoundedRectangle,
-          radius: 20
+          radius: 10
         },
         src: Utils.asset(this.data.url),
         scale: this.unfocus,
@@ -58,7 +58,7 @@ export default class ListItem extends Lightning.Component {
         Inner: {
           shader: {
             type: lng.shaders.RoundedRectangle,
-            radius: 20
+            radius: 10
           },
         }
       })
@@ -133,7 +133,7 @@ export default class ListItem extends Lightning.Component {
     this.tag('Image').patch({
       x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
         type: lng.shaders.RoundedRectangle,
-        radius: 20
+        radius: 10
       }
     })
     this.tag('Item').patch({ smooth: { zIndex: 0, y: this.y + 20 } })

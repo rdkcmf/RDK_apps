@@ -159,7 +159,6 @@ export default class SplashScreen extends Lightning.Component {
   _enable() {
     this.remotePaired = true
     this.hasInternet = true
-
     this._bt = new BluetoothApi()
     this._bt.activate()
     this._bt
@@ -210,7 +209,7 @@ export default class SplashScreen extends Lightning.Component {
         url: 'https://rdkwiki.com/rdk-apps/splash/splash.MOV',
         drmConfig: null,
       })
-      
+
     } catch (error) {
       this.player = null
       console.log('###########', error)
@@ -452,22 +451,22 @@ export default class SplashScreen extends Lightning.Component {
           let _tagEle = this.tag('UISwitch.UIList').element
           let _tag = this.tag('UISwitch')
           let bgColor = ''
-          console.log('get focused called with ele and tag ' + _tagEle + "== " + _tag+" ::bgColor ::" +bgColor)
+          console.log('get focused called with ele and tag ' + _tagEle + "== " + _tag + " ::bgColor ::" + bgColor)
           if (_tagEle._item.title == 'LIVE') {
-              bgColor = 0xFF445263
+            bgColor = 0xFF445263
           } else if (_tagEle._item.title == 'TATA') {
-              bgColor = 0xFF3097A7
+            bgColor = 0xFF3097A7
           } else if (_tagEle._item.title == 'EPAM') {
-              bgColor = 0xFF39C2D7
+            bgColor = 0xFF39C2D7
           } else if (_tagEle._item.title == 'NEW') {
-              bgColor = 0xFF141E30
+            bgColor = 0xFF141E30
           } else if (_tagEle._item.title == 'COMINGSOON') {
-              bgColor = 0xFF485E76
+            bgColor = 0xFF485E76
           } else if (_tagEle._item.title == 'DEFAULT') {
-              bgColor = 0xff20344D
+            bgColor = 0xff20344D
           }
 
-          this.tag('UISwitch').patch({smooth: { color: bgColor}})
+          this.tag('UISwitch').patch({ smooth: { color: bgColor } })
           return this.tag('UISwitch.UIList').element
         }
         _handleRight() {
