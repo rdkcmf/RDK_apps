@@ -34,12 +34,20 @@ export default class UsbFolders extends Lightning.Component {
         type: Lightning.components.ListComponent,
         w: 1020,
         h: 300,
-        itemSize: 257,
+        itemSize: 250,
         roll: true,
         rollMax: 1020,
         horizontal: true,
         itemScrollOffset: -5,
         clipping: false,
+      },
+      Shadow: {
+        alpha: 0,
+        zIndex: 3,
+        x: -15,
+        y: 0,
+        color: 0x66000000,
+        texture: lng.Tools.getShadowRect(205, 60, 10, 10, 20),
       },
     }
   }
@@ -89,6 +97,7 @@ export default class UsbFolders extends Lightning.Component {
           }
         }
         _handleRight() {
+
           if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
             this.tag('UsbFolderList').setNext()
             this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
@@ -96,6 +105,7 @@ export default class UsbFolders extends Lightning.Component {
           }
         }
         _handleLeft() {
+
           if (0 != this.tag('UsbFolderList').index) {
             this.tag('UsbFolderList').setPrevious()
             this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
@@ -104,6 +114,7 @@ export default class UsbFolders extends Lightning.Component {
           if (0 == this.tag('UsbFolderList').index) {
             this.fireAncestors('$goToSideMenubar', 2)
           }
+
         }
         _handleDown() {
         }

@@ -16,11 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+
 import { imageListInfo } from '../../../static/data/ImageListInfo'
 import UsbContent from './UsbContent'
-
-
 
 export default class UsbImageScreen extends UsbContent {
   _active() {

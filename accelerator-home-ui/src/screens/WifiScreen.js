@@ -33,6 +33,13 @@ export default class WiFiScreen extends Lightning.Component {
       Switch: {
         x: 825,
         y: 310,
+        Shadow: {
+          alpha: 0,
+          x: -15,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+        },
         Button: {
           h: 60,
           w: 180,
@@ -274,7 +281,6 @@ export default class WiFiScreen extends Lightning.Component {
         src: Utils.asset('images/switch-on-new.png')
       })
     } else if (!this._wifiIcon) {
-      //this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
       this.toggleBtnAnimationY()
       this.tag('Button').patch({
         src: Utils.asset('images/switch-off-new.png')
@@ -295,6 +301,11 @@ export default class WiFiScreen extends Lightning.Component {
             h: 60,
             w: 180
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
         }
         _getFocused() {
           console.log('switch button')
@@ -302,6 +313,11 @@ export default class WiFiScreen extends Lightning.Component {
             h: 70,
             w: 200
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
         }
         _handleEnter() {
           console.log('enterrr')
@@ -314,6 +330,11 @@ export default class WiFiScreen extends Lightning.Component {
             h: 60,
             w: 180
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
           this.fireAncestors('$goToSideMenubar', 1)
         }
       },

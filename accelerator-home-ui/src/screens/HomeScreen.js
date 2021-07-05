@@ -40,14 +40,14 @@ export default class HomeScreen extends Lightning.Component {
       BackgroundImage: {
         w: 1920,
         h: 1080,
-        alpha: 0.8,
+        alpha: 6,
       },
       BackgroundColor: {
         w: 1920,
         h: 1080,
-        alpha: 0.8,
+        alpha: 0.9,
         rect: true,
-        color: 0xFF000000
+        color: 0xff20344D
       },
 
       TopPanel: {
@@ -159,7 +159,7 @@ export default class HomeScreen extends Lightning.Component {
     }
 
     if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
-      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
+      // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         last_state = this._getState();
         this._setState('ShutdownPanel')
@@ -220,10 +220,8 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
     }
-
     return false
   }
-
 
   _active() {
     if (this.initialLoad) {
@@ -271,7 +269,6 @@ export default class HomeScreen extends Lightning.Component {
    * @param {index} index index value of main view row.
    */
   $goToMainView(index) {
-    // this.zoomIn(0.7)
     this.tag('MainView').index = index
     this._setState('MainView')
   }
@@ -281,26 +278,25 @@ export default class HomeScreen extends Lightning.Component {
 * @param {index} index index value of Top panel item.
 */
   $goToTopPanel(index) {
-    // this.zoomOut(0.7)
     console.log('go to top panel')
     this.tag('TopPanel').index = index
     this._setState('TopPanel')
   }
   $changeBackgroundImageOnFocus(image) {
-    this.tag('BackgroundImage').patch({
-      smooth: {
+
+    if (image.startsWith('/images')) {
+      this.tag('BackgroundImage').patch({
         src: Utils.asset(image),
-        //  x: [0, { duration: 2.5, delay: 0.5, timingFunction: 'ease-out' }]
-      }
-    });
+      });
+    } else {
+      this.tag('BackgroundImage').patch({ src: image });
+    }
   }
+
   $changeBackgroundImageOnNonFocus(image) {
     this.tag('BackgroundImage').patch({
-      //  x:-1920
+      // todo
     })
-
-    //this.tag('BackgroundImage').patch({ smooth: {src: Utils.asset(image), x: [0, { duration: 2.5, delay: 1, timingFunction: 'ease-out' }] } });
-
   }
   /**
    * Fireancestor to set the state to player.
@@ -314,7 +310,6 @@ export default class HomeScreen extends Lightning.Component {
    * Function to scroll
    */
   $scroll(y) {
-    // this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
     this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
   }
 

@@ -19,65 +19,65 @@
 /**
  * Class which contains data for metro app listings.
  */
-export var metroAppsInfo = [
+ export var metroAppsInfo = [
   {
     displayName: "CNN",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
-    url: "/images/metroApps/Test-01.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
   },
   {
     displayName: "VimeoRelease",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
-    url: "/images/metroApps/Test-02.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
   },
   {
     displayName: "WeatherNetwork",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
-    url: "/images/metroApps/Test-03.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
   },
   {
     displayName: "EuroNews",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
-    url: "/images/metroApps/Test-04.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
   },
   {
     displayName: "AccuWeather",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
-    url: "/images/metroApps/Test-05.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
   },
   {
     displayName: "BaebleMusic",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "/images/metroApps/Test-06.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
   },
   {
     displayName: "Aljazeera",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
-    url: "/images/metroApps/Test-07.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
   },
   {
     displayName: "GuessThatCity",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
-    url: "/images/metroApps/Test-08.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
   },
   {
     displayName: "Radioline",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
-    url: "/images/metroApps/Test-09.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
   },
   {
     displayName: "WallStreetJournal",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
-    url: "/images/metroApps/Test-10.png"
+    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   }
 ];

@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+
 import { videoListInfo } from '../../../static/data/VideoListInfo'
 import UsbContent from './UsbContent'
-import UsbHomeScreen from './UsbHomeScreen'
+
 export default class UsbVideoScreen extends UsbContent {
   _active() {
     this.contentTitle = 'Video files'

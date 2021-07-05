@@ -16,7 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+
+import {
+  Lightning,
+  Utils
+} from '@lightningjs/sdk'
 
 /**
  * Class for rendering items in UI list.
@@ -29,9 +33,20 @@ export default class Item extends Lightning.Component {
         h: 150,
         rect: true,
         color: 0xFFDBEBFF,
-        shader: { type: Lightning.shaders.RoundedRectangle, radius: 10 },
+        shader: {
+          type: Lightning.shaders.RoundedRectangle,
+          radius: 10
+        },
       },
       OperatorLogo: {},
+      Shadow: {
+        alpha: 0,
+        zIndex: 2,
+        x: -25,
+        y: -25,
+        color: 0x66000000,
+        texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20),
+      }
     }
   }
 
@@ -51,16 +66,24 @@ export default class Item extends Lightning.Component {
   }
 
   _focus() {
-    this.tag('Item').zIndex = 2
+    this.tag('Item').zIndex = 3
     this.tag('Item').scale = 1.2
     this.tag('Item').color = 0xFFFFFFFF
-    this.tag('OperatorLogo').patch({
-    })
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 1
+      }
+    });
   }
 
   _unfocus() {
     this.tag('Item').zIndex = 1
     this.tag('Item').scale = 1
     this.tag('Item').color = 0xFFDBEBFF
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 0
+      }
+    });
   }
 }

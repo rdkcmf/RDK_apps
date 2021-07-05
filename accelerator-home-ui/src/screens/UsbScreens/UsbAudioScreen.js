@@ -16,8 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
-import { musicListInfo } from '../../../static/data/musicListInfo'
+
+import { musicListInfo } from '../../../static/data/MusicListInfo'
 import UsbContent from './UsbContent'
 
 export default class UsbAudioScreen extends UsbContent {

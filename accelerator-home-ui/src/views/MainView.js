@@ -51,11 +51,11 @@ export default class MainView extends Lightning.Component {
         AppList: {
           x: 0,
           y: 137,
-          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          flex: { direction: 'row', paddingLeft: 15, wrap: false },
           type: Lightning.components.ListComponent,
           w: 1745,
           h: 300,
-          itemSize: 257,
+          itemSize: 250,
           roll: true,
           rollMax: 1745,
           horizontal: true,

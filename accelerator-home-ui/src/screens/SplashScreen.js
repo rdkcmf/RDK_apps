@@ -449,9 +449,8 @@ export default class SplashScreen extends Lightning.Component {
         _getFocused() {
           console.log('get focused called')
           let _tagEle = this.tag('UISwitch.UIList').element
-          let _tag = this.tag('UISwitch')
           let bgColor = ''
-          console.log('get focused called with ele and tag ' + _tagEle + "== " + _tag + " ::bgColor ::" + bgColor)
+          console.log('get focused called with ele and tag ' + _tagEle + " ::bgColor ::" + bgColor)
           if (_tagEle._item.title == 'LIVE') {
             bgColor = 0xFF445263
           } else if (_tagEle._item.title == 'TATA') {

@@ -28,12 +28,15 @@ export default class FolderListItem extends Lightning.Component {
   static _template() {
     return {
       Item: {
-        x: 30,
-        y: 18,
         Shadow: {
           alpha: 0,
-          color: 0xffa9a9a9,
+          x: -25,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(270, 170, 10, 10, 20),
         },
+        x: 30,
+        y: 18,
         Title: {
           text: {
             fontSize: 32,
@@ -84,8 +87,12 @@ export default class FolderListItem extends Lightning.Component {
       y: this.y_text,
       text: { text: this.data.displayName },
     })
-    this.tag('Title').patch({ alpha: 1 })
     this.tag('Item').patch({ zIndex: 1 })
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 1
+      }
+    });
   }
 
   /**
@@ -93,7 +100,11 @@ export default class FolderListItem extends Lightning.Component {
    */
   _unfocus() {
     this.tag('Image').patch({ x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus })
-    this.tag('Title').patch({ alpha: 1 })
     this.tag('Item').patch({ zIndex: 0 })
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 0
+      }
+    });
   }
 }

@@ -31,6 +31,13 @@ export default class BluetoothScreen extends Lightning.Component {
       Switch: {
         x: 825,
         y: 310,
+        Shadow: {
+          alpha: 0,
+          x: -15,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+        },
         Button: {
           h: 60,
           w: 180,
@@ -246,6 +253,11 @@ export default class BluetoothScreen extends Lightning.Component {
             h: 70,
             w: 200
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
         }
         _handleEnter() {
           console.log('enterrr')
@@ -258,6 +270,11 @@ export default class BluetoothScreen extends Lightning.Component {
             h: 60,
             w: 180
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
           this.fireAncestors('$goToSideMenubar', 0)
         }
       },
@@ -273,16 +290,31 @@ export default class BluetoothScreen extends Lightning.Component {
           this.tag('Button').patch({
             h: 60
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
         }
         _getFocused() {
           console.log('switch focus')
           this.tag('Button').patch({
             h: 70
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
         }
         _handleLeft() {
           console.log('handle left bluetooth')
           this.fireAncestors('$goToSideMenubar', 0)
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
         }
 
         _handleDown() {

@@ -154,14 +154,8 @@ export default class SideSettingScreen extends Lightning.Component {
                             return this.changeItemBg(this.indexVal)
 
                         } else if (2 == this.indexVal) {
-                            console.log('lauch UsbHomeScreen')
-
                             this.fireAncestors('$goToUsbFolders', this.indexVal)
-
                             return this.changeItemBg(this.indexVal)
-
-
-                            // Router.navigate('UsbHomeScreen', false)
                         }
 
                     } else if (key.keyCode == 40) {

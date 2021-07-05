@@ -27,6 +27,13 @@ export default class SideSettinglItem extends Lightning.Component {
    */
   static _template() {
     return {
+      Shadow: {
+        alpha: 0,
+        x: -15,
+        y: 0,
+        color: 0x66000000,
+        texture: lng.Tools.getShadowRect(620, 115, 10, 10, 20),
+      },
       Item: {
         rect: true,
         texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
@@ -60,16 +67,17 @@ export default class SideSettinglItem extends Lightning.Component {
    * Function to change properties of item during focus.
    */
   _focus() {
-    //console.log('focused side setting')
-    //console.log(this.tag('Title').text.text)
-
     this.tag('Image').patch({ src: Utils.asset(this.data.img), w: this.w, h: this.h, scale: this.focus })
     this.tag('Title').patch({ alpha: 1, text: { textColor: '0xff141e30', } })
     this.tag('Item').patch({
       zIndex: 1,
       texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, true, 0xffffffff),
     })
-
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 1
+      }
+    });
   }
 
   /**
@@ -81,5 +89,10 @@ export default class SideSettinglItem extends Lightning.Component {
     this.tag('Item').patch({
       zIndex: 1, texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
     })
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 0
+      }
+    });
   }
 }

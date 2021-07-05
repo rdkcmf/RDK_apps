@@ -44,7 +44,7 @@ export default class UsbContent extends Lightning.Component {
                 IconTitle: {
                     x: 200,
                     y: 78,
-                    text: { text: 'USB', fontSize: 40 },
+                    text: { text: 'USB Content Screen', fontSize: 40 },
                 },
                 IpAddress: {
                     x: 1840,
@@ -87,7 +87,7 @@ export default class UsbContent extends Lightning.Component {
                 type: Lightning.components.ListComponent,
                 w: 1761,
                 h: 300,
-                itemSize: 200,
+                itemSize: 185,
                 roll: true,
                 rollMax: 815,
                 horizontal: true,
@@ -146,7 +146,7 @@ export default class UsbContent extends Lightning.Component {
                     }
                 }
                 _handleDown() {
-                    // console.log('handle down')
+                    // todo
                 }
                 _handleUp() {
                     this._setState('Back')

@@ -17,7 +17,6 @@
  * limitations under the License.
  **/
 import Home from './../screens/HomeScreen'
-import UsbHomeScreen from '../screens/UsbScreens/UsbHomeScreen'
 import SplashScreen from './../screens/SplashScreen'
 import Settings from './../screens/SettingsScreen'
 import Error from './../screens/Error'

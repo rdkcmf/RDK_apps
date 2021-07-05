@@ -16,7 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import {
+  Lightning,
+  Utils
+} from '@lightningjs/sdk'
 /**
  * Class to render items in main view.
  */
@@ -26,11 +29,16 @@ export default class AppListItem extends Lightning.Component {
    */
   static _template() {
     return {
+      Shadow:{          
+        alpha: 0,
+        x: -25,
+        y: 0,
+        color: 0x66000000,
+      },
       Item: {
         x: 0,
         y: 18,
-        Image: {
-        },
+        Image: {},
       },
     }
   }
@@ -53,7 +61,10 @@ export default class AppListItem extends Lightning.Component {
         shader: {
           type: lng.shaders.RoundedRectangle,
           radius: 10
-        }, src: this.data.url, w: this.w, h: this.h
+        },
+        src: this.data.url,
+        w: this.w,
+        h: this.h
       })
     }
   }
@@ -63,14 +74,26 @@ export default class AppListItem extends Lightning.Component {
    */
 
   _focus() {
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 1,
+        zIndex:1,
+        texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
+      }
+    });
     this.tag('Image').patch({
-      x: this.x, w: this.w, h: this.h, scale: this.focus,
+      x: this.x,
+      w: this.w,
+      h: this.h,
+      scale: this.focus,
       shader: {
         type: lng.shaders.RoundedRectangle,
-        radius: 10
+        radius: 0
       }
     })
-    this.tag('Item').patch({ smooth: { zIndex: 1 } })
+    this.tag('Item').patch({
+        zIndex: 2
+    })
   }
 
   /**
@@ -78,11 +101,23 @@ export default class AppListItem extends Lightning.Component {
    */
   _unfocus() {
     this.tag('Image').patch({
-      x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
+      x: 0,
+      y: 0,
+      w: this.w,
+      h: this.h,
+      scale: this.unfocus,
+      shader: {
         type: lng.shaders.RoundedRectangle,
         radius: 10
       }
     })
-    this.tag('Item').patch({ smooth: { zIndex: 0 } })
+    this.tag('Item').patch({
+        zIndex: 0
+    })
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 0
+      }
+    });
   }
 }

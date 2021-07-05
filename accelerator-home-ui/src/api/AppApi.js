@@ -467,8 +467,6 @@ export default class AppApi {
           console.log("audio mute error:", JSON.stringify(err, 3, null))
           resolve(false)
         })
-
     })
   }
-
 }

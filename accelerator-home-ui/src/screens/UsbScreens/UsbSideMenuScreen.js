@@ -64,7 +64,6 @@ export default class UsbSideMenuScreen extends SideSettingScreen {
                         } else if (1 == this.indexVal) {
                             this.fireAncestors('$goToUsbAudioScreen', this.indexVal)
                         } else if (2 == this.indexVal) {
-                            console.log('lauch UsbHomeScreen')
                             this.fireAncestors('$goToUsbImageScreen', this.indexVal)
                         }
 

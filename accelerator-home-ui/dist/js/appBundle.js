@@ -2,8 +2,8 @@
  * App version: 1.0.0
  * SDK version: 3.2.1
  * CLI version: 2.5.0
- * 
- * Generated: Mon, 28 Jun 2021 07:38:35 GMT
+ *
+ * Generated: Fri, 02 Jul 2021 17:21:57 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -4825,8 +4825,10 @@ var APP_accelerator_home_ui = (function () {
               } else {
                 fireOnConsumer('Beacon' + event + 'Failed' + response.status);
               }
+              Promise.resolve(null);
             })
             .catch(() => {
+              Promise.resolve(null);
             })
         )
       }, Promise.resolve(null))
@@ -5643,6 +5645,13 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         Item: {
+          Shadow: {
+            alpha: 0,
+            x: -45,
+            y: -40,
+            color: 0x66000000,
+            texture: lng.Tools.getShadowRect(375, 420, 0, 10, 20),
+          },
           x: 0,
           y: 18,
           Image: {},
@@ -5669,15 +5678,14 @@ var APP_accelerator_home_ui = (function () {
           rtt: true,
           w: this.w,
           h: this.h,
+          shader: {
+            type: lng.shaders.RoundedRectangle,
+            radius: 10
+          },
           src: this.data.url,
-          Inner: {
-            shader: {
-              type: lng.shaders.RoundedRectangle,
-              radius: 10
-            },
-          }
         });
       }
+
       /* Used static data for develpment purpose ,
       it wil replaced with Dynamic data once implimetation is completed.*/
       this.tag('Info').patch({
@@ -5695,7 +5703,12 @@ var APP_accelerator_home_ui = (function () {
           Label: {
             x: this.x + 65,
             y: this.y + 10,
-            text: { text: this.data.displayName, fontSize: 25, maxLines: 2, wordWrapWidth: 150 },
+            text: {
+              text: this.data.displayName,
+              fontSize: 25,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
           }
         },
         IMDb: {
@@ -5705,10 +5718,18 @@ var APP_accelerator_home_ui = (function () {
           Rating: {
             x: this.x + 65,
             y: this.y,
-            text: { text: '8.8/10', fontSize: 20, maxLines: 2, wordWrapWidth: 150 },
+            text: {
+              text: '8.8/10',
+              fontSize: 20,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
           },
           Ua: {
-            text: { text: '16+', fontSize: 18 },
+            text: {
+              text: '16+',
+              fontSize: 18
+            },
             x: this.x + 135,
             y: this.y,
             RoundRectangle: {
@@ -5719,7 +5740,12 @@ var APP_accelerator_home_ui = (function () {
           Duration: {
             x: this.x + 190,
             y: this.y,
-            text: { text: '2h 30m', fontSize: 20, maxLines: 2, wordWrapWidth: 150 },
+            text: {
+              text: '2h 30m',
+              fontSize: 20,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
           }
         }
       });
@@ -5730,15 +5756,36 @@ var APP_accelerator_home_ui = (function () {
      */
     _focus() {
       this.tag('Image').patch({
-        x: this.x, w: this.w, h: this.h, scale: this.focus, shader: {
+        x: this.x,
+        w: this.w,
+        h: this.h,
+        scale: this.focus,
+        shader: {
           type: lng.shaders.RoundRectangle,
           radius: 0
         }
       });
 
       this.tag('Info').alpha = 1;
-      this.tag('Info').patch({ smooth: { x: this.x, w: this.w, h: 140, scale: this.focus } });
-      this.tag('Item').patch({ smooth: { zIndex: 1, y: this.y - 65, } });
+      this.tag('Info').patch({
+        smooth: {
+          x: this.x,
+          w: this.w,
+          h: 140,
+          scale: this.focus
+        }
+      });
+      this.tag('Item').patch({
+        smooth: {
+          zIndex: 1,
+          y: this.y - 65,
+        }
+      });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1
+        }
+      });
     }
 
     /**
@@ -5746,13 +5793,28 @@ var APP_accelerator_home_ui = (function () {
      */
     _unfocus() {
       this.tag('Image').patch({
-        x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
+        x: 0,
+        y: 0,
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus,
+        shader: {
           type: lng.shaders.RoundedRectangle,
           radius: 10
         }
       });
-      this.tag('Item').patch({ smooth: { zIndex: 0, y: this.y + 20 } });
+      this.tag('Item').patch({
+        smooth: {
+          zIndex: 0,
+          y: this.y + 20
+        }
+      });
       this.tag('Info').alpha = 0;
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
     }
   }
 
@@ -5777,17 +5839,22 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class to render items in main view.
    */
-  class AppListItem$1 extends Lightning.Component {
+  class AppListItem extends Lightning.Component {
     /**
      * Function to render various elements in the main view item.
      */
     static _template() {
       return {
+        Shadow:{          
+          alpha: 0,
+          x: -25,
+          y: 0,
+          color: 0x66000000,
+        },
         Item: {
           x: 0,
           y: 18,
-          Image: {
-          },
+          Image: {},
         },
       }
     }
@@ -5810,7 +5877,10 @@ var APP_accelerator_home_ui = (function () {
           shader: {
             type: lng.shaders.RoundedRectangle,
             radius: 10
-          }, src: this.data.url, w: this.w, h: this.h
+          },
+          src: this.data.url,
+          w: this.w,
+          h: this.h
         });
       }
     }
@@ -5820,14 +5890,26 @@ var APP_accelerator_home_ui = (function () {
      */
 
     _focus() {
-      this.tag('Image').patch({
-        x: this.x, w: this.w, h: this.h, scale: this.focus,
-        shader: {
-          type: lng.shaders.RoundedRectangle,
-          radius: 10
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1,
+          zIndex:1,
+          texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
         }
       });
-      this.tag('Item').patch({ smooth: { zIndex: 1 } });
+      this.tag('Image').patch({
+        x: this.x,
+        w: this.w,
+        h: this.h,
+        scale: this.focus,
+        shader: {
+          type: lng.shaders.RoundedRectangle,
+          radius: 0
+        }
+      });
+      this.tag('Item').patch({
+          zIndex: 2
+      });
     }
 
     /**
@@ -5835,12 +5917,24 @@ var APP_accelerator_home_ui = (function () {
      */
     _unfocus() {
       this.tag('Image').patch({
-        x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus, shader: {
+        x: 0,
+        y: 0,
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus,
+        shader: {
           type: lng.shaders.RoundedRectangle,
           radius: 10
         }
       });
-      this.tag('Item').patch({ smooth: { zIndex: 0 } });
+      this.tag('Item').patch({
+          zIndex: 0
+      });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
     }
   }
 
@@ -6307,10 +6401,8 @@ var APP_accelerator_home_ui = (function () {
             console.log("audio mute error:", JSON.stringify(err, 3, null));
             resolve(false);
           });
-
       })
     }
-
   }
 
   /**
@@ -6406,11 +6498,11 @@ var APP_accelerator_home_ui = (function () {
           AppList: {
             x: 0,
             y: 137,
-            flex: { direction: 'row', paddingLeft: 20, wrap: false },
+            flex: { direction: 'row', paddingLeft: 15, wrap: false },
             type: Lightning.components.ListComponent,
             w: 1745,
             h: 300,
-            itemSize: 257,
+            itemSize: 250,
             roll: true,
             rollMax: 1745,
             horizontal: true,
@@ -6547,7 +6639,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 235,
           h: 136,
-          type: AppListItem$1,
+          type: AppListItem,
           data: info,
           focus: 1.2,
           unfocus: 1,
@@ -8886,66 +8978,66 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for metro app listings.
    */
-  var metroAppsInfo = [
+   var metroAppsInfo = [
     {
       displayName: "CNN",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
-      url: "/images/metroApps/Test-01.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
     },
     {
       displayName: "VimeoRelease",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
-      url: "/images/metroApps/Test-02.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
     },
     {
       displayName: "WeatherNetwork",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
-      url: "/images/metroApps/Test-03.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
     },
     {
       displayName: "EuroNews",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
-      url: "/images/metroApps/Test-04.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
     },
     {
       displayName: "AccuWeather",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
-      url: "/images/metroApps/Test-05.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
     },
     {
       displayName: "BaebleMusic",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-      url: "/images/metroApps/Test-06.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
     },
     {
       displayName: "Aljazeera",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
-      url: "/images/metroApps/Test-07.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
     },
     {
       displayName: "GuessThatCity",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
-      url: "/images/metroApps/Test-08.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
     },
     {
       displayName: "Radioline",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
-      url: "/images/metroApps/Test-09.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
     },
     {
       displayName: "WallStreetJournal",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
-      url: "/images/metroApps/Test-10.png"
+      url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
     }
   ];
 
@@ -9186,14 +9278,14 @@ var APP_accelerator_home_ui = (function () {
         BackgroundImage: {
           w: 1920,
           h: 1080,
-          alpha: 0.8,
+          alpha: 6,
         },
         BackgroundColor: {
           w: 1920,
           h: 1080,
-          alpha: 0.8,
+          alpha: 0.9,
           rect: true,
-          color: 0xFF000000
+          color: 0xff20344D
         },
 
         TopPanel: {
@@ -9304,7 +9396,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
-        //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
+        // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
           last_state = this._getState();
           this._setState('ShutdownPanel');
@@ -9365,10 +9457,8 @@ var APP_accelerator_home_ui = (function () {
         });
         return true
       }
-
       return false
     }
-
 
     _active() {
       if (this.initialLoad) {
@@ -9416,7 +9506,6 @@ var APP_accelerator_home_ui = (function () {
      * @param {index} index index value of main view row.
      */
     $goToMainView(index) {
-      // this.zoomIn(0.7)
       this.tag('MainView').index = index;
       this._setState('MainView');
     }
@@ -9426,26 +9515,25 @@ var APP_accelerator_home_ui = (function () {
   * @param {index} index index value of Top panel item.
   */
     $goToTopPanel(index) {
-      // this.zoomOut(0.7)
       console.log('go to top panel');
       this.tag('TopPanel').index = index;
       this._setState('TopPanel');
     }
     $changeBackgroundImageOnFocus(image) {
-      this.tag('BackgroundImage').patch({
-        smooth: {
+
+      if (image.startsWith('/images')) {
+        this.tag('BackgroundImage').patch({
           src: Utils.asset(image),
-          //  x: [0, { duration: 2.5, delay: 0.5, timingFunction: 'ease-out' }]
-        }
-      });
+        });
+      } else {
+        this.tag('BackgroundImage').patch({ src: image });
+      }
     }
+
     $changeBackgroundImageOnNonFocus(image) {
       this.tag('BackgroundImage').patch({
-        //  x:-1920
+        // todo
       });
-
-      //this.tag('BackgroundImage').patch({ smooth: {src: Utils.asset(image), x: [0, { duration: 2.5, delay: 1, timingFunction: 'ease-out' }] } });
-
     }
     /**
      * Fireancestor to set the state to player.
@@ -9459,7 +9547,6 @@ var APP_accelerator_home_ui = (function () {
      * Function to scroll
      */
     $scroll(y) {
-      // this.tag('SidePanel').setSmooth('y',y,{duration:0.5})
       this.tag('MainView').setSmooth('y', y, { duration: 0.5 });
     }
 
@@ -9519,1006 +9606,6 @@ var APP_accelerator_home_ui = (function () {
               this.stopPlayer();
               return false;
             }
-          }
-        },
-      ]
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class which contains data for app listings.
-   */
-   var musicListInfo = [
-      {
-        displayName: 'Test Xumo',
-        applicationType: 'WebApp',
-        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-        url: '/images/usb/music-default-tile.jpg',
-
-      },
-      {
-        displayName: 'Test Netflix',
-        applicationType: 'Netflix',
-        uri: '',
-        url: '/images/usb/music-default-tile.jpg',
-
-      },
-      {
-        displayName: 'Test Prime video',
-        applicationType: 'Amazon',
-        uri: '',
-        url: '/images/usb/music-default-tile.jpg',
-
-      },
-      {
-        displayName: 'Bluetooth Audio',
-        applicationType: 'Lightning',
-        uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-        url: '/images/usb/music-default-tile.jpg',
-        
-      }
-    ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  class UsbContent extends Lightning.Component {
-      static _template() {
-          return {
-              Background: {
-                  w: 1920,
-                  h: 1080,
-                  src: Utils.asset('images/tvShows/background_new.jpg'),
-              },
-              UsbHomeTopPanel: {
-                  x: 0,
-                  y: 0,
-                  w: 1920,
-                  h: 171,
-                  Back: {
-                      x: 81,
-                      y: 100,
-                      mountY: 0.5,
-                      src: Utils.asset('/images/settings/Back_icon.png'),
-                      w: 70,
-                      h: 70,
-                  },
-                  IconTitle: {
-                      x: 200,
-                      y: 78,
-                      text: { text: 'USB', fontSize: 40 },
-                  },
-                  IpAddress: {
-                      x: 1840,
-                      y: 115,
-                      mount: 1,
-                      text: {
-                          text: 'IP:N/A',
-                          textColor: 0xffffffff,
-                          fontSize: 40,
-                          w: 360,
-                          h: 40,
-                      },
-                  },
-                  Border: {
-                      x: 81,
-                      y: 171,
-                      mountY: 0.5,
-                      RoundRectangle: {
-                          zIndex: 2,
-                          texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
-                      },
-                      alpha: 0.4
-                  }
-              },
-              ContentTitle:
-              {
-                  x: 80,
-                  y: 220,
-                  text: {
-                      textColor: 0xffffffff,
-                      fontSize: 40,
-                      w: 360,
-                      h: 60,
-                  },
-              },
-              ItemList: {
-                  x: 80,
-                  y: 320,
-                  flex: { direction: 'row', paddingLeft: 20, wrap: false },
-                  type: Lightning.components.ListComponent,
-                  w: 1761,
-                  h: 300,
-                  itemSize: 200,
-                  roll: true,
-                  rollMax: 815,
-                  horizontal: true,
-                  itemScrollOffset: -5,
-                  clipping: true,
-              },
-          }
-      }
-      set contentTitle(title) {
-          this.tag('ContentTitle').patch({
-              text: { text: title }
-          });
-      }
-
-      set itemList(items) {
-          this.tag('ItemList').items = items.map(info => {
-              return {
-                  w: 175,
-                  h: 175,
-                  type: AppListItem$1,
-                  data: info,
-                  focus: 1.2,
-                  unfocus: 1,
-                  x_text: 106,
-                  y_text: 140,
-              }
-          });
-          this.tag('ItemList').start();
-      }
-
-      _init() {
-          var networkApi = new Network();
-          networkApi.getIP().then(ip => {
-              this.tag('IpAddress').text.text = 'IP:' + ip;
-          });
-      }
-
-      static _states() {
-          return [
-              class ItemList extends this {
-                  _getFocused() {
-                      if (this.tag('ItemList').length) {
-                          return this.tag('ItemList').element
-                      }
-                  }
-                  _handleRight() {
-                      if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
-                          this.tag('ItemList').setNext();
-                          return this.tag('ItemList').element
-                      }
-                  }
-                  _handleLeft() {
-                      if (0 != this.tag('ItemList').index) {
-                          this.tag('ItemList').setPrevious();
-                          return this.tag('ItemList').element
-                      }
-                  }
-                  _handleDown() {
-                      // console.log('handle down')
-                  }
-                  _handleUp() {
-                      this._setState('Back');
-                  }
-              },
-
-              class Back extends this{
-                  $enter() {
-
-                      console.log('enter back');
-                      this.tag('Back').patch({
-                          src: Utils.asset('/images/settings/back-arrow-small.png'),
-                      });
-                  }
-                  _handleDown() {
-                      console.log('handle down');
-                      this.tag('Back').patch({
-                          src: Utils.asset('/images/settings/Back_icon.png'),
-
-                      });
-                      this._setState('ItemList');
-                  }
-
-                  _handleKey(key) {
-                      console.log(key.keyCode);
-                      if (key.keyCode == 13) {
-                          this.tag('Back').patch({
-                              src: Utils.asset('/images/settings/Back_icon.png'),
-                          });
-                          this.fireAncestors('$goToSideMenubar', 2);
-                          Router.navigate('settings/SettingsScreen/2', false);
-                      }
-                  }
-              },
-          ]
-      }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  class UsbAudioScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Audio files';
-      this.itemList = musicListInfo;
-      this._setState('ItemList');
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class which contains data for app listings.
-   */
-   var imageListInfo = [
-     
-      {
-        displayName: 'Test Xumo',
-        applicationType: 'WebApp',
-        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-        url: '/images/usb/picture-default-tile.jpg',
-      },
-      {
-        displayName: 'Test Netflix',
-        applicationType: 'Netflix',
-        uri: '',
-        url: '/images/usb/picture-default-tile.jpg',
-      },
-      {
-        displayName: 'Test Prime video',
-        applicationType: 'Amazon',
-        uri: '',
-        url: '/images/usb/picture-default-tile.jpg',
-      },
-      {
-        displayName: 'Bluetooth Audio',
-        applicationType: 'Lightning',
-        uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-        url: '/images/usb/picture-default-tile.jpg',
-      }
-    ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-
-
-  class UsbImageScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Images';
-      this.itemList = imageListInfo;
-      this._setState('ItemList');
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class to render items in side setting Items .
-   */
-  class SideSettinglItem extends Lightning.Component {
-    /**
-     * Function to render various elements in the side setting  item.
-     */
-    static _template() {
-      return {
-        Item: {
-          rect: true,
-          texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
-          Image: {
-            x: 25,
-            y: 25,
-            w: 70,
-            H: 70,
-          },
-          Title: {
-            text: {
-              fontSize: 40,
-              textColor: 0xffffffff,
-            },
-          },
-        },
-      }
-    }
-
-    _init() {
-      this.tag('Title').patch({ x: this.x_text, y: this.y_text, text: { text: this.data.title } });
-      this.tag('Image').patch({
-        src: Utils.asset(this.data.url),
-        w: this.w,
-        h: this.h,
-        scale: this.unfocus,
-      });
-    }
-
-    /**
-     * Function to change properties of item during focus.
-     */
-    _focus() {
-      //console.log('focused side setting')
-      //console.log(this.tag('Title').text.text)
-
-      this.tag('Image').patch({ src: Utils.asset(this.data.img), w: this.w, h: this.h, scale: this.focus });
-      this.tag('Title').patch({ alpha: 1, text: { textColor: '0xff141e30', } });
-      this.tag('Item').patch({
-        zIndex: 1,
-        texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, true, 0xffffffff),
-      });
-
-    }
-
-    /**
-     * Function to change properties of item during unfocus.
-     */
-    _unfocus() {
-      this.tag('Image').patch({ src: Utils.asset(this.data.url), w: this.w, h: this.h, scale: this.unfocus });
-      this.tag('Title').patch({ alpha: 1, text: { textColor: 0xffffffff } });
-      this.tag('Item').patch({
-        zIndex: 1, texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
-      });
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class which contains data for listings in side panel.
-   */
-   var sideSettingInfo = [
-      {
-        title: 'Bluetooth',
-        url: '/images/settings/bluetooth_n.png',
-        img: '/images/settings/Bluetooth_Focused.png',
-      },
-      {
-        title: 'Wi-Fi',
-        url: '/images/settings/wifi_new.png',
-        img: '/images/settings/Wifi_Focused.png',
-      },
-       {
-         title: 'USB',
-         url: '/images/usb/usb-white-small.png',
-         img: '/images/usb/usb-dark-small.png',
-       },  
-    ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /** Class for side setting screen in setting UI */
-  class SideSettingScreen extends Lightning.Component {
-      static _template() {
-          return {
-              SideSettingScreen: {
-                  x: 0,
-                  y: 0,
-                  w: 620,
-                  h: 200,
-                  type: Lightning.components.ListComponent,
-                  roll: true,
-                  horizontal: false,
-                  invertDirection: true,
-
-              },
-          }
-      }
-
-      _init() {
-          this.sidePanelItems = this.getSideSettingInfo();
-          this.indexVal = 0;
-      }
-      _getFocused() {
-          return this.tag('SideSettingScreen')
-      }
-
-      getSideSettingInfo() {
-          return sideSettingInfo
-      }
-
-      _active() {
-          this._setState('SideSettingScreen');
-      }
-
-      /**
-       * Function to set items in side panel.
-       */
-      set sidePanelItems(items) {
-          console.log('sidePanelItems');
-          this.tag('SideSettingScreen').patch({ x: 80 });
-          this.tag('SideSettingScreen').items = items.map((info, index) => {
-              this.data = info;
-              return {
-                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
-                  type: SideSettinglItem,
-                  data: info,
-                  focus: 1,
-                  unfocus: 1,
-                  x_text: 130,
-                  y_text: 35,
-                  text_focus: 1,
-                  text_unfocus: 1,
-              }
-          });
-          this.tag('SideSettingScreen').start();
-      }
-
-      /**
-       * Function to reset items in side panel.
-       */
-      set resetSidePanelItems(items) {
-          this.tag('SideSettingScreen').patch({ x: 80 });
-          this.tag('SideSettingScreen').items = items.map((info, index) => {
-              return {
-                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
-                  type: SideSettinglItem,
-                  data: info,
-                  focus: 1,
-                  unfocus: 1,
-                  x_text: 130,
-                  y_text: 35,
-                  text_focus: 1,
-                  text_unfocus: 1,
-              }
-          });
-          this.tag('SideSettingScreen').start();
-      }
-      /**
-       * Function to set scaling to side panel.
-       */
-      set scale(scale) {
-          this.tag('SideSettingScreen').patch({ scale: scale });
-      }
-
-      /**
-       * Function to set x coordinate of side panel.
-       */
-      set x(x) {
-          this.tag('SideSettingScreen').patch({ x: x });
-      }
-
-      /**
-       * Function to set index value of side panel.
-       */
-      set index(index) {
-          this.indexVal = index;
-      }
-
-      $goToSideMenubar(index) {
-          this.tag('SideSettingScreen').index = index;
-          this._setState('SideSettingScreen');
-      }
-
-      changeItemBg(index) {
-          return this.tag('SideSettingScreen').items[index].patch({
-              Item: {
-                  texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xff121C2C, true, 0xff121C2C),
-              }
-          })
-      }
-
-      static _states() {
-          return [
-              class SideSettingScreen extends this {
-
-                  _getFocused() {
-                      if (this.tag('SideSettingScreen').length) {
-                          this.fireAncestors('$setVisibleSetting', this.indexVal);
-                          return this.tag('SideSettingScreen').items[this.indexVal]
-                      }
-                  }
-
-                  _handleKey(key) {
-                      if (key.keyCode == 39 || key.keyCode == 13) {
-                          if (0 == this.indexVal) {
-                              this.fireAncestors('$goToBluetoothScreen', this.indexVal);
-
-                              return this.changeItemBg(this.indexVal)
-                          } else if (1 == this.indexVal) {
-                              this.fireAncestors('$goToWiFiScreen', this.indexVal);
-
-                              return this.changeItemBg(this.indexVal)
-
-                          } else if (2 == this.indexVal) {
-                              console.log('lauch UsbHomeScreen');
-
-                              this.fireAncestors('$goToUsbFolders', this.indexVal);
-
-                              return this.changeItemBg(this.indexVal)
-
-
-                              // Router.navigate('UsbHomeScreen', false)
-                          }
-
-                      } else if (key.keyCode == 40) {
-                          if (this.tag('SideSettingScreen').length - 1 != this.indexVal) {
-                              this.indexVal = this.indexVal + 1;
-                          }
-
-                          return this.tag('SideSettingScreen').items[this.indexVal]
-                      } else if (key.keyCode == 38) {
-                          if (0 != this.indexVal) {
-                              this.indexVal = this.indexVal - 1;
-                          } else if (0 == this.indexVal) {
-                              this.fireAncestors('$goToSettingsTopPanel', this.indexVal);
-                          }
-
-                          return this.tag('SideSettingScreen').items[this.indexVal]
-                      } else return false;
-                  }
-              },
-          ]
-      }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class which contains data for app listings.
-   */
-   var videoListInfo = [
-   
-      {
-        displayName: 'Test Xumo',
-        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-        url: '/images/usb/video-default-tile.jpg',
-      },
-      {
-        displayName: 'Test Netflix',
-        url: '/images/usb/video-default-tile.jpg',
-      },
-      {
-        displayName: 'Test Prime video',
-        url: '/images/usb/video-default-tile.jpg',
-      },
-      {
-        displayName: 'Bluetooth Audio',
-        url: '/images/usb/video-default-tile.jpg',
-      }
-    ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class UsbVideoScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Video files';
-      this.itemList = videoListInfo;
-      this._setState('ItemList');
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class for Usb Home screen.
-   */
-
-  class UsbHomeScreen extends Lightning.Component {
-    static _template() {
-      return {
-        Background: {
-          w: 1920,
-          h: 1080,
-          src: Utils.asset('images/tvShows/background_new.jpg'),
-        },
-        UsbHomeTopPanel: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 171,
-          Back: {
-            x: 81,
-            y: 100,
-            mountY: 0.5,
-            src: Utils.asset('/images/settings/Back_icon.png'),
-            w: 70,
-            h: 70,
-          },
-          IconTitle: {
-            x: 200,
-            y: 78,
-            text: { text: 'USB' }
-          },
-          IpAddress: {
-            x: 1840,
-            y: 115,
-            mount: 1,
-            text: {
-              text: 'IP:NA',
-              textColor: 0xffffffff,
-              fontSize: 40,
-              w: 360,
-              h: 40,
-            },
-          },
-          Border: {
-            x: 81,
-            y: 171,
-            mountY: 0.5,
-            RoundRectangle: {
-              zIndex: 2,
-              texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
-            },
-            alpha: 0.4
-          }
-        },
-        ItemList: {
-          x: 815,
-          y: 320,
-          flex: { direction: 'row', paddingLeft: 20, wrap: false },
-          type: Lightning.components.ListComponent,
-          w: 1000,
-          h: 300,
-          itemSize: 257,
-          roll: true,
-          rollMax: 815,
-          horizontal: true,
-          itemScrollOffset: -3,
-          clipping: true,
-
-        },
-        set itemList(items) {
-          this.tag('ItemList').items = items.map(info => {
-            return {
-              w: 175,
-              h: 175,
-              type: AppListItem,
-              data: info,
-              focus: 1.2,
-              unfocus: 1,
-              x_text: 106,
-              y_text: 140,
-            }
-          });
-          this.tag('ItemList').start();
-        }
-
-      }
-    }
-
-    $setVisibleScreen(index) {
-      if (index == 0) {
-        this.tag('UsbVideoScreen').alpha = 1;
-        this.tag('UsbAudioScreen').alpha = 0;
-        this.tag('UsbImageScreen').alpha = 0;
-      }
-      else if (index == 1) {
-        this.tag('UsbVideoScreen').alpha = 0;
-        this.tag('UsbAudioScreen').alpha = 1;
-        this.tag('UsbImageScreen').alpha = 0;
-
-      } else if (index == 2) {
-        this.tag('UsbVideoScreen').alpha = 0;
-        this.tag('UsbAudioScreen').alpha = 0;
-        this.tag('UsbImageScreen').alpha = 1;
-
-      }
-    }
-
-    _init() {
-      console.log('init of setting');
-      var networkApi = new Network();
-      networkApi.getIP().then(ip => {
-        this.tag('IpAddress').text.text = 'IP:' + ip;
-      });
-    }
-    _active() {
-      console.log('actie setting screen');
-    }
-
-    set screen(screen) {
-      this._setState(screen);
-    }
-
-    set params(args) {
-      if (args.animation != undefined) {
-        args.animation.start();
-      }
-    }
-
-
-    $goToUsbHomeTopPanel() {
-      this._setState('Back');
-    }
-    /**
-      * Fireancestor to set the state to side panel.
-      * @param {index} index index value of side panel item.
-      */
-    $goToSUsbSideMenuScreen() {
-      this._setState('Back');
-    }
-    $goToUsbVideoScreen(index) {
-      this._setState('UsbVideoScreen');
-    }
-    $goToUsbAudioScreen(index) {
-      this._setState('UsbAudioScreen');
-    }
-    $goToUsbImageScreen(index) {
-      this._setState('UsbImageScreen');
-    }
-
-    $goToUsbSideMenuScreen(index) {
-      this.tag('UsbSideMenuScreen').index = index;
-      this._setState('UsbSideMenuScreen');
-    }
-
-
-
-
-
-
-    static _states() {
-      return [
-        class ItemList extends this {
-          _getFocused() {
-            if (this.tag('ItemList').length) {
-              return this.tag('ItemList').element
-            }
-          }
-          _handleRight() {
-            if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
-              this.tag('ItemList').setNext();
-              return this.tag('ItemList').element
-            }
-          }
-          _handleLeft() {
-            if (0 != this.tag('ItemList').index) {
-              this.tag('ItemList').setPrevious();
-              return this.tag('ItemList').element
-            } else if (0 == this.tag('ItemList').index) {
-              console.log('handle left ItemList');
-              this.fireAncestors('$goToSideMenubar', 2);
-            }
-          }
-          // _handleDown() {
-          //     console.log('handle down')
-          // }
-          // _handleUp() {
-          //     console.log('handle up')
-          // }
-
-        },
-
-        class Back extends this{
-          $enter() {
-
-            console.log('enter back');
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/back-arrow-small.png'),
-            });
-          }
-          _handleDown() {
-            console.log('handle down');
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/Back_icon.png'),
-
-            });
-            this._setState('UsbSideMenuScreen');
-          }
-
-          _handleKey(key) {
-            console.log(key.keyCode);
-            if (key.keyCode == 13) {
-              this.tag('Back').patch({
-                src: Utils.asset('/images/settings/Back_icon.png'),
-
-              });
-              Router.navigate('settings/SettingsScreen', false);
-            }
-          }
-        },
-        class UsbVideoScreen extends this {
-          $enter() {
-            this.tag('UsbVideoScreen').visible = true;
-          }
-          _getFocused() {
-            return this.tag('UsbVideoScreen')
-          }
-          $exit() {
-            // this.tag('UsbVideoScreen').visible = false
-          }
-          _handleKey(key) {
-          }
-        },
-        class UsbAudioScreen extends this {
-          $enter() {
-            this.tag('UsbAudioScreen').visible = true;
-          }
-          _getFocused() {
-            return this.tag('UsbAudioScreen')
-          }
-          $exit() {
-            // this.tag('UsbAudioScreen').visible = false
-          }
-          _handleKey(key) {
-
-          }
-        },
-        class UsbImageScreen extends this {
-          $enter() {
-            this.tag('UsbImageScreen').visible = true;
-          }
-          _getFocused() {
-            return this.tag('UsbImageScreen')
-          }
-          $exit() {
-            // this.tag('UsbImageScreen').visible = false
-          }
-          _handleKey(key) {
-
           }
         },
       ]
@@ -10940,9 +10027,20 @@ var APP_accelerator_home_ui = (function () {
           h: 150,
           rect: true,
           color: 0xFFDBEBFF,
-          shader: { type: Lightning.shaders.RoundedRectangle, radius: 10 },
+          shader: {
+            type: Lightning.shaders.RoundedRectangle,
+            radius: 10
+          },
         },
         OperatorLogo: {},
+        Shadow: {
+          alpha: 0,
+          zIndex: 2,
+          x: -25,
+          y: -25,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20),
+        }
       }
     }
 
@@ -10962,10 +10060,13 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
-      this.tag('Item').zIndex = 2;
+      this.tag('Item').zIndex = 3;
       this.tag('Item').scale = 1.2;
       this.tag('Item').color = 0xFFFFFFFF;
-      this.tag('OperatorLogo').patch({
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1
+        }
       });
     }
 
@@ -10973,6 +10074,11 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Item').zIndex = 1;
       this.tag('Item').scale = 1;
       this.tag('Item').color = 0xFFDBEBFF;
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
     }
   }
 
@@ -11420,9 +10526,8 @@ var APP_accelerator_home_ui = (function () {
           _getFocused() {
             console.log('get focused called');
             let _tagEle = this.tag('UISwitch.UIList').element;
-            let _tag = this.tag('UISwitch');
             let bgColor = '';
-            console.log('get focused called with ele and tag ' + _tagEle + "== " + _tag + " ::bgColor ::" + bgColor);
+            console.log('get focused called with ele and tag ' + _tagEle + " ::bgColor ::" + bgColor);
             if (_tagEle._item.title == 'LIVE') {
               bgColor = 0xFF445263;
             } else if (_tagEle._item.title == 'TATA') {
@@ -11797,6 +10902,13 @@ var APP_accelerator_home_ui = (function () {
         Switch: {
           x: 825,
           y: 310,
+          Shadow: {
+            alpha: 0,
+            x: -15,
+            y: 0,
+            color: 0x66000000,
+            texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+          },
           Button: {
             h: 60,
             w: 180,
@@ -12012,6 +11124,11 @@ var APP_accelerator_home_ui = (function () {
               h: 70,
               w: 200
             });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 1
+              }
+            });
           }
           _handleEnter() {
             console.log('enterrr');
@@ -12023,6 +11140,11 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Button').patch({
               h: 60,
               w: 180
+            });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
             });
             this.fireAncestors('$goToSideMenubar', 0);
           }
@@ -12039,16 +11161,31 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Button').patch({
               h: 60
             });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
+            });
           }
           _getFocused() {
             console.log('switch focus');
             this.tag('Button').patch({
               h: 70
             });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 1
+              }
+            });
           }
           _handleLeft() {
             console.log('handle left bluetooth');
             this.fireAncestors('$goToSideMenubar', 0);
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
+            });
           }
 
           _handleDown() {
@@ -13570,6 +12707,13 @@ var APP_accelerator_home_ui = (function () {
         Switch: {
           x: 825,
           y: 310,
+          Shadow: {
+            alpha: 0,
+            x: -15,
+            y: 0,
+            color: 0x66000000,
+            texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+          },
           Button: {
             h: 60,
             w: 180,
@@ -13811,7 +12955,6 @@ var APP_accelerator_home_ui = (function () {
           src: Utils.asset('images/switch-on-new.png')
         });
       } else if (!this._wifiIcon) {
-        //this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
         this.toggleBtnAnimationY();
         this.tag('Button').patch({
           src: Utils.asset('images/switch-off-new.png')
@@ -13832,12 +12975,22 @@ var APP_accelerator_home_ui = (function () {
               h: 60,
               w: 180
             });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
+            });
           }
           _getFocused() {
             console.log('switch button');
             this.tag('Button').patch({
               h: 70,
               w: 200
+            });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 1
+              }
             });
           }
           _handleEnter() {
@@ -13850,6 +13003,11 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Button').patch({
               h: 60,
               w: 180
+            });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
             });
             this.fireAncestors('$goToSideMenubar', 1);
           }
@@ -14108,6 +13266,321 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
+  /**
+   * Class to render items in side setting Items .
+   */
+  class SideSettinglItem extends Lightning.Component {
+    /**
+     * Function to render various elements in the side setting  item.
+     */
+    static _template() {
+      return {
+        Shadow: {
+          alpha: 0,
+          x: -15,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(620, 115, 10, 10, 20),
+        },
+        Item: {
+          rect: true,
+          texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
+          Image: {
+            x: 25,
+            y: 25,
+            w: 70,
+            H: 70,
+          },
+          Title: {
+            text: {
+              fontSize: 40,
+              textColor: 0xffffffff,
+            },
+          },
+        },
+      }
+    }
+
+    _init() {
+      this.tag('Title').patch({ x: this.x_text, y: this.y_text, text: { text: this.data.title } });
+      this.tag('Image').patch({
+        src: Utils.asset(this.data.url),
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus,
+      });
+    }
+
+    /**
+     * Function to change properties of item during focus.
+     */
+    _focus() {
+      this.tag('Image').patch({ src: Utils.asset(this.data.img), w: this.w, h: this.h, scale: this.focus });
+      this.tag('Title').patch({ alpha: 1, text: { textColor: '0xff141e30', } });
+      this.tag('Item').patch({
+        zIndex: 1,
+        texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, true, 0xffffffff),
+      });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1
+        }
+      });
+    }
+
+    /**
+     * Function to change properties of item during unfocus.
+     */
+    _unfocus() {
+      this.tag('Image').patch({ src: Utils.asset(this.data.url), w: this.w, h: this.h, scale: this.unfocus });
+      this.tag('Title').patch({ alpha: 1, text: { textColor: 0xffffffff } });
+      this.tag('Item').patch({
+        zIndex: 1, texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
+      });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for listings in side panel.
+   */
+   var sideSettingInfo = [
+      {
+        title: 'Bluetooth',
+        url: '/images/settings/bluetooth_n.png',
+        img: '/images/settings/Bluetooth_Focused.png',
+      },
+      {
+        title: 'Wi-Fi',
+        url: '/images/settings/wifi_new.png',
+        img: '/images/settings/Wifi_Focused.png',
+      },
+       {
+         title: 'USB',
+         url: '/images/usb/usb-white-small.png',
+         img: '/images/usb/usb-dark-small.png',
+       },  
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for side setting screen in setting UI */
+  class SideSettingScreen extends Lightning.Component {
+      static _template() {
+          return {
+              SideSettingScreen: {
+                  x: 0,
+                  y: 0,
+                  w: 620,
+                  h: 200,
+                  type: Lightning.components.ListComponent,
+                  roll: true,
+                  horizontal: false,
+                  invertDirection: true,
+
+              },
+          }
+      }
+
+      _init() {
+          this.sidePanelItems = this.getSideSettingInfo();
+          this.indexVal = 0;
+      }
+      _getFocused() {
+          return this.tag('SideSettingScreen')
+      }
+
+      getSideSettingInfo() {
+          return sideSettingInfo
+      }
+
+      _active() {
+          this._setState('SideSettingScreen');
+      }
+
+      /**
+       * Function to set items in side panel.
+       */
+      set sidePanelItems(items) {
+          console.log('sidePanelItems');
+          this.tag('SideSettingScreen').patch({ x: 80 });
+          this.tag('SideSettingScreen').items = items.map((info, index) => {
+              this.data = info;
+              return {
+                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
+                  type: SideSettinglItem,
+                  data: info,
+                  focus: 1,
+                  unfocus: 1,
+                  x_text: 130,
+                  y_text: 35,
+                  text_focus: 1,
+                  text_unfocus: 1,
+              }
+          });
+          this.tag('SideSettingScreen').start();
+      }
+
+      /**
+       * Function to reset items in side panel.
+       */
+      set resetSidePanelItems(items) {
+          this.tag('SideSettingScreen').patch({ x: 80 });
+          this.tag('SideSettingScreen').items = items.map((info, index) => {
+              return {
+                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
+                  type: SideSettinglItem,
+                  data: info,
+                  focus: 1,
+                  unfocus: 1,
+                  x_text: 130,
+                  y_text: 35,
+                  text_focus: 1,
+                  text_unfocus: 1,
+              }
+          });
+          this.tag('SideSettingScreen').start();
+      }
+      /**
+       * Function to set scaling to side panel.
+       */
+      set scale(scale) {
+          this.tag('SideSettingScreen').patch({ scale: scale });
+      }
+
+      /**
+       * Function to set x coordinate of side panel.
+       */
+      set x(x) {
+          this.tag('SideSettingScreen').patch({ x: x });
+      }
+
+      /**
+       * Function to set index value of side panel.
+       */
+      set index(index) {
+          this.indexVal = index;
+      }
+
+      $goToSideMenubar(index) {
+          this.tag('SideSettingScreen').index = index;
+          this._setState('SideSettingScreen');
+      }
+
+      changeItemBg(index) {
+          return this.tag('SideSettingScreen').items[index].patch({
+              Item: {
+                  texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xff121C2C, true, 0xff121C2C),
+              }
+          })
+      }
+
+      static _states() {
+          return [
+              class SideSettingScreen extends this {
+
+                  _getFocused() {
+                      if (this.tag('SideSettingScreen').length) {
+                          this.fireAncestors('$setVisibleSetting', this.indexVal);
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      }
+                  }
+
+                  _handleKey(key) {
+                      if (key.keyCode == 39 || key.keyCode == 13) {
+                          if (0 == this.indexVal) {
+                              this.fireAncestors('$goToBluetoothScreen', this.indexVal);
+
+                              return this.changeItemBg(this.indexVal)
+                          } else if (1 == this.indexVal) {
+                              this.fireAncestors('$goToWiFiScreen', this.indexVal);
+
+                              return this.changeItemBg(this.indexVal)
+
+                          } else if (2 == this.indexVal) {
+                              this.fireAncestors('$goToUsbFolders', this.indexVal);
+                              return this.changeItemBg(this.indexVal)
+                          }
+
+                      } else if (key.keyCode == 40) {
+                          if (this.tag('SideSettingScreen').length - 1 != this.indexVal) {
+                              this.indexVal = this.indexVal + 1;
+                          }
+
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      } else if (key.keyCode == 38) {
+                          if (0 != this.indexVal) {
+                              this.indexVal = this.indexVal - 1;
+                          } else if (0 == this.indexVal) {
+                              this.fireAncestors('$goToSettingsTopPanel', this.indexVal);
+                          }
+
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      } else return false;
+                  }
+              },
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   /**
    * Class which contains data for app listings.
    */
@@ -14156,12 +13629,15 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         Item: {
-          x: 30,
-          y: 18,
           Shadow: {
             alpha: 0,
-            color: 0xffa9a9a9,
+            x: -25,
+            y: 0,
+            color: 0x66000000,
+            texture: lng.Tools.getShadowRect(270, 170, 10, 10, 20),
           },
+          x: 30,
+          y: 18,
           Title: {
             text: {
               fontSize: 32,
@@ -14212,8 +13688,12 @@ var APP_accelerator_home_ui = (function () {
         y: this.y_text,
         text: { text: this.data.displayName },
       });
-      this.tag('Title').patch({ alpha: 1 });
       this.tag('Item').patch({ zIndex: 1 });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1
+        }
+      });
     }
 
     /**
@@ -14221,8 +13701,12 @@ var APP_accelerator_home_ui = (function () {
      */
     _unfocus() {
       this.tag('Image').patch({ x: 0, y: 0, w: this.w, h: this.h, scale: this.unfocus });
-      this.tag('Title').patch({ alpha: 1 });
       this.tag('Item').patch({ zIndex: 0 });
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
     }
   }
 
@@ -14259,12 +13743,20 @@ var APP_accelerator_home_ui = (function () {
           type: Lightning.components.ListComponent,
           w: 1020,
           h: 300,
-          itemSize: 257,
+          itemSize: 250,
           roll: true,
           rollMax: 1020,
           horizontal: true,
           itemScrollOffset: -5,
           clipping: false,
+        },
+        Shadow: {
+          alpha: 0,
+          zIndex: 3,
+          x: -15,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(205, 60, 10, 10, 20),
         },
       }
     }
@@ -14314,6 +13806,7 @@ var APP_accelerator_home_ui = (function () {
             }
           }
           _handleRight() {
+
             if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
               this.tag('UsbFolderList').setNext();
               this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
@@ -14321,6 +13814,7 @@ var APP_accelerator_home_ui = (function () {
             }
           }
           _handleLeft() {
+
             if (0 != this.tag('UsbFolderList').index) {
               this.tag('UsbFolderList').setPrevious();
               this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
@@ -14329,6 +13823,7 @@ var APP_accelerator_home_ui = (function () {
             if (0 == this.tag('UsbFolderList').index) {
               this.fireAncestors('$goToSideMenubar', 2);
             }
+
           }
           _handleDown() {
           }
@@ -14694,6 +14189,415 @@ ${error.toString()}`;
 
     pageTransition() {
       return 'up'
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var musicListInfo = [
+      {
+        displayName: 'Test Xumo',
+        applicationType: 'WebApp',
+        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+        url: '/images/usb/music-default-tile.jpg',
+
+      },
+      {
+        displayName: 'Test Netflix',
+        applicationType: 'Netflix',
+        uri: '',
+        url: '/images/usb/music-default-tile.jpg',
+
+      },
+      {
+        displayName: 'Test Prime video',
+        applicationType: 'Amazon',
+        uri: '',
+        url: '/images/usb/music-default-tile.jpg',
+
+      },
+      {
+        displayName: 'Bluetooth Audio',
+        applicationType: 'Lightning',
+        uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+        url: '/images/usb/music-default-tile.jpg',
+        
+      }
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class UsbContent extends Lightning.Component {
+      static _template() {
+          return {
+              Background: {
+                  w: 1920,
+                  h: 1080,
+                  src: Utils.asset('images/tvShows/background_new.jpg'),
+              },
+              UsbHomeTopPanel: {
+                  x: 0,
+                  y: 0,
+                  w: 1920,
+                  h: 171,
+                  Back: {
+                      x: 81,
+                      y: 100,
+                      mountY: 0.5,
+                      src: Utils.asset('/images/settings/Back_icon.png'),
+                      w: 70,
+                      h: 70,
+                  },
+                  IconTitle: {
+                      x: 200,
+                      y: 78,
+                      text: { text: 'USB Content Screen', fontSize: 40 },
+                  },
+                  IpAddress: {
+                      x: 1840,
+                      y: 115,
+                      mount: 1,
+                      text: {
+                          text: 'IP:N/A',
+                          textColor: 0xffffffff,
+                          fontSize: 40,
+                          w: 360,
+                          h: 40,
+                      },
+                  },
+                  Border: {
+                      x: 81,
+                      y: 171,
+                      mountY: 0.5,
+                      RoundRectangle: {
+                          zIndex: 2,
+                          texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
+                      },
+                      alpha: 0.4
+                  }
+              },
+              ContentTitle:
+              {
+                  x: 80,
+                  y: 220,
+                  text: {
+                      textColor: 0xffffffff,
+                      fontSize: 40,
+                      w: 360,
+                      h: 60,
+                  },
+              },
+              ItemList: {
+                  x: 80,
+                  y: 320,
+                  flex: { direction: 'row', paddingLeft: 20, wrap: false },
+                  type: Lightning.components.ListComponent,
+                  w: 1761,
+                  h: 300,
+                  itemSize: 185,
+                  roll: true,
+                  rollMax: 815,
+                  horizontal: true,
+                  itemScrollOffset: -5,
+                  clipping: true,
+              },
+          }
+      }
+      set contentTitle(title) {
+          this.tag('ContentTitle').patch({
+              text: { text: title }
+          });
+      }
+
+      set itemList(items) {
+          this.tag('ItemList').items = items.map(info => {
+              return {
+                  w: 175,
+                  h: 175,
+                  type: AppListItem,
+                  data: info,
+                  focus: 1.2,
+                  unfocus: 1,
+                  x_text: 106,
+                  y_text: 140,
+              }
+          });
+          this.tag('ItemList').start();
+      }
+
+      _init() {
+          var networkApi = new Network();
+          networkApi.getIP().then(ip => {
+              this.tag('IpAddress').text.text = 'IP:' + ip;
+          });
+      }
+
+      static _states() {
+          return [
+              class ItemList extends this {
+                  _getFocused() {
+                      if (this.tag('ItemList').length) {
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleRight() {
+                      if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setNext();
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleLeft() {
+                      if (0 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setPrevious();
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleDown() {
+                      // todo
+                  }
+                  _handleUp() {
+                      this._setState('Back');
+                  }
+              },
+
+              class Back extends this{
+                  $enter() {
+
+                      console.log('enter back');
+                      this.tag('Back').patch({
+                          src: Utils.asset('/images/settings/back-arrow-small.png'),
+                      });
+                  }
+                  _handleDown() {
+                      console.log('handle down');
+                      this.tag('Back').patch({
+                          src: Utils.asset('/images/settings/Back_icon.png'),
+
+                      });
+                      this._setState('ItemList');
+                  }
+
+                  _handleKey(key) {
+                      console.log(key.keyCode);
+                      if (key.keyCode == 13) {
+                          this.tag('Back').patch({
+                              src: Utils.asset('/images/settings/Back_icon.png'),
+                          });
+                          this.fireAncestors('$goToSideMenubar', 2);
+                          Router.navigate('settings/SettingsScreen/2', false);
+                      }
+                  }
+              },
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class UsbAudioScreen extends UsbContent {
+    _active() {
+      this.contentTitle = 'Audio files';
+      this.itemList = musicListInfo;
+      this._setState('ItemList');
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var imageListInfo = [
+     
+      {
+        displayName: 'Test Xumo',
+        applicationType: 'WebApp',
+        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+        url: '/images/usb/picture-default-tile.jpg',
+      },
+      {
+        displayName: 'Test Netflix',
+        applicationType: 'Netflix',
+        uri: '',
+        url: '/images/usb/picture-default-tile.jpg',
+      },
+      {
+        displayName: 'Test Prime video',
+        applicationType: 'Amazon',
+        uri: '',
+        url: '/images/usb/picture-default-tile.jpg',
+      },
+      {
+        displayName: 'Bluetooth Audio',
+        applicationType: 'Lightning',
+        uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
+        url: '/images/usb/picture-default-tile.jpg',
+      }
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class UsbImageScreen extends UsbContent {
+    _active() {
+      this.contentTitle = 'Images';
+      this.itemList = imageListInfo;
+      this._setState('ItemList');
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var videoListInfo = [
+   
+      {
+        displayName: 'Test Xumo',
+        uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+        url: '/images/usb/video-default-tile.jpg',
+      },
+      {
+        displayName: 'Test Netflix',
+        url: '/images/usb/video-default-tile.jpg',
+      },
+      {
+        displayName: 'Test Prime video',
+        url: '/images/usb/video-default-tile.jpg',
+      },
+      {
+        displayName: 'Bluetooth Audio',
+        url: '/images/usb/video-default-tile.jpg',
+      }
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class UsbVideoScreen extends UsbContent {
+    _active() {
+      this.contentTitle = 'Video files';
+      this.itemList = videoListInfo;
+      this._setState('ItemList');
     }
   }
 
