@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Fri, 02 Jul 2021 17:21:57 GMT
+ * Generated: Thu, 08 Jul 2021 12:01:29 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -9491,7 +9491,6 @@ var APP_accelerator_home_ui = (function () {
             'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
           drmConfig: null,
         });
-        this.zoomOut(0.1);
         this.hide();
         this._setState('Playing');
         this.player.setVideoRect(0, 0, 1920, 1080);
@@ -9559,7 +9558,7 @@ var APP_accelerator_home_ui = (function () {
       this.tag('MainView').patch({ alpha: 0 });
       this.tag('TopPanel').patch({ alpha: 0 });
     }
-    
+
     /**
        * Function to show home UI.
      */
@@ -9591,7 +9590,6 @@ var APP_accelerator_home_ui = (function () {
           }
 
           stopPlayer() {
-            this.zoomIn(0);
             this._setState('MainView');
             this.player.stop();
             this.show();
