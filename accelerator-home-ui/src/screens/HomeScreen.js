@@ -254,7 +254,6 @@ export default class HomeScreen extends Lightning.Component {
           'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         drmConfig: null,
       })
-      this.zoomOut(0.1)
       this.hide()
       this._setState('Playing')
       this.player.setVideoRect(0, 0, 1920, 1080)
@@ -316,23 +315,21 @@ export default class HomeScreen extends Lightning.Component {
   /**
    * Function to hide the home UI.
    */
-  hide() {
-    this.tag('BackgroundImage').patch({ smooth: { alpha: 0 } })
-    this.tag('MainView').patch({ smooth: { alpha: 0 } })
-    this.tag('TopPanel').patch({ smooth: { alpha: 0 } })
-    this.tag('rightArrowIcons').patch({ smooth: { alpha: 0 } })
-    this.tag('leftArrowIcons').patch({ smooth: { alpha: 0 } })
+   hide() {
+    this.tag('BackgroundImage').patch({ alpha: 0 });
+    this.tag('BackgroundColor').patch({ alpha: 0 });
+    this.tag('MainView').patch({ alpha: 0 });
+    this.tag('TopPanel').patch({ alpha: 0 });
   }
 
   /**
      * Function to show home UI.
    */
-  show() {
-    this.tag('BackgroundImage').patch({ smooth: { alpha: 1 } })
-    this.tag('MainView').patch({ smooth: { alpha: 1 } })
-    this.tag('TopPanel').patch({ smooth: { alpha: 1 } })
-    this.tag('rightArrowIcons').patch({ smooth: { alpha: 1 } })
-    this.tag('leftArrowIcons').patch({ smooth: { alpha: 1 } })
+   show() {
+    this.tag('BackgroundImage').patch({ alpha: 1 });
+    this.tag('BackgroundColor').patch({ alpha: 1 });
+    this.tag('MainView').patch({ alpha: 1 });
+    this.tag('TopPanel').patch({ alpha: 1 });
   }
 
   /**
@@ -356,7 +353,6 @@ export default class HomeScreen extends Lightning.Component {
         }
 
         stopPlayer() {
-          this.zoomIn(0);
           this._setState('MainView');
           this.player.stop();
           this.show();

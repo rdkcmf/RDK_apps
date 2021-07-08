@@ -9553,23 +9553,21 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to hide the home UI.
      */
-    hide() {
-      this.tag('BackgroundImage').patch({ smooth: { alpha: 0 } });
-      this.tag('MainView').patch({ smooth: { alpha: 0 } });
-      this.tag('TopPanel').patch({ smooth: { alpha: 0 } });
-      this.tag('rightArrowIcons').patch({ smooth: { alpha: 0 } });
-      this.tag('leftArrowIcons').patch({ smooth: { alpha: 0 } });
+     hide() {
+      this.tag('BackgroundImage').patch({ alpha: 0 });
+      this.tag('BackgroundColor').patch({ alpha: 0 });
+      this.tag('MainView').patch({ alpha: 0 });
+      this.tag('TopPanel').patch({ alpha: 0 });
     }
-
+    
     /**
        * Function to show home UI.
      */
-    show() {
-      this.tag('BackgroundImage').patch({ smooth: { alpha: 1 } });
-      this.tag('MainView').patch({ smooth: { alpha: 1 } });
-      this.tag('TopPanel').patch({ smooth: { alpha: 1 } });
-      this.tag('rightArrowIcons').patch({ smooth: { alpha: 1 } });
-      this.tag('leftArrowIcons').patch({ smooth: { alpha: 1 } });
+     show() {
+      this.tag('BackgroundImage').patch({ alpha: 1 });
+      this.tag('BackgroundColor').patch({ alpha: 1 });
+      this.tag('MainView').patch({ alpha: 1 });
+      this.tag('TopPanel').patch({ alpha: 1 });
     }
 
     /**
