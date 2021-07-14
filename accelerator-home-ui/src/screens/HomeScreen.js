@@ -65,14 +65,23 @@ export default class HomeScreen extends Lightning.Component {
           type: MainView,
         },
       },
-      IpAddress: {
-        x: 1850,
+      IpAddressBg: {
+        rect: true,
+        x: 1870,
         y: 1060,
+        w: 256,
+        h: 30,
+        mount: 1,
+        color: 0xbb0078ac,
+      },
+      IpAddress: {
+        x: 1828,
+        y: 1058,
         mount: 1,
         text: {
           text: 'IP:NA',
           textColor: 0xffffffff,
-          fontSize: 30,
+          fontSize: 22,
         },
       },
       Player: { type: AAMPVideoPlayer },
@@ -83,7 +92,6 @@ export default class HomeScreen extends Lightning.Component {
     this.homeApi = new HomeApi()
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
-    console.log(data)
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -294,7 +302,7 @@ export default class HomeScreen extends Lightning.Component {
 
   $changeBackgroundImageOnNonFocus(image) {
     this.tag('BackgroundImage').patch({
-      // todo
+
     })
   }
   /**
@@ -315,7 +323,7 @@ export default class HomeScreen extends Lightning.Component {
   /**
    * Function to hide the home UI.
    */
-   hide() {
+  hide() {
     this.tag('BackgroundImage').patch({ alpha: 0 });
     this.tag('BackgroundColor').patch({ alpha: 0 });
     this.tag('MainView').patch({ alpha: 0 });
@@ -325,7 +333,7 @@ export default class HomeScreen extends Lightning.Component {
   /**
      * Function to show home UI.
    */
-   show() {
+  show() {
     this.tag('BackgroundImage').patch({ alpha: 1 });
     this.tag('BackgroundColor').patch({ alpha: 1 });
     this.tag('MainView').patch({ alpha: 1 });

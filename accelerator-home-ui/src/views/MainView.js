@@ -39,7 +39,7 @@ export default class MainView extends Lightning.Component {
         Text1: {
           x: 10,
           y: 50,
-          w: 91,
+          w: 95,
           text: {
             fontSize: 40,
             text: 'Apps',

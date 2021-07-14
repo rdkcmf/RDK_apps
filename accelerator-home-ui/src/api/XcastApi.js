@@ -41,8 +41,7 @@ export default class XcastApi {
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
-          console.log(result);
-          console.log('Xcast activation success');
+          console.log('Xcast activation success ' + result);
           this._thunder
             .call('org.rdk.Xcast', 'getEnabled')
             .then(result => {

@@ -35,7 +35,6 @@ export default {
       path: 'home',
       component: Home,
       before() {
-        console.log('before home!')
         return Promise.resolve()
       },
       cache: 10,

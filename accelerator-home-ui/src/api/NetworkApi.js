@@ -68,7 +68,6 @@ export default class Network {
     return new Promise((resolve, reject) => {
       this._thunder.call(this.callsign, 'getStbIp').then(result => {
         if (result.success) {
-          console.log(result)
           resolve(result.ip)
         }
         reject(false)

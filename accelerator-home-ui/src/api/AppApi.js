@@ -410,7 +410,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
         .then(result => {
-          console.log("############ standby ##############" + value)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -425,7 +424,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
         .then(result => {
-          console.log("############ audio_mute ##############" + value)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -442,7 +440,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
         .then(result => {
-          console.log("############ setVolumeLevel ############" + value)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -459,7 +456,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
         .then(result => {
-          console.log("############ getVolumeLevel ############")
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })

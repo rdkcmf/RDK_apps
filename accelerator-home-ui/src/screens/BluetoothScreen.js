@@ -48,7 +48,7 @@ export default class BluetoothScreen extends Lightning.Component {
         x: 1050,
         y: 320,
         text: {
-          text: 'Bluetooth now discoverable as Xfinity x1 guest Remote',
+          text: 'Now discoverable as: ',
           textColor: COLORS.textColor,
           fontSize: 28,
         },
@@ -166,6 +166,7 @@ export default class BluetoothScreen extends Lightning.Component {
 
 
     this._activateBluetooth()
+    this._setState('Switch')
     this._bluetooth = true
     if (this._bluetooth) {
       this.tag('Networks').visible = true
@@ -174,13 +175,21 @@ export default class BluetoothScreen extends Lightning.Component {
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
     this.renderDeviceList()
   }
-
+  _active() {
+    this._setState('Switch')
+  }
   /**
    * Function to be excuted when the Bluetooth screen is enabled.
    */
   _enable() {
-    console.log('eanble--')
-    this._setState('Button')
+    if (this._bluetooth) {
+      this._bt.startScan()
+    }
+    this.scanTimer = setInterval(() => {
+      if (this._bluetooth) {
+        this._bt.startScan()
+      }
+    }, 15000)
   }
 
   /**
@@ -235,20 +244,45 @@ export default class BluetoothScreen extends Lightning.Component {
 
   static _states() {
     return [
-      class Button extends this{
-        $enter() {
-          console.log('Button enter')
-
-        }
+      class Switch extends this {
+        $enter() { }
         $exit() {
-          console.log('Botton exit')
+          console.log('Switch exit')
           this.tag('Button').patch({
             h: 60,
             w: 180
           })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
+        }
+        _handleDown() {
+          if (this._bluetooth) {
+            if (this._pairedNetworks.tag('List').length > 0) {
+              this._setState('PairedDevices')
+            } else if (this._availableNetworks.tag('List').length > 0) {
+              this._setState('AvailableDevices')
+            }
+          }
+        }
+
+        _handleLeft() {
+          console.log('handle left bluetooth')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
+          this.fireAncestors('$goToSideMenubar', 0)
         }
         _getFocused() {
-          console.log('switch button')
+          console.log('switch focus')
           this.tag('Button').patch({
             h: 70,
             w: 200
@@ -260,76 +294,7 @@ export default class BluetoothScreen extends Lightning.Component {
           });
         }
         _handleEnter() {
-          console.log('enterrr')
-          this._bluetoothIcon = !this._bluetoothIcon
-          this.switchOnOff()
-        }
-        _handleLeft() {
-          console.log('handle left bluetooth')
-          this.tag('Button').patch({
-            h: 60,
-            w: 180
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
-          this.fireAncestors('$goToSideMenubar', 0)
-        }
-      },
-      class Switch extends this {
-        $enter() {
-          console.log('Switch enter')
-          this.tag('Button').patch({
-            h: 70
-          })
-        }
-        $exit() {
-          console.log('Switch exit')
-          this.tag('Button').patch({
-            h: 60
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
-        }
-        _getFocused() {
-          console.log('switch focus')
-          this.tag('Button').patch({
-            h: 70
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 1
-            }
-          });
-        }
-        _handleLeft() {
-          console.log('handle left bluetooth')
-          this.fireAncestors('$goToSideMenubar', 0)
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
-        }
-
-        _handleDown() {
-          if (this._bluetooth) {
-            if (this._pairedNetworks.tag('List').length > 0) {
-              this._setState('PairedDevices')
-            } else if (this._availableNetworks.tag('List').length > 0) {
-              this._setState('AvailableDevices')
-            }
-          }
-        }
-        _handleEnter() {
-          console.log('enterrr')
-          this._bluetoothIcon = !this._bluetoothIcon
-          this.switchOnOff()
+          this.switch()
         }
       },
       class PairedDevices extends this {
@@ -443,22 +408,6 @@ export default class BluetoothScreen extends Lightning.Component {
     }
   }
 
-
-  switchOnOff() {
-    console.log('onnnnnnnnffffffffffff' + this._bluetoothIcon)
-    if (this._bluetoothIcon) {
-      this.tag('Switch.Button').src = Utils.asset('images/switch-on-new.png')
-      this.toggleBtnAnimationX()
-      this.tag('Button').patch({
-        src: Utils.asset('images/switch-on-new.png')
-      })
-    } else if (!this._bluetoothIcon) {
-      this.toggleBtnAnimationY()
-      this.tag('Button').patch({
-        src: Utils.asset('images/switch-off-new.png')
-      })
-    }
-  }
   /**
    * Function to turn on and off Bluetooth.
    */

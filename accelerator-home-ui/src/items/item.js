@@ -16,11 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-
-import {
-  Lightning,
-  Utils
-} from '@lightningjs/sdk'
+import { Lightning, Utils } from '@lightningjs/sdk'
 
 /**
  * Class for rendering items in UI list.

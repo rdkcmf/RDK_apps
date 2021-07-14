@@ -35,13 +35,6 @@ export default class SplashScreen extends Lightning.Component {
         h: 1080,
         alpha: 1,
         src: Utils.asset('/images/splash/Splash-Background.jpg'),
-        //just to cache the image
-        Cache: {
-          w: 0,
-          h: 0,
-          x: -1920,
-          src: Utils.asset('/images/splash/Splash-Background.jpg'),
-        },
         Img: {
           mount: 0.5,
           x: 1920 / 2,
@@ -450,7 +443,6 @@ export default class SplashScreen extends Lightning.Component {
           console.log('get focused called')
           let _tagEle = this.tag('UISwitch.UIList').element
           let bgColor = ''
-          console.log('get focused called with ele and tag ' + _tagEle + " ::bgColor ::" + bgColor)
           if (_tagEle._item.title == 'LIVE') {
             bgColor = 0xFF445263
           } else if (_tagEle._item.title == 'TATA') {
