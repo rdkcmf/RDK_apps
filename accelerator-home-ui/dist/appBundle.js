@@ -1,9 +1,9 @@
 /**
  * App version: 1.0.0
  * SDK version: 3.2.1
- * CLI version: 2.5.0
+ * CLI version: 2.5.1
  *
- * Generated: Sun, 27 Jun 2021 14:09:42 GMT
+ * Generated: Thu, 15 Jul 2021 06:15:31 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -471,8 +471,6 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
-    config.getInfo;
-    config.setInfo;
   };
 
   /*
@@ -495,6 +493,25 @@ var APP_accelerator_home_ui = (function () {
    */
 
   var Lightning = window.lng;
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -4827,8 +4844,10 @@ var APP_accelerator_home_ui = (function () {
               } else {
                 fireOnConsumer('Beacon' + event + 'Failed' + response.status);
               }
+              Promise.resolve(null);
             })
             .catch(() => {
+              Promise.resolve(null);
             })
         )
       }, Promise.resolve(null))
@@ -9322,7 +9341,7 @@ var APP_accelerator_home_ui = (function () {
         });
         return true
 
-      } else if (key.keyCode == 118 || key.keyCode == 113) {
+      } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
         let value = !audio_mute;
         appApi$1.audio_mute(value).then(res => {
@@ -13437,6 +13456,27 @@ ${error.toString()}`;
         .catch(err => {
           console.log('Error', err);
         })
+
+
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 173,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+
+
         .then(result => {
           thunder
             .call(rdkshellCallsign, 'addKeyIntercept', {
