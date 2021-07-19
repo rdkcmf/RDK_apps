@@ -198,6 +198,8 @@ export default class HomeScreen extends Lightning.Component {
 
           if (res.success == true) {
             audio_mute = value;
+            new AppApi().zorder("moveToFront","foreground");
+            new AppApi().setVisibility("foreground",audio_mute)
           }
           console.log("audio_mute:" + audio_mute);
         })

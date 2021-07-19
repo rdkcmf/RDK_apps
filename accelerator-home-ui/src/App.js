@@ -44,6 +44,7 @@ export default class App extends Router.App {
   }
 
   _init() {
+    new AppApi().launchforeground();
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result=>{
       if(result){
