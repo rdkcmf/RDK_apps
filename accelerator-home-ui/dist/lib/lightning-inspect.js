@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-window.attachInspector = function({Element, ElementCore, Stage, Component, ElementTexturizer, Texture}) {
+window.attachInspector = function({Application, Element, ElementCore, Stage, Component, ElementTexturizer, Texture}) {
 
     const isAlreadyAttached = window.hasOwnProperty('mutationCounter');
     if (isAlreadyAttached) {
@@ -221,7 +221,7 @@ window.attachInspector = function({Element, ElementCore, Stage, Component, Eleme
         oSetParent.apply(this, arguments);
 
         if (!window.mutatingChildren) {
-            if (parent) {
+            if (parent && parent.dhtml) {
                 var index = parent._children.getIndex(this);
                 if (index == parent._children.get().length - 1) {
                     parent.dhtml().appendChild(this.dhtml());
@@ -229,7 +229,7 @@ window.attachInspector = function({Element, ElementCore, Stage, Component, Eleme
                     parent.dhtml().insertBefore(this.dhtml(), parent.dhtml().children[index]);
                 }
             } else {
-                if (prevParent) {
+                if (prevParent && prevParent.dhtml) {
                     prevParent.dhtml().removeChild(this.dhtml());
                 }
             }
@@ -268,9 +268,13 @@ window.attachInspector = function({Element, ElementCore, Stage, Component, Eleme
             c = c._element;
         }
         if (v == dv) {
-            c.dhtmlRemoveAttribute(n);
+            if (c.dhtmlRemoveAttribute) {
+                c.dhtmlRemoveAttribute(n);
+            }
         } else {
-            c.dhtmlSetAttribute(n, v);
+            if (c.dhtmlSetAttribute) {
+                c.dhtmlSetAttribute(n, v);
+            }
         }
     };
 
@@ -810,6 +814,22 @@ window.attachInspector = function({Element, ElementCore, Stage, Component, Eleme
     Element.prototype._setDisplayedTexture = function() {
         _setDisplayedTexture.apply(this, arguments)
         updateTextureAttribs(this)
+    }
+
+    const _updateFocus = Application.prototype.__updateFocus
+    Application.prototype.__updateFocus = function() {
+        const prev = this._focusPath && this._focusPath.length ? this._focusPath[this._focusPath.length - 1] : null;
+        _updateFocus.apply(this, arguments)
+        const focused = this._focusPath && this._focusPath.length ? this._focusPath[this._focusPath.length - 1] : null;
+
+        if (prev != focused) {
+            if (prev) {
+                val(prev, 'focused', false, false);
+            }
+            if (focused) {
+                val(focused, 'focused', true, false);
+            }
+        }
     }
 };
 

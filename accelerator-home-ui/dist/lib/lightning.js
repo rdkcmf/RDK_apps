@@ -1,5 +1,5 @@
 /**
- * Lightning v2.3.0
+ * Lightning v2.4.0
  *
  * https://github.com/rdkcentral/Lightning
  */
@@ -5610,15 +5610,21 @@
             if (args.fontFace === null) {
                 args.fontFace = this.stage.getOption('defaultFontFace');
             }
+            const gl = this.stage.gl;
             return function (cb) {
                 const canvas = this.stage.platform.getDrawingCanvas();
                 const renderer = new TextTextureRenderer(this.stage, canvas, args);
                 const p = renderer.draw();
+                const texParams = {};
+                if (gl) {
+                    texParams[gl.TEXTURE_MAG_FILTER] = gl.NEAREST;
+                }
                 if (p) {
                     p.then(() => {
                         cb(null, Object.assign({
                             renderInfo: renderer.renderInfo,
-                            throttle: false
+                            throttle: false,
+                            texParams: texParams,
                         }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
                     }).catch((err) => {
                         cb(err);
@@ -5626,7 +5632,8 @@
                 } else {
                     cb(null, Object.assign({
                         renderInfo: renderer.renderInfo,
-                        throttle: false
+                        throttle: false,
+                        texParams: texParams,
                     }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
                 }
             };
@@ -5952,6 +5959,11 @@
                 if (currentIndex === index) {
                     return item;
                 }
+                if (Utils.isObjectLiteral(item)) {
+                    const o = item;
+                    item = this.createItem(o);
+                    item.patch(o);
+                }
                 if (currentIndex != -1) {
                     this.setAt(item, index);
                 } else {
@@ -5986,6 +5998,11 @@
         }
         setAt(item, index) {
             if (index >= 0 && index <= this._items.length) {
+                if (Utils.isObjectLiteral(item)) {
+                    const o = item;
+                    item = this.createItem(o);
+                    item.patch(o);
+                }
                 let currentIndex = this._items.indexOf(item);
                 if (currentIndex != -1) {
                     if (currentIndex !== index) {
@@ -6026,13 +6043,17 @@
             }
         };
         removeAt(index) {
-            let item = this._items[index];
-            if (item.ref) {
-                this._refs[item.ref] = undefined;
+            if (index >= 0 && index < this._items.length) {
+                const item = this._items[index];
+                if (item.ref) {
+                    this._refs[item.ref] = undefined;
+                }
+                this._items.splice(index, 1);
+                this.onRemove(item, index);
+                return item;
+            } else {
+                throw new Error(`removeAt: The index ${index} is out of bounds ${this._items.length - 1}`);
             }
-            this._items.splice(index, 1);
-            this.onRemove(item, index);
-            return item;
         };
         clear() {
             let n = this._items.length;
@@ -6326,6 +6347,7 @@
             }
             this._updateAttachedFlag();
             this._updateEnabledFlag();
+            this._updateCollision();
             if (this.isRoot && parent) {
                 this._throwError("Root should not be added as a child! Results are unspecified!");
             }
@@ -7308,6 +7330,17 @@
                     this._h = v;
                     this._updateDimensions();
                 }
+            }
+        }
+        get collision() {
+            return this._collision;
+        }
+        set collision(v) {
+            this._collision = v;
+        }
+        _updateCollision() {
+            if (this.collision && this.__parent && this.__parent.collision === undefined) {
+                this.__parent.collision = 2;
             }
         }
         get scaleX() {
@@ -10712,6 +10745,9 @@
                 this._imageWorker.destroy();
             }
             this._removeKeyHandler();
+            this._removeClickHandler();
+            this._removeHoverHandler();
+            this._removeScrollWheelHandler();
         }
         startLoop() {
             this._looping = true;
@@ -10848,6 +10884,39 @@
             }
             if (this._keyupListener) {
                 window.removeEventListener('keyup', this._keyupListener);
+            }
+        }
+        registerClickHandler(clickHandler) {
+            this._clickListener = e => {
+                clickHandler(e);
+            };
+            window.addEventListener('mousedown', this._clickListener);
+        }
+        _removeClickHandler() {
+            if (this._clickListener) {
+                window.removeEventListener('mousedown', this._clickListener);
+            }
+        }
+        registerHoverHandler(hoverHandler) {
+            this._hoverListener = e => {
+                hoverHandler(e);
+            };
+            window.addEventListener('mousemove', this._hoverListener);
+        }
+        _removeHoverHandler() {
+            if (this._hoverListener) {
+                window.removeEventListener('mousemove', this._hoverListener);
+            }
+        }
+        registerScrollWheelHandler(registerScrollWheelHandler) {
+            this._scrollWheelListener = e => {
+                registerScrollWheelHandler(e);
+            };
+            window.addEventListener('wheel', this._scrollWheelListener);
+        }
+        _removeScrollWheelHandler() {
+            if (this._scrollWheelListener) {
+                window.removeEventListener('wheel', this._scrollWheelListener);
             }
         }
     }
@@ -13112,6 +13181,7 @@
             Application.booting = false;
             this.__updateFocusCounter = 0;
             this.__keypressTimers = new Map();
+            this.__hoveredChild = null;
             this.stage.init();
             this.updateFocusSettings();
             this.__keymap = this.getOption('keys');
@@ -13121,6 +13191,17 @@
                 });
                 this.stage.platform.registerKeyupHandler((e) => {
                     this._receiveKeyup(e);
+                });
+            }
+            if (this.getOption("enablePointer")) {
+                this.stage.platform.registerClickHandler((e) => {
+                    this._receiveClick(e);
+                });
+                this.stage.platform.registerHoverHandler((e) => {
+                    this._receiveHover(e);
+                });
+                this.stage.platform.registerScrollWheelHandler((e) => {
+                    this._recieveScrollWheel(e);
                 });
             }
         }
@@ -13147,6 +13228,7 @@
                 8: "Back",
                 27: "Exit"
             });
+            opt('enablePointer', false);
         }
         __construct() {
             this.stage.setApplication(this);
@@ -13193,6 +13275,9 @@
                     }
                 }
                 if (this._focusPath.length !== newFocusPath.length || index !== newFocusPath.length) {
+                    if (this.getOption('debug')) {
+                        console.log('[Lightning] Focus changed: ' + newFocusedComponent.getLocationString());
+                    }
                     for (let i = this._focusPath.length - 1; i >= index; i--) {
                         const unfocusedElement = this._focusPath.pop();
                         unfocusedElement._unfocus(newFocusedComponent, prevFocusedComponent);
@@ -13370,6 +13455,158 @@
                 }
             }
             return;
+        }
+        _recieveScrollWheel(e) {
+            const obj = e;
+            const {clientX, clientY} = obj;
+            if (clientX <= this.stage.w && clientY <= this.stage.h) {
+                if (!this.fireTopDownScrollWheelHandler("_captureScroll", obj)) {
+                    this.fireBottomUpScrollWheelHandler("_handleScroll", obj);
+                }
+            }
+        }
+        fireTopDownScrollWheelHandler(event, obj) {
+            let children = this.stage.application.children;
+            let affected = this._findChildren([], children).reverse();
+            let n = affected.length;
+            while(n--) {
+                const child = affected[n];
+                if (child && child[event]) {
+                    child._captureScroll(obj);
+                    return true;
+                }
+            }
+            return false;
+        }
+        fireBottomUpScrollWheelHandler(event, obj) {
+            const {clientX, clientY} = obj;
+            const target = this._getTargetChild(clientX, clientY);
+            let child = target;
+            while (child !== null) {
+                if (child && child[event]) {
+                    child._handleScroll(obj);
+                    return true;
+                }
+                child = child.parent;
+            }
+            return false;
+        }
+        _receiveClick(e) {
+            const obj = e;
+            const {clientX, clientY} = obj;
+            if (clientX <= this.stage.w && clientY <= this.stage.h) {
+                this.stage.application.fireBottomUpClickHandler(obj);
+            }
+        }
+        fireBottomUpClickHandler(obj) {
+            const {clientX, clientY} = obj;
+            const target = this._getTargetChild(clientX, clientY);
+            let child = target;
+            while (child !== null) {
+                if (child && child["_handleClick"]) {
+                    child._handleClick(target);
+                    break;
+                }
+                child = child.parent;
+            }
+        }
+        _receiveHover(e) {
+            const obj = e;
+            const {clientX, clientY} = obj;
+            if (clientX <= this.stage.w && clientY <= this.stage.h) {
+                this.stage.application.fireBottomUpHoverHandler(obj);
+            }
+        }
+        fireBottomUpHoverHandler(obj) {
+            const {clientX, clientY} = obj;
+            const target = this._getTargetChild(clientX, clientY);
+            if (target !== this.__hoveredChild) {
+                if (this.__hoveredChild) {
+                    let child = this.__hoveredChild;
+                    while (child !== null) {
+                        if (child && child["_handleUnhover"]) {
+                            child._handleUnhover(this.__hoveredChild);
+                            break;
+                        }
+                        child = child.parent;
+                    }
+                }
+                let child = target;
+                this.__hoveredChild = target;
+                while (child !== null) {
+                    if (child && child["_handleHover"]) {
+                        child._handleHover(target);
+                        break;
+                    }
+                    child = child.parent;
+                }
+            }
+        }
+        _getTargetChild(clientX, clientY) {
+            let children = this.stage.application.children;
+            let affected = this._findChildren([], children);
+            let hoverableChildren = this._withinClickableRange(affected, clientX, clientY);
+            hoverableChildren.sort((a,b) => {
+                if (a.zIndex > b.zIndex) {
+                    return 1;
+                } else if (a.zIndex < b.zIndex) {
+                    return -1;
+                } else {
+                    return a.id > b.id ? 1: -1;
+                }
+            });
+            if (hoverableChildren.length) {
+                return hoverableChildren.slice(-1)[0];
+            } else {
+                return null;
+            }
+        }
+        _findChildren(bucket, children) {
+            let n = children.length;
+            while (n--) {
+                const child = children[n];
+                if (child.__active && child.collision) {
+                    if (child.collision === true) {
+                        bucket.push(child);
+                    }
+                    if (child.hasChildren()) {
+                        this._findChildren(bucket, child.children);
+                    }
+                }
+            }
+            return bucket;
+        }
+        _withinClickableRange(affectedChildren, cursorX, cursorY) {
+            let n = affectedChildren.length;
+            const candidates = [];
+            while (n--) {
+                const child = affectedChildren[n];
+                const precision = this.stage.getRenderPrecision();
+                const ctx = child.core._worldContext;
+                const cx = ctx.px * precision;
+                const cy = ctx.py * precision;
+                const cw = child.finalW * ctx.ta * precision;
+                const ch = child.finalH * ctx.td * precision;
+                if (cx > this.stage.w || cy > this.stage.h) {
+                    continue;
+                }
+                if (child.parent.core._scissor && !this._testCollision(cursorX, cursorY, ...child.parent.core._scissor)) {
+                    continue
+                }
+                if (this._testCollision(cursorX, cursorY, cx, cy, cw, ch)) {
+                    candidates.push(child);
+                }
+            }
+            return candidates;
+        }
+        _testCollision(px, py, cx, cy, cw, ch) {
+            if (px >= cx &&
+                px <= cx + cw &&
+                py >= cy &&
+                py <= cy + ch) {
+                return true;
+            }
+            return false;
         }
         destroy() {
             if (!this._destroyed) {

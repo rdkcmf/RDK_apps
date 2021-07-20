@@ -1,9 +1,9 @@
 /**
- * App version: 1.0.0
+ * App version: 1 5e37 20/07/21
  * SDK version: 3.2.1
  * CLI version: 2.5.1
  *
- * Generated: Thu, 15 Jul 2021 06:15:31 GMT
+ * Generated: Tue, 20 Jul 2021 12:02:04 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -5541,7 +5541,7 @@ var APP_accelerator_home_ui = (function () {
     api = API(options);
     return wrapper({ ...thunder$2(options), ...plugins })
   };
-  const resolve = (result, args) => {
+  const resolve$1 = (result, args) => {
     if (
       typeof result !== 'object' ||
       (typeof result === 'object' && (!result.then || typeof result.then !== 'function'))
@@ -5611,7 +5611,7 @@ var APP_accelerator_home_ui = (function () {
               }
             }
             return function(...args) {
-              return resolve(prop.apply(this, args), args)
+              return resolve$1(prop.apply(this, args), args)
             }
           }
           if (typeof prop === 'object') {
@@ -5911,6 +5911,10 @@ var APP_accelerator_home_ui = (function () {
           .then(() => {
             thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
+            }).then(()=>{
+              thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+                client:'foreground' ,
+              });
             });
             thunder$1.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
@@ -5943,6 +5947,10 @@ var APP_accelerator_home_ui = (function () {
           .then(() => {
             thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
+            }).then(()=>{
+              thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+                client:'foreground' ,
+              });
             });
             thunder$1.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
@@ -5973,6 +5981,10 @@ var APP_accelerator_home_ui = (function () {
         .then(() => {
           thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            });
           });
           thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
@@ -5993,6 +6005,10 @@ var APP_accelerator_home_ui = (function () {
       .then(() => {
         thunder$1.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
+        }).then(()=>{
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          });
         });
         thunder$1.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
@@ -6015,12 +6031,54 @@ var APP_accelerator_home_ui = (function () {
         .then(() => {
           thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            });
           });
           thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
         .catch(err => {
           console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
         });
+    }
+
+
+
+    launchforeground() {
+      const childCallsign = 'foreground';
+      thunder$1
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: 'HtmlApp',
+          uri: 'http://127.0.0.1:50050/foreground/',
+        })
+        .then(() => {
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp',
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setVisibility', {
+            client: 'foreground',
+            visible: false,
+          });
+        })
+        .catch(err => { })      
+        .catch(err => {
+          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+        });
+    }
+
+    zorder(value,cli) {
+     console.log("#################zorder###################");
+      thunder$1.call('org.rdk.RDKShell',value , { client: cli })
+        .then(result => {
+          console.log(client+":"+value+'  Success');
+          resolve(result);
+        }).catch(err => { resolve(false); });
+
     }
 
     /**
@@ -6194,12 +6252,12 @@ var APP_accelerator_home_ui = (function () {
       })
     }
 
-      audio_mute(value) {
+      audio_mute(value,audio_source) {
       return new Promise((resolve, reject) => {
         thunder$1
-          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
           .then(result => {
-            console.log("############ audio_mute ##############" + value);
+            console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source);
             console.log(JSON.stringify(result, 3, null));
             resolve(result);
           })
@@ -6234,6 +6292,24 @@ var APP_accelerator_home_ui = (function () {
           .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
           .then(result => {
             console.log("############ getVolumeLevel ############");
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
+
+    getConnectedAudioPorts() {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+          .then(result => {
+            console.log("############ getConnectedAudioPorts ############");
             console.log(JSON.stringify(result, 3, null));
             resolve(result);
           })
@@ -6678,11 +6754,15 @@ var APP_accelerator_home_ui = (function () {
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
-              } else return false
+              }  else {
+                appApi.zorder("moveToFront","foreground");
+                return false;
+              }
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
                 console.log('ResidentApp moveToFront Success');
               });
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                appApi.zorder("moveToFront","foreground");
                 console.log('ResidentApp moveToFront Success');
               });
               thunder
@@ -9343,16 +9423,24 @@ var APP_accelerator_home_ui = (function () {
 
       } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
-        let value = !audio_mute;
-        appApi$1.audio_mute(value).then(res => {
-          console.log("__________AUDIO_MUTE_______________________F7");
-          console.log(JSON.stringify(res, 3, null));
+        appApi$1.getConnectedAudioPorts().then(res => {
+          let audio_source = res.connectedAudioPorts[0];
+          let value = !audio_mute;
+          new AppApi().audio_mute(value, audio_source).then(res => {
+            console.log("__________AUDIO_MUTE_______________________F7");
+            console.log(JSON.stringify(res, 3, null));
 
-          if (res.success == true) {
-            audio_mute = value;
-          }
-          console.log("audio_mute:" + audio_mute);
+            if (res.success == true) {
+              audio_mute = value;
+              new AppApi().zorder("moveToFront","foreground");
+              new AppApi().setVisibility("foreground",audio_mute);
+            }
+            console.log("audio_mute:" + audio_mute);
+          });
+
         });
+
+
         return true
 
       } else if (key.keyCode == 175) {
@@ -11348,6 +11436,14 @@ var APP_accelerator_home_ui = (function () {
                 this._events.get('onWIFIStateChanged')(notification);
               }
             });
+
+            this._thunder.on('org.rdk.Network', 'onInterfaceStatusChanged', notification => {
+              console.log('###### onInterfaceStatusChanged: ' + notification.state);
+              if (this._events.has('onInterfaceStatusChanged')) {
+                this._events.get('onInterfaceStatusChanged')(notification);
+              }
+            });
+
             this._thunder.on(this.callsign, 'onError', notification => {
               console.log('Error: ' + notification);
               if (this._events.has('onError')) {
@@ -12954,6 +13050,23 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Networks.AvailableNetworks.Loader').visible = false;
         this.renderDeviceList(notification.ssids);
       });
+
+      this._wifi.registerEvent('onInterfaceStatusChanged', notification => {
+       if(notification.enabled){
+        this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+        this._wifi.discoverSSIDs();
+        this.wifiStatus = true;
+        this.tag('Networks').visible = true;
+        this.tag('Networks.AvailableNetworks.Loader').visible = true;
+       }else {
+        this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+        this._wifi.disconnect();
+        this.wifiStatus = false;
+        this.tag('Networks').visible = false;
+        this.tag('Networks.AvailableNetworks.Loader').visible = false;
+       }
+      });
+
     }
   }
 
@@ -13435,6 +13548,7 @@ ${error.toString()}`;
     }
 
     _init() {
+      new AppApi().launchforeground();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result=>{
         if(result){
