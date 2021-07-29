@@ -1,9 +1,9 @@
 /**
- * App version: 2.0.0 15/07/21
+ * App version: 2.0.0 25/06/21
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Wed, 14 Jul 2021 15:26:11 GMT
+ * Generated: Thu, 29 Jul 2021 11:42:35 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -288,7 +288,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
 
-  var autoSetupMixin = (sourceObject, setup = () => { }) => {
+  var autoSetupMixin = (sourceObject, setup = () => {}) => {
     let ready = false;
 
     const doSetup = () => {
@@ -300,17 +300,17 @@ var APP_accelerator_home_ui = (function () {
 
     return Object.keys(sourceObject).reduce((obj, key) => {
       if (typeof sourceObject[key] === 'function') {
-        obj[key] = function () {
+        obj[key] = function() {
           doSetup();
           return sourceObject[key].apply(sourceObject, arguments)
         };
       } else if (typeof Object.getOwnPropertyDescriptor(sourceObject, key).get === 'function') {
-        obj.__defineGetter__(key, function () {
+        obj.__defineGetter__(key, function() {
           doSetup();
           return Object.getOwnPropertyDescriptor(sourceObject, key).get.apply(sourceObject)
         });
       } else if (typeof Object.getOwnPropertyDescriptor(sourceObject, key).set === 'function') {
-        obj.__defineSetter__(key, function () {
+        obj.__defineSetter__(key, function() {
           doSetup();
           return Object.getOwnPropertyDescriptor(sourceObject, key).set.sourceObject[key].apply(
             sourceObject,
@@ -1019,14 +1019,14 @@ var APP_accelerator_home_ui = (function () {
             this._setState('');
           }
           static _states() {
-            return [class Paused extends this { }]
+            return [class Paused extends this {}]
           }
         },
       ]
     }
   }
 
-  class localCookie { constructor(e) { return e = e || {}, this.forceCookies = e.forceCookies || !1, !0 === this._checkIfLocalStorageWorks() && !0 !== e.forceCookies ? { getItem: this._getItemLocalStorage, setItem: this._setItemLocalStorage, removeItem: this._removeItemLocalStorage, clear: this._clearLocalStorage } : { getItem: this._getItemCookie, setItem: this._setItemCookie, removeItem: this._removeItemCookie, clear: this._clearCookies } } _checkIfLocalStorageWorks() { if ("undefined" == typeof localStorage) return !1; try { return localStorage.setItem("feature_test", "yes"), "yes" === localStorage.getItem("feature_test") && (localStorage.removeItem("feature_test"), !0) } catch (e) { return !1 } } _getItemLocalStorage(e) { return window.localStorage.getItem(e) } _setItemLocalStorage(e, t) { return window.localStorage.setItem(e, t) } _removeItemLocalStorage(e) { return window.localStorage.removeItem(e) } _clearLocalStorage() { return window.localStorage.clear() } _getItemCookie(e) { var t = document.cookie.match(RegExp("(?:^|;\\s*)" + function (e) { return e.replace(/([.*+?\^${}()|\[\]\/\\])/g, "\\$1") }(e) + "=([^;]*)")); return t && "" === t[1] && (t[1] = null), t ? t[1] : null } _setItemCookie(e, t) { var o = new Date, r = new Date(o.getTime() + 15768e7); document.cookie = `${e}=${t}; expires=${r.toUTCString()};`; } _removeItemCookie(e) { document.cookie = `${e}=;Max-Age=-99999999;`; } _clearCookies() { document.cookie.split(";").forEach(e => { document.cookie = e.replace(/^ +/, "").replace(/=.*/, "=;expires=Max-Age=-99999999"); }); } }
+  class localCookie{constructor(e){return e=e||{},this.forceCookies=e.forceCookies||!1,!0===this._checkIfLocalStorageWorks()&&!0!==e.forceCookies?{getItem:this._getItemLocalStorage,setItem:this._setItemLocalStorage,removeItem:this._removeItemLocalStorage,clear:this._clearLocalStorage}:{getItem:this._getItemCookie,setItem:this._setItemCookie,removeItem:this._removeItemCookie,clear:this._clearCookies}}_checkIfLocalStorageWorks(){if("undefined"==typeof localStorage)return !1;try{return localStorage.setItem("feature_test","yes"),"yes"===localStorage.getItem("feature_test")&&(localStorage.removeItem("feature_test"),!0)}catch(e){return !1}}_getItemLocalStorage(e){return window.localStorage.getItem(e)}_setItemLocalStorage(e,t){return window.localStorage.setItem(e,t)}_removeItemLocalStorage(e){return window.localStorage.removeItem(e)}_clearLocalStorage(){return window.localStorage.clear()}_getItemCookie(e){var t=document.cookie.match(RegExp("(?:^|;\\s*)"+function(e){return e.replace(/([.*+?\^${}()|\[\]\/\\])/g,"\\$1")}(e)+"=([^;]*)"));return t&&""===t[1]&&(t[1]=null),t?t[1]:null}_setItemCookie(e,t){var o=new Date,r=new Date(o.getTime()+15768e7);document.cookie=`${e}=${t}; expires=${r.toUTCString()};`;}_removeItemCookie(e){document.cookie=`${e}=;Max-Age=-99999999;`;}_clearCookies(){document.cookie.split(";").forEach(e=>{document.cookie=e.replace(/^ +/,"").replace(/=.*/,"=;expires=Max-Age=-99999999");});}}
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -1330,20 +1330,20 @@ var APP_accelerator_home_ui = (function () {
   };
 
   var isMergeableObject = function isMergeableObject(value) {
-    return isNonNullObject(value)
-      && !isSpecial(value)
+  	return isNonNullObject(value)
+  		&& !isSpecial(value)
   };
 
   function isNonNullObject(value) {
-    return !!value && typeof value === 'object'
+  	return !!value && typeof value === 'object'
   }
 
   function isSpecial(value) {
-    var stringValue = Object.prototype.toString.call(value);
+  	var stringValue = Object.prototype.toString.call(value);
 
-    return stringValue === '[object RegExp]'
-      || stringValue === '[object Date]'
-      || isReactElement(value)
+  	return stringValue === '[object RegExp]'
+  		|| stringValue === '[object Date]'
+  		|| isReactElement(value)
   }
 
   // see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
@@ -1351,110 +1351,110 @@ var APP_accelerator_home_ui = (function () {
   var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
 
   function isReactElement(value) {
-    return value.$$typeof === REACT_ELEMENT_TYPE
+  	return value.$$typeof === REACT_ELEMENT_TYPE
   }
 
   function emptyTarget(val) {
-    return Array.isArray(val) ? [] : {}
+  	return Array.isArray(val) ? [] : {}
   }
 
   function cloneUnlessOtherwiseSpecified(value, options) {
-    return (options.clone !== false && options.isMergeableObject(value))
-      ? deepmerge(emptyTarget(value), value, options)
-      : value
+  	return (options.clone !== false && options.isMergeableObject(value))
+  		? deepmerge(emptyTarget(value), value, options)
+  		: value
   }
 
   function defaultArrayMerge(target, source, options) {
-    return target.concat(source).map(function (element) {
-      return cloneUnlessOtherwiseSpecified(element, options)
-    })
+  	return target.concat(source).map(function(element) {
+  		return cloneUnlessOtherwiseSpecified(element, options)
+  	})
   }
 
   function getMergeFunction(key, options) {
-    if (!options.customMerge) {
-      return deepmerge
-    }
-    var customMerge = options.customMerge(key);
-    return typeof customMerge === 'function' ? customMerge : deepmerge
+  	if (!options.customMerge) {
+  		return deepmerge
+  	}
+  	var customMerge = options.customMerge(key);
+  	return typeof customMerge === 'function' ? customMerge : deepmerge
   }
 
   function getEnumerableOwnPropertySymbols(target) {
-    return Object.getOwnPropertySymbols
-      ? Object.getOwnPropertySymbols(target).filter(function (symbol) {
-        return target.propertyIsEnumerable(symbol)
-      })
-      : []
+  	return Object.getOwnPropertySymbols
+  		? Object.getOwnPropertySymbols(target).filter(function(symbol) {
+  			return target.propertyIsEnumerable(symbol)
+  		})
+  		: []
   }
 
   function getKeys(target) {
-    return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
+  	return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target))
   }
 
   function propertyIsOnObject(object, property) {
-    try {
-      return property in object
-    } catch (_) {
-      return false
-    }
+  	try {
+  		return property in object
+  	} catch(_) {
+  		return false
+  	}
   }
 
   // Protects from prototype poisoning and unexpected merging up the prototype chain.
   function propertyIsUnsafe(target, key) {
-    return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
-      && !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
-        && Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
+  	return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
+  		&& !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
+  			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
   }
 
   function mergeObject(target, source, options) {
-    var destination = {};
-    if (options.isMergeableObject(target)) {
-      getKeys(target).forEach(function (key) {
-        destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
-      });
-    }
-    getKeys(source).forEach(function (key) {
-      if (propertyIsUnsafe(target, key)) {
-        return
-      }
+  	var destination = {};
+  	if (options.isMergeableObject(target)) {
+  		getKeys(target).forEach(function(key) {
+  			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+  		});
+  	}
+  	getKeys(source).forEach(function(key) {
+  		if (propertyIsUnsafe(target, key)) {
+  			return
+  		}
 
-      if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
-        destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
-      } else {
-        destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
-      }
-    });
-    return destination
+  		if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
+  			destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
+  		} else {
+  			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+  		}
+  	});
+  	return destination
   }
 
   function deepmerge(target, source, options) {
-    options = options || {};
-    options.arrayMerge = options.arrayMerge || defaultArrayMerge;
-    options.isMergeableObject = options.isMergeableObject || isMergeableObject;
-    // cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
-    // implementations can use it. The caller may not replace it.
-    options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
+  	options = options || {};
+  	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+  	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+  	// cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+  	// implementations can use it. The caller may not replace it.
+  	options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
 
-    var sourceIsArray = Array.isArray(source);
-    var targetIsArray = Array.isArray(target);
-    var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+  	var sourceIsArray = Array.isArray(source);
+  	var targetIsArray = Array.isArray(target);
+  	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
 
-    if (!sourceAndTargetTypesMatch) {
-      return cloneUnlessOtherwiseSpecified(source, options)
-    } else if (sourceIsArray) {
-      return options.arrayMerge(target, source, options)
-    } else {
-      return mergeObject(target, source, options)
-    }
+  	if (!sourceAndTargetTypesMatch) {
+  		return cloneUnlessOtherwiseSpecified(source, options)
+  	} else if (sourceIsArray) {
+  		return options.arrayMerge(target, source, options)
+  	} else {
+  		return mergeObject(target, source, options)
+  	}
   }
 
   deepmerge.all = function deepmergeAll(array, options) {
-    if (!Array.isArray(array)) {
-      throw new Error('first argument should be an array')
-    }
+  	if (!Array.isArray(array)) {
+  		throw new Error('first argument should be an array')
+  	}
 
-    return array.reduce(function (prev, next) {
-      return deepmerge(prev, next, options)
-    }, {})
+  	return array.reduce(function(prev, next) {
+  		return deepmerge(prev, next, options)
+  	}, {})
   };
 
   var deepmerge_1 = deepmerge;
@@ -1773,18 +1773,18 @@ var APP_accelerator_home_ui = (function () {
           // set language (directly or in a promise)
           typeof language === 'object' && 'then' in language && typeof language.then === 'function'
             ? language
-              .then(lang =>
-                setLanguage(lang)
-                  .then(resolve)
-                  .catch(reject)
-              )
-              .catch(e => {
-                Log.error(e);
-                reject(e);
-              })
+                .then(lang =>
+                  setLanguage(lang)
+                    .then(resolve)
+                    .catch(reject)
+                )
+                .catch(e => {
+                  Log.error(e);
+                  reject(e);
+                })
             : setLanguage(language)
-              .then(resolve)
-              .catch(reject);
+                .then(resolve)
+                .catch(reject);
         })
         .catch(() => {
           const error = 'Language file ' + file + ' not found';
@@ -2305,13 +2305,13 @@ var APP_accelerator_home_ui = (function () {
      * can override it
      * @private
      */
-    _handleBack() { }
+    _handleBack() {}
 
     /**
      * we MUST register _captureKey for dev quick-navigation
      * (via keyboard 1-9)
      */
-    _captureKey() { }
+    _captureKey() {}
 
     /**
      * We MUST return Router.activePage() so the new Page
@@ -2532,7 +2532,7 @@ var APP_accelerator_home_ui = (function () {
    */
   const startRouter = (config, instance) => {
     // backwards compatible
-    let { appInstance, routes, provider = () => { }, widgets = () => { } } = config;
+    let { appInstance, routes, provider = () => {}, widgets = () => {} } = config;
 
     if (instance && isPage(instance)) {
       app = instance;
@@ -3562,11 +3562,11 @@ var APP_accelerator_home_ui = (function () {
 
   const createRegister = flags => {
     const reg = new Map()
-      // store user defined and router
-      // defined flags in register
-      ;[...Object.keys(flags), ...Object.getOwnPropertySymbols(flags)].forEach(key => {
-        reg.set(key, flags[key]);
-      });
+    // store user defined and router
+    // defined flags in register
+    ;[...Object.keys(flags), ...Object.getOwnPropertySymbols(flags)].forEach(key => {
+      reg.set(key, flags[key]);
+    });
     return reg
   };
 
@@ -5378,7 +5378,7 @@ var APP_accelerator_home_ui = (function () {
     };
     params || params === false
       ?
-      typeof params === 'object' && Object.keys(params).length === 0
+        typeof params === 'object' && Object.keys(params).length === 0
         ? null
         : (body.params = params)
       : null;
@@ -5468,7 +5468,7 @@ var APP_accelerator_home_ui = (function () {
   const makeListenerId = (plugin, event) => {
     return ['client', plugin, 'events', event].join('.')
   };
-  const register = function (plugin, event, callback, errorCallback) {
+  const register = function(plugin, event, callback, errorCallback) {
     const listener_id = makeListenerId(plugin, event);
     if (!listeners[listener_id]) {
       listeners[listener_id] = [];
@@ -5490,7 +5490,7 @@ var APP_accelerator_home_ui = (function () {
     listeners[listener_id].push(callback);
     return listeners[listener_id].length - 1
   };
-  const unregister = function (plugin, event, errorCallback) {
+  const unregister = function(plugin, event, errorCallback) {
     const listener_id = makeListenerId(plugin, event);
     delete listeners[listener_id];
     if (plugin !== 'ThunderJS') {
@@ -5520,7 +5520,7 @@ var APP_accelerator_home_ui = (function () {
       options.token = window.thunder.token();
     }
     api = API(options);
-    return wrapper({ ...thunder$2(options), ...plugins })
+    return wrapper({ ...thunder$3(options), ...plugins })
   };
   const resolve = (result, args) => {
     if (
@@ -5538,7 +5538,7 @@ var APP_accelerator_home_ui = (function () {
       return result
     }
   };
-  const thunder$2 = options => ({
+  const thunder$3 = options => ({
     options,
     plugin: false,
     call() {
@@ -5556,7 +5556,7 @@ var APP_accelerator_home_ui = (function () {
       return this.api.request.apply(this, args)
     },
     registerPlugin(name, plugin) {
-      this[name] = wrapper(Object.assign(Object.create(thunder$2), plugin, { plugin: name }));
+      this[name] = wrapper(Object.assign(Object.create(thunder$3), plugin, { plugin: name }));
     },
     subscribe() {
     },
@@ -5587,27 +5587,27 @@ var APP_accelerator_home_ui = (function () {
         if (typeof prop !== 'undefined') {
           if (typeof prop === 'function') {
             if (['on', 'once', 'subscribe'].indexOf(propKey) > -1) {
-              return function (...args) {
+              return function(...args) {
                 return prop.apply(this, args)
               }
             }
-            return function (...args) {
+            return function(...args) {
               return resolve(prop.apply(this, args), args)
             }
           }
           if (typeof prop === 'object') {
             return wrapper(
-              Object.assign(Object.create(thunder$2(target.options)), prop, { plugin: propKey })
+              Object.assign(Object.create(thunder$3(target.options)), prop, { plugin: propKey })
             )
           }
           return prop
         } else {
           if (target.plugin === false) {
             return wrapper(
-              Object.assign(Object.create(thunder$2(target.options)), {}, { plugin: propKey })
+              Object.assign(Object.create(thunder$3(target.options)), {}, { plugin: propKey })
             )
           }
-          return function (...args) {
+          return function(...args) {
             args.unshift(propKey);
             return target.call.apply(this, args)
           }
@@ -5845,7 +5845,7 @@ var APP_accelerator_home_ui = (function () {
      */
     static _template() {
       return {
-        Shadow: {
+        Shadow:{          
           alpha: 0,
           x: -25,
           y: 0,
@@ -5855,12 +5855,21 @@ var APP_accelerator_home_ui = (function () {
           x: 0,
           y: 18,
           Image: {},
+          Title: {
+            text: {
+              fontSize: 27,
+              textColor: 0xffffffff,
+            },
+            mountX: 0.5,
+            alpha: 0,
+          },
         },
+
       }
     }
 
     _init() {
-
+      console.log(this.data);
       if (this.data.url.startsWith('/images')) {
         this.tag('Image').patch({
           w: this.w,
@@ -5883,6 +5892,15 @@ var APP_accelerator_home_ui = (function () {
           h: this.h
         });
       }
+      this.tag('Title').patch({
+        x: this.x_text,
+        y: this.y_text,
+        text: { text: this.data.displayName },
+      });
+      this.tag('Title').patch({ alpha: 1 });
+
+    
+
     }
 
     /**
@@ -5893,8 +5911,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Shadow').patch({
         smooth: {
           alpha: 1,
-          zIndex: 1,
-          texture: lng.Tools.getShadowRect(this.w + 35, this.h + 25, 0, 10, 20),
+          zIndex:1,
+          texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
         }
       });
       this.tag('Image').patch({
@@ -5907,9 +5925,15 @@ var APP_accelerator_home_ui = (function () {
           radius: 0
         }
       });
-      this.tag('Item').patch({
-        zIndex: 2
+      this.tag('Title').patch({
+        x: this.x_text,
+        y: this.y_text,
+        text: { text: this.data.displayName },
       });
+      this.tag('Item').patch({
+          zIndex: 2
+      });
+
     }
 
     /**
@@ -5927,8 +5951,13 @@ var APP_accelerator_home_ui = (function () {
           radius: 10
         }
       });
+      this.tag('Title').patch({
+        x: this.x_text,
+        y: this.y_text,
+        text: { text: this.data.displayName },
+      });
       this.tag('Item').patch({
-        zIndex: 0
+          zIndex: 0
       });
       this.tag('Shadow').patch({
         smooth: {
@@ -5964,12 +5993,12 @@ var APP_accelerator_home_ui = (function () {
   var webUrl = '';
   var lightningUrl = '';
   var nativeUrl = '';
-  const config$1 = {
+  const config$2 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1,
   };
-  var thunder$1 = thunderJS(config$1);
+  var thunder$2 = thunderJS(config$2);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -5997,9 +6026,9 @@ var APP_accelerator_home_ui = (function () {
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$1.Controller.activate({ callsign: systemcCallsign })
+        thunder$2.Controller.activate({ callsign: systemcCallsign })
           .then(() => {
-            thunder$1
+            thunder$2
               .call(systemcCallsign, 'getDeviceInfo', { params: 'estb_ip' })
               .then(result => {
                 resolve(result.success);
@@ -6017,9 +6046,9 @@ var APP_accelerator_home_ui = (function () {
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$1.Controller.activate({ callsign: systemcCallsign })
+        thunder$2.Controller.activate({ callsign: systemcCallsign })
           .then(() => {
-            thunder$1
+            thunder$2
               .call(systemcCallsign, 'getTimeZoneDST')
               .then(result => {
                 resolve(result.timeZone);
@@ -6033,9 +6062,9 @@ var APP_accelerator_home_ui = (function () {
     getResolution() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$1.Controller.activate({ callsign: systemcCallsign })
+        thunder$2.Controller.activate({ callsign: systemcCallsign })
           .then(() => {
-            thunder$1
+            thunder$2
               .call(systemcCallsign, 'getCurrentResolution', { params: 'HDMI0' })
               .then(result => {
                 resolve(result.resolution);
@@ -6056,9 +6085,9 @@ var APP_accelerator_home_ui = (function () {
     setResolution() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$1.Controller.activate({ callsign: systemcCallsign })
+        thunder$2.Controller.activate({ callsign: systemcCallsign })
           .then(() => {
-            thunder$1
+            thunder$2
               .call(systemcCallsign, 'setCurrentResolution', {
                 videoDisplay: 'HDMI0',
                 resolution: '1080p',
@@ -6084,26 +6113,26 @@ var APP_accelerator_home_ui = (function () {
     launchWeb(url) {
       const childCallsign = 'HtmlApp';
       if (webUrl != url) {
-        thunder$1
+        thunder$2
           .call('org.rdk.RDKShell', 'launch', {
             callsign: childCallsign,
             type: childCallsign,
             uri: url,
           })
           .then(() => {
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
             });
-            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+            thunder$2.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
             });
           })
           .catch(err => { });
       } else {
-        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
         });
-        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+        thunder$2.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
       }
       webUrl = url;
       activatedWeb = true;
@@ -6116,26 +6145,26 @@ var APP_accelerator_home_ui = (function () {
     launchLightning(url) {
       const childCallsign = 'LightningApp';
       if (lightningUrl != url) {
-        thunder$1
+        thunder$2
           .call('org.rdk.RDKShell', 'launch', {
             callsign: childCallsign,
             type: childCallsign,
             uri: url,
           })
           .then(() => {
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
             });
-            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+            thunder$2.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
             });
           })
           .catch(err => { });
       } else {
-        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
         });
-        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+        thunder$2.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
       }
       lightningUrl = url;
       activatedLightning = true;
@@ -6147,16 +6176,16 @@ var APP_accelerator_home_ui = (function () {
      */
     launchCobalt(url) {
       const childCallsign = 'Cobalt';
-      thunder$1
+      thunder$2
         .call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
         })
         .then(() => {
-          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
           });
-          thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+          thunder$2.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
         .catch(err => { });
       activatedCobalt = true;
@@ -6167,16 +6196,16 @@ var APP_accelerator_home_ui = (function () {
      */
     launchPremiumApp(childCallsign) {
       // const childCallsign = "Amazon";
-      thunder$1
+      thunder$2
         .call("org.rdk.RDKShell", "launch", {
           callsign: childCallsign,
           type: childCallsign
         })
         .then(() => {
-          thunder$1.call("org.rdk.RDKShell", "moveToFront", {
+          thunder$2.call("org.rdk.RDKShell", "moveToFront", {
             client: childCallsign
           });
-          thunder$1.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
+          thunder$2.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
         })
         .catch(err => { });
       childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
@@ -6188,17 +6217,17 @@ var APP_accelerator_home_ui = (function () {
      */
     launchResident(url) {
       const childCallsign = 'ResidentApp';
-      thunder$1
+      thunder$2
         .call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
           uri: url,
         })
         .then(() => {
-          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
           });
-          thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+          thunder$2.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
         .catch(err => {
           console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
@@ -6210,7 +6239,7 @@ var APP_accelerator_home_ui = (function () {
      */
     suspendWeb() {
       webUrl = '';
-      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'HtmlApp' });
+      thunder$2.call('org.rdk.RDKShell', 'suspend', { callsign: 'HtmlApp' });
     }
 
     /**
@@ -6218,14 +6247,14 @@ var APP_accelerator_home_ui = (function () {
      */
     suspendLightning() {
       lightningUrl = '';
-      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'LightningApp' });
+      thunder$2.call('org.rdk.RDKShell', 'suspend', { callsign: 'LightningApp' });
     }
 
     /**
      * Function to suspend cobalt app.
      */
     suspendCobalt() {
-      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' });
+      thunder$2.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' });
     }
 
 
@@ -6233,14 +6262,14 @@ var APP_accelerator_home_ui = (function () {
      * Function to suspend Netflix/Amazon Prime app.
      */
     suspendPremiumApp(appName) {
-      thunder$1.call('org.rdk.RDKShell', 'suspend', { callsign: appName });
+      thunder$2.call('org.rdk.RDKShell', 'suspend', { callsign: appName });
     }
 
     /**
      * Function to deactivate html app.
      */
     deactivateWeb() {
-      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'HtmlApp' });
+      thunder$2.call('org.rdk.RDKShell', 'destroy', { callsign: 'HtmlApp' });
       activatedWeb = false;
       webUrl = '';
     }
@@ -6249,7 +6278,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to deactivate cobalt app.
      */
     deactivateCobalt() {
-      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' });
+      thunder$2.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' });
       activatedCobalt = false;
     }
 
@@ -6257,7 +6286,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to deactivate Netflix/Amazon Prime app.
      */
     deactivateNativeApp(appName) {
-      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: appName });
+      thunder$2.call('org.rdk.RDKShell', 'destroy', { callsign: appName });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
     }
 
@@ -6265,7 +6294,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to deactivate lightning app.
      */
     deactivateLightning() {
-      thunder$1.call('org.rdk.RDKShell', 'destroy', { callsign: 'LightningApp' });
+      thunder$2.call('org.rdk.RDKShell', 'destroy', { callsign: 'LightningApp' });
       activatedLightning = false;
       lightningUrl = '';
     }
@@ -6276,7 +6305,7 @@ var APP_accelerator_home_ui = (function () {
      * @param {visible} visible value of visibility.
      */
     setVisibility(client, visible) {
-      thunder$1.call('org.rdk.RDKShell', 'setVisibility', {
+      thunder$2.call('org.rdk.RDKShell', 'setVisibility', {
         client: client,
         visible: visible,
       });
@@ -6288,17 +6317,17 @@ var APP_accelerator_home_ui = (function () {
     launchNative(url) {
       const childCallsign = 'testApp';
       if (nativeUrl != url) {
-        thunder$1
+        thunder$2
           .call('org.rdk.RDKShell', 'launchApplication', {
             client: childCallsign,
             uri: url,
             mimeType: 'application/native'
           })
           .then(() => {
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
             });
-            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+            thunder$2.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
             });
           })
@@ -6306,10 +6335,10 @@ var APP_accelerator_home_ui = (function () {
             console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
           });
       } else {
-        thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
         });
-        thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
+        thunder$2.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
       }
       nativeUrl = url;
     }
@@ -6320,7 +6349,7 @@ var APP_accelerator_home_ui = (function () {
        * Function to kill native app.
        */
     killNative() {
-      thunder$1.call('org.rdk.RDKShell', 'kill', { callsign: 'testApp' });
+      thunder$2.call('org.rdk.RDKShell', 'kill', { callsign: 'testApp' });
       nativeUrl = '';
     }
 
@@ -6341,7 +6370,7 @@ var APP_accelerator_home_ui = (function () {
 
     standby(value) {
       return new Promise((resolve, reject) => {
-        thunder$1
+        thunder$2
           .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
           .then(result => {
             console.log(JSON.stringify(result, 3, null));
@@ -6355,7 +6384,7 @@ var APP_accelerator_home_ui = (function () {
 
     audio_mute(value) {
       return new Promise((resolve, reject) => {
-        thunder$1
+        thunder$2
           .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
           .then(result => {
             console.log(JSON.stringify(result, 3, null));
@@ -6371,7 +6400,7 @@ var APP_accelerator_home_ui = (function () {
 
     setVolumeLevel(value) {
       return new Promise((resolve, reject) => {
-        thunder$1
+        thunder$2
           .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
           .then(result => {
             console.log(JSON.stringify(result, 3, null));
@@ -6387,7 +6416,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
-        thunder$1
+        thunder$2
           .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
           .then(result => {
             console.log(JSON.stringify(result, 3, null));
@@ -7396,7 +7425,7 @@ var APP_accelerator_home_ui = (function () {
       // "break on all exceptions" in your console,
       // it would pause the execution at this line.
       throw new Error(message);
-    } catch (e) { } // eslint-disable-line no-empty
+    } catch (e) {} // eslint-disable-line no-empty
 
   }
 
@@ -7405,7 +7434,7 @@ var APP_accelerator_home_ui = (function () {
    * If the function has been minified and NODE_ENV !== 'production', warn the user.
    */
 
-  function isCrushed() { }
+  function isCrushed() {}
 
   if (typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
     warning('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
@@ -7567,8 +7596,7 @@ var APP_accelerator_home_ui = (function () {
                 this.tag('AudioListenSymbol').h = 70;
               }
               mode++;
-              if (mode > 20) { mode = 0; }
-            }.bind(this), 250);
+              if (mode > 20) { mode = 0; }          }.bind(this), 250);
           }
         }
       }
@@ -8848,17 +8876,17 @@ var APP_accelerator_home_ui = (function () {
    */
   var rightArrowInfo = [
 
-    {
-      url: '/images/right-small.png',
-    },
+      {
+          url: '/images/right-small.png',
+      },
 
-    {
-      url: '/images/right-small.png',
-    },
+      {
+          url: '/images/right-small.png',
+      },
 
-    {
-      url: '/images/right-small.png',
-    },
+      {
+          url: '/images/right-small.png',
+      },
 
   ];
 
@@ -8884,16 +8912,16 @@ var APP_accelerator_home_ui = (function () {
    * Class which contains data for app listings.
    */
   var leftArrowInfo = [
-    {
-      url: '/images/left-small.png',
-    },
+     {
+        url: '/images/left-small.png',
+     },
 
-    {
-      url: '/images/left-small.png',
-    },
-    {
-      url: '/images/left-small.png',
-    },
+     {
+        url: '/images/left-small.png',
+     },
+     {
+        url: '/images/left-small.png',
+     },
 
   ];
 
@@ -8918,7 +8946,7 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for UI selection.
    */
-  var uiInfo = [
+   var uiInfo = [
     {
       title: 'DEFAULT',
       url: '/images/splash/DefaultUI.png',
@@ -8974,7 +9002,7 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for metro app listings.
    */
-  var metroAppsInfo = [
+   var metroAppsInfo = [
     {
       displayName: "CNN",
       applicationType: "Lightning",
@@ -13294,23 +13322,23 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for listings in side panel.
    */
-  var sideSettingInfo = [
-    {
-      title: 'Bluetooth',
-      url: '/images/settings/bluetooth_n.png',
-      img: '/images/settings/Bluetooth_Focused.png',
-    },
-    {
-      title: 'Wi-Fi',
-      url: '/images/settings/wifi_new.png',
-      img: '/images/settings/Wifi_Focused.png',
-    },
-    {
-      title: 'USB',
-      url: '/images/usb/usb-white-small.png',
-      img: '/images/usb/usb-dark-small.png',
-    },
-  ];
+   var sideSettingInfo = [
+      {
+        title: 'Bluetooth',
+        url: '/images/settings/bluetooth_n.png',
+        img: '/images/settings/Bluetooth_Focused.png',
+      },
+      {
+        title: 'Wi-Fi',
+        url: '/images/settings/wifi_new.png',
+        img: '/images/settings/Wifi_Focused.png',
+      },
+       {
+         title: 'USB',
+         url: '/images/usb/usb-white-small.png',
+         img: '/images/usb/usb-dark-small.png',
+       },  
+    ];
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -13333,161 +13361,161 @@ var APP_accelerator_home_ui = (function () {
 
   /** Class for side setting screen in setting UI */
   class SideSettingScreen extends Lightning.Component {
-    static _template() {
-      return {
-        SideSettingScreen: {
-          x: 0,
-          y: 0,
-          w: 620,
-          h: 200,
-          type: Lightning.components.ListComponent,
-          roll: true,
-          horizontal: false,
-          invertDirection: true,
+      static _template() {
+          return {
+              SideSettingScreen: {
+                  x: 0,
+                  y: 0,
+                  w: 620,
+                  h: 200,
+                  type: Lightning.components.ListComponent,
+                  roll: true,
+                  horizontal: false,
+                  invertDirection: true,
 
-        },
+              },
+          }
       }
-    }
 
-    _init() {
-      this.sidePanelItems = this.getSideSettingInfo();
-      this.indexVal = 0;
-    }
-    _getFocused() {
-      return this.tag('SideSettingScreen')
-    }
+      _init() {
+          this.sidePanelItems = this.getSideSettingInfo();
+          this.indexVal = 0;
+      }
+      _getFocused() {
+          return this.tag('SideSettingScreen')
+      }
 
-    getSideSettingInfo() {
-      return sideSettingInfo
-    }
+      getSideSettingInfo() {
+          return sideSettingInfo
+      }
 
-    _active() {
-      this._setState('SideSettingScreen');
-    }
+      _active() {
+          this._setState('SideSettingScreen');
+      }
 
-    /**
-     * Function to set items in side panel.
-     */
-    set sidePanelItems(items) {
-      console.log('sidePanelItems');
-      this.tag('SideSettingScreen').patch({ x: 80 });
-      this.tag('SideSettingScreen').items = items.map((info, index) => {
-        this.data = info;
-        return {
-          y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
-          type: SideSettinglItem,
-          data: info,
-          focus: 1,
-          unfocus: 1,
-          x_text: 130,
-          y_text: 35,
-          text_focus: 1,
-          text_unfocus: 1,
-        }
-      });
-      this.tag('SideSettingScreen').start();
-    }
-
-    /**
-     * Function to reset items in side panel.
-     */
-    set resetSidePanelItems(items) {
-      this.tag('SideSettingScreen').patch({ x: 80 });
-      this.tag('SideSettingScreen').items = items.map((info, index) => {
-        return {
-          y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
-          type: SideSettinglItem,
-          data: info,
-          focus: 1,
-          unfocus: 1,
-          x_text: 130,
-          y_text: 35,
-          text_focus: 1,
-          text_unfocus: 1,
-        }
-      });
-      this.tag('SideSettingScreen').start();
-    }
-    /**
-     * Function to set scaling to side panel.
-     */
-    set scale(scale) {
-      this.tag('SideSettingScreen').patch({ scale: scale });
-    }
-
-    /**
-     * Function to set x coordinate of side panel.
-     */
-    set x(x) {
-      this.tag('SideSettingScreen').patch({ x: x });
-    }
-
-    /**
-     * Function to set index value of side panel.
-     */
-    set index(index) {
-      this.indexVal = index;
-    }
-
-    $goToSideMenubar(index) {
-      this.tag('SideSettingScreen').index = index;
-      this._setState('SideSettingScreen');
-    }
-
-    changeItemBg(index) {
-      return this.tag('SideSettingScreen').items[index].patch({
-        Item: {
-          texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xff121C2C, true, 0xff121C2C),
-        }
-      })
-    }
-
-    static _states() {
-      return [
-        class SideSettingScreen extends this {
-
-          _getFocused() {
-            if (this.tag('SideSettingScreen').length) {
-              this.fireAncestors('$setVisibleSetting', this.indexVal);
-              return this.tag('SideSettingScreen').items[this.indexVal]
-            }
-          }
-
-          _handleKey(key) {
-            if (key.keyCode == 39 || key.keyCode == 13) {
-              if (0 == this.indexVal) {
-                this.fireAncestors('$goToBluetoothScreen', this.indexVal);
-
-                return this.changeItemBg(this.indexVal)
-              } else if (1 == this.indexVal) {
-                this.fireAncestors('$goToWiFiScreen', this.indexVal);
-
-                return this.changeItemBg(this.indexVal)
-
-              } else if (2 == this.indexVal) {
-                this.fireAncestors('$goToUsbFolders', this.indexVal);
-                return this.changeItemBg(this.indexVal)
+      /**
+       * Function to set items in side panel.
+       */
+      set sidePanelItems(items) {
+          console.log('sidePanelItems');
+          this.tag('SideSettingScreen').patch({ x: 80 });
+          this.tag('SideSettingScreen').items = items.map((info, index) => {
+              this.data = info;
+              return {
+                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
+                  type: SideSettinglItem,
+                  data: info,
+                  focus: 1,
+                  unfocus: 1,
+                  x_text: 130,
+                  y_text: 35,
+                  text_focus: 1,
+                  text_unfocus: 1,
               }
+          });
+          this.tag('SideSettingScreen').start();
+      }
 
-            } else if (key.keyCode == 40) {
-              if (this.tag('SideSettingScreen').length - 1 != this.indexVal) {
-                this.indexVal = this.indexVal + 1;
+      /**
+       * Function to reset items in side panel.
+       */
+      set resetSidePanelItems(items) {
+          this.tag('SideSettingScreen').patch({ x: 80 });
+          this.tag('SideSettingScreen').items = items.map((info, index) => {
+              return {
+                  y: index == 0 ? 282 : (index == 1 ? 331 : (index == 2 ? 382 : 0)),
+                  type: SideSettinglItem,
+                  data: info,
+                  focus: 1,
+                  unfocus: 1,
+                  x_text: 130,
+                  y_text: 35,
+                  text_focus: 1,
+                  text_unfocus: 1,
               }
+          });
+          this.tag('SideSettingScreen').start();
+      }
+      /**
+       * Function to set scaling to side panel.
+       */
+      set scale(scale) {
+          this.tag('SideSettingScreen').patch({ scale: scale });
+      }
 
-              return this.tag('SideSettingScreen').items[this.indexVal]
-            } else if (key.keyCode == 38) {
-              if (0 != this.indexVal) {
-                this.indexVal = this.indexVal - 1;
-              } else if (0 == this.indexVal) {
-                this.fireAncestors('$goToSettingsTopPanel', this.indexVal);
+      /**
+       * Function to set x coordinate of side panel.
+       */
+      set x(x) {
+          this.tag('SideSettingScreen').patch({ x: x });
+      }
+
+      /**
+       * Function to set index value of side panel.
+       */
+      set index(index) {
+          this.indexVal = index;
+      }
+
+      $goToSideMenubar(index) {
+          this.tag('SideSettingScreen').index = index;
+          this._setState('SideSettingScreen');
+      }
+
+      changeItemBg(index) {
+          return this.tag('SideSettingScreen').items[index].patch({
+              Item: {
+                  texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xff121C2C, true, 0xff121C2C),
               }
+          })
+      }
 
-              return this.tag('SideSettingScreen').items[this.indexVal]
-            } else return false;
-          }
-        },
-      ]
-    }
+      static _states() {
+          return [
+              class SideSettingScreen extends this {
+
+                  _getFocused() {
+                      if (this.tag('SideSettingScreen').length) {
+                          this.fireAncestors('$setVisibleSetting', this.indexVal);
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      }
+                  }
+
+                  _handleKey(key) {
+                      if (key.keyCode == 39 || key.keyCode == 13) {
+                          if (0 == this.indexVal) {
+                              this.fireAncestors('$goToBluetoothScreen', this.indexVal);
+
+                              return this.changeItemBg(this.indexVal)
+                          } else if (1 == this.indexVal) {
+                              this.fireAncestors('$goToWiFiScreen', this.indexVal);
+
+                              return this.changeItemBg(this.indexVal)
+
+                          } else if (2 == this.indexVal) {
+                              this.fireAncestors('$goToUsbFolders', this.indexVal);
+                              return this.changeItemBg(this.indexVal)
+                          }
+
+                      } else if (key.keyCode == 40) {
+                          if (this.tag('SideSettingScreen').length - 1 != this.indexVal) {
+                              this.indexVal = this.indexVal + 1;
+                          }
+
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      } else if (key.keyCode == 38) {
+                          if (0 != this.indexVal) {
+                              this.indexVal = this.indexVal - 1;
+                          } else if (0 == this.indexVal) {
+                              this.fireAncestors('$goToSettingsTopPanel', this.indexVal);
+                          }
+
+                          return this.tag('SideSettingScreen').items[this.indexVal]
+                      } else return false;
+                  }
+              },
+          ]
+      }
   }
 
   /**
@@ -13511,21 +13539,294 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for app listings.
    */
-  var UsbFolderListInfo = [
-    {
-      displayName: 'Video',
-      url: '/images/usb/video-folder.png',
-    },
-    {
-      displayName: 'Audio',
-      url: '/images/usb/music-folder.png',
-    },
-    {
-      displayName: 'Images',
-      url: '/images/usb/picture-folder.png',
-    },
+   var UsbFolderListInfo = [
+      {
+        displayName: 'Video',
+        url: '/images/usb/video-folder.png',
+      },
+      {
+          displayName: 'Audio',
+          url: '/images/usb/music-folder.png',
+        },
+        {
+          displayName: 'Images',
+          url: '/images/usb/picture-folder.png',
+        },
+     
+    ];
 
-  ];
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var imageListInfo = [
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var musicListInfo = [
+   
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class which contains data for app listings.
+   */
+   var videoListInfo = [
+    ];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+
+  const config$1 = {
+      host: '127.0.0.1',
+      port: 9998,
+      default: 1,
+  };
+  var thunder$1 = thunderJS(config$1);
+  /**
+   * Class that contains functions which commuicates with thunder API's
+   */
+
+
+
+  class UsbApi {
+    /**
+    *  Function to create link for USB content
+    */
+      clearLink() {
+          return new Promise((resolve, reject) => {
+              const systemcCallsign = 'org.rdk.UsbAccess';
+              thunder$1.Controller.activate({ callsign: systemcCallsign })
+                  .then(() => {
+                      thunder$1
+                          .call(systemcCallsign, 'clearLink')
+                          .then(result => {
+                              console.log(result);
+                              console.log(JSON.stringify(result));
+                              resolve(result);
+                          }).catch(err => { resolve(false); });
+                  }).catch(err => {
+                      console.log('clear link failed ');
+                  });
+          })
+      }
+
+      /**
+      *  Function to create link for USB content
+      */
+      createLink() {
+          return new Promise((resolve, reject) => {
+              const systemcCallsign = 'org.rdk.UsbAccess';
+              thunder$1.Controller.activate({ callsign: systemcCallsign })
+                  .then(() => {
+                      thunder$1
+                          .call(systemcCallsign, 'createLink')
+                          .then(result => {
+                              console.log(result);
+                              console.log(JSON.stringify(result));
+                              resolve(result);
+                          }).catch(err => { resolve(false); });
+                  }).catch(err => { });
+          })
+      }
+
+      /**
+      *  Function to get getUsbList
+      */
+      getUsbFileList() {
+          return new Promise((resolve, reject) => {
+              const systemcCallsign = 'org.rdk.UsbAccess';
+              thunder$1.Controller.activate({ callsign: systemcCallsign })
+                  .then(() => {
+                      thunder$1
+                          .call(systemcCallsign, 'getFileList')
+                          .then(result => {
+                              console.log(result);
+                              console.log(result.contents);
+                              resolve(result.contents);
+                          }).catch(err => { resolve(false); });
+                  }).catch(err => { });
+          })
+      }
+
+      retrieUsb() {
+          this.clearLink().then(
+              result => {
+                  this.createLink().then(
+                      res => {
+                          this.usbLink = res.baseURL;
+                          this.getUsbFileList().then(
+                              result1 => {
+                                  console.log(JSON.stringify(result1));
+                                  this.getUsbContentList(result1);
+                              }
+                          );
+                      }
+                  );
+              }
+          );
+      }
+
+      destroy() {
+          console.log(imageListInfo.length);
+          }
+
+      getUsbContentList(result) {
+          var extensionForImageJPEG = '.jpeg';
+          var extensionForImage = '.png';
+          var extensionForVideo = '.mp4';
+          var extensionForAudio = '.mp3';
+          var extensionForAudioMPEG = '.mpeg';
+
+          this._discoveredC = result;
+          console.log(JSON.stringify(result));
+
+          this._discoveredC.filter(device => {
+
+              if (device.name.indexOf(extensionForImage) !== -1) {
+                  var obj1 = {
+                      displayName: device.name,
+                      uri: this.usbLink + '/' + device.name,
+                      url: this.usbLink + '/' + device.name,
+                  };
+                  imageListInfo.push(obj1);
+                  return device
+              }
+          });
+
+          this._discoveredC.filter(device => {
+
+              if (device.name.indexOf(extensionForImageJPEG) !== -1) {
+                  var obj1 = {
+                      displayName: device.name,
+                      uri: this.usbLink + '/' + device.name,
+                      url: this.usbLink + '/' + device.name,
+                  };
+                  imageListInfo.push(obj1);
+                  return device
+              }
+          });
+
+
+          this._discoveredC.filter(device => {
+              if (device.name.indexOf(extensionForVideo) !== -1) {
+                  var obj2 = {
+                      displayName: device.name,
+                      url: '/images/usb/video-default-tile.jpg',
+                      uri: this.usbLink + '/' + device.name,
+                  };
+                  videoListInfo.push(obj2);
+                  return device
+              }
+          });
+
+
+          this._discoveredC.filter(device => {
+              if (device.name.indexOf(extensionForAudioMPEG) !== -1) {
+                  var obj3 = {
+                      displayName: device.name,
+                      url: '/images/usb/music-default-tile.jpg',
+                      uri: this.usbLink + '/' + device.name,
+                  };
+                  musicListInfo.push(obj3);
+                  return device
+              }
+          });
+          this._discoveredC.filter(device => {
+              if (device.name.indexOf(extensionForAudio) !== -1) {
+                  var obj4 = {
+                      displayName: device.name,
+                      url: '/images/usb/music-default-tile.jpg',
+                      uri: this.usbLink + '/' + device.name,
+                  };
+                  musicListInfo.push(obj4);
+                  return device
+              }
+          });
+          console.log('SSH logssssssssssssssssssssssss ');
+          console.log(JSON.stringify(this.usbLink));
+          // console.log(imageListInfo)
+          // console.log('Image ')
+          // console.log(JSON.stringify(imageListInfo))
+          // console.log('Music ')
+          // console.log(JSON.stringify(musicListInfo))
+          // console.log('Video ')
+          // console.log(JSON.stringify(videoListInfo))
+          console.log('SSH logssssssssssssssssssssssss ends ');
+      }
+
+  }
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -13663,9 +13964,38 @@ var APP_accelerator_home_ui = (function () {
   class UsbFolders extends Lightning.Component {
     static _template() {
       return {
+
+        Switch: {
+          x: 825,
+          y: 310,
+          Shadow: {
+            alpha: 0,
+            x: -15,
+            y: 0,
+            color: 0x66000000,
+            texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+          },
+          Button: {
+            h: 60,
+            w: 180,
+            src: Utils.asset('images/switch-off-new.png'),
+          },
+
+        },
+        HelperText: {
+          x: 1050,
+          y: 320,
+          text: {
+            text: 'Enable only if USB/HDD connected to Box',
+            textColor: COLORS.textColor,
+            fontSize: 28,
+          },
+          alpha: 1
+        },
+
         UsbFolderList: {
           x: 800,
-          y: 275,
+          y: 450,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           type: Lightning.components.ListComponent,
           w: 1020,
@@ -13676,6 +14006,7 @@ var APP_accelerator_home_ui = (function () {
           horizontal: true,
           itemScrollOffset: -5,
           clipping: false,
+          alpha: 0
         },
         Shadow: {
           alpha: 0,
@@ -13690,10 +14021,16 @@ var APP_accelerator_home_ui = (function () {
 
     _init() {
       this.usbFolderList = UsbFolderListInfo;
+      this._usbEnabled = false;
+
     }
     _active() {
-      this._setState('UsbFolderList');
+      if (!this._usbEnabled)
+        this._setState('Button');
+      else
+        this._setState('UsbFolderList');
     }
+
 
     set usbFolderList(items) {
       this.tag('UsbFolderList').items = items.map(info => {
@@ -13711,6 +14048,70 @@ var APP_accelerator_home_ui = (function () {
       this.tag('UsbFolderList').start();
     }
 
+    toggleBtnAnimationX() {
+      const lilLightningAnimation = this.tag('Button').animation({
+        duration: 1,
+        repeat: 0,
+        actions: [
+          { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+        ]
+      });
+      lilLightningAnimation.start();
+    }
+    toggleBtnAnimationY() {
+      const lilLightningAnimation = this.tag('Button').animation({
+        duration: 1,
+        repeat: 0,
+        actions: [
+          { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+        ]
+      });
+      lilLightningAnimation.start();
+    }
+
+    switchOnOff() {
+      if (this._usbEnabled) {
+        // this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
+        this.toggleBtnAnimationX();
+        this.tag('Button').patch({
+          src: Utils.asset('images/switch-off-new.png')
+        });
+
+        var usbApi = new UsbApi();
+        usbApi.retrieUsb();
+
+
+        this.tag('HelperText').patch({
+          text: {
+            text: 'USB/HDD is connected'
+          }
+        });
+        this.tag('UsbFolderList').patch({
+          alpha: 1
+        });
+        this._setState('UsbFolderList');
+
+
+      } else if (!this._usbEnabled) {
+
+        var usbApi = new UsbApi();
+        usbApi.destroy();
+
+        this.toggleBtnAnimationY();
+        this.tag('Button').patch({
+          src: Utils.asset('images/switch-on-new.png')
+        });
+        this.tag('UsbFolderList').patch({
+          alpha: 0
+        });
+        this.tag('HelperText').patch({
+          text: {
+            text: 'Enable only if USB/HDD connected to Box',
+          }
+        });
+
+      }
+    }
 
     launchUsbFolder(index) {
       if (index == 0) {
@@ -13724,46 +14125,94 @@ var APP_accelerator_home_ui = (function () {
     }
 
     static _states() {
-      return [
-        class UsbFolderList extends this {
-          _getFocused() {
-            if (this.tag('UsbFolderList').length) {
-              this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url);
-              return this.tag('UsbFolderList').element
-            }
-          }
-          _handleRight() {
+      return [class Button extends this{
+        $enter() {
+          console.log('Button enter');
 
-            if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
-              this.tag('UsbFolderList').setNext();
-              this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
-              return this.tag('UsbFolderList').element
-            }
-          }
-          _handleLeft() {
+        }
+        $exit() {
+          console.log('Botton exit');
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          });
 
-            if (0 != this.tag('UsbFolderList').index) {
-              this.tag('UsbFolderList').setPrevious();
-              this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
-              return this.tag('UsbFolderList').element
-            }
-            if (0 == this.tag('UsbFolderList').index) {
-              this.fireAncestors('$goToSideMenubar', 2);
-            }
+        }
 
+        _getFocused() {
+          this.tag('Button').patch({
+            h: 70,
+            w: 200
+          });
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
+
+        }
+        _handleUp() {
+          this.fireAncestors('$goToTopPanel', 0);
+        }
+        _handleEnter() {
+          this._usbEnabled = !this._usbEnabled;
+          this.switchOnOff();
+        }
+        _handleLeft() {
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          });
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
+          this.fireAncestors('$goToSideMenubar', 2);
+        }
+      },
+      class UsbFolderList extends this {
+        _getFocused() {
+          if (this.tag('UsbFolderList').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url);
+            return this.tag('UsbFolderList').element
           }
-          _handleDown() {
+        }
+        _handleRight() {
+
+          if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
+            this.tag('UsbFolderList').setNext();
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
+            return this.tag('UsbFolderList').element
           }
-          _handleUp() {
-            console.log('handle up');
-            this.fireAncestors('$goToTopPanel', 0);
+        }
+        _handleLeft() {
+
+          if (0 != this.tag('UsbFolderList').index) {
+            this.tag('UsbFolderList').setPrevious();
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
+            return this.tag('UsbFolderList').element
           }
-          _handleEnter() {
-            this.launchUsbFolder(this.tag('UsbFolderList').index);
+          if (0 == this.tag('UsbFolderList').index) {
+            this.fireAncestors('$goToSideMenubar', 2);
           }
-          _handleKey(key) {
-          }
-        },
+
+        }
+        _handleDown() {
+        }
+
+        _handleUp() {
+          this._setState('Button');
+        }
+
+
+        _handleEnter() {
+          this.launchUsbFolder(this.tag('UsbFolderList').index);
+        }
+        _handleKey(key) {
+        }
+      },
+
       ]
     }
   }
@@ -14137,222 +14586,293 @@ ${error.toString()}`;
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /**
-   * Class which contains data for app listings.
-   */
-  var musicListInfo = [
-    {
-      displayName: 'Test Xumo',
-      applicationType: 'WebApp',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/usb/music-default-tile.jpg',
-
-    },
-    {
-      displayName: 'Test Netflix',
-      applicationType: 'Netflix',
-      uri: '',
-      url: '/images/usb/music-default-tile.jpg',
-
-    },
-    {
-      displayName: 'Test Prime video',
-      applicationType: 'Amazon',
-      uri: '',
-      url: '/images/usb/music-default-tile.jpg',
-
-    },
-    {
-      displayName: 'Bluetooth Audio',
-      applicationType: 'Lightning',
-      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-      url: '/images/usb/music-default-tile.jpg',
-
-    }
-  ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
 
   class UsbContent extends Lightning.Component {
-    static _template() {
-      return {
-        Background: {
-          w: 1920,
-          h: 1080,
-          src: Utils.asset('images/tvShows/background_new.jpg'),
-        },
-        UsbHomeTopPanel: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 171,
-          Back: {
-            x: 81,
-            y: 100,
-            mountY: 0.5,
-            src: Utils.asset('/images/settings/Back_icon.png'),
-            w: 70,
-            h: 70,
-          },
-          IconTitle: {
-            x: 200,
-            y: 78,
-            text: { text: 'USB Content Screen', fontSize: 40 },
-          },
-          IpAddress: {
-            x: 1835,
-            y: 125,
-            mount: 1,
-            text: {
-              text: 'IP:N/A',
-              textColor: 0xffffffff,
-              fontSize: 32,
-              w: 360,
-              h: 40,
-            },
-          },
-          Border: {
-            x: 81,
-            y: 171,
-            mountY: 0.5,
-            RoundRectangle: {
-              zIndex: 2,
-              texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
-            },
-            alpha: 0.4
+      static _template() {
+          return {
+              Background: {
+                  w: 1920,
+                  h: 1080,
+                  src: Utils.asset('images/tvShows/background_new.jpg'),
+              },
+              UsbHomeTopPanel: {
+                  x: 0,
+                  y: 0,
+                  w: 1920,
+                  h: 171,
+                  Back: {
+                      x: 81,
+                      y: 100,
+                      mountY: 0.5,
+                      src: Utils.asset('/images/settings/Back_icon.png'),
+                      w: 70,
+                      h: 70,
+                  },
+                  IconTitle: {
+                      x: 200,
+                      y: 78,
+                      text: { text: 'USB Content Screen', fontSize: 40 },
+                  },
+                  IpAddress: {
+                      x: 1835,
+                      y: 125,
+                      mount: 1,
+                      text: {
+                          text: 'IP:N/A',
+                          textColor: 0xffffffff,
+                          fontSize: 32,
+                          w: 360,
+                          h: 40,
+                      },
+                  },
+                  Border: {
+                      x: 81,
+                      y: 171,
+                      mountY: 0.5,
+                      RoundRectangle: {
+                          zIndex: 2,
+                          texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
+                      },
+                      alpha: 0.4
+                  }
+              },
+              ContentTitle:
+              {
+                  x: 80,
+                  y: 220,
+                  text: {
+                      textColor: 0xffffffff,
+                      fontSize: 40,
+                      w: 360,
+                      h: 60,
+                  },
+              },
+              
+              ItemList: {
+                  x: 80,
+                  y: 320,
+                  flex: { direction: 'row', paddingLeft: 20, wrap: false },
+                  type: Lightning.components.ListComponent,
+                  w: 1761,
+                  h: 300,
+                  itemSize: 185,
+                  roll: true,
+                  rollMax: 815,
+                  horizontal: true,
+                  itemScrollOffset: -5,
+                  clipping: true,
+              },
+              Preview: {
+                  x: 500,
+                  y: 580,
+                  w: 750,
+                  h: 450,
+              },
+              Message:
+              {
+                  x: 500,
+                  y: 800,
+                  text: {
+                      textColor: 0xffffdf00,
+                      fontSize: 38,
+                      fontStyle: 'italic bold',
+                      textColor: 0xffffdf00,
+                      shadow: true,
+                      shadowColor: 0xffff00ff,
+                      shadowOffsetX: 2,
+                      shadowOffsetY: 2,
+                      shadowBlur: 2,
+                      w: 900,
+                      h: 100,
+                  },
+              },
+
+              Player: {
+                  type: AAMPVideoPlayer,
+              },
           }
-        },
-        ContentTitle:
-        {
-          x: 80,
-          y: 220,
-          text: {
-            textColor: 0xffffffff,
-            fontSize: 40,
-            w: 360,
-            h: 60,
-          },
-        },
-        ItemList: {
-          x: 80,
-          y: 320,
-          flex: { direction: 'row', paddingLeft: 20, wrap: false },
-          type: Lightning.components.ListComponent,
-          w: 1761,
-          h: 300,
-          itemSize: 185,
-          roll: true,
-          rollMax: 815,
-          horizontal: true,
-          itemScrollOffset: -5,
-          clipping: true,
-        },
+      }
+      set contentTitle(title) {
+          this.tag('ContentTitle').patch({
+              text: { text: title }
+          });
+      }
+      set message(message) {
+          this.tag('Message').patch({
+              text: { text: message }
+          });
+      }
+      
+
+      set itemList(items) {
+          this.tag('ItemList').items = items.map(info => {
+              return {
+                  w: 175,
+                  h: 175,
+                  type: AppListItem,
+                  data: info,
+                  focus: 1.2,
+                  unfocus: 1,
+                  x_text: 106,
+                  y_text: 215,
+              }
+          });
+          this.tag('ItemList').start();
+      }
+
+      _init() {
+          this.videoPlayback=false;
+          var networkApi = new Network();
+          networkApi.getIP().then(ip => {
+              this.tag('IpAddress').text.text = 'IP:' + ip;
+          });
+      }
+
+      
+      previewImageOnFocus(image) {
+          if (image.startsWith('/images')) {
+            this.tag('Preview').patch({
+              src: Utils.asset(image),
+            });
+          } else {
+            this.tag('Preview').patch({ src: image });
+          }
+        }
+
+    goToPlayer(item) {
+         this._setState('Player');
+         this.play(item);
+    }
+
+
+     /**
+     * Function to hide the home UI.
+     */
+      hide() {
+          this.tag('Background').patch({ alpha: 0 });
+          this.tag('UsbHomeTopPanel').patch({ alpha: 0 });
+          this.tag('ContentTitle').patch({ alpha: 0 });
+          this.tag('ItemList').patch({ alpha: 0 });
+          this.tag('Preview').patch({ alpha: 0 });
+        }
+      
+        /**
+           * Function to show home UI.
+         */
+         show() {
+          console.log('show -from content');
+          this.tag('Background').patch({ alpha: 1 });
+          this.tag('UsbHomeTopPanel').patch({ alpha: 1 });
+          this.tag('ContentTitle').patch({ alpha: 1 });
+          this.tag('ItemList').patch({ alpha: 1 });
+          this.tag('Preview').patch({ alpha: 1 });
+
+        }
+         /**
+     * Function to start video playback.
+     */
+    play(item) {
+      this.player = this.tag('Player');
+      try {
+        this.player.load({
+          title: item.data.displayName,
+          subtitle: 'm3u8',
+          url:item.data.uri,
+          drmConfig: null,
+        });
+        this.hide();
+        this._setState('Playing');
+        this.player.setVideoRect(0, 0, 1920, 1080);
+      } catch (error) {
+        this._setState('ItemList');
+        console.error('Playback Failed ' + error);
       }
     }
-    set contentTitle(title) {
-      this.tag('ContentTitle').patch({
-        text: { text: title }
-      });
-    }
 
-    set itemList(items) {
-      this.tag('ItemList').items = items.map(info => {
-        return {
-          w: 175,
-          h: 175,
-          type: AppListItem,
-          data: info,
-          focus: 1.2,
-          unfocus: 1,
-          x_text: 106,
-          y_text: 140,
-        }
-      });
-      this.tag('ItemList').start();
-    }
+      static _states() {
+          return [
+              class ItemList extends this {
+                  _getFocused() {
+                      if (this.tag('ItemList').length) {
+                          this.previewImageOnFocus(this.tag('ItemList').element.data.url);
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleRight() {
+                      if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setNext();
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleLeft() {
+                      if (0 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setPrevious();
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleDown() {
+                  }
+                  _handleUp() {
+                      this.videoPlayback=false;
+                      this._setState('Back');
+                  }
+                  _handleEnter() {
+                      let item= this.tag('ItemList').element;
+                      if (this.videoPlayback == true) { this.goToPlayer(item); }
+                  }
+                  $exit() {
+                      this.videoPlayback = false;
+                  }
+              },
 
-    _init() {
-      var networkApi = new Network();
-      networkApi.getIP().then(ip => {
-        this.tag('IpAddress').text.text = 'IP:' + ip;
-      });
-    }
+              class Back extends this{
+                  $enter() {
+                      this.tag('Back').patch({
+                          src: Utils.asset('/images/settings/back-arrow-small.png'),
+                      });
+                  }
+                  _handleDown() {
+                      this.tag('Back').patch({
+                          src: Utils.asset('/images/settings/Back_icon.png'),
 
-    static _states() {
-      return [
-        class ItemList extends this {
-          _getFocused() {
-            if (this.tag('ItemList').length) {
-              return this.tag('ItemList').element
-            }
-          }
-          _handleRight() {
-            if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
-              this.tag('ItemList').setNext();
-              return this.tag('ItemList').element
-            }
-          }
-          _handleLeft() {
-            if (0 != this.tag('ItemList').index) {
-              this.tag('ItemList').setPrevious();
-              return this.tag('ItemList').element
-            }
-          }
-          _handleDown() {
-            // todo
-          }
-          _handleUp() {
-            this._setState('Back');
-          }
-        },
+                      });
+                      this._setState('ItemList');
+                  }
 
-        class Back extends this{
-          $enter() {
-
-            console.log('enter back');
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/back-arrow-small.png'),
-            });
-          }
-          _handleDown() {
-            console.log('handle down');
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/Back_icon.png'),
-
-            });
-            this._setState('ItemList');
-          }
-
-          _handleKey(key) {
-            console.log(key.keyCode);
-            if (key.keyCode == 13) {
-              this.tag('Back').patch({
-                src: Utils.asset('/images/settings/Back_icon.png'),
-              });
-              this.fireAncestors('$goToSideMenubar', 2);
-              Router.navigate('settings/SettingsScreen/2', false);
-            }
-          }
-        },
-      ]
-    }
+                  _handleKey(key) {
+                      console.log(key.keyCode);
+                      if (key.keyCode == 13) {
+                          this.tag('Back').patch({
+                              src: Utils.asset('/images/settings/Back_icon.png'),
+                          });
+                          this.fireAncestors('$goToSideMenubar', 2);
+                          Router.navigate('settings/SettingsScreen/2', false);
+                      }
+                  }
+              },
+              class Playing extends this {
+                  _getFocused() {
+                    return this.tag('Player')
+                  }
+          
+                  stopPlayer() {
+                    this._setState('ItemList');
+                    if(this.player !=null)
+                       this.player.stop();
+                    this.show();
+                  }
+          
+                  _handleKey(key) {
+                    if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+                      this.stopPlayer();
+                    } else if (key.keyCode == 227 || key.keyCode == 179) {
+                      this.stopPlayer();
+                      return false;
+                    }
+                  }
+                },
+          ]
+      }
   }
 
   /**
@@ -14377,60 +14897,11 @@ ${error.toString()}`;
   class UsbAudioScreen extends UsbContent {
     _active() {
       this.contentTitle = 'Audio files';
+      this.message='Audio playback functionality not yet implemented';
       this.itemList = musicListInfo;
       this._setState('ItemList');
     }
-
   }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class which contains data for app listings.
-   */
-  var imageListInfo = [
-
-    {
-      displayName: 'Test Xumo',
-      applicationType: 'WebApp',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Netflix',
-      applicationType: 'Netflix',
-      uri: '',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Prime video',
-      applicationType: 'Amazon',
-      uri: '',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Bluetooth Audio',
-      applicationType: 'Lightning',
-      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-      url: '/images/usb/picture-default-tile.jpg',
-    }
-  ];
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -14477,52 +14948,11 @@ ${error.toString()}`;
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /**
-   * Class which contains data for app listings.
-   */
-  var videoListInfo = [
-
-    {
-      displayName: 'Test Xumo',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Netflix',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Prime video',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Bluetooth Audio',
-      url: '/images/usb/video-default-tile.jpg',
-    }
-  ];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
 
   class UsbVideoScreen extends UsbContent {
     _active() {
       this.contentTitle = 'Video files';
+      this.videoPlayback=true;
       this.itemList = videoListInfo;
       this._setState('ItemList');
     }
@@ -15370,7 +15800,7 @@ ${error.toString()}`;
    * limitations under the License.
    **/
 
-  function index() {
+  function index () {
     return Launch(App, ...arguments)
   }
 

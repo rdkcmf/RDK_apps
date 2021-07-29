@@ -19,6 +19,7 @@
 import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import AppListItem from '../../items/AppListItem'
 import NetworkApi from '../../api/NetworkApi'
+import AAMPVideoPlayer from '../../player/AAMPVideoPlayer'
 
 export default class UsbContent extends Lightning.Component {
     static _template() {
@@ -80,6 +81,7 @@ export default class UsbContent extends Lightning.Component {
                     h: 60,
                 },
             },
+            
             ItemList: {
                 x: 80,
                 y: 320,
@@ -94,6 +96,34 @@ export default class UsbContent extends Lightning.Component {
                 itemScrollOffset: -5,
                 clipping: true,
             },
+            Preview: {
+                x: 500,
+                y: 580,
+                w: 750,
+                h: 450,
+            },
+            Message:
+            {
+                x: 500,
+                y: 800,
+                text: {
+                    textColor: 0xffffdf00,
+                    fontSize: 38,
+                    fontStyle: 'italic bold',
+                    textColor: 0xffffdf00,
+                    shadow: true,
+                    shadowColor: 0xffff00ff,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2,
+                    shadowBlur: 2,
+                    w: 900,
+                    h: 100,
+                },
+            },
+
+            Player: {
+                type: AAMPVideoPlayer,
+            },
         }
     }
     set contentTitle(title) {
@@ -101,6 +131,12 @@ export default class UsbContent extends Lightning.Component {
             text: { text: title }
         })
     }
+    set message(message) {
+        this.tag('Message').patch({
+            text: { text: message }
+        })
+    }
+    
 
     set itemList(items) {
         this.tag('ItemList').items = items.map(info => {
@@ -112,24 +148,87 @@ export default class UsbContent extends Lightning.Component {
                 focus: 1.2,
                 unfocus: 1,
                 x_text: 106,
-                y_text: 140,
+                y_text: 215,
             }
         })
         this.tag('ItemList').start()
     }
 
     _init() {
+        this.videoPlayback=false;
         var networkApi = new NetworkApi()
         networkApi.getIP().then(ip => {
             this.tag('IpAddress').text.text = 'IP:' + ip
         })
     }
 
+    
+    previewImageOnFocus(image) {
+        if (image.startsWith('/images')) {
+          this.tag('Preview').patch({
+            src: Utils.asset(image),
+          });
+        } else {
+          this.tag('Preview').patch({ src: image });
+        }
+      }
+
+  goToPlayer(item) {
+       this._setState('Player')
+       this.play(item)
+  }
+
+
+   /**
+   * Function to hide the home UI.
+   */
+    hide() {
+        this.tag('Background').patch({ alpha: 0 });
+        this.tag('UsbHomeTopPanel').patch({ alpha: 0 });
+        this.tag('ContentTitle').patch({ alpha: 0 });
+        this.tag('ItemList').patch({ alpha: 0 });
+        this.tag('Preview').patch({ alpha: 0 });
+      }
+    
+      /**
+         * Function to show home UI.
+       */
+       show() {
+        console.log('show -from content')
+        this.tag('Background').patch({ alpha: 1 });
+        this.tag('UsbHomeTopPanel').patch({ alpha: 1 });
+        this.tag('ContentTitle').patch({ alpha: 1 });
+        this.tag('ItemList').patch({ alpha: 1 });
+        this.tag('Preview').patch({ alpha: 1 });
+
+      }
+       /**
+   * Function to start video playback.
+   */
+  play(item) {
+    this.player = this.tag('Player')
+    try {
+      this.player.load({
+        title: item.data.displayName,
+        subtitle: 'm3u8',
+        url:item.data.uri,
+        drmConfig: null,
+      })
+      this.hide()
+      this._setState('Playing')
+      this.player.setVideoRect(0, 0, 1920, 1080)
+    } catch (error) {
+      this._setState('ItemList')
+      console.error('Playback Failed ' + error)
+    }
+  }
+
     static _states() {
         return [
             class ItemList extends this {
                 _getFocused() {
                     if (this.tag('ItemList').length) {
+                        this.previewImageOnFocus(this.tag('ItemList').element.data.url)
                         return this.tag('ItemList').element
                     }
                 }
@@ -146,23 +245,27 @@ export default class UsbContent extends Lightning.Component {
                     }
                 }
                 _handleDown() {
-                    // todo
                 }
                 _handleUp() {
+                    this.videoPlayback=false;
                     this._setState('Back')
+                }
+                _handleEnter() {
+                    let item= this.tag('ItemList').element
+                    if (this.videoPlayback == true) { this.goToPlayer(item) }
+                }
+                $exit() {
+                    this.videoPlayback = false;
                 }
             },
 
             class Back extends this{
                 $enter() {
-
-                    console.log('enter back');
                     this.tag('Back').patch({
                         src: Utils.asset('/images/settings/back-arrow-small.png'),
                     })
                 }
                 _handleDown() {
-                    console.log('handle down')
                     this.tag('Back').patch({
                         src: Utils.asset('/images/settings/Back_icon.png'),
 
@@ -181,6 +284,27 @@ export default class UsbContent extends Lightning.Component {
                     }
                 }
             },
+            class Playing extends this {
+                _getFocused() {
+                  return this.tag('Player')
+                }
+        
+                stopPlayer() {
+                  this._setState('ItemList');
+                  if(this.player !=null)
+                     this.player.stop()
+                  this.show();
+                }
+        
+                _handleKey(key) {
+                  if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+                    this.stopPlayer()
+                  } else if (key.keyCode == 227 || key.keyCode == 179) {
+                    this.stopPlayer()
+                    return false;
+                  }
+                }
+              },
         ]
     }
 }

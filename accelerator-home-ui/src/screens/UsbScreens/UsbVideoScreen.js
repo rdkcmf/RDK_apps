@@ -23,6 +23,7 @@ import UsbContent from './UsbContent'
 export default class UsbVideoScreen extends UsbContent {
   _active() {
     this.contentTitle = 'Video files'
+    this.videoPlayback=true;
     this.itemList = videoListInfo
     this._setState('ItemList')
   }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import {
+ import {
   Lightning,
   Utils
 } from '@lightningjs/sdk'
@@ -39,12 +39,21 @@ export default class AppListItem extends Lightning.Component {
         x: 0,
         y: 18,
         Image: {},
+        Title: {
+          text: {
+            fontSize: 27,
+            textColor: 0xffffffff,
+          },
+          mountX: 0.5,
+          alpha: 0,
+        },
       },
+
     }
   }
 
   _init() {
-
+    console.log(this.data)
     if (this.data.url.startsWith('/images')) {
       this.tag('Image').patch({
         w: this.w,
@@ -67,6 +76,15 @@ export default class AppListItem extends Lightning.Component {
         h: this.h
       })
     }
+    this.tag('Title').patch({
+      x: this.x_text,
+      y: this.y_text,
+      text: { text: this.data.displayName },
+    })
+    this.tag('Title').patch({ alpha: 1 })
+
+  
+
   }
 
   /**
@@ -91,9 +109,15 @@ export default class AppListItem extends Lightning.Component {
         radius: 0
       }
     })
+    this.tag('Title').patch({
+      x: this.x_text,
+      y: this.y_text,
+      text: { text: this.data.displayName },
+    })
     this.tag('Item').patch({
         zIndex: 2
     })
+
   }
 
   /**
@@ -110,6 +134,11 @@ export default class AppListItem extends Lightning.Component {
         type: lng.shaders.RoundedRectangle,
         radius: 10
       }
+    })
+    this.tag('Title').patch({
+      x: this.x_text,
+      y: this.y_text,
+      text: { text: this.data.displayName },
     })
     this.tag('Item').patch({
         zIndex: 0

@@ -20,30 +20,5 @@
  * Class which contains data for app listings.
  */
  export var imageListInfo = [
-   
-    {
-      displayName: 'Test Xumo',
-      applicationType: 'WebApp',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Netflix',
-      applicationType: 'Netflix',
-      uri: '',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Prime video',
-      applicationType: 'Amazon',
-      uri: '',
-      url: '/images/usb/picture-default-tile.jpg',
-    },
-    {
-      displayName: 'Bluetooth Audio',
-      applicationType: 'Lightning',
-      uri: 'https://rdkwiki.com/rdk-apps/BluetoothAudio/index.html',
-      url: '/images/usb/picture-default-tile.jpg',
-    }
   ]
   

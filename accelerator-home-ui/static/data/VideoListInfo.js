@@ -20,23 +20,5 @@
  * Class which contains data for app listings.
  */
  export var videoListInfo = [
- 
-    {
-      displayName: 'Test Xumo',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Netflix',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Test Prime video',
-      url: '/images/usb/video-default-tile.jpg',
-    },
-    {
-      displayName: 'Bluetooth Audio',
-      url: '/images/usb/video-default-tile.jpg',
-    }
   ]
   

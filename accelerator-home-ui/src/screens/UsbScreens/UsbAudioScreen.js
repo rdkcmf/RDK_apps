@@ -23,8 +23,8 @@ import UsbContent from './UsbContent'
 export default class UsbAudioScreen extends UsbContent {
   _active() {
     this.contentTitle = 'Audio files'
+    this.message='Audio playback functionality not yet implemented'
     this.itemList = musicListInfo
     this._setState('ItemList')
   }
-
 }
