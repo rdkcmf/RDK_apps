@@ -32,7 +32,8 @@ var appApi = new AppApi();
 
 export default class App extends Router.App {
   static getFonts() {
-    return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') }];
+    return [{ family: 'MS-Regular', url: Utils.asset('fonts/Montserrat/Montserrat-Regular.ttf') },
+    { family: 'MS-Light', url: Utils.asset('fonts/Montserrat/Montserrat-Light.ttf') }];
   }
   _setup() {
     Router.startRouter(routes, this);

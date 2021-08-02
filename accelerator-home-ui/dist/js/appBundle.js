@@ -1,9 +1,9 @@
 /**
- * App version: 2.0.0 25/06/21
+ * App version: 2.0.0 02/08/21
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Thu, 29 Jul 2021 11:42:35 GMT
+ * Generated: Mon, 02 Aug 2021 13:58:57 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -15288,7 +15288,8 @@ ${error.toString()}`;
 
   class App extends Router.App {
     static getFonts() {
-      return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') }];
+      return [{ family: 'MS-Regular', url: Utils.asset('fonts/Montserrat/Montserrat-Regular.ttf') },
+      { family: 'MS-Light', url: Utils.asset('fonts/Montserrat/Montserrat-Light.ttf') }];
     }
     _setup() {
       Router.startRouter(routes, this);
