@@ -292,11 +292,13 @@ export default class AppApi {
 
   launchforeground() {
     const childCallsign = 'foreground'
+    console.log("notification_url::"+location.protocol + '//' + location.host + location.pathname)
+    let notification_url = location.protocol + '//' + location.host + location.pathname+"/notification/"
     thunder
       .call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
         type: 'HtmlApp',
-        uri: 'http://127.0.0.1:50050/foreground/',
+        uri:notification_url,
       })
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {

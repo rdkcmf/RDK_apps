@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.1
  *
- * Generated: Tue, 20 Jul 2021 12:02:04 GMT
+ * Generated: Thu, 05 Aug 2021 15:15:59 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6047,11 +6047,13 @@ var APP_accelerator_home_ui = (function () {
 
     launchforeground() {
       const childCallsign = 'foreground';
+      console.log("notification_url::"+location.protocol + '//' + location.host + location.pathname);
+      let notification_url = location.protocol + '//' + location.host + location.pathname+"/notification/";
       thunder$1
         .call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: 'HtmlApp',
-          uri: 'http://127.0.0.1:50050/foreground/',
+          uri:notification_url,
         })
         .then(() => {
           thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
@@ -10242,7 +10244,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to be excuted when the Bluetooth screen is enabled.
      */
     _enable() {
-      this.remotePaired = true;
+      this.remotePaired = null;
       this.hasInternet = true;
 
       this._bt = new BluetoothApi();
@@ -10252,11 +10254,14 @@ var APP_accelerator_home_ui = (function () {
         .then(() => this._bt.getConnectedDevices())
         .then(() => {
           let paired = this._bt.pairedDevices;
-          let connected = this._bt.connectedDevices;
+          this._bt.connectedDevices;
 
-          if (paired.length == 0 && connected.length == 0) {
+          if (paired.length > 0) {
+            this.remotePaired = true;
+          }else {
             this.remotePaired = false;
           }
+
         });
       // this.startVideo()
       // var thunderCalls = new ThunderCalls()
@@ -10459,6 +10464,8 @@ var APP_accelerator_home_ui = (function () {
               let pairedDevices = this._bt.pairedDevices;
               if (pairedDevices.length > 0) {
                 this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType);
+                this.tag('AutoRemotePair.Description').text =
+                 pairedDevices[0].deviceType+'remote is paired';
               } else {
                 setTimeout(() => {
                   this._bt.getPairedDevices().then(() => {
@@ -10476,7 +10483,7 @@ var APP_accelerator_home_ui = (function () {
               let connectedDevices = this._bt.connectedDevices;
               if (connectedDevices.length > 0) {
                 this.tag('AutoRemotePair.Description').text =
-                  'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name;
+                  'Remote is Connected to ' + connectedDevices[0].name;
                 connected = true;
                 clearTimeout(timer);
                 setTimeout(() => {
