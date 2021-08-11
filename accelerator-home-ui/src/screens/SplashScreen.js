@@ -57,6 +57,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1600,
           y: 474,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 55,
             textAlign: 'center',
             text: 'Pair Your Remote',
@@ -68,6 +69,7 @@ export default class SplashScreen extends Lightning.Component {
           y: 550,
           x: 150,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 35,
             textAlign: 'center',
             maxLines: 2,
@@ -96,6 +98,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1920,
           y: 325,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 55,
             textAlign: 'center',
             text: "You're not connected to the internet",
@@ -106,6 +109,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1920,
           y: 400,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 35,
             textAlign: 'center',
             maxLines: 2,
@@ -127,6 +131,7 @@ export default class SplashScreen extends Lightning.Component {
           y: 350,
           mountX: 0.5,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 55,
             textAlign: 'center',
             text: 'Choose a Service',
@@ -150,7 +155,7 @@ export default class SplashScreen extends Lightning.Component {
    * Function to be excuted when the Bluetooth screen is enabled.
    */
   _enable() {
-    this.remotePaired = true
+    this.remotePaired = null
     this.hasInternet = true
     this._bt = new BluetoothApi()
     this._bt.activate()
@@ -161,7 +166,9 @@ export default class SplashScreen extends Lightning.Component {
         let paired = this._bt.pairedDevices
         let connected = this._bt.connectedDevices
 
-        if (paired.length == 0 && connected.length == 0) {
+        if (paired.length > 0) {
+          this.remotePaired = true
+        }else{
           this.remotePaired = false
         }
       })
@@ -370,6 +377,7 @@ export default class SplashScreen extends Lightning.Component {
             let pairedDevices = this._bt.pairedDevices
             if (pairedDevices.length > 0) {
               this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType)
+              this.tag('AutoRemotePair.Description').text = pairedDevices[0].deviceType+'remote is paired'
             } else {
               setTimeout(() => {
                 this._bt.getPairedDevices().then(() => {
@@ -386,8 +394,7 @@ export default class SplashScreen extends Lightning.Component {
           this._bt.registerEvent('onConnectionChange', () => {
             let connectedDevices = this._bt.connectedDevices
             if (connectedDevices.length > 0) {
-              this.tag('AutoRemotePair.Description').text =
-                'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name
+              this.tag('AutoRemotePair.Description').text = 'Remote is Connected to ' + connectedDevices[0].name              
               connected = true
               clearTimeout(timer)
               setTimeout(() => {

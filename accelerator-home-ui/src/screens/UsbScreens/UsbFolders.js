@@ -51,6 +51,7 @@ export default class UsbFolders extends Lightning.Component {
         x: 1050,
         y: 320,
         text: {
+          fontFace: 'MS-Light',
           text: 'Enable only if USB/HDD connected to Box',
           textColor: COLORS.textColor,
           fontSize: 28,

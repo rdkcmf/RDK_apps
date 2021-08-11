@@ -29,6 +29,7 @@ export default class Error extends Lightning.Component {
         x: 100,
         y: 100,
         text: {
+          fontFace: 'MS-Regular',
           text: 'Error',
           fontSize: 22,
         },

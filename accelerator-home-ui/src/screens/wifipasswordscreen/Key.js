@@ -53,7 +53,7 @@ export default class Key extends Lightning.Component {
         x: this.w / 2,
         y: this.h / 2,
         mount: 0.5,
-        text: { text: item, fontSize: this._fontSize, fontFace: 'Light' },
+        text: { text: item, fontSize: this._fontSize, fontFace: 'MS-Light' },
       },
     }
     if (this._keyType == 'delete') {

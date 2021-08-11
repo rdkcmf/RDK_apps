@@ -87,6 +87,7 @@ export default class ListItem extends Lightning.Component {
           x: this.x + 65,
           y: this.y + 10,
           text: {
+            fontFace: 'MS-Regular',
             text: this.data.displayName,
             fontSize: 25,
             maxLines: 2,
@@ -102,6 +103,7 @@ export default class ListItem extends Lightning.Component {
           x: this.x + 65,
           y: this.y,
           text: {
+            fontFace: 'MS-Light',
             text: '8.8/10',
             fontSize: 20,
             maxLines: 2,
@@ -110,6 +112,7 @@ export default class ListItem extends Lightning.Component {
         },
         Ua: {
           text: {
+            fontFace: 'MS-Light',
             text: '16+',
             fontSize: 18
           },
@@ -124,6 +127,7 @@ export default class ListItem extends Lightning.Component {
           x: this.x + 190,
           y: this.y,
           text: {
+            fontFace: 'MS-Light',
             text: '2h 30m',
             fontSize: 20,
             maxLines: 2,

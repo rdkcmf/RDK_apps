@@ -39,8 +39,8 @@ export default class MainView extends Lightning.Component {
         Text1: {
           x: 10,
           y: 50,
-          w: 95,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 40,
             text: 'Apps',
             fontStyle: 'normal',
@@ -66,6 +66,7 @@ export default class MainView extends Lightning.Component {
           x: 10,
           y: 338,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 40,
             text: 'Metro Apps',
             fontStyle: 'normal',
@@ -90,6 +91,7 @@ export default class MainView extends Lightning.Component {
           x: 10,
           y: 665,
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 40,
             text: 'TVShows',
             fontStyle: 'normal',
@@ -196,7 +198,7 @@ export default class MainView extends Lightning.Component {
         data: info,
         focus: 1.2,
         unfocus: 1,
-        x_text: 106,
+        x_text: 120,
         y_text: 140,
       }
     })

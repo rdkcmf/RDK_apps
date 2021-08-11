@@ -67,7 +67,7 @@ export default class HomeScreen extends Lightning.Component {
       },
       IpAddressBg: {
         rect: true,
-        x: 1870,
+        x: 1860,
         y: 1060,
         w: 256,
         h: 30,
@@ -79,6 +79,7 @@ export default class HomeScreen extends Lightning.Component {
         y: 1058,
         mount: 1,
         text: {
+          fontFace: 'MS-Regular',
           text: 'IP:NA',
           textColor: 0xffffffff,
           fontSize: 22,

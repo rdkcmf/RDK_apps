@@ -39,6 +39,7 @@ export default class FolderListItem extends Lightning.Component {
         y: 18,
         Title: {
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 32,
             textColor: 0xffffffff,
           },

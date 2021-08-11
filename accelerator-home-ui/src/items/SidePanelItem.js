@@ -38,6 +38,7 @@ export default class SidePanelItem extends Lightning.Component {
         },
         Title: {
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 40,
             textColor: 0xffffffff,
           },

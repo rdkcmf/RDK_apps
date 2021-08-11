@@ -50,7 +50,7 @@ export default class SelectionKey extends Key {
         x: this.w / 2,
         y: this.h / 2,
         mount: 0.5,
-        text: { text: this._key, fontSize: 24, textColor: 0xffffffff, fontFace: 'Regular' },
+        text: { text: this._key, fontSize: 24, textColor: 0xffffffff, fontFace: 'MS-Regular' },
       },
     })
   }

@@ -45,13 +45,14 @@ export default class UsbContent extends Lightning.Component {
                 IconTitle: {
                     x: 200,
                     y: 78,
-                    text: { text: 'USB Content Screen', fontSize: 40 },
+                    text: { text: 'USB Content Screen', fontSize: 40, fontFace: 'MS-Regular', },
                 },
                 IpAddress: {
                     x: 1835,
                     y: 125,
                     mount: 1,
                     text: {
+                        fontFace: 'MS-Regular',
                         text: 'IP:N/A',
                         textColor: 0xffffffff,
                         fontSize: 32,
@@ -75,6 +76,7 @@ export default class UsbContent extends Lightning.Component {
                 x: 80,
                 y: 220,
                 text: {
+                    fontFace: 'MS-Regular',
                     textColor: 0xffffffff,
                     fontSize: 40,
                     w: 360,
@@ -107,6 +109,7 @@ export default class UsbContent extends Lightning.Component {
                 x: 500,
                 y: 800,
                 text: {
+                    fontFace: 'MS-Regular',
                     textColor: 0xffffdf00,
                     fontSize: 38,
                     fontStyle: 'italic bold',

@@ -1,9 +1,9 @@
 /**
- * App version: 2.0.0 02/08/21
+ * App version: 2.0.0 11/08/21
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Mon, 02 Aug 2021 13:58:57 GMT
+ * Generated: Wed, 11 Aug 2021 13:30:46 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -5704,6 +5704,7 @@ var APP_accelerator_home_ui = (function () {
             x: this.x + 65,
             y: this.y + 10,
             text: {
+              fontFace: 'MS-Regular',
               text: this.data.displayName,
               fontSize: 25,
               maxLines: 2,
@@ -5719,6 +5720,7 @@ var APP_accelerator_home_ui = (function () {
             x: this.x + 65,
             y: this.y,
             text: {
+              fontFace: 'MS-Light',
               text: '8.8/10',
               fontSize: 20,
               maxLines: 2,
@@ -5727,6 +5729,7 @@ var APP_accelerator_home_ui = (function () {
           },
           Ua: {
             text: {
+              fontFace: 'MS-Light',
               text: '16+',
               fontSize: 18
             },
@@ -5741,6 +5744,7 @@ var APP_accelerator_home_ui = (function () {
             x: this.x + 190,
             y: this.y,
             text: {
+              fontFace: 'MS-Light',
               text: '2h 30m',
               fontSize: 20,
               maxLines: 2,
@@ -5857,7 +5861,8 @@ var APP_accelerator_home_ui = (function () {
           Image: {},
           Title: {
             text: {
-              fontSize: 27,
+              fontFace: 'MS-Regular',
+              fontSize: 22,
               textColor: 0xffffffff,
             },
             mountX: 0.5,
@@ -5927,8 +5932,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Title').patch({
         x: this.x_text,
-        y: this.y_text,
-        text: { text: this.data.displayName },
+        y: this.y_text+15,
+        text: { smooth: { text: this.data.displayName }},
       });
       this.tag('Item').patch({
           zIndex: 2
@@ -5954,7 +5959,7 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Title').patch({
         x: this.x_text,
         y: this.y_text,
-        text: { text: this.data.displayName },
+        text: { smooth: { text: this.data.displayName }},
       });
       this.tag('Item').patch({
           zIndex: 0
@@ -6511,8 +6516,8 @@ var APP_accelerator_home_ui = (function () {
           Text1: {
             x: 10,
             y: 50,
-            w: 95,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 40,
               text: 'Apps',
               fontStyle: 'normal',
@@ -6538,6 +6543,7 @@ var APP_accelerator_home_ui = (function () {
             x: 10,
             y: 338,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 40,
               text: 'Metro Apps',
               fontStyle: 'normal',
@@ -6562,6 +6568,7 @@ var APP_accelerator_home_ui = (function () {
             x: 10,
             y: 665,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 40,
               text: 'TVShows',
               fontStyle: 'normal',
@@ -6668,7 +6675,7 @@ var APP_accelerator_home_ui = (function () {
           data: info,
           focus: 1.2,
           unfocus: 1,
-          x_text: 106,
+          x_text: 120,
           y_text: 140,
         }
       });
@@ -7507,7 +7514,7 @@ var APP_accelerator_home_ui = (function () {
             x: 200,
             y: 105,
             mountY: 0.5,
-            text: { text: 'Search TV shows, movies and more...', fontSize: 42 },
+            text: { text: 'Search TV shows, movies and more...', fontSize: 42, fontFace: 'MS-Light', },
             w: 600,
             h: 50,
             alpha: 0.5,
@@ -7524,7 +7531,7 @@ var APP_accelerator_home_ui = (function () {
             x: 1550,
             y: 105,
             mountY: 0.5,
-            text: { text: '', fontSize: 48 },
+            text: { text: '', fontSize: 48, fontFace: 'MS-Regular', },
             w: 160,
             h: 60,
           },
@@ -7532,7 +7539,7 @@ var APP_accelerator_home_ui = (function () {
             x: 1740,
             y: 95,
             mountY: 0.5,
-            text: { text: '', fontSize: 32 },
+            text: { text: '', fontSize: 32, fontFace: 'MS-Regular', },
             w: 95,
             h: 32,
           },
@@ -7540,7 +7547,7 @@ var APP_accelerator_home_ui = (function () {
             x: 1741,
             y: 115,
             mountY: 0.5,
-            text: { text: '', fontSize: 22 },
+            text: { text: '', fontSize: 22, fontFace: 'MS-Light', },
             w: 95,
             h: 22,
           },
@@ -9329,7 +9336,7 @@ var APP_accelerator_home_ui = (function () {
         },
         IpAddressBg: {
           rect: true,
-          x: 1870,
+          x: 1860,
           y: 1060,
           w: 256,
           h: 30,
@@ -9341,6 +9348,7 @@ var APP_accelerator_home_ui = (function () {
           y: 1058,
           mount: 1,
           text: {
+            fontFace: 'MS-Regular',
             text: 'IP:NA',
             textColor: 0xffffffff,
             fontSize: 22,
@@ -10162,6 +10170,7 @@ var APP_accelerator_home_ui = (function () {
             w: 1600,
             y: 474,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 55,
               textAlign: 'center',
               text: 'Pair Your Remote',
@@ -10173,6 +10182,7 @@ var APP_accelerator_home_ui = (function () {
             y: 550,
             x: 150,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 35,
               textAlign: 'center',
               maxLines: 2,
@@ -10201,6 +10211,7 @@ var APP_accelerator_home_ui = (function () {
             w: 1920,
             y: 325,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 55,
               textAlign: 'center',
               text: "You're not connected to the internet",
@@ -10211,6 +10222,7 @@ var APP_accelerator_home_ui = (function () {
             w: 1920,
             y: 400,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 35,
               textAlign: 'center',
               maxLines: 2,
@@ -10232,6 +10244,7 @@ var APP_accelerator_home_ui = (function () {
             y: 350,
             mountX: 0.5,
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 55,
               textAlign: 'center',
               text: 'Choose a Service',
@@ -10255,7 +10268,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to be excuted when the Bluetooth screen is enabled.
      */
     _enable() {
-      this.remotePaired = true;
+      this.remotePaired = null;
       this.hasInternet = true;
       this._bt = new BluetoothApi();
       this._bt.activate();
@@ -10264,9 +10277,11 @@ var APP_accelerator_home_ui = (function () {
         .then(() => this._bt.getConnectedDevices())
         .then(() => {
           let paired = this._bt.pairedDevices;
-          let connected = this._bt.connectedDevices;
+          this._bt.connectedDevices;
 
-          if (paired.length == 0 && connected.length == 0) {
+          if (paired.length > 0) {
+            this.remotePaired = true;
+          }else {
             this.remotePaired = false;
           }
         });
@@ -10475,6 +10490,7 @@ var APP_accelerator_home_ui = (function () {
               let pairedDevices = this._bt.pairedDevices;
               if (pairedDevices.length > 0) {
                 this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType);
+                this.tag('AutoRemotePair.Description').text = pairedDevices[0].deviceType+'remote is paired';
               } else {
                 setTimeout(() => {
                   this._bt.getPairedDevices().then(() => {
@@ -10491,8 +10507,7 @@ var APP_accelerator_home_ui = (function () {
             this._bt.registerEvent('onConnectionChange', () => {
               let connectedDevices = this._bt.connectedDevices;
               if (connectedDevices.length > 0) {
-                this.tag('AutoRemotePair.Description').text =
-                  'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name;
+                this.tag('AutoRemotePair.Description').text = 'Remote is Connected to ' + connectedDevices[0].name;              
                 connected = true;
                 clearTimeout(timer);
                 setTimeout(() => {
@@ -10671,7 +10686,7 @@ var APP_accelerator_home_ui = (function () {
           x: 10,
           y: this.tag('Item').h / 2,
           mountY: 0.5,
-          text: { text: item, fontSize: 25, textColor: COLORS.textColor },
+          text: { text: item, fontSize: 25, textColor: COLORS.textColor, fontFace: 'MS-Regular', },
         },
       });
     }
@@ -10815,7 +10830,7 @@ var APP_accelerator_home_ui = (function () {
         Title: {
           x: 20,
           y: 100,
-          text: { text: '', fontSize: 30, textColor: COLORS.titleColor },
+          text: { text: '', fontSize: 30, textColor: COLORS.titleColor, fontFace: 'MS-Regular', },
         },
         List: {
           x: 20,
@@ -10833,6 +10848,7 @@ var APP_accelerator_home_ui = (function () {
           y: 500,
           Text: {
             text: {
+              fontFace: 'MS-Light',
               text: 'Enter the below code in your Bluetooth device and press enter',
               wordWrapWidth: 1920 / 3 - 70,
               fontSize: 30,
@@ -10939,6 +10955,7 @@ var APP_accelerator_home_ui = (function () {
           x: 1050,
           y: 320,
           text: {
+            fontFace: 'MS-Regular',
             text: 'Now discoverable as: ',
             textColor: COLORS.textColor,
             fontSize: 28,
@@ -10954,6 +10971,7 @@ var APP_accelerator_home_ui = (function () {
             h: 30,
             Title: {
               text: {
+                fontFace: 'MS-Regular',
                 text: 'My Devices: ',
                 textColor: COLORS.titleColor,
                 fontSize: 32,
@@ -10976,6 +10994,7 @@ var APP_accelerator_home_ui = (function () {
             h: 30,
             Title: {
               text: {
+                fontFace: 'MS-Regular',
                 text: 'Other Devices: ',
                 textColor: COLORS.titleColor,
                 fontSize: 32,
@@ -11016,7 +11035,7 @@ var APP_accelerator_home_ui = (function () {
         Message: {
           x: 1920 - 1920 / 3 + 40,
           y: 950,
-          text: { text: '' },
+          text: { text: '', fontFace: 'MS-Regular', },
         },
       }
     }
@@ -11433,7 +11452,7 @@ var APP_accelerator_home_ui = (function () {
           x: 10,
           y: 32.5,
           mountY: 0.5,
-          text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor },
+          text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor, fontFace: 'MS-Regular', },
         },
 
         Right: {
@@ -12033,7 +12052,7 @@ var APP_accelerator_home_ui = (function () {
           x: this.w / 2,
           y: this.h / 2,
           mount: 0.5,
-          text: { text: item, fontSize: this._fontSize, fontFace: 'Light' },
+          text: { text: item, fontSize: this._fontSize, fontFace: 'MS-Light' },
         },
       };
       if (this._keyType == 'delete') {
@@ -12156,7 +12175,7 @@ var APP_accelerator_home_ui = (function () {
           x: this.w / 2,
           y: this.h / 2,
           mount: 0.5,
-          text: { text: this._key, fontSize: 24, textColor: 0xffffffff, fontFace: 'Regular' },
+          text: { text: this._key, fontSize: 24, textColor: 0xffffffff, fontFace: 'MS-Regular' },
         },
       });
     }
@@ -12258,7 +12277,7 @@ var APP_accelerator_home_ui = (function () {
             x: 20,
             y: this._height / 2 + 5,
             mountY: 0.5,
-            text: { text: 'Password', fontSize: 18, fontFace: 'Light', textColor: 0xffa5a5a5 },
+            text: { text: 'Password', fontSize: 18, fontFace: 'MS-Light', textColor: 0xffa5a5a5 },
           },
           Pwd: {
             x: 130,
@@ -12267,7 +12286,7 @@ var APP_accelerator_home_ui = (function () {
             text: {
               text: '',
               fontSize: 24,
-              fontFace: 'Light',
+              fontFace: 'MS-Light',
               textColor: 0xffc0c0c0,
               wordWrapWidth: this._width - 130,
               wordWrap: false,
@@ -12327,7 +12346,7 @@ var APP_accelerator_home_ui = (function () {
             x: this._width / 2,
             y: this._height / 2,
             mount: 0.5,
-            text: { text: 'Submit', fontSize: 24, fontFace: 'Light', textColor: 0xffffffff },
+            text: { text: 'Submit', fontSize: 24, fontFace: 'MS-Light', textColor: 0xffffffff },
           },
         },
       });
@@ -13249,6 +13268,7 @@ var APP_accelerator_home_ui = (function () {
           },
           Title: {
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 40,
               textColor: 0xffffffff,
             },
@@ -13868,6 +13888,7 @@ var APP_accelerator_home_ui = (function () {
           y: 18,
           Title: {
             text: {
+              fontFace: 'MS-Regular',
               fontSize: 32,
               textColor: 0xffffffff,
             },
@@ -13986,6 +14007,7 @@ var APP_accelerator_home_ui = (function () {
           x: 1050,
           y: 320,
           text: {
+            fontFace: 'MS-Light',
             text: 'Enable only if USB/HDD connected to Box',
             textColor: COLORS.textColor,
             fontSize: 28,
@@ -14264,13 +14286,14 @@ var APP_accelerator_home_ui = (function () {
           IconTitle: {
             x: 200,
             y: 78,
-            text: { text: 'Settings', fontSize: 40 },
+            text: { text: 'Settings', fontSize: 40, fontFace: 'MS-Regular', },
           },
           IpAddress: {
             x: 1835,
             y: 125,
             mount: 1,
             text: {
+              fontFace: 'MS-Regular',
               text: 'IP:N/A',
               textColor: 0xffffffff,
               fontSize: 32,
@@ -14532,6 +14555,7 @@ var APP_accelerator_home_ui = (function () {
           x: 100,
           y: 100,
           text: {
+            fontFace: 'MS-Regular',
             text: 'Error',
             fontSize: 22,
           },
@@ -14611,13 +14635,14 @@ ${error.toString()}`;
                   IconTitle: {
                       x: 200,
                       y: 78,
-                      text: { text: 'USB Content Screen', fontSize: 40 },
+                      text: { text: 'USB Content Screen', fontSize: 40, fontFace: 'MS-Regular', },
                   },
                   IpAddress: {
                       x: 1835,
                       y: 125,
                       mount: 1,
                       text: {
+                          fontFace: 'MS-Regular',
                           text: 'IP:N/A',
                           textColor: 0xffffffff,
                           fontSize: 32,
@@ -14641,6 +14666,7 @@ ${error.toString()}`;
                   x: 80,
                   y: 220,
                   text: {
+                      fontFace: 'MS-Regular',
                       textColor: 0xffffffff,
                       fontSize: 40,
                       w: 360,
@@ -14673,6 +14699,7 @@ ${error.toString()}`;
                   x: 500,
                   y: 800,
                   text: {
+                      fontFace: 'MS-Regular',
                       textColor: 0xffffdf00,
                       fontSize: 38,
                       fontStyle: 'italic bold',

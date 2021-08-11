@@ -45,7 +45,7 @@ export default class SettingsItem extends Lightning.Component {
         x: 10,
         y: this.tag('Item').h / 2,
         mountY: 0.5,
-        text: { text: item, fontSize: 25, textColor: COLORS.textColor },
+        text: { text: item, fontSize: 25, textColor: COLORS.textColor, fontFace: 'MS-Regular', },
       },
     })
   }

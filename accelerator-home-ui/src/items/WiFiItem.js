@@ -44,7 +44,7 @@ export default class WiFiItem extends SettingsItem {
         x: 10,
         y: 32.5,
         mountY: 0.5,
-        text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor },
+        text: { text: item.ssid, fontSize: 25, textColor: COLORS.textColor, fontFace: 'MS-Regular', },
       },
 
       Right: {

@@ -41,7 +41,8 @@ export default class AppListItem extends Lightning.Component {
         Image: {},
         Title: {
           text: {
-            fontSize: 27,
+            fontFace: 'MS-Regular',
+            fontSize: 22,
             textColor: 0xffffffff,
           },
           mountX: 0.5,
@@ -111,8 +112,8 @@ export default class AppListItem extends Lightning.Component {
     })
     this.tag('Title').patch({
       x: this.x_text,
-      y: this.y_text,
-      text: { text: this.data.displayName },
+      y: this.y_text+15,
+      text: { smooth: { text: this.data.displayName }},
     })
     this.tag('Item').patch({
         zIndex: 2
@@ -138,7 +139,7 @@ export default class AppListItem extends Lightning.Component {
     this.tag('Title').patch({
       x: this.x_text,
       y: this.y_text,
-      text: { text: this.data.displayName },
+      text: { smooth: { text: this.data.displayName }},
     })
     this.tag('Item').patch({
         zIndex: 0

@@ -45,6 +45,7 @@ export default class SideSettinglItem extends Lightning.Component {
         },
         Title: {
           text: {
+            fontFace: 'MS-Regular',
             fontSize: 40,
             textColor: 0xffffffff,
           },

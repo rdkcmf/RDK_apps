@@ -48,6 +48,7 @@ export default class BluetoothScreen extends Lightning.Component {
         x: 1050,
         y: 320,
         text: {
+          fontFace: 'MS-Regular',
           text: 'Now discoverable as: ',
           textColor: COLORS.textColor,
           fontSize: 28,
@@ -63,6 +64,7 @@ export default class BluetoothScreen extends Lightning.Component {
           h: 30,
           Title: {
             text: {
+              fontFace: 'MS-Regular',
               text: 'My Devices: ',
               textColor: COLORS.titleColor,
               fontSize: 32,
@@ -85,6 +87,7 @@ export default class BluetoothScreen extends Lightning.Component {
           h: 30,
           Title: {
             text: {
+              fontFace: 'MS-Regular',
               text: 'Other Devices: ',
               textColor: COLORS.titleColor,
               fontSize: 32,
@@ -125,7 +128,7 @@ export default class BluetoothScreen extends Lightning.Component {
       Message: {
         x: 1920 - 1920 / 3 + 40,
         y: 950,
-        text: { text: '' },
+        text: { text: '', fontFace: 'MS-Regular', },
       },
     }
   }
