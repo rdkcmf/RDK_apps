@@ -419,11 +419,12 @@ export default class AppApi {
     })
   }
 
-  audio_mute(value) {
+    audio_mute(value,audio_source) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
+          console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -465,4 +466,23 @@ export default class AppApi {
         })
     })
   }
+
+
+  getConnectedAudioPorts() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+        .then(result => {
+          console.log("############ getConnectedAudioPorts ############")
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
 }

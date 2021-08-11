@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Wed, 11 Aug 2021 13:30:46 GMT
+ * Generated: Wed, 11 Aug 2021 15:16:31 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6387,11 +6387,12 @@ var APP_accelerator_home_ui = (function () {
       })
     }
 
-    audio_mute(value) {
+      audio_mute(value,audio_source) {
       return new Promise((resolve, reject) => {
         thunder$2
-          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
           .then(result => {
+            console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source);
             console.log(JSON.stringify(result, 3, null));
             resolve(result);
           })
@@ -6433,6 +6434,25 @@ var APP_accelerator_home_ui = (function () {
           });
       })
     }
+
+
+    getConnectedAudioPorts() {
+      return new Promise((resolve, reject) => {
+        thunder$2
+          .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+          .then(result => {
+            console.log("############ getConnectedAudioPorts ############");
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
   }
 
   /**
@@ -9459,16 +9479,24 @@ var APP_accelerator_home_ui = (function () {
 
       } else if (key.keyCode == 118 || key.keyCode == 113) {
 
-        let value = !audio_mute;
-        appApi$1.audio_mute(value).then(res => {
-          console.log("__________AUDIO_MUTE_______________________F7");
-          console.log(JSON.stringify(res, 3, null));
+        appApi$1.getConnectedAudioPorts().then(res => {
+          let audio_source = res.connectedAudioPorts[0];
+          let value = !audio_mute;
+          new AppApi().audio_mute(value, audio_source).then(res => {
+            console.log("__________AUDIO_MUTE_______________________F7");
+            console.log(JSON.stringify(res, 3, null));
 
-          if (res.success == true) {
-            audio_mute = value;
-          }
-          console.log("audio_mute:" + audio_mute);
+            if (res.success == true) {
+              audio_mute = value;
+              new AppApi().zorder("moveToFront","foreground");
+              new AppApi().setVisibility("foreground",audio_mute);
+            }
+            console.log("audio_mute:" + audio_mute);
+          });
+
         });
+
+
         return true
 
       } else if (key.keyCode == 175) {
