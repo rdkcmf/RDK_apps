@@ -377,13 +377,7 @@ export default class MainView extends Lightning.Component {
           var thunder = ThunderJS(config);
           console.log('_handleKey', key.keyCode);
           var appApi = new AppApi();
-          if (Storage.get('applicationType') == 'Cobalt') {
-            if ((key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49)) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) { // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            }
-          } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
+          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
             if (Storage.get('applicationType') == 'WebApp') {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
@@ -403,6 +397,10 @@ export default class MainView extends Lightning.Component {
             } else if (Storage.get('applicationType') == 'Netflix') {
               Storage.set('applicationType', '');
               appApi.suspendPremiumApp('Netflix');
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Cobalt') {
+              Storage.set('applicationType', '');
+              appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
             }
             thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
