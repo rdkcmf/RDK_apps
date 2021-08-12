@@ -62,7 +62,7 @@ export default class ShutdownPanel extends Lightning.Component {
         Txt: {
           x: 60,
           y: 15,
-          text: { text: 'Light Sleep', fontSize: 33 }
+          text: { text: 'Light Sleep', fontSize: 33, fontFace: 'MS-Regular' }
         }
       },
       DeepSleepbtn: {
@@ -76,7 +76,7 @@ export default class ShutdownPanel extends Lightning.Component {
         Txt: {
           x: 60,
           y: 15,
-          text: { text: 'Deep Sleep', fontSize: 33 }
+          text: { text: 'Deep Sleep', fontSize: 33, fontFace: 'MS-Regular' }
         }
       },
     }

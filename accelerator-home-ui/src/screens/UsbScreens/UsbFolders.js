@@ -137,10 +137,9 @@ export default class UsbFolders extends Lightning.Component {
 
   switchOnOff() {
     if (this._usbEnabled) {
-      // this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
       this.toggleBtnAnimationX()
       this.tag('Button').patch({
-        src: Utils.asset('images/switch-off-new.png')
+        src: Utils.asset('images/switch-on-new.png')
       })
 
       var usbApi = new UsbApi()
@@ -165,7 +164,7 @@ export default class UsbFolders extends Lightning.Component {
 
       this.toggleBtnAnimationY()
       this.tag('Button').patch({
-        src: Utils.asset('images/switch-on-new.png')
+        src: Utils.asset('images/switch-off-new.png')
       })
       this.tag('UsbFolderList').patch({
         alpha: 0

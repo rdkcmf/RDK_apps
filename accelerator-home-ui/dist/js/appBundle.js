@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Thu, 12 Aug 2021 16:44:47 GMT
+ * Generated: Thu, 12 Aug 2021 18:44:01 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7017,7 +7017,7 @@ var APP_accelerator_home_ui = (function () {
         },
         class TVShows extends this {
           $enter() {
-            this.fireAncestors('$scroll', -300);
+            this.fireAncestors('$scroll', -320);
           }
           _getFocused() {
             if (this.tag('TVShows').length) {
@@ -7925,7 +7925,7 @@ var APP_accelerator_home_ui = (function () {
           Txt: {
             x: 60,
             y: 15,
-            text: { text: 'Light Sleep', fontSize: 33 }
+            text: { text: 'Light Sleep', fontSize: 33, fontFace: 'MS-Regular' }
           }
         },
         DeepSleepbtn: {
@@ -7939,7 +7939,7 @@ var APP_accelerator_home_ui = (function () {
           Txt: {
             x: 60,
             y: 15,
-            text: { text: 'Deep Sleep', fontSize: 33 }
+            text: { text: 'Deep Sleep', fontSize: 33, fontFace: 'MS-Regular' }
           }
         },
       }
@@ -14291,10 +14291,9 @@ var APP_accelerator_home_ui = (function () {
 
     switchOnOff() {
       if (this._usbEnabled) {
-        // this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
         this.toggleBtnAnimationX();
         this.tag('Button').patch({
-          src: Utils.asset('images/switch-off-new.png')
+          src: Utils.asset('images/switch-on-new.png')
         });
 
         var usbApi = new UsbApi();
@@ -14319,7 +14318,7 @@ var APP_accelerator_home_ui = (function () {
 
         this.toggleBtnAnimationY();
         this.tag('Button').patch({
-          src: Utils.asset('images/switch-on-new.png')
+          src: Utils.asset('images/switch-off-new.png')
         });
         this.tag('UsbFolderList').patch({
           alpha: 0
@@ -14487,7 +14486,7 @@ var APP_accelerator_home_ui = (function () {
             text: { text: 'Settings', fontSize: 40, fontFace: 'MS-Regular', },
           },
           IpAddress: {
-            x: 1835,
+            x: 1950,
             y: 125,
             mount: 1,
             text: {

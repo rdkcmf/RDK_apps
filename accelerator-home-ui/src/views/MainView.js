@@ -520,7 +520,7 @@ export default class MainView extends Lightning.Component {
       },
       class TVShows extends this {
         $enter() {
-          this.fireAncestors('$scroll', -300)
+          this.fireAncestors('$scroll', -320)
         }
         _getFocused() {
           if (this.tag('TVShows').length) {

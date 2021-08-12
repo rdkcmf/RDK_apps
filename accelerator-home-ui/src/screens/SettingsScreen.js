@@ -54,7 +54,7 @@ export default class SettingsScreen extends Lightning.Component {
           text: { text: 'Settings', fontSize: 40, fontFace: 'MS-Regular', },
         },
         IpAddress: {
-          x: 1835,
+          x: 1950,
           y: 125,
           mount: 1,
           text: {
