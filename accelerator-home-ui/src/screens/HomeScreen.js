@@ -19,6 +19,7 @@
 import { Lightning, Utils } from '@lightningjs/sdk'
 import MainView from '../views/MainView.js'
 import TopPanel from '../views/TopPanel.js'
+import ShutdownPanel from '../views/ShutdownPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
@@ -29,6 +30,7 @@ var powerState = 'ON';
 var audio_mute = false;
 var audio_volume = 50;
 var appApi = new AppApi();
+var last_state = ''
 
 /** Class for home screen UI */
 export default class HomeScreen extends Lightning.Component {
@@ -86,6 +88,13 @@ export default class HomeScreen extends Lightning.Component {
         },
       },
       Player: { type: AAMPVideoPlayer },
+      ShutdownPanel: {
+        type: ShutdownPanel,
+        x: 660,
+        y: 385,
+        signals: { select: true },
+        alpha: 0
+      }
     }
   }
 
@@ -200,8 +209,8 @@ export default class HomeScreen extends Lightning.Component {
 
           if (res.success == true) {
             audio_mute = value;
-            new AppApi().zorder("moveToFront","foreground");
-            new AppApi().setVisibility("foreground",audio_mute)
+            new AppApi().zorder("moveToFront", "foreground");
+            new AppApi().setVisibility("foreground", audio_mute)
           }
           console.log("audio_mute:" + audio_mute);
         })
@@ -329,6 +338,22 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
   }
 
+  $standby(value) {
+    if (value == 'Back') {
+      this._setState(last_state)
+    } else {
+      if (powerState == 'ON') {
+        appApi.standby(value).then(res => {
+          if (res.success) {
+            powerState = 'STANDBY'
+          }
+          this._setState(last_state);
+        })
+        return true
+      }
+    }
+  }
+
   /**
    * Function to hide the home UI.
    */
@@ -357,6 +382,17 @@ export default class HomeScreen extends Lightning.Component {
       class TopPanel extends this {
         _getFocused() {
           return this.tag('TopPanel')
+        }
+      },
+      class ShutdownPanel extends this {
+        $enter() {
+          this.tag('ShutdownPanel').setSmooth('alpha', 1)
+        }
+        $exit() {
+          this.tag('ShutdownPanel').setSmooth('alpha', 0)
+        }
+        _getFocused() {
+          return this.tag('ShutdownPanel')
         }
       },
       class MainView extends this {

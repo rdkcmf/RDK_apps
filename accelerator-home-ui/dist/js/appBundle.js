@@ -1,9 +1,9 @@
 /**
- * App version: 2.0.0 11/08/21
+ * App version: 2.0.0 12/08/21
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Wed, 11 Aug 2021 18:39:10 GMT
+ * Generated: Thu, 12 Aug 2021 06:34:31 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7803,6 +7803,207 @@ var APP_accelerator_home_ui = (function () {
    **/
 
   /**
+   * Class for rendering items in UI list.
+   */
+  class Item extends Lightning.Component {
+    static _template() {
+      return {
+        Item: {
+          w: 300,
+          h: 150,
+          rect: true,
+          color: 0xFFDBEBFF,
+          shader: {
+            type: Lightning.shaders.RoundedRectangle,
+            radius: 10
+          },
+        },
+        OperatorLogo: {},
+        Shadow: {
+          alpha: 0,
+          zIndex: 2,
+          x: -25,
+          y: -25,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20),
+        }
+      }
+    }
+
+    /**
+     * Function to set contents for an item in UI list.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('OperatorLogo').patch({
+        Logo: {
+          w: 300,
+          h: 150,
+          zIndex: 3,
+          src: Utils.asset(this._item.url),
+        }
+      });
+    }
+
+    _focus() {
+      this.tag('Item').zIndex = 3;
+      this.tag('Item').scale = 1.2;
+      this.tag('Item').color = 0xFFFFFFFF;
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 1
+        }
+      });
+    }
+
+    _unfocus() {
+      this.tag('Item').zIndex = 1;
+      this.tag('Item').scale = 1;
+      this.tag('Item').color = 0xFFDBEBFF;
+      this.tag('Shadow').patch({
+        smooth: {
+          alpha: 0
+        }
+      });
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /** Class for top panel in home UI */
+  class ShutdownPanel extends Lightning.Component {
+    static _template() {
+      return {
+        Bg: {
+          rect: true,
+          x: 660 * -1,
+          y: 385 * -1,
+          w: 1920,
+          h: 1080,
+          color: 0x33000000,
+        },
+        Border: {
+          rect: true,
+          w: 610,
+          h: 310,
+          color: 0xFF000000,
+          alpha: 0.5,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 }
+        },
+        Box: {
+          rect: true,
+          w: 600,
+          h: 300,
+          color: 0xFF000055,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 }
+        },
+        LightSleepbtn: {
+          rect: true,
+          x: 150,
+          y: 60,
+          w: 300,
+          h: 80,
+          color: 0xFF0000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 },
+          Txt: {
+            x: 60,
+            y: 15,
+            text: { text: 'Light Sleep', fontSize: 33 }
+          }
+        },
+        DeepSleepbtn: {
+          rect: true,
+          x: 150,
+          y: 170,
+          w: 300,
+          h: 80,
+          color: 0xFF0000000,
+          shader: { type: Lightning.shaders.RoundedRectangle, radius: 19 },
+          Txt: {
+            x: 60,
+            y: 15,
+            text: { text: 'Deep Sleep', fontSize: 33 }
+          }
+        },
+      }
+    }
+
+
+
+    _init() {
+      console.log("Shutdown panel init..");
+      this.tag('LightSleepbtn').color = '0Xff0000AA';
+      this.power_state = 'LightSleepbtn';
+
+    }
+
+    _handleEnter() {
+      console.log(" current focus :" + this.power_state);
+      if (this.power_state == 'LightSleepbtn') {
+        this.fireAncestors('$standby', 'STANDBY');
+      } else if (this.power_state == 'DeepSleepbtn') {
+        this.fireAncestors('$standby', 'DEEP_SLEEP');
+
+      }
+
+    }
+
+    _handleDown() {
+      this.tag('DeepSleepbtn').color = '0Xff0000AA';
+      this.tag('LightSleepbtn').color = '0xFF0000000';
+      this.power_state = 'DeepSleepbtn';
+
+    }
+
+    _handleUp() {
+      this.tag('LightSleepbtn').color = '0Xff0000AA';
+      this.tag('DeepSleepbtn').color = '0xFF0000000';
+      this.power_state = 'LightSleepbtn';
+    }
+
+    _handleBack() {
+      this.fireAncestors('$standby', 'Back');
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
    * Variable to store the timer
    */
   var timeout;
@@ -9316,6 +9517,7 @@ var APP_accelerator_home_ui = (function () {
   var audio_mute = false;
   var audio_volume = 50;
   var appApi$1 = new AppApi();
+  var last_state = '';
 
   /** Class for home screen UI */
   class HomeScreen extends Lightning.Component {
@@ -9373,6 +9575,13 @@ var APP_accelerator_home_ui = (function () {
           },
         },
         Player: { type: AAMPVideoPlayer },
+        ShutdownPanel: {
+          type: ShutdownPanel,
+          x: 660,
+          y: 385,
+          signals: { select: true },
+          alpha: 0
+        }
       }
     }
 
@@ -9486,8 +9695,8 @@ var APP_accelerator_home_ui = (function () {
 
             if (res.success == true) {
               audio_mute = value;
-              new AppApi().zorder("moveToFront","foreground");
-              new AppApi().setVisibility("foreground",audio_mute);
+              new AppApi().zorder("moveToFront", "foreground");
+              new AppApi().setVisibility("foreground", audio_mute);
             }
             console.log("audio_mute:" + audio_mute);
           });
@@ -9615,6 +9824,22 @@ var APP_accelerator_home_ui = (function () {
       this.tag('MainView').setSmooth('y', y, { duration: 0.5 });
     }
 
+    $standby(value) {
+      if (value == 'Back') {
+        this._setState(last_state);
+      } else {
+        if (powerState == 'ON') {
+          appApi$1.standby(value).then(res => {
+            if (res.success) {
+              powerState = 'STANDBY';
+            }
+            this._setState(last_state);
+          });
+          return true
+        }
+      }
+    }
+
     /**
      * Function to hide the home UI.
      */
@@ -9643,6 +9868,17 @@ var APP_accelerator_home_ui = (function () {
         class TopPanel extends this {
           _getFocused() {
             return this.tag('TopPanel')
+          }
+        },
+        class ShutdownPanel extends this {
+          $enter() {
+            this.tag('ShutdownPanel').setSmooth('alpha', 1);
+          }
+          $exit() {
+            this.tag('ShutdownPanel').setSmooth('alpha', 0);
+          }
+          _getFocused() {
+            return this.tag('ShutdownPanel')
           }
         },
         class MainView extends this {
@@ -10056,91 +10292,6 @@ var APP_accelerator_home_ui = (function () {
           resolve(result.name);
         });
       })
-    }
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class for rendering items in UI list.
-   */
-  class Item extends Lightning.Component {
-    static _template() {
-      return {
-        Item: {
-          w: 300,
-          h: 150,
-          rect: true,
-          color: 0xFFDBEBFF,
-          shader: {
-            type: Lightning.shaders.RoundedRectangle,
-            radius: 10
-          },
-        },
-        OperatorLogo: {},
-        Shadow: {
-          alpha: 0,
-          zIndex: 2,
-          x: -25,
-          y: -25,
-          color: 0x66000000,
-          texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20),
-        }
-      }
-    }
-
-    /**
-     * Function to set contents for an item in UI list.
-     */
-    set item(item) {
-      this._item = item;
-      this.tag('OperatorLogo').patch({
-        Logo: {
-          w: 300,
-          h: 150,
-          zIndex: 3,
-          src: Utils.asset(this._item.url),
-        }
-      });
-    }
-
-    _focus() {
-      this.tag('Item').zIndex = 3;
-      this.tag('Item').scale = 1.2;
-      this.tag('Item').color = 0xFFFFFFFF;
-      this.tag('Shadow').patch({
-        smooth: {
-          alpha: 1
-        }
-      });
-    }
-
-    _unfocus() {
-      this.tag('Item').zIndex = 1;
-      this.tag('Item').scale = 1;
-      this.tag('Item').color = 0xFFDBEBFF;
-      this.tag('Shadow').patch({
-        smooth: {
-          alpha: 0
-        }
-      });
     }
   }
 
