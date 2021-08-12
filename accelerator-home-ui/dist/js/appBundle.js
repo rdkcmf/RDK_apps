@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Thu, 12 Aug 2021 06:34:31 GMT
+ * Generated: Thu, 12 Aug 2021 16:44:47 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -11734,6 +11734,12 @@ var APP_accelerator_home_ui = (function () {
                 this._events.get('onWIFIStateChanged')(notification);
               }
             });
+            this._thunder.on('org.rdk.Network', 'onInterfaceStatusChanged', notification => {
+              console.log('###### onInterfaceStatusChanged: ' + notification.state);
+              if (this._events.has('onInterfaceStatusChanged')) {
+                this._events.get('onInterfaceStatusChanged')(notification);
+              }
+            });
             this._thunder.on(this.callsign, 'onError', notification => {
               console.log('Error: ' + notification);
               if (this._events.has('onError')) {
@@ -13395,6 +13401,21 @@ var APP_accelerator_home_ui = (function () {
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.tag('Networks.AvailableNetworks.Loader').visible = false;
         this.renderDeviceList(notification.ssids);
+      });
+      this._wifi.registerEvent('onInterfaceStatusChanged', notification => {
+        if (notification.enabled) {
+          this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+          this._wifi.discoverSSIDs();
+          this.wifiStatus = true;
+          this.tag('Networks').visible = true;
+          this.tag('Networks.AvailableNetworks.Loader').visible = true;
+        } else {
+          this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+          this._wifi.disconnect();
+          this.wifiStatus = false;
+          this.tag('Networks').visible = false;
+          this.tag('Networks.AvailableNetworks.Loader').visible = false;
+        }
       });
     }
   }
