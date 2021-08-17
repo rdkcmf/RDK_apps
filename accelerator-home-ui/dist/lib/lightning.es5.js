@@ -1,5 +1,5 @@
 /**
- * Lightning v2.3.0
+ * Lightning v2.4.0
  *
  * https://github.com/rdkcentral/Lightning
  */
@@ -9,6 +9,44 @@
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.lng = factory());
 }(this, (function () { 'use strict';
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+
+      if (enumerableOnly) {
+        symbols = symbols.filter(function (sym) {
+          return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        });
+      }
+
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -45,40 +83,6 @@
     }
 
     return obj;
-  }
-
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
   }
 
   function _inherits(subClass, superClass) {
@@ -118,7 +122,7 @@
     if (typeof Proxy === "function") return true;
 
     try {
-      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
       return true;
     } catch (e) {
       return false;
@@ -255,7 +259,7 @@
   }
 
   function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
 
   function _unsupportedIterableToArray(o, minLen) {
@@ -280,9 +284,9 @@
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
-    var it;
+    var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
 
-    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (!it) {
       if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
         if (it) o = it;
         var i = 0;
@@ -315,7 +319,7 @@
         err;
     return {
       s: function () {
-        it = o[Symbol.iterator]();
+        it = it.call(o);
       },
       n: function () {
         var step = it.next();
@@ -987,6 +991,11 @@
     }
 
     _createClass(ContentAligner, [{
+      key: "_lines",
+      get: function get() {
+        return this._layout._lines;
+      }
+    }, {
       key: "init",
       value: function init() {
         this._totalCrossAxisSize = this._getTotalCrossAxisSize();
@@ -1028,6 +1037,11 @@
         }
       }
     }, {
+      key: "totalCrossAxisSize",
+      get: function get() {
+        return this._totalCrossAxisSize;
+      }
+    }, {
       key: "_getTotalCrossAxisSize",
       value: function _getTotalCrossAxisSize() {
         var lines = this._lines;
@@ -1046,16 +1060,6 @@
         var mode = this._layout._flexContainer.alignContent;
         var numberOfItems = this._lines.length;
         return SpacingCalculator.getSpacing(mode, numberOfItems, remainingSpace);
-      }
-    }, {
-      key: "_lines",
-      get: function get() {
-        return this._layout._lines;
-      }
-    }, {
-      key: "totalCrossAxisSize",
-      get: function get() {
-        return this._totalCrossAxisSize;
       }
     }]);
 
@@ -1473,6 +1477,11 @@
     }
 
     _createClass(ItemPositioner, [{
+      key: "_layout",
+      get: function get() {
+        return this._line._layout;
+      }
+    }, {
       key: "position",
       value: function position() {
         var _this$_getSpacing = this._getSpacing(),
@@ -1499,11 +1508,6 @@
         var numberOfItems = this._line.numberOfItems;
         return SpacingCalculator.getSpacing(mode, numberOfItems, remainingSpace);
       }
-    }, {
-      key: "_layout",
-      get: function get() {
-        return this._line._layout;
-      }
     }]);
 
     return ItemPositioner;
@@ -1522,6 +1526,16 @@
     }
 
     _createClass(ItemAligner, [{
+      key: "_layout",
+      get: function get() {
+        return this._line._layout;
+      }
+    }, {
+      key: "_flexContainer",
+      get: function get() {
+        return this._layout._flexContainer;
+      }
+    }, {
       key: "setCrossAxisLayoutSize",
       value: function setCrossAxisLayoutSize(size) {
         this._crossAxisLayoutSize = size;
@@ -1544,6 +1558,11 @@
 
           this._alignItem(item);
         }
+      }
+    }, {
+      key: "recursiveResizeOccured",
+      get: function get() {
+        return this._recursiveResizeOccured;
       }
     }, {
       key: "_alignItem",
@@ -1645,21 +1664,6 @@
         var forceStretch = flexItem.alignSelf === "stretch";
         return hasFixedCrossAxisSize && !forceStretch;
       }
-    }, {
-      key: "_layout",
-      get: function get() {
-        return this._line._layout;
-      }
-    }, {
-      key: "_flexContainer",
-      get: function get() {
-        return this._layout._flexContainer;
-      }
-    }, {
-      key: "recursiveResizeOccured",
-      get: function get() {
-        return this._recursiveResizeOccured;
-      }
     }]);
 
     return ItemAligner;
@@ -1737,23 +1741,6 @@
         return mainAxisMinSize;
       }
     }, {
-      key: "_calcCrossAxisMaxLayoutSize",
-      value: function _calcCrossAxisMaxLayoutSize() {
-        this._crossAxisMaxLayoutSize = this._getCrossAxisMaxLayoutSize();
-      }
-    }, {
-      key: "_getCrossAxisMaxLayoutSize",
-      value: function _getCrossAxisMaxLayoutSize() {
-        var crossAxisMaxSize = 0;
-
-        for (var i = this.startIndex; i <= this.endIndex; i++) {
-          var item = this.items[i];
-          crossAxisMaxSize = Math.max(crossAxisMaxSize, item.flexItem._getCrossAxisLayoutSizeWithPaddingAndMargin());
-        }
-
-        return crossAxisMaxSize;
-      }
-    }, {
       key: "numberOfItems",
       get: function get() {
         return this.endIndex - this.startIndex + 1;
@@ -1769,6 +1756,23 @@
         } else {
           return this._layout.crossAxisSize;
         }
+      }
+    }, {
+      key: "_calcCrossAxisMaxLayoutSize",
+      value: function _calcCrossAxisMaxLayoutSize() {
+        this._crossAxisMaxLayoutSize = this._getCrossAxisMaxLayoutSize();
+      }
+    }, {
+      key: "_getCrossAxisMaxLayoutSize",
+      value: function _getCrossAxisMaxLayoutSize() {
+        var crossAxisMaxSize = 0;
+
+        for (var i = this.startIndex; i <= this.endIndex; i++) {
+          var item = this.items[i];
+          crossAxisMaxSize = Math.max(crossAxisMaxSize, item.flexItem._getCrossAxisLayoutSizeWithPaddingAndMargin());
+        }
+
+        return crossAxisMaxSize;
       }
     }]);
 
@@ -1786,6 +1790,34 @@
     }
 
     _createClass(LineLayouter, [{
+      key: "lines",
+      get: function get() {
+        return this._lines;
+      }
+    }, {
+      key: "mainAxisMinSize",
+      get: function get() {
+        if (this._mainAxisMinSize === -1) {
+          this._mainAxisMinSize = this._getMainAxisMinSize();
+        }
+
+        return this._mainAxisMinSize;
+      }
+    }, {
+      key: "crossAxisMinSize",
+      get: function get() {
+        if (this._crossAxisMinSize === -1) {
+          this._crossAxisMinSize = this._getCrossAxisMinSize();
+        }
+
+        return this._crossAxisMinSize;
+      }
+    }, {
+      key: "mainAxisContentSize",
+      get: function get() {
+        return this._mainAxisContentSize;
+      }
+    }, {
       key: "layoutLines",
       value: function layoutLines() {
         this._setup();
@@ -1900,34 +1932,6 @@
           return this._layout.mainAxisSize;
         }
       }
-    }, {
-      key: "lines",
-      get: function get() {
-        return this._lines;
-      }
-    }, {
-      key: "mainAxisMinSize",
-      get: function get() {
-        if (this._mainAxisMinSize === -1) {
-          this._mainAxisMinSize = this._getMainAxisMinSize();
-        }
-
-        return this._mainAxisMinSize;
-      }
-    }, {
-      key: "crossAxisMinSize",
-      get: function get() {
-        if (this._crossAxisMinSize === -1) {
-          this._crossAxisMinSize = this._getCrossAxisMinSize();
-        }
-
-        return this._crossAxisMinSize;
-      }
-    }, {
-      key: "mainAxisContentSize",
-      get: function get() {
-        return this._mainAxisContentSize;
-      }
     }]);
 
     return LineLayouter;
@@ -1944,6 +1948,11 @@
     }
 
     _createClass(ItemCoordinatesUpdater, [{
+      key: "_flexContainer",
+      get: function get() {
+        return this._layout._flexContainer;
+      }
+    }, {
       key: "finalize",
       value: function finalize() {
         var parentFlex = this._layout.getParentFlexContainer();
@@ -2065,11 +2074,6 @@
 
         item.flexItem._setMainAxisLayoutPos(reversedPos);
       }
-    }, {
-      key: "_flexContainer",
-      get: function get() {
-        return this._layout._flexContainer;
-      }
     }]);
 
     return ItemCoordinatesUpdater;
@@ -2089,6 +2093,16 @@
     }
 
     _createClass(FlexLayout, [{
+      key: "shrunk",
+      get: function get() {
+        return this._shrunk;
+      }
+    }, {
+      key: "recalc",
+      get: function get() {
+        return this.item.recalc;
+      }
+    }, {
       key: "layoutTree",
       value: function layoutTree() {
         var isSubTree = this.item.flexParent !== null;
@@ -2186,6 +2200,11 @@
       key: "_layoutLines",
       value: function _layoutLines() {
         this._lineLayouter.layoutLines();
+      }
+    }, {
+      key: "_lines",
+      get: function get() {
+        return this._lineLayouter.lines;
       }
     }, {
       key: "_fitMainAxisSizeToContents",
@@ -2338,6 +2357,16 @@
         this._resizingCrossAxis = false;
       }
     }, {
+      key: "targetMainAxisSize",
+      get: function get() {
+        return this._horizontal ? this.item.target.w : this.item.target.h;
+      }
+    }, {
+      key: "targetCrossAxisSize",
+      get: function get() {
+        return this._horizontal ? this.item.target.h : this.item.target.w;
+      }
+    }, {
       key: "getParentFlexContainer",
       value: function getParentFlexContainer() {
         return this.item.isFlexItemEnabled() ? this.item.flexItem.ctr : null;
@@ -2371,31 +2400,6 @@
       key: "_getCrossAxisBasis",
       value: function _getCrossAxisBasis() {
         return FlexUtils.getRelAxisSize(this.item, !this._horizontal);
-      }
-    }, {
-      key: "shrunk",
-      get: function get() {
-        return this._shrunk;
-      }
-    }, {
-      key: "recalc",
-      get: function get() {
-        return this.item.recalc;
-      }
-    }, {
-      key: "_lines",
-      get: function get() {
-        return this._lineLayouter.lines;
-      }
-    }, {
-      key: "targetMainAxisSize",
-      get: function get() {
-        return this._horizontal ? this.item.target.w : this.item.target.h;
-      }
-    }, {
-      key: "targetCrossAxisSize",
-      get: function get() {
-        return this._horizontal ? this.item.target.h : this.item.target.w;
       }
     }, {
       key: "_horizontal",
@@ -2472,6 +2476,11 @@
     }
 
     _createClass(FlexContainer, [{
+      key: "item",
+      get: function get() {
+        return this._item;
+      }
+    }, {
       key: "_changedDimensions",
       value: function _changedDimensions() {
         this._item.changedDimensions();
@@ -2480,16 +2489,6 @@
       key: "_changedContents",
       value: function _changedContents() {
         this._item.changedContents();
-      }
-    }, {
-      key: "patch",
-      value: function patch(settings) {
-        Base.patchObject(this, settings);
-      }
-    }, {
-      key: "item",
-      get: function get() {
-        return this._item;
       }
     }, {
       key: "direction",
@@ -2505,13 +2504,13 @@
       }
     }, {
       key: "wrap",
+      get: function get() {
+        return this._wrap;
+      },
       set: function set(v) {
         this._wrap = v;
 
         this._changedContents();
-      },
-      get: function get() {
-        return this._wrap;
       }
     }, {
       key: "alignItems",
@@ -2563,54 +2562,59 @@
       }
     }, {
       key: "padding",
+      get: function get() {
+        return this.paddingLeft;
+      },
       set: function set(v) {
         this.paddingLeft = v;
         this.paddingTop = v;
         this.paddingRight = v;
         this.paddingBottom = v;
-      },
-      get: function get() {
-        return this.paddingLeft;
       }
     }, {
       key: "paddingLeft",
+      get: function get() {
+        return this._paddingLeft;
+      },
       set: function set(v) {
         this._paddingLeft = v;
 
         this._changedDimensions();
-      },
-      get: function get() {
-        return this._paddingLeft;
       }
     }, {
       key: "paddingTop",
+      get: function get() {
+        return this._paddingTop;
+      },
       set: function set(v) {
         this._paddingTop = v;
 
         this._changedDimensions();
-      },
-      get: function get() {
-        return this._paddingTop;
       }
     }, {
       key: "paddingRight",
+      get: function get() {
+        return this._paddingRight;
+      },
       set: function set(v) {
         this._paddingRight = v;
 
         this._changedDimensions();
-      },
-      get: function get() {
-        return this._paddingRight;
       }
     }, {
       key: "paddingBottom",
+      get: function get() {
+        return this._paddingBottom;
+      },
       set: function set(v) {
         this._paddingBottom = v;
 
         this._changedDimensions();
-      },
-      get: function get() {
-        return this._paddingBottom;
+      }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        Base.patchObject(this, settings);
       }
     }]);
 
@@ -2640,6 +2644,37 @@
     }
 
     _createClass(FlexItem, [{
+      key: "item",
+      get: function get() {
+        return this._item;
+      }
+    }, {
+      key: "grow",
+      get: function get() {
+        return this._grow;
+      },
+      set: function set(v) {
+        if (this._grow === v) return;
+        this._grow = parseInt(v) || 0;
+
+        this._changed();
+      }
+    }, {
+      key: "shrink",
+      get: function get() {
+        if (this._shrink === FlexItem.SHRINK_AUTO) {
+          return this._getDefaultShrink();
+        }
+
+        return this._shrink;
+      },
+      set: function set(v) {
+        if (this._shrink === v) return;
+        this._shrink = parseInt(v) || 0;
+
+        this._changed();
+      }
+    }, {
       key: "_getDefaultShrink",
       value: function _getDefaultShrink() {
         if (this.item.isFlexEnabled()) {
@@ -2649,9 +2684,128 @@
         }
       }
     }, {
+      key: "alignSelf",
+      get: function get() {
+        return this._alignSelf;
+      },
+      set: function set(v) {
+        if (this._alignSelf === v) return;
+
+        if (v === undefined) {
+          this._alignSelf = undefined;
+        } else {
+          if (FlexContainer.ALIGN_ITEMS.indexOf(v) === -1) {
+            throw new Error("Unknown alignSelf, options: " + FlexContainer.ALIGN_ITEMS.join(","));
+          }
+
+          this._alignSelf = v;
+        }
+
+        this._changed();
+      }
+    }, {
+      key: "minWidth",
+      get: function get() {
+        return this._minWidth;
+      },
+      set: function set(v) {
+        this._minWidth = Math.max(0, v);
+
+        this._item.changedDimensions(true, false);
+      }
+    }, {
+      key: "minHeight",
+      get: function get() {
+        return this._minHeight;
+      },
+      set: function set(v) {
+        this._minHeight = Math.max(0, v);
+
+        this._item.changedDimensions(false, true);
+      }
+    }, {
+      key: "maxWidth",
+      get: function get() {
+        return this._maxWidth;
+      },
+      set: function set(v) {
+        this._maxWidth = Math.max(0, v);
+
+        this._item.changedDimensions(true, false);
+      }
+    }, {
+      key: "maxHeight",
+      get: function get() {
+        return this._maxHeight;
+      },
+      set: function set(v) {
+        this._maxHeight = Math.max(0, v);
+
+        this._item.changedDimensions(false, true);
+      }
+    }, {
+      key: "margin",
+      get: function get() {
+        return this.marginLeft;
+      },
+      set: function set(v) {
+        this.marginLeft = v;
+        this.marginTop = v;
+        this.marginRight = v;
+        this.marginBottom = v;
+      }
+    }, {
+      key: "marginLeft",
+      get: function get() {
+        return this._marginLeft;
+      },
+      set: function set(v) {
+        this._marginLeft = v;
+
+        this._changed();
+      }
+    }, {
+      key: "marginTop",
+      get: function get() {
+        return this._marginTop;
+      },
+      set: function set(v) {
+        this._marginTop = v;
+
+        this._changed();
+      }
+    }, {
+      key: "marginRight",
+      get: function get() {
+        return this._marginRight;
+      },
+      set: function set(v) {
+        this._marginRight = v;
+
+        this._changed();
+      }
+    }, {
+      key: "marginBottom",
+      get: function get() {
+        return this._marginBottom;
+      },
+      set: function set(v) {
+        this._marginBottom = v;
+
+        this._changed();
+      }
+    }, {
       key: "_changed",
       value: function _changed() {
         if (this.ctr) this.ctr._changedContents();
+      }
+    }, {
+      key: "ctr",
+      get: function get() {
+        return this._ctr;
+      },
+      set: function set(v) {
+        this._ctr = v;
       }
     }, {
       key: "patch",
@@ -2842,156 +2996,6 @@
       value: function _hasRelCrossAxisSize() {
         return !!(this.ctr._horizontal ? this.item.funcH : this.item.funcW);
       }
-    }, {
-      key: "item",
-      get: function get() {
-        return this._item;
-      }
-    }, {
-      key: "grow",
-      get: function get() {
-        return this._grow;
-      },
-      set: function set(v) {
-        if (this._grow === v) return;
-        this._grow = parseInt(v) || 0;
-
-        this._changed();
-      }
-    }, {
-      key: "shrink",
-      get: function get() {
-        if (this._shrink === FlexItem.SHRINK_AUTO) {
-          return this._getDefaultShrink();
-        }
-
-        return this._shrink;
-      },
-      set: function set(v) {
-        if (this._shrink === v) return;
-        this._shrink = parseInt(v) || 0;
-
-        this._changed();
-      }
-    }, {
-      key: "alignSelf",
-      get: function get() {
-        return this._alignSelf;
-      },
-      set: function set(v) {
-        if (this._alignSelf === v) return;
-
-        if (v === undefined) {
-          this._alignSelf = undefined;
-        } else {
-          if (FlexContainer.ALIGN_ITEMS.indexOf(v) === -1) {
-            throw new Error("Unknown alignSelf, options: " + FlexContainer.ALIGN_ITEMS.join(","));
-          }
-
-          this._alignSelf = v;
-        }
-
-        this._changed();
-      }
-    }, {
-      key: "minWidth",
-      get: function get() {
-        return this._minWidth;
-      },
-      set: function set(v) {
-        this._minWidth = Math.max(0, v);
-
-        this._item.changedDimensions(true, false);
-      }
-    }, {
-      key: "minHeight",
-      get: function get() {
-        return this._minHeight;
-      },
-      set: function set(v) {
-        this._minHeight = Math.max(0, v);
-
-        this._item.changedDimensions(false, true);
-      }
-    }, {
-      key: "maxWidth",
-      get: function get() {
-        return this._maxWidth;
-      },
-      set: function set(v) {
-        this._maxWidth = Math.max(0, v);
-
-        this._item.changedDimensions(true, false);
-      }
-    }, {
-      key: "maxHeight",
-      get: function get() {
-        return this._maxHeight;
-      },
-      set: function set(v) {
-        this._maxHeight = Math.max(0, v);
-
-        this._item.changedDimensions(false, true);
-      }
-    }, {
-      key: "margin",
-      set: function set(v) {
-        this.marginLeft = v;
-        this.marginTop = v;
-        this.marginRight = v;
-        this.marginBottom = v;
-      },
-      get: function get() {
-        return this.marginLeft;
-      }
-    }, {
-      key: "marginLeft",
-      set: function set(v) {
-        this._marginLeft = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._marginLeft;
-      }
-    }, {
-      key: "marginTop",
-      set: function set(v) {
-        this._marginTop = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._marginTop;
-      }
-    }, {
-      key: "marginRight",
-      set: function set(v) {
-        this._marginRight = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._marginRight;
-      }
-    }, {
-      key: "marginBottom",
-      set: function set(v) {
-        this._marginBottom = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._marginBottom;
-      }
-    }, {
-      key: "ctr",
-      set: function set(v) {
-        this._ctr = v;
-      },
-      get: function get() {
-        return this._ctr;
-      }
     }]);
 
     return FlexItem;
@@ -3020,10 +3024,83 @@
     }
 
     _createClass(FlexTarget, [{
+      key: "flexLayout",
+      get: function get() {
+        return this.flex ? this.flex._layout : null;
+      }
+    }, {
       key: "layoutFlexTree",
       value: function layoutFlexTree() {
         if (this.isFlexEnabled() && this.isChanged()) {
           this.flexLayout.layoutTree();
+        }
+      }
+    }, {
+      key: "target",
+      get: function get() {
+        return this._target;
+      }
+    }, {
+      key: "flex",
+      get: function get() {
+        return this._flex;
+      },
+      set: function set(v) {
+        if (!v) {
+          if (this.isFlexEnabled()) {
+            this._disableFlex();
+          }
+        } else {
+          if (!this.isFlexEnabled()) {
+            this._enableFlex();
+          }
+
+          this._flex.patch(v);
+        }
+      }
+    }, {
+      key: "flexItem",
+      get: function get() {
+        if (this._flexItemDisabled) {
+          return false;
+        }
+
+        this._ensureFlexItem();
+
+        return this._flexItem;
+      },
+      set: function set(v) {
+        if (v === false) {
+          if (!this._flexItemDisabled) {
+            var parent = this.flexParent;
+            this._flexItemDisabled = true;
+
+            this._checkEnabled();
+
+            if (parent) {
+              parent._clearFlexItemsCache();
+
+              parent.changedContents();
+            }
+          }
+        } else {
+          this._ensureFlexItem();
+
+          this._flexItem.patch(v);
+
+          if (this._flexItemDisabled) {
+            this._flexItemDisabled = false;
+
+            this._checkEnabled();
+
+            var _parent = this.flexParent;
+
+            if (_parent) {
+              _parent._clearFlexItemsCache();
+
+              _parent.changedContents();
+            }
+          }
         }
       }
     }, {
@@ -3185,6 +3262,21 @@
         this._checkEnabled();
       }
     }, {
+      key: "flexParent",
+      get: function get() {
+        if (this._flexItemDisabled) {
+          return null;
+        }
+
+        var parent = this._target._parent;
+
+        if (parent && parent.isFlexContainer()) {
+          return parent._layout;
+        }
+
+        return null;
+      }
+    }, {
       key: "setVisible",
       value: function setVisible(v) {
         var parent = this.flexParent;
@@ -3192,6 +3284,15 @@
         if (parent) {
           parent._changedChildren();
         }
+      }
+    }, {
+      key: "items",
+      get: function get() {
+        if (!this._items) {
+          this._items = this._getFlexItems();
+        }
+
+        return this._items;
       }
     }, {
       key: "_getFlexItems",
@@ -3359,6 +3460,11 @@
         return combinedRecalc;
       }
     }, {
+      key: "recalc",
+      get: function get() {
+        return this._recalc;
+      }
+    }, {
       key: "clearRecalcFlag",
       value: function clearRecalcFlag() {
         this._recalc = 0;
@@ -3369,126 +3475,24 @@
         this._recalc = 1;
       }
     }, {
-      key: "setOriginalXWithoutUpdatingLayout",
-      value: function setOriginalXWithoutUpdatingLayout(v) {
-        this._originalX = v;
-      }
-    }, {
-      key: "setOriginalYWithoutUpdatingLayout",
-      value: function setOriginalYWithoutUpdatingLayout(v) {
-        this._originalY = v;
-      }
-    }, {
-      key: "flexLayout",
-      get: function get() {
-        return this.flex ? this.flex._layout : null;
-      }
-    }, {
-      key: "target",
-      get: function get() {
-        return this._target;
-      }
-    }, {
-      key: "flex",
-      get: function get() {
-        return this._flex;
-      },
-      set: function set(v) {
-        if (!v) {
-          if (this.isFlexEnabled()) {
-            this._disableFlex();
-          }
-        } else {
-          if (!this.isFlexEnabled()) {
-            this._enableFlex();
-          }
-
-          this._flex.patch(v);
-        }
-      }
-    }, {
-      key: "flexItem",
-      get: function get() {
-        if (this._flexItemDisabled) {
-          return false;
-        }
-
-        this._ensureFlexItem();
-
-        return this._flexItem;
-      },
-      set: function set(v) {
-        if (v === false) {
-          if (!this._flexItemDisabled) {
-            var parent = this.flexParent;
-            this._flexItemDisabled = true;
-
-            this._checkEnabled();
-
-            if (parent) {
-              parent._clearFlexItemsCache();
-
-              parent.changedContents();
-            }
-          }
-        } else {
-          this._ensureFlexItem();
-
-          this._flexItem.patch(v);
-
-          if (this._flexItemDisabled) {
-            this._flexItemDisabled = false;
-
-            this._checkEnabled();
-
-            var _parent = this.flexParent;
-
-            if (_parent) {
-              _parent._clearFlexItemsCache();
-
-              _parent.changedContents();
-            }
-          }
-        }
-      }
-    }, {
-      key: "flexParent",
-      get: function get() {
-        if (this._flexItemDisabled) {
-          return null;
-        }
-
-        var parent = this._target._parent;
-
-        if (parent && parent.isFlexContainer()) {
-          return parent._layout;
-        }
-
-        return null;
-      }
-    }, {
-      key: "items",
-      get: function get() {
-        if (!this._items) {
-          this._items = this._getFlexItems();
-        }
-
-        return this._items;
-      }
-    }, {
-      key: "recalc",
-      get: function get() {
-        return this._recalc;
-      }
-    }, {
       key: "originalX",
       get: function get() {
         return this._originalX;
       }
     }, {
+      key: "setOriginalXWithoutUpdatingLayout",
+      value: function setOriginalXWithoutUpdatingLayout(v) {
+        this._originalX = v;
+      }
+    }, {
       key: "originalY",
       get: function get() {
         return this._originalY;
+      }
+    }, {
+      key: "setOriginalYWithoutUpdatingLayout",
+      value: function setOriginalYWithoutUpdatingLayout(v) {
+        this._originalY = v;
       }
     }, {
       key: "originalWidth",
@@ -3563,6 +3567,11 @@
     }
 
     _createClass(TextureSource, [{
+      key: "loadError",
+      get: function get() {
+        return this._loadError;
+      }
+    }, {
       key: "addTexture",
       value: function addTexture(v) {
         if (!this.textures.has(v)) {
@@ -3591,6 +3600,14 @@
         if (this._activeTextureCount === 0) {
           this.becomesUnused();
         }
+      }
+    }, {
+      key: "isResultTexture",
+      get: function get() {
+        return this._isResultTexture;
+      },
+      set: function set(v) {
+        this._isResultTexture = v;
       }
     }, {
       key: "forEachEnabledElement",
@@ -3802,6 +3819,11 @@
         });
       }
     }, {
+      key: "nativeTexture",
+      get: function get() {
+        return this._nativeTexture;
+      }
+    }, {
       key: "clearNativeTexture",
       value: function clearNativeTexture() {
         this._nativeTexture = null;
@@ -3873,24 +3895,6 @@
 
         return false;
       }
-    }, {
-      key: "loadError",
-      get: function get() {
-        return this._loadError;
-      }
-    }, {
-      key: "isResultTexture",
-      get: function get() {
-        return this._isResultTexture;
-      },
-      set: function set(v) {
-        this._isResultTexture = v;
-      }
-    }, {
-      key: "nativeTexture",
-      get: function get() {
-        return this._nativeTexture;
-      }
     }]);
 
     return TextureSource;
@@ -3916,6 +3920,40 @@
     }
 
     _createClass(ElementTexturizer, [{
+      key: "enabled",
+      get: function get() {
+        return this._enabled;
+      },
+      set: function set(v) {
+        this._enabled = v;
+
+        this._core.updateRenderToTextureEnabled();
+      }
+    }, {
+      key: "renderOffscreen",
+      get: function get() {
+        return this._renderOffscreen;
+      },
+      set: function set(v) {
+        this._renderOffscreen = v;
+
+        this._core.setHasRenderUpdates(1);
+
+        this._core._setRecalc(6);
+      }
+    }, {
+      key: "colorize",
+      get: function get() {
+        return this._colorize;
+      },
+      set: function set(v) {
+        if (this._colorize !== v) {
+          this._colorize = v;
+
+          this._core.setHasRenderUpdates(1);
+        }
+      }
+    }, {
       key: "_getTextureSource",
       value: function _getTextureSource() {
         if (!this._resultTextureSource) {
@@ -3976,6 +4014,11 @@
         this.release();
       }
     }, {
+      key: "renderTextureReused",
+      get: function get() {
+        return this._renderTextureReused;
+      }
+    }, {
       key: "release",
       value: function release() {
         this.releaseRenderTexture();
@@ -4021,45 +4064,6 @@
       key: "getResultTexture",
       value: function getResultTexture() {
         return this._renderTexture;
-      }
-    }, {
-      key: "enabled",
-      get: function get() {
-        return this._enabled;
-      },
-      set: function set(v) {
-        this._enabled = v;
-
-        this._core.updateRenderToTextureEnabled();
-      }
-    }, {
-      key: "renderOffscreen",
-      get: function get() {
-        return this._renderOffscreen;
-      },
-      set: function set(v) {
-        this._renderOffscreen = v;
-
-        this._core.setHasRenderUpdates(1);
-
-        this._core._setRecalc(6);
-      }
-    }, {
-      key: "colorize",
-      get: function get() {
-        return this._colorize;
-      },
-      set: function set(v) {
-        if (this._colorize !== v) {
-          this._colorize = v;
-
-          this._core.setHasRenderUpdates(1);
-        }
-      }
-    }, {
-      key: "renderTextureReused",
-      get: function get() {
-        return this._renderTextureReused;
       }
     }]);
 
@@ -4144,10 +4148,132 @@
     }
 
     _createClass(ElementCore, [{
+      key: "offsetX",
+      get: function get() {
+        if (this._funcX) {
+          return this._funcX;
+        } else {
+          if (this.hasFlexLayout()) {
+            return this._layout.originalX;
+          } else {
+            return this._x;
+          }
+        }
+      },
+      set: function set(v) {
+        if (Utils.isFunction(v)) {
+          this.funcX = v;
+        } else {
+          this._disableFuncX();
+
+          if (this.hasFlexLayout()) {
+            this.x += v - this._layout.originalX;
+
+            this._layout.setOriginalXWithoutUpdatingLayout(v);
+          } else {
+            this.x = v;
+          }
+        }
+      }
+    }, {
+      key: "x",
+      get: function get() {
+        return this._x;
+      },
+      set: function set(v) {
+        if (v !== this._x) {
+          this._updateLocalTranslateDelta(v - this._x, 0);
+
+          this._x = v;
+        }
+      }
+    }, {
+      key: "funcX",
+      get: function get() {
+        return this._optFlags & 1 ? this._funcX : null;
+      },
+      set: function set(v) {
+        if (this._funcX !== v) {
+          this._optFlags |= 1;
+          this._funcX = v;
+
+          if (this.hasFlexLayout()) {
+            this._layout.setOriginalXWithoutUpdatingLayout(0);
+
+            this.layout.forceLayout();
+          } else {
+            this._x = 0;
+
+            this._triggerRecalcTranslate();
+          }
+        }
+      }
+    }, {
       key: "_disableFuncX",
       value: function _disableFuncX() {
         this._optFlags = this._optFlags & 0xFFFF - 1;
         this._funcX = null;
+      }
+    }, {
+      key: "offsetY",
+      get: function get() {
+        if (this._funcY) {
+          return this._funcY;
+        } else {
+          if (this.hasFlexLayout()) {
+            return this._layout.originalY;
+          } else {
+            return this._y;
+          }
+        }
+      },
+      set: function set(v) {
+        if (Utils.isFunction(v)) {
+          this.funcY = v;
+        } else {
+          this._disableFuncY();
+
+          if (this.hasFlexLayout()) {
+            this.y += v - this._layout.originalY;
+
+            this._layout.setOriginalYWithoutUpdatingLayout(v);
+          } else {
+            this.y = v;
+          }
+        }
+      }
+    }, {
+      key: "y",
+      get: function get() {
+        return this._y;
+      },
+      set: function set(v) {
+        if (v !== this._y) {
+          this._updateLocalTranslateDelta(0, v - this._y);
+
+          this._y = v;
+        }
+      }
+    }, {
+      key: "funcY",
+      get: function get() {
+        return this._optFlags & 2 ? this._funcY : null;
+      },
+      set: function set(v) {
+        if (this._funcY !== v) {
+          this._optFlags |= 2;
+          this._funcY = v;
+
+          if (this.hasFlexLayout()) {
+            this._layout.setOriginalYWithoutUpdatingLayout(0);
+
+            this.layout.forceLayout();
+          } else {
+            this._y = 0;
+
+            this._triggerRecalcTranslate();
+          }
+        }
       }
     }, {
       key: "_disableFuncY",
@@ -4156,16 +4282,61 @@
         this._funcY = null;
       }
     }, {
+      key: "funcW",
+      get: function get() {
+        return this._optFlags & 4 ? this._funcW : null;
+      },
+      set: function set(v) {
+        if (this._funcW !== v) {
+          this._optFlags |= 4;
+          this._funcW = v;
+
+          if (this.hasFlexLayout()) {
+            this._layout._originalWidth = 0;
+            this.layout.changedDimensions(true, false);
+          } else {
+            this._w = 0;
+
+            this._triggerRecalcTranslate();
+          }
+        }
+      }
+    }, {
       key: "disableFuncW",
       value: function disableFuncW() {
         this._optFlags = this._optFlags & 0xFFFF - 4;
         this._funcW = null;
       }
     }, {
+      key: "funcH",
+      get: function get() {
+        return this._optFlags & 8 ? this._funcH : null;
+      },
+      set: function set(v) {
+        if (this._funcH !== v) {
+          this._optFlags |= 8;
+          this._funcH = v;
+
+          if (this.hasFlexLayout()) {
+            this._layout._originalHeight = 0;
+            this.layout.changedDimensions(false, true);
+          } else {
+            this._h = 0;
+
+            this._triggerRecalcTranslate();
+          }
+        }
+      }
+    }, {
       key: "disableFuncH",
       value: function disableFuncH() {
         this._optFlags = this._optFlags & 0xFFFF - 8;
         this._funcH = null;
+      }
+    }, {
+      key: "w",
+      get: function get() {
+        return this._w;
       }
     }, {
       key: "getRenderWidth",
@@ -4177,12 +4348,177 @@
         }
       }
     }, {
+      key: "h",
+      get: function get() {
+        return this._h;
+      }
+    }, {
       key: "getRenderHeight",
       value: function getRenderHeight() {
         if (this.hasFlexLayout()) {
           return this._layout.originalHeight;
         } else {
           return this._h;
+        }
+      }
+    }, {
+      key: "scaleX",
+      get: function get() {
+        return this._scaleX;
+      },
+      set: function set(v) {
+        if (this._scaleX !== v) {
+          this._scaleX = v;
+
+          this._updateLocalTransform();
+        }
+      }
+    }, {
+      key: "scaleY",
+      get: function get() {
+        return this._scaleY;
+      },
+      set: function set(v) {
+        if (this._scaleY !== v) {
+          this._scaleY = v;
+
+          this._updateLocalTransform();
+        }
+      }
+    }, {
+      key: "scale",
+      get: function get() {
+        return this.scaleX;
+      },
+      set: function set(v) {
+        if (this._scaleX !== v || this._scaleY !== v) {
+          this._scaleX = v;
+          this._scaleY = v;
+
+          this._updateLocalTransform();
+        }
+      }
+    }, {
+      key: "pivotX",
+      get: function get() {
+        return this._pivotX;
+      },
+      set: function set(v) {
+        if (this._pivotX !== v) {
+          this._pivotX = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "pivotY",
+      get: function get() {
+        return this._pivotY;
+      },
+      set: function set(v) {
+        if (this._pivotY !== v) {
+          this._pivotY = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "pivot",
+      get: function get() {
+        return this._pivotX;
+      },
+      set: function set(v) {
+        if (this._pivotX !== v || this._pivotY !== v) {
+          this._pivotX = v;
+          this._pivotY = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "mountX",
+      get: function get() {
+        return this._mountX;
+      },
+      set: function set(v) {
+        if (this._mountX !== v) {
+          this._mountX = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "mountY",
+      get: function get() {
+        return this._mountY;
+      },
+      set: function set(v) {
+        if (this._mountY !== v) {
+          this._mountY = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "mount",
+      get: function get() {
+        return this._mountX;
+      },
+      set: function set(v) {
+        if (this._mountX !== v || this._mountY !== v) {
+          this._mountX = v;
+          this._mountY = v;
+
+          this._updateLocalTranslate();
+        }
+      }
+    }, {
+      key: "rotation",
+      get: function get() {
+        return this._rotation;
+      },
+      set: function set(v) {
+        if (this._rotation !== v) {
+          this._rotation = v;
+
+          this._updateLocalTransform();
+        }
+      }
+    }, {
+      key: "alpha",
+      get: function get() {
+        return this._alpha;
+      },
+      set: function set(v) {
+        v = v > 1 ? 1 : v < 1e-14 ? 0 : v;
+
+        if (this._alpha !== v) {
+          var prev = this._alpha;
+          this._alpha = v;
+
+          this._updateLocalAlpha();
+
+          if (prev === 0 !== (v === 0)) {
+            this._element._updateEnabledFlag();
+          }
+        }
+      }
+    }, {
+      key: "visible",
+      get: function get() {
+        return this._visible;
+      },
+      set: function set(v) {
+        if (this._visible !== v) {
+          this._visible = v;
+
+          this._updateLocalAlpha();
+
+          this._element._updateEnabledFlag();
+
+          if (this.hasFlexLayout()) {
+            this.layout.setVisible(v);
+          }
         }
       }
     }, {
@@ -4485,10 +4821,20 @@
         this._bry = bry;
       }
     }, {
+      key: "displayedTextureSource",
+      get: function get() {
+        return this._displayedTextureSource;
+      }
+    }, {
       key: "setDisplayedTextureSource",
       value: function setDisplayedTextureSource(textureSource) {
         this.setHasRenderUpdates(3);
         this._displayedTextureSource = textureSource;
+      }
+    }, {
+      key: "isRoot",
+      get: function get() {
+        return this._isRoot;
       }
     }, {
       key: "setAsRoot",
@@ -4594,6 +4940,84 @@
         }
       }
     }, {
+      key: "zIndex",
+      get: function get() {
+        return this._zIndex;
+      },
+      set: function set(zIndex) {
+        if (this._zIndex !== zIndex) {
+          this.setHasRenderUpdates(1);
+          var newZParent = this._zParent;
+          var prevIsZContext = this.isZContext();
+
+          if (zIndex === 0 && this._zIndex !== 0) {
+            if (this._parent === this._zParent) {
+              if (this._zParent) {
+                this._zParent.decZContextUsage();
+              }
+            } else {
+              newZParent = this._parent;
+            }
+          } else if (zIndex !== 0 && this._zIndex === 0) {
+            newZParent = this._parent ? this._parent.findZContext() : null;
+
+            if (newZParent === this._zParent) {
+              if (this._zParent) {
+                this._zParent.incZContextUsage();
+
+                this._zParent.enableZSort();
+              }
+            }
+          } else if (zIndex !== this._zIndex) {
+            if (this._zParent && this._zParent._zContextUsage) {
+              this._zParent.enableZSort();
+            }
+          }
+
+          if (newZParent !== this._zParent) {
+            this.setZParent(null);
+          }
+
+          this._zIndex = zIndex;
+
+          if (newZParent !== this._zParent) {
+            this.setZParent(newZParent);
+          }
+
+          if (prevIsZContext !== this.isZContext()) {
+            if (!this.isZContext()) {
+              this.disableZContext();
+            } else {
+              this.enableZContext(this._parent.findZContext());
+            }
+          }
+
+          this._zIndexResort = true;
+
+          if (this._zParent) {
+            this._zParent.enableZSort();
+          }
+        }
+      }
+    }, {
+      key: "forceZIndexContext",
+      get: function get() {
+        return this._forceZIndexContext;
+      },
+      set: function set(v) {
+        this.setHasRenderUpdates(1);
+        var prevIsZContext = this.isZContext();
+        this._forceZIndexContext = v;
+
+        if (prevIsZContext !== this.isZContext()) {
+          if (!this.isZContext()) {
+            this.disableZContext();
+          } else {
+            this.enableZContext(this._parent.findZContext());
+          }
+        }
+      }
+    }, {
       key: "enableZContext",
       value: function enableZContext(prevZContext) {
         var _this = this;
@@ -4652,6 +5076,119 @@
         }
       }
     }, {
+      key: "colorUl",
+      get: function get() {
+        return this._colorUl;
+      },
+      set: function set(color) {
+        if (this._colorUl !== color) {
+          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
+          this._colorUl = color;
+        }
+      }
+    }, {
+      key: "colorUr",
+      get: function get() {
+        return this._colorUr;
+      },
+      set: function set(color) {
+        if (this._colorUr !== color) {
+          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
+          this._colorUr = color;
+        }
+      }
+    }, {
+      key: "colorBl",
+      get: function get() {
+        return this._colorBl;
+      },
+      set: function set(color) {
+        if (this._colorBl !== color) {
+          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
+          this._colorBl = color;
+        }
+      }
+    }, {
+      key: "colorBr",
+      get: function get() {
+        return this._colorBr;
+      },
+      set: function set(color) {
+        if (this._colorBr !== color) {
+          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
+          this._colorBr = color;
+        }
+      }
+    }, {
+      key: "onUpdate",
+      set: function set(f) {
+        this._onUpdate = f;
+
+        this._setRecalc(7);
+      }
+    }, {
+      key: "onAfterUpdate",
+      set: function set(f) {
+        this._onAfterUpdate = f;
+
+        this._setRecalc(7);
+      }
+    }, {
+      key: "onAfterCalcs",
+      set: function set(f) {
+        this._onAfterCalcs = f;
+
+        this._setRecalc(7);
+      }
+    }, {
+      key: "shader",
+      get: function get() {
+        return this._shader;
+      },
+      set: function set(v) {
+        this.setHasRenderUpdates(1);
+        var prevShader = this._shader;
+        this._shader = v;
+
+        if (!v && prevShader) {
+          var newShaderOwner = this._parent && !this._parent._renderToTextureEnabled ? this._parent._shaderOwner : null;
+
+          this._setShaderOwnerRecursive(newShaderOwner);
+        } else if (v) {
+          this._setShaderOwnerRecursive(this);
+        }
+      }
+    }, {
+      key: "activeShader",
+      get: function get() {
+        return this._shaderOwner ? this._shaderOwner.shader : this.renderState.defaultShader;
+      }
+    }, {
+      key: "activeShaderOwner",
+      get: function get() {
+        return this._shaderOwner;
+      }
+    }, {
+      key: "clipping",
+      get: function get() {
+        return this._clipping;
+      },
+      set: function set(v) {
+        if (this._clipping !== v) {
+          this._clipping = v;
+
+          this._setRecalc(1 + 2);
+        }
+      }
+    }, {
+      key: "clipbox",
+      get: function get() {
+        return this._clipbox;
+      },
+      set: function set(v) {
+        this._clipbox = v;
+      }
+    }, {
       key: "_setShaderOwnerRecursive",
       value: function _setShaderOwnerRecursive(elementCore) {
         this._shaderOwner = elementCore;
@@ -4687,6 +5224,11 @@
       key: "_hasRenderContext",
       value: function _hasRenderContext() {
         return this._renderContext !== this._worldContext;
+      }
+    }, {
+      key: "renderContext",
+      get: function get() {
+        return this._renderContext;
       }
     }, {
       key: "updateRenderToTextureEnabled",
@@ -4792,6 +5334,21 @@
       key: "isVisible",
       value: function isVisible() {
         return this._localAlpha > 1e-14;
+      }
+    }, {
+      key: "outOfBounds",
+      get: function get() {
+        return this._outOfBounds;
+      }
+    }, {
+      key: "boundsMargin",
+      get: function get() {
+        return this._boundsMargin;
+      },
+      set: function set(v) {
+        this._boundsMargin = v ? v.slice() : null;
+
+        this._triggerRecalcTranslate();
       }
     }, {
       key: "update",
@@ -5363,6 +5920,11 @@
         }
       }
     }, {
+      key: "zSort",
+      get: function get() {
+        return this._zSort;
+      }
+    }, {
       key: "sortZIndexedChildren",
       value: function sortZIndexedChildren() {
         var n = this._zIndexedChildren.length;
@@ -5453,6 +6015,45 @@
         this._zSort = false;
       }
     }, {
+      key: "localTa",
+      get: function get() {
+        return this._localTa;
+      }
+    }, {
+      key: "localTb",
+      get: function get() {
+        return this._localTb;
+      }
+    }, {
+      key: "localTc",
+      get: function get() {
+        return this._localTc;
+      }
+    }, {
+      key: "localTd",
+      get: function get() {
+        return this._localTd;
+      }
+    }, {
+      key: "element",
+      get: function get() {
+        return this._element;
+      }
+    }, {
+      key: "renderUpdates",
+      get: function get() {
+        return this._hasRenderUpdates;
+      }
+    }, {
+      key: "texturizer",
+      get: function get() {
+        if (!this._texturizer) {
+          this._texturizer = new ElementTexturizer(this);
+        }
+
+        return this._texturizer;
+      }
+    }, {
       key: "getCornerPoints",
       value: function getCornerPoints() {
         var w = this._worldContext;
@@ -5511,6 +6112,29 @@
         return c[2] >= sc[0] && c[0] <= sc[0] + sc[2] && c[7] >= sc[1] && c[1] <= sc[1] + sc[3];
       }
     }, {
+      key: "layout",
+      get: function get() {
+        this._ensureLayout();
+
+        return this._layout;
+      }
+    }, {
+      key: "flex",
+      get: function get() {
+        return this._layout ? this._layout.flex : null;
+      },
+      set: function set(v) {
+        this.layout.flex = v;
+      }
+    }, {
+      key: "flexItem",
+      get: function get() {
+        return this._layout ? this._layout.flexItem : null;
+      },
+      set: function set(v) {
+        this.layout.flexItem = v;
+      }
+    }, {
       key: "isFlexItem",
       value: function isFlexItem() {
         return !!this._layout && this._layout.isFlexItemEnabled();
@@ -5559,626 +6183,6 @@
       key: "_triggerRecalcTranslate",
       value: function _triggerRecalcTranslate() {
         this._setRecalc(2);
-      }
-    }, {
-      key: "offsetX",
-      get: function get() {
-        if (this._funcX) {
-          return this._funcX;
-        } else {
-          if (this.hasFlexLayout()) {
-            return this._layout.originalX;
-          } else {
-            return this._x;
-          }
-        }
-      },
-      set: function set(v) {
-        if (Utils.isFunction(v)) {
-          this.funcX = v;
-        } else {
-          this._disableFuncX();
-
-          if (this.hasFlexLayout()) {
-            this.x += v - this._layout.originalX;
-
-            this._layout.setOriginalXWithoutUpdatingLayout(v);
-          } else {
-            this.x = v;
-          }
-        }
-      }
-    }, {
-      key: "x",
-      get: function get() {
-        return this._x;
-      },
-      set: function set(v) {
-        if (v !== this._x) {
-          this._updateLocalTranslateDelta(v - this._x, 0);
-
-          this._x = v;
-        }
-      }
-    }, {
-      key: "funcX",
-      get: function get() {
-        return this._optFlags & 1 ? this._funcX : null;
-      },
-      set: function set(v) {
-        if (this._funcX !== v) {
-          this._optFlags |= 1;
-          this._funcX = v;
-
-          if (this.hasFlexLayout()) {
-            this._layout.setOriginalXWithoutUpdatingLayout(0);
-
-            this.layout.forceLayout();
-          } else {
-            this._x = 0;
-
-            this._triggerRecalcTranslate();
-          }
-        }
-      }
-    }, {
-      key: "offsetY",
-      get: function get() {
-        if (this._funcY) {
-          return this._funcY;
-        } else {
-          if (this.hasFlexLayout()) {
-            return this._layout.originalY;
-          } else {
-            return this._y;
-          }
-        }
-      },
-      set: function set(v) {
-        if (Utils.isFunction(v)) {
-          this.funcY = v;
-        } else {
-          this._disableFuncY();
-
-          if (this.hasFlexLayout()) {
-            this.y += v - this._layout.originalY;
-
-            this._layout.setOriginalYWithoutUpdatingLayout(v);
-          } else {
-            this.y = v;
-          }
-        }
-      }
-    }, {
-      key: "y",
-      get: function get() {
-        return this._y;
-      },
-      set: function set(v) {
-        if (v !== this._y) {
-          this._updateLocalTranslateDelta(0, v - this._y);
-
-          this._y = v;
-        }
-      }
-    }, {
-      key: "funcY",
-      get: function get() {
-        return this._optFlags & 2 ? this._funcY : null;
-      },
-      set: function set(v) {
-        if (this._funcY !== v) {
-          this._optFlags |= 2;
-          this._funcY = v;
-
-          if (this.hasFlexLayout()) {
-            this._layout.setOriginalYWithoutUpdatingLayout(0);
-
-            this.layout.forceLayout();
-          } else {
-            this._y = 0;
-
-            this._triggerRecalcTranslate();
-          }
-        }
-      }
-    }, {
-      key: "funcW",
-      get: function get() {
-        return this._optFlags & 4 ? this._funcW : null;
-      },
-      set: function set(v) {
-        if (this._funcW !== v) {
-          this._optFlags |= 4;
-          this._funcW = v;
-
-          if (this.hasFlexLayout()) {
-            this._layout._originalWidth = 0;
-            this.layout.changedDimensions(true, false);
-          } else {
-            this._w = 0;
-
-            this._triggerRecalcTranslate();
-          }
-        }
-      }
-    }, {
-      key: "funcH",
-      get: function get() {
-        return this._optFlags & 8 ? this._funcH : null;
-      },
-      set: function set(v) {
-        if (this._funcH !== v) {
-          this._optFlags |= 8;
-          this._funcH = v;
-
-          if (this.hasFlexLayout()) {
-            this._layout._originalHeight = 0;
-            this.layout.changedDimensions(false, true);
-          } else {
-            this._h = 0;
-
-            this._triggerRecalcTranslate();
-          }
-        }
-      }
-    }, {
-      key: "w",
-      get: function get() {
-        return this._w;
-      }
-    }, {
-      key: "h",
-      get: function get() {
-        return this._h;
-      }
-    }, {
-      key: "scaleX",
-      get: function get() {
-        return this._scaleX;
-      },
-      set: function set(v) {
-        if (this._scaleX !== v) {
-          this._scaleX = v;
-
-          this._updateLocalTransform();
-        }
-      }
-    }, {
-      key: "scaleY",
-      get: function get() {
-        return this._scaleY;
-      },
-      set: function set(v) {
-        if (this._scaleY !== v) {
-          this._scaleY = v;
-
-          this._updateLocalTransform();
-        }
-      }
-    }, {
-      key: "scale",
-      get: function get() {
-        return this.scaleX;
-      },
-      set: function set(v) {
-        if (this._scaleX !== v || this._scaleY !== v) {
-          this._scaleX = v;
-          this._scaleY = v;
-
-          this._updateLocalTransform();
-        }
-      }
-    }, {
-      key: "pivotX",
-      get: function get() {
-        return this._pivotX;
-      },
-      set: function set(v) {
-        if (this._pivotX !== v) {
-          this._pivotX = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "pivotY",
-      get: function get() {
-        return this._pivotY;
-      },
-      set: function set(v) {
-        if (this._pivotY !== v) {
-          this._pivotY = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "pivot",
-      get: function get() {
-        return this._pivotX;
-      },
-      set: function set(v) {
-        if (this._pivotX !== v || this._pivotY !== v) {
-          this._pivotX = v;
-          this._pivotY = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "mountX",
-      get: function get() {
-        return this._mountX;
-      },
-      set: function set(v) {
-        if (this._mountX !== v) {
-          this._mountX = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "mountY",
-      get: function get() {
-        return this._mountY;
-      },
-      set: function set(v) {
-        if (this._mountY !== v) {
-          this._mountY = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "mount",
-      get: function get() {
-        return this._mountX;
-      },
-      set: function set(v) {
-        if (this._mountX !== v || this._mountY !== v) {
-          this._mountX = v;
-          this._mountY = v;
-
-          this._updateLocalTranslate();
-        }
-      }
-    }, {
-      key: "rotation",
-      get: function get() {
-        return this._rotation;
-      },
-      set: function set(v) {
-        if (this._rotation !== v) {
-          this._rotation = v;
-
-          this._updateLocalTransform();
-        }
-      }
-    }, {
-      key: "alpha",
-      get: function get() {
-        return this._alpha;
-      },
-      set: function set(v) {
-        v = v > 1 ? 1 : v < 1e-14 ? 0 : v;
-
-        if (this._alpha !== v) {
-          var prev = this._alpha;
-          this._alpha = v;
-
-          this._updateLocalAlpha();
-
-          if (prev === 0 !== (v === 0)) {
-            this._element._updateEnabledFlag();
-          }
-        }
-      }
-    }, {
-      key: "visible",
-      get: function get() {
-        return this._visible;
-      },
-      set: function set(v) {
-        if (this._visible !== v) {
-          this._visible = v;
-
-          this._updateLocalAlpha();
-
-          this._element._updateEnabledFlag();
-
-          if (this.hasFlexLayout()) {
-            this.layout.setVisible(v);
-          }
-        }
-      }
-    }, {
-      key: "displayedTextureSource",
-      get: function get() {
-        return this._displayedTextureSource;
-      }
-    }, {
-      key: "isRoot",
-      get: function get() {
-        return this._isRoot;
-      }
-    }, {
-      key: "zIndex",
-      get: function get() {
-        return this._zIndex;
-      },
-      set: function set(zIndex) {
-        if (this._zIndex !== zIndex) {
-          this.setHasRenderUpdates(1);
-          var newZParent = this._zParent;
-          var prevIsZContext = this.isZContext();
-
-          if (zIndex === 0 && this._zIndex !== 0) {
-            if (this._parent === this._zParent) {
-              if (this._zParent) {
-                this._zParent.decZContextUsage();
-              }
-            } else {
-              newZParent = this._parent;
-            }
-          } else if (zIndex !== 0 && this._zIndex === 0) {
-            newZParent = this._parent ? this._parent.findZContext() : null;
-
-            if (newZParent === this._zParent) {
-              if (this._zParent) {
-                this._zParent.incZContextUsage();
-
-                this._zParent.enableZSort();
-              }
-            }
-          } else if (zIndex !== this._zIndex) {
-            if (this._zParent && this._zParent._zContextUsage) {
-              this._zParent.enableZSort();
-            }
-          }
-
-          if (newZParent !== this._zParent) {
-            this.setZParent(null);
-          }
-
-          this._zIndex = zIndex;
-
-          if (newZParent !== this._zParent) {
-            this.setZParent(newZParent);
-          }
-
-          if (prevIsZContext !== this.isZContext()) {
-            if (!this.isZContext()) {
-              this.disableZContext();
-            } else {
-              this.enableZContext(this._parent.findZContext());
-            }
-          }
-
-          this._zIndexResort = true;
-
-          if (this._zParent) {
-            this._zParent.enableZSort();
-          }
-        }
-      }
-    }, {
-      key: "forceZIndexContext",
-      get: function get() {
-        return this._forceZIndexContext;
-      },
-      set: function set(v) {
-        this.setHasRenderUpdates(1);
-        var prevIsZContext = this.isZContext();
-        this._forceZIndexContext = v;
-
-        if (prevIsZContext !== this.isZContext()) {
-          if (!this.isZContext()) {
-            this.disableZContext();
-          } else {
-            this.enableZContext(this._parent.findZContext());
-          }
-        }
-      }
-    }, {
-      key: "colorUl",
-      get: function get() {
-        return this._colorUl;
-      },
-      set: function set(color) {
-        if (this._colorUl !== color) {
-          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
-          this._colorUl = color;
-        }
-      }
-    }, {
-      key: "colorUr",
-      get: function get() {
-        return this._colorUr;
-      },
-      set: function set(color) {
-        if (this._colorUr !== color) {
-          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
-          this._colorUr = color;
-        }
-      }
-    }, {
-      key: "colorBl",
-      get: function get() {
-        return this._colorBl;
-      },
-      set: function set(color) {
-        if (this._colorBl !== color) {
-          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
-          this._colorBl = color;
-        }
-      }
-    }, {
-      key: "colorBr",
-      get: function get() {
-        return this._colorBr;
-      },
-      set: function set(color) {
-        if (this._colorBr !== color) {
-          this.setHasRenderUpdates(this._displayedTextureSource ? 3 : 1);
-          this._colorBr = color;
-        }
-      }
-    }, {
-      key: "onUpdate",
-      set: function set(f) {
-        this._onUpdate = f;
-
-        this._setRecalc(7);
-      }
-    }, {
-      key: "onAfterUpdate",
-      set: function set(f) {
-        this._onAfterUpdate = f;
-
-        this._setRecalc(7);
-      }
-    }, {
-      key: "onAfterCalcs",
-      set: function set(f) {
-        this._onAfterCalcs = f;
-
-        this._setRecalc(7);
-      }
-    }, {
-      key: "shader",
-      get: function get() {
-        return this._shader;
-      },
-      set: function set(v) {
-        this.setHasRenderUpdates(1);
-        var prevShader = this._shader;
-        this._shader = v;
-
-        if (!v && prevShader) {
-          var newShaderOwner = this._parent && !this._parent._renderToTextureEnabled ? this._parent._shaderOwner : null;
-
-          this._setShaderOwnerRecursive(newShaderOwner);
-        } else if (v) {
-          this._setShaderOwnerRecursive(this);
-        }
-      }
-    }, {
-      key: "activeShader",
-      get: function get() {
-        return this._shaderOwner ? this._shaderOwner.shader : this.renderState.defaultShader;
-      }
-    }, {
-      key: "activeShaderOwner",
-      get: function get() {
-        return this._shaderOwner;
-      }
-    }, {
-      key: "clipping",
-      get: function get() {
-        return this._clipping;
-      },
-      set: function set(v) {
-        if (this._clipping !== v) {
-          this._clipping = v;
-
-          this._setRecalc(1 + 2);
-        }
-      }
-    }, {
-      key: "clipbox",
-      get: function get() {
-        return this._clipbox;
-      },
-      set: function set(v) {
-        this._clipbox = v;
-      }
-    }, {
-      key: "renderContext",
-      get: function get() {
-        return this._renderContext;
-      }
-    }, {
-      key: "outOfBounds",
-      get: function get() {
-        return this._outOfBounds;
-      }
-    }, {
-      key: "boundsMargin",
-      set: function set(v) {
-        this._boundsMargin = v ? v.slice() : null;
-
-        this._triggerRecalcTranslate();
-      },
-      get: function get() {
-        return this._boundsMargin;
-      }
-    }, {
-      key: "zSort",
-      get: function get() {
-        return this._zSort;
-      }
-    }, {
-      key: "localTa",
-      get: function get() {
-        return this._localTa;
-      }
-    }, {
-      key: "localTb",
-      get: function get() {
-        return this._localTb;
-      }
-    }, {
-      key: "localTc",
-      get: function get() {
-        return this._localTc;
-      }
-    }, {
-      key: "localTd",
-      get: function get() {
-        return this._localTd;
-      }
-    }, {
-      key: "element",
-      get: function get() {
-        return this._element;
-      }
-    }, {
-      key: "renderUpdates",
-      get: function get() {
-        return this._hasRenderUpdates;
-      }
-    }, {
-      key: "texturizer",
-      get: function get() {
-        if (!this._texturizer) {
-          this._texturizer = new ElementTexturizer(this);
-        }
-
-        return this._texturizer;
-      }
-    }, {
-      key: "layout",
-      get: function get() {
-        this._ensureLayout();
-
-        return this._layout;
-      }
-    }, {
-      key: "flex",
-      get: function get() {
-        return this._layout ? this._layout.flex : null;
-      },
-      set: function set(v) {
-        this.layout.flex = v;
-      }
-    }, {
-      key: "flexItem",
-      get: function get() {
-        return this._layout ? this._layout.flexItem : null;
-      },
-      set: function set(v) {
-        this.layout.flexItem = v;
       }
     }]);
 
@@ -6536,6 +6540,17 @@
     }
 
     _createClass(Texture, [{
+      key: "source",
+      get: function get() {
+        if (this._mustUpdate || this.stage.hasUpdateSourceTexture(this)) {
+          this._performUpdateSource(true);
+
+          this.stage.removeUpdateSourceTexture(this);
+        }
+
+        return this._source;
+      }
+    }, {
       key: "addElement",
       value: function addElement(v) {
         if (!this.elements.has(v)) {
@@ -6654,6 +6669,11 @@
       key: "_getSourceLoader",
       value: function _getSourceLoader() {
         throw new Error("Texture.generate must be implemented.");
+      }
+    }, {
+      key: "isValid",
+      get: function get() {
+        return this._getIsValid();
       }
     }, {
       key: "_getIsValid",
@@ -6797,10 +6817,43 @@
         return this._source && this._source.isLoaded();
       }
     }, {
+      key: "loadError",
+      get: function get() {
+        return this._source && this._source.loadError;
+      }
+    }, {
       key: "free",
       value: function free() {
         if (this._source) {
           this._source.free();
+        }
+      }
+    }, {
+      key: "resizeMode",
+      get: function get() {
+        return this._resizeMode;
+      },
+      set: function set(_ref) {
+        var _ref$type = _ref.type,
+            type = _ref$type === void 0 ? "cover" : _ref$type,
+            _ref$w = _ref.w,
+            w = _ref$w === void 0 ? 0 : _ref$w,
+            _ref$h = _ref.h,
+            h = _ref$h === void 0 ? 0 : _ref$h,
+            _ref$clipX = _ref.clipX,
+            clipX = _ref$clipX === void 0 ? 0.5 : _ref$clipX,
+            _ref$clipY = _ref.clipY,
+            clipY = _ref$clipY === void 0 ? 0.5 : _ref$clipY;
+        this._resizeMode = {
+          type: type,
+          w: w,
+          h: h,
+          clipX: clipX,
+          clipY: clipY
+        };
+
+        if (this.isLoaded()) {
+          this._applyResizeMode();
         }
       }
     }, {
@@ -6927,83 +6980,6 @@
         return nonDefaults;
       }
     }, {
-      key: "isAutosizeTexture",
-      value: function isAutosizeTexture() {
-        return true;
-      }
-    }, {
-      key: "getRenderWidth",
-      value: function getRenderWidth() {
-        if (!this.isAutosizeTexture()) {
-          return 0;
-        }
-
-        return (this._w || (this._source ? this._source.getRenderWidth() - this._x : 0)) / this._precision;
-      }
-    }, {
-      key: "getRenderHeight",
-      value: function getRenderHeight() {
-        if (!this.isAutosizeTexture()) {
-          return 0;
-        }
-
-        return (this._h || (this._source ? this._source.getRenderHeight() - this._y : 0)) / this._precision;
-      }
-    }, {
-      key: "patch",
-      value: function patch(settings) {
-        Base.patchObject(this, settings);
-      }
-    }, {
-      key: "source",
-      get: function get() {
-        if (this._mustUpdate || this.stage.hasUpdateSourceTexture(this)) {
-          this._performUpdateSource(true);
-
-          this.stage.removeUpdateSourceTexture(this);
-        }
-
-        return this._source;
-      }
-    }, {
-      key: "isValid",
-      get: function get() {
-        return this._getIsValid();
-      }
-    }, {
-      key: "loadError",
-      get: function get() {
-        return this._source && this._source.loadError;
-      }
-    }, {
-      key: "resizeMode",
-      set: function set(_ref) {
-        var _ref$type = _ref.type,
-            type = _ref$type === void 0 ? "cover" : _ref$type,
-            _ref$w = _ref.w,
-            w = _ref$w === void 0 ? 0 : _ref$w,
-            _ref$h = _ref.h,
-            h = _ref$h === void 0 ? 0 : _ref$h,
-            _ref$clipX = _ref.clipX,
-            clipX = _ref$clipX === void 0 ? 0.5 : _ref$clipX,
-            _ref$clipY = _ref.clipY,
-            clipY = _ref$clipY === void 0 ? 0.5 : _ref$clipY;
-        this._resizeMode = {
-          type: type,
-          w: w,
-          h: h,
-          clipX: clipX,
-          clipY: clipY
-        };
-
-        if (this.isLoaded()) {
-          this._applyResizeMode();
-        }
-      },
-      get: function get() {
-        return this._resizeMode;
-      }
-    }, {
       key: "px",
       get: function get() {
         return this._x;
@@ -7101,6 +7077,34 @@
           this._updatePrecision();
         }
       }
+    }, {
+      key: "isAutosizeTexture",
+      value: function isAutosizeTexture() {
+        return true;
+      }
+    }, {
+      key: "getRenderWidth",
+      value: function getRenderWidth() {
+        if (!this.isAutosizeTexture()) {
+          return 0;
+        }
+
+        return (this._w || (this._source ? this._source.getRenderWidth() - this._x : 0)) / this._precision;
+      }
+    }, {
+      key: "getRenderHeight",
+      value: function getRenderHeight() {
+        if (!this.isAutosizeTexture()) {
+          return 0;
+        }
+
+        return (this._h || (this._source ? this._source.getRenderHeight() - this._y : 0)) / this._precision;
+      }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        Base.patchObject(this, settings);
+      }
     }]);
 
     return Texture;
@@ -7125,6 +7129,30 @@
     }
 
     _createClass(ImageTexture, [{
+      key: "src",
+      get: function get() {
+        return this._src;
+      },
+      set: function set(v) {
+        if (this._src !== v) {
+          this._src = v;
+
+          this._changed();
+        }
+      }
+    }, {
+      key: "hasAlpha",
+      get: function get() {
+        return this._hasAlpha;
+      },
+      set: function set(v) {
+        if (this._hasAlpha !== v) {
+          this._hasAlpha = v;
+
+          this._changed();
+        }
+      }
+    }, {
       key: "_getIsValid",
       value: function _getIsValid() {
         return !!this._src;
@@ -7169,30 +7197,6 @@
         }
 
         return obj;
-      }
-    }, {
-      key: "src",
-      get: function get() {
-        return this._src;
-      },
-      set: function set(v) {
-        if (this._src !== v) {
-          this._src = v;
-
-          this._changed();
-        }
-      }
-    }, {
-      key: "hasAlpha",
-      get: function get() {
-        return this._hasAlpha;
-      },
-      set: function set(v) {
-        if (this._hasAlpha !== v) {
-          this._hasAlpha = v;
-
-          this._changed();
-        }
       }
     }]);
 
@@ -7692,178 +7696,6 @@
     }
 
     _createClass(TextTexture, [{
-      key: "_getIsValid",
-      value: function _getIsValid() {
-        return !!this.text;
-      }
-    }, {
-      key: "_getLookupId",
-      value: function _getLookupId() {
-        var parts = [];
-        if (this.w !== 0) parts.push("w " + this.w);
-        if (this.h !== 0) parts.push("h " + this.h);
-        if (this.fontStyle !== "normal") parts.push("fS" + this.fontStyle);
-        if (this.fontSize !== 40) parts.push("fs" + this.fontSize);
-        if (this.fontFace !== null) parts.push("ff" + (Array.isArray(this.fontFace) ? this.fontFace.join(",") : this.fontFace));
-        if (this.wordWrap !== true) parts.push("wr" + (this.wordWrap ? 1 : 0));
-        if (this.wordWrapWidth !== 0) parts.push("ww" + this.wordWrapWidth);
-        if (this.textOverflow != "") parts.push("to" + this.textOverflow);
-        if (this.lineHeight !== null) parts.push("lh" + this.lineHeight);
-        if (this.textBaseline !== "alphabetic") parts.push("tb" + this.textBaseline);
-        if (this.textAlign !== "left") parts.push("ta" + this.textAlign);
-        if (this.verticalAlign !== "top") parts.push("va" + this.verticalAlign);
-        if (this.offsetY !== null) parts.push("oy" + this.offsetY);
-        if (this.maxLines !== 0) parts.push("ml" + this.maxLines);
-        if (this.maxLinesSuffix !== "..") parts.push("ms" + this.maxLinesSuffix);
-        parts.push("pc" + this.precision);
-        if (this.textColor !== 0xffffffff) parts.push("co" + this.textColor.toString(16));
-        if (this.paddingLeft !== 0) parts.push("pl" + this.paddingLeft);
-        if (this.paddingRight !== 0) parts.push("pr" + this.paddingRight);
-        if (this.shadow !== false) parts.push("sh" + (this.shadow ? 1 : 0));
-        if (this.shadowColor !== 0xff000000) parts.push("sc" + this.shadowColor.toString(16));
-        if (this.shadowOffsetX !== 0) parts.push("sx" + this.shadowOffsetX);
-        if (this.shadowOffsetY !== 0) parts.push("sy" + this.shadowOffsetY);
-        if (this.shadowBlur !== 5) parts.push("sb" + this.shadowBlur);
-        if (this.highlight !== false) parts.push("hL" + (this.highlight ? 1 : 0));
-        if (this.highlightHeight !== 0) parts.push("hh" + this.highlightHeight);
-        if (this.highlightColor !== 0xff000000) parts.push("hc" + this.highlightColor.toString(16));
-        if (this.highlightOffset !== null) parts.push("ho" + this.highlightOffset);
-        if (this.highlightPaddingLeft !== null) parts.push("hl" + this.highlightPaddingLeft);
-        if (this.highlightPaddingRight !== null) parts.push("hr" + this.highlightPaddingRight);
-        if (this.letterSpacing !== null) parts.push("ls" + this.letterSpacing);
-        if (this.textIndent !== null) parts.push("ti" + this.textIndent);
-        if (this.cutSx) parts.push("csx" + this.cutSx);
-        if (this.cutEx) parts.push("cex" + this.cutEx);
-        if (this.cutSy) parts.push("csy" + this.cutSy);
-        if (this.cutEy) parts.push("cey" + this.cutEy);
-        var id = "TX$" + parts.join("|") + ":" + this.text;
-        return id;
-      }
-    }, {
-      key: "_getSourceLoader",
-      value: function _getSourceLoader() {
-        var args = this.cloneArgs();
-
-        if (args.fontFace === null) {
-          args.fontFace = this.stage.getOption('defaultFontFace');
-        }
-
-        return function (cb) {
-          var _this2 = this;
-
-          var canvas = this.stage.platform.getDrawingCanvas();
-          var renderer = new TextTextureRenderer(this.stage, canvas, args);
-          var p = renderer.draw();
-
-          if (p) {
-            p.then(function () {
-              _newArrowCheck(this, _this2);
-
-              cb(null, Object.assign({
-                renderInfo: renderer.renderInfo,
-                throttle: false
-              }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
-            }.bind(this)).catch(function (err) {
-              _newArrowCheck(this, _this2);
-
-              cb(err);
-            }.bind(this));
-          } else {
-            cb(null, Object.assign({
-              renderInfo: renderer.renderInfo,
-              throttle: false
-            }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
-          }
-        };
-      }
-    }, {
-      key: "getNonDefaults",
-      value: function getNonDefaults() {
-        var nonDefaults = _get(_getPrototypeOf(TextTexture.prototype), "getNonDefaults", this).call(this);
-
-        if (this.text !== "") nonDefaults['text'] = this.text;
-        if (this.w !== 0) nonDefaults['w'] = this.w;
-        if (this.h !== 0) nonDefaults['h'] = this.h;
-        if (this.fontStyle !== "normal") nonDefaults['fontStyle'] = this.fontStyle;
-        if (this.fontSize !== 40) nonDefaults["fontSize"] = this.fontSize;
-        if (this.fontFace !== null) nonDefaults["fontFace"] = this.fontFace;
-        if (this.wordWrap !== true) nonDefaults["wordWrap"] = this.wordWrap;
-        if (this.wordWrapWidth !== 0) nonDefaults["wordWrapWidth"] = this.wordWrapWidth;
-        if (this.textOverflow != "") nonDefaults["textOverflow"] = this.textOverflow;
-        if (this.lineHeight !== null) nonDefaults["lineHeight"] = this.lineHeight;
-        if (this.textBaseline !== "alphabetic") nonDefaults["textBaseline"] = this.textBaseline;
-        if (this.textAlign !== "left") nonDefaults["textAlign"] = this.textAlign;
-        if (this.verticalAlign !== "top") nonDefaults["verticalAlign"] = this.verticalAlign;
-        if (this.offsetY !== null) nonDefaults["offsetY"] = this.offsetY;
-        if (this.maxLines !== 0) nonDefaults["maxLines"] = this.maxLines;
-        if (this.maxLinesSuffix !== "..") nonDefaults["maxLinesSuffix"] = this.maxLinesSuffix;
-        if (this.precision !== this.stage.getOption('precision')) nonDefaults["precision"] = this.precision;
-        if (this.textColor !== 0xffffffff) nonDefaults["textColor"] = this.textColor;
-        if (this.paddingLeft !== 0) nonDefaults["paddingLeft"] = this.paddingLeft;
-        if (this.paddingRight !== 0) nonDefaults["paddingRight"] = this.paddingRight;
-        if (this.shadow !== false) nonDefaults["shadow"] = this.shadow;
-        if (this.shadowColor !== 0xff000000) nonDefaults["shadowColor"] = this.shadowColor;
-        if (this.shadowOffsetX !== 0) nonDefaults["shadowOffsetX"] = this.shadowOffsetX;
-        if (this.shadowOffsetY !== 0) nonDefaults["shadowOffsetY"] = this.shadowOffsetY;
-        if (this.shadowBlur !== 5) nonDefaults["shadowBlur"] = this.shadowBlur;
-        if (this.highlight !== false) nonDefaults["highlight"] = this.highlight;
-        if (this.highlightHeight !== 0) nonDefaults["highlightHeight"] = this.highlightHeight;
-        if (this.highlightColor !== 0xff000000) nonDefaults["highlightColor"] = this.highlightColor;
-        if (this.highlightOffset !== 0) nonDefaults["highlightOffset"] = this.highlightOffset;
-        if (this.highlightPaddingLeft !== 0) nonDefaults["highlightPaddingLeft"] = this.highlightPaddingLeft;
-        if (this.highlightPaddingRight !== 0) nonDefaults["highlightPaddingRight"] = this.highlightPaddingRight;
-        if (this.letterSpacing !== 0) nonDefaults["letterSpacing"] = this.letterSpacing;
-        if (this.textIndent !== 0) nonDefaults["textIndent"] = this.textIndent;
-        if (this.cutSx) nonDefaults["cutSx"] = this.cutSx;
-        if (this.cutEx) nonDefaults["cutEx"] = this.cutEx;
-        if (this.cutSy) nonDefaults["cutSy"] = this.cutSy;
-        if (this.cutEy) nonDefaults["cutEy"] = this.cutEy;
-        return nonDefaults;
-      }
-    }, {
-      key: "cloneArgs",
-      value: function cloneArgs() {
-        var obj = {};
-        obj.text = this._text;
-        obj.w = this._w;
-        obj.h = this._h;
-        obj.fontStyle = this._fontStyle;
-        obj.fontSize = this._fontSize;
-        obj.fontFace = this._fontFace;
-        obj.wordWrap = this._wordWrap;
-        obj.wordWrapWidth = this._wordWrapWidth;
-        obj.textOverflow = this._textOverflow;
-        obj.lineHeight = this._lineHeight;
-        obj.textBaseline = this._textBaseline;
-        obj.textAlign = this._textAlign;
-        obj.verticalAlign = this._verticalAlign;
-        obj.offsetY = this._offsetY;
-        obj.maxLines = this._maxLines;
-        obj.maxLinesSuffix = this._maxLinesSuffix;
-        obj.precision = this._precision;
-        obj.textColor = this._textColor;
-        obj.paddingLeft = this._paddingLeft;
-        obj.paddingRight = this._paddingRight;
-        obj.shadow = this._shadow;
-        obj.shadowColor = this._shadowColor;
-        obj.shadowOffsetX = this._shadowOffsetX;
-        obj.shadowOffsetY = this._shadowOffsetY;
-        obj.shadowBlur = this._shadowBlur;
-        obj.highlight = this._highlight;
-        obj.highlightHeight = this._highlightHeight;
-        obj.highlightColor = this._highlightColor;
-        obj.highlightOffset = this._highlightOffset;
-        obj.highlightPaddingLeft = this._highlightPaddingLeft;
-        obj.highlightPaddingRight = this._highlightPaddingRight;
-        obj.letterSpacing = this._letterSpacing;
-        obj.textIndent = this._textIndent;
-        obj.cutSx = this._cutSx;
-        obj.cutEx = this._cutEx;
-        obj.cutSy = this._cutSy;
-        obj.cutEy = this._cutEy;
-        return obj;
-      }
-    }, {
       key: "text",
       get: function get() {
         return this._text;
@@ -8273,27 +8105,27 @@
       }
     }, {
       key: "letterSpacing",
+      get: function get() {
+        return this._letterSpacing;
+      },
       set: function set(v) {
         if (this._letterSpacing !== v) {
           this._letterSpacing = v;
 
           this._changed();
         }
-      },
-      get: function get() {
-        return this._letterSpacing;
       }
     }, {
       key: "textIndent",
+      get: function get() {
+        return this._textIndent;
+      },
       set: function set(v) {
         if (this._textIndent !== v) {
           this._textIndent = v;
 
           this._changed();
         }
-      },
-      get: function get() {
-        return this._textIndent;
       }
     }, {
       key: "precision",
@@ -8306,6 +8138,186 @@
 
           this._changed();
         }
+      }
+    }, {
+      key: "_getIsValid",
+      value: function _getIsValid() {
+        return !!this.text;
+      }
+    }, {
+      key: "_getLookupId",
+      value: function _getLookupId() {
+        var parts = [];
+        if (this.w !== 0) parts.push("w " + this.w);
+        if (this.h !== 0) parts.push("h " + this.h);
+        if (this.fontStyle !== "normal") parts.push("fS" + this.fontStyle);
+        if (this.fontSize !== 40) parts.push("fs" + this.fontSize);
+        if (this.fontFace !== null) parts.push("ff" + (Array.isArray(this.fontFace) ? this.fontFace.join(",") : this.fontFace));
+        if (this.wordWrap !== true) parts.push("wr" + (this.wordWrap ? 1 : 0));
+        if (this.wordWrapWidth !== 0) parts.push("ww" + this.wordWrapWidth);
+        if (this.textOverflow != "") parts.push("to" + this.textOverflow);
+        if (this.lineHeight !== null) parts.push("lh" + this.lineHeight);
+        if (this.textBaseline !== "alphabetic") parts.push("tb" + this.textBaseline);
+        if (this.textAlign !== "left") parts.push("ta" + this.textAlign);
+        if (this.verticalAlign !== "top") parts.push("va" + this.verticalAlign);
+        if (this.offsetY !== null) parts.push("oy" + this.offsetY);
+        if (this.maxLines !== 0) parts.push("ml" + this.maxLines);
+        if (this.maxLinesSuffix !== "..") parts.push("ms" + this.maxLinesSuffix);
+        parts.push("pc" + this.precision);
+        if (this.textColor !== 0xffffffff) parts.push("co" + this.textColor.toString(16));
+        if (this.paddingLeft !== 0) parts.push("pl" + this.paddingLeft);
+        if (this.paddingRight !== 0) parts.push("pr" + this.paddingRight);
+        if (this.shadow !== false) parts.push("sh" + (this.shadow ? 1 : 0));
+        if (this.shadowColor !== 0xff000000) parts.push("sc" + this.shadowColor.toString(16));
+        if (this.shadowOffsetX !== 0) parts.push("sx" + this.shadowOffsetX);
+        if (this.shadowOffsetY !== 0) parts.push("sy" + this.shadowOffsetY);
+        if (this.shadowBlur !== 5) parts.push("sb" + this.shadowBlur);
+        if (this.highlight !== false) parts.push("hL" + (this.highlight ? 1 : 0));
+        if (this.highlightHeight !== 0) parts.push("hh" + this.highlightHeight);
+        if (this.highlightColor !== 0xff000000) parts.push("hc" + this.highlightColor.toString(16));
+        if (this.highlightOffset !== null) parts.push("ho" + this.highlightOffset);
+        if (this.highlightPaddingLeft !== null) parts.push("hl" + this.highlightPaddingLeft);
+        if (this.highlightPaddingRight !== null) parts.push("hr" + this.highlightPaddingRight);
+        if (this.letterSpacing !== null) parts.push("ls" + this.letterSpacing);
+        if (this.textIndent !== null) parts.push("ti" + this.textIndent);
+        if (this.cutSx) parts.push("csx" + this.cutSx);
+        if (this.cutEx) parts.push("cex" + this.cutEx);
+        if (this.cutSy) parts.push("csy" + this.cutSy);
+        if (this.cutEy) parts.push("cey" + this.cutEy);
+        var id = "TX$" + parts.join("|") + ":" + this.text;
+        return id;
+      }
+    }, {
+      key: "_getSourceLoader",
+      value: function _getSourceLoader() {
+        var args = this.cloneArgs();
+
+        if (args.fontFace === null) {
+          args.fontFace = this.stage.getOption('defaultFontFace');
+        }
+
+        var gl = this.stage.gl;
+        return function (cb) {
+          var _this2 = this;
+
+          var canvas = this.stage.platform.getDrawingCanvas();
+          var renderer = new TextTextureRenderer(this.stage, canvas, args);
+          var p = renderer.draw();
+          var texParams = {};
+
+          if (gl) {
+            texParams[gl.TEXTURE_MAG_FILTER] = gl.NEAREST;
+          }
+
+          if (p) {
+            p.then(function () {
+              _newArrowCheck(this, _this2);
+
+              cb(null, Object.assign({
+                renderInfo: renderer.renderInfo,
+                throttle: false,
+                texParams: texParams
+              }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
+            }.bind(this)).catch(function (err) {
+              _newArrowCheck(this, _this2);
+
+              cb(err);
+            }.bind(this));
+          } else {
+            cb(null, Object.assign({
+              renderInfo: renderer.renderInfo,
+              throttle: false,
+              texParams: texParams
+            }, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas)));
+          }
+        };
+      }
+    }, {
+      key: "getNonDefaults",
+      value: function getNonDefaults() {
+        var nonDefaults = _get(_getPrototypeOf(TextTexture.prototype), "getNonDefaults", this).call(this);
+
+        if (this.text !== "") nonDefaults['text'] = this.text;
+        if (this.w !== 0) nonDefaults['w'] = this.w;
+        if (this.h !== 0) nonDefaults['h'] = this.h;
+        if (this.fontStyle !== "normal") nonDefaults['fontStyle'] = this.fontStyle;
+        if (this.fontSize !== 40) nonDefaults["fontSize"] = this.fontSize;
+        if (this.fontFace !== null) nonDefaults["fontFace"] = this.fontFace;
+        if (this.wordWrap !== true) nonDefaults["wordWrap"] = this.wordWrap;
+        if (this.wordWrapWidth !== 0) nonDefaults["wordWrapWidth"] = this.wordWrapWidth;
+        if (this.textOverflow != "") nonDefaults["textOverflow"] = this.textOverflow;
+        if (this.lineHeight !== null) nonDefaults["lineHeight"] = this.lineHeight;
+        if (this.textBaseline !== "alphabetic") nonDefaults["textBaseline"] = this.textBaseline;
+        if (this.textAlign !== "left") nonDefaults["textAlign"] = this.textAlign;
+        if (this.verticalAlign !== "top") nonDefaults["verticalAlign"] = this.verticalAlign;
+        if (this.offsetY !== null) nonDefaults["offsetY"] = this.offsetY;
+        if (this.maxLines !== 0) nonDefaults["maxLines"] = this.maxLines;
+        if (this.maxLinesSuffix !== "..") nonDefaults["maxLinesSuffix"] = this.maxLinesSuffix;
+        if (this.precision !== this.stage.getOption('precision')) nonDefaults["precision"] = this.precision;
+        if (this.textColor !== 0xffffffff) nonDefaults["textColor"] = this.textColor;
+        if (this.paddingLeft !== 0) nonDefaults["paddingLeft"] = this.paddingLeft;
+        if (this.paddingRight !== 0) nonDefaults["paddingRight"] = this.paddingRight;
+        if (this.shadow !== false) nonDefaults["shadow"] = this.shadow;
+        if (this.shadowColor !== 0xff000000) nonDefaults["shadowColor"] = this.shadowColor;
+        if (this.shadowOffsetX !== 0) nonDefaults["shadowOffsetX"] = this.shadowOffsetX;
+        if (this.shadowOffsetY !== 0) nonDefaults["shadowOffsetY"] = this.shadowOffsetY;
+        if (this.shadowBlur !== 5) nonDefaults["shadowBlur"] = this.shadowBlur;
+        if (this.highlight !== false) nonDefaults["highlight"] = this.highlight;
+        if (this.highlightHeight !== 0) nonDefaults["highlightHeight"] = this.highlightHeight;
+        if (this.highlightColor !== 0xff000000) nonDefaults["highlightColor"] = this.highlightColor;
+        if (this.highlightOffset !== 0) nonDefaults["highlightOffset"] = this.highlightOffset;
+        if (this.highlightPaddingLeft !== 0) nonDefaults["highlightPaddingLeft"] = this.highlightPaddingLeft;
+        if (this.highlightPaddingRight !== 0) nonDefaults["highlightPaddingRight"] = this.highlightPaddingRight;
+        if (this.letterSpacing !== 0) nonDefaults["letterSpacing"] = this.letterSpacing;
+        if (this.textIndent !== 0) nonDefaults["textIndent"] = this.textIndent;
+        if (this.cutSx) nonDefaults["cutSx"] = this.cutSx;
+        if (this.cutEx) nonDefaults["cutEx"] = this.cutEx;
+        if (this.cutSy) nonDefaults["cutSy"] = this.cutSy;
+        if (this.cutEy) nonDefaults["cutEy"] = this.cutEy;
+        return nonDefaults;
+      }
+    }, {
+      key: "cloneArgs",
+      value: function cloneArgs() {
+        var obj = {};
+        obj.text = this._text;
+        obj.w = this._w;
+        obj.h = this._h;
+        obj.fontStyle = this._fontStyle;
+        obj.fontSize = this._fontSize;
+        obj.fontFace = this._fontFace;
+        obj.wordWrap = this._wordWrap;
+        obj.wordWrapWidth = this._wordWrapWidth;
+        obj.textOverflow = this._textOverflow;
+        obj.lineHeight = this._lineHeight;
+        obj.textBaseline = this._textBaseline;
+        obj.textAlign = this._textAlign;
+        obj.verticalAlign = this._verticalAlign;
+        obj.offsetY = this._offsetY;
+        obj.maxLines = this._maxLines;
+        obj.maxLinesSuffix = this._maxLinesSuffix;
+        obj.precision = this._precision;
+        obj.textColor = this._textColor;
+        obj.paddingLeft = this._paddingLeft;
+        obj.paddingRight = this._paddingRight;
+        obj.shadow = this._shadow;
+        obj.shadowColor = this._shadowColor;
+        obj.shadowOffsetX = this._shadowOffsetX;
+        obj.shadowOffsetY = this._shadowOffsetY;
+        obj.shadowBlur = this._shadowBlur;
+        obj.highlight = this._highlight;
+        obj.highlightHeight = this._highlightHeight;
+        obj.highlightColor = this._highlightColor;
+        obj.highlightOffset = this._highlightOffset;
+        obj.highlightPaddingLeft = this._highlightPaddingLeft;
+        obj.highlightPaddingRight = this._highlightPaddingRight;
+        obj.letterSpacing = this._letterSpacing;
+        obj.textIndent = this._textIndent;
+        obj.cutSx = this._cutSx;
+        obj.cutEx = this._cutEx;
+        obj.cutSy = this._cutSy;
+        obj.cutEy = this._cutEy;
+        return obj;
       }
     }], [{
       key: "renderer",
@@ -8370,11 +8382,6 @@
     }
 
     _createClass(SourceTexture, [{
-      key: "_getTextureSource",
-      value: function _getTextureSource() {
-        return this._textureSource;
-      }
-    }, {
       key: "textureSource",
       get: function get() {
         return this._textureSource;
@@ -8389,6 +8396,11 @@
 
           this._changed();
         }
+      }
+    }, {
+      key: "_getTextureSource",
+      value: function _getTextureSource() {
+        return this._textureSource;
       }
     }]);
 
@@ -8633,6 +8645,16 @@
         return this._items;
       }
     }, {
+      key: "first",
+      get: function get() {
+        return this._items[0];
+      }
+    }, {
+      key: "last",
+      get: function get() {
+        return this._items.length ? this._items[this._items.length - 1] : undefined;
+      }
+    }, {
       key: "add",
       value: function add(item) {
         this.addAt(item, this._items.length);
@@ -8645,6 +8667,12 @@
 
           if (currentIndex === index) {
             return item;
+          }
+
+          if (Utils.isObjectLiteral(item)) {
+            var o = item;
+            item = this.createItem(o);
+            item.patch(o);
           }
 
           if (currentIndex != -1) {
@@ -8694,6 +8722,12 @@
       key: "setAt",
       value: function setAt(item, index) {
         if (index >= 0 && index <= this._items.length) {
+          if (Utils.isObjectLiteral(item)) {
+            var o = item;
+            item = this.createItem(o);
+            item.patch(o);
+          }
+
           var currentIndex = this._items.indexOf(item);
 
           if (currentIndex != -1) {
@@ -8750,16 +8784,20 @@
     }, {
       key: "removeAt",
       value: function removeAt(index) {
-        var item = this._items[index];
+        if (index >= 0 && index < this._items.length) {
+          var item = this._items[index];
 
-        if (item.ref) {
-          this._refs[item.ref] = undefined;
+          if (item.ref) {
+            this._refs[item.ref] = undefined;
+          }
+
+          this._items.splice(index, 1);
+
+          this.onRemove(item, index);
+          return item;
+        } else {
+          throw new Error("removeAt: The index ".concat(index, " is out of bounds ").concat(this._items.length - 1));
         }
-
-        this._items.splice(index, 1);
-
-        this.onRemove(item, index);
-        return item;
       }
     }, {
       key: "clear",
@@ -8791,6 +8829,11 @@
           this.add(o);
           return o;
         }
+      }
+    }, {
+      key: "length",
+      get: function get() {
+        return this._items.length;
       }
     }, {
       key: "_getRefs",
@@ -8989,21 +9032,6 @@
       value: function forEach(f) {
         this.get().forEach(f);
       }
-    }, {
-      key: "first",
-      get: function get() {
-        return this._items[0];
-      }
-    }, {
-      key: "last",
-      get: function get() {
-        return this._items.length ? this._items[this._items.length - 1] : undefined;
-      }
-    }, {
-      key: "length",
-      get: function get() {
-        return this._items.length;
-      }
     }]);
 
     return ObjectList;
@@ -9142,6 +9170,48 @@
       key: "__start",
       value: function __start() {}
     }, {
+      key: "id",
+      get: function get() {
+        return this.__id;
+      }
+    }, {
+      key: "ref",
+      get: function get() {
+        return this.__ref;
+      },
+      set: function set(ref) {
+        if (this.__ref !== ref) {
+          var charcode = ref.charCodeAt(0);
+
+          if (!Utils.isUcChar(charcode)) {
+            this._throwError("Ref must start with an upper case character: " + ref);
+          }
+
+          if (this.__ref !== null) {
+            this.removeTag(this.__ref);
+
+            if (this.__parent) {
+              this.__parent.__childList.clearRef(this.__ref);
+            }
+          }
+
+          this.__ref = ref;
+
+          if (this.__ref) {
+            this._addTag(this.__ref);
+
+            if (this.__parent) {
+              this.__parent.__childList.setRef(this.__ref, this);
+            }
+          }
+        }
+      }
+    }, {
+      key: "core",
+      get: function get() {
+        return this.__core;
+      }
+    }, {
       key: "setAsRoot",
       value: function setAsRoot() {
         this.__core.setAsRoot();
@@ -9149,6 +9219,11 @@
         this._updateAttachedFlag();
 
         this._updateEnabledFlag();
+      }
+    }, {
+      key: "isRoot",
+      get: function get() {
+        return this.__core.isRoot;
       }
     }, {
       key: "_setParent",
@@ -9168,6 +9243,8 @@
         this._updateAttachedFlag();
 
         this._updateEnabledFlag();
+
+        this._updateCollision();
 
         if (this.isRoot && parent) {
           this._throwError("Root should not be added as a child! Results are unspecified!");
@@ -9246,6 +9323,21 @@
         } while (o1 && o2);
 
         return null;
+      }
+    }, {
+      key: "attached",
+      get: function get() {
+        return this.__attached;
+      }
+    }, {
+      key: "enabled",
+      get: function get() {
+        return this.__enabled;
+      }
+    }, {
+      key: "active",
+      get: function get() {
+        return this.__active;
       }
     }, {
       key: "_isAttached",
@@ -9455,6 +9547,44 @@
         }
       }
     }, {
+      key: "renderWidth",
+      get: function get() {
+        if (this.__enabled) {
+          return this.__core.getRenderWidth();
+        } else {
+          return this._getRenderWidth();
+        }
+      }
+    }, {
+      key: "renderHeight",
+      get: function get() {
+        if (this.__enabled) {
+          return this.__core.getRenderHeight();
+        } else {
+          return this._getRenderHeight();
+        }
+      }
+    }, {
+      key: "finalX",
+      get: function get() {
+        return this.__core.x;
+      }
+    }, {
+      key: "finalY",
+      get: function get() {
+        return this.__core.y;
+      }
+    }, {
+      key: "finalW",
+      get: function get() {
+        return this.__core.w;
+      }
+    }, {
+      key: "finalH",
+      get: function get() {
+        return this.__core.h;
+      }
+    }, {
       key: "textureIsLoaded",
       value: function textureIsLoaded() {
         return this.__texture && this.__texture.isLoaded();
@@ -9494,6 +9624,71 @@
       key: "_disableTexture",
       value: function _disableTexture() {
         this._setDisplayedTexture(null);
+      }
+    }, {
+      key: "texture",
+      get: function get() {
+        return this.__texture;
+      },
+      set: function set(v) {
+        var texture;
+
+        if (Utils.isObjectLiteral(v)) {
+          if (v.type) {
+            texture = new v.type(this.stage);
+          } else {
+            texture = this.texture;
+          }
+
+          if (texture) {
+            Base.patchObject(texture, v);
+          }
+        } else if (!v) {
+          texture = null;
+        } else {
+          if (v.isTexture) {
+            texture = v;
+          } else if (v.isTextureSource) {
+            texture = new SourceTexture(this.stage);
+            texture.textureSource = v;
+          } else {
+            console.error("[Lightning] Please specify a texture type.");
+            return;
+          }
+        }
+
+        var prevTexture = this.__texture;
+
+        if (texture !== prevTexture) {
+          this.__texture = texture;
+
+          if (this.__texture) {
+            if (this.__enabled) {
+              this.__texture.addElement(this);
+
+              if (this.withinBoundsMargin) {
+                if (this.__texture.isLoaded()) {
+                  this._setDisplayedTexture(this.__texture);
+                } else {
+                  this._enableTextureError();
+                }
+              }
+            }
+          } else {
+            this._setDisplayedTexture(null);
+          }
+
+          if (prevTexture && prevTexture !== this.__displayedTexture) {
+            prevTexture.removeElement(this);
+          }
+
+          this._updateDimensions();
+        }
+      }
+    }, {
+      key: "displayedTexture",
+      get: function get() {
+        return this.__displayedTexture;
       }
     }, {
       key: "_setDisplayedTexture",
@@ -9931,6 +10126,14 @@
         }
       }
     }, {
+      key: "tag",
+      get: function get() {
+        return this._tag;
+      },
+      set: function set(t) {
+        this.tags = t;
+      }
+    }, {
       key: "mtag",
       value: function mtag(tag) {
         var idx = tag.indexOf(".");
@@ -9967,6 +10170,22 @@
 
         for (var i = 0; i < n; i++) {
           Base.patchObject(t[i], settings);
+        }
+      }
+    }, {
+      key: "tagRoot",
+      get: function get() {
+        return this.__tagRoot;
+      },
+      set: function set(v) {
+        if (this.__tagRoot !== v) {
+          if (!v) {
+            this._setTagsParent();
+          } else {
+            this._unsetTagsParent();
+          }
+
+          this.__tagRoot = v;
         }
       }
     }, {
@@ -10244,6 +10463,11 @@
         return settings;
       }
     }, {
+      key: "withinBoundsMargin",
+      get: function get() {
+        return this.__core._withinBoundsMargin;
+      }
+    }, {
       key: "_enableWithinBoundsMargin",
       value: function _enableWithinBoundsMargin() {
         if (this.__enabled) {
@@ -10258,424 +10482,16 @@
         }
       }
     }, {
-      key: "hasChildren",
-      value: function hasChildren() {
-        return this._allowChildrenAccess() && this.__childList && this.__childList.length > 0;
-      }
-    }, {
-      key: "_allowChildrenAccess",
-      value: function _allowChildrenAccess() {
-        return true;
-      }
-    }, {
-      key: "add",
-      value: function add(o) {
-        return this.childList.a(o);
-      }
-    }, {
-      key: "enableTextTexture",
-      value: function enableTextTexture() {
-        if (!this.texture || !(this.texture instanceof TextTexture)) {
-          this.texture = new TextTexture(this.stage);
-
-          if (!this.texture.w && !this.texture.h) {
-            this.texture.w = this.w;
-            this.texture.h = this.h;
-          }
-        }
-
-        return this.texture;
-      }
-    }, {
-      key: "forceUpdate",
-      value: function forceUpdate() {
-        this.__core._setHasUpdates();
-      }
-    }, {
-      key: "_hasTexturizer",
-      value: function _hasTexturizer() {
-        return !!this.__core._texturizer;
-      }
-    }, {
-      key: "getTexture",
-      value: function getTexture() {
-        return this.texturizer._getTextureSource();
-      }
-    }, {
-      key: "patch",
-      value: function patch(settings) {
-        var paths = Object.keys(settings);
-
-        for (var i = 0, n = paths.length; i < n; i++) {
-          var path = paths[i];
-          var v = settings[path];
-          var firstCharCode = path.charCodeAt(0);
-
-          if (Utils.isUcChar(firstCharCode)) {
-            var child = this.getByRef(path);
-
-            if (!child) {
-              if (v !== undefined) {
-                var c = void 0;
-
-                if (Utils.isObjectLiteral(v)) {
-                  c = this.childList.createItem(v);
-                  c.patch(v);
-                } else if (Utils.isObject(v)) {
-                  c = v;
-                }
-
-                if (c.isElement) {
-                  c.ref = path;
-                }
-
-                this.childList.a(c);
-              }
-            } else {
-              if (v === undefined) {
-                if (child.parent) {
-                  child.parent.childList.remove(child);
-                }
-              } else if (Utils.isObjectLiteral(v)) {
-                child.patch(v);
-              } else if (v.isElement) {
-                v.ref = path;
-                this.childList.replace(v, child);
-              } else {
-                this._throwError("Unexpected value for path: " + path);
-              }
-            }
-          } else {
-            Base.patchObjectProperty(this, path, v);
-          }
-        }
-      }
-    }, {
-      key: "_throwError",
-      value: function _throwError(message) {
-        throw new Error(this.constructor.name + " (" + this.getLocationString() + "): " + message);
-      }
-    }, {
-      key: "animation",
-      value: function animation(settings) {
-        return this.stage.animations.createAnimation(this, settings);
-      }
-    }, {
-      key: "transition",
-      value: function transition(property) {
-        var settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-        if (settings === null) {
-          return this._getTransition(property);
-        } else {
-          this._setTransition(property, settings);
-
-          return null;
-        }
-      }
-    }, {
-      key: "fastForward",
-      value: function fastForward(property) {
-        if (this._transitions) {
-          var t = this._transitions[property];
-
-          if (t && t.isTransition) {
-            t.finish();
-          }
-        }
-      }
-    }, {
-      key: "_getTransition",
-      value: function _getTransition(property) {
-        if (!this._transitions) {
-          this._transitions = {};
-        }
-
-        var t = this._transitions[property];
-
-        if (!t) {
-          t = new Transition(this.stage.transitions, this.stage.transitions.defaultTransitionSettings, this, property);
-        } else if (t.isTransitionSettings) {
-          t = new Transition(this.stage.transitions, t, this, property);
-        }
-
-        this._transitions[property] = t;
-        return t;
-      }
-    }, {
-      key: "_setTransition",
-      value: function _setTransition(property, settings) {
-        if (!settings) {
-          this._removeTransition(property);
-        } else {
-          if (Utils.isObjectLiteral(settings)) {
-            settings = this.stage.transitions.createSettings(settings);
-          }
-
-          if (!this._transitions) {
-            this._transitions = {};
-          }
-
-          var current = this._transitions[property];
-
-          if (current && current.isTransition) {
-            current.settings = settings;
-            return current;
-          } else {
-            this._transitions[property] = settings;
-          }
-        }
-      }
-    }, {
-      key: "_removeTransition",
-      value: function _removeTransition(property) {
-        if (this._transitions) {
-          delete this._transitions[property];
-        }
-      }
-    }, {
-      key: "getSmooth",
-      value: function getSmooth(property, v) {
-        var t = this._getTransition(property);
-
-        if (t && t.isAttached()) {
-          return t.targetValue;
-        } else {
-          return v;
-        }
-      }
-    }, {
-      key: "setSmooth",
-      value: function setSmooth(property, v, settings) {
-        if (settings) {
-          this._setTransition(property, settings);
-        }
-
-        var t = this._getTransition(property);
-
-        t.start(v);
-        return t;
-      }
-    }, {
-      key: "toJSON",
-      value: function toJSON() {
-        var ref = ["".concat(this.constructor.name)];
-
-        var tree = _defineProperty({}, ref, {});
-
-        if (this.hasChildren()) {
-          Element.collectChildren(tree[ref], this.__childList);
-        } else {
-          tree[ref] = _objectSpread2({}, Element.getProperties(this));
-        }
-
-        return tree;
-      }
-    }, {
-      key: "id",
-      get: function get() {
-        return this.__id;
-      }
-    }, {
-      key: "ref",
-      set: function set(ref) {
-        if (this.__ref !== ref) {
-          var charcode = ref.charCodeAt(0);
-
-          if (!Utils.isUcChar(charcode)) {
-            this._throwError("Ref must start with an upper case character: " + ref);
-          }
-
-          if (this.__ref !== null) {
-            this.removeTag(this.__ref);
-
-            if (this.__parent) {
-              this.__parent.__childList.clearRef(this.__ref);
-            }
-          }
-
-          this.__ref = ref;
-
-          if (this.__ref) {
-            this._addTag(this.__ref);
-
-            if (this.__parent) {
-              this.__parent.__childList.setRef(this.__ref, this);
-            }
-          }
-        }
-      },
-      get: function get() {
-        return this.__ref;
-      }
-    }, {
-      key: "core",
-      get: function get() {
-        return this.__core;
-      }
-    }, {
-      key: "isRoot",
-      get: function get() {
-        return this.__core.isRoot;
-      }
-    }, {
-      key: "attached",
-      get: function get() {
-        return this.__attached;
-      }
-    }, {
-      key: "enabled",
-      get: function get() {
-        return this.__enabled;
-      }
-    }, {
-      key: "active",
-      get: function get() {
-        return this.__active;
-      }
-    }, {
-      key: "renderWidth",
-      get: function get() {
-        if (this.__enabled) {
-          return this.__core.getRenderWidth();
-        } else {
-          return this._getRenderWidth();
-        }
-      }
-    }, {
-      key: "renderHeight",
-      get: function get() {
-        if (this.__enabled) {
-          return this.__core.getRenderHeight();
-        } else {
-          return this._getRenderHeight();
-        }
-      }
-    }, {
-      key: "finalX",
-      get: function get() {
-        return this.__core.x;
-      }
-    }, {
-      key: "finalY",
-      get: function get() {
-        return this.__core.y;
-      }
-    }, {
-      key: "finalW",
-      get: function get() {
-        return this.__core.w;
-      }
-    }, {
-      key: "finalH",
-      get: function get() {
-        return this.__core.h;
-      }
-    }, {
-      key: "texture",
-      get: function get() {
-        return this.__texture;
-      },
-      set: function set(v) {
-        var texture;
-
-        if (Utils.isObjectLiteral(v)) {
-          if (v.type) {
-            texture = new v.type(this.stage);
-          } else {
-            texture = this.texture;
-          }
-
-          if (texture) {
-            Base.patchObject(texture, v);
-          }
-        } else if (!v) {
-          texture = null;
-        } else {
-          if (v.isTexture) {
-            texture = v;
-          } else if (v.isTextureSource) {
-            texture = new SourceTexture(this.stage);
-            texture.textureSource = v;
-          } else {
-            console.error("[Lightning] Please specify a texture type.");
-            return;
-          }
-        }
-
-        var prevTexture = this.__texture;
-
-        if (texture !== prevTexture) {
-          this.__texture = texture;
-
-          if (this.__texture) {
-            if (this.__enabled) {
-              this.__texture.addElement(this);
-
-              if (this.withinBoundsMargin) {
-                if (this.__texture.isLoaded()) {
-                  this._setDisplayedTexture(this.__texture);
-                } else {
-                  this._enableTextureError();
-                }
-              }
-            }
-          } else {
-            this._setDisplayedTexture(null);
-          }
-
-          if (prevTexture && prevTexture !== this.__displayedTexture) {
-            prevTexture.removeElement(this);
-          }
-
-          this._updateDimensions();
-        }
-      }
-    }, {
-      key: "displayedTexture",
-      get: function get() {
-        return this.__displayedTexture;
-      }
-    }, {
-      key: "tag",
-      get: function get() {
-        return this._tag;
-      },
-      set: function set(t) {
-        this.tags = t;
-      }
-    }, {
-      key: "tagRoot",
-      get: function get() {
-        return this.__tagRoot;
-      },
-      set: function set(v) {
-        if (this.__tagRoot !== v) {
-          if (!v) {
-            this._setTagsParent();
-          } else {
-            this._unsetTagsParent();
-          }
-
-          this.__tagRoot = v;
-        }
-      }
-    }, {
-      key: "withinBoundsMargin",
-      get: function get() {
-        return this.__core._withinBoundsMargin;
-      }
-    }, {
       key: "boundsMargin",
+      get: function get() {
+        return this.__core.boundsMargin;
+      },
       set: function set(v) {
         if (!Array.isArray(v) && v !== null) {
           throw new Error("boundsMargin should be an array of left-top-right-bottom values or null (inherit margin)");
         }
 
         this.__core.boundsMargin = v;
-      },
-      get: function get() {
-        return this.__core.boundsMargin;
       }
     }, {
       key: "x",
@@ -10733,6 +10549,21 @@
 
             this._updateDimensions();
           }
+        }
+      }
+    }, {
+      key: "collision",
+      get: function get() {
+        return this._collision;
+      },
+      set: function set(v) {
+        this._collision = v;
+      }
+    }, {
+      key: "_updateCollision",
+      value: function _updateCollision() {
+        if (this.collision && this.__parent && this.__parent.collision === undefined) {
+          this.__parent.collision = 2;
         }
       }
     }, {
@@ -10985,12 +10816,27 @@
         return this._children;
       }
     }, {
+      key: "hasChildren",
+      value: function hasChildren() {
+        return this._allowChildrenAccess() && this.__childList && this.__childList.length > 0;
+      }
+    }, {
+      key: "_allowChildrenAccess",
+      value: function _allowChildrenAccess() {
+        return true;
+      }
+    }, {
       key: "children",
       get: function get() {
         return this.childList.get();
       },
       set: function set(children) {
         this.childList.patch(children);
+      }
+    }, {
+      key: "add",
+      value: function add(o) {
+        return this.childList.a(o);
       }
     }, {
       key: "p",
@@ -11051,6 +10897,20 @@
         }
       }
     }, {
+      key: "enableTextTexture",
+      value: function enableTextTexture() {
+        if (!this.texture || !(this.texture instanceof TextTexture)) {
+          this.texture = new TextTexture(this.stage);
+
+          if (!this.texture.w && !this.texture.h) {
+            this.texture.w = this.w;
+            this.texture.h = this.h;
+          }
+        }
+
+        return this.texture;
+      }
+    }, {
       key: "text",
       get: function get() {
         if (this.texture && this.texture instanceof TextTexture) {
@@ -11086,6 +10946,11 @@
         this.__core.onAfterUpdate = f;
       }
     }, {
+      key: "forceUpdate",
+      value: function forceUpdate() {
+        this.__core._setHasUpdates();
+      }
+    }, {
       key: "shader",
       get: function get() {
         return this.__core.shader;
@@ -11108,6 +10973,11 @@
             this.__core.shader.addElement(this.__core);
           }
         }
+      }
+    }, {
+      key: "_hasTexturizer",
+      value: function _hasTexturizer() {
+        return !!this.__core._texturizer;
       }
     }, {
       key: "renderToTexture",
@@ -11150,9 +11020,86 @@
         this.texturizer.colorize = v;
       }
     }, {
+      key: "getTexture",
+      value: function getTexture() {
+        return this.texturizer._getTextureSource();
+      }
+    }, {
       key: "texturizer",
       get: function get() {
         return this.__core.texturizer;
+      }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        var paths = Object.keys(settings);
+
+        for (var i = 0, n = paths.length; i < n; i++) {
+          var path = paths[i];
+          var v = settings[path];
+          var firstCharCode = path.charCodeAt(0);
+
+          if (Utils.isUcChar(firstCharCode)) {
+            var child = this.getByRef(path);
+
+            if (!child) {
+              if (v !== undefined) {
+                var c = void 0;
+
+                if (Utils.isObjectLiteral(v)) {
+                  c = this.childList.createItem(v);
+                  c.patch(v);
+                } else if (Utils.isObject(v)) {
+                  c = v;
+                }
+
+                if (c.isElement) {
+                  c.ref = path;
+                }
+
+                this.childList.a(c);
+              }
+            } else {
+              if (v === undefined) {
+                if (child.parent) {
+                  child.parent.childList.remove(child);
+                }
+              } else if (Utils.isObjectLiteral(v)) {
+                child.patch(v);
+              } else if (v.isElement) {
+                v.ref = path;
+                this.childList.replace(v, child);
+              } else {
+                this._throwError("Unexpected value for path: " + path);
+              }
+            }
+          } else {
+            Base.patchObjectProperty(this, path, v);
+          }
+        }
+      }
+    }, {
+      key: "_throwError",
+      value: function _throwError(message) {
+        throw new Error(this.constructor.name + " (" + this.getLocationString() + "): " + message);
+      }
+    }, {
+      key: "animation",
+      value: function animation(settings) {
+        return this.stage.animations.createAnimation(this, settings);
+      }
+    }, {
+      key: "transition",
+      value: function transition(property) {
+        var settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+        if (settings === null) {
+          return this._getTransition(property);
+        } else {
+          this._setTransition(property, settings);
+
+          return null;
+        }
       }
     }, {
       key: "transitions",
@@ -11185,6 +11132,89 @@
         }.bind(this));
       }
     }, {
+      key: "fastForward",
+      value: function fastForward(property) {
+        if (this._transitions) {
+          var t = this._transitions[property];
+
+          if (t && t.isTransition) {
+            t.finish();
+          }
+        }
+      }
+    }, {
+      key: "_getTransition",
+      value: function _getTransition(property) {
+        if (!this._transitions) {
+          this._transitions = {};
+        }
+
+        var t = this._transitions[property];
+
+        if (!t) {
+          t = new Transition(this.stage.transitions, this.stage.transitions.defaultTransitionSettings, this, property);
+        } else if (t.isTransitionSettings) {
+          t = new Transition(this.stage.transitions, t, this, property);
+        }
+
+        this._transitions[property] = t;
+        return t;
+      }
+    }, {
+      key: "_setTransition",
+      value: function _setTransition(property, settings) {
+        if (!settings) {
+          this._removeTransition(property);
+        } else {
+          if (Utils.isObjectLiteral(settings)) {
+            settings = this.stage.transitions.createSettings(settings);
+          }
+
+          if (!this._transitions) {
+            this._transitions = {};
+          }
+
+          var current = this._transitions[property];
+
+          if (current && current.isTransition) {
+            current.settings = settings;
+            return current;
+          } else {
+            this._transitions[property] = settings;
+          }
+        }
+      }
+    }, {
+      key: "_removeTransition",
+      value: function _removeTransition(property) {
+        if (this._transitions) {
+          delete this._transitions[property];
+        }
+      }
+    }, {
+      key: "getSmooth",
+      value: function getSmooth(property, v) {
+        var t = this._getTransition(property);
+
+        if (t && t.isAttached()) {
+          return t.targetValue;
+        } else {
+          return v;
+        }
+      }
+    }, {
+      key: "setSmooth",
+      value: function setSmooth(property, v, settings) {
+        if (settings) {
+          this._setTransition(property, settings);
+        }
+
+        var t = this._getTransition(property);
+
+        t.start(v);
+        return t;
+      }
+    }, {
       key: "flex",
       get: function get() {
         return this.__core.flex;
@@ -11199,6 +11229,21 @@
       },
       set: function set(v) {
         this.__core.flexItem = v;
+      }
+    }, {
+      key: "toJSON",
+      value: function toJSON() {
+        var ref = ["".concat(this.constructor.name)];
+
+        var tree = _defineProperty({}, ref, {});
+
+        if (this.hasChildren()) {
+          Element.collectChildren(tree[ref], this.__childList);
+        } else {
+          tree[ref] = _objectSpread2({}, Element.getProperties(this));
+        }
+
+        return tree;
       }
     }], [{
       key: "getPrettyString",
@@ -11641,6 +11686,11 @@
     }
 
     _createClass(StateMachineType, [{
+      key: "router",
+      get: function get() {
+        return this._router;
+      }
+    }, {
       key: "init",
       value: function init() {
         this._router = this._createRouter();
@@ -12139,11 +12189,6 @@
           }
         }
       }
-    }, {
-      key: "router",
-      get: function get() {
-        return this._router;
-      }
     }], [{
       key: "_supportsSpread",
       value: function _supportsSpread() {
@@ -12225,6 +12270,11 @@
       value: function __start() {
         StateMachine.setupStateMachine(this);
         this._onStateChange = Component.prototype.__onStateChange;
+      }
+    }, {
+      key: "state",
+      get: function get() {
+        return this._getState();
       }
     }, {
       key: "__onStateChange",
@@ -12390,6 +12440,11 @@
       key: "_inactive",
       value: function _inactive() {}
     }, {
+      key: "application",
+      get: function get() {
+        return this.stage.application;
+      }
+    }, {
       key: "__construct",
       value: function __construct() {
         this._construct();
@@ -12441,6 +12496,11 @@
         return path && path.indexOf(this) >= 0;
       }
     }, {
+      key: "cparent",
+      get: function get() {
+        return Component.getParent(this);
+      }
+    }, {
       key: "seekAncestorByType",
       value: function seekAncestorByType(type) {
         var c = this.cparent;
@@ -12463,113 +12523,6 @@
         }
 
         return ancestor;
-      }
-    }, {
-      key: "signal",
-      value: function signal(event) {
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
-
-        return this._signal(event, args);
-      }
-    }, {
-      key: "_signal",
-      value: function _signal(event, args) {
-        var signalParent = this._getParentSignalHandler();
-
-        if (signalParent) {
-          if (this.__signals) {
-            var fireEvent = this.__signals[event];
-
-            if (fireEvent === false) {
-              return;
-            }
-
-            if (fireEvent) {
-              if (fireEvent === true) {
-                fireEvent = event;
-              }
-
-              if (Utils.isFunction(fireEvent)) {
-                return fireEvent.apply(void 0, _toConsumableArray(args));
-              }
-
-              if (signalParent._hasMethod(fireEvent)) {
-                return signalParent[fireEvent].apply(signalParent, _toConsumableArray(args));
-              }
-            }
-          }
-
-          var passSignal = this.__passSignals && this.__passSignals[event];
-
-          if (passSignal) {
-            if (passSignal && passSignal !== true) {
-              event = passSignal;
-            }
-
-            return signalParent._signal(event, args);
-          }
-        }
-      }
-    }, {
-      key: "_getParentSignalHandler",
-      value: function _getParentSignalHandler() {
-        return this.cparent ? this.cparent._getSignalHandler() : null;
-      }
-    }, {
-      key: "_getSignalHandler",
-      value: function _getSignalHandler() {
-        if (this._signalProxy) {
-          return this.cparent ? this.cparent._getSignalHandler() : null;
-        }
-
-        return this;
-      }
-    }, {
-      key: "fireAncestors",
-      value: function fireAncestors(name) {
-        if (!name.startsWith('$')) {
-          throw new Error("Ancestor event name must be prefixed by dollar sign.");
-        }
-
-        var parent = this._getParentSignalHandler();
-
-        if (parent) {
-          for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-            args[_key2 - 1] = arguments[_key2];
-          }
-
-          return parent._doFireAncestors(name, args);
-        }
-      }
-    }, {
-      key: "_doFireAncestors",
-      value: function _doFireAncestors(name, args) {
-        if (this._hasMethod(name)) {
-          return this.fire.apply(this, [name].concat(_toConsumableArray(args)));
-        } else {
-          var signalParent = this._getParentSignalHandler();
-
-          if (signalParent) {
-            return signalParent._doFireAncestors(name, args);
-          }
-        }
-      }
-    }, {
-      key: "state",
-      get: function get() {
-        return this._getState();
-      }
-    }, {
-      key: "application",
-      get: function get() {
-        return this.stage.application;
-      }
-    }, {
-      key: "cparent",
-      get: function get() {
-        return Component.getParent(this);
       }
     }, {
       key: "signals",
@@ -12634,9 +12587,101 @@
         }
       }
     }, {
+      key: "signal",
+      value: function signal(event) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        return this._signal(event, args);
+      }
+    }, {
+      key: "_signal",
+      value: function _signal(event, args) {
+        var signalParent = this._getParentSignalHandler();
+
+        if (signalParent) {
+          if (this.__signals) {
+            var fireEvent = this.__signals[event];
+
+            if (fireEvent === false) {
+              return;
+            }
+
+            if (fireEvent) {
+              if (fireEvent === true) {
+                fireEvent = event;
+              }
+
+              if (Utils.isFunction(fireEvent)) {
+                return fireEvent.apply(void 0, _toConsumableArray(args));
+              }
+
+              if (signalParent._hasMethod(fireEvent)) {
+                return signalParent[fireEvent].apply(signalParent, _toConsumableArray(args));
+              }
+            }
+          }
+
+          var passSignal = this.__passSignals && this.__passSignals[event];
+
+          if (passSignal) {
+            if (passSignal && passSignal !== true) {
+              event = passSignal;
+            }
+
+            return signalParent._signal(event, args);
+          }
+        }
+      }
+    }, {
+      key: "_getParentSignalHandler",
+      value: function _getParentSignalHandler() {
+        return this.cparent ? this.cparent._getSignalHandler() : null;
+      }
+    }, {
+      key: "_getSignalHandler",
+      value: function _getSignalHandler() {
+        if (this._signalProxy) {
+          return this.cparent ? this.cparent._getSignalHandler() : null;
+        }
+
+        return this;
+      }
+    }, {
       key: "_signalProxy",
       get: function get() {
         return false;
+      }
+    }, {
+      key: "fireAncestors",
+      value: function fireAncestors(name) {
+        if (!name.startsWith('$')) {
+          throw new Error("Ancestor event name must be prefixed by dollar sign.");
+        }
+
+        var parent = this._getParentSignalHandler();
+
+        if (parent) {
+          for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+            args[_key2 - 1] = arguments[_key2];
+          }
+
+          return parent._doFireAncestors(name, args);
+        }
+      }
+    }, {
+      key: "_doFireAncestors",
+      value: function _doFireAncestors(name, args) {
+        if (this._hasMethod(name)) {
+          return this.fire.apply(this, [name].concat(_toConsumableArray(args)));
+        } else {
+          var signalParent = this._getParentSignalHandler();
+
+          if (signalParent) {
+            return signalParent._doFireAncestors(name, args);
+          }
+        }
       }
     }], [{
       key: "bindProp",
@@ -12863,6 +12908,11 @@
     }
 
     _createClass(CoreQuadList, [{
+      key: "length",
+      get: function get() {
+        return this.quadTextures.length;
+      }
+    }, {
       key: "reset",
       value: function reset() {
         this.quadTextures = [];
@@ -12905,11 +12955,6 @@
         } else {
           return this.quadElements[index]._displayedTextureSource.h;
         }
-      }
-    }, {
-      key: "length",
-      get: function get() {
-        return this.quadTextures.length;
       }
     }]);
 
@@ -12979,6 +13024,11 @@
     }
 
     _createClass(CoreQuadOperation, [{
+      key: "quads",
+      get: function get() {
+        return this.ctx.renderState.quads;
+      }
+    }, {
       key: "getTexture",
       value: function getTexture(index) {
         return this.quads.getTexture(this.index + index);
@@ -13030,11 +13080,6 @@
         } else {
           return this.ctx.stage.h;
         }
-      }
-    }, {
-      key: "quads",
-      get: function get() {
-        return this.ctx.renderState.quads;
       }
     }]);
 
@@ -13383,6 +13428,11 @@
         this._isCachingTexturizer = false;
       }
     }, {
+      key: "length",
+      get: function get() {
+        return this.quads.quadTextures.length;
+      }
+    }, {
       key: "setShader",
       value: function setShader(shader, owner) {
         if (this._shaderOwner !== owner || this._realShader !== shader) {
@@ -13398,6 +13448,11 @@
             this._check = true;
           }
         }
+      }
+    }, {
+      key: "renderTextureInfo",
+      get: function get() {
+        return this._renderTextureInfo;
       }
     }, {
       key: "setScissor",
@@ -13432,6 +13487,14 @@
         var cache = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         this._texturizer = texturizer;
         this._cacheTexturizer = cache;
+      }
+    }, {
+      key: "isCachingTexturizer",
+      get: function get() {
+        return this._isCachingTexturizer;
+      },
+      set: function set(v) {
+        this._isCachingTexturizer = v;
       }
     }, {
       key: "addQuad",
@@ -13547,24 +13610,6 @@
 
         this.renderer.finishRenderState(this);
       }
-    }, {
-      key: "length",
-      get: function get() {
-        return this.quads.quadTextures.length;
-      }
-    }, {
-      key: "renderTextureInfo",
-      get: function get() {
-        return this._renderTextureInfo;
-      }
-    }, {
-      key: "isCachingTexturizer",
-      set: function set(v) {
-        this._isCachingTexturizer = v;
-      },
-      get: function get() {
-        return this._isCachingTexturizer;
-      }
     }]);
 
     return CoreRenderState;
@@ -13671,6 +13716,16 @@
         }
       }
     }, {
+      key: "glProgram",
+      get: function get() {
+        return this._program;
+      }
+    }, {
+      key: "compiled",
+      get: function get() {
+        return !!this._program;
+      }
+    }, {
       key: "_valueEquals",
       value: function _valueEquals(v1, v2) {
         if (v1.length && v2.length) {
@@ -13714,16 +13769,6 @@
           }
         }
       }
-    }, {
-      key: "glProgram",
-      get: function get() {
-        return this._program;
-      }
-    }, {
-      key: "compiled",
-      get: function get() {
-        return !!this._program;
-      }
     }]);
 
     return WebGLShaderProgram;
@@ -13753,6 +13798,11 @@
     }
 
     _createClass(WebGLShader, [{
+      key: "glProgram",
+      get: function get() {
+        return this._program.glProgram;
+      }
+    }, {
       key: "_init",
       value: function _init() {
         if (!this._initialized) {
@@ -13764,6 +13814,11 @@
       key: "initialize",
       value: function initialize() {
         this._program.compile(this.gl);
+      }
+    }, {
+      key: "initialized",
+      get: function get() {
+        return this._initialized;
       }
     }, {
       key: "_uniform",
@@ -13851,16 +13906,6 @@
       key: "cleanup",
       value: function cleanup() {
         this._initialized = false;
-      }
-    }, {
-      key: "glProgram",
-      get: function get() {
-        return this._program.glProgram;
-      }
-    }, {
-      key: "initialized",
-      get: function get() {
-        return this._initialized;
       }
     }]);
 
@@ -14526,9 +14571,7 @@
 
         for (var i = 0; i < length; i++) {
           var tx = operation.getTexture(i);
-
-          var _vc = operation.getElementCore(i);
-
+          var vc = operation.getElementCore(i);
           var rc = operation.getRenderContext(i);
           var white = operation.getWhite(i);
           var stc = operation.getSimpleTc(i);
@@ -14546,14 +14589,14 @@
             if (white) {
               ctx.fillStyle = 'white';
             } else {
-              this._setColorGradient(ctx, _vc);
+              this._setColorGradient(ctx, vc);
             }
 
             ctx.globalAlpha = rc.alpha;
 
             this._beforeDrawEl(info);
 
-            ctx.fillRect(0, 0, _vc.w, _vc.h);
+            ctx.fillRect(0, 0, vc.w, vc.h);
 
             this._afterDrawEl(info);
 
@@ -14563,17 +14606,17 @@
 
             this._beforeDrawEl(info);
 
-            var sourceX = stc ? 0 : _vc._ulx * tx.w;
-            var sourceY = stc ? 0 : _vc._uly * tx.h;
-            var sourceW = (stc ? 1 : _vc._brx - _vc._ulx) * tx.w;
-            var sourceH = (stc ? 1 : _vc._bry - _vc._uly) * tx.h;
+            var sourceX = stc ? 0 : vc._ulx * tx.w;
+            var sourceY = stc ? 0 : vc._uly * tx.h;
+            var sourceW = (stc ? 1 : vc._brx - vc._ulx) * tx.w;
+            var sourceH = (stc ? 1 : vc._bry - vc._uly) * tx.h;
             var colorize = !white;
 
             if (colorize) {
-              var color = _vc._colorUl;
+              var color = vc._colorUl;
 
-              if (_vc._colorUl !== _vc._colorUr || _vc._colorUr !== _vc._colorBl || _vc._colorBr !== _vc._colorBl) {
-                color = StageUtils.mergeMultiColorsEqual([_vc._colorUl, _vc._colorUr, _vc._colorBl, _vc._colorBr]);
+              if (vc._colorUl !== vc._colorUr || vc._colorUr !== vc._colorBl || vc._colorBr !== vc._colorBl) {
+                color = StageUtils.mergeMultiColorsEqual([vc._colorUl, vc._colorUr, vc._colorBl, vc._colorBr]);
               }
 
               var alpha = (color / 16777216 | 0) / 255.0;
@@ -14583,10 +14626,10 @@
               var tintTexture = this._tintManager.getTintTexture(tx, rgb);
 
               ctx.fillStyle = 'white';
-              ctx.drawImage(tintTexture, sourceX, sourceY, sourceW, sourceH, 0, 0, _vc.w, _vc.h);
+              ctx.drawImage(tintTexture, sourceX, sourceY, sourceW, sourceH, 0, 0, vc.w, vc.h);
             } else {
               ctx.fillStyle = 'white';
-              ctx.drawImage(tx, sourceX, sourceY, sourceW, sourceH, 0, 0, _vc.w, _vc.h);
+              ctx.drawImage(tx, sourceX, sourceY, sourceW, sourceH, 0, 0, vc.w, vc.h);
             }
 
             this._afterDrawEl(info);
@@ -14807,6 +14850,11 @@
     }
 
     _createClass(C2dTintCache, [{
+      key: "memoryUsage",
+      get: function get() {
+        return this._memTextures * this._tx.w * this._tx.h;
+      }
+    }, {
       key: "releaseBlancoTextures",
       value: function releaseBlancoTextures() {
         this._memTextures -= this._blancoTextures.length;
@@ -14879,11 +14927,6 @@
           this._memTextures--;
           return this._blancoTextures.pop();
         }
-      }
-    }, {
-      key: "memoryUsage",
-      get: function get() {
-        return this._memTextures * this._tx.w * this._tx.h;
       }
     }]);
 
@@ -15256,25 +15299,6 @@
     }
 
     _createClass(ImageWorkerImage, [{
-      key: "cancel",
-      value: function cancel() {
-        this._manager.cancel(this);
-      }
-    }, {
-      key: "load",
-      value: function load(info) {
-        if (this._onLoad) {
-          this._onLoad(info);
-        }
-      }
-    }, {
-      key: "error",
-      value: function error(info) {
-        if (this._onError) {
-          this._onError(info);
-        }
-      }
-    }, {
       key: "id",
       get: function get() {
         return this._id;
@@ -15293,6 +15317,25 @@
       key: "onLoad",
       set: function set(f) {
         this._onLoad = f;
+      }
+    }, {
+      key: "cancel",
+      value: function cancel() {
+        this._manager.cancel(this);
+      }
+    }, {
+      key: "load",
+      value: function load(info) {
+        if (this._onLoad) {
+          this._onLoad(info);
+        }
+      }
+    }, {
+      key: "error",
+      value: function error(info) {
+        if (this._onError) {
+          this._onError(info);
+        }
       }
     }]);
 
@@ -15538,6 +15581,12 @@
         }
 
         this._removeKeyHandler();
+
+        this._removeClickHandler();
+
+        this._removeHoverHandler();
+
+        this._removeScrollWheelHandler();
       }
     }, {
       key: "startLoop",
@@ -15743,6 +15792,66 @@
 
         if (this._keyupListener) {
           window.removeEventListener('keyup', this._keyupListener);
+        }
+      }
+    }, {
+      key: "registerClickHandler",
+      value: function registerClickHandler(clickHandler) {
+        var _this3 = this;
+
+        this._clickListener = function (e) {
+          _newArrowCheck(this, _this3);
+
+          clickHandler(e);
+        }.bind(this);
+
+        window.addEventListener('mousedown', this._clickListener);
+      }
+    }, {
+      key: "_removeClickHandler",
+      value: function _removeClickHandler() {
+        if (this._clickListener) {
+          window.removeEventListener('mousedown', this._clickListener);
+        }
+      }
+    }, {
+      key: "registerHoverHandler",
+      value: function registerHoverHandler(hoverHandler) {
+        var _this4 = this;
+
+        this._hoverListener = function (e) {
+          _newArrowCheck(this, _this4);
+
+          hoverHandler(e);
+        }.bind(this);
+
+        window.addEventListener('mousemove', this._hoverListener);
+      }
+    }, {
+      key: "_removeHoverHandler",
+      value: function _removeHoverHandler() {
+        if (this._hoverListener) {
+          window.removeEventListener('mousemove', this._hoverListener);
+        }
+      }
+    }, {
+      key: "registerScrollWheelHandler",
+      value: function registerScrollWheelHandler(_registerScrollWheelHandler) {
+        var _this5 = this;
+
+        this._scrollWheelListener = function (e) {
+          _newArrowCheck(this, _this5);
+
+          _registerScrollWheelHandler(e);
+        }.bind(this);
+
+        window.addEventListener('wheel', this._scrollWheelListener);
+      }
+    }, {
+      key: "_removeScrollWheelHandler",
+      value: function _removeScrollWheelHandler() {
+        if (this._scrollWheelListener) {
+          window.removeEventListener('wheel', this._scrollWheelListener);
         }
       }
     }]);
@@ -16848,6 +16957,11 @@
     }
 
     _createClass(TextureManager, [{
+      key: "usedMemory",
+      get: function get() {
+        return this._usedMemory;
+      }
+    }, {
       key: "destroy",
       value: function destroy() {
         for (var i = 0, n = this._uploadedTextureSources.length; i < n; i++) {
@@ -16993,11 +17107,6 @@
         this.stage.renderer.freeTextureSource(textureSource);
         textureSource.clearNativeTexture();
       }
-    }, {
-      key: "usedMemory",
-      get: function get() {
-        return this._usedMemory;
-      }
     }]);
 
     return TextureManager;
@@ -17090,6 +17199,11 @@
     }
 
     _createClass(CoreContext, [{
+      key: "usedMemory",
+      get: function get() {
+        return this._usedMemory;
+      }
+    }, {
       key: "destroy",
       value: function destroy() {
         var _this = this;
@@ -17257,11 +17371,6 @@
       value: function forceZSort(elementCore) {
         this._zSorts.push(elementCore);
       }
-    }, {
-      key: "usedMemory",
-      get: function get() {
-        return this._usedMemory;
-      }
     }]);
 
     return CoreContext;
@@ -17280,11 +17389,6 @@
     }
 
     _createClass(TransitionSettings, [{
-      key: "patch",
-      value: function patch(settings) {
-        Base.patchObject(this, settings);
-      }
-    }, {
       key: "timingFunction",
       get: function get() {
         return this._timingFunction;
@@ -17297,6 +17401,11 @@
       key: "timingFunctionImpl",
       get: function get() {
         return this._timingFunctionImpl;
+      }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        Base.patchObject(this, settings);
       }
     }]);
 
@@ -17840,20 +17949,6 @@
         }
       }
     }, {
-      key: "patch",
-      value: function patch(settings) {
-        Base.patchObject(this, settings);
-      }
-    }, {
-      key: "hasColorProperty",
-      value: function hasColorProperty() {
-        if (this._hasColorProperty === undefined) {
-          this._hasColorProperty = this._props.length ? Element.isColorProperty(this._props[0]) : false;
-        }
-
-        return this._hasColorProperty;
-      }
-    }, {
       key: "selector",
       set: function set(v) {
         this._selector = v;
@@ -17916,6 +18011,20 @@
       set: function set(v) {
         this.properties = v;
       }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        Base.patchObject(this, settings);
+      }
+    }, {
+      key: "hasColorProperty",
+      value: function hasColorProperty() {
+        if (this._hasColorProperty === undefined) {
+          this._hasColorProperty = this._props.length ? Element.isColorProperty(this._props[0]) : false;
+        }
+
+        return this._hasColorProperty;
+      }
     }]);
 
     return AnimationActionSettings;
@@ -17941,27 +18050,6 @@
     }
 
     _createClass(AnimationSettings, [{
-      key: "apply",
-      value: function apply(element, p) {
-        var factor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-
-        this._actions.forEach(function (action) {
-          action.apply(element, p, factor);
-        });
-      }
-    }, {
-      key: "reset",
-      value: function reset(element) {
-        this._actions.forEach(function (action) {
-          action.reset(element);
-        });
-      }
-    }, {
-      key: "patch",
-      value: function patch(settings) {
-        Base.patchObject(this, settings);
-      }
-    }, {
       key: "actions",
       get: function get() {
         return this._actions;
@@ -17983,6 +18071,22 @@
         }
       }
     }, {
+      key: "apply",
+      value: function apply(element, p) {
+        var factor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+        this._actions.forEach(function (action) {
+          action.apply(element, p, factor);
+        });
+      }
+    }, {
+      key: "reset",
+      value: function reset(element) {
+        this._actions.forEach(function (action) {
+          action.reset(element);
+        });
+      }
+    }, {
       key: "stopTimingFunction",
       get: function get() {
         return this._stopTimingFunction;
@@ -17995,6 +18099,11 @@
       key: "stopTimingFunctionImpl",
       get: function get() {
         return this._stopTimingFunctionImpl;
+      }
+    }, {
+      key: "patch",
+      value: function patch(settings) {
+        Base.patchObject(this, settings);
       }
     }]);
 
@@ -18603,6 +18712,16 @@
     }
 
     _createClass(Stage, [{
+      key: "renderer",
+      get: function get() {
+        return this._renderer;
+      }
+    }, {
+      key: "mode",
+      get: function get() {
+        return this._mode;
+      }
+    }, {
       key: "isWebgl",
       value: function isWebgl() {
         return this.mode === 0;
@@ -18695,6 +18814,11 @@
       key: "resume",
       value: function resume() {
         this.platform.startLoop();
+      }
+    }, {
+      key: "root",
+      get: function get() {
+        return this.application;
       }
     }, {
       key: "getCanvas",
@@ -18838,6 +18962,26 @@
         return this.element(settings);
       }
     }, {
+      key: "w",
+      get: function get() {
+        return this._options.w;
+      }
+    }, {
+      key: "h",
+      get: function get() {
+        return this._options.h;
+      }
+    }, {
+      key: "coordsWidth",
+      get: function get() {
+        return this.w / this._options.precision;
+      }
+    }, {
+      key: "coordsHeight",
+      get: function get() {
+        return this.h / this._options.precision;
+      }
+    }, {
       key: "addMemoryUsage",
       value: function addMemoryUsage(delta) {
         this._usedMemory += delta;
@@ -18851,6 +18995,11 @@
             }
           }
         }
+      }
+    }, {
+      key: "usedMemory",
+      get: function get() {
+        return this._usedMemory;
       }
     }, {
       key: "gc",
@@ -18920,46 +19069,6 @@
         this.root.core.collectAtCoord(x, y, children);
         return children;
       }
-    }, {
-      key: "renderer",
-      get: function get() {
-        return this._renderer;
-      }
-    }, {
-      key: "mode",
-      get: function get() {
-        return this._mode;
-      }
-    }, {
-      key: "root",
-      get: function get() {
-        return this.application;
-      }
-    }, {
-      key: "w",
-      get: function get() {
-        return this._options.w;
-      }
-    }, {
-      key: "h",
-      get: function get() {
-        return this._options.h;
-      }
-    }, {
-      key: "coordsWidth",
-      get: function get() {
-        return this.w / this._options.precision;
-      }
-    }, {
-      key: "coordsHeight",
-      get: function get() {
-        return this.h / this._options.precision;
-      }
-    }, {
-      key: "usedMemory",
-      get: function get() {
-        return this._usedMemory;
-      }
     }], [{
       key: "isWebglSupported",
       value: function isWebglSupported() {
@@ -19000,6 +19109,7 @@
       Application.booting = false;
       _this.__updateFocusCounter = 0;
       _this.__keypressTimers = new Map();
+      _this.__hoveredChild = null;
 
       _this.stage.init();
 
@@ -19018,6 +19128,26 @@
           _newArrowCheck(this, _this2);
 
           _this._receiveKeyup(e);
+        }.bind(this));
+      }
+
+      if (_this.getOption("enablePointer")) {
+        _this.stage.platform.registerClickHandler(function (e) {
+          _newArrowCheck(this, _this2);
+
+          _this._receiveClick(e);
+        }.bind(this));
+
+        _this.stage.platform.registerHoverHandler(function (e) {
+          _newArrowCheck(this, _this2);
+
+          _this._receiveHover(e);
+        }.bind(this));
+
+        _this.stage.platform.registerScrollWheelHandler(function (e) {
+          _newArrowCheck(this, _this2);
+
+          _this._recieveScrollWheel(e);
         }.bind(this));
       }
 
@@ -19058,6 +19188,7 @@
           8: "Back",
           27: "Exit"
         });
+        opt('enablePointer', false);
       }
     }, {
       key: "__construct",
@@ -19129,6 +19260,10 @@
           }
 
           if (this._focusPath.length !== newFocusPath.length || index !== newFocusPath.length) {
+            if (this.getOption('debug')) {
+              console.log('[Lightning] Focus changed: ' + newFocusedComponent.getLocationString());
+            }
+
             for (var _i = this._focusPath.length - 1; _i >= index; _i--) {
               var unfocusedElement = this._focusPath.pop();
 
@@ -19225,6 +19360,11 @@
         } while (true);
 
         return path;
+      }
+    }, {
+      key: "focusPath",
+      get: function get() {
+        return this._focusPath;
       }
     }, {
       key: "focusTopDownEvent",
@@ -19381,6 +19521,230 @@
         return;
       }
     }, {
+      key: "_recieveScrollWheel",
+      value: function _recieveScrollWheel(e) {
+        var obj = e;
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        if (clientX <= this.stage.w && clientY <= this.stage.h) {
+          if (!this.fireTopDownScrollWheelHandler("_captureScroll", obj)) {
+            this.fireBottomUpScrollWheelHandler("_handleScroll", obj);
+          }
+        }
+      }
+    }, {
+      key: "fireTopDownScrollWheelHandler",
+      value: function fireTopDownScrollWheelHandler(event, obj) {
+        var children = this.stage.application.children;
+
+        var affected = this._findChildren([], children).reverse();
+
+        var n = affected.length;
+
+        while (n--) {
+          var child = affected[n];
+
+          if (child && child[event]) {
+            child._captureScroll(obj);
+
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }, {
+      key: "fireBottomUpScrollWheelHandler",
+      value: function fireBottomUpScrollWheelHandler(event, obj) {
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        var target = this._getTargetChild(clientX, clientY);
+
+        var child = target;
+
+        while (child !== null) {
+          if (child && child[event]) {
+            child._handleScroll(obj);
+
+            return true;
+          }
+
+          child = child.parent;
+        }
+
+        return false;
+      }
+    }, {
+      key: "_receiveClick",
+      value: function _receiveClick(e) {
+        var obj = e;
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        if (clientX <= this.stage.w && clientY <= this.stage.h) {
+          this.stage.application.fireBottomUpClickHandler(obj);
+        }
+      }
+    }, {
+      key: "fireBottomUpClickHandler",
+      value: function fireBottomUpClickHandler(obj) {
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        var target = this._getTargetChild(clientX, clientY);
+
+        var child = target;
+
+        while (child !== null) {
+          if (child && child["_handleClick"]) {
+            child._handleClick(target);
+
+            break;
+          }
+
+          child = child.parent;
+        }
+      }
+    }, {
+      key: "_receiveHover",
+      value: function _receiveHover(e) {
+        var obj = e;
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        if (clientX <= this.stage.w && clientY <= this.stage.h) {
+          this.stage.application.fireBottomUpHoverHandler(obj);
+        }
+      }
+    }, {
+      key: "fireBottomUpHoverHandler",
+      value: function fireBottomUpHoverHandler(obj) {
+        var clientX = obj.clientX,
+            clientY = obj.clientY;
+
+        var target = this._getTargetChild(clientX, clientY);
+
+        if (target !== this.__hoveredChild) {
+          if (this.__hoveredChild) {
+            var _child = this.__hoveredChild;
+
+            while (_child !== null) {
+              if (_child && _child["_handleUnhover"]) {
+                _child._handleUnhover(this.__hoveredChild);
+
+                break;
+              }
+
+              _child = _child.parent;
+            }
+          }
+
+          var child = target;
+          this.__hoveredChild = target;
+
+          while (child !== null) {
+            if (child && child["_handleHover"]) {
+              child._handleHover(target);
+
+              break;
+            }
+
+            child = child.parent;
+          }
+        }
+      }
+    }, {
+      key: "_getTargetChild",
+      value: function _getTargetChild(clientX, clientY) {
+        var _this5 = this;
+
+        var children = this.stage.application.children;
+
+        var affected = this._findChildren([], children);
+
+        var hoverableChildren = this._withinClickableRange(affected, clientX, clientY);
+
+        hoverableChildren.sort(function (a, b) {
+          _newArrowCheck(this, _this5);
+
+          if (a.zIndex > b.zIndex) {
+            return 1;
+          } else if (a.zIndex < b.zIndex) {
+            return -1;
+          } else {
+            return a.id > b.id ? 1 : -1;
+          }
+        }.bind(this));
+
+        if (hoverableChildren.length) {
+          return hoverableChildren.slice(-1)[0];
+        } else {
+          return null;
+        }
+      }
+    }, {
+      key: "_findChildren",
+      value: function _findChildren(bucket, children) {
+        var n = children.length;
+
+        while (n--) {
+          var child = children[n];
+
+          if (child.__active && child.collision) {
+            if (child.collision === true) {
+              bucket.push(child);
+            }
+
+            if (child.hasChildren()) {
+              this._findChildren(bucket, child.children);
+            }
+          }
+        }
+
+        return bucket;
+      }
+    }, {
+      key: "_withinClickableRange",
+      value: function _withinClickableRange(affectedChildren, cursorX, cursorY) {
+        var n = affectedChildren.length;
+        var candidates = [];
+
+        while (n--) {
+          var child = affectedChildren[n];
+          var precision = this.stage.getRenderPrecision();
+          var ctx = child.core._worldContext;
+          var cx = ctx.px * precision;
+          var cy = ctx.py * precision;
+          var cw = child.finalW * ctx.ta * precision;
+          var ch = child.finalH * ctx.td * precision;
+
+          if (cx > this.stage.w || cy > this.stage.h) {
+            continue;
+          }
+
+          if (child.parent.core._scissor && !this._testCollision.apply(this, [cursorX, cursorY].concat(_toConsumableArray(child.parent.core._scissor)))) {
+            continue;
+          }
+
+          if (this._testCollision(cursorX, cursorY, cx, cy, cw, ch)) {
+            candidates.push(child);
+          }
+        }
+
+        return candidates;
+      }
+    }, {
+      key: "_testCollision",
+      value: function _testCollision(px, py, cx, cy, cw, ch) {
+        if (px >= cx && px <= cx + cw && py >= cy && py <= cy + ch) {
+          return true;
+        }
+
+        return false;
+      }
+    }, {
       key: "destroy",
       value: function destroy() {
         if (!this._destroyed) {
@@ -19422,11 +19786,6 @@
       value: function getCanvas() {
         return this.stage.getCanvas();
       }
-    }, {
-      key: "focusPath",
-      get: function get() {
-        return this._focusPath;
-      }
     }]);
 
     return Application;
@@ -19449,6 +19808,17 @@
     }
 
     _createClass(StaticCanvasTexture, [{
+      key: "content",
+      set: function set(_ref) {
+        var factory = _ref.factory,
+            _ref$lookupId = _ref.lookupId,
+            lookupId = _ref$lookupId === void 0 ? undefined : _ref$lookupId;
+        this._factory = factory;
+        this._lookupId = lookupId;
+
+        this._changed();
+      }
+    }, {
       key: "_getIsValid",
       value: function _getIsValid() {
         return !!this._factory;
@@ -19479,17 +19849,6 @@
             cb(null, this.stage.platform.getTextureOptionsForDrawingCanvas(canvas));
           }.bind(this), this.stage);
         }.bind(this);
-      }
-    }, {
-      key: "content",
-      set: function set(_ref) {
-        var factory = _ref.factory,
-            _ref$lookupId = _ref.lookupId,
-            lookupId = _ref$lookupId === void 0 ? undefined : _ref$lookupId;
-        this._factory = factory;
-        this._lookupId = lookupId;
-
-        this._changed();
       }
     }]);
 
@@ -19994,6 +20353,40 @@
     }
 
     _createClass(HtmlTexture, [{
+      key: "htmlElement",
+      get: function get() {
+        return this._htmlElement;
+      },
+      set: function set(v) {
+        this._htmlElement = v;
+
+        this._changed();
+      }
+    }, {
+      key: "scale",
+      get: function get() {
+        return this._scale;
+      },
+      set: function set(v) {
+        this._scale = v;
+
+        this._changed();
+      }
+    }, {
+      key: "html",
+      get: function get() {
+        return this._htmlElement.innerHTML;
+      },
+      set: function set(v) {
+        if (!v) {
+          this.htmlElement = undefined;
+        } else {
+          var d = document.createElement('div');
+          d.innerHTML = "<div>" + v + "</div>";
+          this.htmlElement = d.firstElementChild;
+        }
+      }
+    }, {
       key: "_getIsValid",
       value: function _getIsValid() {
         return this.htmlElement;
@@ -20039,40 +20432,6 @@
           }.bind(this));
         };
       }
-    }, {
-      key: "htmlElement",
-      set: function set(v) {
-        this._htmlElement = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._htmlElement;
-      }
-    }, {
-      key: "scale",
-      set: function set(v) {
-        this._scale = v;
-
-        this._changed();
-      },
-      get: function get() {
-        return this._scale;
-      }
-    }, {
-      key: "html",
-      set: function set(v) {
-        if (!v) {
-          this.htmlElement = undefined;
-        } else {
-          var d = document.createElement('div');
-          d.innerHTML = "<div>" + v + "</div>";
-          this.htmlElement = d.firstElementChild;
-        }
-      },
-      get: function get() {
-        return this._htmlElement.innerHTML;
-      }
     }], [{
       key: "getPreloadArea",
       value: function getPreloadArea() {
@@ -20117,6 +20476,18 @@
     }
 
     _createClass(StaticTexture, [{
+      key: "options",
+      get: function get() {
+        return this._options;
+      },
+      set: function set(v) {
+        if (this._options !== v) {
+          this._options = v;
+
+          this._changed();
+        }
+      }
+    }, {
       key: "_getIsValid",
       value: function _getIsValid() {
         return !!this._options;
@@ -20131,18 +20502,6 @@
 
           cb(null, this._options);
         }.bind(this);
-      }
-    }, {
-      key: "options",
-      set: function set(v) {
-        if (this._options !== v) {
-          this._options = v;
-
-          this._changed();
-        }
-      },
-      get: function get() {
-        return this._options;
       }
     }]);
 
@@ -20183,6 +20542,14 @@
       key: "_allowChildrenAccess",
       value: function _allowChildrenAccess() {
         return false;
+      }
+    }, {
+      key: "items",
+      get: function get() {
+        return this.itemList.get();
+      },
+      set: function set(children) {
+        this.itemList.patch(children);
       }
     }, {
       key: "start",
@@ -20402,14 +20769,6 @@
         this.update();
       }
     }, {
-      key: "items",
-      get: function get() {
-        return this.itemList.get();
-      },
-      set: function set(children) {
-        this.itemList.patch(children);
-      }
-    }, {
       key: "element",
       get: function get() {
         var e = this._wrapper.children[this.realIndex];
@@ -20477,11 +20836,11 @@
       }
     }, {
       key: "scrollTransition",
-      set: function set(v) {
-        this._scrollTransitionSettings.patch(v);
-      },
       get: function get() {
         return this._scrollTransition;
+      },
+      set: function set(v) {
+        this._scrollTransitionSettings.patch(v);
       }
     }, {
       key: "progressAnimation",
@@ -20665,25 +21024,6 @@
     }
 
     _createClass(LinearBlurShader, [{
-      key: "useDefault",
-      value: function useDefault() {
-        return this._kernelRadius === 0;
-      }
-    }, {
-      key: "setupUniforms",
-      value: function setupUniforms(operation) {
-        _get(_getPrototypeOf(LinearBlurShader.prototype), "setupUniforms", this).call(this, operation);
-
-        this._setUniform("direction", this._direction, this.gl.uniform2fv);
-
-        this._setUniform("kernelRadius", this._kernelRadius, this.gl.uniform1i);
-
-        var w = operation.getRenderWidth();
-        var h = operation.getRenderHeight();
-
-        this._setUniform("resolution", new Float32Array([w, h]), this.gl.uniform2fv);
-      }
-    }, {
       key: "x",
       get: function get() {
         return this._direction[0];
@@ -20709,6 +21049,25 @@
       set: function set(v) {
         this._kernelRadius = v;
         this.redraw();
+      }
+    }, {
+      key: "useDefault",
+      value: function useDefault() {
+        return this._kernelRadius === 0;
+      }
+    }, {
+      key: "setupUniforms",
+      value: function setupUniforms(operation) {
+        _get(_getPrototypeOf(LinearBlurShader.prototype), "setupUniforms", this).call(this, operation);
+
+        this._setUniform("direction", this._direction, this.gl.uniform2fv);
+
+        this._setUniform("kernelRadius", this._kernelRadius, this.gl.uniform1i);
+
+        var w = operation.getRenderWidth();
+        var h = operation.getRenderHeight();
+
+        this._setUniform("resolution", new Float32Array([w, h]), this.gl.uniform2fv);
       }
     }]);
 
@@ -20760,6 +21119,15 @@
     }
 
     _createClass(BlurShader, [{
+      key: "kernelRadius",
+      get: function get() {
+        return this._kernelRadius;
+      },
+      set: function set(v) {
+        this._kernelRadius = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._amount === 0;
@@ -20775,15 +21143,6 @@
       value: function _afterDrawEl(_ref2) {
         var target = _ref2.target;
         target.ctx.filter = "none";
-      }
-    }, {
-      key: "kernelRadius",
-      get: function get() {
-        return this._kernelRadius;
-      },
-      set: function set(v) {
-        this._kernelRadius = v;
-        this.redraw();
       }
     }]);
 
@@ -20802,32 +21161,17 @@
     }
 
     _createClass(FastBlurComponent, [{
-      key: "_onResize",
-      value: function _onResize() {
-        this.wrap.w = this.renderWidth;
-        this.wrap.h = this.renderHeight;
-      }
-    }, {
-      key: "_build",
-      value: function _build() {
-        this.patch({
-          Wrap: {
-            type: this.stage.gl ? WebGLFastBlurComponent : C2dFastBlurComponent
-          }
-        });
-      }
-    }, {
       key: "wrap",
       get: function get() {
         return this.tag("Wrap");
       }
     }, {
       key: "content",
-      set: function set(v) {
-        return this.wrap.content = v;
-      },
       get: function get() {
         return this.wrap.content;
+      },
+      set: function set(v) {
+        return this.wrap.content = v;
       }
     }, {
       key: "padding",
@@ -20853,16 +21197,31 @@
       }
     }, {
       key: "amount",
-      set: function set(v) {
-        return this.wrap.amount = v;
-      },
       get: function get() {
         return this.wrap.amount;
+      },
+      set: function set(v) {
+        return this.wrap.amount = v;
+      }
+    }, {
+      key: "_onResize",
+      value: function _onResize() {
+        this.wrap.w = this.renderWidth;
+        this.wrap.h = this.renderHeight;
       }
     }, {
       key: "_signalProxy",
       get: function get() {
         return true;
+      }
+    }, {
+      key: "_build",
+      value: function _build() {
+        this.patch({
+          Wrap: {
+            type: this.stage.gl ? WebGLFastBlurComponent : C2dFastBlurComponent
+          }
+        });
       }
     }], [{
       key: "_template",
@@ -20879,22 +21238,6 @@
 
     var _super2 = _createSuper(C2dFastBlurComponent);
 
-    _createClass(C2dFastBlurComponent, null, [{
-      key: "_template",
-      value: function _template() {
-        return {
-          forceZIndexContext: true,
-          rtt: true,
-          Textwrap: {
-            shader: {
-              type: BlurShader
-            },
-            Content: {}
-          }
-        };
-      }
-    }]);
-
     function C2dFastBlurComponent(stage) {
       var _this;
 
@@ -20910,6 +21253,36 @@
     }
 
     _createClass(C2dFastBlurComponent, [{
+      key: "content",
+      get: function get() {
+        return this.sel('Textwrap>Content');
+      },
+      set: function set(v) {
+        this.sel('Textwrap>Content').patch(v, true);
+      }
+    }, {
+      key: "padding",
+      set: function set(v) {
+        this._paddingX = v;
+        this._paddingY = v;
+
+        this._updateBlurSize();
+      }
+    }, {
+      key: "paddingX",
+      set: function set(v) {
+        this._paddingX = v;
+
+        this._updateBlurSize();
+      }
+    }, {
+      key: "paddingY",
+      set: function set(v) {
+        this._paddingY = v;
+
+        this._updateBlurSize();
+      }
+    }, {
       key: "_updateBlurSize",
       value: function _updateBlurSize() {
         var w = this.renderWidth;
@@ -20922,6 +21295,145 @@
         this._textwrap.y = -paddingY;
         this._textwrap.w = w + paddingX * 2;
         this._textwrap.h = h + paddingY * 2;
+      }
+    }, {
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+        this._textwrap.shader.kernelRadius = C2dFastBlurComponent._amountToKernelRadius(v);
+      }
+    }, {
+      key: "_signalProxy",
+      get: function get() {
+        return true;
+      }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          forceZIndexContext: true,
+          rtt: true,
+          Textwrap: {
+            shader: {
+              type: BlurShader
+            },
+            Content: {}
+          }
+        };
+      }
+    }, {
+      key: "getSpline",
+      value: function getSpline() {
+        if (!this._multiSpline) {
+          this._multiSpline = new MultiSpline();
+
+          this._multiSpline.parse(false, {
+            0: 0,
+            0.25: 1.5,
+            0.5: 5.5,
+            0.75: 18,
+            1: 39
+          });
+        }
+
+        return this._multiSpline;
+      }
+    }, {
+      key: "_amountToKernelRadius",
+      value: function _amountToKernelRadius(v) {
+        return C2dFastBlurComponent.getSpline().getValue(Math.min(1, v * 0.25));
+      }
+    }]);
+
+    return C2dFastBlurComponent;
+  }(Component);
+
+  var WebGLFastBlurComponent = /*#__PURE__*/function (_Component3) {
+    _inherits(WebGLFastBlurComponent, _Component3);
+
+    var _super3 = _createSuper(WebGLFastBlurComponent);
+
+    function WebGLFastBlurComponent(stage) {
+      var _this2;
+
+      _classCallCheck(this, WebGLFastBlurComponent);
+
+      _this2 = _super3.call(this, stage);
+      _this2._textwrap = _this2.sel("Textwrap");
+      _this2._wrapper = _this2.sel("Textwrap>Content");
+      _this2._layers = _this2.sel("Layers");
+      _this2._output = _this2.sel("Result");
+      _this2._amount = 0;
+      _this2._paddingX = 0;
+      _this2._paddingY = 0;
+      return _this2;
+    }
+
+    _createClass(WebGLFastBlurComponent, [{
+      key: "_signalProxy",
+      get: function get() {
+        return true;
+      }
+    }, {
+      key: "_buildLayers",
+      value: function _buildLayers() {
+        var _this3 = this;
+
+        var filterShaderSettings = [{
+          x: 1,
+          y: 0,
+          kernelRadius: 1
+        }, {
+          x: 0,
+          y: 1,
+          kernelRadius: 1
+        }, {
+          x: 1.5,
+          y: 0,
+          kernelRadius: 1
+        }, {
+          x: 0,
+          y: 1.5,
+          kernelRadius: 1
+        }];
+        var filterShaders = filterShaderSettings.map(function (s) {
+          _newArrowCheck(this, _this3);
+
+          var shader = Shader.create(this.stage, Object.assign({
+            type: LinearBlurShader
+          }, s));
+          return shader;
+        }.bind(this));
+
+        this._setLayerTexture(this.getLayerContents(0), this._textwrap.getTexture(), []);
+
+        this._setLayerTexture(this.getLayerContents(1), this.getLayer(0).getTexture(), [filterShaders[0], filterShaders[1]]);
+
+        this._setLayerTexture(this.getLayerContents(2), this.getLayer(1).getTexture(), [filterShaders[0], filterShaders[1], filterShaders[2], filterShaders[3]]);
+
+        this._setLayerTexture(this.getLayerContents(3), this.getLayer(2).getTexture(), [filterShaders[0], filterShaders[1], filterShaders[2], filterShaders[3]]);
+      }
+    }, {
+      key: "_setLayerTexture",
+      value: function _setLayerTexture(element, texture, steps) {
+        if (!steps.length) {
+          element.texture = texture;
+        } else {
+          var step = steps.pop();
+          var child = element.stage.c({
+            rtt: true,
+            shader: step
+          });
+
+          this._setLayerTexture(child, texture, steps);
+
+          element.childList.add(child);
+        }
+
+        return element;
       }
     }, {
       key: "content",
@@ -20954,55 +21466,109 @@
         this._updateBlurSize();
       }
     }, {
+      key: "getLayer",
+      value: function getLayer(i) {
+        return this._layers.sel("L" + i);
+      }
+    }, {
+      key: "getLayerContents",
+      value: function getLayerContents(i) {
+        return this.getLayer(i).sel("Content");
+      }
+    }, {
+      key: "_onResize",
+      value: function _onResize() {
+        this._updateBlurSize();
+      }
+    }, {
+      key: "_updateBlurSize",
+      value: function _updateBlurSize() {
+        var w = this.renderWidth;
+        var h = this.renderHeight;
+        var paddingX = this._paddingX;
+        var paddingY = this._paddingY;
+        var fw = w + paddingX * 2;
+        var fh = h + paddingY * 2;
+        this._textwrap.w = fw;
+        this._wrapper.x = paddingX;
+        this.getLayer(0).w = this.getLayerContents(0).w = fw / 2;
+        this.getLayer(1).w = this.getLayerContents(1).w = fw / 4;
+        this.getLayer(2).w = this.getLayerContents(2).w = fw / 8;
+        this.getLayer(3).w = this.getLayerContents(3).w = fw / 16;
+        this._output.x = -paddingX;
+        this._textwrap.x = -paddingX;
+        this._output.w = fw;
+        this._textwrap.h = fh;
+        this._wrapper.y = paddingY;
+        this.getLayer(0).h = this.getLayerContents(0).h = fh / 2;
+        this.getLayer(1).h = this.getLayerContents(1).h = fh / 4;
+        this.getLayer(2).h = this.getLayerContents(2).h = fh / 8;
+        this.getLayer(3).h = this.getLayerContents(3).h = fh / 16;
+        this._output.y = -paddingY;
+        this._textwrap.y = -paddingY;
+        this._output.h = fh;
+        this.w = w;
+        this.h = h;
+      }
+    }, {
       key: "amount",
       get: function get() {
         return this._amount;
       },
       set: function set(v) {
         this._amount = v;
-        this._textwrap.shader.kernelRadius = C2dFastBlurComponent._amountToKernelRadius(v);
+
+        this._update();
       }
     }, {
-      key: "_signalProxy",
-      get: function get() {
-        return true;
-      }
-    }], [{
-      key: "getSpline",
-      value: function getSpline() {
-        if (!this._multiSpline) {
-          this._multiSpline = new MultiSpline();
+      key: "_update",
+      value: function _update() {
+        var v = Math.min(4, Math.max(0, this._amount));
 
-          this._multiSpline.parse(false, {
-            0: 0,
-            0.25: 1.5,
-            0.5: 5.5,
-            0.75: 18,
-            1: 39
-          });
+        if (v === 0) {
+          this._textwrap.renderToTexture = false;
+          this._output.shader.otherTextureSource = null;
+          this._output.visible = false;
+        } else {
+          this._textwrap.renderToTexture = true;
+          this._output.visible = true;
+          this.getLayer(0).visible = v > 0;
+          this.getLayer(1).visible = v > 1;
+          this.getLayer(2).visible = v > 2;
+          this.getLayer(3).visible = v > 3;
+
+          if (v <= 1) {
+            this._output.texture = this._textwrap.getTexture();
+            this._output.shader.otherTextureSource = this.getLayer(0).getTexture();
+            this._output.shader.a = v;
+          } else if (v <= 2) {
+            this._output.texture = this.getLayer(0).getTexture();
+            this._output.shader.otherTextureSource = this.getLayer(1).getTexture();
+            this._output.shader.a = v - 1;
+          } else if (v <= 3) {
+            this._output.texture = this.getLayer(1).getTexture();
+            this._output.shader.otherTextureSource = this.getLayer(2).getTexture();
+            this._output.shader.a = v - 2;
+          } else if (v <= 4) {
+            this._output.texture = this.getLayer(2).getTexture();
+            this._output.shader.otherTextureSource = this.getLayer(3).getTexture();
+            this._output.shader.a = v - 3;
+          }
         }
-
-        return this._multiSpline;
       }
     }, {
-      key: "_amountToKernelRadius",
-      value: function _amountToKernelRadius(v) {
-        return C2dFastBlurComponent.getSpline().getValue(Math.min(1, v * 0.25));
+      key: "shader",
+      set: function set(s) {
+        _set(_getPrototypeOf(WebGLFastBlurComponent.prototype), "shader", s, this, true);
+
+        if (!this.renderToTexture) {
+          console.warn("[Lightning] Please enable renderToTexture to use with a shader.");
+        }
       }
-    }]);
-
-    return C2dFastBlurComponent;
-  }(Component);
-
-  var WebGLFastBlurComponent = /*#__PURE__*/function (_Component3) {
-    _inherits(WebGLFastBlurComponent, _Component3);
-
-    var _super3 = _createSuper(WebGLFastBlurComponent);
-
-    _createClass(WebGLFastBlurComponent, [{
-      key: "_signalProxy",
-      get: function get() {
-        return true;
+    }, {
+      key: "_firstActive",
+      value: function _firstActive() {
+        this._buildLayers();
       }
     }], [{
       key: "_template",
@@ -21084,48 +21650,116 @@
       }
     }]);
 
-    function WebGLFastBlurComponent(stage) {
-      var _this2;
+    return WebGLFastBlurComponent;
+  }(Component);
 
-      _classCallCheck(this, WebGLFastBlurComponent);
+  var FastBlurOutputShader = /*#__PURE__*/function (_DefaultShader) {
+    _inherits(FastBlurOutputShader, _DefaultShader);
 
-      _this2 = _super3.call(this, stage);
-      _this2._textwrap = _this2.sel("Textwrap");
-      _this2._wrapper = _this2.sel("Textwrap>Content");
-      _this2._layers = _this2.sel("Layers");
-      _this2._output = _this2.sel("Result");
-      _this2._amount = 0;
-      _this2._paddingX = 0;
-      _this2._paddingY = 0;
-      return _this2;
+    var _super4 = _createSuper(FastBlurOutputShader);
+
+    function FastBlurOutputShader(ctx) {
+      var _this4;
+
+      _classCallCheck(this, FastBlurOutputShader);
+
+      _this4 = _super4.call(this, ctx);
+      _this4._a = 0;
+      _this4._otherTextureSource = null;
+      return _this4;
     }
 
-    _createClass(WebGLFastBlurComponent, [{
-      key: "_buildLayers",
-      value: function _buildLayers() {
-        var _this3 = this;
+    _createClass(FastBlurOutputShader, [{
+      key: "a",
+      get: function get() {
+        return this._a;
+      },
+      set: function set(v) {
+        this._a = v;
+        this.redraw();
+      }
+    }, {
+      key: "otherTextureSource",
+      set: function set(v) {
+        this._otherTextureSource = v;
+        this.redraw();
+      }
+    }, {
+      key: "setupUniforms",
+      value: function setupUniforms(operation) {
+        _get(_getPrototypeOf(FastBlurOutputShader.prototype), "setupUniforms", this).call(this, operation);
+
+        this._setUniform("a", this._a, this.gl.uniform1f);
+
+        this._setUniform("uSampler2", 1, this.gl.uniform1i);
+      }
+    }, {
+      key: "beforeDraw",
+      value: function beforeDraw(operation) {
+        var glTexture = this._otherTextureSource ? this._otherTextureSource.nativeTexture : null;
+        var gl = this.gl;
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+        gl.activeTexture(gl.TEXTURE0);
+      }
+    }]);
+
+    return FastBlurOutputShader;
+  }(DefaultShader);
+
+  FastBlurOutputShader.fragmentShaderSource = "\n    #ifdef GL_ES\n    # ifdef GL_FRAGMENT_PRECISION_HIGH\n    precision highp float;\n    # else\n    precision lowp float;\n    # endif\n    #endif\n    varying vec2 vTextureCoord;\n    varying vec4 vColor;\n    uniform sampler2D uSampler;\n    uniform sampler2D uSampler2;\n    uniform float a;\n    void main(void){\n        if (a == 1.0) {\n            gl_FragColor = texture2D(uSampler2, vTextureCoord) * vColor;\n        } else {\n            gl_FragColor = ((1.0 - a) * texture2D(uSampler, vTextureCoord) + (a * texture2D(uSampler2, vTextureCoord))) * vColor;\n        }\n    }\n";
+
+  var BloomComponent = /*#__PURE__*/function (_Component) {
+    _inherits(BloomComponent, _Component);
+
+    var _super = _createSuper(BloomComponent);
+
+    function BloomComponent(stage) {
+      var _this;
+
+      _classCallCheck(this, BloomComponent);
+
+      _this = _super.call(this, stage);
+      _this._textwrap = _this.sel("Textwrap");
+      _this._wrapper = _this.sel("Textwrap.Content");
+      _this._layers = _this.sel("Layers");
+      _this._amount = 0;
+      _this._paddingX = 0;
+      _this._paddingY = 0;
+      return _this;
+    }
+
+    _createClass(BloomComponent, [{
+      key: "_signalProxy",
+      get: function get() {
+        return true;
+      }
+    }, {
+      key: "_build",
+      value: function _build() {
+        var _this2 = this;
 
         var filterShaderSettings = [{
           x: 1,
           y: 0,
-          kernelRadius: 1
+          kernelRadius: 3
         }, {
           x: 0,
           y: 1,
-          kernelRadius: 1
+          kernelRadius: 3
         }, {
           x: 1.5,
           y: 0,
-          kernelRadius: 1
+          kernelRadius: 3
         }, {
           x: 0,
           y: 1.5,
-          kernelRadius: 1
+          kernelRadius: 3
         }];
         var filterShaders = filterShaderSettings.map(function (s) {
-          _newArrowCheck(this, _this3);
+          _newArrowCheck(this, _this2);
 
-          var shader = Shader.create(this.stage, Object.assign({
+          var shader = this.stage.createShader(Object.assign({
             type: LinearBlurShader
           }, s));
           return shader;
@@ -21159,6 +21793,36 @@
         return element;
       }
     }, {
+      key: "content",
+      get: function get() {
+        return this.sel('Textwrap.Content');
+      },
+      set: function set(v) {
+        this.sel('Textwrap.Content').patch(v);
+      }
+    }, {
+      key: "padding",
+      set: function set(v) {
+        this._paddingX = v;
+        this._paddingY = v;
+
+        this._updateBlurSize();
+      }
+    }, {
+      key: "paddingX",
+      set: function set(v) {
+        this._paddingX = v;
+
+        this._updateBlurSize();
+      }
+    }, {
+      key: "paddingY",
+      set: function set(v) {
+        this._paddingY = v;
+
+        this._updateBlurSize();
+      }
+    }, {
       key: "getLayer",
       value: function getLayer(i) {
         return this._layers.sel("L" + i);
@@ -21188,181 +21852,52 @@
         this.getLayer(1).w = this.getLayerContents(1).w = fw / 4;
         this.getLayer(2).w = this.getLayerContents(2).w = fw / 8;
         this.getLayer(3).w = this.getLayerContents(3).w = fw / 16;
-        this._output.x = -paddingX;
         this._textwrap.x = -paddingX;
-        this._output.w = fw;
         this._textwrap.h = fh;
         this._wrapper.y = paddingY;
         this.getLayer(0).h = this.getLayerContents(0).h = fh / 2;
         this.getLayer(1).h = this.getLayerContents(1).h = fh / 4;
         this.getLayer(2).h = this.getLayerContents(2).h = fh / 8;
         this.getLayer(3).h = this.getLayerContents(3).h = fh / 16;
-        this._output.y = -paddingY;
         this._textwrap.y = -paddingY;
-        this._output.h = fh;
         this.w = w;
         this.h = h;
+      }
+    }, {
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+
+        this._update();
       }
     }, {
       key: "_update",
       value: function _update() {
         var v = Math.min(4, Math.max(0, this._amount));
 
-        if (v === 0) {
-          this._textwrap.renderToTexture = false;
-          this._output.shader.otherTextureSource = null;
-          this._output.visible = false;
-        } else {
-          this._textwrap.renderToTexture = true;
-          this._output.visible = true;
+        if (v > 0) {
           this.getLayer(0).visible = v > 0;
           this.getLayer(1).visible = v > 1;
           this.getLayer(2).visible = v > 2;
           this.getLayer(3).visible = v > 3;
-
-          if (v <= 1) {
-            this._output.texture = this._textwrap.getTexture();
-            this._output.shader.otherTextureSource = this.getLayer(0).getTexture();
-            this._output.shader.a = v;
-          } else if (v <= 2) {
-            this._output.texture = this.getLayer(0).getTexture();
-            this._output.shader.otherTextureSource = this.getLayer(1).getTexture();
-            this._output.shader.a = v - 1;
-          } else if (v <= 3) {
-            this._output.texture = this.getLayer(1).getTexture();
-            this._output.shader.otherTextureSource = this.getLayer(2).getTexture();
-            this._output.shader.a = v - 2;
-          } else if (v <= 4) {
-            this._output.texture = this.getLayer(2).getTexture();
-            this._output.shader.otherTextureSource = this.getLayer(3).getTexture();
-            this._output.shader.a = v - 3;
-          }
         }
-      }
-    }, {
-      key: "_firstActive",
-      value: function _firstActive() {
-        this._buildLayers();
-      }
-    }, {
-      key: "content",
-      get: function get() {
-        return this.sel('Textwrap>Content');
-      },
-      set: function set(v) {
-        this.sel('Textwrap>Content').patch(v, true);
-      }
-    }, {
-      key: "padding",
-      set: function set(v) {
-        this._paddingX = v;
-        this._paddingY = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "paddingX",
-      set: function set(v) {
-        this._paddingX = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "paddingY",
-      set: function set(v) {
-        this._paddingY = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-
-        this._update();
-      },
-      get: function get() {
-        return this._amount;
       }
     }, {
       key: "shader",
       set: function set(s) {
-        _set(_getPrototypeOf(WebGLFastBlurComponent.prototype), "shader", s, this, true);
+        _set(_getPrototypeOf(BloomComponent.prototype), "shader", s, this, true);
 
         if (!this.renderToTexture) {
           console.warn("[Lightning] Please enable renderToTexture to use with a shader.");
         }
       }
-    }]);
-
-    return WebGLFastBlurComponent;
-  }(Component);
-
-  var FastBlurOutputShader = /*#__PURE__*/function (_DefaultShader) {
-    _inherits(FastBlurOutputShader, _DefaultShader);
-
-    var _super4 = _createSuper(FastBlurOutputShader);
-
-    function FastBlurOutputShader(ctx) {
-      var _this4;
-
-      _classCallCheck(this, FastBlurOutputShader);
-
-      _this4 = _super4.call(this, ctx);
-      _this4._a = 0;
-      _this4._otherTextureSource = null;
-      return _this4;
-    }
-
-    _createClass(FastBlurOutputShader, [{
-      key: "setupUniforms",
-      value: function setupUniforms(operation) {
-        _get(_getPrototypeOf(FastBlurOutputShader.prototype), "setupUniforms", this).call(this, operation);
-
-        this._setUniform("a", this._a, this.gl.uniform1f);
-
-        this._setUniform("uSampler2", 1, this.gl.uniform1i);
-      }
     }, {
-      key: "beforeDraw",
-      value: function beforeDraw(operation) {
-        var glTexture = this._otherTextureSource ? this._otherTextureSource.nativeTexture : null;
-        var gl = this.gl;
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-        gl.activeTexture(gl.TEXTURE0);
-      }
-    }, {
-      key: "a",
-      get: function get() {
-        return this._a;
-      },
-      set: function set(v) {
-        this._a = v;
-        this.redraw();
-      }
-    }, {
-      key: "otherTextureSource",
-      set: function set(v) {
-        this._otherTextureSource = v;
-        this.redraw();
-      }
-    }]);
-
-    return FastBlurOutputShader;
-  }(DefaultShader);
-
-  FastBlurOutputShader.fragmentShaderSource = "\n    #ifdef GL_ES\n    # ifdef GL_FRAGMENT_PRECISION_HIGH\n    precision highp float;\n    # else\n    precision lowp float;\n    # endif\n    #endif\n    varying vec2 vTextureCoord;\n    varying vec4 vColor;\n    uniform sampler2D uSampler;\n    uniform sampler2D uSampler2;\n    uniform float a;\n    void main(void){\n        if (a == 1.0) {\n            gl_FragColor = texture2D(uSampler2, vTextureCoord) * vColor;\n        } else {\n            gl_FragColor = ((1.0 - a) * texture2D(uSampler, vTextureCoord) + (a * texture2D(uSampler2, vTextureCoord))) * vColor;\n        }\n    }\n";
-
-  var BloomComponent = /*#__PURE__*/function (_Component) {
-    _inherits(BloomComponent, _Component);
-
-    var _super = _createSuper(BloomComponent);
-
-    _createClass(BloomComponent, [{
-      key: "_signalProxy",
-      get: function get() {
-        return true;
+      key: "_firstActive",
+      value: function _firstActive() {
+        this._build();
       }
     }], [{
       key: "_template",
@@ -21447,188 +21982,6 @@
       }
     }]);
 
-    function BloomComponent(stage) {
-      var _this;
-
-      _classCallCheck(this, BloomComponent);
-
-      _this = _super.call(this, stage);
-      _this._textwrap = _this.sel("Textwrap");
-      _this._wrapper = _this.sel("Textwrap.Content");
-      _this._layers = _this.sel("Layers");
-      _this._amount = 0;
-      _this._paddingX = 0;
-      _this._paddingY = 0;
-      return _this;
-    }
-
-    _createClass(BloomComponent, [{
-      key: "_build",
-      value: function _build() {
-        var _this2 = this;
-
-        var filterShaderSettings = [{
-          x: 1,
-          y: 0,
-          kernelRadius: 3
-        }, {
-          x: 0,
-          y: 1,
-          kernelRadius: 3
-        }, {
-          x: 1.5,
-          y: 0,
-          kernelRadius: 3
-        }, {
-          x: 0,
-          y: 1.5,
-          kernelRadius: 3
-        }];
-        var filterShaders = filterShaderSettings.map(function (s) {
-          _newArrowCheck(this, _this2);
-
-          var shader = this.stage.createShader(Object.assign({
-            type: LinearBlurShader
-          }, s));
-          return shader;
-        }.bind(this));
-
-        this._setLayerTexture(this.getLayerContents(0), this._textwrap.getTexture(), []);
-
-        this._setLayerTexture(this.getLayerContents(1), this.getLayer(0).getTexture(), [filterShaders[0], filterShaders[1]]);
-
-        this._setLayerTexture(this.getLayerContents(2), this.getLayer(1).getTexture(), [filterShaders[0], filterShaders[1], filterShaders[2], filterShaders[3]]);
-
-        this._setLayerTexture(this.getLayerContents(3), this.getLayer(2).getTexture(), [filterShaders[0], filterShaders[1], filterShaders[2], filterShaders[3]]);
-      }
-    }, {
-      key: "_setLayerTexture",
-      value: function _setLayerTexture(element, texture, steps) {
-        if (!steps.length) {
-          element.texture = texture;
-        } else {
-          var step = steps.pop();
-          var child = element.stage.c({
-            rtt: true,
-            shader: step
-          });
-
-          this._setLayerTexture(child, texture, steps);
-
-          element.childList.add(child);
-        }
-
-        return element;
-      }
-    }, {
-      key: "getLayer",
-      value: function getLayer(i) {
-        return this._layers.sel("L" + i);
-      }
-    }, {
-      key: "getLayerContents",
-      value: function getLayerContents(i) {
-        return this.getLayer(i).sel("Content");
-      }
-    }, {
-      key: "_onResize",
-      value: function _onResize() {
-        this._updateBlurSize();
-      }
-    }, {
-      key: "_updateBlurSize",
-      value: function _updateBlurSize() {
-        var w = this.renderWidth;
-        var h = this.renderHeight;
-        var paddingX = this._paddingX;
-        var paddingY = this._paddingY;
-        var fw = w + paddingX * 2;
-        var fh = h + paddingY * 2;
-        this._textwrap.w = fw;
-        this._wrapper.x = paddingX;
-        this.getLayer(0).w = this.getLayerContents(0).w = fw / 2;
-        this.getLayer(1).w = this.getLayerContents(1).w = fw / 4;
-        this.getLayer(2).w = this.getLayerContents(2).w = fw / 8;
-        this.getLayer(3).w = this.getLayerContents(3).w = fw / 16;
-        this._textwrap.x = -paddingX;
-        this._textwrap.h = fh;
-        this._wrapper.y = paddingY;
-        this.getLayer(0).h = this.getLayerContents(0).h = fh / 2;
-        this.getLayer(1).h = this.getLayerContents(1).h = fh / 4;
-        this.getLayer(2).h = this.getLayerContents(2).h = fh / 8;
-        this.getLayer(3).h = this.getLayerContents(3).h = fh / 16;
-        this._textwrap.y = -paddingY;
-        this.w = w;
-        this.h = h;
-      }
-    }, {
-      key: "_update",
-      value: function _update() {
-        var v = Math.min(4, Math.max(0, this._amount));
-
-        if (v > 0) {
-          this.getLayer(0).visible = v > 0;
-          this.getLayer(1).visible = v > 1;
-          this.getLayer(2).visible = v > 2;
-          this.getLayer(3).visible = v > 3;
-        }
-      }
-    }, {
-      key: "_firstActive",
-      value: function _firstActive() {
-        this._build();
-      }
-    }, {
-      key: "content",
-      get: function get() {
-        return this.sel('Textwrap.Content');
-      },
-      set: function set(v) {
-        this.sel('Textwrap.Content').patch(v);
-      }
-    }, {
-      key: "padding",
-      set: function set(v) {
-        this._paddingX = v;
-        this._paddingY = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "paddingX",
-      set: function set(v) {
-        this._paddingX = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "paddingY",
-      set: function set(v) {
-        this._paddingY = v;
-
-        this._updateBlurSize();
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-
-        this._update();
-      },
-      get: function get() {
-        return this._amount;
-      }
-    }, {
-      key: "shader",
-      set: function set(s) {
-        _set(_getPrototypeOf(BloomComponent.prototype), "shader", s, this, true);
-
-        if (!this.renderToTexture) {
-          console.warn("[Lightning] Please enable renderToTexture to use with a shader.");
-        }
-      }
-    }]);
-
     return BloomComponent;
   }(Component);
 
@@ -21653,23 +22006,6 @@
 
     var _super = _createSuper(SmoothScaleComponent);
 
-    _createClass(SmoothScaleComponent, null, [{
-      key: "_template",
-      value: function _template() {
-        return {
-          ContentWrap: {
-            renderOffscreen: true,
-            forceZIndexContext: true,
-            onAfterUpdate: SmoothScaleComponent._updateDimensions,
-            Content: {}
-          },
-          Scale: {
-            visible: false
-          }
-        };
-      }
-    }]);
-
     function SmoothScaleComponent(stage) {
       var _this;
 
@@ -21682,6 +22018,35 @@
     }
 
     _createClass(SmoothScaleComponent, [{
+      key: "content",
+      get: function get() {
+        return this.tag('Content');
+      },
+      set: function set(v) {
+        this.tag('Content').patch(v, true);
+      }
+    }, {
+      key: "smoothScale",
+      get: function get() {
+        return this._smoothScale;
+      },
+      set: function set(v) {
+        if (this._smoothScale !== v) {
+          var its = 0;
+
+          while (v < 0.5 && its < 12) {
+            its++;
+            v = v * 2;
+          }
+
+          this.scale = v;
+
+          this._setIterations(its);
+
+          this._smoothScale = v;
+        }
+      }
+    }, {
       key: "_setIterations",
       value: function _setIterations(its) {
         if (this._iterations !== its) {
@@ -21721,40 +22086,26 @@
         }
       }
     }, {
-      key: "content",
-      get: function get() {
-        return this.tag('Content');
-      },
-      set: function set(v) {
-        this.tag('Content').patch(v, true);
-      }
-    }, {
-      key: "smoothScale",
-      get: function get() {
-        return this._smoothScale;
-      },
-      set: function set(v) {
-        if (this._smoothScale !== v) {
-          var its = 0;
-
-          while (v < 0.5 && its < 12) {
-            its++;
-            v = v * 2;
-          }
-
-          this.scale = v;
-
-          this._setIterations(its);
-
-          this._smoothScale = v;
-        }
-      }
-    }, {
       key: "_signalProxy",
       get: function get() {
         return true;
       }
     }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          ContentWrap: {
+            renderOffscreen: true,
+            forceZIndexContext: true,
+            onAfterUpdate: SmoothScaleComponent._updateDimensions,
+            Content: {}
+          },
+          Scale: {
+            visible: false
+          }
+        };
+      }
+    }, {
       key: "_updateDimensions",
       value: function _updateDimensions(contentWrap, force) {
         var content = contentWrap.children[0];
@@ -21783,40 +22134,6 @@
     _inherits(BorderComponent, _Component);
 
     var _super = _createSuper(BorderComponent);
-
-    _createClass(BorderComponent, [{
-      key: "_signalProxy",
-      get: function get() {
-        return true;
-      }
-    }], [{
-      key: "_template",
-      value: function _template() {
-        return {
-          Content: {},
-          Borders: {
-            Top: {
-              rect: true,
-              visible: false,
-              mountY: 1
-            },
-            Right: {
-              rect: true,
-              visible: false
-            },
-            Bottom: {
-              rect: true,
-              visible: false
-            },
-            Left: {
-              rect: true,
-              visible: false,
-              mountX: 1
-            }
-          }
-        };
-      }
-    }]);
 
     function BorderComponent(stage) {
       var _this;
@@ -21848,6 +22165,11 @@
     }
 
     _createClass(BorderComponent, [{
+      key: "_signalProxy",
+      get: function get() {
+        return true;
+      }
+    }, {
       key: "content",
       get: function get() {
         return this.sel('Content');
@@ -21985,6 +22307,33 @@
         this.borderBottom = settings;
         this.borderRight = settings;
       }
+    }], [{
+      key: "_template",
+      value: function _template() {
+        return {
+          Content: {},
+          Borders: {
+            Top: {
+              rect: true,
+              visible: false,
+              mountY: 1
+            },
+            Right: {
+              rect: true,
+              visible: false
+            },
+            Bottom: {
+              rect: true,
+              visible: false
+            },
+            Left: {
+              rect: true,
+              visible: false,
+              mountX: 1
+            }
+          }
+        };
+      }
     }]);
 
     return BorderComponent;
@@ -22006,6 +22355,15 @@
     }
 
     _createClass(WebGLGrayscaleShader, [{
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._amount === 0;
@@ -22016,15 +22374,6 @@
         _get(_getPrototypeOf(WebGLGrayscaleShader.prototype), "setupUniforms", this).call(this, operation);
 
         this._setUniform("amount", this._amount, this.gl.uniform1f);
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._amount;
       }
     }], [{
       key: "getC2d",
@@ -22052,6 +22401,15 @@
     }
 
     _createClass(C2dGrayscaleShader, [{
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._amount === 0;
@@ -22067,15 +22425,6 @@
       value: function _afterDrawEl(_ref2) {
         var target = _ref2.target;
         target.ctx.filter = "none";
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._amount;
       }
     }], [{
       key: "getWebGL",
@@ -22105,6 +22454,18 @@
     }
 
     _createClass(DitheringShader, [{
+      key: "graining",
+      set: function set(v) {
+        this._graining = v;
+        this.redraw();
+      }
+    }, {
+      key: "random",
+      set: function set(v) {
+        this._random = v;
+        this.redraw();
+      }
+    }, {
       key: "setExtraAttribsInBuffer",
       value: function setExtraAttribsInBuffer(operation) {
         this._noiseTexture.load();
@@ -22203,18 +22564,6 @@
           this.redraw();
         }
       }
-    }, {
-      key: "graining",
-      set: function set(v) {
-        this._graining = v;
-        this.redraw();
-      }
-    }, {
-      key: "random",
-      set: function set(v) {
-        this._random = v;
-        this.redraw();
-      }
     }]);
 
     return DitheringShader;
@@ -22246,6 +22595,73 @@
     }
 
     _createClass(CircularPushShader, [{
+      key: "aspectRatio",
+      get: function get() {
+        return this._aspectRatio;
+      },
+      set: function set(v) {
+        this._aspectRatio = v;
+        this.redraw();
+      }
+    }, {
+      key: "offsetX",
+      get: function get() {
+        return this._offsetX;
+      },
+      set: function set(v) {
+        this._offsetX = v;
+        this.redraw();
+      }
+    }, {
+      key: "offsetY",
+      get: function get() {
+        return this._offsetY;
+      },
+      set: function set(v) {
+        this._offsetY = v;
+        this.redraw();
+      }
+    }, {
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+        this.redraw();
+      }
+    }, {
+      key: "inputValue",
+      get: function get() {
+        return this._inputValue;
+      },
+      set: function set(v) {
+        this._inputValue = v;
+      }
+    }, {
+      key: "maxDerivative",
+      get: function get() {
+        return this._maxDerivative;
+      },
+      set: function set(v) {
+        this._maxDerivative = v;
+      }
+    }, {
+      key: "buckets",
+      get: function get() {
+        return this._buckets;
+      },
+      set: function set(v) {
+        if (v > 100) {
+          console.warn("[Lightning] CircularPushShader: supports max 100 buckets");
+          v = 100;
+        }
+
+        this._buckets = v;
+        this._values = new Uint8Array(this._getValues(v));
+        this.redraw();
+      }
+    }, {
       key: "_getValues",
       value: function _getValues(n) {
         var v = [];
@@ -22280,6 +22696,12 @@
             this._values[i] = this._values[targetIndex];
           }
         }
+      }
+    }, {
+      key: "offset",
+      set: function set(v) {
+        this._offset = v;
+        this.redraw();
       }
     }, {
       key: "setupUniforms",
@@ -22338,79 +22760,6 @@
           this.gl.deleteTexture(this._valuesTexture);
         }
       }
-    }, {
-      key: "aspectRatio",
-      get: function get() {
-        return this._aspectRatio;
-      },
-      set: function set(v) {
-        this._aspectRatio = v;
-        this.redraw();
-      }
-    }, {
-      key: "offsetX",
-      get: function get() {
-        return this._offsetX;
-      },
-      set: function set(v) {
-        this._offsetX = v;
-        this.redraw();
-      }
-    }, {
-      key: "offsetY",
-      get: function get() {
-        return this._offsetY;
-      },
-      set: function set(v) {
-        this._offsetY = v;
-        this.redraw();
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._amount;
-      }
-    }, {
-      key: "inputValue",
-      set: function set(v) {
-        this._inputValue = v;
-      },
-      get: function get() {
-        return this._inputValue;
-      }
-    }, {
-      key: "maxDerivative",
-      set: function set(v) {
-        this._maxDerivative = v;
-      },
-      get: function get() {
-        return this._maxDerivative;
-      }
-    }, {
-      key: "buckets",
-      set: function set(v) {
-        if (v > 100) {
-          console.warn("[Lightning] CircularPushShader: supports max 100 buckets");
-          v = 100;
-        }
-
-        this._buckets = v;
-        this._values = new Uint8Array(this._getValues(v));
-        this.redraw();
-      },
-      get: function get() {
-        return this._buckets;
-      }
-    }, {
-      key: "offset",
-      set: function set(v) {
-        this._offset = v;
-        this.redraw();
-      }
     }]);
 
     return CircularPushShader;
@@ -22434,6 +22783,15 @@
     }
 
     _createClass(InversionShader, [{
+      key: "amount",
+      get: function get() {
+        return this._amount;
+      },
+      set: function set(v) {
+        this._amount = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._amount === 0;
@@ -22444,15 +22802,6 @@
         _get(_getPrototypeOf(InversionShader.prototype), "setupUniforms", this).call(this, operation);
 
         this._setUniform("amount", this._amount, this.gl.uniform1f);
-      }
-    }, {
-      key: "amount",
-      set: function set(v) {
-        this._amount = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._amount;
       }
     }]);
 
@@ -22478,6 +22827,28 @@
     }
 
     _createClass(OutlineShader, [{
+      key: "width",
+      set: function set(v) {
+        this._width = v;
+        this.redraw();
+      }
+    }, {
+      key: "color",
+      get: function get() {
+        return this._col;
+      },
+      set: function set(v) {
+        if (this._col !== v) {
+          var col = StageUtils.getRgbaComponentsNormalized(v);
+          col[0] = col[0] * col[3];
+          col[1] = col[1] * col[3];
+          col[2] = col[2] * col[3];
+          this._color = col;
+          this.redraw();
+          this._col = v;
+        }
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._width === 0 || this._col[3] === 0;
@@ -22540,28 +22911,6 @@
       value: function getExtraAttribBytesPerVertex() {
         return 8;
       }
-    }, {
-      key: "width",
-      set: function set(v) {
-        this._width = v;
-        this.redraw();
-      }
-    }, {
-      key: "color",
-      get: function get() {
-        return this._col;
-      },
-      set: function set(v) {
-        if (this._col !== v) {
-          var col = StageUtils.getRgbaComponentsNormalized(v);
-          col[0] = col[0] * col[3];
-          col[1] = col[1] * col[3];
-          col[2] = col[2] * col[3];
-          this._color = col;
-          this.redraw();
-          this._col = v;
-        }
-      }
     }]);
 
     return OutlineShader;
@@ -22585,6 +22934,34 @@
     }
 
     _createClass(PixelateShader, [{
+      key: "x",
+      get: function get() {
+        return this._size[0];
+      },
+      set: function set(v) {
+        this._size[0] = v;
+        this.redraw();
+      }
+    }, {
+      key: "y",
+      get: function get() {
+        return this._size[1];
+      },
+      set: function set(v) {
+        this._size[1] = v;
+        this.redraw();
+      }
+    }, {
+      key: "size",
+      get: function get() {
+        return this._size[0];
+      },
+      set: function set(v) {
+        this._size[0] = v;
+        this._size[1] = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._size[0] === 0 && this._size[1] === 0;
@@ -22644,34 +23021,6 @@
         var gl = this.gl;
         gl.vertexAttribPointer(this._attrib("aTextureRes"), 2, gl.FLOAT, false, this.getExtraAttribBytesPerVertex(), this.getVertexAttribPointerOffset(operation));
       }
-    }, {
-      key: "x",
-      get: function get() {
-        return this._size[0];
-      },
-      set: function set(v) {
-        this._size[0] = v;
-        this.redraw();
-      }
-    }, {
-      key: "y",
-      get: function get() {
-        return this._size[1];
-      },
-      set: function set(v) {
-        this._size[1] = v;
-        this.redraw();
-      }
-    }, {
-      key: "size",
-      get: function get() {
-        return this._size[0];
-      },
-      set: function set(v) {
-        this._size[0] = v;
-        this._size[1] = v;
-        this.redraw();
-      }
     }], [{
       key: "getWebGLImpl",
       value: function getWebGLImpl() {
@@ -22701,6 +23050,24 @@
     }
 
     _createClass(RadialFilterShader, [{
+      key: "radius",
+      get: function get() {
+        return this._radius;
+      },
+      set: function set(v) {
+        this._radius = v;
+        this.redraw();
+      }
+    }, {
+      key: "cutoff",
+      get: function get() {
+        return this._cutoff;
+      },
+      set: function set(v) {
+        this._cutoff = v;
+        this.redraw();
+      }
+    }, {
       key: "useDefault",
       value: function useDefault() {
         return this._radius === 0;
@@ -22713,24 +23080,6 @@
         this._setUniform("radius", 2 * (this._radius - 0.5) / operation.getRenderWidth(), this.gl.uniform1f);
 
         this._setUniform("cutoff", 0.5 * operation.getRenderWidth() / this._cutoff, this.gl.uniform1f);
-      }
-    }, {
-      key: "radius",
-      set: function set(v) {
-        this._radius = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius;
-      }
-    }, {
-      key: "cutoff",
-      set: function set(v) {
-        this._cutoff = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._cutoff;
       }
     }]);
 
@@ -22760,6 +23109,98 @@
     }
 
     _createClass(RoundedRectangleShader, [{
+      key: "blend",
+      set: function set(p) {
+        this._blend = Math.min(Math.max(p, 0), 1);
+      }
+    }, {
+      key: "radius",
+      get: function get() {
+        return this._radius;
+      },
+      set: function set(v) {
+        if (Array.isArray(v)) {
+          if (v.length === 2) {
+            this._radius = [v[0], v[1], v[0], v[1]];
+          } else if (v.length === 3) {
+            this._radius = [v[0], v[1], v[2], this._radius[3]];
+          } else if (v.length === 4) {
+            this._radius = v;
+          } else {
+            this._radius = [v[0], v[0], v[0], v[0]];
+          }
+        } else {
+          this._radius = [v, v, v, v];
+        }
+
+        this.redraw();
+      }
+    }, {
+      key: "topLeft",
+      get: function get() {
+        return this._radius[0];
+      },
+      set: function set(num) {
+        this._radius[0] = num;
+        this.redraw();
+      }
+    }, {
+      key: "topRight",
+      get: function get() {
+        return this._radius[1];
+      },
+      set: function set(num) {
+        this._radius[1] = num;
+        this.redraw();
+      }
+    }, {
+      key: "bottomRight",
+      get: function get() {
+        return this._radius[2];
+      },
+      set: function set(num) {
+        this._radius[2] = num;
+        this.redraw();
+      }
+    }, {
+      key: "bottomLeft",
+      get: function get() {
+        return this._radius[4];
+      },
+      set: function set(num) {
+        this._radius[3] = num;
+        this.redraw();
+      }
+    }, {
+      key: "strokeColor",
+      get: function get() {
+        return this._sc;
+      },
+      set: function set(argb) {
+        this._sc = argb;
+        this._strokeColor = this._getNormalizedColor(argb);
+        this.redraw();
+      }
+    }, {
+      key: "fillColor",
+      get: function get() {
+        return this._fc;
+      },
+      set: function set(argb) {
+        this._fc = argb;
+        this._fillColor = this._getNormalizedColor(argb);
+        this.redraw();
+      }
+    }, {
+      key: "stroke",
+      get: function get() {
+        return this._stroke;
+      },
+      set: function set(num) {
+        this._stroke = num;
+        this.redraw();
+      }
+    }, {
       key: "_getNormalizedColor",
       value: function _getNormalizedColor(color) {
         var col = StageUtils.getRgbaComponentsNormalized(color);
@@ -22798,98 +23239,6 @@
 
         this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
       }
-    }, {
-      key: "blend",
-      set: function set(p) {
-        this._blend = Math.min(Math.max(p, 0), 1);
-      }
-    }, {
-      key: "radius",
-      set: function set(v) {
-        if (Array.isArray(v)) {
-          if (v.length === 2) {
-            this._radius = [v[0], v[1], v[0], v[1]];
-          } else if (v.length === 3) {
-            this._radius = [v[0], v[1], v[2], this._radius[3]];
-          } else if (v.length === 4) {
-            this._radius = v;
-          } else {
-            this._radius = [v[0], v[0], v[0], v[0]];
-          }
-        } else {
-          this._radius = [v, v, v, v];
-        }
-
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius;
-      }
-    }, {
-      key: "topLeft",
-      set: function set(num) {
-        this._radius[0] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius[0];
-      }
-    }, {
-      key: "topRight",
-      set: function set(num) {
-        this._radius[1] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius[1];
-      }
-    }, {
-      key: "bottomRight",
-      set: function set(num) {
-        this._radius[2] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius[2];
-      }
-    }, {
-      key: "bottomLeft",
-      set: function set(num) {
-        this._radius[3] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radius[4];
-      }
-    }, {
-      key: "strokeColor",
-      set: function set(argb) {
-        this._sc = argb;
-        this._strokeColor = this._getNormalizedColor(argb);
-        this.redraw();
-      },
-      get: function get() {
-        return this._sc;
-      }
-    }, {
-      key: "fillColor",
-      set: function set(argb) {
-        this._fc = argb;
-        this._fillColor = this._getNormalizedColor(argb);
-        this.redraw();
-      },
-      get: function get() {
-        return this._fc;
-      }
-    }, {
-      key: "stroke",
-      set: function set(num) {
-        this._stroke = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._stroke;
-      }
     }]);
 
     return RoundedRectangleShader;
@@ -22913,6 +23262,64 @@
     }
 
     _createClass(FadeOutShader, [{
+      key: "top",
+      get: function get() {
+        return this._fade[0];
+      },
+      set: function set(num) {
+        this._fade[0] = num;
+        this.redraw();
+      }
+    }, {
+      key: "right",
+      get: function get() {
+        return this._fade[1];
+      },
+      set: function set(num) {
+        this._fade[1] = num;
+        this.redraw();
+      }
+    }, {
+      key: "bottom",
+      get: function get() {
+        return this._fade[2];
+      },
+      set: function set(num) {
+        this._fade[2] = num;
+        this.redraw();
+      }
+    }, {
+      key: "left",
+      get: function get() {
+        return this._fade[3];
+      },
+      set: function set(num) {
+        this._fade[3] = num;
+        this.redraw();
+      }
+    }, {
+      key: "fade",
+      get: function get() {
+        return this._fade;
+      },
+      set: function set(v) {
+        if (Array.isArray(v)) {
+          if (v.length === 2) {
+            this._fade = [v[0], v[1], v[0], v[1]];
+          } else if (v.length === 3) {
+            this._fade = [v[0], v[1], v[2], this._fade[3]];
+          } else if (v.length === 4) {
+            this._fade = v;
+          } else {
+            this._fade = [v[0], v[0], v[0], v[0]];
+          }
+        } else {
+          this._fade = [v, v, v, v];
+        }
+
+        this.redraw();
+      }
+    }, {
       key: "setupUniforms",
       value: function setupUniforms(operation) {
         var _this2 = this;
@@ -22931,64 +23338,6 @@
         this._setUniform('fade', new Float32Array(fade), this.gl.uniform4fv);
 
         this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
-      }
-    }, {
-      key: "top",
-      set: function set(num) {
-        this._fade[0] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._fade[0];
-      }
-    }, {
-      key: "right",
-      set: function set(num) {
-        this._fade[1] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._fade[1];
-      }
-    }, {
-      key: "bottom",
-      set: function set(num) {
-        this._fade[2] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._fade[2];
-      }
-    }, {
-      key: "left",
-      set: function set(num) {
-        this._fade[3] = num;
-        this.redraw();
-      },
-      get: function get() {
-        return this._fade[3];
-      }
-    }, {
-      key: "fade",
-      set: function set(v) {
-        if (Array.isArray(v)) {
-          if (v.length === 2) {
-            this._fade = [v[0], v[1], v[0], v[1]];
-          } else if (v.length === 3) {
-            this._fade = [v[0], v[1], v[2], this._fade[3]];
-          } else if (v.length === 4) {
-            this._fade = v;
-          } else {
-            this._fade = [v[0], v[0], v[0], v[0]];
-          }
-        } else {
-          this._fade = [v, v, v, v];
-        }
-
-        this.redraw();
-      },
-      get: function get() {
-        return this._fade;
       }
     }]);
 
@@ -23103,35 +23452,6 @@
     }
 
     _createClass(SpinnerShader, [{
-      key: "setupUniforms",
-      value: function setupUniforms(operation) {
-        _get(_getPrototypeOf(SpinnerShader.prototype), "setupUniforms", this).call(this, operation);
-
-        var owner = operation.shaderOwner;
-
-        this._setUniform("iTime", Date.now() - this._time, this.gl.uniform1f);
-
-        var renderPrecision = this.ctx.stage.getRenderPrecision();
-
-        this._setUniform('radius', this._radius * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('width', this._width * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('period', this._period, this.gl.uniform1f);
-
-        this._setUniform('angle', this._angle, this.gl.uniform1f);
-
-        this._setUniform('smooth', this._smooth, this.gl.uniform1f);
-
-        this._setUniform('color', new Float32Array(StageUtils.getRgbaComponentsNormalized(this._color)), this.gl.uniform4fv);
-
-        this._setUniform('backgroundColor', new Float32Array(StageUtils.getRgbaComponentsNormalized(this._backgroundColor)), this.gl.uniform4fv);
-
-        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
-
-        this.redraw();
-      }
-    }, {
       key: "radius",
       set: function set(v) {
         this._radius = v;
@@ -23173,6 +23493,35 @@
         this._backgroundColor = v;
         this.redraw();
       }
+    }, {
+      key: "setupUniforms",
+      value: function setupUniforms(operation) {
+        _get(_getPrototypeOf(SpinnerShader.prototype), "setupUniforms", this).call(this, operation);
+
+        var owner = operation.shaderOwner;
+
+        this._setUniform("iTime", Date.now() - this._time, this.gl.uniform1f);
+
+        var renderPrecision = this.ctx.stage.getRenderPrecision();
+
+        this._setUniform('radius', this._radius * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('width', this._width * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('period', this._period, this.gl.uniform1f);
+
+        this._setUniform('angle', this._angle, this.gl.uniform1f);
+
+        this._setUniform('smooth', this._smooth, this.gl.uniform1f);
+
+        this._setUniform('color', new Float32Array(StageUtils.getRgbaComponentsNormalized(this._color)), this.gl.uniform4fv);
+
+        this._setUniform('backgroundColor', new Float32Array(StageUtils.getRgbaComponentsNormalized(this._backgroundColor)), this.gl.uniform4fv);
+
+        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
+
+        this.redraw();
+      }
     }]);
 
     return SpinnerShader;
@@ -23200,31 +23549,6 @@
     }
 
     _createClass(HoleShader, [{
-      key: "setupUniforms",
-      value: function setupUniforms(operation) {
-        _get(_getPrototypeOf(HoleShader.prototype), "setupUniforms", this).call(this, operation);
-
-        var owner = operation.shaderOwner;
-        var renderPrecision = this.ctx.stage.getRenderPrecision();
-
-        this._setUniform("x", this._x * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform("y", this._y * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform("w", this._w * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform("h", this._h * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('radius', (this._radius + .5) * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
-      }
-    }, {
-      key: "useDefault",
-      value: function useDefault() {
-        return this._x === 0 && this._y === 0 && this._w === 0 && this._h === 0;
-      }
-    }, {
       key: "x",
       get: function get() {
         return this._x;
@@ -23269,6 +23593,31 @@
         this._radius = v;
         this.redraw();
       }
+    }, {
+      key: "setupUniforms",
+      value: function setupUniforms(operation) {
+        _get(_getPrototypeOf(HoleShader.prototype), "setupUniforms", this).call(this, operation);
+
+        var owner = operation.shaderOwner;
+        var renderPrecision = this.ctx.stage.getRenderPrecision();
+
+        this._setUniform("x", this._x * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform("y", this._y * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform("w", this._w * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform("h", this._h * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('radius', (this._radius + .5) * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
+      }
+    }, {
+      key: "useDefault",
+      value: function useDefault() {
+        return this._x === 0 && this._y === 0 && this._w === 0 && this._h === 0;
+      }
     }]);
 
     return HoleShader;
@@ -23297,6 +23646,103 @@
     }
 
     _createClass(RadialGradientShader, [{
+      key: "radiusX",
+      get: function get() {
+        return this._radius;
+      },
+      set: function set(v) {
+        this.radius = v;
+      }
+    }, {
+      key: "radiusY",
+      get: function get() {
+        return this._radiusY;
+      },
+      set: function set(v) {
+        this._radiusY = v;
+        this.redraw();
+      }
+    }, {
+      key: "radius",
+      set: function set(v) {
+        this._radius = v;
+        this.redraw();
+      }
+    }, {
+      key: "innerColor",
+      get: function get() {
+        return this._ic;
+      },
+      set: function set(argb) {
+        this._ic = argb;
+        this._normalizedIC = this._getNormalizedColor(argb);
+        this.redraw();
+      }
+    }, {
+      key: "outerColor",
+      get: function get() {
+        return this._ic;
+      },
+      set: function set(argb) {
+        this._oc = argb;
+        this._normalizedOC = this._getNormalizedColor(argb);
+        this.redraw();
+      }
+    }, {
+      key: "color",
+      get: function get() {
+        return this.innerColor;
+      },
+      set: function set(argb) {
+        this.innerColor = argb;
+      }
+    }, {
+      key: "x",
+      set: function set(f) {
+        this._x = f;
+        this.redraw();
+      }
+    }, {
+      key: "y",
+      set: function set(f) {
+        this._y = f;
+        this.redraw();
+      }
+    }, {
+      key: "pivot",
+      get: function get() {
+        return this._pivot[0];
+      },
+      set: function set(v) {
+        if (Array.isArray(v) && v.length === 2) {
+          this._pivot = v;
+        } else if (Array.isArray(v)) {
+          this._pivot = [v[0], v[1] || v[0]];
+        } else {
+          this._pivot = [v, v];
+        }
+
+        this.redraw();
+      }
+    }, {
+      key: "pivotY",
+      get: function get() {
+        return this._pivot[1];
+      },
+      set: function set(f) {
+        this._pivot[1] = f;
+        this.redraw();
+      }
+    }, {
+      key: "pivotX",
+      get: function get() {
+        return this._pivot[0];
+      },
+      set: function set(f) {
+        this._pivot[0] = f;
+        this.redraw();
+      }
+    }, {
       key: "_getNormalizedColor",
       value: function _getNormalizedColor(color) {
         var col = StageUtils.getRgbaComponentsNormalized(color);
@@ -23339,103 +23785,6 @@
         this._setUniform('radius', this._radius, this.gl.uniform1f);
 
         this._setUniform('radiusY', this._radiusY || this._radius, this.gl.uniform1f);
-      }
-    }, {
-      key: "radiusX",
-      set: function set(v) {
-        this.radius = v;
-      },
-      get: function get() {
-        return this._radius;
-      }
-    }, {
-      key: "radiusY",
-      set: function set(v) {
-        this._radiusY = v;
-        this.redraw();
-      },
-      get: function get() {
-        return this._radiusY;
-      }
-    }, {
-      key: "radius",
-      set: function set(v) {
-        this._radius = v;
-        this.redraw();
-      }
-    }, {
-      key: "innerColor",
-      set: function set(argb) {
-        this._ic = argb;
-        this._normalizedIC = this._getNormalizedColor(argb);
-        this.redraw();
-      },
-      get: function get() {
-        return this._ic;
-      }
-    }, {
-      key: "outerColor",
-      set: function set(argb) {
-        this._oc = argb;
-        this._normalizedOC = this._getNormalizedColor(argb);
-        this.redraw();
-      },
-      get: function get() {
-        return this._ic;
-      }
-    }, {
-      key: "color",
-      set: function set(argb) {
-        this.innerColor = argb;
-      },
-      get: function get() {
-        return this.innerColor;
-      }
-    }, {
-      key: "x",
-      set: function set(f) {
-        this._x = f;
-        this.redraw();
-      }
-    }, {
-      key: "y",
-      set: function set(f) {
-        this._y = f;
-        this.redraw();
-      }
-    }, {
-      key: "pivot",
-      set: function set(v) {
-        if (Array.isArray(v) && v.length === 2) {
-          this._pivot = v;
-        } else if (Array.isArray(v)) {
-          this._pivot = [v[0], v[1] || v[0]];
-        } else {
-          this._pivot = [v, v];
-        }
-
-        this.redraw();
-      },
-      get: function get() {
-        return this._pivot[0];
-      }
-    }, {
-      key: "pivotY",
-      set: function set(f) {
-        this._pivot[1] = f;
-        this.redraw();
-      },
-      get: function get() {
-        return this._pivot[1];
-      }
-    }, {
-      key: "pivotX",
-      set: function set(f) {
-        this._pivot[0] = f;
-        this.redraw();
-      },
-      get: function get() {
-        return this._pivot[0];
       }
     }]);
 
@@ -23498,36 +23847,31 @@
         this._setUniform("fudge", this._fudge, gl.uniform1f);
       }
     }, {
-      key: "useDefault",
-      value: function useDefault() {
-        return this._rx === 0 && this._ry === 0 && this._z === 0 && this._strength === 0 && this._ambient === 1;
-      }
-    }, {
       key: "strength",
+      get: function get() {
+        return this._strength;
+      },
       set: function set(v) {
         this._strength = v;
         this.redraw();
-      },
-      get: function get() {
-        return this._strength;
       }
     }, {
       key: "ambient",
+      get: function get() {
+        return this._ambient;
+      },
       set: function set(v) {
         this._ambient = v;
         this.redraw();
-      },
-      get: function get() {
-        return this._ambient;
       }
     }, {
       key: "fudge",
+      get: function get() {
+        return this._fudge;
+      },
       set: function set(v) {
         this._fudge = v;
         this.redraw();
-      },
-      get: function get() {
-        return this._fudge;
       }
     }, {
       key: "rx",
@@ -23601,6 +23945,11 @@
         this._lightZ = v;
         this.redraw();
       }
+    }, {
+      key: "useDefault",
+      value: function useDefault() {
+        return this._rx === 0 && this._ry === 0 && this._z === 0 && this._strength === 0 && this._ambient === 1;
+      }
     }]);
 
     return Light3dShader;
@@ -23648,18 +23997,13 @@
         this._setUniform("fudge", this._fudge, gl.uniform1f);
       }
     }, {
-      key: "useDefault",
-      value: function useDefault() {
-        return this._rx === 0 && this._ry === 0 && this._z === 0;
-      }
-    }, {
       key: "fudge",
+      get: function get() {
+        return this._fudge;
+      },
       set: function set(v) {
         this._fudge = v;
         this.redraw();
-      },
-      get: function get() {
-        return this._fudge;
       }
     }, {
       key: "rx",
@@ -23687,6 +24031,11 @@
       set: function set(v) {
         this._z = v;
         this.redraw();
+      }
+    }, {
+      key: "useDefault",
+      value: function useDefault() {
+        return this._rx === 0 && this._ry === 0 && this._z === 0;
       }
     }]);
 
@@ -23716,33 +24065,6 @@
     }
 
     _createClass(MagnifierShader, [{
-      key: "setupUniforms",
-      value: function setupUniforms(operation) {
-        _get(_getPrototypeOf(MagnifierShader.prototype), "setupUniforms", this).call(this, operation);
-
-        var owner = operation.shaderOwner;
-        var renderPrecision = this.ctx.stage.getRenderPrecision();
-
-        this._setUniform('x', this._x * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('y', this._y * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('w', this._w * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('h', this._h * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('magnification', this._magnification, this.gl.uniform1f);
-
-        this._setUniform('radius', (this._radius + 0.5) * renderPrecision, this.gl.uniform1f);
-
-        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
-      }
-    }, {
-      key: "useDefault",
-      value: function useDefault() {
-        return this._w === 0 && this._h === 0;
-      }
-    }, {
       key: "x",
       get: function get() {
         return this._x;
@@ -23796,6 +24118,33 @@
         this._radius = v;
         this.redraw();
       }
+    }, {
+      key: "setupUniforms",
+      value: function setupUniforms(operation) {
+        _get(_getPrototypeOf(MagnifierShader.prototype), "setupUniforms", this).call(this, operation);
+
+        var owner = operation.shaderOwner;
+        var renderPrecision = this.ctx.stage.getRenderPrecision();
+
+        this._setUniform('x', this._x * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('y', this._y * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('w', this._w * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('h', this._h * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('magnification', this._magnification, this.gl.uniform1f);
+
+        this._setUniform('radius', (this._radius + 0.5) * renderPrecision, this.gl.uniform1f);
+
+        this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
+      }
+    }, {
+      key: "useDefault",
+      value: function useDefault() {
+        return this._w === 0 && this._h === 0;
+      }
     }]);
 
     return MagnifierShader;
@@ -23826,6 +24175,65 @@
     }
 
     _createClass(SpinnerShader2, [{
+      key: "radius",
+      set: function set(v) {
+        if (v === 0) {
+          v = 1;
+        }
+
+        this._radius = v;
+      }
+    }, {
+      key: "stroke",
+      get: function get() {
+        return this._stroke;
+      },
+      set: function set(value) {
+        this._stroke = Math.abs(value);
+      }
+    }, {
+      key: "color",
+      get: function get() {
+        return this._c;
+      },
+      set: function set(argb) {
+        this._c = argb;
+        this._normalizedC = this._getNormalizedColor(argb);
+      }
+    }, {
+      key: "backgroundColor",
+      get: function get() {
+        return this._sc;
+      },
+      set: function set(argb) {
+        this._bc = argb;
+        this._normalizedBC = this._getNormalizedColor(argb);
+      }
+    }, {
+      key: "showDot",
+      get: function get() {
+        return this._showDot;
+      },
+      set: function set(bool) {
+        this._showDot = bool;
+      }
+    }, {
+      key: "clockwise",
+      get: function get() {
+        return this._clockwise;
+      },
+      set: function set(bool) {
+        this._clockwise = bool;
+      }
+    }, {
+      key: "period",
+      get: function get() {
+        return this._period;
+      },
+      set: function set(v) {
+        this._period = v;
+      }
+    }, {
       key: "_getNormalizedColor",
       value: function _getNormalizedColor(color) {
         var col = StageUtils.getRgbaComponentsNormalized(color);
@@ -23869,65 +24277,6 @@
         if (this._sc !== this._bc || this._stroke !== radius * 0.5) {
           this.redraw();
         }
-      }
-    }, {
-      key: "radius",
-      set: function set(v) {
-        if (v === 0) {
-          v = 1;
-        }
-
-        this._radius = v;
-      }
-    }, {
-      key: "stroke",
-      set: function set(value) {
-        this._stroke = Math.abs(value);
-      },
-      get: function get() {
-        return this._stroke;
-      }
-    }, {
-      key: "color",
-      set: function set(argb) {
-        this._c = argb;
-        this._normalizedC = this._getNormalizedColor(argb);
-      },
-      get: function get() {
-        return this._c;
-      }
-    }, {
-      key: "backgroundColor",
-      set: function set(argb) {
-        this._bc = argb;
-        this._normalizedBC = this._getNormalizedColor(argb);
-      },
-      get: function get() {
-        return this._sc;
-      }
-    }, {
-      key: "showDot",
-      set: function set(bool) {
-        this._showDot = bool;
-      },
-      get: function get() {
-        return this._showDot;
-      }
-    }, {
-      key: "clockwise",
-      set: function set(bool) {
-        this._clockwise = bool;
-      },
-      get: function get() {
-        return this._clockwise;
-      }
-    }, {
-      key: "period",
-      set: function set(v) {
-        this._period = v;
-      },
-      get: function get() {
-        return this._period;
       }
     }]);
 

@@ -1,9 +1,9 @@
 /**
- * App version: 1.0.0
+ * App version: 1 5e37 20/07/21
  * SDK version: 3.2.1
- * CLI version: 2.5.0
+ * CLI version: 2.5.1
  *
- * Generated: Sun, 27 Jun 2021 14:09:42 GMT
+ * Generated: Thu, 05 Aug 2021 15:15:59 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -471,8 +471,6 @@ var APP_accelerator_home_ui = (function () {
    */
 
   const initProfile = config => {
-    config.getInfo;
-    config.setInfo;
   };
 
   /*
@@ -495,6 +493,25 @@ var APP_accelerator_home_ui = (function () {
    */
 
   var Lightning = window.lng;
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -4827,8 +4844,10 @@ var APP_accelerator_home_ui = (function () {
               } else {
                 fireOnConsumer('Beacon' + event + 'Failed' + response.status);
               }
+              Promise.resolve(null);
             })
             .catch(() => {
+              Promise.resolve(null);
             })
         )
       }, Promise.resolve(null))
@@ -5522,7 +5541,7 @@ var APP_accelerator_home_ui = (function () {
     api = API(options);
     return wrapper({ ...thunder$2(options), ...plugins })
   };
-  const resolve = (result, args) => {
+  const resolve$1 = (result, args) => {
     if (
       typeof result !== 'object' ||
       (typeof result === 'object' && (!result.then || typeof result.then !== 'function'))
@@ -5592,7 +5611,7 @@ var APP_accelerator_home_ui = (function () {
               }
             }
             return function(...args) {
-              return resolve(prop.apply(this, args), args)
+              return resolve$1(prop.apply(this, args), args)
             }
           }
           if (typeof prop === 'object') {
@@ -5892,6 +5911,10 @@ var APP_accelerator_home_ui = (function () {
           .then(() => {
             thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
+            }).then(()=>{
+              thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+                client:'foreground' ,
+              });
             });
             thunder$1.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
@@ -5924,6 +5947,10 @@ var APP_accelerator_home_ui = (function () {
           .then(() => {
             thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign,
+            }).then(()=>{
+              thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+                client:'foreground' ,
+              });
             });
             thunder$1.call('org.rdk.RDKShell', 'setFocus', {
               client: childCallsign,
@@ -5954,6 +5981,10 @@ var APP_accelerator_home_ui = (function () {
         .then(() => {
           thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            });
           });
           thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
@@ -5974,6 +6005,10 @@ var APP_accelerator_home_ui = (function () {
       .then(() => {
         thunder$1.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
+        }).then(()=>{
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          });
         });
         thunder$1.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
@@ -5996,12 +6031,56 @@ var APP_accelerator_home_ui = (function () {
         .then(() => {
           thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            });
           });
           thunder$1.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign });
         })
         .catch(err => {
           console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
         });
+    }
+
+
+
+    launchforeground() {
+      const childCallsign = 'foreground';
+      console.log("notification_url::"+location.protocol + '//' + location.host + location.pathname);
+      let notification_url = location.protocol + '//' + location.host + location.pathname+"/notification/";
+      thunder$1
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: 'HtmlApp',
+          uri:notification_url,
+        })
+        .then(() => {
+          thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp',
+          });
+          thunder$1.call('org.rdk.RDKShell', 'setVisibility', {
+            client: 'foreground',
+            visible: false,
+          });
+        })
+        .catch(err => { })      
+        .catch(err => {
+          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+        });
+    }
+
+    zorder(value,cli) {
+     console.log("#################zorder###################");
+      thunder$1.call('org.rdk.RDKShell',value , { client: cli })
+        .then(result => {
+          console.log(client+":"+value+'  Success');
+          resolve(result);
+        }).catch(err => { resolve(false); });
+
     }
 
     /**
@@ -6175,12 +6254,12 @@ var APP_accelerator_home_ui = (function () {
       })
     }
 
-      audio_mute(value) {
+      audio_mute(value,audio_source) {
       return new Promise((resolve, reject) => {
         thunder$1
-          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+          .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
           .then(result => {
-            console.log("############ audio_mute ##############" + value);
+            console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source);
             console.log(JSON.stringify(result, 3, null));
             resolve(result);
           })
@@ -6215,6 +6294,24 @@ var APP_accelerator_home_ui = (function () {
           .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
           .then(result => {
             console.log("############ getVolumeLevel ############");
+            console.log(JSON.stringify(result, 3, null));
+            resolve(result);
+          })
+          .catch(err => {
+            console.log("audio mute error:", JSON.stringify(err, 3, null));
+            resolve(false);
+          });
+
+      })
+    }
+
+
+    getConnectedAudioPorts() {
+      return new Promise((resolve, reject) => {
+        thunder$1
+          .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+          .then(result => {
+            console.log("############ getConnectedAudioPorts ############");
             console.log(JSON.stringify(result, 3, null));
             resolve(result);
           })
@@ -6659,11 +6756,15 @@ var APP_accelerator_home_ui = (function () {
                 Storage.set('applicationType', '');
                 appApi.suspendCobalt();
                 appApi.setVisibility('ResidentApp', true);
-              } else return false
+              }  else {
+                appApi.zorder("moveToFront","foreground");
+                return false;
+              }
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
                 console.log('ResidentApp moveToFront Success');
               });
               thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                appApi.zorder("moveToFront","foreground");
                 console.log('ResidentApp moveToFront Success');
               });
               thunder
@@ -9322,18 +9423,26 @@ var APP_accelerator_home_ui = (function () {
         });
         return true
 
-      } else if (key.keyCode == 118 || key.keyCode == 113) {
+      } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
-        let value = !audio_mute;
-        appApi$1.audio_mute(value).then(res => {
-          console.log("__________AUDIO_MUTE_______________________F7");
-          console.log(JSON.stringify(res, 3, null));
+        appApi$1.getConnectedAudioPorts().then(res => {
+          let audio_source = res.connectedAudioPorts[0];
+          let value = !audio_mute;
+          new AppApi().audio_mute(value, audio_source).then(res => {
+            console.log("__________AUDIO_MUTE_______________________F7");
+            console.log(JSON.stringify(res, 3, null));
 
-          if (res.success == true) {
-            audio_mute = value;
-          }
-          console.log("audio_mute:" + audio_mute);
+            if (res.success == true) {
+              audio_mute = value;
+              new AppApi().zorder("moveToFront","foreground");
+              new AppApi().setVisibility("foreground",audio_mute);
+            }
+            console.log("audio_mute:" + audio_mute);
+          });
+
         });
+
+
         return true
 
       } else if (key.keyCode == 175) {
@@ -10135,7 +10244,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to be excuted when the Bluetooth screen is enabled.
      */
     _enable() {
-      this.remotePaired = true;
+      this.remotePaired = null;
       this.hasInternet = true;
 
       this._bt = new BluetoothApi();
@@ -10145,11 +10254,14 @@ var APP_accelerator_home_ui = (function () {
         .then(() => this._bt.getConnectedDevices())
         .then(() => {
           let paired = this._bt.pairedDevices;
-          let connected = this._bt.connectedDevices;
+          this._bt.connectedDevices;
 
-          if (paired.length == 0 && connected.length == 0) {
+          if (paired.length > 0) {
+            this.remotePaired = true;
+          }else {
             this.remotePaired = false;
           }
+
         });
       // this.startVideo()
       // var thunderCalls = new ThunderCalls()
@@ -10352,6 +10464,8 @@ var APP_accelerator_home_ui = (function () {
               let pairedDevices = this._bt.pairedDevices;
               if (pairedDevices.length > 0) {
                 this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType);
+                this.tag('AutoRemotePair.Description').text =
+                 pairedDevices[0].deviceType+'remote is paired';
               } else {
                 setTimeout(() => {
                   this._bt.getPairedDevices().then(() => {
@@ -10369,7 +10483,7 @@ var APP_accelerator_home_ui = (function () {
               let connectedDevices = this._bt.connectedDevices;
               if (connectedDevices.length > 0) {
                 this.tag('AutoRemotePair.Description').text =
-                  'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name;
+                  'Remote is Connected to ' + connectedDevices[0].name;
                 connected = true;
                 clearTimeout(timer);
                 setTimeout(() => {
@@ -11329,6 +11443,14 @@ var APP_accelerator_home_ui = (function () {
                 this._events.get('onWIFIStateChanged')(notification);
               }
             });
+
+            this._thunder.on('org.rdk.Network', 'onInterfaceStatusChanged', notification => {
+              console.log('###### onInterfaceStatusChanged: ' + notification.state);
+              if (this._events.has('onInterfaceStatusChanged')) {
+                this._events.get('onInterfaceStatusChanged')(notification);
+              }
+            });
+
             this._thunder.on(this.callsign, 'onError', notification => {
               console.log('Error: ' + notification);
               if (this._events.has('onError')) {
@@ -12935,6 +13057,23 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Networks.AvailableNetworks.Loader').visible = false;
         this.renderDeviceList(notification.ssids);
       });
+
+      this._wifi.registerEvent('onInterfaceStatusChanged', notification => {
+       if(notification.enabled){
+        this.tag('Switch.Button').src = Utils.asset('images/switch-on.png');
+        this._wifi.discoverSSIDs();
+        this.wifiStatus = true;
+        this.tag('Networks').visible = true;
+        this.tag('Networks.AvailableNetworks.Loader').visible = true;
+       }else {
+        this.tag('Switch.Button').src = Utils.asset('images/switch-off.png');
+        this._wifi.disconnect();
+        this.wifiStatus = false;
+        this.tag('Networks').visible = false;
+        this.tag('Networks.AvailableNetworks.Loader').visible = false;
+       }
+      });
+
     }
   }
 
@@ -13416,6 +13555,7 @@ ${error.toString()}`;
     }
 
     _init() {
+      new AppApi().launchforeground();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result=>{
         if(result){
@@ -13437,6 +13577,27 @@ ${error.toString()}`;
         .catch(err => {
           console.log('Error', err);
         })
+
+
+        .then(result => {
+          thunder
+            .call(rdkshellCallsign, 'addKeyIntercept', {
+              client: 'ResidentApp',
+              keyCode: 173,
+              modifiers: [],
+            })
+            .then(result => {
+              console.log('addKeyIntercept success');
+            })
+            .catch(err => {
+              console.log('Error', err);
+            });
+        })
+        .catch(err => {
+          console.log('Error', err);
+        })
+
+
         .then(result => {
           thunder
             .call(rdkshellCallsign, 'addKeyIntercept', {

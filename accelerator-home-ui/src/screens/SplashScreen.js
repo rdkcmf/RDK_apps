@@ -156,7 +156,7 @@ export default class SplashScreen extends Lightning.Component {
    * Function to be excuted when the Bluetooth screen is enabled.
    */
   _enable() {
-    this.remotePaired = true
+    this.remotePaired = null
     this.hasInternet = true
 
     this._bt = new BluetoothApi()
@@ -168,9 +168,12 @@ export default class SplashScreen extends Lightning.Component {
         let paired = this._bt.pairedDevices
         let connected = this._bt.connectedDevices
 
-        if (paired.length == 0 && connected.length == 0) {
+        if (paired.length > 0) {
+          this.remotePaired = true
+        }else{
           this.remotePaired = false
         }
+
       })
     // this.startVideo()
     // var thunderCalls = new ThunderCalls()
@@ -373,6 +376,8 @@ export default class SplashScreen extends Lightning.Component {
             let pairedDevices = this._bt.pairedDevices
             if (pairedDevices.length > 0) {
               this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType)
+              this.tag('AutoRemotePair.Description').text =
+               pairedDevices[0].deviceType+'remote is paired'
             } else {
               setTimeout(() => {
                 this._bt.getPairedDevices().then(() => {
@@ -390,7 +395,7 @@ export default class SplashScreen extends Lightning.Component {
             let connectedDevices = this._bt.connectedDevices
             if (connectedDevices.length > 0) {
               this.tag('AutoRemotePair.Description').text =
-                'Please put the remote in pairing mode, Connected to ' + connectedDevices[0].name
+                'Remote is Connected to ' + connectedDevices[0].name
               connected = true
               clearTimeout(timer)
               setTimeout(() => {

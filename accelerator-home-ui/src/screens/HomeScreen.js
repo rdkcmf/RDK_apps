@@ -189,16 +189,24 @@ export default class HomeScreen extends Lightning.Component {
 
     } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
-      let value = !audio_mute;
-      appApi.audio_mute(value).then(res => {
-        console.log("__________AUDIO_MUTE_______________________F7")
-        console.log(JSON.stringify(res, 3, null));
+      appApi.getConnectedAudioPorts().then(res => {
+        let audio_source = res.connectedAudioPorts[0]
+        let value = !audio_mute;
+        new AppApi().audio_mute(value, audio_source).then(res => {
+          console.log("__________AUDIO_MUTE_______________________F7")
+          console.log(JSON.stringify(res, 3, null));
 
-        if (res.success == true) {
-          audio_mute = value;
-        }
-        console.log("audio_mute:" + audio_mute);
-      })
+          if (res.success == true) {
+            audio_mute = value;
+            new AppApi().zorder("moveToFront","foreground");
+            new AppApi().setVisibility("foreground",audio_mute)
+          }
+          console.log("audio_mute:" + audio_mute);
+        })
+
+      });
+
+
       return true
 
     } else if (key.keyCode == 175) {

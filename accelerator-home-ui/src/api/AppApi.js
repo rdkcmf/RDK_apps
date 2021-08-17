@@ -156,6 +156,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -188,6 +192,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(()=>{
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client:'foreground' ,
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -218,6 +226,10 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(()=>{
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
@@ -238,6 +250,10 @@ export default class AppApi {
     .then(() => {
       thunder.call("org.rdk.RDKShell", "moveToFront", {
         client: childCallsign
+      }).then(()=>{
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client:'foreground' ,
+        })
       });
       thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
     })
@@ -260,12 +276,56 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(()=>{
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client:'foreground' ,
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
+  }
+
+
+
+  launchforeground() {
+    const childCallsign = 'foreground'
+    console.log("notification_url::"+location.protocol + '//' + location.host + location.pathname)
+    let notification_url = location.protocol + '//' + location.host + location.pathname+"/notification/"
+    thunder
+      .call('org.rdk.RDKShell', 'launch', {
+        callsign: childCallsign,
+        type: 'HtmlApp',
+        uri:notification_url,
+      })
+      .then(() => {
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
+        })
+        thunder.call('org.rdk.RDKShell', 'setFocus', {
+          client: 'ResidentApp',
+        })
+        thunder.call('org.rdk.RDKShell', 'setVisibility', {
+          client: 'foreground',
+          visible: false,
+        })
+      })
+      .catch(err => { })      
+      .catch(err => {
+        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+      })
+  }
+
+  zorder(value,cli) {
+   console.log("#################zorder###################");
+    thunder.call('org.rdk.RDKShell',value , { client: cli })
+      .then(result => {
+        console.log(client+":"+value+'  Success');
+        resolve(result)
+      }).catch(err => { resolve(false) });
+
   }
 
   /**
@@ -442,12 +502,12 @@ export default class AppApi {
     })
   }
 
-    audio_mute(value) {
+    audio_mute(value,audio_source) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": "HDMI0", "muted": value })
+        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
-          console.log("############ audio_mute ##############" + value)
+          console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -482,6 +542,24 @@ export default class AppApi {
         .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
         .then(result => {
           console.log("############ getVolumeLevel ############")
+          console.log(JSON.stringify(result, 3, null))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
+
+  getConnectedAudioPorts() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+        .then(result => {
+          console.log("############ getConnectedAudioPorts ############")
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
