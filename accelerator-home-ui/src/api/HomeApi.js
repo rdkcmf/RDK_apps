@@ -16,13 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './AppApi'
 import { appListInfo } from './../../static/data/AppListInfo.js'
 import { tvShowsInfo } from './../../static/data/TvShowsInfo.js'
 import { settingsInfo } from './../../static/data/SettingsInfo.js'
 import { sidePanelInfo } from './../../static/data/SidePanelInfo.js'
+import { rightArrowInfo } from './../../static/data/RightArrowInfo.js'
+import { leftArrowInfo } from './../../static/data/LeftArrowInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
 import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
 import { metroAppsInfoOffline } from "./../../static/data/MetroAppsInfoOffline.js"
@@ -32,7 +33,6 @@ var partnerApps = []
 /**
  * Get the ip address.
  */
-
 var IpAddress1 = ''
 var IpAddress2 = ''
 
@@ -113,5 +113,17 @@ export default class HomeApi {
    */
   getPartnerAppsInfo() {
     return partnerApps
+  }
+  /**
+  * Function to details of right arrow
+  */
+  getRightArrowInfo() {
+    return rightArrowInfo
+  }
+  /**
+    * Function to details of left arrow
+    */
+  getLeftArrowInfo() {
+    return leftArrowInfo
   }
 }

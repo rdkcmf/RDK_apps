@@ -19,7 +19,7 @@
 /**
  * Class which contains data for metro app listings.
  */
-export var metroAppsInfo = [
+ export var metroAppsInfo = [
   {
     displayName: "CNN",
     applicationType: "Lightning",

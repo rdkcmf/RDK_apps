@@ -62,6 +62,12 @@ export default class Wifi {
               this._events.get('onWIFIStateChanged')(notification)
             }
           })
+          this._thunder.on('org.rdk.Network', 'onInterfaceStatusChanged', notification => {
+            console.log('###### onInterfaceStatusChanged: ' + notification.state);
+            if (this._events.has('onInterfaceStatusChanged')) {
+              this._events.get('onInterfaceStatusChanged')(notification)
+            }
+          })
           this._thunder.on(this.callsign, 'onError', notification => {
             console.log('Error: ' + notification)
             if (this._events.has('onError')) {

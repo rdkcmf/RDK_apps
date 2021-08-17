@@ -16,8 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
-import { COLORS } from '../colors/Colors'
+import { Lightning, Utils } from '@lightningjs/sdk'
 
 /**
  * Class for rendering items in UI list.
@@ -26,12 +25,24 @@ export default class Item extends Lightning.Component {
   static _template() {
     return {
       Item: {
-        w: 200,
-        h: 65,
+        w: 300,
+        h: 150,
         rect: true,
-        color: COLORS.hightlightColor,
-        shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
+        color: 0xFFDBEBFF,
+        shader: {
+          type: Lightning.shaders.RoundedRectangle,
+          radius: 10
+        },
       },
+      OperatorLogo: {},
+      Shadow: {
+        alpha: 0,
+        zIndex: 2,
+        x: -25,
+        y: -25,
+        color: 0x66000000,
+        texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20),
+      }
     }
   }
 
@@ -40,35 +51,35 @@ export default class Item extends Lightning.Component {
    */
   set item(item) {
     this._item = item
-    this.tag('Item').patch({
-      Name: {
-        x: 100,
-        y: 32.5,
-        mount: 0.5,
-        text: { text: item.title, textColor: 0xffffffff, fontSize: 35 },
-      },
+    this.tag('OperatorLogo').patch({
+      Logo: {
+        w: 300,
+        h: 150,
+        zIndex: 3,
+        src: Utils.asset(this._item.url),
+      }
     })
   }
 
-  /**
-   * Set width of the item.
-   */
-  set width(width) {
-    this.tag('Item').w = width
-  }
-
-  /**
-   * Set height of the item.
-   */
-  set height(height) {
-    this.tag('Item').h = height
-  }
-
   _focus() {
-    this.tag('Item').scale = 1.1
+    this.tag('Item').zIndex = 3
+    this.tag('Item').scale = 1.2
+    this.tag('Item').color = 0xFFFFFFFF
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 1
+      }
+    });
   }
 
   _unfocus() {
+    this.tag('Item').zIndex = 1
     this.tag('Item').scale = 1
+    this.tag('Item').color = 0xFFDBEBFF
+    this.tag('Shadow').patch({
+      smooth: {
+        alpha: 0
+      }
+    });
   }
 }

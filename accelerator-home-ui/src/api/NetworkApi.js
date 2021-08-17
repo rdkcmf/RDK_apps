@@ -17,7 +17,6 @@
  * limitations under the License.
  **/
 import ThunderJS from 'ThunderJS';
-
 export default class Network {
   constructor() {
     this._events = new Map();
@@ -66,16 +65,15 @@ export default class Network {
    * Function to return the IP of the default interface.
    */
   getIP() {
-    return new Promise((resolve,reject)=>{
-        this._thunder.call(this.callsign,'getStbIp').then(result=>{
-            if(result.success){
-                console.log(result)
-                resolve(result.ip)
-            }
-            reject(false)
-        }).catch(err=>{
-            reject(err)
-        })
+    return new Promise((resolve, reject) => {
+      this._thunder.call(this.callsign, 'getStbIp').then(result => {
+        if (result.success) {
+          resolve(result.ip)
+        }
+        reject(false)
+      }).catch(err => {
+        reject(err)
+      })
     })
   }
 }

@@ -28,43 +28,35 @@ import { COLORS } from './../colors/Colors'
 export default class BluetoothScreen extends Lightning.Component {
   static _template() {
     return {
-      Title: {
-        x: 1920 - 1920 / 3 + 1920 / 6,
-        y: 50,
-        text: { text: 'Bluetooth', textColor: COLORS.headingColor },
-        mountX: 0.5,
-      },
       Switch: {
-        x: 1920 - 1920 / 3 + 20,
-        y: 150,
-        rect: true,
-        shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
-        color: 0x00c0c0c0,
-        w: 1920 / 3 - 70,
-        h: 50,
-        Text: {
-          x: 0,
-          text: { text: 'Bluetooth', textColor: COLORS.titleColor },
+        x: 825,
+        y: 310,
+        Shadow: {
+          alpha: 0,
+          x: -15,
+          y: 0,
+          color: 0x66000000,
+          texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
         },
         Button: {
-          x: 1920 / 3 - 80,
-          y: 10,
-          mountX: 1,
-          src: Utils.asset('images/switch-on.png'),
+          h: 60,
+          w: 180,
+          src: Utils.asset('images/switch-on-new.png'),
         },
       },
       Name: {
-        x: 1920 - 1920 / 3 + 20,
-        y: 200,
+        x: 1050,
+        y: 320,
         text: {
-          text: 'Now discoverable as',
+          fontFace: 'MS-Regular',
+          text: 'Now discoverable as: ',
           textColor: COLORS.textColor,
-          fontSize: 20,
+          fontSize: 28,
         },
       },
       Networks: {
-        x: 1920 - 1920 / 3,
-        y: 250,
+        x: 825,
+        y: 400,
         flex: { direction: 'column' },
         PairedNetworks: {
           flexItem: { margin: 20 },
@@ -72,9 +64,10 @@ export default class BluetoothScreen extends Lightning.Component {
           h: 30,
           Title: {
             text: {
-              text: 'My Devices',
+              fontFace: 'MS-Regular',
+              text: 'My Devices: ',
               textColor: COLORS.titleColor,
-              fontSize: 30,
+              fontSize: 32,
             },
           },
           List: {
@@ -94,9 +87,10 @@ export default class BluetoothScreen extends Lightning.Component {
           h: 30,
           Title: {
             text: {
-              text: 'Other Devices',
+              fontFace: 'MS-Regular',
+              text: 'Other Devices: ',
               textColor: COLORS.titleColor,
-              fontSize: 30,
+              fontSize: 32,
             },
           },
           Loader: {
@@ -134,9 +128,30 @@ export default class BluetoothScreen extends Lightning.Component {
       Message: {
         x: 1920 - 1920 / 3 + 40,
         y: 950,
-        text: { text: '' },
+        text: { text: '', fontFace: 'MS-Regular', },
       },
     }
+  }
+
+  toggleBtnAnimationX() {
+    const lilLightningAnimation = this.tag('Button').animation({
+      duration: 1,
+      repeat: 0,
+      actions: [
+        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+      ]
+    });
+    lilLightningAnimation.start();
+  }
+  toggleBtnAnimationY() {
+    const lilLightningAnimation = this.tag('Button').animation({
+      duration: 1,
+      repeat: 0,
+      actions: [
+        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
+      ]
+    });
+    lilLightningAnimation.start();
   }
 
   _init() {
@@ -150,6 +165,9 @@ export default class BluetoothScreen extends Lightning.Component {
     this.loadingAnimation.play()
     this._bt = new BluetoothApi()
     this._bluetooth = true
+    this._bluetoothIcon = true
+
+
     this._activateBluetooth()
     this._setState('Switch')
     this._bluetooth = true
@@ -230,11 +248,18 @@ export default class BluetoothScreen extends Lightning.Component {
   static _states() {
     return [
       class Switch extends this {
-        $enter() {
-          this.tag('Switch').color = COLORS.hightlightColor
-        }
+        $enter() { }
         $exit() {
-          this.tag('Switch').color = 0x00c0c0c0
+          console.log('Switch exit')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
         }
         _handleDown() {
           if (this._bluetooth) {
@@ -245,12 +270,38 @@ export default class BluetoothScreen extends Lightning.Component {
             }
           }
         }
+
+        _handleLeft() {
+          console.log('handle left bluetooth')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
+          this.fireAncestors('$goToSideMenubar', 0)
+        }
+        _getFocused() {
+          console.log('switch focus')
+          this.tag('Button').patch({
+            h: 70,
+            w: 200
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
+        }
         _handleEnter() {
           this.switch()
         }
       },
       class PairedDevices extends this {
-        $enter() {}
+        $enter() { }
         _getFocused() {
           return this._pairedNetworks.tag('List').element
         }
@@ -267,7 +318,7 @@ export default class BluetoothScreen extends Lightning.Component {
         }
       },
       class AvailableDevices extends this {
-        $enter() {}
+        $enter() { }
         _getFocused() {
           return this._availableNetworks.tag('List').element
         }
@@ -295,7 +346,7 @@ export default class BluetoothScreen extends Lightning.Component {
           if (option === 'Cancel') {
             this._setState('Switch')
           } else if (option === 'Pair') {
-            this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => {})
+            this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => { })
           } else if (option === 'Connect') {
             this._bt
               .connect(
@@ -317,10 +368,10 @@ export default class BluetoothScreen extends Lightning.Component {
                 this._pairedNetworks.tag('List').element._item.deviceID,
                 this._pairedNetworks.tag('List').element._item.deviceType
               )
-              .then(() => {})
+              .then(() => { })
             this._setState('Switch')
           } else if (option === 'Unpair') {
-            this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => {})
+            this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => { })
             this._setState('Switch')
           }
         }
@@ -369,7 +420,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = false
           this.tag('Networks').visible = false
-          this.tag('Switch.Button').src = Utils.asset('images/switch-off.png')
+          this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
         }
       })
     } else {
@@ -377,7 +428,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = true
           this.tag('Networks').visible = true
-          this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
+          this.tag('Switch.Button').src = Utils.asset('images/switch-on-new.png')
           this.renderDeviceList()
           this._bt.startScan()
         }
@@ -400,7 +451,6 @@ export default class BluetoothScreen extends Lightning.Component {
       })
       this._bt.registerEvent('onPairingRequest', notification => {
         if (notification.pinRequired === 'true' && notification.pinValue) {
-          //this.fireAncestors('$rerenderDeviceOptions', notification.pinValue)
           this.tag('PairingScreen').code = notification.pinValue
         } else {
           this.respondToPairingRequest(notification.deviceID, 'ACCEPTED')
@@ -436,14 +486,9 @@ export default class BluetoothScreen extends Lightning.Component {
           this.tag('Message').text = ''
         }, 2000)
       })
-      //this._bt.startScan()
       this._bt.getName().then(name => {
         this.tag('Name').text.text = `Now discoverable as "${name}"`
       })
-      // this._bluetooth = true
-      // this.tag('Networks').visible = true
-      // this.tag('Switch.Button').src = Utils.asset('images/switch-on.png')
-      // this.renderDeviceList()
     })
   }
 

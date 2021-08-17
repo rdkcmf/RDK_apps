@@ -18,7 +18,6 @@
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
 import MainView from '../views/MainView.js'
-import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
 import ShutdownPanel from '../views/ShutdownPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
@@ -40,49 +39,62 @@ export default class HomeScreen extends Lightning.Component {
    */
   static _template() {
     return {
-      Background: {
+      BackgroundImage: {
         w: 1920,
         h: 1080,
-        src: Utils.asset('images/tvShows/background.jpg'),
-        alpha: 1,
+        alpha: 6,
+      },
+      BackgroundColor: {
+        w: 1920,
+        h: 1080,
+        alpha: 0.9,
+        rect: true,
+        color: 0xff20344D
+      },
+
+      TopPanel: {
+        type: TopPanel,
       },
       View: {
-        x: 0,
-        y: 200,
-        w: 1920,
-        h: 1080,
+        x: 80,
+        y: 171,
+        w: 1994,
+        h: 919,
         clipping: true,
-        SidePanel: {
-          type: SidePanel,
-        },
         MainView: {
-          w: 1920,
-          h: 1080,
+          w: 1994,
+          h: 919,
           type: MainView,
         },
       },
-      IpAddress: {
-        x: 1850,
+      IpAddressBg: {
+        rect: true,
+        x: 1860,
         y: 1060,
+        w: 256,
+        h: 30,
+        mount: 1,
+        color: 0xbb0078ac,
+      },
+      IpAddress: {
+        x: 1828,
+        y: 1058,
         mount: 1,
         text: {
+          fontFace: 'MS-Regular',
           text: 'IP:NA',
           textColor: 0xffffffff,
-          fontSize: 30,
+          fontSize: 22,
         },
       },
       Player: { type: AAMPVideoPlayer },
-
       ShutdownPanel: {
         type: ShutdownPanel,
         x: 660,
         y: 385,
         signals: { select: true },
         alpha: 0
-      },
-      TopPanel: {
-        type: TopPanel,
-      },
+      }
     }
   }
 
@@ -90,7 +102,6 @@ export default class HomeScreen extends Lightning.Component {
     this.homeApi = new HomeApi()
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
-    console.log(data)
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -126,9 +137,10 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').metroApps = this.homeApi.getMetroInfo()
     this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo()
     this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo()
-    this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
-    this.sidePanelData = this.homeApi.getSidePanelInfo()
-    this._setState('SidePanel')
+    this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo()
+    this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo()
+
+    this._setState('MainView')
     this.initialLoad = true
     this.networkApi = new NetworkApi()
     this.networkApi.activate().then(result => {
@@ -156,7 +168,6 @@ export default class HomeScreen extends Lightning.Component {
     }
   }
 
-
   _captureKey(key) {
     console.log(" _captureKey home screen : " + key.keyCode)
 
@@ -166,7 +177,7 @@ export default class HomeScreen extends Lightning.Component {
     }
 
     if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
-      //Remote power key and keyboard F1 key used for STANDBY and POWER_ON
+      // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         last_state = this._getState();
         this._setState('ShutdownPanel')
@@ -187,18 +198,26 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
 
-    } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
+    } else if (key.keyCode == 118 || key.keyCode == 113) {
 
-      let value = !audio_mute;
-      appApi.audio_mute(value).then(res => {
-        console.log("__________AUDIO_MUTE_______________________F7")
-        console.log(JSON.stringify(res, 3, null));
+      appApi.getConnectedAudioPorts().then(res => {
+        let audio_source = res.connectedAudioPorts[0]
+        let value = !audio_mute;
+        new AppApi().audio_mute(value, audio_source).then(res => {
+          console.log("__________AUDIO_MUTE_______________________F7")
+          console.log(JSON.stringify(res, 3, null));
 
-        if (res.success == true) {
-          audio_mute = value;
-        }
-        console.log("audio_mute:" + audio_mute);
-      })
+          if (res.success == true) {
+            audio_mute = value;
+            new AppApi().zorder("moveToFront", "foreground");
+            new AppApi().setVisibility("foreground", audio_mute)
+          }
+          console.log("audio_mute:" + audio_mute);
+        })
+
+      });
+
+
       return true
 
     } else if (key.keyCode == 175) {
@@ -227,7 +246,6 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
     }
-
     return false
   }
 
@@ -262,7 +280,6 @@ export default class HomeScreen extends Lightning.Component {
           'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         drmConfig: null,
       })
-      this.zoomOut(0.1)
       this.hide()
       this._setState('Playing')
       this.player.setVideoRect(0, 0, 1920, 1080)
@@ -273,77 +290,39 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /**
-   * Function to zoom in main view of home UI.
-   */
-  zoomIn(duration) {
-    this._sidePanelAnimation = this.tag('SidePanel').animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [{ p: 'x', v: { 0: 130, 1: 280 } }],
-    })
-    this._sidePanelAnimation.start()
-    this.tag('SidePanel').resetSidePanelItems = this.sidePanelData
-    let app = this
-    this._appAnimation = app.animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [
-        { p: 'x', v: { 0: 0, 1: -320 } },
-        { p: 'y', v: { 0: 0, 1: -180 } },
-        { p: 'scale', v: { 0: 1, 1: 1.17 } },
-      ],
-    })
-    this._appAnimation.start()
-  }
-
-  /**
-   * Function to zoom out main view of home UI.
-   */
-  zoomOut(duration) {
-    this._sidePanelAnimation = this.tag('SidePanel').animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [{ p: 'x', v: { 0: 280, 1: 130 } }],
-    })
-    this._sidePanelAnimation.start()
-    this.tag('SidePanel').sidePanelItems = this.sidePanelData
-    let app = this
-    this._appAnimation = app.animation({
-      duration: duration,
-      repeat: 0,
-      stopMethod: 'immediate',
-      actions: [
-        { p: 'x', v: { 0: -320, 1: 0 } },
-        { p: 'y', v: { 0: -180, 1: 0 } },
-        { p: 'scale', v: { 0: 1.17, 1: 1 } },
-      ],
-    })
-    this._appAnimation.start()
-  }
-
-  /**
-   * Fireancestor to set the state to side panel.
-   * @param {index} index index value of side panel item.
-   */
-  $goToSidePanel(index) {
-    this.zoomOut(0.7)
-    this.tag('SidePanel').index = index
-    this._setState('SidePanel')
-  }
-
-  /**
    * Fireancestor to set the state to main view.
    * @param {index} index index value of main view row.
    */
   $goToMainView(index) {
-    this.zoomIn(0.7)
     this.tag('MainView').index = index
     this._setState('MainView')
   }
 
+  /**
+* Fireancestor to set the state to side panel.
+* @param {index} index index value of Top panel item.
+*/
+  $goToTopPanel(index) {
+    console.log('go to top panel')
+    this.tag('TopPanel').index = index
+    this._setState('TopPanel')
+  }
+  $changeBackgroundImageOnFocus(image) {
+
+    if (image.startsWith('/images')) {
+      this.tag('BackgroundImage').patch({
+        src: Utils.asset(image),
+      });
+    } else {
+      this.tag('BackgroundImage').patch({ src: image });
+    }
+  }
+
+  $changeBackgroundImageOnNonFocus(image) {
+    this.tag('BackgroundImage').patch({
+
+    })
+  }
   /**
    * Fireancestor to set the state to player.
    */
@@ -356,11 +335,8 @@ export default class HomeScreen extends Lightning.Component {
    * Function to scroll
    */
   $scroll(y) {
-    this.tag('SidePanel').setSmooth('y', y, { duration: 0.5 })
     this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
   }
-
-
 
   $standby(value) {
     if (value == 'Back') {
@@ -378,30 +354,24 @@ export default class HomeScreen extends Lightning.Component {
     }
   }
 
-
-
-
-
-
-
   /**
    * Function to hide the home UI.
    */
   hide() {
-    this.tag('Background').patch({ alpha: 0 })
-    this.tag('MainView').patch({ alpha: 0 })
-    this.tag('TopPanel').patch({ alpha: 0 })
-    this.tag('SidePanel').patch({ alpha: 0 })
+    this.tag('BackgroundImage').patch({ alpha: 0 });
+    this.tag('BackgroundColor').patch({ alpha: 0 });
+    this.tag('MainView').patch({ alpha: 0 });
+    this.tag('TopPanel').patch({ alpha: 0 });
   }
 
   /**
-   * Function to show home UI.
+     * Function to show home UI.
    */
   show() {
-    this.tag('Background').patch({ alpha: 1 })
-    this.tag('MainView').patch({ alpha: 1 })
-    this.tag('TopPanel').patch({ alpha: 1 })
-    this.tag('SidePanel').patch({ alpha: 1 })
+    this.tag('BackgroundImage').patch({ alpha: 1 });
+    this.tag('BackgroundColor').patch({ alpha: 1 });
+    this.tag('MainView').patch({ alpha: 1 });
+    this.tag('TopPanel').patch({ alpha: 1 });
   }
 
   /**
@@ -414,12 +384,6 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('TopPanel')
         }
       },
-      class SidePanel extends this {
-        _getFocused() {
-          return this.tag('SidePanel')
-        }
-      },
-
       class ShutdownPanel extends this {
         $enter() {
           this.tag('ShutdownPanel').setSmooth('alpha', 1)
@@ -430,10 +394,7 @@ export default class HomeScreen extends Lightning.Component {
         _getFocused() {
           return this.tag('ShutdownPanel')
         }
-
       },
-
-
       class MainView extends this {
         _getFocused() {
           return this.tag('MainView')
@@ -445,7 +406,6 @@ export default class HomeScreen extends Lightning.Component {
         }
 
         stopPlayer() {
-          this.zoomIn(0);
           this._setState('MainView');
           this.player.stop();
           this.show();

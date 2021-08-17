@@ -173,7 +173,7 @@ export default class Keypad extends Lightning.Component {
 
   static _states() {
     return [
-      class Empty extends this {},
+      class Empty extends this { },
       class Filled extends this {
         _getFocused() {
           return this.currentItem

@@ -20,7 +20,6 @@ import ThunderJS from 'ThunderJS';
 /**
  * Class for Xcast thunder plugin apis.
  */
-
 export default class XcastApi {
   constructor() {
     console.log('Xcast constructor');
@@ -42,8 +41,7 @@ export default class XcastApi {
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
-          console.log(result);
-          console.log('Xcast activation success');
+          console.log('Xcast activation success ' + result);
           this._thunder
             .call('org.rdk.Xcast', 'getEnabled')
             .then(result => {
@@ -128,7 +126,7 @@ export default class XcastApi {
   }
 
   static supportedApps() {
-    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' };
+    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
     return xcastApps;
   }
 }

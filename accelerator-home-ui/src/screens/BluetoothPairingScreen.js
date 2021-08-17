@@ -37,7 +37,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
       Title: {
         x: 20,
         y: 100,
-        text: { text: '', fontSize: 30, textColor: COLORS.titleColor },
+        text: { text: '', fontSize: 30, textColor: COLORS.titleColor, fontFace: 'MS-Regular', },
       },
       List: {
         x: 20,
@@ -55,6 +55,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         y: 500,
         Text: {
           text: {
+            fontFace: 'MS-Light',
             text: 'Enter the below code in your Bluetooth device and press enter',
             wordWrapWidth: 1920 / 3 - 70,
             fontSize: 30,

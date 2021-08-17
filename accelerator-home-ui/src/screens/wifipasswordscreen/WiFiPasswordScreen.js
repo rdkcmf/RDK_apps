@@ -59,7 +59,7 @@ export default class WiFiPasswordScreen extends Lightning.Component {
           x: 20,
           y: this._height / 2 + 5,
           mountY: 0.5,
-          text: { text: 'Password', fontSize: 18, fontFace: 'Light', textColor: 0xffa5a5a5 },
+          text: { text: 'Password', fontSize: 18, fontFace: 'MS-Light', textColor: 0xffa5a5a5 },
         },
         Pwd: {
           x: 130,
@@ -68,7 +68,7 @@ export default class WiFiPasswordScreen extends Lightning.Component {
           text: {
             text: '',
             fontSize: 24,
-            fontFace: 'Light',
+            fontFace: 'MS-Light',
             textColor: 0xffc0c0c0,
             wordWrapWidth: this._width - 130,
             wordWrap: false,
@@ -128,7 +128,7 @@ export default class WiFiPasswordScreen extends Lightning.Component {
           x: this._width / 2,
           y: this._height / 2,
           mount: 0.5,
-          text: { text: 'Submit', fontSize: 24, fontFace: 'Light', textColor: 0xffffffff },
+          text: { text: 'Submit', fontSize: 24, fontFace: 'MS-Light', textColor: 0xffffffff },
         },
       },
     })

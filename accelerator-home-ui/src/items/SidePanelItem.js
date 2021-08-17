@@ -28,17 +28,21 @@ export default class SidePanelItem extends Lightning.Component {
   static _template() {
     return {
       Item: {
+        rect: true,
+        texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
+        Image: {
+          x: 25,
+          y: 25,
+          w: 70,
+          H: 70,
+        },
         Title: {
           text: {
-            fontSize: 27,
+            fontFace: 'MS-Regular',
+            fontSize: 40,
             textColor: 0xffffffff,
           },
-          mountX: 0.5,
-          alpha: 0,
-        },
-        Image: {
-          x: 0,
-        },
+        }
       },
     }
   }
@@ -67,7 +71,7 @@ export default class SidePanelItem extends Lightning.Component {
    */
   _unfocus() {
     this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus })
-    this.tag('Title').patch({ alpha: 0 })
-    this.tag('Item').patch({ zIndex: 0 })
+    this.tag('Title').patch({ alpha: 1 })
+    this.tag('Item').patch({ zIndex: 1 })
   }
 }
