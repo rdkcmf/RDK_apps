@@ -143,8 +143,7 @@ export default class UsbFolders extends Lightning.Component {
       })
 
       var usbApi = new UsbApi()
-      var abc = usbApi.retrieUsb()
-
+      usbApi.retrieUsb()
 
       this.tag('HelperText').patch({
         text: {
@@ -160,7 +159,7 @@ export default class UsbFolders extends Lightning.Component {
     } else if (!this._usbEnabled) {
 
       var usbApi = new UsbApi()
-      var abc = usbApi.destroy()
+      usbApi.destroy()
 
       this.toggleBtnAnimationY()
       this.tag('Button').patch({

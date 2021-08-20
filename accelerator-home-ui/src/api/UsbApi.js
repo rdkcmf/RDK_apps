@@ -35,9 +35,9 @@ var thunder = ThunderJS(config)
 
 
 export default class UsbApi {
-  /**
-  *  Function to create link for USB content
-  */
+    /**
+    *  Function to create link for USB content
+    */
     clearLink() {
         return new Promise((resolve, reject) => {
             const systemcCallsign = 'org.rdk.UsbAccess'
@@ -113,91 +113,62 @@ export default class UsbApi {
     }
 
     destroy() {
-        console.log(imageListInfo.length)
-        }
+        imageListInfo.length = 0;
+        videoListInfo.length = 0;
+        musicListInfo.length = 0;
+    }
 
     getUsbContentList(result) {
-        var extensionForImageJPEG = '.jpeg'
-        var extensionForImage = '.png'
-        var extensionForVideo = '.mp4'
-        var extensionForAudio = '.mp3'
-        var extensionForAudioMPEG = '.mpeg'
+        // to add support for more formats, extension can be added same as below 
+        var extensionForImage = ['.png', '.jpg', '.PNG', '.jpeg', '.JPEG', '.jpg', '.JPG'];
+        var extensionForVideo = ['.mp4', '.MP4', '.mov', '.MOV', '.avi', '.AVI', '.m3u8', '.M3U8', '.mpeg2', '.MPEG2'];
+        var extensionForAudio = ['.mp3', '.mpeg', '.MP3', '.MPEG'];
 
-        this._discoveredC = result
-        console.log(JSON.stringify(result))
-
-        this._discoveredC.filter(device => {
-
-            if (device.name.indexOf(extensionForImage) !== -1) {
-                var obj1 = {
-                    displayName: device.name,
-                    uri: this.usbLink + '/' + device.name,
-                    url: this.usbLink + '/' + device.name,
-                }
-                imageListInfo.push(obj1)
-                return device
-            }
-        })
+        this._discoveredC = result;
+        console.log("Discovered result :: " + JSON.stringify(result));
 
         this._discoveredC.filter(device => {
-
-            if (device.name.indexOf(extensionForImageJPEG) !== -1) {
-                var obj1 = {
-                    displayName: device.name,
-                    uri: this.usbLink + '/' + device.name,
-                    url: this.usbLink + '/' + device.name,
+            for (let i in extensionForImage) {
+                if (device.name.indexOf(extensionForImage[i]) !== -1) {
+                    var obj1 = {
+                        displayName: device.name,
+                        uri: this.usbLink + '/' + device.name,
+                        url: this.usbLink + '/' + device.name,
+                    };
+                    imageListInfo.push(obj1);
+                    return device
                 }
-                imageListInfo.push(obj1)
-                return device
             }
-        })
 
+        });
 
         this._discoveredC.filter(device => {
-            if (device.name.indexOf(extensionForVideo) !== -1) {
-                var obj2 = {
-                    displayName: device.name,
-                    url: '/images/usb/video-default-tile.jpg',
-                    uri: this.usbLink + '/' + device.name,
+            for (let i in extensionForVideo) {
+                if (device.name.indexOf(extensionForVideo[i]) !== -1) {
+                    var obj2 = {
+                        displayName: device.name,
+                        url: '/images/usb/video-default-tile.jpg',
+                        uri: this.usbLink + '/' + device.name,
+                    };
+                    videoListInfo.push(obj2);
+                    return device
                 }
-                videoListInfo.push(obj2)
-                return device
             }
-        })
-
+        });
 
         this._discoveredC.filter(device => {
-            if (device.name.indexOf(extensionForAudioMPEG) !== -1) {
-                var obj3 = {
-                    displayName: device.name,
-                    url: '/images/usb/music-default-tile.jpg',
-                    uri: this.usbLink + '/' + device.name,
+            for (let i in extensionForAudio) {
+                if (device.name.indexOf(extensionForAudio[i]) !== -1) {
+                    var obj3 = {
+                        displayName: device.name,
+                        url: '/images/usb/music-default-tile.jpg',
+                        uri: this.usbLink + '/' + device.name,
+                    };
+                    musicListInfo.push(obj3);
+                    return device
                 }
-                musicListInfo.push(obj3)
-                return device
             }
-        })
-        this._discoveredC.filter(device => {
-            if (device.name.indexOf(extensionForAudio) !== -1) {
-                var obj4 = {
-                    displayName: device.name,
-                    url: '/images/usb/music-default-tile.jpg',
-                    uri: this.usbLink + '/' + device.name,
-                }
-                musicListInfo.push(obj4)
-                return device
-            }
-        })
-        console.log('SSH logssssssssssssssssssssssss ')
-        console.log(JSON.stringify(this.usbLink))
-        // console.log(imageListInfo)
-        // console.log('Image ')
-        // console.log(JSON.stringify(imageListInfo))
-        // console.log('Music ')
-        // console.log(JSON.stringify(musicListInfo))
-        // console.log('Video ')
-        // console.log(JSON.stringify(videoListInfo))
-        console.log('SSH logssssssssssssssssssssssss ends ')
+        });
     }
 
 }
