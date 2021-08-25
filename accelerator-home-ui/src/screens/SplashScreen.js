@@ -180,7 +180,7 @@ export default class SplashScreen extends Lightning.Component {
    */
   _disable() {
     if (this._bt) this._bt.deactivate()
-    if (this.player) this.player.stop()
+  //  if (this.player) this.player.stop()
   }
 
   _init() {
@@ -199,6 +199,7 @@ export default class SplashScreen extends Lightning.Component {
   /**
    * Function to startVideo.
    */
+  /*
   startVideo() {
     this.player = this.tag('SplashVideo.Player')
     try {
@@ -215,7 +216,7 @@ export default class SplashScreen extends Lightning.Component {
       console.log('###########', error)
     }
   }
-
+*/
   /**
    * Function to handle the different states of the app.
    */
@@ -265,25 +266,26 @@ export default class SplashScreen extends Lightning.Component {
             duration: 0.5,
             repeat: 0,
             stopMethod: 'immediate',
-            actions: [{ p: 'alpha', v: { 0: 0, 1: 1 } }],
+            actions: [{ p: 'alpha', v: { 0: 0, 0: 0 } }],
           })
           myAnimation.start()
-          this.startVideo()
+        //  this.startVideo()
+        
           this.timeout = setTimeout(() => {
             if (this.remotePaired == false) this._setState('AutoRemotePair')
             else if (this.hasInternet == false) this._setState('ConnectivityScreen')
             else Router.navigate('home')
-          }, 5000)
+          }, 10)
         }
         $exit() {
           const myAnimation = this.tag('SplashVideo').animation({
             duration: 0.5,
             repeat: 0,
             stopMethod: 'immediate',
-            actions: [{ p: 'alpha', v: { 0: 1, 1: 0 } }],
+            actions: [{ p: 'alpha', v: { 0: 0, 0: 0 } }],
           })
           myAnimation.on('finish', p => {
-            if (this.player) this.player.stop()
+          //  if (this.player) this.player.stop()
           })
           myAnimation.start()
           window.clearTimeout(this.timeout)
