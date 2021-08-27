@@ -25,7 +25,7 @@ export default class SidePanel extends Lightning.Component {
   static _template() {
     return {
       SidePanel: {
-        x: 130,
+        x: 0,
         y: 0,
         w: 240,
         h: 750,
@@ -44,23 +44,24 @@ export default class SidePanel extends Lightning.Component {
     this.sidePanelData = this.homeApi.getSidePanelInfo()
     this._setState('SidePanel')
     this.indexVal = 0
+    this.prevIndex = 0
   }
 
   /**
    * Function to set items in side panel.
    */
   set sidePanelItems(items) {
-    this.tag('SidePanel').patch({ x: 0 })
+    this.tag('SidePanel').patch({ x: 60 })
     this.tag('SidePanel').items = items.map((info, index) => {
       this.data = info
       return {
-        w: 204,
-        h: 184,
-        y: index == 0 ? 30 : (index == 1 ? 115 : (index == 2 ? 260 : 470)),
+        w: 70,
+        h: 70,
+        y: index == 0 ? 70 : (index + 1) * 70,
         type: SidePanelItem,
         data: info,
-        focus: 0.7,
-        unfocus: 0.6,
+        focus: 1.1,
+        unfocus: 1,
         x_text: 100,
         y_text: 160,
         text_focus: 1.1,
@@ -110,6 +111,7 @@ export default class SidePanel extends Lightning.Component {
    * Function to set index value of side panel.
    */
   set index(index) {
+    this.tag('SidePanel').items[this.prevIndex].clearColor()
     this.indexVal = index
   }
 
@@ -118,8 +120,8 @@ export default class SidePanel extends Lightning.Component {
       class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
-            if (this.indexVal == 3) {
-              this.fireAncestors('$scroll', -200)
+            if (this.indexVal >= 2) {
+              this.fireAncestors('$scroll', -350)
             }
             else {
               this.fireAncestors('$scroll', 0)
@@ -129,17 +131,26 @@ export default class SidePanel extends Lightning.Component {
         }
         _handleKey(key) {
           if (key.keyCode == 39 || key.keyCode == 13) {
-            this.fireAncestors('$goToMainView', this.indexVal)
+            if(this.prevIndex != this.indexVal){
+              this.tag('SidePanel').items[this.prevIndex].clearColor()
+            }
+            
+            this.fireAncestors('$goToMainView', this.indexVal == 3 ? 2 : this.indexVal)
+            this.tag('SidePanel').items[this.indexVal].setColor()
+            this.prevIndex = this.indexVal
+            
           } else if (key.keyCode == 40) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1
             }
             return this.tag('SidePanel').items[this.indexVal]
           } else if (key.keyCode == 38) {
-            if (0 != this.indexVal) {
+            if (0 === this.indexVal) {
+              this.fireAncestors('$goToTopPanel', 0)
+            }else{
               this.indexVal = this.indexVal - 1
+              return this.tag('SidePanel').items[this.indexVal]
             }
-            return this.tag('SidePanel').items[this.indexVal]
           } else return false;
         }
       },

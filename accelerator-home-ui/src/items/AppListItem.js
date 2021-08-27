@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import {
+import {
   Lightning,
   Utils
 } from '@lightningjs/sdk'
+import { CONFIG } from '../Config/Config'
 /**
  * Class to render items in main view.
  */
@@ -29,19 +30,17 @@ export default class AppListItem extends Lightning.Component {
    */
   static _template() {
     return {
-      Shadow:{          
-        alpha: 0,
-        x: -25,
-        y: 0,
-        color: 0x66000000,
-      },
       Item: {
+        Shadow: {
+          alpha: 0,
+          color: CONFIG.theme.hex,
+        },
         x: 0,
         y: 18,
         Image: {},
         Title: {
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 22,
             textColor: 0xffffffff,
           },
@@ -60,31 +59,17 @@ export default class AppListItem extends Lightning.Component {
         w: this.w,
         h: this.h,
         src: Utils.asset(this.data.url),
-        shader: {
-          type: lng.shaders.RoundedRectangle,
-          radius: 10
-        },
         scale: this.unfocus,
       })
     } else {
       this.tag('Image').patch({
-        shader: {
-          type: lng.shaders.RoundedRectangle,
-          radius: 10
-        },
         src: this.data.url,
         w: this.w,
         h: this.h
       })
     }
-    this.tag('Title').patch({
-      x: this.x_text,
-      y: this.y_text,
-      text: { text: this.data.displayName },
-    })
-    this.tag('Title').patch({ alpha: 1 })
 
-  
+
 
   }
 
@@ -93,31 +78,23 @@ export default class AppListItem extends Lightning.Component {
    */
 
   _focus() {
-    this.tag('Shadow').patch({
-      smooth: {
-        alpha: 1,
-        zIndex:1,
-        texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
-      }
-    });
+    
     this.tag('Image').patch({
       x: this.x,
       w: this.w,
       h: this.h,
+      zIndex: 1,
       scale: this.focus,
-      shader: {
-        type: lng.shaders.RoundedRectangle,
-        radius: 0
-      }
-    })
-    this.tag('Title').patch({
-      x: this.x_text,
-      y: this.y_text+15,
-      text: { smooth: { text: this.data.displayName }},
     })
     this.tag('Item').patch({
-        zIndex: 2
+      zIndex: 2
     })
+    this.tag('Shadow').patch({
+      scale: this.focus,
+      alpha: 1,
+      y: -10,
+      texture: lng.Tools.getShadowRect(this.w, this.h + 20, 0, 0, 0),
+  });
 
   }
 
@@ -131,23 +108,12 @@ export default class AppListItem extends Lightning.Component {
       w: this.w,
       h: this.h,
       scale: this.unfocus,
-      shader: {
-        type: lng.shaders.RoundedRectangle,
-        radius: 10
-      }
-    })
-    this.tag('Title').patch({
-      x: this.x_text,
-      y: this.y_text,
-      text: { smooth: { text: this.data.displayName }},
     })
     this.tag('Item').patch({
-        zIndex: 0
+      zIndex: 0
     })
     this.tag('Shadow').patch({
-      smooth: {
         alpha: 0
-      }
     });
   }
 }

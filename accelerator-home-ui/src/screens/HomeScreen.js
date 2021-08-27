@@ -18,6 +18,7 @@
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
 import MainView from '../views/MainView.js'
+import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
 import ShutdownPanel from '../views/ShutdownPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
@@ -25,6 +26,7 @@ import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './../api/AppApi';
 import store from '../redux.js'
+import { CONFIG } from '../Config/Config.js'
 
 var powerState = 'ON';
 var audio_mute = false;
@@ -42,46 +44,41 @@ export default class HomeScreen extends Lightning.Component {
       BackgroundImage: {
         w: 1920,
         h: 1080,
-        alpha: 6,
+        alpha: 0,
       },
       BackgroundColor: {
         w: 1920,
         h: 1080,
-        alpha: 0.9,
+        alpha: 1,
         rect: true,
-        color: 0xff20344D
+        color: CONFIG.theme.background
       },
 
       TopPanel: {
         type: TopPanel,
       },
       View: {
-        x: 80,
-        y: 171,
+        x: 0,
+        y: 300,
         w: 1994,
         h: 919,
         clipping: true,
+        SidePanel: {
+          y: -50,
+          type: SidePanel,
+        },
         MainView: {
           w: 1994,
           h: 919,
           type: MainView,
         },
       },
-      IpAddressBg: {
-        rect: true,
-        x: 1860,
-        y: 1060,
-        w: 256,
-        h: 30,
-        mount: 1,
-        color: 0xbb0078ac,
-      },
       IpAddress: {
-        x: 1828,
+        x: 200,
         y: 1058,
         mount: 1,
         text: {
-          fontFace: 'MS-Regular',
+          fontFace: CONFIG.language.font,
           text: 'IP:NA',
           textColor: 0xffffffff,
           fontSize: 22,
@@ -139,8 +136,9 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo()
     this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo()
     this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo()
+    this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
 
-    this._setState('MainView')
+    this._setState('SidePanel')
     this.initialLoad = true
     this.networkApi = new NetworkApi()
     this.networkApi.activate().then(result => {
@@ -299,6 +297,15 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /**
+   * Fireancestor to set the state to main view.
+   * @param {index} index index value of side view row.
+   */
+  $goToSidePanel(index) {
+    this.tag('SidePanel').index = index
+    this._setState('SidePanel')
+  }
+
+  /**
 * Fireancestor to set the state to side panel.
 * @param {index} index index value of Top panel item.
 */
@@ -362,6 +369,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('BackgroundColor').patch({ alpha: 0 });
     this.tag('MainView').patch({ alpha: 0 });
     this.tag('TopPanel').patch({ alpha: 0 });
+    this.tag('SidePanel').patch({ alpha: 0 });
   }
 
   /**
@@ -372,6 +380,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('BackgroundColor').patch({ alpha: 1 });
     this.tag('MainView').patch({ alpha: 1 });
     this.tag('TopPanel').patch({ alpha: 1 });
+    this.tag('SidePanel').patch({ alpha: 1 });
   }
 
   /**
@@ -382,6 +391,11 @@ export default class HomeScreen extends Lightning.Component {
       class TopPanel extends this {
         _getFocused() {
           return this.tag('TopPanel')
+        }
+      },
+      class SidePanel extends this{
+        _getFocused(){
+          return this.tag('SidePanel')
         }
       },
       class ShutdownPanel extends this {

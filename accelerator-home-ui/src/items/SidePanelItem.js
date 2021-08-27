@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
+import { CONFIG } from '../Config/Config'
 
 /**
  * Class to render items in side panel.
@@ -29,7 +30,6 @@ export default class SidePanelItem extends Lightning.Component {
     return {
       Item: {
         rect: true,
-        texture: lng.Tools.getRoundRect(612, 121, 24, 2, 0xffffffff, false, 0xffffffff),
         Image: {
           x: 25,
           y: 25,
@@ -48,7 +48,6 @@ export default class SidePanelItem extends Lightning.Component {
   }
 
   _init() {
-    this.tag('Title').patch({ x: this.x_text, y: this.y_text, text: { text: this.data.title } })
     this.tag('Image').patch({
       src: Utils.asset(this.data.url),
       w: this.w,
@@ -61,17 +60,20 @@ export default class SidePanelItem extends Lightning.Component {
    * Function to change properties of item during focus.
    */
   _focus() {
-    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus })
-    this.tag('Title').patch({ alpha: 1 })
-    this.tag('Item').patch({ zIndex: 1 })
+    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus, color: CONFIG.theme.hex })
   }
 
   /**
    * Function to change properties of item during unfocus.
    */
   _unfocus() {
-    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus })
-    this.tag('Title').patch({ alpha: 1 })
-    this.tag('Item').patch({ zIndex: 1 })
+    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus, color: 0xffffffff })
+  }
+
+  setColor(){
+    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.focus, color: CONFIG.theme.hex })
+  }
+  clearColor(){
+    this.tag('Image').patch({ w: this.w, h: this.h, scale: this.unfocus, color: 0xffffffff })
   }
 }

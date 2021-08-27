@@ -10,6 +10,6 @@
     "inspector": true,
     "path": "./static",
     "log": true,
-    "showVersion": true
+    "showVersion": false
   }
 }

@@ -14,6 +14,12 @@ license file, called LICENSE, which describes the licensing of the material in
 the Montserrat directory.
 Note: there are two directories called "Montserrat" in this repository.
 
+The Play directory within this component contains fonts which are
+licensed under the SIL Open Font License, version 1.1. The Play directory contains its own
+license file, called LICENSE, which describes the licensing of the material in
+the Play directory.
+Note: there are two directories called "Play" in this repository.
+
 The tvShows directory within this component contains images which are
 licensed under the Pixabay license.The tvShows directory contains its own
 license file, called LICENSE, which describes the licensing of the material in

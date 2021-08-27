@@ -21,6 +21,7 @@ import ThunderJS from 'ThunderJS';
 import routes from './api/routes';
 import AppApi from '../src/api/AppApi.js';
 import XcastApi from '../src/api/XcastApi';
+import { CONFIG } from './Config/Config';
 
 const config = {
   host: '127.0.0.1',
@@ -32,8 +33,7 @@ var appApi = new AppApi();
 
 export default class App extends Router.App {
   static getFonts() {
-    return [{ family: 'MS-Regular', url: Utils.asset('fonts/Montserrat/Montserrat-Regular.ttf') },
-    { family: 'MS-Light', url: Utils.asset('fonts/Montserrat/Montserrat-Light.ttf') }];
+    return [{ family: CONFIG.language.font, url: Utils.asset('fonts/'+ CONFIG.language.fontSrc) }];
   }
   _setup() {
     Router.startRouter(routes, this);
@@ -42,6 +42,15 @@ export default class App extends Router.App {
         e.preventDefault();
       }
     };
+  }
+
+  static language() {
+    let lang = navigator.language
+    console.log(lang)
+    return {
+      file: Utils.asset('language/language-file.json'),
+      language: CONFIG.language.id 
+    }
   }
 
   _init() {
