@@ -198,7 +198,7 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
 
-    } else if (key.keyCode == 118 || key.keyCode == 113) {
+    } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
       appApi.getConnectedAudioPorts().then(res => {
         let audio_source = res.connectedAudioPorts[0]
@@ -209,8 +209,8 @@ export default class HomeScreen extends Lightning.Component {
 
           if (res.success == true) {
             audio_mute = value;
-            new AppApi().zorder("moveToFront", "foreground");
-            new AppApi().setVisibility("foreground", audio_mute)
+            new AppApi().zorder("moveToFront","foreground");
+            new AppApi().setVisibility("foreground",audio_mute)
           }
           console.log("audio_mute:" + audio_mute);
         })

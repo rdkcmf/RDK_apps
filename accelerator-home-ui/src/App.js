@@ -45,6 +45,7 @@ export default class App extends Router.App {
   }
 
   _init() {
+    new AppApi().launchforeground();
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
@@ -66,6 +67,27 @@ export default class App extends Router.App {
       .catch(err => {
         console.log('Error', err);
       })
+
+
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'ResidentApp',
+            keyCode: 173,
+            modifiers: [],
+          })
+          .then(result => {
+            console.log('addKeyIntercept success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+
+
       .then(result => {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
@@ -364,12 +386,19 @@ export default class App extends Router.App {
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
-          this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchPremiumApp('Netflix');
-          Storage.set('applicationType', 'Netflix');
-          appApi.setVisibility('ResidentApp', false);
-          let params = { applicationName: notification.applicationName, state: 'running' };
-          this.xcastApi.onApplicationStateChanged(params);
+          appApi.configureApplication('Netflix', notification.parameters).then((res) => {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchPremiumApp('Netflix');
+            Storage.set('applicationType', 'Netflix');
+            appApi.setVisibility('ResidentApp', false);
+            if(AppApi.pluginStatus('Netflix')){
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          }
+          }).catch((err) => {
+            console.log('Error while launching '+applicationName+ ', Err: '+JSON.stringify(err));
+          })
+          
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
           appApi.launchCobalt();

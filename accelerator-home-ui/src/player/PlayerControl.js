@@ -125,7 +125,7 @@ export default class PlayerControls extends Lightning.Component {
      */
     this.videoDuration = 0
     this.tag('Buttons').children[0].patch({
-      alpha: 0.4
+          alpha: 0.4
     })
     this.tag('Buttons').children[2].patch({
       alpha: 0.4
@@ -504,7 +504,7 @@ export default class PlayerControls extends Lightning.Component {
         }
       },
       class Hidden extends this {
-        _getFocused() { }
+        _getFocused() {}
       },
     ]
   }

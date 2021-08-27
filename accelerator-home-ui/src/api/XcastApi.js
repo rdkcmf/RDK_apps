@@ -126,7 +126,7 @@ export default class XcastApi {
   }
 
   static supportedApps() {
-    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
+    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' };
     return xcastApps;
   }
 }

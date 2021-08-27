@@ -156,6 +156,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(() => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground',
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -188,6 +192,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(() => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground',
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -218,6 +226,10 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
@@ -238,6 +250,10 @@ export default class AppApi {
       .then(() => {
         thunder.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         });
         thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
@@ -260,12 +276,50 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
+  }
+
+  launchforeground() {
+    const childCallsign = 'foreground'
+    console.log("notification_url > location.protocol::" + location.protocol + '// location.host ' + location.host + " // '// location.pathname '" + location.pathname)
+    let notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+    thunder.call('org.rdk.RDKShell', 'launch', {
+      callsign: childCallsign,
+      type: 'HtmlApp',
+      uri: notification_url,
+    }).then(() => {
+      thunder.call('org.rdk.RDKShell', 'moveToFront', {
+        client: childCallsign,
+      })
+      thunder.call('org.rdk.RDKShell', 'setFocus', {
+        client: 'ResidentApp',
+      })
+      thunder.call('org.rdk.RDKShell', 'setVisibility', {
+        client: 'foreground',
+        visible: false,
+      })
+    }).catch(err => { })
+      .catch(err => {
+        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+      })
+  }
+
+  zorder(value, cli) {
+    console.log("#################zorder###################");
+    thunder.call('org.rdk.RDKShell', value, { client: cli })
+      .then(result => {
+        console.log(client + ":" + value + '  Success');
+        resolve(result)
+      }).catch(err => { resolve(false) });
   }
 
   /**
@@ -346,6 +400,28 @@ export default class AppApi {
     })
   }
   /**
+   * Function to set the configuration of premium apps.
+   * @param {appName} Name of the application
+   * @param {config_data} config_data configuration data
+   */
+
+  configureApplication(appName, config_data) {
+    let plugin = 'Controller';
+    let method = 'configuration@' + appName;
+    return new Promise((resolve, reject) => {
+      thunder.call(plugin, method).then((res) => {
+        res.querystring = config_data;
+        thunder.call(plugin, method, res).then((resp) => {
+          resolve(true);
+        }).catch((err) => {
+          resolve(true);
+        })
+      }).catch((err) => {
+        reject(err);
+      })
+    })
+  }
+  /**
    * Function to launch Native app.
    * @param {String} url url of app.
    */
@@ -419,12 +495,12 @@ export default class AppApi {
     })
   }
 
-    audio_mute(value,audio_source) {
+  audio_mute(value, audio_source) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
-          console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source)
+          console.log("############ audio_mute ############## value: " + value + " audio_source: " + audio_source)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })

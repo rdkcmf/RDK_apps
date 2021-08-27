@@ -351,7 +351,7 @@ export default class WiFiScreen extends Lightning.Component {
         }
       },
       class PairedDevices extends this {
-        $enter() { }
+        $enter() {}
         _getFocused() {
           return this._pairedNetworks.tag('List').element
         }
@@ -368,7 +368,7 @@ export default class WiFiScreen extends Lightning.Component {
         }
       },
       class AvailableDevices extends this {
-        $enter() { }
+        $enter() {}
         _getFocused() {
           return this._availableNetworks.tag('List').element
         }
@@ -399,11 +399,11 @@ export default class WiFiScreen extends Lightning.Component {
             if (this._availableNetworks.tag('List').element) {
               this._wifi
                 .connect(this._availableNetworks.tag('List').element._item, '')
-                .then(() => { })
+                .then(() => {})
             }
             this._setState('Switch')
           } else if (option === 'Disconnect') {
-            this._wifi.disconnect().then(() => { })
+            this._wifi.disconnect().then(() => {})
             this._setState('Switch')
           }
         }

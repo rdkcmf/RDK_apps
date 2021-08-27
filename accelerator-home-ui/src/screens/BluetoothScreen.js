@@ -301,7 +301,7 @@ export default class BluetoothScreen extends Lightning.Component {
         }
       },
       class PairedDevices extends this {
-        $enter() { }
+        $enter() {}
         _getFocused() {
           return this._pairedNetworks.tag('List').element
         }
@@ -318,7 +318,7 @@ export default class BluetoothScreen extends Lightning.Component {
         }
       },
       class AvailableDevices extends this {
-        $enter() { }
+        $enter() {}
         _getFocused() {
           return this._availableNetworks.tag('List').element
         }
@@ -346,7 +346,7 @@ export default class BluetoothScreen extends Lightning.Component {
           if (option === 'Cancel') {
             this._setState('Switch')
           } else if (option === 'Pair') {
-            this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => { })
+            this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => {})
           } else if (option === 'Connect') {
             this._bt
               .connect(
@@ -368,10 +368,10 @@ export default class BluetoothScreen extends Lightning.Component {
                 this._pairedNetworks.tag('List').element._item.deviceID,
                 this._pairedNetworks.tag('List').element._item.deviceType
               )
-              .then(() => { })
+              .then(() => {})
             this._setState('Switch')
           } else if (option === 'Unpair') {
-            this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => { })
+            this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => {})
             this._setState('Switch')
           }
         }
