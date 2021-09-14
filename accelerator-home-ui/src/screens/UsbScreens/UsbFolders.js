@@ -189,93 +189,99 @@ export default class UsbFolders extends Lightning.Component {
   }
 
   static _states() {
-    return [class Button extends this{
-      $enter() {
-        console.log('Button enter')
+    return [
+      class Button extends this{
+        $enter() {
+          console.log('Button enter')
 
-      }
-      $exit() {
-        console.log('Botton exit')
-        this.tag('Button').patch({
-          h: 60,
-          w: 180
-        })
+        }
+        $exit() {
+          console.log('Botton exit')
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
 
-      }
+        }
 
-      _getFocused() {
-        this.tag('Button').patch({
-          h: 70,
-          w: 200
-        })
-        this.tag('Shadow').patch({
-          smooth: {
-            alpha: 1
+        _getFocused() {
+          this.tag('Button').patch({
+            h: 70,
+            w: 200
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 1
+            }
+          });
+
+        }
+        _handleUp() {
+          this.fireAncestors('$goToTopPanel', 0)
+        }
+        _handleEnter() {
+          this._usbEnabled = !this._usbEnabled
+          this.switchOnOff()
+        }
+        _handleDown() {
+          if (this._usbEnabled) {
+            this._setState('UsbFolderList')
           }
-        });
-
-      }
-      _handleUp() {
-        this.fireAncestors('$goToTopPanel', 0)
-      }
-      _handleEnter() {
-        this._usbEnabled = !this._usbEnabled
-        this.switchOnOff()
-      }
-      _handleLeft() {
-        this.tag('Button').patch({
-          h: 60,
-          w: 180
-        })
-        this.tag('Shadow').patch({
-          smooth: {
-            alpha: 0
-          }
-        });
-        this.fireAncestors('$goToSideMenubar', 2)
-      }
-    },
-    class UsbFolderList extends this {
-      _getFocused() {
-        if (this.tag('UsbFolderList').length) {
-          this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url)
-          return this.tag('UsbFolderList').element
         }
-      }
-      _handleRight() {
 
-        if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
-          this.tag('UsbFolderList').setNext()
-          this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
-          return this.tag('UsbFolderList').element
-        }
-      }
-      _handleLeft() {
-
-        if (0 != this.tag('UsbFolderList').index) {
-          this.tag('UsbFolderList').setPrevious()
-          this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
-          return this.tag('UsbFolderList').element
-        }
-        if (0 == this.tag('UsbFolderList').index) {
+        _handleLeft() {
+          this.tag('Button').patch({
+            h: 60,
+            w: 180
+          })
+          this.tag('Shadow').patch({
+            smooth: {
+              alpha: 0
+            }
+          });
           this.fireAncestors('$goToSideMenubar', 2)
         }
+      },
+      class UsbFolderList extends this {
+        _getFocused() {
+          if (this.tag('UsbFolderList').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url)
+            return this.tag('UsbFolderList').element
+          }
+        }
+        _handleRight() {
 
-      }
-      _handleDown() {
-      }
+          if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
+            this.tag('UsbFolderList').setNext()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
+            return this.tag('UsbFolderList').element
+          }
+        }
+        _handleLeft() {
 
-      _handleUp() {
-        this._setState('Button')
-      }
+          if (0 != this.tag('UsbFolderList').index) {
+            this.tag('UsbFolderList').setPrevious()
+            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url)
+            return this.tag('UsbFolderList').element
+          }
+          if (0 == this.tag('UsbFolderList').index) {
+            this.fireAncestors('$goToSideMenubar', 2)
+          }
+        }
+        _handleDown() {
+        }
+
+        _handleUp() {
+          this._setState('Button')
+        }
 
 
-      _handleEnter() {
-        this.launchUsbFolder(this.tag('UsbFolderList').index)
-      }
-      _handleKey(key) {
-      }
-    },
+        _handleEnter() {
+          this.launchUsbFolder(this.tag('UsbFolderList').index)
+        }
+        _handleKey(key) {
+        }
+      },
 
     ]
   }

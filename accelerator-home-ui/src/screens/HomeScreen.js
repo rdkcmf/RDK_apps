@@ -69,17 +69,17 @@ export default class HomeScreen extends Lightning.Component {
       },
       IpAddressBg: {
         rect: true,
-        x: 1860,
-        y: 1060,
-        w: 256,
+        x: 1725,
+        y: 1045,
+        w: 290,
         h: 30,
-        mount: 1,
+        mount: 0.5,
         color: 0xbb0078ac,
       },
       IpAddress: {
-        x: 1828,
-        y: 1058,
-        mount: 1,
+        x: 1695,
+        y: 1042,
+        mount: 0.5,
         text: {
           fontFace: 'MS-Regular',
           text: 'IP:NA',
@@ -209,8 +209,8 @@ export default class HomeScreen extends Lightning.Component {
 
           if (res.success == true) {
             audio_mute = value;
-            new AppApi().zorder("moveToFront","foreground");
-            new AppApi().setVisibility("foreground",audio_mute)
+            new AppApi().zorder("moveToFront", "foreground");
+            new AppApi().setVisibility("foreground", audio_mute)
           }
           console.log("audio_mute:" + audio_mute);
         })

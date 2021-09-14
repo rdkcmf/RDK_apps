@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import {
+import {
   Lightning,
   Utils
 } from '@lightningjs/sdk'
@@ -29,7 +29,7 @@ export default class AppListItem extends Lightning.Component {
    */
   static _template() {
     return {
-      Shadow:{          
+      Shadow: {
         alpha: 0,
         x: -25,
         y: 0,
@@ -44,8 +44,9 @@ export default class AppListItem extends Lightning.Component {
             fontFace: 'MS-Regular',
             fontSize: 22,
             textColor: 0xffffffff,
+            cutEx: 300,
           },
-          mountX: 0.5,
+          mount: 0.5,
           alpha: 0,
         },
       },
@@ -84,7 +85,7 @@ export default class AppListItem extends Lightning.Component {
     })
     this.tag('Title').patch({ alpha: 1 })
 
-  
+
 
   }
 
@@ -96,8 +97,8 @@ export default class AppListItem extends Lightning.Component {
     this.tag('Shadow').patch({
       smooth: {
         alpha: 1,
-        zIndex:1,
-        texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
+        zIndex: 1,
+        texture: lng.Tools.getShadowRect(this.w + 35, this.h + 25, 0, 10, 20),
       }
     });
     this.tag('Image').patch({
@@ -112,11 +113,11 @@ export default class AppListItem extends Lightning.Component {
     })
     this.tag('Title').patch({
       x: this.x_text,
-      y: this.y_text+15,
-      text: { smooth: { text: this.data.displayName }},
+      y: this.y_text + 15,
+      text: { smooth: { text: this.data.displayName } },
     })
     this.tag('Item').patch({
-        zIndex: 2
+      zIndex: 2
     })
 
   }
@@ -139,10 +140,10 @@ export default class AppListItem extends Lightning.Component {
     this.tag('Title').patch({
       x: this.x_text,
       y: this.y_text,
-      text: { smooth: { text: this.data.displayName }},
+      text: { smooth: { text: this.data.displayName } },
     })
     this.tag('Item').patch({
-        zIndex: 0
+      zIndex: 0
     })
     this.tag('Shadow').patch({
       smooth: {

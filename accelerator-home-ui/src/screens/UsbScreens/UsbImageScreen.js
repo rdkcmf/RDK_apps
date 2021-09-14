@@ -23,6 +23,7 @@ import UsbContent from './UsbContent'
 export default class UsbImageScreen extends UsbContent {
   _active() {
     this.contentTitle = 'Images'
+    this.imageFullScreen = true
     this.itemList = imageListInfo
     this._setState('ItemList')
   }

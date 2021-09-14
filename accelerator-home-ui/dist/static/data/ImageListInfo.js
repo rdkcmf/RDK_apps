@@ -19,6 +19,5 @@
 /**
  * Class which contains data for app listings.
  */
- export var imageListInfo = [
-  ]
-  
+export var imageListInfo = [
+]

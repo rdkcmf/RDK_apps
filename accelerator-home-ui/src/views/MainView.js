@@ -199,7 +199,7 @@ export default class MainView extends Lightning.Component {
         focus: 1.2,
         unfocus: 1,
         x_text: 120,
-        y_text: 140,
+        y_text: 155,
       }
     })
     this.tag('AppList').start()

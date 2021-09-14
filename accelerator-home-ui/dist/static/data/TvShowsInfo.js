@@ -30,7 +30,7 @@ export var tvShowsInfo = [
   },
   {
     displayName: 'Let it Snow',
-    url: '/images/tvShows/let-it-snow.png',
+    url: '/images/tvShows/let-it-snow.jpg',
   },
   {
     displayName: 'Do Little',

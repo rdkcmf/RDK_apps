@@ -20,6 +20,9 @@ import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import AppListItem from '../../items/AppListItem'
 import NetworkApi from '../../api/NetworkApi'
 import AAMPVideoPlayer from '../../player/AAMPVideoPlayer'
+import HomeApi from '../../api/HomeApi.js'
+import ArrowIconItem from '../../items/ArrowIconlItem.js'
+
 
 export default class UsbContent extends Lightning.Component {
     static _template() {
@@ -48,16 +51,16 @@ export default class UsbContent extends Lightning.Component {
                     text: { text: 'USB Content Screen', fontSize: 40, fontFace: 'MS-Regular', },
                 },
                 IpAddress: {
-                    x: 1835,
-                    y: 125,
-                    mount: 1,
+                    x: 1475,
+                    y: 105,
+                    mountY: 0.5,
                     text: {
                         fontFace: 'MS-Regular',
                         text: 'IP:N/A',
                         textColor: 0xffffffff,
-                        fontSize: 32,
+                        fontSize: 28,
                         w: 360,
-                        h: 40,
+                        h: 30,
                     },
                 },
                 Border: {
@@ -83,15 +86,15 @@ export default class UsbContent extends Lightning.Component {
                     h: 60,
                 },
             },
-            
+
             ItemList: {
                 x: 80,
-                y: 320,
+                y: 295,
                 flex: { direction: 'row', paddingLeft: 20, wrap: false },
                 type: Lightning.components.ListComponent,
                 w: 1761,
                 h: 300,
-                itemSize: 185,
+                itemSize: 320,
                 roll: true,
                 rollMax: 815,
                 horizontal: true,
@@ -106,26 +109,49 @@ export default class UsbContent extends Lightning.Component {
             },
             Message:
             {
-                x: 500,
-                y: 800,
+                x: 520,
+                y: 575,
                 text: {
                     fontFace: 'MS-Regular',
                     textColor: 0xffffdf00,
-                    fontSize: 38,
-                    fontStyle: 'italic bold',
+                    fontSize: 48,
+                    textAlign: 'center',
                     textColor: 0xffffdf00,
                     shadow: true,
                     shadowColor: 0xffff00ff,
                     shadowOffsetX: 2,
                     shadowOffsetY: 2,
                     shadowBlur: 2,
-                    w: 900,
+                    w: 700,
                     h: 100,
                 },
             },
 
             Player: {
                 type: AAMPVideoPlayer,
+            },
+            FullScreen:
+            {
+                x: 0,
+                y: 0,
+                w: 1920,
+                h: 1080,
+            },
+            RightArrow: {
+                x: 1835,
+                y: 540,
+                w: 40,
+                h: 50,
+                src: Utils.asset('images/right-small.png'),
+                alpha: 0,
+            },
+            LeftArrow: {
+                x: 25,
+                y: 540,
+                w: 40,
+                h: 50,
+                src: Utils.asset('images/left-small.png'),
+                alpha: 0,
             },
         }
     }
@@ -139,64 +165,82 @@ export default class UsbContent extends Lightning.Component {
             text: { text: message }
         })
     }
-    
+    imageOnFullScreen(image) {
+        if (image.startsWith('/images')) {
+            this.tag('FullScreen').patch({
+                src: Utils.asset(image),
+            });
+            this._setState('FullScreen')
+            this.hide()
+        } else {
+            this.tag('FullScreen').patch({ src: image });
+            this._setState('FullScreen')
+            this.hide()
+        }
+    }
+    /**
+  * Function to set details of items in right Icons list.
+  *
+  */
+
 
     set itemList(items) {
         this.tag('ItemList').items = items.map(info => {
             return {
-                w: 175,
-                h: 175,
+                w: 300,
+                h: 200,
                 type: AppListItem,
                 data: info,
                 focus: 1.2,
                 unfocus: 1,
-                x_text: 106,
-                y_text: 215,
+                x_text: 150,
+                y_text: 220,
             }
         })
         this.tag('ItemList').start()
     }
 
     _init() {
-        this.videoPlayback=false;
+        this.videoPlayback = false;
+        this.imageFullScreen = false;
         var networkApi = new NetworkApi()
         networkApi.getIP().then(ip => {
             this.tag('IpAddress').text.text = 'IP:' + ip
         })
     }
 
-    
+
     previewImageOnFocus(image) {
         if (image.startsWith('/images')) {
-          this.tag('Preview').patch({
-            src: Utils.asset(image),
-          });
+            this.tag('Preview').patch({
+                src: Utils.asset(image),
+            });
         } else {
-          this.tag('Preview').patch({ src: image });
+            this.tag('Preview').patch({ src: image });
         }
-      }
+    }
 
-  goToPlayer(item) {
-       this._setState('Player')
-       this.play(item)
-  }
+    goToPlayer(item) {
+        this._setState('Player')
+        this.play(item)
+    }
 
 
-   /**
-   * Function to hide the home UI.
-   */
+    /**
+    * Function to hide the home UI.
+    */
     hide() {
         this.tag('Background').patch({ alpha: 0 });
         this.tag('UsbHomeTopPanel').patch({ alpha: 0 });
         this.tag('ContentTitle').patch({ alpha: 0 });
         this.tag('ItemList').patch({ alpha: 0 });
         this.tag('Preview').patch({ alpha: 0 });
-      }
-    
-      /**
-         * Function to show home UI.
-       */
-       show() {
+    }
+
+    /**
+       * Function to show home UI.
+     */
+    show() {
         console.log('show -from content')
         this.tag('Background').patch({ alpha: 1 });
         this.tag('UsbHomeTopPanel').patch({ alpha: 1 });
@@ -204,27 +248,27 @@ export default class UsbContent extends Lightning.Component {
         this.tag('ItemList').patch({ alpha: 1 });
         this.tag('Preview').patch({ alpha: 1 });
 
-      }
-       /**
-   * Function to start video playback.
-   */
-  play(item) {
-    this.player = this.tag('Player')
-    try {
-      this.player.load({
-        title: item.data.displayName,
-        subtitle: 'm3u8',
-        url:item.data.uri,
-        drmConfig: null,
-      })
-      this.hide()
-      this._setState('Playing')
-      this.player.setVideoRect(0, 0, 1920, 1080)
-    } catch (error) {
-      this._setState('ItemList')
-      console.error('Playback Failed ' + error)
     }
-  }
+    /**
+* Function to start video playback.
+*/
+    play(item) {
+        this.player = this.tag('Player')
+        try {
+            this.player.load({
+                title: item.data.displayName,
+                subtitle: 'm3u8',
+                url: item.data.uri,
+                drmConfig: null,
+            })
+            this.hide()
+            this._setState('Playing')
+            this.player.setVideoRect(0, 0, 1920, 1080)
+        } catch (error) {
+            this._setState('ItemList')
+            console.error('Playback Failed ' + error)
+        }
+    }
 
     static _states() {
         return [
@@ -250,16 +294,89 @@ export default class UsbContent extends Lightning.Component {
                 _handleDown() {
                 }
                 _handleUp() {
-                    this.videoPlayback=false;
+                    this.videoPlayback = false;
+                    this.imageFullScreen = false;
                     this._setState('Back')
                 }
                 _handleEnter() {
-                    let item= this.tag('ItemList').element
+                    let item = this.tag('ItemList').element
                     if (this.videoPlayback == true) { this.goToPlayer(item) }
+                    if (this.imageFullScreen == true) { this._setState('FullScreen') }
+
+
                 }
                 $exit() {
                     this.videoPlayback = false;
                 }
+            },
+            class FullScreen extends this{
+                $enter() {
+                    this.tag('FullScreen').patch({
+                        alpha: 1
+                    });
+                    this.tag('RightArrow').patch({
+                        alpha: 1
+                    })
+                    this.tag('LeftArrow').patch({
+                        alpha: 1
+                    })
+                }
+                $exit() {
+                    this.tag('RightArrow').patch({
+                        alpha: 0
+                    })
+                    this.tag('LeftArrow').patch({
+                        alpha: 0
+                    })
+                    this.tag('FullScreen').patch({
+                        alpha: 0
+                    });
+
+
+                }
+                _getFocused() {
+                    if (this.tag('ItemList').length) {
+                        this.imageOnFullScreen(this.tag('ItemList').element.data.url)
+                        return this.tag('ItemList').element
+                    }
+                }
+                _handleRight() {
+                    if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
+                        this.tag('ItemList').setNext()
+                        this.tag('LeftArrow').patch({
+                            alpha: 1
+                        })
+                        return this.tag('ItemList').element
+                    } else {
+                        this.tag('RightArrow').patch({
+                            alpha: 0
+                        })
+                    }
+                }
+                _handleLeft() {
+                    if (0 != this.tag('ItemList').index) {
+                        this.tag('ItemList').setPrevious()
+                        this.tag('RightArrow').patch({
+                            alpha: 1
+                        })
+                        return this.tag('ItemList').element
+                    } else {
+                        this.tag('LeftArrow').patch({
+                            alpha: 0
+                        })
+                    }
+                }
+                _handleKey(key) {
+                    console.log(key.keyCode)
+                    if (key.keyCode == 8 || key.keyCode == 27) {
+                        this._setState('ItemList')
+                        this.show()
+                        this.tag('FullScreen').patch({
+                            alpha: 0
+                        });
+                    }
+                }
+
             },
 
             class Back extends this{
@@ -289,25 +406,25 @@ export default class UsbContent extends Lightning.Component {
             },
             class Playing extends this {
                 _getFocused() {
-                  return this.tag('Player')
+                    return this.tag('Player')
                 }
-        
+
                 stopPlayer() {
-                  this._setState('ItemList');
-                  if(this.player !=null)
-                     this.player.stop()
-                  this.show();
+                    this._setState('ItemList');
+                    if (this.player != null)
+                        this.player.stop()
+                    this.show();
                 }
-        
+
                 _handleKey(key) {
-                  if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-                    this.stopPlayer()
-                  } else if (key.keyCode == 227 || key.keyCode == 179) {
-                    this.stopPlayer()
-                    return false;
-                  }
+                    if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+                        this.stopPlayer()
+                    } else if (key.keyCode == 227 || key.keyCode == 179) {
+                        this.stopPlayer()
+                        return false;
+                    }
                 }
-              },
+            },
         ]
     }
 }

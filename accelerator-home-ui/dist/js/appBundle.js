@@ -1,9 +1,9 @@
 /**
- * App version: 2.0.0 27/08/21
+ * App version: 2.0.0 14/09/21
  * SDK version: 3.2.1
  * CLI version: 2.5.0
  *
- * Generated: Fri, 27 Aug 2021 15:12:09 GMT
+ * Generated: Tue, 14 Sep 2021 16:42:24 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -5707,8 +5707,7 @@ var APP_accelerator_home_ui = (function () {
               fontFace: 'MS-Regular',
               text: this.data.displayName,
               fontSize: 25,
-              maxLines: 2,
-              wordWrapWidth: 150
+              cutEx: 214,
             },
           }
         },
@@ -5849,7 +5848,7 @@ var APP_accelerator_home_ui = (function () {
      */
     static _template() {
       return {
-        Shadow:{          
+        Shadow: {
           alpha: 0,
           x: -25,
           y: 0,
@@ -5864,8 +5863,9 @@ var APP_accelerator_home_ui = (function () {
               fontFace: 'MS-Regular',
               fontSize: 22,
               textColor: 0xffffffff,
+              cutEx: 300,
             },
-            mountX: 0.5,
+            mount: 0.5,
             alpha: 0,
           },
         },
@@ -5904,7 +5904,7 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Title').patch({ alpha: 1 });
 
-    
+
 
     }
 
@@ -5916,8 +5916,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Shadow').patch({
         smooth: {
           alpha: 1,
-          zIndex:1,
-          texture: lng.Tools.getShadowRect(this.w+35, this.h+25, 0, 10, 20),
+          zIndex: 1,
+          texture: lng.Tools.getShadowRect(this.w + 35, this.h + 25, 0, 10, 20),
         }
       });
       this.tag('Image').patch({
@@ -5932,11 +5932,11 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Title').patch({
         x: this.x_text,
-        y: this.y_text+15,
-        text: { smooth: { text: this.data.displayName }},
+        y: this.y_text + 15,
+        text: { smooth: { text: this.data.displayName } },
       });
       this.tag('Item').patch({
-          zIndex: 2
+        zIndex: 2
       });
 
     }
@@ -5959,10 +5959,10 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Title').patch({
         x: this.x_text,
         y: this.y_text,
-        text: { smooth: { text: this.data.displayName }},
+        text: { smooth: { text: this.data.displayName } },
       });
       this.tag('Item').patch({
-          zIndex: 0
+        zIndex: 0
       });
       this.tag('Shadow').patch({
         smooth: {
@@ -6772,7 +6772,7 @@ var APP_accelerator_home_ui = (function () {
           focus: 1.2,
           unfocus: 1,
           x_text: 120,
-          y_text: 140,
+          y_text: 155,
         }
       });
       this.tag('AppList').start();
@@ -9080,7 +9080,7 @@ var APP_accelerator_home_ui = (function () {
     },
     {
       displayName: 'Let it Snow',
-      url: '/images/tvShows/let-it-snow.png',
+      url: '/images/tvShows/let-it-snow.jpg',
     },
     {
       displayName: 'Do Little',
@@ -9402,61 +9402,61 @@ var APP_accelerator_home_ui = (function () {
       displayName: "CNN",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
-      url: "/images/metroApps/Test-01.png"
+      url: "/images/metroApps/Test-01.jpg"
     },
     {
       displayName: "VimeoRelease",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
-      url: "/images/metroApps/Test-02.png"
+      url: "/images/metroApps/Test-02.jpg"
     },
     {
       displayName: "WeatherNetwork",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
-      url: "/images/metroApps/Test-03.png"
+      url: "/images/metroApps/Test-03.jpg"
     },
     {
       displayName: "EuroNews",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
-      url: "/images/metroApps/Test-04.png"
+      url: "/images/metroApps/Test-04.jpg"
     },
     {
       displayName: "AccuWeather",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
-      url: "/images/metroApps/Test-05.png"
+      url: "/images/metroApps/Test-05.jpg"
     },
     {
       displayName: "BaebleMusic",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-      url: "/images/metroApps/Test-06.png"
+      url: "/images/metroApps/Test-06.jpg"
     },
     {
       displayName: "Aljazeera",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
-      url: "/images/metroApps/Test-07.png"
+      url: "/images/metroApps/Test-07.jpg"
     },
     {
       displayName: "GuessThatCity",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
-      url: "/images/metroApps/Test-08.png"
+      url: "/images/metroApps/Test-08.jpg"
     },
     {
       displayName: "Radioline",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
-      url: "/images/metroApps/Test-09.png"
+      url: "/images/metroApps/Test-09.jpg"
     },
     {
       displayName: "WallStreetJournal",
       applicationType: "Lightning",
       uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
-      url: "/images/metroApps/Test-10.png"
+      url: "/images/metroApps/Test-10.jpg"
     }
   ];
 
@@ -9641,17 +9641,17 @@ var APP_accelerator_home_ui = (function () {
         },
         IpAddressBg: {
           rect: true,
-          x: 1860,
-          y: 1060,
-          w: 256,
+          x: 1725,
+          y: 1045,
+          w: 290,
           h: 30,
-          mount: 1,
+          mount: 0.5,
           color: 0xbb0078ac,
         },
         IpAddress: {
-          x: 1828,
-          y: 1058,
-          mount: 1,
+          x: 1695,
+          y: 1042,
+          mount: 0.5,
           text: {
             fontFace: 'MS-Regular',
             text: 'IP:NA',
@@ -9780,8 +9780,8 @@ var APP_accelerator_home_ui = (function () {
 
             if (res.success == true) {
               audio_mute = value;
-              new AppApi().zorder("moveToFront","foreground");
-              new AppApi().setVisibility("foreground",audio_mute);
+              new AppApi().zorder("moveToFront", "foreground");
+              new AppApi().setVisibility("foreground", audio_mute);
             }
             console.log("audio_mute:" + audio_mute);
           });
@@ -13881,8 +13881,8 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for app listings.
    */
-   var imageListInfo = [
-    ];
+  var imageListInfo = [
+  ];
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -13905,9 +13905,8 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for app listings.
    */
-   var musicListInfo = [
-   
-    ];
+  var musicListInfo = [
+  ];
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -13930,8 +13929,8 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class which contains data for app listings.
    */
-   var videoListInfo = [
-    ];
+  var videoListInfo = [
+  ];
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -14401,93 +14400,99 @@ var APP_accelerator_home_ui = (function () {
     }
 
     static _states() {
-      return [class Button extends this{
-        $enter() {
-          console.log('Button enter');
+      return [
+        class Button extends this{
+          $enter() {
+            console.log('Button enter');
 
-        }
-        $exit() {
-          console.log('Botton exit');
-          this.tag('Button').patch({
-            h: 60,
-            w: 180
-          });
+          }
+          $exit() {
+            console.log('Botton exit');
+            this.tag('Button').patch({
+              h: 60,
+              w: 180
+            });
 
-        }
+          }
 
-        _getFocused() {
-          this.tag('Button').patch({
-            h: 70,
-            w: 200
-          });
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 1
+          _getFocused() {
+            this.tag('Button').patch({
+              h: 70,
+              w: 200
+            });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 1
+              }
+            });
+
+          }
+          _handleUp() {
+            this.fireAncestors('$goToTopPanel', 0);
+          }
+          _handleEnter() {
+            this._usbEnabled = !this._usbEnabled;
+            this.switchOnOff();
+          }
+          _handleDown() {
+            if (this._usbEnabled) {
+              this._setState('UsbFolderList');
             }
-          });
-
-        }
-        _handleUp() {
-          this.fireAncestors('$goToTopPanel', 0);
-        }
-        _handleEnter() {
-          this._usbEnabled = !this._usbEnabled;
-          this.switchOnOff();
-        }
-        _handleLeft() {
-          this.tag('Button').patch({
-            h: 60,
-            w: 180
-          });
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
-          this.fireAncestors('$goToSideMenubar', 2);
-        }
-      },
-      class UsbFolderList extends this {
-        _getFocused() {
-          if (this.tag('UsbFolderList').length) {
-            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url);
-            return this.tag('UsbFolderList').element
           }
-        }
-        _handleRight() {
 
-          if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
-            this.tag('UsbFolderList').setNext();
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
-            return this.tag('UsbFolderList').element
-          }
-        }
-        _handleLeft() {
-
-          if (0 != this.tag('UsbFolderList').index) {
-            this.tag('UsbFolderList').setPrevious();
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
-            return this.tag('UsbFolderList').element
-          }
-          if (0 == this.tag('UsbFolderList').index) {
+          _handleLeft() {
+            this.tag('Button').patch({
+              h: 60,
+              w: 180
+            });
+            this.tag('Shadow').patch({
+              smooth: {
+                alpha: 0
+              }
+            });
             this.fireAncestors('$goToSideMenubar', 2);
           }
+        },
+        class UsbFolderList extends this {
+          _getFocused() {
+            if (this.tag('UsbFolderList').length) {
+              this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbFolderList').element.data.url);
+              return this.tag('UsbFolderList').element
+            }
+          }
+          _handleRight() {
 
-        }
-        _handleDown() {
-        }
+            if (this.tag('UsbFolderList').length - 1 != this.tag('UsbFolderList').index) {
+              this.tag('UsbFolderList').setNext();
+              this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
+              return this.tag('UsbFolderList').element
+            }
+          }
+          _handleLeft() {
 
-        _handleUp() {
-          this._setState('Button');
-        }
+            if (0 != this.tag('UsbFolderList').index) {
+              this.tag('UsbFolderList').setPrevious();
+              this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('UsbFolderList').element.data.url);
+              return this.tag('UsbFolderList').element
+            }
+            if (0 == this.tag('UsbFolderList').index) {
+              this.fireAncestors('$goToSideMenubar', 2);
+            }
+          }
+          _handleDown() {
+          }
+
+          _handleUp() {
+            this._setState('Button');
+          }
 
 
-        _handleEnter() {
-          this.launchUsbFolder(this.tag('UsbFolderList').index);
-        }
-        _handleKey(key) {
-        }
-      },
+          _handleEnter() {
+            this.launchUsbFolder(this.tag('UsbFolderList').index);
+          }
+          _handleKey(key) {
+          }
+        },
 
       ]
     }
@@ -14543,16 +14548,16 @@ var APP_accelerator_home_ui = (function () {
             text: { text: 'Settings', fontSize: 40, fontFace: 'MS-Regular', },
           },
           IpAddress: {
-            x: 1950,
-            y: 125,
-            mount: 1,
+            x: 1475,
+            y: 105,
+            mountY: 0.5,
             text: {
               fontFace: 'MS-Regular',
               text: 'IP:N/A',
               textColor: 0xffffffff,
-              fontSize: 32,
+              fontSize: 28,
               w: 360,
-              h: 40,
+              h: 30,
             },
           },
           Border: {
@@ -14865,6 +14870,7 @@ ${error.toString()}`;
    * limitations under the License.
    **/
 
+
   class UsbContent extends Lightning.Component {
       static _template() {
           return {
@@ -14892,16 +14898,16 @@ ${error.toString()}`;
                       text: { text: 'USB Content Screen', fontSize: 40, fontFace: 'MS-Regular', },
                   },
                   IpAddress: {
-                      x: 1835,
-                      y: 125,
-                      mount: 1,
+                      x: 1475,
+                      y: 105,
+                      mountY: 0.5,
                       text: {
                           fontFace: 'MS-Regular',
                           text: 'IP:N/A',
                           textColor: 0xffffffff,
-                          fontSize: 32,
+                          fontSize: 28,
                           w: 360,
-                          h: 40,
+                          h: 30,
                       },
                   },
                   Border: {
@@ -14927,15 +14933,15 @@ ${error.toString()}`;
                       h: 60,
                   },
               },
-              
+
               ItemList: {
                   x: 80,
-                  y: 320,
+                  y: 295,
                   flex: { direction: 'row', paddingLeft: 20, wrap: false },
                   type: Lightning.components.ListComponent,
                   w: 1761,
                   h: 300,
-                  itemSize: 185,
+                  itemSize: 320,
                   roll: true,
                   rollMax: 815,
                   horizontal: true,
@@ -14950,26 +14956,49 @@ ${error.toString()}`;
               },
               Message:
               {
-                  x: 500,
-                  y: 800,
+                  x: 520,
+                  y: 575,
                   text: {
                       fontFace: 'MS-Regular',
                       textColor: 0xffffdf00,
-                      fontSize: 38,
-                      fontStyle: 'italic bold',
+                      fontSize: 48,
+                      textAlign: 'center',
                       textColor: 0xffffdf00,
                       shadow: true,
                       shadowColor: 0xffff00ff,
                       shadowOffsetX: 2,
                       shadowOffsetY: 2,
                       shadowBlur: 2,
-                      w: 900,
+                      w: 700,
                       h: 100,
                   },
               },
 
               Player: {
                   type: AAMPVideoPlayer,
+              },
+              FullScreen:
+              {
+                  x: 0,
+                  y: 0,
+                  w: 1920,
+                  h: 1080,
+              },
+              RightArrow: {
+                  x: 1835,
+                  y: 540,
+                  w: 40,
+                  h: 50,
+                  src: Utils.asset('images/right-small.png'),
+                  alpha: 0,
+              },
+              LeftArrow: {
+                  x: 25,
+                  y: 540,
+                  w: 40,
+                  h: 50,
+                  src: Utils.asset('images/left-small.png'),
+                  alpha: 0,
               },
           }
       }
@@ -14983,64 +15012,82 @@ ${error.toString()}`;
               text: { text: message }
           });
       }
-      
+      imageOnFullScreen(image) {
+          if (image.startsWith('/images')) {
+              this.tag('FullScreen').patch({
+                  src: Utils.asset(image),
+              });
+              this._setState('FullScreen');
+              this.hide();
+          } else {
+              this.tag('FullScreen').patch({ src: image });
+              this._setState('FullScreen');
+              this.hide();
+          }
+      }
+      /**
+    * Function to set details of items in right Icons list.
+    *
+    */
+
 
       set itemList(items) {
           this.tag('ItemList').items = items.map(info => {
               return {
-                  w: 175,
-                  h: 175,
+                  w: 300,
+                  h: 200,
                   type: AppListItem,
                   data: info,
                   focus: 1.2,
                   unfocus: 1,
-                  x_text: 106,
-                  y_text: 215,
+                  x_text: 150,
+                  y_text: 220,
               }
           });
           this.tag('ItemList').start();
       }
 
       _init() {
-          this.videoPlayback=false;
+          this.videoPlayback = false;
+          this.imageFullScreen = false;
           var networkApi = new Network();
           networkApi.getIP().then(ip => {
               this.tag('IpAddress').text.text = 'IP:' + ip;
           });
       }
 
-      
+
       previewImageOnFocus(image) {
           if (image.startsWith('/images')) {
-            this.tag('Preview').patch({
-              src: Utils.asset(image),
-            });
+              this.tag('Preview').patch({
+                  src: Utils.asset(image),
+              });
           } else {
-            this.tag('Preview').patch({ src: image });
+              this.tag('Preview').patch({ src: image });
           }
-        }
+      }
 
-    goToPlayer(item) {
-         this._setState('Player');
-         this.play(item);
-    }
+      goToPlayer(item) {
+          this._setState('Player');
+          this.play(item);
+      }
 
 
-     /**
-     * Function to hide the home UI.
-     */
+      /**
+      * Function to hide the home UI.
+      */
       hide() {
           this.tag('Background').patch({ alpha: 0 });
           this.tag('UsbHomeTopPanel').patch({ alpha: 0 });
           this.tag('ContentTitle').patch({ alpha: 0 });
           this.tag('ItemList').patch({ alpha: 0 });
           this.tag('Preview').patch({ alpha: 0 });
-        }
-      
-        /**
-           * Function to show home UI.
-         */
-         show() {
+      }
+
+      /**
+         * Function to show home UI.
+       */
+      show() {
           console.log('show -from content');
           this.tag('Background').patch({ alpha: 1 });
           this.tag('UsbHomeTopPanel').patch({ alpha: 1 });
@@ -15048,27 +15095,27 @@ ${error.toString()}`;
           this.tag('ItemList').patch({ alpha: 1 });
           this.tag('Preview').patch({ alpha: 1 });
 
-        }
-         /**
-     * Function to start video playback.
-     */
-    play(item) {
-      this.player = this.tag('Player');
-      try {
-        this.player.load({
-          title: item.data.displayName,
-          subtitle: 'm3u8',
-          url:item.data.uri,
-          drmConfig: null,
-        });
-        this.hide();
-        this._setState('Playing');
-        this.player.setVideoRect(0, 0, 1920, 1080);
-      } catch (error) {
-        this._setState('ItemList');
-        console.error('Playback Failed ' + error);
       }
-    }
+      /**
+  * Function to start video playback.
+  */
+      play(item) {
+          this.player = this.tag('Player');
+          try {
+              this.player.load({
+                  title: item.data.displayName,
+                  subtitle: 'm3u8',
+                  url: item.data.uri,
+                  drmConfig: null,
+              });
+              this.hide();
+              this._setState('Playing');
+              this.player.setVideoRect(0, 0, 1920, 1080);
+          } catch (error) {
+              this._setState('ItemList');
+              console.error('Playback Failed ' + error);
+          }
+      }
 
       static _states() {
           return [
@@ -15094,16 +15141,89 @@ ${error.toString()}`;
                   _handleDown() {
                   }
                   _handleUp() {
-                      this.videoPlayback=false;
+                      this.videoPlayback = false;
+                      this.imageFullScreen = false;
                       this._setState('Back');
                   }
                   _handleEnter() {
-                      let item= this.tag('ItemList').element;
+                      let item = this.tag('ItemList').element;
                       if (this.videoPlayback == true) { this.goToPlayer(item); }
+                      if (this.imageFullScreen == true) { this._setState('FullScreen'); }
+
+
                   }
                   $exit() {
                       this.videoPlayback = false;
                   }
+              },
+              class FullScreen extends this{
+                  $enter() {
+                      this.tag('FullScreen').patch({
+                          alpha: 1
+                      });
+                      this.tag('RightArrow').patch({
+                          alpha: 1
+                      });
+                      this.tag('LeftArrow').patch({
+                          alpha: 1
+                      });
+                  }
+                  $exit() {
+                      this.tag('RightArrow').patch({
+                          alpha: 0
+                      });
+                      this.tag('LeftArrow').patch({
+                          alpha: 0
+                      });
+                      this.tag('FullScreen').patch({
+                          alpha: 0
+                      });
+
+
+                  }
+                  _getFocused() {
+                      if (this.tag('ItemList').length) {
+                          this.imageOnFullScreen(this.tag('ItemList').element.data.url);
+                          return this.tag('ItemList').element
+                      }
+                  }
+                  _handleRight() {
+                      if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setNext();
+                          this.tag('LeftArrow').patch({
+                              alpha: 1
+                          });
+                          return this.tag('ItemList').element
+                      } else {
+                          this.tag('RightArrow').patch({
+                              alpha: 0
+                          });
+                      }
+                  }
+                  _handleLeft() {
+                      if (0 != this.tag('ItemList').index) {
+                          this.tag('ItemList').setPrevious();
+                          this.tag('RightArrow').patch({
+                              alpha: 1
+                          });
+                          return this.tag('ItemList').element
+                      } else {
+                          this.tag('LeftArrow').patch({
+                              alpha: 0
+                          });
+                      }
+                  }
+                  _handleKey(key) {
+                      console.log(key.keyCode);
+                      if (key.keyCode == 8 || key.keyCode == 27) {
+                          this._setState('ItemList');
+                          this.show();
+                          this.tag('FullScreen').patch({
+                              alpha: 0
+                          });
+                      }
+                  }
+
               },
 
               class Back extends this{
@@ -15133,25 +15253,25 @@ ${error.toString()}`;
               },
               class Playing extends this {
                   _getFocused() {
-                    return this.tag('Player')
+                      return this.tag('Player')
                   }
-          
+
                   stopPlayer() {
-                    this._setState('ItemList');
-                    if(this.player !=null)
-                       this.player.stop();
-                    this.show();
+                      this._setState('ItemList');
+                      if (this.player != null)
+                          this.player.stop();
+                      this.show();
                   }
-          
+
                   _handleKey(key) {
-                    if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-                      this.stopPlayer();
-                    } else if (key.keyCode == 227 || key.keyCode == 179) {
-                      this.stopPlayer();
-                      return false;
-                    }
+                      if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+                          this.stopPlayer();
+                      } else if (key.keyCode == 227 || key.keyCode == 179) {
+                          this.stopPlayer();
+                          return false;
+                      }
                   }
-                },
+              },
           ]
       }
   }
@@ -15206,6 +15326,7 @@ ${error.toString()}`;
   class UsbImageScreen extends UsbContent {
     _active() {
       this.contentTitle = 'Images';
+      this.imageFullScreen = true;
       this.itemList = imageListInfo;
       this._setState('ItemList');
     }
