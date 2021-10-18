@@ -31,11 +31,9 @@ export default class ListItem extends Lightning.Component {
       Item: {
         Shadow: {
           alpha: 0,
-          color: CONFIG.theme.hex,
         },
         y: 20,
         Image: {
-          y: this.y
         },
         Info: {},
       },
@@ -43,6 +41,14 @@ export default class ListItem extends Lightning.Component {
   }
 
   _init() {
+    this.tag('Shadow').patch({
+      color: CONFIG.theme.hex,
+      rect: true,
+      h: this.h + 24,
+      w: this.w,
+      x: this.x,
+      y: this.y - 12
+    })
     if (this.data.url.startsWith('/images')) {
       this.tag('Image').patch({
         rtt: true,
@@ -66,76 +72,98 @@ export default class ListItem extends Lightning.Component {
 
     /* Used static data for develpment purpose ,
     it wil replaced with Dynamic data once implimetation is completed.*/
-    this.tag('Info').patch({
-      x: this.x,
-      y: this.y + this.h + 25,
-      w: this.w,
-      h: 140,
-      alpha: 0,
-      PlayIcon: {
-        // x: this.x + 20,
-        // y: this.y + 20,
-        // texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/play_icon_new.png'), 50, 50),
-        Label: {
+
+    if (this.info) {
+      this.tag('Info').patch({
+        x: this.x - 20,
+        y: this.y + this.h + 10,
+        w: this.w,
+        h: 140,
+        alpha: 0,
+        PlayIcon: {
+          Label: {
+            x: this.x,
+            y: this.y + 10,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: this.data.displayName,
+              fontSize: 25,
+              maxLines: 2,
+              wordWrapWidth: this.w
+            },
+          }
+        },
+        IMDb: {
           x: this.x,
-          y: this.y + 10,
-          text: {
-            fontFace: CONFIG.language.font,
-            text: this.data.displayName,
-            fontSize: 25,
-            maxLines: 2,
-            wordWrapWidth: this.w
+          y: this.y + 40,
+          texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/IMDb.png'), 30, 20),
+          Rating: {
+            x: this.x + 30,
+            y: this.y - 3,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: '8.8/10',
+              fontSize: 21,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
           },
+          Ua: {
+            text: {
+              fontFace: CONFIG.language.font,
+              text: 'R',
+              fontSize: 20
+            },
+            x: this.x + 110,
+            y: this.y - 3
+          },
+          Duration: {
+            x: this.x + 140,
+            y: this.y - 3,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: '2h 30min',
+              fontSize: 21,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
+          },
+          Year: {
+            x: this.x + 240,
+            y: this.y - 3,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: '2017',
+              fontSize: 21,
+              maxLines: 2,
+              wordWrapWidth: 150
+            },
+          }
         }
-      },
-      IMDb: {
-        x: this.x,
-        y: this.y + 40,
-        texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/IMDb.png'), 30, 20),
-        Rating: {
-          x: this.x + 30,
-          y: this.y - 3,
-          text: {
-            fontFace: CONFIG.language.font,
-            text: '8.8/10',
-            fontSize: 20,
-            maxLines: 2,
-            wordWrapWidth: 150
-          },
+      })
+    } else {
+      this.tag('Info').patch({
+        x: this.x - 20,
+        y: this.y + this.h + 10,
+        w: this.w,
+        h: 140,
+        alpha: 0,
+        PlayIcon: {
+          Label: {
+            x: this.x,
+            y: this.y + 10,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: this.data.displayName,
+              fontSize: 35,
+              maxLines: 2,
+              wordWrapWidth: this.w
+            },
+          }
         },
-        Ua: {
-          text: {
-            fontFace: CONFIG.language.font,
-            text: 'R',
-            fontSize: 20
-          },
-          x: this.x + 110,
-          y: this.y - 3
-        },
-        Duration: {
-          x: this.x + 140,
-          y: this.y - 3,
-          text: {
-            fontFace: CONFIG.language.font,
-            text: '2h 30min',
-            fontSize: 20,
-            maxLines: 2,
-            wordWrapWidth: 150
-          },
-        },
-        Year:{
-          x: this.x + 240,
-          y: this.y - 3,
-          text: {
-            fontFace: CONFIG.language.font,
-            text: '2017',
-            fontSize: 20,
-            maxLines: 2,
-            wordWrapWidth: 150
-          },
-        }
-      }
-    })
+      })
+    }
+
   }
 
   /**
@@ -150,24 +178,13 @@ export default class ListItem extends Lightning.Component {
       zIndex: 1,
       scale: this.focus,
     })
-
     this.tag('Info').alpha = 1
-    this.tag('Info').patch({
-      smooth: {
-        x: this.x,
-        w: this.w,
-        h: 140,
-        scale: this.focus
-      }
-    })
     this.tag('Item').patch({
       zIndex: 2,
     })
     this.tag('Shadow').patch({
       scale: this.focus,
       alpha: 1,
-      y: -10,
-      texture: lng.Tools.getShadowRect(this.w, this.h + 20, 0, 0, 0),
     });
   }
 
@@ -176,23 +193,16 @@ export default class ListItem extends Lightning.Component {
    */
   _unfocus() {
     this.tag('Image').patch({
-      x: this.x,
-      y: this.y,
       w: this.w,
       h: this.h,
       scale: this.unfocus,
     })
     this.tag('Item').patch({
-      smooth: {
-        zIndex: 0,
-        y: this.y + 20
-      }
+      zIndex: 0,
     })
     this.tag('Info').alpha = 0
     this.tag('Shadow').patch({
-      smooth: {
-        alpha: 0
-      }
+      alpha: 0
     });
   }
 }

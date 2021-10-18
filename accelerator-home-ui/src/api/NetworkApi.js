@@ -26,7 +26,7 @@ export default class Network {
       default: 1,
     };
     this._thunder = ThunderJS(config);
-    this.callsign = 'org.rdk.Network';
+    this.callsign = 'org.rdk.Network.1';
   }
 
   /**

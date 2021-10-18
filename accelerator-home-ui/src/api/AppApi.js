@@ -95,6 +95,7 @@ export default class AppApi {
    */
   getResolution() {
     return new Promise((resolve, reject) => {
+
       const systemcCallsign = 'org.rdk.DisplaySettings'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
@@ -108,7 +109,28 @@ export default class AppApi {
             })
         })
         .catch(err => {
-          console.log('Display Error', err)
+          console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  getSupportedResolutions() {
+    return new Promise((resolve, reject) => {
+
+      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'getSupportedResolutions', { params: 'HDMI0' })
+            .then(result => { 
+              resolve(result.supportedResolutions)
+            })
+            .catch(err => {
+              resolve(false)
+            })
+        })
+        .catch(err => {
+          console.log('Display Error', JSON.stringify(err))
         })
     })
   }
@@ -116,7 +138,7 @@ export default class AppApi {
   /**
    * Function to set the display resolution.
    */
-  setResolution() {
+  setResolution(res) {
     return new Promise((resolve, reject) => {
       const systemcCallsign = 'org.rdk.DisplaySettings'
       thunder.Controller.activate({ callsign: systemcCallsign })
@@ -124,7 +146,7 @@ export default class AppApi {
           thunder
             .call(systemcCallsign, 'setCurrentResolution', {
               videoDisplay: 'HDMI0',
-              resolution: '1080p',
+              resolution: res,
               persist: true,
             })
             .then(result => {
@@ -135,7 +157,7 @@ export default class AppApi {
             })
         })
         .catch(err => {
-          console.log('Display Error', err)
+          console.log('Display Error', JSON.stringify(err))
         })
     })
   }
@@ -219,6 +241,7 @@ export default class AppApi {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
         })
+        thunder.call('Cobalt.1', 'deeplink', url)
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => { })
@@ -419,12 +442,12 @@ export default class AppApi {
     })
   }
 
-    audio_mute(value,audio_source) {
+  audio_mute(value, audio_source) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
-          console.log("############ audio_mute ############## value: " + value +" audio_source: "+audio_source)
+          console.log("############ audio_mute ############## value: " + value + " audio_source: " + audio_source)
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
@@ -482,6 +505,66 @@ export default class AppApi {
           resolve(false)
         })
 
+    })
+  }
+
+  getSoundMode() {
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getSoundMode', {
+         "audioPort": "HDMI0" 
+      })
+      .then(result => {
+        console.log("############ getSoundMode ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  setSoundMode(mode){
+
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'setSoundMode', {
+        "audioPort": "HDMI0",
+        "soundMode": mode,
+        "persist": true
+
+      })
+
+      .then(result => {
+        console.log("############ setSoundMode ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in setting sound mode:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  getSupportedAudioModes(){
+
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
+         "audioPort": "HDMI0" 
+      })
+      .then(result => {
+        console.log("############ getSupportedAudioModes ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting support audio sound mode:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
     })
   }
 

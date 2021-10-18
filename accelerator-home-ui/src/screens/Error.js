@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 import { Lightning, Router } from '@lightningjs/sdk'
+import { CONFIG } from '../Config/Config'
 
 export default class Error extends Lightning.Component {
   static _template() {
@@ -29,7 +30,7 @@ export default class Error extends Lightning.Component {
         x: 100,
         y: 100,
         text: {
-          fontFace: 'MS-Regular',
+          fontFace: CONFIG.language.font,
           text: 'Error',
           fontSize: 22,
         },

@@ -51,7 +51,7 @@ export default class SidePanel extends Lightning.Component {
    * Function to set items in side panel.
    */
   set sidePanelItems(items) {
-    this.tag('SidePanel').patch({ x: 60 })
+    this.tag('SidePanel').patch({ x: 105 })
     this.tag('SidePanel').items = items.map((info, index) => {
       this.data = info
       return {

@@ -20,6 +20,7 @@ import { Lightning, Utils } from '@lightningjs/sdk'
 import MainView from '../views/MainView.js'
 import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
+import SettingsScreen from './SettingsScreen.js'
 import ShutdownPanel from '../views/ShutdownPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
@@ -59,12 +60,14 @@ export default class HomeScreen extends Lightning.Component {
       },
       View: {
         x: 0,
-        y: 300,
+        y: 275,
         w: 1994,
         h: 919,
         clipping: true,
         SidePanel: {
-          y: -50,
+          w: 500,
+          h: 1000,
+          x: 105,
           type: SidePanel,
         },
         MainView: {
@@ -72,6 +75,12 @@ export default class HomeScreen extends Lightning.Component {
           h: 919,
           type: MainView,
         },
+      },
+      Settings:{
+        alpha:0,
+        w:1920,
+        h:1080,
+        type:SettingsScreen,
       },
       IpAddress: {
         x: 200,
@@ -97,6 +106,7 @@ export default class HomeScreen extends Lightning.Component {
 
   _init() {
     this.homeApi = new HomeApi()
+    
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
     var prop_apps = 'applications'
@@ -146,7 +156,7 @@ export default class HomeScreen extends Lightning.Component {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
-            location.reload(true);
+            // location.reload(true);
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
           }
@@ -156,6 +166,9 @@ export default class HomeScreen extends Lightning.Component {
         })
       }
     })
+  
+    
+  
   }
 
   _captureKeyRelease(key) {
@@ -330,12 +343,24 @@ export default class HomeScreen extends Lightning.Component {
 
     })
   }
+/**
+   * Fireancestor to change the text on top panel.
+   */
+  $changeHomeText(text) {
+    this.tag('TopPanel').changeText = text
+  }
   /**
    * Fireancestor to set the state to player.
    */
   $goToPlayer() {
     this._setState('Player')
     this.play()
+  }
+/**
+   * Fireancestor to change the IP.
+   */
+  $changeIp(ip){
+    this.tag('IpAddress').text.text = ip
   }
 
   /**
@@ -371,6 +396,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('TopPanel').patch({ alpha: 0 });
     this.tag('SidePanel').patch({ alpha: 0 });
   }
+  
 
   /**
      * Function to show home UI.
@@ -381,6 +407,25 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').patch({ alpha: 1 });
     this.tag('TopPanel').patch({ alpha: 1 });
     this.tag('SidePanel').patch({ alpha: 1 });
+  }
+
+  /** this function is used to hide only the side and top panels  */
+  $hideSideAndTopPanels(){
+    this.tag('TopPanel').patch({ alpha: 0 });
+    this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  /** this function will show side and top panels only */
+  $showSideAndTopPanels(){
+    this.tag('TopPanel').patch({ alpha: 1 });
+    this.tag('SidePanel').patch({ alpha: 1 });
+  }
+
+  /**
+   * Fireancestor to set the state to Settings.
+   */
+   $goToSettings() {
+    this._setState('Settings')
   }
 
   /**
@@ -394,7 +439,7 @@ export default class HomeScreen extends Lightning.Component {
         }
       },
       class SidePanel extends this{
-        _getFocused(){
+        _getFocused() {
           return this.tag('SidePanel')
         }
       },
@@ -412,6 +457,19 @@ export default class HomeScreen extends Lightning.Component {
       class MainView extends this {
         _getFocused() {
           return this.tag('MainView')
+        }
+      },
+      class Settings extends this{
+        $enter() {
+          this.tag('MainView').alpha = 0
+          this.tag('Settings').alpha = 1
+        }
+        _getFocused() {
+          return this.tag('Settings')
+        }
+        $exit() {
+          this.tag('MainView').alpha = 1
+          this.tag('Settings').alpha = 0
         }
       },
       class Playing extends this {

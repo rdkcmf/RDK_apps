@@ -36,7 +36,6 @@ export default class AppListItem extends Lightning.Component {
           color: CONFIG.theme.hex,
         },
         x: 0,
-        y: 18,
         Image: {},
         Title: {
           text: {
@@ -92,8 +91,8 @@ export default class AppListItem extends Lightning.Component {
     this.tag('Shadow').patch({
       scale: this.focus,
       alpha: 1,
-      y: -10,
-      texture: lng.Tools.getShadowRect(this.w, this.h + 20, 0, 0, 0),
+      y: -12,
+      texture: lng.Tools.getShadowRect(this.w, this.h + 24, 0, 0, 0),
   });
 
   }

@@ -31,47 +31,45 @@ export default class TopPanel extends Lightning.Component {
         w: 1920,
         h: 171,
         Mic: {
-          x: 80,
-          zIndex: 2,
-          y: 95,
-          mountY: 0.5,
+          x: 105,
+          // zIndex: 2,
+          y: 77,
           src: Utils.asset('/images/topPanel/microphone.png'),
           w: 70,
           h: 70,
         },
         Logo: {
-          x: 235,
-          y: 100,
-          mountY: 0.5,
-          src: Utils.asset('/images/'+ CONFIG.theme.logo),
-          w: 800 / 4,
-          h: 157 / 4
+          x: 315 - 35,
+          y: 90,
+          src: Utils.asset('/images/' + CONFIG.theme.logo),
+          w: 227,
+          h: 43
         },
         Page: {
-          x: 235,
-          y: 240,
-          mountY: 0.5,
+          x: 315 - 35,
+          y: 184,
+          // mountY: 0.5,
           text: {
             fontSize: 40,
             text: Language.translate('home'),
             textColor: CONFIG.theme.hex,
-            fontStyle: 'bold',
+            fontStyle: 'bolder',
             fontFace: CONFIG.language.font
           }
         },
         Settings: {
-          x: 1725 - 120,
-          y: 100,
+          x: 1825 - 105 - 160 - 37 + 30,
+          y: 111,
           mountY: 0.5,
           src: Utils.asset('/images/topPanel/setting.png'),
-          w: 40,
-          h: 40,
+          w: 37,
+          h: 37,
         },
         Time: {
-          x: 1820 -120,
-          y: 105,
+          x: 1920 - 105 - 160,
+          y: 111,
           mountY: 0.5,
-          text: { text: '', fontSize: 40, fontFace: CONFIG.language.font, },
+          text: { text: '', fontSize: 35, fontFace: CONFIG.language.font, },
           w: 160,
           h: 60,
         },
@@ -123,6 +121,14 @@ export default class TopPanel extends Lightning.Component {
     } else if (this.indexVal == 2) {
       this._setState('Setting')
     }
+  }
+
+  set changeText(text) {
+    this.tag('Page').text.text = text
+    if (text === 'Home') {
+      this.tag('Settings').color = 0xffffffff
+    }
+
   }
 
   _build() {
@@ -198,14 +204,18 @@ export default class TopPanel extends Lightning.Component {
           this.tag('Settings').color = CONFIG.theme.hex
         }
         _handleDown() {
-          
+
         }
         _handleLeft() {
-          
+
           this._setState('Mic')
         }
-        $exit(){
-          this.tag('Settings').color =  0xffffffff
+        _handleEnter() {
+          this.tag('Page').text.text = Language.translate('settings')
+          this.fireAncestors('$goToSettings')
+        }
+        $exit() {
+          this.tag('Settings').color = 0xffffffff
         }
       },
     ]

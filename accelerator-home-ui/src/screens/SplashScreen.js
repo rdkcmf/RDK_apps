@@ -23,6 +23,7 @@ import BluetoothApi from './../api/BluetoothApi'
 import HomeApi from '../api/HomeApi'
 import AppApi from '../api/AppApi'
 import Item from './../items/item'
+import { CONFIG } from '../Config/Config'
 
 /**
  * Class for splash screen.
@@ -57,7 +58,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1600,
           y: 474,
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 55,
             textAlign: 'center',
             text: 'Pair Your Remote',
@@ -69,7 +70,7 @@ export default class SplashScreen extends Lightning.Component {
           y: 550,
           x: 150,
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 35,
             textAlign: 'center',
             maxLines: 2,
@@ -98,7 +99,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1920,
           y: 325,
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 55,
             textAlign: 'center',
             text: "You're not connected to the internet",
@@ -109,7 +110,7 @@ export default class SplashScreen extends Lightning.Component {
           w: 1920,
           y: 400,
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 35,
             textAlign: 'center',
             maxLines: 2,
@@ -131,7 +132,7 @@ export default class SplashScreen extends Lightning.Component {
           y: 350,
           mountX: 0.5,
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 55,
             textAlign: 'center',
             text: 'Choose a Service',

@@ -18,9 +18,13 @@
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
 import BluetoothItem from '../items/BluetoothItem'
+import SettingsMainItem from '../items/SettingsMainItem'
+import SettingsItem from '../items/SettingsItem'
 import BluetoothApi from './../api/BluetoothApi'
+import BluetoothConfirmation from './BluetoothConfirmation'
 import BluetoothPairingScreen from './BluetoothPairingScreen'
 import { COLORS } from './../colors/Colors'
+import { CONFIG } from '../Config/Config'
 
 /**
  * Class for Bluetooth screen.
@@ -28,146 +32,142 @@ import { COLORS } from './../colors/Colors'
 export default class BluetoothScreen extends Lightning.Component {
   static _template() {
     return {
+      x: 0,
+      y: 0,
+      Confirmation: {
+        x: 700,
+        y: 100,
+        type: BluetoothConfirmation,
+        visible: false
+      },
+      PairingScreen: {
+        x: 700,
+        y: 100,
+        type: BluetoothPairingScreen,
+        zIndex: 100,
+        visible: false
+      },
       Switch: {
-        x: 825,
-        y: 310,
-        Shadow: {
-          alpha: 0,
-          x: -15,
-          y: 0,
-          color: 0x66000000,
-          texture: lng.Tools.getShadowRect(205, 60, 50, 10, 20),
+        // y: 0 + 200,
+        type: SettingsMainItem,
+        Title: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: 'Bluetooth On/Off',
+            textColor: COLORS.titleColor,
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+          }
         },
         Button: {
-          h: 60,
-          w: 180,
-          src: Utils.asset('images/switch-on-new.png'),
+          h: 30 * 1.5,
+          w: 44.6 * 1.5,
+          x: 1535,
+          mountX: 1,
+          y: 45,
+          mountY: 0.5,
+          src: Utils.asset('images/settings/ToggleOnOrange.png'),
         },
       },
-      Name: {
-        x: 1050,
-        y: 320,
-        text: {
-          fontFace: 'MS-Regular',
-          text: 'Now discoverable as: ',
-          textColor: COLORS.textColor,
-          fontSize: 28,
+      Searching: {
+        visible: false,
+        type: SettingsItem,
+        Title: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: 'Searching for Devices',
+            textColor: COLORS.titleColor,
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+          }
+        },
+        Loader: {
+          h: 30 * 1.5,
+          w: 30 * 1.5,
+          // x: 1535,
+          x: 320,
+          mountX: 1,
+          y: 45,
+          mountY: 0.5,
+          src: Utils.asset('images/settings/Loading.gif'),
         },
       },
       Networks: {
-        x: 825,
-        y: 400,
-        flex: { direction: 'column' },
         PairedNetworks: {
-          flexItem: { margin: 20 },
-          w: 1920 / 3,
-          h: 30,
-          Title: {
-            text: {
-              fontFace: 'MS-Regular',
-              text: 'My Devices: ',
-              textColor: COLORS.titleColor,
-              fontSize: 32,
-            },
-          },
+          y: 180,
           List: {
-            x: 0,
-            y: 65,
             type: Lightning.components.ListComponent,
-            w: 1920 / 3,
-            itemSize: 65,
+            w: 1920 - 300,
+            itemSize: 90,
             horizontal: false,
             invertDirection: true,
             roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6,
           },
         },
         AvailableNetworks: {
-          flexItem: { margin: 20, marginTop: 30 },
-          w: 1920 / 3,
-          h: 30,
-          Title: {
-            text: {
-              fontFace: 'MS-Regular',
-              text: 'Other Devices: ',
-              textColor: COLORS.titleColor,
-              fontSize: 32,
-            },
-          },
-          Loader: {
-            x: 250,
-            y: -10,
-            w: 50,
-            h: 50,
-            color: 0xff000000,
-            src: Utils.asset('images/loader.png'),
-            visible: false,
-          },
-
+          y: 90,
+          visible: false,
           List: {
-            x: 0,
-            y: 65,
-            w: 1920 / 3,
-            h: 100,
+            w: 1920 - 300,
             type: Lightning.components.ListComponent,
-            itemSize: 65,
+            itemSize: 90,
             horizontal: false,
             invertDirection: true,
             roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6,
           },
         },
         visible: false,
       },
-      PairingScreen: {
-        x: 1920 - 1920 / 3,
-        y: 0,
-        w: 1920 / 3,
-        h: 1080,
-        visible: false,
-        type: BluetoothPairingScreen,
+      AddADevice: {
+        y: 90,
+        type: SettingsMainItem,
+        Title: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: 'Add A Device',
+            textColor: COLORS.titleColor,
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+          }
+        },
       },
-      Message: {
-        x: 1920 - 1920 / 3 + 40,
-        y: 950,
-        text: { text: '', fontFace: 'MS-Regular', },
-      },
+      // PairingScreen: {
+      //   x: 1920 - 1920 / 3,
+      //   y: 0,
+      //   w: 1920 / 3,
+      //   h: 1080,
+      //   visible: false,
+      //   type: BluetoothPairingScreen,
+      // },
+      // Message: {
+      //   x: 1920 - 1920 / 3 + 40,
+      //   y: 950,
+      //   text: { text: '' },
+      // },
     }
   }
 
-  toggleBtnAnimationX() {
-    const lilLightningAnimation = this.tag('Button').animation({
-      duration: 1,
-      repeat: 0,
-      actions: [
-        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
-      ]
-    });
-    lilLightningAnimation.start();
-  }
-  toggleBtnAnimationY() {
-    const lilLightningAnimation = this.tag('Button').animation({
-      duration: 1,
-      repeat: 0,
-      actions: [
-        { p: 'x', v: { 0: 0, 0.5: 0, 1: 0 } }
-      ]
-    });
-    lilLightningAnimation.start();
-  }
-
   _init() {
-    this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
-      duration: 1,
-      repeat: -1,
-      stopMethod: 'immediate',
-      stopDelay: 0.2,
-      actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
-    })
-    this.loadingAnimation.play()
+    // this.loadingAnimation = this.tag('Networks.AvailableNetworks.Loader').animation({
+    //   duration: 1,
+    //   repeat: -1,
+    //   stopMethod: 'immediate',
+    //   stopDelay: 0.2,
+    //   actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
+    // })
+    // this.loadingAnimation.play()
     this._bt = new BluetoothApi()
     this._bluetooth = true
-    this._bluetoothIcon = true
-
-
     this._activateBluetooth()
     this._setState('Switch')
     this._bluetooth = true
@@ -177,7 +177,18 @@ export default class BluetoothScreen extends Lightning.Component {
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
     this.renderDeviceList()
+
+
+    this.loadingAnimation = this.tag('Searching.Loader').animation({
+      duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+      actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+    });
+
+    this.loadingAnimation.start()
+
   }
+
+
   _active() {
     this._setState('Switch')
   }
@@ -203,19 +214,98 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   /**
+   * Function to be executed when add a device is pressed
+   */
+
+  showAvailableDevices() {
+    this.tag('Switch').patch({ alpha: 0 });
+    this.tag('PairedNetworks').patch({ alpha: 0 });
+    this.tag('AddADevice').patch({ alpha: 0 });
+    this.tag('Searching').patch({ visible: true });
+    this.tag('AvailableNetworks').patch({ visible: true });
+    //  this.loadingAnimation.stop()
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  hideAvailableDevices() {
+    this.tag('Switch').patch({ alpha: 1 });
+    this.tag('PairedNetworks').patch({ alpha: 1 });
+    this.tag('AddADevice').patch({ alpha: 1 });
+    this.tag('Searching').patch({ visible: false });
+    this.tag('AvailableNetworks').patch({ visible: false });
+    this.tag('Confirmation').patch({ visible: false });
+    //  this.loadingAnimation.start()
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  showPairingScreen() {
+    this.tag('Switch').patch({ alpha: 0 });
+    this.tag('PairedNetworks').patch({ alpha: 0 });
+    this.tag('AddADevice').patch({ alpha: 0 });
+    this.tag('Searching').patch({ visible: false });
+    this.tag('AvailableNetworks').patch({ visible: false });
+    this.tag('Confirmation').patch({ visible: false });
+    this.tag('PairingScreen').patch({ visible: true });
+    this.fireAncestors('$hideTopPanel');
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  hidePairingScreen() {
+    this.tag('Switch').patch({ alpha: 1 });
+    this.tag('PairedNetworks').patch({ alpha: 1 });
+    this.tag('AddADevice').patch({ alpha: 1 });
+    this.tag('Searching').patch({ visible: false });
+    this.tag('AvailableNetworks').patch({ visible: false });
+    this.tag('Confirmation').patch({ visible: false });
+    this.tag('PairingScreen').patch({ visible: false });
+    this.fireAncestors('$showTopPanel');
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  showConfirmation() {
+    this.tag('Switch').patch({ alpha: 0 });
+    this.tag('PairedNetworks').patch({ alpha: 0 });
+    this.tag('AddADevice').patch({ alpha: 0 });
+    this.tag('Searching').patch({ visible: false });
+    this.tag('AvailableNetworks').patch({ visible: false });
+    this.tag('PairingScreen').patch({ visible: false });
+    this.tag('Confirmation').patch({ visible: true });
+    this.fireAncestors('$hideTopPanel');
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  hideConfirmation() {
+    this.tag('Switch').patch({ alpha: 1 });
+    this.tag('PairedNetworks').patch({ alpha: 1 });
+    this.tag('AddADevice').patch({ alpha: 1 });
+    this.tag('Searching').patch({ visible: false });
+    this.tag('AvailableNetworks').patch({ visible: false });
+    this.tag('PairingScreen').patch({ visible: false });
+    this.tag('Confirmation').patch({ visible: false });
+    this.fireAncestors('$showTopPanel');
+    // this.tag('TopPanel').patch({ alpha: 0 });
+    // this.tag('SidePanel').patch({ alpha: 0 });
+  }
+
+  /**
    * Function to render list of Bluetooth devices
    */
   renderDeviceList() {
     this._bt.getPairedDevices().then(result => {
       this._pairedList = result
-      this._pairedNetworks.h = this._pairedList.length * 65 + 30
-      this._pairedNetworks.tag('List').h = this._pairedList.length * 65
+      this._pairedNetworks.h = this._pairedList.length * 90
+      this._pairedNetworks.tag('List').h = this._pairedList.length * 90
       this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
         item.paired = true
         return {
           ref: 'Paired' + index,
-          w: 1920 / 3,
-          h: 65,
+          w: 1920 - 300,
+          h: 90,
           type: BluetoothItem,
           item: item,
         }
@@ -231,13 +321,13 @@ export default class BluetoothScreen extends Lightning.Component {
           } else return device
         }
       })
-      this._availableNetworks.h = this._otherList.length * 65 + 30
-      this._availableNetworks.tag('List').h = this._otherList.length * 65
+      this._availableNetworks.h = this._otherList.length * 90
+      this._availableNetworks.tag('List').h = this._otherList.length * 90
       this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
         return {
           ref: 'Other' + index,
-          w: 1920 / 3,
-          h: 65,
+          w: 1920 - 300,
+          h: 90,
           type: BluetoothItem,
           item: item,
         }
@@ -245,63 +335,169 @@ export default class BluetoothScreen extends Lightning.Component {
     })
   }
 
+  // connectBluetooth(option) {
+  //   if (this._pairedNetworks.tag('List').element._item.connected){
+  //     this._bt
+  //       .disconnect(
+  //         this._pairedNetworks.tag('List').element._item.deviceID,
+  //         this._pairedNetworks.tag('List').element._item.deviceType
+  //       )
+  //       .then(() => {})
+  //     this._setState('Switch')
+  //   } else if( !this._pairedNetworks.tag('List').element._item.connected){
+  //     this._setState('Confirmation')
+  //     this._bt
+  //       .connect(
+  //         this._pairedNetworks.tag('List').element._item.deviceID,
+  //         this._pairedNetworks.tag('List').element._item.deviceType
+  //       )
+  //       .then(result => {
+  //         if (!result) {
+  //           this.tag('Message').text = 'CONNECTION FAILED'
+  //           this._setState('Switch')
+  //         }
+  //         setTimeout(() => {
+  //           this.tag('Message').text = ''
+  //         }, 2000)
+  //       })
+  //   }   
+  // }
+
+  $pressEnter(option) {
+    if (option === 'Cancel') {
+      this._setState('Switch')
+    } else if (option === 'Pair') {
+      this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
+        this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+        if (result.success) {
+          this.tag('Confirmation.Pairing').text = 'Pairing Succesful'
+          this._setState('Confirmation')
+        } else {
+          this.tag('Confirmation.Pairing').text = 'Pairing Failed'
+          this._setState('Confirmation')
+        }
+        setTimeout(() => {
+          // this.tag('Message').text = ''
+          this._setState('Switch')
+          this.tag('Confirmation.Pairing').text = ''
+        }, 5000)
+      })
+      this._setState('Switch')
+    } else if (option === 'Connect') {
+      this._bt
+        .connect(
+          this._pairedNetworks.tag('List').element._item.deviceID,
+          this._pairedNetworks.tag('List').element._item.deviceType
+        )
+        .then(result => {
+          this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+          if (!result) {
+            // this.tag('Message').text = 'CONNECTION FAILED'
+            this.tag('Confirmation.Pairing').text = 'Connection Failed'
+            this._setState('Confirmation')
+          } else {
+            this.tag('Confirmation.Pairing').text = 'Connection Successful'
+            this._setState('Confirmation')
+          }
+          setTimeout(() => {
+            // this.tag('Message').text = ''
+            this._setState('Switch')
+            this.tag('Confirmation.Pairing').text = ''
+          }, 5000)
+        })
+      this._setState('Switch')
+    } else if (option === 'Disconnect') {
+      this._bt
+        .disconnect(
+          this._pairedNetworks.tag('List').element._item.deviceID,
+          this._pairedNetworks.tag('List').element._item.deviceType
+        )
+        .then(result => {
+          this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+          if (!result) {
+            this.tag('Confirmation.Pairing').text = 'Failed to Disconnect'
+            this._setState('Confirmation')
+          } else {
+            this.tag('Confirmation.Pairing').text = 'Disconnected'
+            this._setState('Confirmation')
+          }
+          setTimeout(() => {
+            // this.tag('Message').text = ''
+            this._setState('Switch')
+            this.tag('Confirmation.Pairing').text = ''
+          }, 5000)
+        })
+      this._setState('Switch')
+    } else if (option === 'Unpair') {
+      this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
+        this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+        if (result.success) {
+          this.tag('Confirmation.Pairing').text = 'Unpaired'
+          this._setState('Confirmation')
+        } else {
+          this.tag('Confirmation.Pairing').text = 'Unpairing Failed'
+          this._setState('Confirmation')
+        }
+        setTimeout(() => {
+          // this.tag('Message').text = ''
+          this._setState('Switch')
+          this.tag('Confirmation.Pairing').text = ''
+        }, 5000)
+      })
+      this._setState('Switch')
+    }
+  }
+
   static _states() {
     return [
       class Switch extends this {
-        $enter() { }
+        $enter() {
+          this.hideAvailableDevices()
+          this.hidePairingScreen()
+          console.log('Button enter')
+          this.tag('Switch')._focus()
+        }
         $exit() {
-          console.log('Switch exit')
-          this.tag('Button').patch({
-            h: 60,
-            w: 180
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
+          console.log('Botton exit')
+          this.tag('Switch')._unfocus()
         }
         _handleDown() {
-          if (this._bluetooth) {
-            if (this._pairedNetworks.tag('List').length > 0) {
-              this._setState('PairedDevices')
-            } else if (this._availableNetworks.tag('List').length > 0) {
-              this._setState('AvailableDevices')
-            }
-          }
+          this._setState('AddADevice')
+          // if (this._bluetooth) {
+          //   if (this._pairedNetworks.tag('List').length > 0) {
+          //     this._setState('PairedDevices')
+          //   } else if (this._availableNetworks.tag('List').length > 0) {
+          //     this._setState('AvailableDevices')
+          //   }
+          // }
         }
-
+        _handleUp() {
+          // this.fireAncestors('$goToTopPanel', 4)
+        }
         _handleLeft() {
-          console.log('handle left bluetooth')
-          this.tag('Button').patch({
-            h: 60,
-            w: 180
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 0
-            }
-          });
-          this.fireAncestors('$goToSideMenubar', 0)
-        }
-        _getFocused() {
-          console.log('switch focus')
-          this.tag('Button').patch({
-            h: 70,
-            w: 200
-          })
-          this.tag('Shadow').patch({
-            smooth: {
-              alpha: 1
-            }
-          });
+          // this.fireAncestors('$goToSidePanel', 0)
         }
         _handleEnter() {
           this.switch()
         }
       },
+      class Confirmation extends this{
+        $enter() {
+          this.showConfirmation()
+        }
+        _getFocused() {
+          return this.tag('Confirmation')
+        }
+        $pressOK() {
+          this._setState('Switch')
+          this.hideConfirmation()
+        }
+      },
+
       class PairedDevices extends this {
-        $enter() { }
+        $enter() {
+          this.hideAvailableDevices()
+        }
         _getFocused() {
           return this._pairedNetworks.tag('List').element
         }
@@ -312,13 +508,18 @@ export default class BluetoothScreen extends Lightning.Component {
           this._navigate('MyDevices', 'up')
         }
         _handleEnter() {
-          this.tag('PairingScreen').visible = true
+          // this.connectBluetooth(this._pairedNetworks.tag('List').element.ref)
+          // this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+          this.showPairingScreen()
+          // this.tag('PairingScreen').visible = true
           this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
           this._setState('PairingScreen')
         }
       },
       class AvailableDevices extends this {
-        $enter() { }
+        $enter() {
+          // this.showAvailableDevices()
+        }
         _getFocused() {
           return this._availableNetworks.tag('List').element
         }
@@ -329,52 +530,81 @@ export default class BluetoothScreen extends Lightning.Component {
           this._navigate('AvailableDevices', 'up')
         }
         _handleEnter() {
-          this.tag('PairingScreen').visible = true
-          this.tag('PairingScreen').item = this._availableNetworks.tag('List').element._item
-          this._setState('PairingScreen')
+          this.$pressEnter('Pair')
+          this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+          // this.tag('PairingScreen').visible = true
+          // this.tag('PairingScreen').item = this._availableNetworks.tag('List').element._item
+          // this._setState('PairingScreen')
+        }
+        _handleBack() {
+          this.hideAvailableDevices()
+          this._setState('Switch')
+        }
+      },
+      class AddADevice extends this {
+        $enter() {
+          this.tag('AddADevice')._focus()
+          this.hideAvailableDevices()
+        }
+        _handleUp() {
+          this._setState('Switch')
+        }
+        _handleDown() {
+          if (this._bluetooth) {
+            if (this._pairedNetworks.tag('List').length > 0) {
+              this._setState('PairedDevices')
+            } else if (this._availableNetworks.tag('List').length > 0) {
+              this._setState('AvailableDevices')
+            }
+          }
+        }
+        $exit() {
+          this.tag('AddADevice')._unfocus()
+        }
+        _handleEnter() {
+          if (this._bluetooth) {
+            this.showAvailableDevices()
+            this._setState('AvailableDevices')
+            // if (this._availableNetworks.tag('List').length>0){
+            //   this._setState('AvailableDevices')
+            // }
+            // else{
+            //   this._setState('Searching')
+            // }
+          }
+        }
+      },
+      class Searching extends this {
+        $enter() {
+          this.showAvailableDevices()
+        }
+
+        _handleBack() {
+          this.hideAvailableDevices()
+          this._setState('Switch')
+        }
+        _handleDown() {
+          this._setState('AvailableDevices')
         }
       },
       class PairingScreen extends this {
         $enter() {
           this._disable()
           this._bt.stopScan()
+          return this.tag('PairingScreen')
+        }
+        _handleBack() {
+          this.hidePairingScreen()
+          this._setState('Switch')
+        }
+        $goBack() {
+          this.hidePairingScreen()
+          this._setState('Switch')
         }
         _getFocused() {
           return this.tag('PairingScreen')
         }
-        $pressEnter(option) {
-          if (option === 'Cancel') {
-            this._setState('Switch')
-          } else if (option === 'Pair') {
-            this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(() => { })
-          } else if (option === 'Connect') {
-            this._bt
-              .connect(
-                this._pairedNetworks.tag('List').element._item.deviceID,
-                this._pairedNetworks.tag('List').element._item.deviceType
-              )
-              .then(result => {
-                if (!result) {
-                  this.tag('Message').text = 'CONNECTION FAILED'
-                  this._setState('Switch')
-                }
-                setTimeout(() => {
-                  this.tag('Message').text = ''
-                }, 2000)
-              })
-          } else if (option === 'Disconnect') {
-            this._bt
-              .disconnect(
-                this._pairedNetworks.tag('List').element._item.deviceID,
-                this._pairedNetworks.tag('List').element._item.deviceType
-              )
-              .then(() => { })
-            this._setState('Switch')
-          } else if (option === 'Unpair') {
-            this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(() => { })
-            this._setState('Switch')
-          }
-        }
+
         $exit() {
           this.tag('PairingScreen').visible = false
           this._enable()
@@ -396,16 +626,18 @@ export default class BluetoothScreen extends Lightning.Component {
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
-          this._setState('AvailableDevices')
+          // this._setState('AvailableDevices')
         }
       }
     } else if (dir === 'up') {
       if (list.index > 0) list.setPrevious()
       else if (list.index == 0) {
         if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
-          this._setState('PairedDevices')
-        } else {
-          this._setState('Switch')
+          // this._setState('PairedDevices')
+        } else if (listname === 'MyDevices') {
+          this._setState('AddADevice')
+          // } else if (listname === 'AvailableDevices'){
+          //   this._setState('Searching')
         }
       }
     }
@@ -420,7 +652,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = false
           this.tag('Networks').visible = false
-          this.tag('Switch.Button').src = Utils.asset('images/switch-off-new.png')
+          this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
         }
       })
     } else {
@@ -428,7 +660,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = true
           this.tag('Networks').visible = true
-          this.tag('Switch.Button').src = Utils.asset('images/switch-on-new.png')
+          this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
           this.renderDeviceList()
           this._bt.startScan()
         }
@@ -447,7 +679,9 @@ export default class BluetoothScreen extends Lightning.Component {
       this._bt.registerEvent('onPairingChange', status => {
         this._bt.startScan()
         this.renderDeviceList()
-        this._setState('Switch')
+        this._setState('Confirmation')
+        this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+
       })
       this._bt.registerEvent('onPairingRequest', notification => {
         if (notification.pinRequired === 'true' && notification.pinValue) {
@@ -460,31 +694,40 @@ export default class BluetoothScreen extends Lightning.Component {
         this._bt.startScan()
         console.log('CONNECTION CHANGED' + JSON.stringify(notification))
         this.renderDeviceList()
-        this._setState('Switch')
+        //  this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
         if (notification.connected) {
-          this.tag('Message').text = 'CONNECTION SUCCESS'
+          // this.tag('Message').text = 'CONNECTION SUCCESS'
+          this.tag('Confirmation.Pairing').text = 'CONNECTION SUCCESS'
         } else {
-          this.tag('Message').text = 'CONNECTION FAILED'
+          // this.tag('Message').text = 'CONNECTION FAILED'
+          this.tag('Confirmation.Pairing').text = 'CONNECTION FAILED'
         }
         setTimeout(() => {
-          this.tag('Message').text = ''
-        }, 2000)
+          // this.tag('Message').text = ''
+          this._setState('Switch')
+          this.tag('Confirmation.Pairing').text = ''
+        }, 5000)
+        this._setState('Confirmation')
       })
       this._bt.registerEvent('onDiscoveryCompleted', () => {
-        this.tag('Networks.AvailableNetworks.Loader').visible = false
+        this.tag('Searching.Loader').visible = false
         this.renderDeviceList()
       })
       this._bt.registerEvent('onDiscoveryStarted', () => {
-        this.tag('Networks.AvailableNetworks.Loader').visible = true
+        this.tag('Searching.Loader').visible = true
       })
       this._bt.registerEvent('onRequestFailed', notification => {
         this._bt.startScan()
         this.renderDeviceList()
-        this._setState('Switch')
-        this.tag('Message').text = notification.newStatus
+        this._setState('Confirmation')
+        //  this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+        // this.tag('Confirmation').item.name = notification.params.name
+        this.tag('Confirmation.Pairing').text = notification.newStatus
         setTimeout(() => {
-          this.tag('Message').text = ''
-        }, 2000)
+          // this.tag('Message').text = ''
+          this._setState('Switch')
+          this.tag('Confirmation.Pairing').text = ''
+        }, 5000)
       })
       this._bt.getName().then(name => {
         this.tag('Name').text.text = `Now discoverable as "${name}"`

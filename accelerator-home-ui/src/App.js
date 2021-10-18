@@ -54,6 +54,8 @@ export default class App extends Router.App {
   }
 
   _init() {
+    
+
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
@@ -381,7 +383,7 @@ export default class App extends Router.App {
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchCobalt();
+          appApi.launchCobalt(notification.parameters.url);
           Storage.set('applicationType', 'Cobalt');
           appApi.setVisibility('ResidentApp', false);
           let params = {
@@ -488,7 +490,7 @@ export default class App extends Router.App {
         let status = AppApi.pluginStatus(applicationName);
         let params = { applicationName: notification.applicationName, state: 'stopped' };
         if (status) {
-          params.status = 'running';
+          params.state = 'running';
         }
         this.xcastApi.onApplicationStateChanged(params);
         console.log('State of ' + this.xcastApps(notification.applicationName));

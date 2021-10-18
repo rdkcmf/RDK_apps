@@ -8,6 +8,13 @@ within the component is also subject to the terms and conditions
 of these licenses. The LICENSE file contains the text of all the
 licenses which apply within this component.
 
+Material in accelerator-home-ui/src/ui-components has been adapted from
+original code in the Lightning-UI-Components repository at:
+https://github.com/rdkcentral/Lightning-UI-Components
+and which is:
+Copyright 2020 Comcast Cable Communications Management LLC
+Licensed under the Apache License, Version 2.0.
+
 The Montserrat directory within this component contains fonts which are
 licensed under the SIL Open Font License, version 1.1. The Montserrat directory contains its own
 license file, called LICENSE, which describes the licensing of the material in

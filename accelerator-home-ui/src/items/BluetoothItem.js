@@ -16,67 +16,100 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
-import SettingsItem from './SettingsItem'
-import { COLORS } from '../colors/Colors'
-
-/**
- * Class for the item in the Bluetooth screen.
- */
-export default class BluetoothItem extends SettingsItem {
-  static _template() {
-    return {
-      Item: {
-        w: 1920 / 3 - 70,
-        h: 65,
-        rect: true,
-        color: 0x00000000,
-        shader: { type: Lightning.shaders.RoundedRectangle, radius: 9 },
-      },
-    }
-  }
-
-  /**
-   * Function to set contents of an item in the Bluetooth screen.
-   */
-  set item(item) {
-    this._item = item
-    this.connected = item.connected ? 'Connected' : 'Not Connected'
-    this.status = item.paired ? this.connected : 'Not Paired'
-    this.tag('Item').patch({
-      Left: {
-        x: 10,
-        y: 32.5,
-        mountY: 0.5,
-        text: { text: item.name, fontSize: 25, textColor: COLORS.textColor },
-      },
-
-      Right: {
-        x: 1920 / 3 - 80,
-        mountX: 1,
-        y: 32.5,
-        mountY: 0.5,
-        flex: { direction: 'row' },
-        Text: { x: 0, flexItem: {}, text: { text: this.status, fontSize: 25 } },
-        Info: {
-          color: 0xff0000ff,
-          flexItem: { marginLeft: 10 },
-          texture: Lightning.Tools.getSvgTexture(Utils.asset('images/info.png'), 32.5, 32.5),
-        },
-      },
-    })
-    if (this.status == 'Connected') {
-      this.tag('Item.Right.Info').visible = false
-    } else {
-      this.tag('Item.Right.Info').visible = true
-    }
-  }
-
-  _focus() {
-    this.tag('Item').color = COLORS.hightlightColor
-  }
-
-  _unfocus() {
-    this.tag('Item').color = 0x00000000
-  }
-}
+ import { Lightning, Utils } from '@lightningjs/sdk'
+ import SettingsItem from './SettingsItem'
+ import { COLORS } from '../colors/Colors'
+ import { CONFIG } from '../Config/Config'
+ 
+ /**
+  * Class for the item in the Bluetooth screen.
+  */
+ export default class BluetoothItem extends SettingsItem {
+   static _template() {
+     return {
+       TopLine: {
+         y: 0,
+         mountY: 0.5,
+         w: 1535,
+         h: 3,
+         rect: true,
+         color: 0xFFFFFFFF
+       },
+       Item: {
+         w: 1920 -300,
+         h: 90,
+       },
+       BottomLine: {
+         y: 90,
+         mountY: 0.5,
+         w: 1535,
+         h: 3,
+         rect: true,
+         color: 0xFFFFFFFF
+       },
+     }
+   }
+ 
+   /**
+    * Function to set contents of an item in the Bluetooth screen.
+    */
+   set item(item) {
+     this._item = item
+     this.connected = item.connected ? 'Connected' : 'Not Connected'
+     this.status = item.paired ? this.connected : 'Not Paired'
+     this.tag('Item').patch({
+       Left: {
+         x: 10,
+         y: 45,
+         mountY: 0.5,
+         text: { text: item.name, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font },
+       },
+ 
+       Right: {
+         x: 1535-200,
+         y: 30,
+         mountY: 0.5,
+         mountX:1,
+         Text: { text: { text: this.status, fontSize: 25,fontFace:CONFIG.language.font,verticalAlign:"middle" } },
+       },
+      //  Debug:{
+      //    x: 300,
+      //    y:5,
+      //    mountY: 0.5,
+      //    mountX:1,
+      //    Text: { text: { text: `item: ${JSON.stringify(item)}`, fontSize: 15,fontFace:CONFIG.language.font,verticalAlign:"middle" } },
+      //  }
+     })
+   }
+ 
+   _focus() {
+     this.tag('TopLine').color = CONFIG.theme.hex
+     this.tag('BottomLine').color = CONFIG.theme.hex
+     this.patch({
+       zIndex:10
+     })
+    this.tag('TopLine').h = 6
+    this.tag('BottomLine').h = 6
+   }
+ 
+   _unfocus() {
+     this.tag('TopLine').color = 0xFFFFFFFF
+     this.tag('BottomLine').color = 0xFFFFFFFF
+     this.patch({
+       zIndex:1
+     })
+      this.tag('TopLine').h = 3
+      this.tag('BottomLine').h = 3
+   }
+   // _handleEnter() {
+   //   // this.tag("Item").patch(
+   //   //   {
+   //   //     text: {
+   //   //       text: "this works",
+   //   //     }
+   //   //   }
+   //   // )
+   //   this.fireAncestors('$connectBluetooth', this.tag('List').element.ref)
+   // }
+ }
+ 

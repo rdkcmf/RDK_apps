@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import BluetoothScreen from './BluetoothScreen'
 import WiFiScreen from './WifiScreen'
-import SideSettingScreen from './SideSettingScreen'
-import UsbFolders from './UsbScreens/UsbFolders'
-import NetworkApi from '../api/NetworkApi'
+import { COLORS } from '../colors/Colors'
+import SettingsMainItem from '../items/SettingsMainItem'
+import { CONFIG } from '../Config/Config'
 
 /**
  * Class for settings screen.
@@ -30,270 +30,161 @@ import NetworkApi from '../api/NetworkApi'
 export default class SettingsScreen extends Lightning.Component {
   static _template() {
     return {
-      Background: {
-        w: 1920,
-        h: 1080,
-        src: Utils.asset('images/tvShows/background_new.jpg'),
-      },
-      SettingsTopPanel: {
-        x: 0,
+      x: 280,
+      y: 286,
+      WiFi: {
         y: 0,
-        w: 1920,
-        h: 171,
-        Back: {
-          x: 81,
-          y: 100,
+        type: SettingsMainItem,
+        Title: {
+          x: 10,
+          y: 45,
           mountY: 0.5,
-          src: Utils.asset('/images/settings/Back_icon.png'),
-          w: 70,
-          h: 70,
-        },
-        IconTitle: {
-          x: 200,
-          y: 78,
-          text: { text: 'Settings', fontSize: 40, fontFace: 'MS-Regular', },
-        },
-        IpAddress: {
-          x: 1950,
-          y: 125,
-          mount: 1,
           text: {
-            fontFace: 'MS-Regular',
-            text: 'IP:N/A',
-            textColor: 0xffffffff,
-            fontSize: 32,
-            w: 360,
-            h: 40,
-          },
+            text: 'WiFi',
+            textColor: COLORS.titleColor,
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+          }
         },
-        Border: {
-          x: 81,
-          y: 171,
+        Button: {
+          h: 45,
+          w: 45,
+          x: 1535,
+          mountX: 1,
+          y: 45,
           mountY: 0.5,
-          RoundRectangle: {
-            zIndex: 2,
-            texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff),
-          },
-          alpha: 0.4
-        }
+          src: Utils.asset('images/settings/Arrow.png'),
+        },
       },
-
-      SideMenubar: {
-        type: SideSettingScreen,
-        rect: true,
-        color: 0xff364651,
-        visible: true
+      Bluetooth: {
+        y: 90,
+        type: SettingsMainItem,
+        Title: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: 'Bluetooth',
+            textColor: COLORS.titleColor,
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+          }
+        },
+        Button: {
+          h: 45,
+          w: 45,
+          x: 1535,
+          mountX: 1,
+          y: 45,
+          mountY: 0.5,
+          src: Utils.asset('images/settings/Arrow.png'),
+        },
       },
       WiFiScreen: {
         type: WiFiScreen,
-        visible: true,
+        visible: false,
       },
       BluetoothScreen: {
         type: BluetoothScreen,
-        visible: true,
+        visible: false,
       },
-      UsbFolders: {
-        type: UsbFolders,
-        visible: true,
-      },
-      HBorder: {
-        x: 760,
-        y: 220,
-        mountY: 0.5,
-        RoundRectangle: {
-          zIndex: 2,
-          texture: lng.Tools.getRoundRect(0, 809, 0, 3, 0xffffffff, true, 0xffffffff),
-        },
-        alpha: 0.4
-      }
     }
   }
 
   _init() {
-    var networkApi = new NetworkApi()
-    networkApi.getIP().then(ip => {
-      this.tag('IpAddress').text.text = 'IP:' + ip
-    })
-  }
-  _active() {
-    this._setState('SideMenubar')
-    this.tag('SideMenubar').index = this.sideMenubarIndex
+    this._setState('WiFi')
   }
 
-  set screen(screen) {
-    this._setState(screen)
+  hide() {
+    this.tag('WiFi').patch({ alpha: 0 });
+    this.tag('Bluetooth').patch({ alpha: 0 });
   }
 
-  set id(id) {
-    this.sideMenubarIndex = parseInt(id)
+  show() {
+    this.tag('WiFi').patch({ alpha: 1 });
+    this.tag('Bluetooth').patch({ alpha: 1 });
   }
 
-  set params(args) {
-    if (args.animation != undefined) {
-      args.animation.start()
-    }
-  }
-
-  /**
-   * Fireancestor to set the state to side panel.
-   * @param {index} index index value of side panel item.
-   */
-  $goToSettingsTopPanel() {
-    this._setState('Back')
-  }
-
-  $goToBluetoothScreen(index) {
-    this._setState('BluetoothScreen')
-  }
-  $goToWiFiScreen(index) {
-    this._setState('WiFiScreen')
-  }
-  $goToUsbFolders(index) {
-    this._setState('UsbFolders')
-  }
-
-  $goToSideMenubar(index) {
-    this.tag('SideMenubar').index = index
-    this._setState('SideMenubar')
-  }
-
-  $setVisibleSetting(index) {
-    if (index == 0) {
-      this.tag('BluetoothScreen').alpha = 1
-      this.tag('WiFiScreen').alpha = 0
-      this.tag('UsbFolders').alpha = 0
-    }
-    else if (index == 1) {
-      this.tag('BluetoothScreen').alpha = 0
-      this.tag('WiFiScreen').alpha = 1
-      this.tag('UsbFolders').alpha = 0
-
-    } else if (index == 2) {
-      this.tag('BluetoothScreen').alpha = 0
-      this.tag('WiFiScreen').alpha = 0
-      this.tag('UsbFolders').alpha = 1
-    }
+  home() {
+    this.fireAncestors('$changeHomeText', Language.translate('home'))
+    this.fireAncestors('$goToSidePanel', 0)
   }
 
   static _states() {
     return [
-      class SideMenubar extends this{
-        _getFocused() {
-          return this.tag('SideMenubar')
-        }
-      },
-      class Back extends this{
+      class WiFi extends this {
         $enter() {
-          this.tag('Back').patch({
-            src: Utils.asset('/images/settings/back-arrow-small.png'),
-          })
+          this.tag('WiFi')._focus()
+        }
+        $exit() {
+          console.log('Botton exit')
+          this.tag('WiFi')._unfocus()
         }
         _handleDown() {
-          this.tag('Back').patch({
-            src: Utils.asset('/images/settings/Back_icon.png'),
-          })
-          this._setState('SideMenubar')
+          this._setState('Bluetooth')
         }
-        _handleKey(key) {
-          if (key.keyCode == 13) {
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/Back_icon.png'),
-            })
-            Router.navigate('/home', false)
-          }
+        _handleEnter() {
+          this._setState('WiFiScreen')
+          this.hide()
+        }
+        _handleBack() {
+          this.home()
         }
       },
+      class Bluetooth extends this {
+        $enter() {
+          console.log('Button enter')
+          this.tag('Bluetooth')._focus()
+        }
+        $exit() {
+          console.log('Botton exit')
+          this.tag('Bluetooth')._unfocus()
+        }
+        _handleUp() {
+          this._setState('WiFi')
+        }
+        _handleEnter() {
+          this._setState('BluetoothScreen')
+          this.hide()
+        }
+        _handleBack() {
+          this.home()
+        }
+      },
+
+
       class BluetoothScreen extends this {
         $enter() {
           this.tag('BluetoothScreen').visible = true
+          this.fireAncestors('$changeHomeText', 'Settings / Bluetooth')
         }
         _getFocused() {
           return this.tag('BluetoothScreen')
         }
         $exit() {
-          // this.tag('BluetoothScreen').visible = false
+          this.tag('BluetoothScreen').visible = false
+          this.fireAncestors('$changeHomeText', 'Settings')
         }
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1,
-          }
-          if (
-            (Storage.get('applicationType') == '') &&
-            (key.keyCode == 77 ||
-              key.keyCode == 49 ||
-              key.keyCode == 36 ||
-              key.keyCode == 158 ||
-              key.keyCode == 27 ||
-              (key.keyCode == 73 && key.ctrlKey == true))
-          ) {
-            this._appAnimation = this.animation({
-              duration: 0.5,
-              repeat: 0,
-              stopMethod: 'immediate',
-              actions: [
-                { p: 'alpha', v: { 0: 0.5, 1: 1 } },
-                { p: 'y', v: { 0: 0, 1: 1080 } },
-              ],
-            })
-            this._appAnimation.start()
-            this._appAnimation.on('finish', p => {
-              Router.navigate('home')
-            })
-          } else return false;
-        }
-      },
-      class UsbFolders extends this {
-        $enter() {
-          this.tag('UsbFolders').visible = true
-        }
-        _getFocused() {
-          return this.tag('UsbFolders')
-        }
-        $exit() {
-          // this.tag('UsbFolders').visible = false
+        _handleBack() {
+          this._setState('Bluetooth')
+          this.show()
         }
       },
       class WiFiScreen extends this {
         $enter() {
           this.tag('WiFiScreen').visible = true
+          this.fireAncestors('$changeHomeText', 'Settings / WiFi')
         }
         _getFocused() {
           return this.tag('WiFiScreen')
         }
         $exit() {
-          // this.tag('WiFiScreen').visible = false
+          this.tag('WiFiScreen').visible = false
+          this.fireAncestors('$changeHomeText', 'Settings')
         }
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1,
-          }
-          if (
-            (Storage.get('applicationType') == '') &&
-            (key.keyCode == 77 ||
-              key.keyCode == 49 ||
-              key.keyCode == 36 ||
-              key.keyCode == 158 ||
-              key.keyCode == 27 ||
-              (key.keyCode == 73 && key.ctrlKey == true))
-          ) {
-            this._appAnimation = this.animation({
-              duration: 0.3,
-              repeat: 0,
-              stopMethod: 'immediate',
-              actions: [
-                { p: 'alpha', v: { 0: 0.5, 1: 1 } },
-                { p: 'y', v: { 0: 0, 1: 1080 } },
-              ],
-            })
-            this._appAnimation.start()
-            this._appAnimation.on('finish', p => {
-              Router.navigate('home')
-            })
-          } else return false;
+        _handleBack() {
+          this._setState('WiFi')
+          this.show()
         }
       },
     ]

@@ -31,14 +31,12 @@ export default class SidePanelItem extends Lightning.Component {
       Item: {
         rect: true,
         Image: {
-          x: 25,
-          y: 25,
           w: 70,
           H: 70,
         },
         Title: {
           text: {
-            fontFace: 'MS-Regular',
+            fontFace: CONFIG.language.font,
             fontSize: 40,
             textColor: 0xffffffff,
           },

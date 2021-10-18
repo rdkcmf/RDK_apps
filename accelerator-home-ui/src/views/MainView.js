@@ -21,7 +21,6 @@ import ListItem from '../items/ListItem.js'
 import AppListItem from '../items/AppListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
-import ArrowIconItem from '../items/ArrowIconlItem.js'
 import { CONFIG } from '../Config/Config.js'
 
 /** Class for main view component in home UI */
@@ -32,16 +31,17 @@ export default class MainView extends Lightning.Component {
   static _template() {
     return {
       MainView: {
-        x: 225 - 25,
+        x: 280,
         w: 1765,
         h: 1080,
         clipping: true,
         Text1: {
-          x: 10 + 25,
-          y:  30,
+          // x: 10 + 25,
+          // y:  30,
+          h: 30,
           text: {
             fontFace: CONFIG.language.font,
-            fontSize: 28,
+            fontSize: 25,
             text: Language.translate('Featured Content'),
             fontStyle: 'normal',
             textColor: 0xFFFFFFFF,
@@ -49,13 +49,13 @@ export default class MainView extends Lightning.Component {
           zIndex: 0
         },
         AppList: {
-          y: 50 + 10,
-          x: 25,
-          flex: { direction: 'row', paddingLeft: 15, wrap: false },
+          y: 27 + 10,
+          x: -20,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
           type: Lightning.components.ListComponent,
           w: 1745,
           h: 400,
-          itemSize: 440+ 15,
+          itemSize: 454 + 20,
           roll: true,
           rollMax: 1745,
           horizontal: true,
@@ -63,25 +63,25 @@ export default class MainView extends Lightning.Component {
           clipping: false,
         },
         Text2: {
-          x: 10 + 25,
-          y: 368 + 30,
+          // x: 10 + 25,
+          y: 425,
+          h: 30,
           text: {
             fontFace: CONFIG.language.font,
-            fontSize: 28,
+            fontSize: 25,
             text: Language.translate('Featured Apps'),
             fontStyle: 'normal',
             textColor: 0xFFFFFFFF,
           },
         },
         MetroApps: {
-          x: 0,
-          y: 410 + 20,
-          x: 25,
+          x: -20,
+          y: 425 + 30 + 27,
           type: Lightning.components.ListComponent,
-          flex: { direction: 'row', paddingLeft: 15, wrap: false },
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
           w: 1745,
           h: 300,
-          itemSize: 275 + 15,
+          itemSize: 268 + 20,
           roll: true,
           rollMax: 1745,
           horizontal: true,
@@ -89,25 +89,26 @@ export default class MainView extends Lightning.Component {
           clipping: false,
         },
         Text3: {
-          x: 10 + 25,
-          y: 595 + 50,
+          // x: 10 + 25,
+          y: 633 + 40,
+          h: 30,
           text: {
             fontFace: CONFIG.language.font,
-            fontSize: 28,
+            fontSize: 25,
             text: Language.translate('Featured Video on Demand'),
             fontStyle: 'normal',
             textColor: 0xFFFFFFFF,
           },
         },
         TVShows: {
-          x: 25,
-          y: 635 + 50,
+          x: -20,
+          y: 673 + 10 + 27,
           w: 1745,
           h: 400,
           type: Lightning.components.ListComponent,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           roll: true,
-          itemSize: 328,
+          itemSize: 257 + 20,
           rollMax: 1745,
           horizontal: true,
           itemScrollOffset: -4,
@@ -147,38 +148,21 @@ export default class MainView extends Lightning.Component {
     });
   }
 
-  _active() {
-    if (this.settingsScreen) {
-      let app = this.parent.parent
-      this._appAnimation = app.animation({
-        duration: 0,
-        repeat: 0,
-        stopMethod: 'immediate',
-        actions: [
-          { p: 'x', v: { 0: 0, 1: -320 } },
-          { p: 'y', v: { 0: 0, 1: -180 } },
-          { p: 'scale', v: { 0: 1, 1: 1.17 } },
-        ],
-      })
-      this._appAnimation.start()
-      this.settingsScreen = false
-    }
-  }
-
   /**
    * Function to set details of items in app list.
    */
   set appItems(items) {
     this.tag('AppList').items = items.map(info => {
       return {
-        w: 440,
-        h: 270,
+        w: 454,
+        h: 255,
         type: ListItem,
         data: info,
-        focus: 1.1,
+        focus: 1.11,
         unfocus: 1,
         x_text: 120,
         y_text: 140,
+        info: false
       }
     })
     this.tag('AppList').start()
@@ -187,11 +171,11 @@ export default class MainView extends Lightning.Component {
   set metroApps(items) {
     this.tag('MetroApps').items = items.map((info, index) => {
       return {
-        w: 275,
-        h: 155,
+        w: 268,
+        h: 151,
         type: AppListItem,
         data: info,
-        focus: 1.1,
+        focus: 1.15,
         unfocus: 1,
         x_text: 106,
         y_text: 140,
@@ -206,14 +190,15 @@ export default class MainView extends Lightning.Component {
   set tvShowItems(items) {
     this.tag('TVShows').items = items.map(info => {
       return {
-        w: 308,
-        h: 200,
+        w: 257,
+        h: 145,
         type: ListItem,
         data: info,
-        focus: 1.2,
+        focus: 1.15,
         unfocus: 1,
         x_text: 218,
         y_text: 264,
+        info: true
       }
     })
     this.tag('TVShows').start()
@@ -281,14 +266,6 @@ export default class MainView extends Lightning.Component {
             this.fireAncestors('$goToSidePanel', 0)
           }
         }
-        // _handleDown() {
-        //   this.tag('Text1').text.fontStyle = 'normal'
-        //   this._setState('MetroApps')
-        // }
-        // _handleUp() {
-        //   console.log('handle up')
-        //   this.fireAncestors('$goToTopPanel', 0)
-        // }
         _handleEnter() {
           var appApi = new AppApi();
           var applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
@@ -377,10 +354,6 @@ export default class MainView extends Lightning.Component {
             return this.tag('MetroApps').element
           }
         }
-        // _handleUp() {
-        //   this.tag('Text2').text.fontStyle = 'normal'
-        //   this._setState('AppList')
-        // }
         _handleRight() {
           if (this.tag('MetroApps').length - 1 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setNext()
@@ -399,10 +372,6 @@ export default class MainView extends Lightning.Component {
             this.fireAncestors('$goToSidePanel', 1)
           }
         }
-        // _handleDown() {
-        //   this.tag('Text2').text.fontStyle = 'normal'
-        //   this._setState('TVShows')
-        // }
         _handleEnter() {
           var appApi = new AppApi();
           var applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
