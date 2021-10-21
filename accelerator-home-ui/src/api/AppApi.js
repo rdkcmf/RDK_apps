@@ -568,4 +568,191 @@ export default class AppApi {
     })
   }
 
+  //OTHER SETTINGS PAGE API
+  
+  //1. UI VOICE
+
+  //Start a speech
+  speak(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.TextToSpeech.1', 'speak', {
+        "text": "speech_1" 
+      })
+      .then(result => {
+        console.log("############ speak ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in speak:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  //Resume a speech
+  resume(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.TextToSpeech.1', 'resume', {
+        "speechid": 1 
+      })
+      .then(result => {
+        console.log("############ resume ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in resuming:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  //Pause a speech
+  pause(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.TextToSpeech.1', 'pause', {
+        "speechid": 1 
+      })
+      .then(result => {
+        console.log("############ pause ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in pausing:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  // 2. TTS Options
+  getlistVoices(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.TextToSpeech.1', 'listvoices', {
+        "language": "en-US" 
+      })
+      .then(result => {
+        console.log("############ list voices ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting voices:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  // 3. Sync Location
+  syncLocation(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('LocationSync.1', 'sync')
+      .then(result => {
+        console.log("############ sync location ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in syncing location:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+
+
+  getLocation(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('LocationSync.1', 'location')
+      .then(result => {
+        console.log("############ get location ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting location:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+  // 4. Check for Firmware Update
+
+  //Get Firmware Update Info
+  getFirmwareUpdateInfo(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.System.1', 'getFirmwareUpdateInfo')
+      .then(result => {
+        console.log("############ firmware update info ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting firmware update info:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  // Get Firmware Update State
+  getFirmwareUpdateState(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.System.1', 'getFirmwareUpdateState')
+      .then(result => {
+        console.log("############ firmware update state ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting firmware update state:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  // 5. Device Info
+  systeminfo(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('DeviceInfo.1', 'systeminfo')
+      .then(result => {
+        console.log("############ system info ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting system info:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+  // 6. Reboot
+  reboot(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.System.1', 'reboot', {
+        "rebootReason": "FIRMWARE_FAILURE"
+      })
+      .then(result => {
+        console.log("############ reboot ############")
+        console.log(JSON.stringify(result, 3, null))
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in reboot:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+    })
+  }
+
+
 }

@@ -161,6 +161,10 @@ export default class Keyboard extends lng.Component {
   }
 
   _unfocus() {
+    this.tag(this._currentFormat).alpha = 0;
+    this._currentFormat = this._defaultFormat
+    this.tag(this._currentFormat).alpha = 1;
+    this._refocus();
     this.fireAncestors('$keyboardFocused', false);
   }
 

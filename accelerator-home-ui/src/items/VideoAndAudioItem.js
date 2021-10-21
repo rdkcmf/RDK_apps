@@ -17,8 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils } from '@lightningjs/sdk'
-import SettingsItem from './SettingsItem'
+import { Lightning } from '@lightningjs/sdk'
 import { CONFIG } from '../Config/Config.js'
 import Tick from '../../static/images/settings/Tick.png'
 import AppApi from '../api/AppApi'

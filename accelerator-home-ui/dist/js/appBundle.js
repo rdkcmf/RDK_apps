@@ -3,7 +3,7 @@
  * SDK version: 3.2.1
  * CLI version: 2.5.1
  * 
- * Generated: Wed, 20 Oct 2021 11:27:27 GMT
+ * Generated: Fri, 22 Oct 2021 14:18:07 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -5444,7 +5444,13 @@ var APP_accelerator_home_ui = (function () {
   };
 
   var makeBody = (requestId, plugin, method, params, version) => {
-    params ? delete params.version : null;
+    if (params) {
+      delete params.version;
+      if (params.versionAsParameter) {
+        params.version = params.versionAsParameter;
+        delete params.versionAsParameter;
+      }
+    }
     const body = {
       jsonrpc: '2.0',
       id: requestId,
@@ -6626,6 +6632,193 @@ var APP_accelerator_home_ui = (function () {
       })
     }
 
+    //OTHER SETTINGS PAGE API
+    
+    //1. UI VOICE
+
+    //Start a speech
+    speak(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.TextToSpeech.1', 'speak', {
+          "text": "speech_1" 
+        })
+        .then(result => {
+          console.log("############ speak ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in speak:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    //Resume a speech
+    resume(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.TextToSpeech.1', 'resume', {
+          "speechid": 1 
+        })
+        .then(result => {
+          console.log("############ resume ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in resuming:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    //Pause a speech
+    pause(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.TextToSpeech.1', 'pause', {
+          "speechid": 1 
+        })
+        .then(result => {
+          console.log("############ pause ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in pausing:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    // 2. TTS Options
+    getlistVoices(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.TextToSpeech.1', 'listvoices', {
+          "language": "en-US" 
+        })
+        .then(result => {
+          console.log("############ list voices ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in getting voices:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    // 3. Sync Location
+    syncLocation(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('LocationSync.1', 'sync')
+        .then(result => {
+          console.log("############ sync location ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in syncing location:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+
+
+    getLocation(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('LocationSync.1', 'location')
+        .then(result => {
+          console.log("############ get location ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in getting location:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+    // 4. Check for Firmware Update
+
+    //Get Firmware Update Info
+    getFirmwareUpdateInfo(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.System.1', 'getFirmwareUpdateInfo')
+        .then(result => {
+          console.log("############ firmware update info ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in getting firmware update info:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    // Get Firmware Update State
+    getFirmwareUpdateState(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.System.1', 'getFirmwareUpdateState')
+        .then(result => {
+          console.log("############ firmware update state ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in getting firmware update state:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    // 5. Device Info
+    systeminfo(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('DeviceInfo.1', 'systeminfo')
+        .then(result => {
+          console.log("############ system info ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in getting system info:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+    // 6. Reboot
+    reboot(){
+      return new Promise((resolve, reject) => {
+        thunder$1
+        .call('org.rdk.System.1', 'reboot', {
+          "rebootReason": "FIRMWARE_FAILURE"
+        })
+        .then(result => {
+          console.log("############ reboot ############");
+          console.log(JSON.stringify(result, 3, null));
+          resolve(result);
+        })
+        .catch(err => {
+          console.log("error in reboot:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      })
+    }
+
+
   }
 
   /**
@@ -7268,6 +7461,117 @@ var APP_accelerator_home_ui = (function () {
         });
       })
     }
+    /**
+     * Function to return available interfaces.
+     */
+    getInterfaces(){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'getInterfaces').then(result => {
+          if(result.success){
+            console.log('getInterfaces result: ' + JSON.stringify(result.interfaces));
+            resolve(result.interfaces);
+          }
+        }).catch(err => {
+          console.error(`getInterfaces fail: ${err}`);
+          reject(err);
+        });
+      })
+    }
+
+    /**
+     * Function to return default interfaces.
+     */
+    getDefaultInterface(){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'getDefaultInterface').then(result => {
+          if(result.success){
+            console.log('getDefaultInterface result: ' + result.interface);
+            resolve(result.interface);
+          }
+        }).catch(err => {
+          console.error(`getDefaultInterface fail: ${err}`);
+          reject(err);
+        });
+      })
+    }
+
+    setDefaultInterface(interfaceName){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'setDefaultInterface', 
+          {
+            "interface": interfaceName,
+            "persist": true
+          }).then(result => {
+            console.log('setDefaultInterface from network API: '+ JSON.stringify(result));
+            resolve(result);
+          }).catch(err => {
+            console.error(`setDefaultInterface fail: ${err}`);
+            reject(err);
+          });
+      })
+    }
+
+    getSTBIPFamily(){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'getSTBIPFamily').then(result => {
+          //need to check
+        });
+      })
+    }
+
+    /**
+     * Function to return IP Settings.
+     */
+
+    getIPSettings(currentInterface){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'getIPSettings', 
+          {
+            "interface": currentInterface,
+          }).then(result => {
+            console.log('getIPSettings from network API: '+ JSON.stringify(result));
+            resolve(result);
+        }).catch(err => {
+          console.error(`getIPSettings fail: ${err}`);
+          reject(err);
+        });
+      })
+    }
+
+    /**
+     * Function to set IP Settings.
+     */
+
+    setIPSettings(IPSettings){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'setIPSettings', IPSettings).then(result => {
+            console.log('setIPSettings from network API: '+ JSON.stringify(result));
+            resolve(result);
+        }).catch(err => {
+          console.error(`setIPSettings fail: ${err}`);
+          reject(err);
+        });
+      })
+    }
+
+
+    isConnectedToInternet(){
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign,'isConnectedToInternet').then(result => {
+          if(result.success){
+            console.log('from networkAPI isConnectedToInternet result: ' + result.connectedToInternet);
+            resolve(result.connectedToInternet);
+          }
+        }).catch(err => {
+          console.error(`isConnectedToInternet fail: ${err}`);
+          reject(err);
+        });
+      })
+    }
+
+
+
+
   }
 
   /**
@@ -7768,8 +8072,8 @@ var APP_accelerator_home_ui = (function () {
     IpAddress1 = ip;
   });
 
-  var appApi$2 = new AppApi();
-  appApi$2.getIP().then(ip => {
+  var appApi$3 = new AppApi();
+  appApi$3.getIP().then(ip => {
     IpAddress2 = ip;
   });
 
@@ -8050,59 +8354,59 @@ var APP_accelerator_home_ui = (function () {
     return Object.getPrototypeOf(obj) === proto;
   }
 
+  // Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
+  function miniKindOf(val) {
+    if (val === void 0) return 'undefined';
+    if (val === null) return 'null';
+    var type = typeof val;
+
+    switch (type) {
+      case 'boolean':
+      case 'string':
+      case 'number':
+      case 'symbol':
+      case 'function':
+        {
+          return type;
+        }
+    }
+
+    if (Array.isArray(val)) return 'array';
+    if (isDate(val)) return 'date';
+    if (isError(val)) return 'error';
+    var constructorName = ctorName(val);
+
+    switch (constructorName) {
+      case 'Symbol':
+      case 'Promise':
+      case 'WeakMap':
+      case 'WeakSet':
+      case 'Map':
+      case 'Set':
+        return constructorName;
+    } // other
+
+
+    return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+  }
+
+  function ctorName(val) {
+    return typeof val.constructor === 'function' ? val.constructor.name : null;
+  }
+
+  function isError(val) {
+    return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
+  }
+
+  function isDate(val) {
+    if (val instanceof Date) return true;
+    return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
+  }
+
   function kindOf(val) {
     var typeOfVal = typeof val;
 
     {
-      // Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
-      function miniKindOf(val) {
-        if (val === void 0) return 'undefined';
-        if (val === null) return 'null';
-        var type = typeof val;
-
-        switch (type) {
-          case 'boolean':
-          case 'string':
-          case 'number':
-          case 'symbol':
-          case 'function':
-            {
-              return type;
-            }
-        }
-
-        if (Array.isArray(val)) return 'array';
-        if (isDate(val)) return 'date';
-        if (isError(val)) return 'error';
-        var constructorName = ctorName(val);
-
-        switch (constructorName) {
-          case 'Symbol':
-          case 'Promise':
-          case 'WeakMap':
-          case 'WeakSet':
-          case 'Map':
-          case 'Set':
-            return constructorName;
-        } // other
-
-
-        return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
-      }
-
-      function ctorName(val) {
-        return typeof val.constructor === 'function' ? val.constructor.name : null;
-      }
-
-      function isError(val) {
-        return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
-      }
-
-      function isDate(val) {
-        if (val instanceof Date) return true;
-        return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
-      }
-
       typeOfVal = miniKindOf(val);
     }
 
@@ -8680,6 +8984,8 @@ var APP_accelerator_home_ui = (function () {
     headingColor: 0xffffffff,
   };
 
+  var img$5 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGx2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1MWJjNzY4MC0zY2ViLTRmZWItYmY2Zi1kMGIzN2UyYWYyNDkiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpmZDE3NTAzYy1jMWIxLWQ5NGMtODBlYi0zZmVlZWNmNWU4ZTciIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjVkOGRlOGJiLTE2MmQtNDA4OS1iODY5LTAyNjNkZjdmY2QxMyIgc3RFdnQ6d2hlbj0iMjAyMS0wOC0wMlQxNjoxODo1Mi0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmY3YmJmOWQ2LTc5NjktNDgzYS1hN2ViLWI0Mzg0YzM0MmMzYSIgc3RFdnQ6d2hlbj0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjUxYmM3NjgwLTNjZWItNGZlYi1iZjZmLWQwYjM3ZTJhZjI0OSIgc3RFdnQ6d2hlbj0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+9I+Q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";
+
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -8698,56 +9004,78 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-   /**
-    * Class for rendering items in Settings screen.
-    */
-   class SettingsItem extends lng$1.Component {
-     static _template() {
-       return {
-         Item: {
-           w: 1920 / 3 - 70,
-           h: 90,
-         },
-       }
-     }
-   
-     /**
-      * Function to set contents for an item in settings screen.
-      */
-     set item(item) {
-       this._item = item;
-       this.tag('Item').patch({
-         Left: {
-          //  x: 10,
-           y: this.tag('Item').h / 2,
-           mountY: 0.5,
-           text: { text: item, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
-         },
-       });
-     }
-   
-     /**
-      * Set width of the item.
-      */
-     set width(width) {
-       this.tag('Item').w = width;
-     }
-   
-     /**
-      * Set height of the item.
-      */
-     set height(height) {
-       this.tag('Item').h = height;
-     }
-   
-     _focus() {
-       this.tag('Item').color = COLORS.hightlightColor;
-     }
-   
-     _unfocus() {
-       this.tag('Item').color = 0x00000000;
-     }
-   }
+  /**
+   * Class for rendering items in Settings screen.
+   */
+  class SettingsItem extends lng$1.Component {
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1535,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1535,
+          h: 90,
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1535,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+      }
+    }
+
+    /**
+     * Function to set contents for an item in settings screen.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Tick: {
+          y: 45,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: false
+        },
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: { text: item, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
+        },
+      });
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+  }
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -9728,7 +10056,7 @@ var APP_accelerator_home_ui = (function () {
         },
         Searching: {
           visible: false,
-          type: SettingsItem,
+          h:90,
           Title: {
             x: 10,
             y: 45,
@@ -9795,6 +10123,7 @@ var APP_accelerator_home_ui = (function () {
               fontSize: 25,
             }
           },
+          visible: false,
         },
         // PairingScreen: {
         //   x: 1920 - 1920 / 3,
@@ -9828,6 +10157,7 @@ var APP_accelerator_home_ui = (function () {
       this._bluetooth = true;
       if (this._bluetooth) {
         this.tag('Networks').visible = true;
+        this.tag('AddADevice').visible = true;
       }
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
@@ -10109,11 +10439,9 @@ var APP_accelerator_home_ui = (function () {
           $enter() {
             this.hideAvailableDevices();
             this.hidePairingScreen();
-            console.log('Button enter');
             this.tag('Switch')._focus();
           }
           $exit() {
-            console.log('Botton exit');
             this.tag('Switch')._unfocus();
           }
           _handleDown() {
@@ -10303,6 +10631,7 @@ var APP_accelerator_home_ui = (function () {
           if (result.success) {
             this._bluetooth = false;
             this.tag('Networks').visible = false;
+            this.tag('AddADevice').visible = false;
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
           }
         });
@@ -10311,6 +10640,7 @@ var APP_accelerator_home_ui = (function () {
           if (result.success) {
             this._bluetooth = true;
             this.tag('Networks').visible = true;
+            this.tag('AddADevice').visible = true;
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.renderDeviceList();
             this._bt.startScan();
@@ -10343,7 +10673,6 @@ var APP_accelerator_home_ui = (function () {
         });
         this._bt.registerEvent('onConnectionChange', notification => {
           this._bt.startScan();
-          console.log('CONNECTION CHANGED' + JSON.stringify(notification));
           this.renderDeviceList();
           //  this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
           if (notification.connected) {
@@ -10396,17 +10725,15 @@ var APP_accelerator_home_ui = (function () {
     }
   }
 
-  var img$5 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mzk6NDUtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjZqHi4AAA+hSURBVHic7d17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";
+  var img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mzk6NDUtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjZqHi4AAA+hSURBVHic7d17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";
 
-  var img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mjk6MjYtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk7s+1gAACNQSURBVHic7d15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";
+  var img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mjk6MjYtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk7s+1gAACNQSURBVHic7d15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";
 
-  var img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyNjozOC0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyNjozOC0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyN2RmOTM5Yi0xZmU5LTRjNjgtYmE2OS1lNTEyM2VmYWMyNDEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyN2RmOTM5Yi0xZmU5LTRjNjgtYmE2OS1lNTEyM2VmYWMyNDEiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjY6MzgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PlaRZPgAACKlSURBVHic7d13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";
+  var img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyNjozOC0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyNjozOC0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyN2RmOTM5Yi0xZmU5LTRjNjgtYmE2OS1lNTEyM2VmYWMyNDEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyN2RmOTM5Yi0xZmU5LTRjNjgtYmE2OS1lNTEyM2VmYWMyNDEiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjY6MzgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PlaRZPgAACKlSURBVHic7d13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";
 
-  var img$2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAF6mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg8xNqcAACJtSURBVHic7d13uF1Vncbx700PKQQSUjFg6KEEkCIMRRARQgBpShPNUO6BwaFIUQcFHEFBlKIjm44MKkVhIPSOdJFQEqoRQgklQEIKKSQh88e7rwkkt561yzrn/TzPeUi5d+1FcvKetdf+rbUaFi9ejJlZDDoV3QEzs7ZyYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm0XBgmVk0HFhmFg0HlplFw4FlZtFwYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm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";
+  var img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAF6mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg8xNqcAACJtSURBVHic7d13uF1Vncbx700PKQQSUjFg6KEEkCIMRRARQgBpShPNUO6BwaFIUQcFHEFBlKIjm44MKkVhIPSOdJFQEqoRQgklQEIKKSQh88e7rwkkt561yzrn/TzPeUi5d+1FcvKetdf+rbUaFi9ejJlZDDoV3QEzs7ZyYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm0XBgmVk0HFhmFg0HlplFw4FlZtFwYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm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";
 
-  var img$1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAFG2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOC0wNVQxNjoyOTozMS0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOC0wNVQxNjoyOTozMS0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJk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";
-
-  var img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGx2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1MWJjNzY4MC0zY2ViLTRmZWItYmY2Zi1kMGIzN2UyYWYyNDkiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpmZDE3NTAzYy1jMWIxLWQ5NGMtODBlYi0zZmVlZWNmNWU4ZTciIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjVkOGRlOGJiLTE2MmQtNDA4OS1iODY5LTAyNjNkZjdmY2QxMyIgc3RFdnQ6d2hlbj0iMjAyMS0wOC0wMlQxNjoxODo1Mi0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmY3YmJmOWQ2LTc5NjktNDgzYS1hN2ViLWI0Mzg0YzM0MmMzYSIgc3RFdnQ6d2hlbj0iMjAyMS0wOS0yMVQwOToyNDo0OC0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjUxYmM3NjgwLTNjZWItNGZlYi1iZjZmLWQwYjM3ZTJhZjI0OSIgc3RFdnQ6d2hlbj0iMjAyMS0wOS0yMVQxMDoxNTo1Ny0wNjowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+9I+Q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";
+  var img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAFG2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOC0wNVQxNjoyOTozMS0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOC0wNVQxNjoyOTozMS0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJk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";
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -10474,16 +10801,16 @@ var APP_accelerator_home_ui = (function () {
    
        var wifiicon = "";
        if (item.signalStrength >= -50) {
-         wifiicon = img$1;
+         wifiicon = img;
        }
        else if (item.signalStrength >= -60) {
-         wifiicon = img$2;
+         wifiicon = img$1;
        }
        else if (item.signalStrength >= -67) {
-         wifiicon = img$3;
+         wifiicon = img$2;
        }
        else  {
-         wifiicon = img$4;
+         wifiicon = img$3;
        }
        
    
@@ -10493,7 +10820,7 @@ var APP_accelerator_home_ui = (function () {
            x: 10,
            y: 45,
            mountY: 0.5,
-           texture: lng$1.Tools.getSvgTexture(img, 32.5, 32.5),
+           texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
            color: 0xffffffff,
            visible : item.connected ? true : false
          },
@@ -10514,7 +10841,7 @@ var APP_accelerator_home_ui = (function () {
              //color: 0xff000000,
              //  x:1515,
              color: 0xffffffff,
-             texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+             texture: lng$1.Tools.getSvgTexture(img$4, 32.5, 32.5),
              alpha: 1
            },
            Icon: {
@@ -13133,6 +13460,10 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _unfocus() {
+      this.tag(this._currentFormat).alpha = 0;
+      this._currentFormat = this._defaultFormat;
+      this.tag(this._currentFormat).alpha = 1;
+      this._refocus();
       this.fireAncestors('$keyboardFocused', false);
     }
 
@@ -14624,6 +14955,7 @@ var APP_accelerator_home_ui = (function () {
               fontSize: 25,
             }
           },
+          visible: false,
         },
         PairingScreen: {
           x: -300,
@@ -14654,6 +14986,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this._setState('Switch');
       new Network().getIP().then(ip => {
         this.fireAncestors('$changeIp', 'IP:' + ip);
       });
@@ -14664,7 +14997,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     $removeFailScreen() {
-      clearTimeout(this.failScreen);
+      // clearTimeout(this.failScreen)
       this._setState('Switch');
       this.childList.remove(this.tag('FailScreen'));
     }
@@ -14694,6 +15027,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('Switch');
       if (this.wiFiStatus) {
         this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
       }
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
@@ -14713,6 +15047,7 @@ var APP_accelerator_home_ui = (function () {
                 if (result.success) {
                   this.wifiStatus = true;
                   this.tag('Networks').visible = true;
+                  this.tag('JoinAnotherNetwork').visible = true;
                   this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
                   this._wifi.discoverSSIDs();
                 }
@@ -14724,6 +15059,7 @@ var APP_accelerator_home_ui = (function () {
               this._wifi.disconnect();
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
+              this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               this._setState('Switch');
             }
@@ -14818,7 +15154,9 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch')._unfocus();
           }
           _handleDown() {
-            this._setState('JoinAnotherNetwork');
+            if (this.wifiStatus === true) {
+              this._setState('JoinAnotherNetwork');
+            }
           }
           _handleEnter() {
             this.switch();
@@ -15004,6 +15342,7 @@ var APP_accelerator_home_ui = (function () {
                 this._wifi.disconnect();
                 this.wifiStatus = false;
                 this.tag('Networks').visible = false;
+                this.tag('JoinAnotherNetwork').visible = false;
                 this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               }
             });
@@ -15018,6 +15357,7 @@ var APP_accelerator_home_ui = (function () {
                   if (result.success) {
                     this.wifiStatus = true;
                     this.tag('Networks').visible = true;
+                    this.tag('JoinAnotherNetwork').visible = true;
                     this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
                     this._wifi.discoverSSIDs();
                   }
@@ -15052,14 +15392,2955 @@ var APP_accelerator_home_ui = (function () {
       this._wifi.registerEvent('onError', notification => {
         this._wifi.discoverSSIDs();
         this._setfailState(this.onError[notification.code]);
-        this.failScreen = setTimeout(() => {
-          this.childList.remove(this.tag('FailScreen'));
-        }, 5000);
+        // this.failScreen = setTimeout(() => {
+        //   this.childList.remove(this.tag('FailScreen'))
+        //   this._setState('Switch')
+        // }, 5000)
       });
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
       });
     }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class SleepTimerScreen extends lng$1.Component {
+      static _template() {
+          return {
+              List: {
+                  w: 1920 - 300,
+                  type: lng$1.components.ListComponent,
+                  itemSize: 90,
+                  horizontal: false,
+                  invertDirection: true,
+                  roll: true,
+                  rollMax: 900,
+                  itemScrollOffset: -5,
+              }
+          }
+      }
+      _init() {
+          this.lastElement = false;
+          this.options = [
+              { value: 'Off', tick: true },
+              { value: '30 Minutes', tick: false },
+              { value: '1 Hour', tick: false },
+              { value: '1.5 Hours', tick: false },
+              { value: '2 Hours', tick: false },
+              { value: '3 Hours', tick: false }
+          ];
+          this.tag('List').h = this.options.length * 90;
+          this.tag('List').items = this.options.map(item => {
+              return {
+                  w: 1920 - 300,
+                  h: 90,
+                  type: SettingsItem,
+                  item: item.value
+              }
+          });
+          this.tag('List').getElement(0).tag('Tick').visible = true;
+          this._setState('Options');
+      }
+
+      static _states() {
+          return [
+              class Options extends this{
+                  _getFocused() {
+                      return this.tag('List').element
+                  }
+                  _handleDown() {
+                      this.tag('List').setNext();
+                  }
+                  _handleUp() {
+                      this.tag('List').setPrevious();
+                  }
+                  _handleEnter() {
+                      this.options.forEach((element, idx) => {
+                          if (element.tick) {
+                              this.tag('List').getElement(idx).tag('Tick').visible = false;
+                              this.options[idx].tick = false;
+                          }
+                      });
+                      this.tag('List').element.tag('Tick').visible = true;
+                      this.options[this.tag('List').index].tick = true;
+                      this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
+                  }
+              }
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  class VideoAndAudioItem extends lng$1.Component {
+    static _template(){
+      return {
+        zIndex:1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1535,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1920 - 300,
+          h: 90,
+          rect: true,
+          color: 0x00000000,
+        },
+        BottomLine: {
+          y: 0 + 90,
+          mountY: 0.5,
+          w: 1535,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+      }
+    }
+
+    _init() {
+      console.log(`!! init comes first !!`);
+      if(this.isTicked){
+        console.log(`!! is ticked was true for the object ${this}!!`);
+        this.fireAncestors("$resetPrevTickObject",this);
+      }
+      this.appApi = new AppApi();
+      console.log(`item value was set to ${this._item} and is a Video Element ${this.videoElement}`);
+    }
+
+    _handleEnter(){
+      var self = this;
+      if(this.videoElement === true){
+        this.appApi.setResolution(this._item).then(res=>{
+          console.log(`the resolution attempted to be set to ${this._item.split(" ")[1]} and the result was ${res}`);
+          this.fireAncestors('$updateResolution', self._item);
+          if(res === true){
+            self.fireAncestors("$resetPrevTickObject",self);
+            self.tag("Item.Tick").visible = true;
+          }
+          
+        }).catch(err=>{
+          console.log(`there was an error while setting the resolution.`);
+        });
+      }
+      else {
+        console.log("else block");
+        this.appApi.setSoundMode(this._item)
+        .then(result => {
+          console.log(result);
+          if(result.success === true){
+            self.fireAncestors("$resetPrevTickObject",self);
+            self.tag("Item.Tick").visible = true;
+           // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
+          }
+          //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
+          this.fireAncestors("$updateSoundMode", this._item);
+        })
+        .catch(err => {
+          console.log('Some error while setting the sound mode ',err);
+        });
+      }
+    }
+
+    set item(item) {
+      console.log(`!! set comes first !!`);
+      this._item = item;
+      var self = this;
+      console.log(`setting a video element and it ${self.isTicked}ly ticked`);
+      this.tag('Item').patch({
+          Tick: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+              color: 0xffffffff,
+              visible : self.isTicked ? true : false //implement the logic to show the tick
+          },
+          Left: {
+              x: 50, 
+              y: 45,
+              mountY: 0.5,
+              text: { text: item, fontSize: 25, textColor: 0xffFFFFFF, fontFace: CONFIG.language.font, }, // update the text
+          },
+      });
+
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex:2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex:1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+   }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for Resolution Screen.
+   */
+
+  class ResolutionScreen extends lng$1.Component {
+      static _template() {
+          return {
+              x: 0,
+              y: 0,
+              ResolutionScreenContents: {
+                  List: {
+                      type: lng$1.components.ListComponent,
+                      w: 1920 - 300,
+                      itemSize: 90,
+                      horizontal: false,
+                      invertDirection: true,
+                      roll: true,
+                      rollMax: 900,
+                      itemScrollOffset: -6,
+                  },
+              }
+          }
+      }
+
+
+      _init() {
+          console.log("Resolution screens init was called");
+          var options = [];
+          this.appApi = new AppApi();
+
+          this.appApi.getResolution().then(resolution => {
+              // self.fireAncestors("$updateResolutionText",resolution);
+              //#############  settings the resolution items  ################
+              //------------------------------------------------------------------------------
+
+              this.appApi.getSupportedResolutions().then(res => {
+                  this._setState("Options");
+                  options = [...res];
+                  this.tag('ResolutionScreenContents').h = options.length * 90;
+                  this.tag('ResolutionScreenContents.List').h = options.length * 90;
+                  this.tag('List').items = options.map((item, index) => {
+                      console.log(` ------- condition = ${resolution} === ${item} --------------- `);
+                      return {
+                          ref: 'Option' + index,
+                          w: 1920 - 300,
+                          h: 90,
+                          type: VideoAndAudioItem,
+                          isTicked: (resolution === item) ? true : false,
+                          item: item,
+                          videoElement: true,
+
+
+                      }
+                  });
+                  console.log(`
+                    
+                    Tanjirou's log - the supported resolutions are ${res}
+                    
+                    `);
+              }).catch(err => {
+                  console.log(`
+                    
+                    Tanjirou's log - error while fetching the supported resolution ${err}
+                    
+                    `);
+              });
+
+              //------------------------------------------------------------------------------
+          }).catch(ex => { });
+
+
+
+
+      }
+
+      $resetPrevTickObject(prevTicObject) {
+
+          if (!this.prevTicOb) {
+              this.prevTicOb = prevTicObject;
+              console.log(`prevTicOb = ${this.prevTicOb}`);
+          }
+          else {
+              this.prevTicOb.tag("Item.Tick").visible = false;
+              console.log(`tried to reset the prev tickect object ie.${this.prevTicOb}`);
+              this.prevTicOb = prevTicObject;
+              console.log(`prevTicOb was reset to ${this.prevTicOb}`);
+          }
+      }
+
+      static _states() {
+          return [
+              class Options extends this{
+                  _getFocused() {
+                      return this.tag('List').element
+                  }
+                  _handleDown() {
+                      this.tag('List').setNext();
+                  }
+                  _handleUp() {
+                      this.tag('List').setPrevious();
+                  }
+                  _handleEnter() {
+                      // this.tag("List").element.patch({ "Item.Tick.visible": true });
+                      this.tag("List").element.tag("Tick").visible = true;
+                      // enable the tick mark in VideoAudioItem.js
+                      //to update the resolution value on Video Screen
+                  }
+              }
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for Video screen.
+   */
+
+  class VideoScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        VideoScreenContents: {
+          Resolution: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Resolution: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          HDR: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'High Dynamic Range: Auto',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          MatchContent: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Match Content: Match Dynamic Range',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          OutputFormat: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Output Format: YCbCr',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          Chroma: {
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Chroma: 4:4:4',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          HDCP: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'HDCP Status: Supported',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+          },
+        },
+
+        ResolutionScreen: {
+          type: ResolutionScreen,
+          visible: false,
+        }
+      }
+    }
+
+    _init() {
+      new AppApi().getResolution().then(resolution => {
+        this.tag("Resolution.Title").text.text = 'Resolution: ' + resolution;
+        this.tag("Resolution.Title").patch({ visible: false });
+        setTimeout(() => {
+          this.tag("Resolution.Title").patch({ visible: true });
+        }, 1500);
+
+        console.log(`xxxx the patch is done`);
+      }).catch(err => {
+        console.log("Error fetching the Resolution");
+        this.tag("Resolution.Title").text.text = "Error fetching Resolution";
+      });
+
+
+
+    }
+
+    _focus() {
+      this._setState('Resolution');
+    }
+
+    hide() {
+      this.tag('VideoScreenContents').visible = false;
+    }
+    show() {
+      this.tag('VideoScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [
+        class Resolution extends this{
+          $enter() {
+            this.tag('Resolution')._focus();
+          }
+          $exit() {
+            this.tag('Resolution')._unfocus();
+          }
+          _handleDown() {
+            this._setState('HDR');
+          }
+          _handleEnter() {
+            this._setState('ResolutionScreen');
+          }
+
+        },
+        class HDR extends this{
+          $enter() {
+            this.tag('HDR')._focus();
+          }
+          $exit() {
+            this.tag('HDR')._unfocus();
+          }
+          _handleUp() {
+            this._setState('Resolution');
+          }
+          _handleDown() {
+            this._setState('MatchContent');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class MatchContent extends this{
+          $enter() {
+            this.tag('MatchContent')._focus();
+          }
+          $exit() {
+            this.tag('MatchContent')._unfocus();
+          }
+          _handleUp() {
+            this._setState('HDR');
+          }
+          _handleDown() {
+            this._setState('OutputFormat');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class OutputFormat extends this{
+          $enter() {
+            this.tag('OutputFormat')._focus();
+          }
+          $exit() {
+            this.tag('OutputFormat')._unfocus();
+          }
+          _handleUp() {
+            this._setState('MatchContent');
+          }
+          _handleDown() {
+            this._setState('Chroma');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class Chroma extends this{
+          $enter() {
+            this.tag('Chroma')._focus();
+          }
+          $exit() {
+            this.tag('Chroma')._unfocus();
+          }
+          _handleUp() {
+            this._setState('OutputFormat');
+          }
+          _handleDown() {
+            this._setState('HDCP');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class HDCP extends this{
+          $enter() {
+            this.tag('HDCP')._focus();
+          }
+          $exit() {
+            this.tag('HDCP')._unfocus();
+          }
+          _handleUp() {
+            this._setState('Chroma');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class ResolutionScreen extends this {
+          $enter() {
+            this.hide();
+            this.tag('ResolutionScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Video / Resolution');
+          }
+          $exit() {
+            this.tag('ResolutionScreen').visible = false;
+            this.show();
+            this.fireAncestors('$changeHomeText', 'Settings / Video');
+          }
+          _getFocused() {
+            return this.tag('ResolutionScreen')
+          }
+          _handleBack() {
+            this._setState('Resolution');
+          }
+          $updateResolution(value) {
+            this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
+          }
+        }
+      ]
+
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for Resolution Screen.
+   */
+  var appApi$2 = new AppApi();
+  class HdmiOutputScreen extends lng$1.Component {
+      static _template() {
+          return {
+              x: 0,
+              y: 0,
+              HdmiOutputScreenContents: {
+                  List: {
+                      type: lng$1.components.ListComponent,
+                      w: 1920 - 300,
+                      itemSize: 90,
+                      horizontal: false,
+                      invertDirection: true,
+                      roll: true,
+                  },
+              }
+          }
+      }
+
+      $resetPrevTickObject(prevTicObject) {
+          if (!this.prevTicOb) {
+              this.prevTicOb = prevTicObject;
+              console.log(`prevTicOb = ${this.prevTicOb}`);
+          }
+          else {
+              this.prevTicOb.tag("Item.Tick").visible = false;
+              console.log(`tried to reset the prev tickect object ie.${this.prevTicOb}`);
+              this.prevTicOb = prevTicObject;
+              console.log(`prevTicOb was reset to ${this.prevTicOb}`);
+          }
+      }
+
+
+      _init() {
+          var self = this;
+          var tappApi = appApi$2;
+          var options = [];
+
+          appApi$2.getSoundMode()
+              .then(result => {
+                  // updating on the audio screen
+                  self.fireAncestors("$updateTheDefaultAudio", result.soundMode);
+
+                  // ###############  setting the audio items  ###############
+                  tappApi.getSupportedAudioModes()
+                      .then(res => {
+                          console.log(res);
+                          options = [...res.supportedAudioModes];
+                          this.tag('HdmiOutputScreenContents').h = options.length * 90;
+                          this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
+                          this.tag('List').items = options.map((item, index) => {
+                              return {
+                                  ref: 'Option' + index,
+                                  w: 1920 - 300,
+                                  h: 90,
+                                  type: VideoAndAudioItem,
+                                  isTicked: (result.soundMode===item)?true:false,
+                                  item: item,
+                                  videoElement: false
+                              }
+                          });
+
+                      })
+                      .catch(err => {
+                          console.log('Some error');
+                      });
+                       this._setState("Options");
+                      //--------------------------------------------------------
+
+              })
+              .catch(err => {
+                  console.log('Some error');
+              });
+
+
+          //options = ['Stereo', 'Auto Detect (Dolby Digital Plus)', 'Expert Mode'],
+      }
+
+
+      static _states() {
+          return [
+              class Options extends this{
+                  _getFocused() {
+                      return this.tag('List').element
+                  }
+                  _handleDown() {
+                      this.tag('List').setNext();
+                  }
+                  _handleUp() {
+                      this.tag('List').setPrevious();
+                  }
+                  _handleEnter() {
+                      // enable the tick mark in VideoAudioItem.js
+                      // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
+                  }
+              }
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class AudioScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        Wrapper: {
+          AudioOutput: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Audio Output: HDMI',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          OutputMode: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Output Mode: Auto',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              },
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+          DynamicRange: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Full Dynamic Range',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+
+          AudioLanguage: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Audio Language: Auto',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+
+          NavigationFeedback: {
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Navigation Feedback',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 66,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOnWhite.png'),
+            },
+          },
+
+          Bluetooth: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Bluetooth: None',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1535,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png'),
+            },
+          },
+        },
+        OutputModeScreen: {
+          type: HdmiOutputScreen,
+          visible: false,
+        }
+      }
+    }
+
+    _init() {
+      //fetch the current HdmiAudioOutputStereo set it
+      // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + currentHdmiAudioOutputStereo
+
+    }
+
+    $updateTheDefaultAudio(audio) {
+      console.log(audio);
+      this.tag('OutputMode.Title').text.text = 'Output Mode: ' + audio;
+    }
+
+    $updateSoundMode(soundMode) {
+      this.tag('OutputMode.Title').text.text = 'Output Mode: ' + soundMode;
+    }
+
+    _focus() {
+      this._setState('AudioOutput');
+    }
+
+    hide() {
+      this.tag('Wrapper').visible = false;
+    }
+    show() {
+      this.tag('Wrapper').visible = true;
+    }
+
+    static _states() {
+      return [
+        class AudioOutput extends this{
+          $enter() {
+            this.tag('AudioOutput')._focus();
+          }
+          $exit() {
+            this.tag('AudioOutput')._unfocus();
+          }
+          _handleDown() {
+            this._setState('OutputMode');
+          }
+          // _handleEnter() {
+          //   this._setState('HdmiAudioOutputStereoScreen')
+          // }
+
+        },
+
+        class OutputMode extends this{
+          $enter() {
+            this.tag('OutputMode')._focus();
+          }
+          $exit() {
+            this.tag('OutputMode')._unfocus();
+          }
+          _handleUp() {
+            this._setState('AudioOutput');
+          }
+          _handleDown() {
+            this._setState('DynamicRange');
+          }
+          _handleEnter() {
+            this._setState('HdmiAudioOutputStereoScreen');
+          }
+        },
+        class DynamicRange extends this{
+          $enter() {
+            this.tag('DynamicRange')._focus();
+          }
+          $exit() {
+            this.tag('DynamicRange')._unfocus();
+          }
+          _handleUp() {
+            this._setState('OutputMode');
+          }
+          _handleDown() {
+            this._setState('NavigationFeedback');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class NavigationFeedback extends this{
+          $enter() {
+            this.tag('NavigationFeedback')._focus();
+          }
+          $exit() {
+            this.tag('NavigationFeedback')._unfocus();
+          }
+          _handleUp() {
+            this._setState('DynamicRange');
+          }
+          _handleDown() {
+            this._setState('Bluetooth');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class Bluetooth extends this{
+          $enter() {
+            this.tag('Bluetooth')._focus();
+          }
+          $exit() {
+            this.tag('Bluetooth')._unfocus();
+          }
+          _handleUp() {
+            this._setState('NavigationFeedback');
+          }
+          _handleEnter() {
+            //
+          }
+        },
+        class HdmiAudioOutputStereoScreen extends this {
+          $enter() {
+            this.hide();
+            this.tag('OutputModeScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode');
+          }
+          $exit() {
+            this.tag('OutputModeScreen').visible = false;
+            this.show();
+            this.fireAncestors('$changeHomeText', 'Settings / Audio');
+          }
+          _getFocused() {
+            return this.tag('OutputModeScreen')
+          }
+          _handleBack() {
+            this._setState('OutputMode');
+          }
+          $updateHdmiAudioOutputStereo(value) {
+            this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value;
+          }
+        }
+      ]
+
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+   /**
+    * Class for Other Settings Screen.
+    */
+
+   class NetworkConfigurationScreen extends lng$1.Component {
+      static _template(){
+          return {
+              x:0,
+              y:0,
+              NetworkConfigurationScreenContents:{
+                  NetworkInterface: {
+                      y: 0,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Network Interface: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  InternetProtocol: {
+                      y: 90,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Internet Protocol: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  TestInternetAccess: {
+                      y: 180,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Test Internet Access',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  StaticMode: {
+                      y: 270,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Static Mode: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+              },
+              NetworkInterfaceScreen:{
+                  // 
+              },
+          }
+      }
+
+      _init(){
+          let _currentInterface = ""; //getDefaultInterface
+          let _currentIPSettings = {};
+          let _newIPSettings = {};
+          let _newInterface = "ETHERNET"; //new interface to be set
+
+          console.log('network configuration screen init called');
+          this._network = new Network();
+          this._network.getInterfaces().then(list => {
+              console.log('from network configuration screen ' + JSON.stringify(list));
+          });
+          this._network.getDefaultInterface().then(interfaceName => {
+              console.log('Interface name from network configuration screen: ' + interfaceName );
+              _currentInterface = interfaceName;
+          });
+          this._network.getIPSettings(_currentInterface).then(result => {
+              console.log('IP Settings from network configuration screen ' + JSON.stringify(result));
+              _currentIPSettings = result;
+          }); // we get IP settings of default interface if we pass _currentInterface as ""
+          
+
+          _newIPSettings = _currentIPSettings;
+          _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
+
+
+          this._network.setIPSettings(_newIPSettings).then(result => {
+              console.log('setIPSettings from network configuration screen ' + JSON.stringify(result)); // result fails
+          });
+
+          this._network.setDefaultInterface(_newInterface).then(result => {
+              console.log('setDefaultInterface from network configuration screen ' + JSON.stringify(result)); // result fails
+          });
+
+          this._network.isConnectedToInternet().then(result => {
+              console.log('from network configuration screen isConnectedToInternet: ' + result);
+          });
+          
+      }
+
+
+      _focus(){
+          this._setState('NetworkInterface'); //can be used on init as well
+      }
+
+      hide(){
+          this.tag('NetworkConfigurationScreenContents').visible = false;
+      }
+
+      show(){
+          this.tag('NetworkConfigurationScreenContents').visible = true;
+      }
+
+      static _states() {
+          return [
+              class NetworkInterface extends this {
+                  $enter(){
+                      this.tag('NetworkInterface')._focus();
+                  }
+                  $exit(){
+                      this.tag('NetworkInterface')._unfocus();
+                  }
+                  _handleDown(){
+                      this._setState('InternetProtocol');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class InternetProtocol extends this {
+                  $enter(){
+                      this.tag('InternetProtocol')._focus();
+                  }
+                  $exit(){
+                      this.tag('InternetProtocol')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('NetworkInterface');
+                  }
+                  _handleDown(){
+                      this._setState('TestInternetAccess');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class TestInternetAccess extends this {
+                  $enter(){
+                      this.tag('TestInternetAccess')._focus();
+                  }
+                  $exit(){
+                      this.tag('TestInternetAccess')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('InternetProtocol');
+                  }
+                  _handleDown(){
+                      this._setState('StaticMode');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class StaticMode extends this {
+                  $enter(){
+                      this.tag('StaticMode')._focus();
+                  }
+                  $exit(){
+                      this.tag('StaticMode')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('TestInternetAccess');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+   /**
+    * Class for Other Settings Screen.
+    */
+
+   class RemoteControlScreen extends lng$1.Component {
+      static _template(){
+          return {
+              x:0,
+              y:0,
+              RemoteControlScreenContents:{
+                  PairingStatus: {
+                      y: 0,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Pairing Status: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  FirmwareVersion: {
+                      y: 90,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Firmware Version: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  TestMicrophone: {
+                      y: 180,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Test Microphone',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Info: {
+                      y: 270,
+                      BatteryHealth: {
+                          x: 10,
+                          y: 45,
+                          mountY: 0.5,
+                          text: {
+                              text: 'Battery Health: ',
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                      SignalStrength: {
+                          x: 10,
+                          y: 45+35,
+                          mountY: 0.5,
+                          text: {
+                              text: 'Signal Strength: ',
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                      VoiceCapable: {
+                          x: 10,
+                          y: 45+35+35,
+                          mountY: 0.5,
+                          text: {
+                              text: 'Voice Capable: ',
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                      
+                  },
+              },
+              PairingStatusScreen:{
+                  // 
+              },
+          }
+      }
+
+
+      _focus(){
+          this._setState('PairingStatus'); //can be used on init as well
+      }
+
+      hide(){
+          this.tag('RemoteControlScreenContents').visible = false;
+      }
+
+      show(){
+          this.tag('RemoteControlScreenContents').visible = true;
+      }
+
+      static _states() {
+          return [
+              class PairingStatus extends this {
+                  $enter(){
+                      this.tag('PairingStatus')._focus();
+                  }
+                  $exit(){
+                      this.tag('PairingStatus')._unfocus();
+                  }
+                  _handleDown(){
+                      this._setState('FirmwareVersion');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class FirmwareVersion extends this {
+                  $enter(){
+                      this.tag('FirmwareVersion')._focus();
+                  }
+                  $exit(){
+                      this.tag('FirmwareVersion')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('PairingStatus');
+                  }
+                  _handleDown(){
+                      this._setState('TestMicrophone');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class TestMicrophone extends this {
+                  $enter(){
+                      this.tag('TestMicrophone')._focus();
+                  }
+                  $exit(){
+                      this.tag('TestMicrophone')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('FirmwareVersion');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class DeviceInformationScreen extends lng$1.Component {
+      static _template() {
+          return {
+              DeviceInfoContents: {
+                  ChipSet: {
+                      Title: {
+                          x: 10,
+                          y: 45,
+                          mountY: 0.5,
+                          text: {
+                              text: `Chipset: XXXX`,
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                  },
+                  SerialNumber: {
+                      Title: {
+                          x: 10,
+                          y: 45 + 35,
+                          mountY: 0.5,
+                          text: {
+                              text: `Serial Number: XXXX`,
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                  },
+                  Location: {
+                      Title: {
+                          x: 10,
+                          y: 45 + 35 + 35,
+                          mountY: 0.5,
+                          text: {
+                              text: `Location: XXXX`,
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                  },
+                  SupportedDRM: {
+                      Title: {
+                          x: 10,
+                          y: 45 + 35 + 35 + 35,
+                          mountY: 0.5,
+                          text: {
+                              text: `Supported DRM & Key-System: XXXX`,
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                  },
+                  FirmwareVersions: {
+                      Title: {
+                          x: 10,
+                          y: 45 + 35 + 35 + 35 + 35,
+                          mountY: 0.5,
+                          text: {
+                              text: `Firmware version: UI Version, Build Version, Timestamp`,
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                  },
+                  AppVersions: {
+                      Title: {
+                          x: 10,
+                          y: 45 + 35 + 35 + 35 + 35 + 45,
+                          mountY: 0.5,
+                          text: {
+                              text: 'App Version: 3.1',
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                              fontStyle: 'bold'
+                          }
+                      },
+                  },
+              },
+          }
+      }
+
+      _init(){
+          this.appApi = new AppApi();
+          this.appApi.systeminfo().then(result => {
+              console.log('from advanced settings screen system info: ' + JSON.stringify(result));
+              let ram = (result.totalram / 10**9).toFixed(2);
+              this.tag('SupportedDRM.Title').text.text = `Supported DRM & Key-System: ${ram} GB`;
+              this.tag('SerialNumber.Title').text.text = `Serial Number: ${result.serialnumber}`;
+          });
+          this.appApi.getLocation().then(result => {
+              console.log('from advanced settings screen get location: ' + JSON.stringify(result));
+              this.tag('Location.Title').text.text = `Location: ${result.city.length !== 0 ? result.city +", "+result.country : "NA" }`;
+          });
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+   /**
+    * Class for Video and Audio screen.
+    */
+
+   class AdvancedSettingsScreen extends lng$1.Component {
+      static _template(){
+          return { 
+              x:0,
+              y:0,
+              AdvanceScreenContents:{   
+                  UIVoice: {
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                      text: 'UI Voice',
+                      textColor: COLORS.titleColor,
+                      fontFace: CONFIG.language.font,
+                      fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 *1.5,
+                      w: 30 *1.5,
+                      x: 1535,
+                      mountX:1,
+                      y: 45,
+                      mountY:0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  TTSOptions: {
+                      y: 0+90,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'TTS Options',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  CECControl: {
+                      y: 0+90+90,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'CEC Control',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Bug: {
+                      y: 0+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Bug Report',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Contact: {
+                      y: 0+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Contact Support',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Sync: {
+                      y: 0+90+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Synchronize Location',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Firmware: {
+                      y: 0+90+90+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Check for Firmware Update',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  DeviceInfo: {
+                      y: 0+90+90+90+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Device Info',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Reboot: {
+                      y: 0+90+90+90+90+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Reboot',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Reset: {
+                      y: 0+90+90+90+90+90+90+90+90+90 ,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Factory Reset',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                      h: 30 * 1.5,
+                      w: 30 * 1.5,
+                      x: 1535,
+                      mountX: 1,
+                      y: 45,
+                      mountY: 0.5,
+                      src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+              },
+
+              DeviceInformationScreen: {
+                  type: DeviceInformationScreen,
+                  visible: false,
+              },
+
+          }
+
+      }
+
+      _init(){
+          this.appApi = new AppApi();
+          this.appApi.syncLocation().then(result => {
+              console.log('from advanced settings screen syncLocation: ' + JSON.stringify(result));
+          });
+          this.appApi.speak().then(result => {
+              console.log('from advanced settings screen speak: ' + JSON.stringify(result));
+          });
+          this.appApi.getlistVoices().then(result => {
+              console.log('from advanced settings screen getlistVoices: ' + JSON.stringify(result));
+          });
+          this.appApi.getFirmwareUpdateInfo().then(result => {
+              console.log('from advanced settings screen getFirmwareUpdateInfo: ' + JSON.stringify(result));
+          });
+          this.appApi.getFirmwareUpdateState().then(result => {
+              console.log('from advanced settings screen getFirmwareUpdateState: ' + JSON.stringify(result));
+          });
+      }
+
+      _focus(){
+          this._setState('UIVoice');
+      }
+
+      hide(){
+          this.tag('AdvanceScreenContents').visible = false;
+      }
+
+      show(){
+          this.tag('AdvanceScreenContents').visible = true;
+      }
+
+      static _states(){
+          return [
+              class UIVoice extends this{
+                  $enter(){
+                      this.tag('UIVoice')._focus();
+                  }
+                  $exit(){
+                      this.tag('UIVoice')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Reset');
+                  }
+                  _handleDown(){
+                      this._setState('TTSOptions');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class TTSOptions extends this{
+                  $enter(){
+                      this.tag('TTSOptions')._focus();
+                  }
+                  $exit(){
+                      this.tag('TTSOptions')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('UIVoice');
+                  }
+                  _handleDown(){
+                      this._setState('CECControl');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class CECControl extends this{
+                  $enter(){
+                      this.tag('CECControl')._focus();
+                  }
+                  $exit(){
+                      this.tag('CECControl')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('TTSOptions');
+                  }
+                  _handleDown(){
+                      this._setState('Bug');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class Bug extends this{
+                  $enter(){
+                      this.tag('Bug')._focus();
+                  }
+                  $exit(){
+                      this.tag('Bug')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('CECControl');
+                  }
+                  _handleDown(){
+                      this._setState('Contact');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class Contact extends this{
+                  $enter(){
+                      this.tag('Contact')._focus();
+                  }
+                  $exit(){
+                      this.tag('Contact')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Bug');
+                  }
+                  _handleDown(){
+                      this._setState('Sync');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class Sync extends this{
+                  $enter(){
+                      this.tag('Sync')._focus();
+                  }
+                  $exit(){
+                      this.tag('Sync')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Contact');
+                  }
+                  _handleDown(){
+                      this._setState('Firmware');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class Firmware extends this{
+                  $enter(){
+                      this.tag('Firmware')._focus();
+                  }
+                  $exit(){
+                      this.tag('Firmware')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Sync');
+                  }
+                  _handleDown(){
+                      this._setState('DeviceInfo');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+              class DeviceInfo extends this{
+                  $enter(){
+                      this.tag('DeviceInfo')._focus();
+                  }
+                  $exit(){
+                      this.tag('DeviceInfo')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Firmware');
+                  }
+                  _handleDown(){
+                      this._setState('Reboot');
+                  }
+                  _handleEnter(){
+                      this._setState('DeviceInformationScreen');
+                      this.hide();
+                  }
+              },
+              class Reboot extends this{
+                  $enter(){
+                      this.tag('Reboot')._focus();
+                  }
+                  $exit(){
+                      this.tag('Reboot')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('DeviceInfo');
+                  }
+                  _handleDown(){
+                      this._setState('Reset');
+                  }
+                  _handleEnter(){
+                      this.appApi.reboot().then(result => {
+                          console.log('from advanced settings screen reboot: ' + JSON.stringify(result));
+                      }); 
+                  }
+              },
+              class Reset extends this{
+                  $enter(){
+                      this.tag('Reset')._focus();
+                  }
+                  $exit(){
+                      this.tag('Reset')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Reboot');
+                  }
+                  _handleDown(){
+                      this._setState('UIVoice');
+                  }
+                  _handleEnter(){
+                      
+                  }
+              },
+
+
+              //Inner Screens Classes
+              class DeviceInformationScreen extends this {
+                  $enter() {
+                    this.tag('DeviceInformationScreen').visible = true;
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device Info');
+                  }
+                  _getFocused() {
+                    return this.tag('DeviceInformationScreen')
+                  }
+                  $exit() {
+                    this.tag('DeviceInformationScreen').visible = false;
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
+                  }
+                  _handleBack() {
+                    this._setState('DeviceInfo');
+                    this.show();
+                  }
+                },
+          ]
+      }
+
+
+   }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+   /**
+    * Class for Other Settings Screen.
+    */
+
+   class PrivacyScreen extends lng$1.Component {
+      static _template(){
+          return {
+              x:0,
+              y:0,
+              PrivacyScreenContents:{
+                  LocalDeviceDiscovery: {
+                          y: 0,
+                          type: SettingsMainItem,
+                          Title: {
+                          x: 10,
+                          y: 45,
+                          mountY: 0.5,
+                          text: {
+                              text: 'Local Device Discovery',
+                              textColor: COLORS.titleColor,
+                              fontFace: CONFIG.language.font,
+                              fontSize: 25,
+                          }
+                      },
+                      Button: {
+                          h: 30 *1.5,
+                          w: 44.6 *1.5,
+                          x: 1535,
+                          mountX:1,
+                          y: 45,
+                          mountY:0.5,
+                          src: Utils.asset('images/settings/ToggleOffWhite.png'),
+                      },
+                  },
+                  UsbMediaDevices: {
+                      y: 90,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'USB Media Devices',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                          h: 30 *1.5,
+                          w: 44.6 *1.5,
+                          x: 1535,
+                          mountX:1,
+                          y: 45,
+                          mountY:0.5,
+                          src: Utils.asset('images/settings/ToggleOffWhite.png'),
+                      },
+                  },
+                  AudioInput: {
+                      y: 180,
+                      type: SettingsMainItem,
+                      Title: {
+                      x: 10,
+                      y: 45,
+                      mountY: 0.5,
+                      text: {
+                          text: 'Audio Input',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                      }
+                      },
+                      Button: {
+                          h: 30 *1.5,
+                          w: 44.6 *1.5,
+                          x: 1535,
+                          mountX:1,
+                          y: 45,
+                          mountY:0.5,
+                          src: Utils.asset('images/settings/ToggleOffWhite.png'),
+                      },
+                  },
+                  ClearCookies: {
+                      y: 270,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Clear Cookies and App Data',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  PrivacyPolicy: {
+                      y: 360,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Privacy Policy and License',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  
+
+              },
+              
+          }
+      }
+
+
+      _focus(){
+          this._setState('LocalDeviceDiscovery'); //can be used on init as well
+      }
+
+      hide(){
+          this.tag('PrivacyScreenContents').visible = false;
+      }
+
+      show(){
+          this.tag('PrivacyScreenContents').visible = true;
+      }
+
+      static _states() {
+          return [
+              class LocalDeviceDiscovery extends this {
+                  $enter(){
+                      this.tag('LocalDeviceDiscovery')._focus();
+                  }
+                  $exit(){
+                      this.tag('LocalDeviceDiscovery')._unfocus();
+                  }
+                  _handleDown(){
+                      this._setState('UsbMediaDevices');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class UsbMediaDevices extends this {
+                  $enter(){
+                      this.tag('UsbMediaDevices')._focus();
+                  }
+                  $exit(){
+                      this.tag('UsbMediaDevices')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('LocalDeviceDiscovery');
+                  }
+                  _handleDown(){
+                      this._setState('AudioInput');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class AudioInput extends this {
+                  $enter(){
+                      this.tag('AudioInput')._focus();
+                  }
+                  $exit(){
+                      this.tag('AudioInput')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('UsbMediaDevices');
+                  }
+                  _handleDown(){
+                      this._setState('ClearCookies');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class ClearCookies extends this {
+                  $enter(){
+                      this.tag('ClearCookies')._focus();
+                  }
+                  $exit(){
+                      this.tag('ClearCookies')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('AudioInput');
+                  }
+                  _handleDown(){
+                      this._setState('PrivacyPolicy');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class PrivacyPolicy extends this {
+                  $enter(){
+                      this.tag('PrivacyPolicy')._focus();
+                  }
+                  $exit(){
+                      this.tag('PrivacyPolicy')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('ClearCookies');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+          ]
+      }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+   /**
+    * Class for Other Settings Screen.
+    */
+
+   class OtherSettingsScreen extends lng$1.Component {
+      static _template(){
+          return {
+              x:0,
+              y:0,
+              OtherSettingsScreenContents: {
+                  NetworkConfiguration: {
+                      y: 0,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Network Configuration',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                    },
+                  RemoteControl: {
+                      y: 90,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Remote Control',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                    },
+                  ScreenSaver: {
+                      y: 180,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Screen-Saver: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                    },
+                  EnergySaver: {
+                      y: 270,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Energy Saver: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                    },
+                  Theme: {
+                      y: 360,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'UI Theme: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Language: {
+                      y: 450,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Language: ',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  Privacy: {
+                      y: 540,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Privacy',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+                  AdvancedSettings: {
+                      y: 630,
+                      type: SettingsMainItem,
+                      Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                          text: 'Advanced Settings',
+                          textColor: COLORS.titleColor,
+                          fontFace: CONFIG.language.font,
+                          fontSize: 25,
+                        }
+                      },
+                      Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                      },
+                  },
+              },
+              NetworkConfigurationScreen:{
+                  type: NetworkConfigurationScreen,
+                  visible:false,
+              },
+              RemoteControlScreen:{
+                  type: RemoteControlScreen,
+                  visible:false,
+              },
+
+              // 
+
+              PrivacyScreen:{
+                  type: PrivacyScreen,
+                  visible:false,
+              },
+              AdvancedSettingsScreen: {
+                  type: AdvancedSettingsScreen,
+                  visible: false,
+              },
+          }
+      }
+
+      _focus(){
+          this._setState('NetworkConfiguration'); //can be used on init as well
+      }
+
+      hide(){
+          this.tag('OtherSettingsScreenContents').visible = false;
+      }
+
+      show(){
+          this.tag('OtherSettingsScreenContents').visible = true;
+      }
+
+      static _states() {
+          return [
+              class NetworkConfiguration extends this {
+                  $enter(){
+                      this.tag('NetworkConfiguration')._focus();
+                  }
+                  $exit(){
+                      this.tag('NetworkConfiguration')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('AdvancedSettings');
+                  }
+                  _handleDown(){
+                      this._setState('RemoteControl');
+                  }
+                  _handleEnter(){
+                      this._setState('NetworkConfigurationScreen');
+                  }
+              },
+              class RemoteControl extends this {
+                  $enter(){
+                      this.tag('RemoteControl')._focus();
+                  }
+                  $exit(){
+                      this.tag('RemoteControl')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('NetworkConfiguration');
+                  }
+                  _handleDown(){
+                      this._setState('ScreenSaver');
+                  }
+                  _handleEnter(){
+                      this._setState('RemoteControlScreen');
+                  }
+              },
+              class ScreenSaver extends this {
+                  $enter(){
+                      this.tag('ScreenSaver')._focus();
+                  }
+                  $exit(){
+                      this.tag('ScreenSaver')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('RemoteControl');
+                  }
+                  _handleDown(){
+                      this._setState('EnergySaver');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class EnergySaver extends this {
+                  $enter(){
+                      this.tag('EnergySaver')._focus();
+                  }
+                  $exit(){
+                      this.tag('EnergySaver')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('ScreenSaver');
+                  }
+                  _handleDown(){
+                      this._setState('Theme');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class Theme extends this {
+                  $enter(){
+                      this.tag('Theme')._focus();
+                  }
+                  $exit(){
+                      this.tag('Theme')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('EnergySaver');
+                  }
+                  _handleDown(){
+                      this._setState('Language');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class Language extends this {
+                  $enter(){
+                      this.tag('Language')._focus();
+                  }
+                  $exit(){
+                      this.tag('Language')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Theme');
+                  }
+                  _handleDown(){
+                      this._setState('Privacy');
+                  }
+                  _handleEnter(){
+                      // 
+                  }
+              },
+              class Privacy extends this {
+                  $enter(){
+                      this.tag('Privacy')._focus();
+                  }
+                  $exit(){
+                      this.tag('Privacy')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Language');
+                  }
+                  _handleDown(){
+                      this._setState('AdvancedSettings');
+                  }
+                  _handleEnter(){
+                      this._setState('PrivacyScreen'); 
+                  }
+              },
+              class AdvancedSettings extends this {
+                  $enter(){
+                      this.tag('AdvancedSettings')._focus();
+                  }
+                  $exit(){
+                      this.tag('AdvancedSettings')._unfocus();
+                  }
+                  _handleUp(){
+                      this._setState('Privacy');
+                  }
+                  _handleDown(){
+                      this._setState('NetworkConfiguration');
+                  }
+                  _handleEnter(){
+                      this._setState('AdvancedSettingsScreen'); 
+                  }
+              },
+              class NetworkConfigurationScreen extends this {
+                  $enter(){
+                      this.hide();
+                      this.tag('NetworkConfigurationScreen').visible = true;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Network Configuration');
+                  }
+                  $exit(){
+                      this.show();
+                      this.tag('NetworkConfigurationScreen').visible = false;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+                  }
+                  _getFocused() {
+                      return this.tag('NetworkConfigurationScreen')
+                    }
+                  _handleBack() {
+                      this._setState('NetworkConfiguration');
+                  }
+              },
+              class RemoteControlScreen extends this {
+                  $enter(){
+                      this.hide();
+                      this.tag('RemoteControlScreen').visible = true;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Remote Control');
+                  }
+                  $exit(){
+                      this.show();
+                      this.tag('RemoteControlScreen').visible = false;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+                  }
+                  _getFocused() {
+                      return this.tag('RemoteControlScreen')
+                    }
+                  _handleBack() {
+                      this._setState('RemoteControl');
+                  }
+              },
+
+
+              // 
+              
+
+              class PrivacyScreen extends this {
+                  $enter(){
+                      this.hide();
+                      this.tag('PrivacyScreen').visible = true;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy');
+                  }
+                  $exit(){
+                      this.show();
+                      this.tag('PrivacyScreen').visible = false;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+                  }
+                  _getFocused() {
+                      return this.tag('PrivacyScreen')
+                    }
+                  _handleBack() {
+                      this._setState('Privacy');
+                  }
+              },
+
+              class AdvancedSettingsScreen extends this {
+                  $enter(){
+                      this.hide();
+                      this.tag('AdvancedSettingsScreen').visible = true;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
+                  }
+                  $exit(){
+                      this.show();
+                      this.tag('AdvancedSettingsScreen').visible = false;
+                      this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+                  }
+                  _getFocused() {
+                      return this.tag('AdvancedSettingsScreen')
+                    }
+                  _handleBack() {
+                      this._setState('AdvancedSettings');
+                  }
+              },
+          ]
+      }
   }
 
   /**
@@ -15090,8 +18371,32 @@ var APP_accelerator_home_ui = (function () {
       return {
         x: 280,
         y: 286,
-        WiFi: {
+        SleepTimer: {
           y: 0,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Sleep Timer: Off',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        WiFi: {
+          y: 90,
           type: SettingsMainItem,
           Title: {
             x: 10,
@@ -15115,7 +18420,7 @@ var APP_accelerator_home_ui = (function () {
           },
         },
         Bluetooth: {
-          y: 90,
+          y: 180,
           type: SettingsMainItem,
           Title: {
             x: 10,
@@ -15123,6 +18428,78 @@ var APP_accelerator_home_ui = (function () {
             mountY: 0.5,
             text: {
               text: 'Bluetooth',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        Video: {
+          y: 270,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Video',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        Audio: {
+          y: 360,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Audio',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        OtherSettings: {
+          y: 450,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Other Settings',
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -15146,21 +18523,46 @@ var APP_accelerator_home_ui = (function () {
           type: BluetoothScreen,
           visible: false,
         },
+        VideoScreen: {
+          type: VideoScreen,
+          visible: false,
+        },
+        AudioScreen: {
+          type: AudioScreen,
+          visible: false,
+        },
+        SleepTimerScreen: {
+          type: SleepTimerScreen,
+          visible: false
+        },
+        OtherSettingsScreen: {
+          type: OtherSettingsScreen,
+          visible: false,
+        }
+
       }
     }
 
     _init() {
-      this._setState('WiFi');
+      this._setState('SleepTimer');
     }
 
     hide() {
       this.tag('WiFi').patch({ alpha: 0 });
       this.tag('Bluetooth').patch({ alpha: 0 });
+      this.tag('Video').patch({ alpha: 0 });
+      this.tag('Audio').patch({ alpha: 0 });
+      this.tag('SleepTimer').patch({ alpha: 0 });
+      this.tag('OtherSettings').patch({ alpha: 0 });
     }
 
     show() {
       this.tag('WiFi').patch({ alpha: 1 });
       this.tag('Bluetooth').patch({ alpha: 1 });
+      this.tag('Audio').patch({ alpha: 1 });
+      this.tag('Video').patch({ alpha: 1 });
+      this.tag('SleepTimer').patch({ alpha: 1 });
+      this.tag('OtherSettings').patch({ alpha: 1 });
     }
 
     home() {
@@ -15168,8 +18570,30 @@ var APP_accelerator_home_ui = (function () {
       this.fireAncestors('$goToSidePanel', 0);
     }
 
+    $sleepTimerText(text) {
+      this.tag('SleepTimer.Title').text.text = 'Sleep Timer: ' + text;
+    }
+
     static _states() {
       return [
+        class SleepTimer extends this{
+          $enter() {
+            this.tag('SleepTimer')._focus();
+          }
+          $exit() {
+            this.tag('SleepTimer')._unfocus();
+          }
+          _handleDown() {
+            this._setState('WiFi');
+          }
+          _handleEnter() {
+            this._setState('SleepTimerScreen');
+            this.hide();
+          }
+          _handleBack() {
+            this.home();
+          }
+        },
         class WiFi extends this {
           $enter() {
             this.tag('WiFi')._focus();
@@ -15177,6 +18601,9 @@ var APP_accelerator_home_ui = (function () {
           $exit() {
             console.log('Botton exit');
             this.tag('WiFi')._unfocus();
+          }
+          _handleUp() {
+            this._setState('SleepTimer');
           }
           _handleDown() {
             this._setState('Bluetooth');
@@ -15201,6 +18628,11 @@ var APP_accelerator_home_ui = (function () {
           _handleUp() {
             this._setState('WiFi');
           }
+          _handleDown() {
+            this._setState('Video');
+          }
+          _handleLeft() {
+          }
           _handleEnter() {
             this._setState('BluetoothScreen');
             this.hide();
@@ -15210,7 +18642,89 @@ var APP_accelerator_home_ui = (function () {
           }
         },
 
+        class Video extends this{
+          $enter() {
+            this.tag('Video')._focus();
+          }
+          $exit() {
+            this.tag('Video')._unfocus();
+          }
+          _handleUp() {
+            this._setState('Bluetooth');
+          }
+          _handleDown() {
+            this._setState('Audio');
+          }
+          _handleEnter() {
+            this._setState('VideoScreen');
+            this.hide();
+          }
+          _handleBack() {
+            this.home();
+          }
 
+        },
+
+        class Audio extends this{
+          $enter() {
+            this.tag('Audio')._focus();
+          }
+          $exit() {
+            this.tag('Audio')._unfocus();
+          }
+          _handleUp() {
+            this._setState('Video');
+          }
+          _handleEnter() {
+            this._setState('AudioScreen');
+            this.hide();
+          }
+          _handleDown() {
+            this._setState('OtherSettings');
+          }
+          _handleBack() {
+            this.home();
+          }
+
+        },
+
+        class OtherSettings extends this{
+          $enter() {
+            this.tag('OtherSettings')._focus();
+          }
+          $exit() {
+            this.tag('OtherSettings')._unfocus();
+          }
+          _handleUp() {
+            this._setState('Audio');
+          }
+          _handleEnter() {
+            this._setState('OtherSettingsScreen');
+            this.hide();
+          }
+          _handleBack() {
+            this.home();
+          }
+
+        },
+
+        class SleepTimerScreen extends this{
+          $enter() {
+            this.tag('SleepTimerScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Sleep Timer');
+          }
+          _getFocused() {
+            return this.tag('SleepTimerScreen')
+          }
+          $exit() {
+            this.tag('SleepTimerScreen').visible = false;
+            this.fireAncestors('$changeHomeText', 'Settings');
+          }
+          _handleBack() {
+            this._setState('SleepTimer');
+            this.show();
+          }
+        },
         class BluetoothScreen extends this {
           $enter() {
             this.tag('BluetoothScreen').visible = true;
@@ -15242,6 +18756,59 @@ var APP_accelerator_home_ui = (function () {
           }
           _handleBack() {
             this._setState('WiFi');
+            this.show();
+          }
+        },
+
+        class VideoScreen extends this {
+          $enter() {
+            this.tag('VideoScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Video');
+          }
+          _getFocused() {
+            return this.tag('VideoScreen')
+          }
+          $exit() {
+            this.tag('VideoScreen').visible = false;
+            this.fireAncestors('$changeHomeText', 'Settings');
+          }
+          _handleBack() {
+            this._setState('Video');
+            this.show();
+          }
+        },
+
+        class AudioScreen extends this {
+          $enter() {
+            this.tag('AudioScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Audio');
+          }
+          _getFocused() {
+            return this.tag('AudioScreen')
+          }
+          $exit() {
+            this.tag('AudioScreen').visible = false;
+            this.fireAncestors('$changeHomeText', 'Settings');
+          }
+          _handleBack() {
+            this._setState('Audio');
+            this.show();
+          }
+        },
+        class OtherSettingsScreen extends this {
+          $enter() {
+            this.tag('OtherSettingsScreen').visible = true;
+            this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+          }
+          _getFocused() {
+            return this.tag('OtherSettingsScreen')
+          }
+          $exit() {
+            this.tag('OtherSettingsScreen').visible = false;
+            this.fireAncestors('$changeHomeText', 'Settings');
+          }
+          _handleBack() {
+            this._setState('OtherSettings');
             this.show();
           }
         },

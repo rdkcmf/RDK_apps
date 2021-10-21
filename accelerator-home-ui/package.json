@@ -3,8 +3,9 @@
   "description": "accelerator-home-ui",
   "dependencies": {
     "@lightningjs/sdk": "^3.0.0",
-    "ThunderJS": "github:rdkcentral/ThunderJS",
-    "redux": "^4.1.0"
+    "@lightningjs/ui-components": "^1.0.0",
+    "redux": "^4.1.0",
+    "ThunderJS": "github:rdkcentral/ThunderJS"
   },
   "lint-staged": {
     "*.js": [

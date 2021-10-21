@@ -73,7 +73,7 @@ export default class BluetoothScreen extends Lightning.Component {
       },
       Searching: {
         visible: false,
-        type: SettingsItem,
+        h:90,
         Title: {
           x: 10,
           y: 45,
@@ -140,6 +140,7 @@ export default class BluetoothScreen extends Lightning.Component {
             fontSize: 25,
           }
         },
+        visible: false,
       },
       // PairingScreen: {
       //   x: 1920 - 1920 / 3,
@@ -173,6 +174,7 @@ export default class BluetoothScreen extends Lightning.Component {
     this._bluetooth = true
     if (this._bluetooth) {
       this.tag('Networks').visible = true
+      this.tag('AddADevice').visible = true
     }
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
@@ -454,11 +456,9 @@ export default class BluetoothScreen extends Lightning.Component {
         $enter() {
           this.hideAvailableDevices()
           this.hidePairingScreen()
-          console.log('Button enter')
           this.tag('Switch')._focus()
         }
         $exit() {
-          console.log('Botton exit')
           this.tag('Switch')._unfocus()
         }
         _handleDown() {
@@ -652,6 +652,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = false
           this.tag('Networks').visible = false
+          this.tag('AddADevice').visible = false
           this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
         }
       })
@@ -660,6 +661,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (result.success) {
           this._bluetooth = true
           this.tag('Networks').visible = true
+          this.tag('AddADevice').visible = true
           this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
           this.renderDeviceList()
           this._bt.startScan()
@@ -692,7 +694,6 @@ export default class BluetoothScreen extends Lightning.Component {
       })
       this._bt.registerEvent('onConnectionChange', notification => {
         this._bt.startScan()
-        console.log('CONNECTION CHANGED' + JSON.stringify(notification))
         this.renderDeviceList()
         //  this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
         if (notification.connected) {
