@@ -23,7 +23,6 @@ import ThunderJS from 'ThunderJS'
 
 export default class BluetoothApi {
   constructor() {
-    console.log('Bluetooth constructor')
     this._events = new Map()
     this._devices = []
     this._pairedDevices = []
@@ -45,15 +44,12 @@ export default class BluetoothApi {
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
-          console.log('Bluetooth activated', result)
           this._thunder.on(this.callsign, 'onDiscoveredDevice', notification => {
-            console.log('onDiscoveredDevice ' + JSON.stringify(notification))
             this.getDiscoveredDevices().then(() => {
               this._events.get('onDiscoveredDevice')(notification)
             })
           })
           this._thunder.on(this.callsign, 'onStatusChanged', notification => {
-            console.log('onStatusChanged ' + notification.newStatus)
             if (notification.newStatus === 'PAIRING_CHANGE') {
               this.getPairedDevices().then(() => {
                 this._events.get('onPairingChange')(notification)
@@ -73,15 +69,12 @@ export default class BluetoothApi {
             }
           })
           this._thunder.on(this.callsign, 'onPairingRequest', notification => {
-            console.log('onPairingRequest ' + JSON.stringify(notification))
             this._events.get('onPairingRequest')(notification)
           })
           this._thunder.on(this.callsign, 'onRequestFailed', notification => {
-            console.log('onRequestFailed ' + JSON.stringify(notification))
             this._events.get('onRequestFailed')(notification)
           })
           this._thunder.on(this.callsign, 'onConnectionRequest', notification => {
-            console.log('onConnectionRequest ' + JSON.stringify(notification))
             this._events.get('onConnectionRequest')(notification)
           })
           resolve('Blutooth activated')
@@ -119,7 +112,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'disable')
         .then(result => {
-          console.log(JSON.stringify(result))
           resolve(result)
         })
         .catch(err => {
@@ -137,7 +129,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'enable')
         .then(result => {
-          console.log(JSON.stringify(result))
           resolve(result)
         })
         .catch(err => {
@@ -155,10 +146,12 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'startScan', {
           timeout: '10',
-          profile: 'KEYBOARD,MOUSE,JOYSTICK',
+          profile: `KEYBOARD,
+                    MOUSE,
+                    JOYSTICK,
+                    HUMAN INTERFACE DEVICE`,
         })
         .then(result => {
-          console.log('scanning : ' + result.success)
           if (result.success) resolve()
           else reject()
         })
@@ -175,9 +168,8 @@ export default class BluetoothApi {
   stopScan() {
     return new Promise((resolve, reject) => {
       this._thunder
-        .call('org.rdk.Bluetooth', 'startScan', {})
+        .call('org.rdk.Bluetooth', 'stopScan', {})
         .then(result => {
-          console.log('stopped scanning : ' + result.success)
           if (result.success) resolve()
           else reject()
         })
@@ -196,7 +188,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'getDiscoveredDevices')
         .then(result => {
-          console.log(JSON.stringify(result))
           this._devices = result.discoveredDevices
           resolve(result.discoveredDevices)
         })
@@ -218,7 +209,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'getPairedDevices')
         .then(result => {
-          console.log(JSON.stringify(result))
           this._pairedDevices = result.pairedDevices
           resolve(result.pairedDevices)
         })
@@ -240,7 +230,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'getConnectedDevices')
         .then(result => {
-          console.log(JSON.stringify(result))
           this._connectedDevices = result.connectedDevices
           resolve(result.connectedDevices)
         })
@@ -263,15 +252,13 @@ export default class BluetoothApi {
    */
   connect(deviceID, deviceType) {
     return new Promise((resolve, reject) => {
-      console.log(deviceID)
       this._thunder
         .call('org.rdk.Bluetooth', 'connect', {
           deviceID: deviceID,
           deviceType: deviceType,
-          profile: deviceType,
+          connectedProfile: deviceType,
         })
         .then(result => {
-          console.log('connected : ' + result.success)
           resolve(result.success)
         })
         .catch(err => {
@@ -287,7 +274,6 @@ export default class BluetoothApi {
    *@param {string} deviceType Device type of the Bluetooth client.
    */
   disconnect(deviceID, deviceType) {
-    console.log(deviceID)
     return new Promise((resolve, reject) => {
       this._thunder
         .call('org.rdk.Bluetooth', 'disconnect', {
@@ -295,7 +281,6 @@ export default class BluetoothApi {
           deviceType: deviceType,
         })
         .then(result => {
-          console.log('disconnected : ' + result.success)
           if (result.success) resolve(true)
           else reject()
         })
@@ -315,7 +300,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'unpair', { deviceID: deviceId })
         .then(result => {
-          console.log('unpaired : ' + result.success)
           if (result.success) resolve()
           else reject()
         })
@@ -335,7 +319,6 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'pair', { deviceID: deviceId })
         .then(result => {
-          console.log('paired : ' + result.success)
           if (result.success) resolve()
           else reject()
         })
@@ -361,7 +344,6 @@ export default class BluetoothApi {
           responseValue: responseValue,
         })
         .then(result => {
-          console.log('responded to event : ' + result.success)
           if (result.success) resolve()
           else reject()
         })
@@ -382,4 +364,23 @@ export default class BluetoothApi {
       })
     })
   }
+
+  setAudioStream(deviceID) {
+    
+    return new Promise((resolve, reject) => {
+      this._thunder
+        .call('org.rdk.Bluetooth', 'setAudioStream', { "deviceID": deviceID, "audioStreamName": "AUXILIARY" })
+        .then(result => {
+          
+          // console.log(JSON.stringify(result))
+          this._connectedDevices = result.connectedDevices
+          resolve(result.connectedDevices)
+        })
+        .catch(err => {
+          console.error(`Can't get connected devices : ${err}`)
+          reject()
+        })
+    })
+  }
+
 }

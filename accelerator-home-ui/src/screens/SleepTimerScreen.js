@@ -79,6 +79,7 @@ export default class SleepTimerScreen extends Lightning.Component {
                     this.tag('List').element.tag('Tick').visible = true
                     this.options[this.tag('List').index].tick = true
                     this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value)
+                    this.fireAncestors('$resetSleepTimer',this.options[this.tag('List').index].value);
                 }
             }
         ]

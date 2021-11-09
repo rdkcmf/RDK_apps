@@ -72,97 +72,26 @@ export default class ListItem extends Lightning.Component {
 
     /* Used static data for develpment purpose ,
     it wil replaced with Dynamic data once implimetation is completed.*/
-
-    if (this.info) {
-      this.tag('Info').patch({
-        x: this.x - 20,
-        y: this.y + this.h + 10,
-        w: this.w,
-        h: 140,
-        alpha: 0,
-        PlayIcon: {
-          Label: {
-            x: this.x,
-            y: this.y + 10,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: this.data.displayName,
-              fontSize: 25,
-              maxLines: 2,
-              wordWrapWidth: this.w
-            },
-          }
-        },
-        IMDb: {
-          x: this.x,
-          y: this.y + 40,
-          texture: Lightning.Tools.getSvgTexture(Utils.asset('images/player/IMDb.png'), 30, 20),
-          Rating: {
-            x: this.x + 30,
-            y: this.y - 3,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: '8.8/10',
-              fontSize: 21,
-              maxLines: 2,
-              wordWrapWidth: 150
-            },
+    this.tag('Info').patch({
+      x: this.x - 20,
+      y: this.y + this.h + 10,
+      w: this.w,
+      h: 140,
+      alpha: 0,
+      PlayIcon: {
+        Label: {
+          x: this.idx === 0 ? this.x + 20 : this.x,
+          y: this.y + 10,
+          text: {
+            fontFace: CONFIG.language.font,
+            text: this.data.displayName,
+            fontSize: 35,
+            maxLines: 2,
+            wordWrapWidth: this.w
           },
-          Ua: {
-            text: {
-              fontFace: CONFIG.language.font,
-              text: 'R',
-              fontSize: 20
-            },
-            x: this.x + 110,
-            y: this.y - 3
-          },
-          Duration: {
-            x: this.x + 140,
-            y: this.y - 3,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: '2h 30min',
-              fontSize: 21,
-              maxLines: 2,
-              wordWrapWidth: 150
-            },
-          },
-          Year: {
-            x: this.x + 240,
-            y: this.y - 3,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: '2017',
-              fontSize: 21,
-              maxLines: 2,
-              wordWrapWidth: 150
-            },
-          }
         }
-      })
-    } else {
-      this.tag('Info').patch({
-        x: this.x - 20,
-        y: this.y + this.h + 10,
-        w: this.w,
-        h: 140,
-        alpha: 0,
-        PlayIcon: {
-          Label: {
-            x: this.x,
-            y: this.y + 10,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: this.data.displayName,
-              fontSize: 35,
-              maxLines: 2,
-              wordWrapWidth: this.w
-            },
-          }
-        },
-      })
-    }
+      },
+    })
 
   }
 

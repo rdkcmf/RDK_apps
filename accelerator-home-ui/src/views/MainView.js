@@ -22,6 +22,7 @@ import AppListItem from '../items/AppListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
 import { CONFIG } from '../Config/Config.js'
+import XcastApi from '../api/XcastApi';
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -127,6 +128,7 @@ export default class MainView extends Lightning.Component {
       port: 9998,
       default: 1,
     };
+    this.xcastApi = new XcastApi();
     var thunder = ThunderJS(config);
     thunder.on('Controller', 'statechange', notification => {
       if (notification && (notification.callsign == 'Cobalt' || notification.callsign == 'Amazon') && notification.state == 'Deactivation') {
@@ -152,7 +154,7 @@ export default class MainView extends Lightning.Component {
    * Function to set details of items in app list.
    */
   set appItems(items) {
-    this.tag('AppList').items = items.map(info => {
+    this.tag('AppList').items = items.map((info, idx) => {
       return {
         w: 454,
         h: 255,
@@ -162,7 +164,7 @@ export default class MainView extends Lightning.Component {
         unfocus: 1,
         x_text: 120,
         y_text: 140,
-        info: false
+        idx: idx
       }
     })
     this.tag('AppList').start()
@@ -188,7 +190,7 @@ export default class MainView extends Lightning.Component {
    * Function to set details of items in tv shows list.
    */
   set tvShowItems(items) {
-    this.tag('TVShows').items = items.map(info => {
+    this.tag('TVShows').items = items.map((info, idx) => {
       return {
         w: 257,
         h: 145,
@@ -198,7 +200,7 @@ export default class MainView extends Lightning.Component {
         unfocus: 1,
         x_text: 218,
         y_text: 264,
-        info: true
+        idx: idx
       }
     })
     this.tag('TVShows').start()
@@ -287,11 +289,41 @@ export default class MainView extends Lightning.Component {
             appApi.launchNative(this.uri);
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
-            appApi.launchPremiumApp('Amazon');
-            appApi.setVisibility('ResidentApp', false);
+            console.log('Launching app')
+            fetch('http://127.0.0.1:9998/Service/Controller/')
+              .then(res => res.json())
+              .then(data => {
+                console.log(data)
+                data.plugins.forEach(element => {
+                  if (element.callsign === 'Amazon') {
+                    console.log('Opening Amazon')
+                    appApi.launchPremiumApp('Amazon');
+                    appApi.setVisibility('ResidentApp', false);
+                  }
+                });
+              })
+              .catch(err => {
+                console.log('Amazon not working')
+              })
+
           } else if (Storage.get('applicationType') == 'Netflix') {
-            appApi.launchPremiumApp('Netflix');
-            appApi.setVisibility('ResidentApp', false);
+            console.log('Launching app')
+            fetch('http://127.0.0.1:9998/Service/Controller/')
+              .then(res => res.json())
+              .then(data => {
+                console.log(data)
+                data.plugins.forEach(element => {
+                  if (element.callsign === 'Netflix') {
+                    console.log('Opening Netflix')
+                    appApi.launchPremiumApp('Netflix');
+                    appApi.setVisibility('ResidentApp', false);
+                  }
+                });
+              })
+              .catch(err => {
+                console.log('Netflix not working')
+              })
+
           }
         }
         _handleKey(key) {

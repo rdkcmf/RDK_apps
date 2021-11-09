@@ -48,7 +48,6 @@
        this._thunder
          .call('Controller', 'activate', { callsign: this.callsign })
          .then(result => {
-           console.log('Wifi activated', result)
  
            this.getCurrentState().then(state => {
              if (state === WiFiState.DISABLED) {
@@ -57,20 +56,17 @@
            })
  
            this._thunder.on(this.callsign, 'onWIFIStateChanged', notification => {
-             console.log('onWIFIStateChanged: ' + notification.state)
              if (this._events.has('onWIFIStateChanged')) {
                this._events.get('onWIFIStateChanged')(notification)
              }
            })
            this._thunder.on(this.callsign, 'onError', notification => {
-             console.log('Error: ' + notification)
              if (this._events.has('onError')) {
                this._events.get('onError')(notification)
              }
            })
  
            this._thunder.on(this.callsign, 'onAvailableSSIDs', notification => {
-             console.log('AvailableSSIDs: ' + JSON.stringify(notification))
              if (notification.moreData === false) {
                this.stopScan()
                notification.ssids = notification.ssids.filter(
@@ -117,7 +113,6 @@
        this._thunder
          .call(this.callsign, 'getConnectedSSID')
          .then(result => {
-           console.log('ConnectedSSID: ' + result.ssid)
            resolve(result)
          })
          .catch(err => {

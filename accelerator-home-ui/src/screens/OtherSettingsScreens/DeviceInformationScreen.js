@@ -100,7 +100,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 45 + 35 + 35 + 35 + 35 + 45,
                         mountY: 0.5,
                         text: {
-                            text: 'App Version: 3.1',
+                            text: 'App Version: 3.2',
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -115,13 +115,11 @@ export default class DeviceInformationScreen extends Lightning.Component {
     _init(){
         this.appApi = new AppApi();
         this.appApi.systeminfo().then(result => {
-            console.log('from advanced settings screen system info: ' + JSON.stringify(result))
             let ram = (result.totalram / 10**9).toFixed(2)
             this.tag('SupportedDRM.Title').text.text = `Supported DRM & Key-System: ${ram} GB`
             this.tag('SerialNumber.Title').text.text = `Serial Number: ${result.serialnumber}`
         })
         this.appApi.getLocation().then(result => {
-            console.log('from advanced settings screen get location: ' + JSON.stringify(result))
             this.tag('Location.Title').text.text = `Location: ${result.city.length !== 0 ? result.city +", "+result.country : "NA" }`
         })
     }

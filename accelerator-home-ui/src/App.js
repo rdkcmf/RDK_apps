@@ -33,7 +33,7 @@ var appApi = new AppApi();
 
 export default class App extends Router.App {
   static getFonts() {
-    return [{ family: CONFIG.language.font, url: Utils.asset('fonts/'+ CONFIG.language.fontSrc) }];
+    return [{ family: CONFIG.language.font, url: Utils.asset('fonts/' + CONFIG.language.fontSrc) }];
   }
   _setup() {
     Router.startRouter(routes, this);
@@ -49,12 +49,12 @@ export default class App extends Router.App {
     console.log(lang)
     return {
       file: Utils.asset('language/language-file.json'),
-      language: CONFIG.language.id 
+      language: CONFIG.language.id
     }
   }
 
   _init() {
-    
+
 
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
@@ -73,6 +73,26 @@ export default class App extends Router.App {
       })
       .then(result => {
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder.on(rdkshellCallsign, 'onSuspended', notification => {
+          if (notification) {
+            console.log('onSuspended notification: ' + notification.client);
+            if (Storage.get('applicationType') == notification.client) {
+              Storage.set('applicationType', '');
+              appApi.setVisibility('ResidentApp', true);
+              thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp moveToFront Success');
+              });
+              thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' }).then(result => {
+                console.log('ResidentApp setFocus Success');
+              });
+            }
+          }
+        });
       })
       .catch(err => {
         console.log('Error', err);
@@ -366,7 +386,6 @@ export default class App extends Router.App {
       console.log('Received a launch request ' + JSON.stringify(notification));
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        console.log('Launch ' + this.xcastApps(notification.applicationName));
         if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
           this.deactivateChildApp(Storage.get('applicationType'));
           appApi.launchPremiumApp('Amazon');
@@ -375,12 +394,18 @@ export default class App extends Router.App {
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
-          this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchPremiumApp('Netflix');
-          Storage.set('applicationType', 'Netflix');
-          appApi.setVisibility('ResidentApp', false);
-          let params = { applicationName: notification.applicationName, state: 'running' };
-          this.xcastApi.onApplicationStateChanged(params);
+          appApi.configureApplication('Netflix', notification.parameters).then((res) => {
+            this.deactivateChildApp(Storage.get('applicationType'));
+            appApi.launchPremiumApp('Netflix');
+            Storage.set('applicationType', 'Netflix');
+            appApi.setVisibility('ResidentApp', false);
+            if (AppApi.pluginStatus('Netflix')) {
+              let params = { applicationName: notification.applicationName, state: 'running' };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+          }).catch((err) => {
+            console.log('Error while launching ' + applicationName + ', Err: ' + JSON.stringify(err));
+          });
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
           appApi.launchCobalt(notification.parameters.url);
@@ -487,13 +512,15 @@ export default class App extends Router.App {
       console.log('Received a state request ' + JSON.stringify(notification));
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        let status = AppApi.pluginStatus(applicationName);
-        let params = { applicationName: notification.applicationName, state: 'stopped' };
-        if (status) {
-          params.state = 'running';
-        }
-        this.xcastApi.onApplicationStateChanged(params);
-        console.log('State of ' + this.xcastApps(notification.applicationName));
+        appApi.sendAppState(applicationName);
+        console.log(AppApi.pluginStatus(applicationName))
+        // let status = AppApi.pluginStatus(applicationName);
+        // let params = { applicationName: notification.applicationName, state: 'stopped' };
+        // if (status) {
+        //   params.state = 'running';
+        // }
+        // this.xcastApi.onApplicationStateChanged(params);
+        // console.log('State of ' + this.xcastApps(notification.applicationName) + JSON.stringify(params));
       }
     });
   }

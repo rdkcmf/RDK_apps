@@ -21,7 +21,6 @@ import MainView from '../views/MainView.js'
 import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
 import SettingsScreen from './SettingsScreen.js'
-import ShutdownPanel from '../views/ShutdownPanel.js'
 import AAMPVideoPlayer from '../player/AAMPVideoPlayer.js'
 import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
@@ -76,11 +75,11 @@ export default class HomeScreen extends Lightning.Component {
           type: MainView,
         },
       },
-      Settings:{
-        alpha:0,
-        w:1920,
-        h:1080,
-        type:SettingsScreen,
+      Settings: {
+        alpha: 0,
+        w: 1920,
+        h: 1080,
+        type: SettingsScreen,
       },
       IpAddress: {
         x: 200,
@@ -93,20 +92,15 @@ export default class HomeScreen extends Lightning.Component {
           fontSize: 22,
         },
       },
-      Player: { type: AAMPVideoPlayer },
-      ShutdownPanel: {
-        type: ShutdownPanel,
-        x: 660,
-        y: 385,
-        signals: { select: true },
-        alpha: 0
-      }
+      // Player: { type: AAMPVideoPlayer },
     }
   }
 
   _init() {
     this.homeApi = new HomeApi()
-    
+    this.timer;
+    this.time = 0;
+
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
     var prop_apps = 'applications'
@@ -166,9 +160,49 @@ export default class HomeScreen extends Lightning.Component {
         })
       }
     })
-  
+  }
+
+  removeAndAssign(){
+    if(this.timer){
+      // console.log(`the previous timer was cleared`);
+      clearTimeout(this.timer);
+      this.timer=null;
+    } 
+
+    if(this.time){
+      // console.log(`the new timer was set to time ${this.time}`);
+      this.timer = setTimeout(()=>{
+        last_state = this._getState();
+        this.$standby('STANDBY');
+      } , parseInt(this.time));
+    }
     
-  
+  }
+
+  $resetSleepTimer(t){   
+    // console.log(`reset timer has been called with the time value ${t}`);
+    var arr = t.split(" ");
+    if(arr.length<2){
+      // console.log(`detected sleeptimer is off`);
+      this.time = null;
+    } 
+    else{
+    var temp = arr[1].substring(0,1);
+    // console.log( `current array value = ${arr[0]} , ${temp}`);
+    if(temp ==='H'){
+      this.time = 1000 * 60 * parseInt(arr[0]);
+      // console.log(`detected ${arr[0]} Hours`);
+    }
+    else if(temp ==='M'){
+      this.time = 1000 * parseInt(arr[0]);
+      // console.log(`detected ${arr[0]} minutes`);
+    }
+    else{
+      this.time = 1000 * parseInt(arr[0]);
+      // console.log(`detected ${arr[0]} seconds`);
+    }
+    }
+    this.removeAndAssign(); 
   }
 
   _captureKeyRelease(key) {
@@ -180,7 +214,8 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   _captureKey(key) {
-    console.log(" _captureKey home screen : " + key.keyCode)
+    this.removeAndAssign();
+    //console.log(" _captureKey home screen : " + key.keyCode)
 
     if (key.keyCode == 120 || key.keyCode == 217) {
       store.dispatch({ type: 'ACTION_LISTEN_START' })
@@ -190,8 +225,11 @@ export default class HomeScreen extends Lightning.Component {
     if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
-        last_state = this._getState();
-        this._setState('ShutdownPanel')
+        last_state = this.state
+        
+        this.$standby('STANDBY');
+        
+
 
         return true
       } else if (powerState == 'STANDBY') {
@@ -343,9 +381,9 @@ export default class HomeScreen extends Lightning.Component {
 
     })
   }
-/**
-   * Fireancestor to change the text on top panel.
-   */
+  /**
+     * Fireancestor to change the text on top panel.
+     */
   $changeHomeText(text) {
     this.tag('TopPanel').changeText = text
   }
@@ -353,13 +391,13 @@ export default class HomeScreen extends Lightning.Component {
    * Fireancestor to set the state to player.
    */
   $goToPlayer() {
-    this._setState('Player')
-    this.play()
+    // this._setState('Player')
+    // this.play()
   }
-/**
-   * Fireancestor to change the IP.
-   */
-  $changeIp(ip){
+  /**
+     * Fireancestor to change the IP.
+     */
+  $changeIp(ip) {
     this.tag('IpAddress').text.text = ip
   }
 
@@ -396,7 +434,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('TopPanel').patch({ alpha: 0 });
     this.tag('SidePanel').patch({ alpha: 0 });
   }
-  
+
 
   /**
      * Function to show home UI.
@@ -410,13 +448,13 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /** this function is used to hide only the side and top panels  */
-  $hideSideAndTopPanels(){
+  $hideSideAndTopPanels() {
     this.tag('TopPanel').patch({ alpha: 0 });
     this.tag('SidePanel').patch({ alpha: 0 });
   }
 
   /** this function will show side and top panels only */
-  $showSideAndTopPanels(){
+  $showSideAndTopPanels() {
     this.tag('TopPanel').patch({ alpha: 1 });
     this.tag('SidePanel').patch({ alpha: 1 });
   }
@@ -424,7 +462,7 @@ export default class HomeScreen extends Lightning.Component {
   /**
    * Fireancestor to set the state to Settings.
    */
-   $goToSettings() {
+  $goToSettings() {
     this._setState('Settings')
   }
 
@@ -443,17 +481,7 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('SidePanel')
         }
       },
-      class ShutdownPanel extends this {
-        $enter() {
-          this.tag('ShutdownPanel').setSmooth('alpha', 1)
-        }
-        $exit() {
-          this.tag('ShutdownPanel').setSmooth('alpha', 0)
-        }
-        _getFocused() {
-          return this.tag('ShutdownPanel')
-        }
-      },
+      
       class MainView extends this {
         _getFocused() {
           return this.tag('MainView')
@@ -467,9 +495,11 @@ export default class HomeScreen extends Lightning.Component {
         _getFocused() {
           return this.tag('Settings')
         }
-        $exit() {
-          this.tag('MainView').alpha = 1
-          this.tag('Settings').alpha = 0
+        $exit(e) {
+          
+            this.tag('MainView').alpha = 1
+            this.tag('Settings').alpha = 0
+          
         }
       },
       class Playing extends this {

@@ -16,91 +16,90 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Utils } from '@lightningjs/sdk'
- import SettingsMainItem from '../../items/SettingsMainItem'
- import SettingsItem from '../../items/SettingsItem'
- import { COLORS } from '../../colors/Colors'
+import { Lightning, Utils } from '@lightningjs/sdk'
+import SettingsMainItem from '../../items/SettingsMainItem'
+import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
- /**
-  * Class for Other Settings Screen.
-  */
+/**
+ * Class for Other Settings Screen.
+ */
 
- export default class RemoteControlScreen extends Lightning.Component {
-    static _template(){
+export default class RemoteControlScreen extends Lightning.Component {
+    static _template() {
         return {
-            x:0,
-            y:0,
-            RemoteControlScreenContents:{
+            x: 0,
+            y: 0,
+            RemoteControlScreenContents: {
                 PairingStatus: {
                     y: 0,
                     type: SettingsMainItem,
                     Title: {
-                      x: 10,
-                      y: 45,
-                      mountY: 0.5,
-                      text: {
-                        text: 'Pairing Status: ',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                      }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Pairing Status: ',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                      h: 45,
-                      w: 45,
-                      x: 1535,
-                      mountX: 1,
-                      y: 45,
-                      mountY: 0.5,
-                      src: Utils.asset('images/settings/Arrow.png'),
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 FirmwareVersion: {
                     y: 90,
                     type: SettingsMainItem,
                     Title: {
-                      x: 10,
-                      y: 45,
-                      mountY: 0.5,
-                      text: {
-                        text: 'Firmware Version: ',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                      }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Firmware Version: ',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                      h: 45,
-                      w: 45,
-                      x: 1535,
-                      mountX: 1,
-                      y: 45,
-                      mountY: 0.5,
-                      src: Utils.asset('images/settings/Arrow.png'),
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 TestMicrophone: {
                     y: 180,
                     type: SettingsMainItem,
                     Title: {
-                      x: 10,
-                      y: 45,
-                      mountY: 0.5,
-                      text: {
-                        text: 'Test Microphone',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                      }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Test Microphone',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                      h: 45,
-                      w: 45,
-                      x: 1535,
-                      mountX: 1,
-                      y: 45,
-                      mountY: 0.5,
-                      src: Utils.asset('images/settings/Arrow.png'),
+                        h: 45,
+                        w: 45,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 Info: {
@@ -118,7 +117,7 @@ import { CONFIG } from '../../Config/Config'
                     },
                     SignalStrength: {
                         x: 10,
-                        y: 45+35,
+                        y: 45 + 35,
                         mountY: 0.5,
                         text: {
                             text: 'Signal Strength: ',
@@ -129,7 +128,7 @@ import { CONFIG } from '../../Config/Config'
                     },
                     VoiceCapable: {
                         x: 10,
-                        y: 45+35+35,
+                        y: 45 + 35 + 35,
                         mountY: 0.5,
                         text: {
                             text: 'Voice Capable: ',
@@ -138,72 +137,72 @@ import { CONFIG } from '../../Config/Config'
                             fontSize: 25,
                         }
                     },
-                    
+
                 },
             },
-            PairingStatusScreen:{
+            PairingStatusScreen: {
                 // 
             },
         }
     }
 
 
-    _focus(){
+    _focus() {
         this._setState('PairingStatus') //can be used on init as well
     }
 
-    hide(){
+    hide() {
         this.tag('RemoteControlScreenContents').visible = false
     }
 
-    show(){
+    show() {
         this.tag('RemoteControlScreenContents').visible = true
     }
 
     static _states() {
         return [
             class PairingStatus extends this {
-                $enter(){
+                $enter() {
                     this.tag('PairingStatus')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('PairingStatus')._unfocus()
                 }
-                _handleDown(){
+                _handleDown() {
                     this._setState('FirmwareVersion')
                 }
-                _handleEnter(){
+                _handleEnter() {
                     // 
                 }
             },
             class FirmwareVersion extends this {
-                $enter(){
+                $enter() {
                     this.tag('FirmwareVersion')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('FirmwareVersion')._unfocus()
                 }
-                _handleUp(){
+                _handleUp() {
                     this._setState('PairingStatus')
                 }
-                _handleDown(){
+                _handleDown() {
                     this._setState('TestMicrophone')
                 }
-                _handleEnter(){
+                _handleEnter() {
                     // 
                 }
             },
             class TestMicrophone extends this {
-                $enter(){
+                $enter() {
                     this.tag('TestMicrophone')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('TestMicrophone')._unfocus()
                 }
-                _handleUp(){
+                _handleUp() {
                     this._setState('FirmwareVersion')
                 }
-                _handleEnter(){
+                _handleEnter() {
                     // 
                 }
             },

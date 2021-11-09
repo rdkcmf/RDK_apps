@@ -49,13 +49,13 @@ export default class HdmiOutputScreen extends Lightning.Component {
     $resetPrevTickObject(prevTicObject) {
         if (!this.prevTicOb) {
             this.prevTicOb = prevTicObject;
-            console.log(`prevTicOb = ${this.prevTicOb}`);
+            
         }
         else {
             this.prevTicOb.tag("Item.Tick").visible = false;
-            console.log(`tried to reset the prev tickect object ie.${this.prevTicOb}`);
+            
             this.prevTicOb = prevTicObject;
-            console.log(`prevTicOb was reset to ${this.prevTicOb}`);
+            
         }
     }
 
@@ -73,7 +73,7 @@ export default class HdmiOutputScreen extends Lightning.Component {
                 // ###############  setting the audio items  ###############
                 tappApi.getSupportedAudioModes()
                     .then(res => {
-                        console.log(res);
+                        
                         options = [...res.supportedAudioModes]
                         this.tag('HdmiOutputScreenContents').h = options.length * 90
                         this.tag('HdmiOutputScreenContents.List').h = options.length * 90

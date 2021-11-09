@@ -83,7 +83,6 @@ export default class Network {
     return new Promise((resolve, reject) => {
       this._thunder.call(this.callsign,'getInterfaces').then(result => {
         if(result.success){
-          console.log('getInterfaces result: ' + JSON.stringify(result.interfaces))
           resolve(result.interfaces)
         }
       }).catch(err => {
@@ -100,7 +99,6 @@ export default class Network {
     return new Promise((resolve, reject) => {
       this._thunder.call(this.callsign,'getDefaultInterface').then(result => {
         if(result.success){
-          console.log('getDefaultInterface result: ' + result.interface)
           resolve(result.interface)
         }
       }).catch(err => {
@@ -117,7 +115,6 @@ export default class Network {
           "interface": interfaceName,
           "persist": true
         }).then(result => {
-          console.log('setDefaultInterface from network API: '+ JSON.stringify(result))
           resolve(result)
         }).catch(err => {
           console.error(`setDefaultInterface fail: ${err}`)
@@ -144,7 +141,6 @@ export default class Network {
         {
           "interface": currentInterface,
         }).then(result => {
-          console.log('getIPSettings from network API: '+ JSON.stringify(result))
           resolve(result)
       }).catch(err => {
         console.error(`getIPSettings fail: ${err}`)
@@ -160,7 +156,6 @@ export default class Network {
   setIPSettings(IPSettings){
     return new Promise((resolve, reject) => {
       this._thunder.call(this.callsign,'setIPSettings', IPSettings).then(result => {
-          console.log('setIPSettings from network API: '+ JSON.stringify(result))
           resolve(result)
       }).catch(err => {
         console.error(`setIPSettings fail: ${err}`)
@@ -174,7 +169,6 @@ export default class Network {
     return new Promise((resolve, reject) => {
       this._thunder.call(this.callsign,'isConnectedToInternet').then(result => {
         if(result.success){
-          console.log('from networkAPI isConnectedToInternet result: ' + result.connectedToInternet)
           resolve(result.connectedToInternet)
         }
       }).catch(err => {

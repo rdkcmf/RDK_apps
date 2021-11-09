@@ -68,7 +68,7 @@ export default class BluetoothScreen extends Lightning.Component {
           mountX: 1,
           y: 45,
           mountY: 0.5,
-          src: Utils.asset('images/settings/ToggleOnOrange.png'),
+          src: Utils.asset('images/settings/ToggleOffWhite.png'),
         },
       },
       Searching: {
@@ -168,10 +168,11 @@ export default class BluetoothScreen extends Lightning.Component {
     // })
     // this.loadingAnimation.play()
     this._bt = new BluetoothApi()
-    this._bluetooth = true
+    this._bluetooth = false
     this._activateBluetooth()
     this._setState('Switch')
-    this._bluetooth = true
+    this.switch()
+    //this._bluetooth = false
     if (this._bluetooth) {
       this.tag('Networks').visible = true
       this.tag('AddADevice').visible = true
@@ -398,6 +399,21 @@ export default class BluetoothScreen extends Lightning.Component {
             this.tag('Confirmation.Pairing').text = 'Connection Failed'
             this._setState('Confirmation')
           } else {
+            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID).then(res=>{
+              // console.log(`
+              // Tanjirou's log:
+              
+              //   the Audio stream was successfully set${res}
+              
+              // `);
+            }).catch(err=>{
+              console.log(`
+              Tanjirou's log:
+              
+              Unable to set the audio stream , error = ${err}
+              
+              `);
+            });
             this.tag('Confirmation.Pairing').text = 'Connection Successful'
             this._setState('Confirmation')
           }
@@ -675,6 +691,7 @@ export default class BluetoothScreen extends Lightning.Component {
    */
   _activateBluetooth() {
     this._bt.activate().then(() => {
+      this._bluetooth = true
       this._bt.registerEvent('onDiscoveredDevice', () => {
         this.renderDeviceList()
       })

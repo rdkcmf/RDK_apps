@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+var running = false
 import ThunderJS from 'ThunderJS';
 /**
  * Class for Xcast thunder plugin apis.
@@ -119,7 +120,6 @@ export default class XcastApi {
     return new Promise((resolve, reject) => {
       console.log('Notifying back');
       this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
-        console.log(result);
         resolve(result);
       });
     });

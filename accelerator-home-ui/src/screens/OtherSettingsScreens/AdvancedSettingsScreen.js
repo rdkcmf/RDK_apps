@@ -287,19 +287,14 @@ import AppApi from '../../api/AppApi'
     _init(){
         this.appApi = new AppApi();
         this.appApi.syncLocation().then(result => {
-            console.log('from advanced settings screen syncLocation: ' + JSON.stringify(result))
         })
         this.appApi.speak().then(result => {
-            console.log('from advanced settings screen speak: ' + JSON.stringify(result))
         })
         this.appApi.getlistVoices().then(result => {
-            console.log('from advanced settings screen getlistVoices: ' + JSON.stringify(result))
         })
         this.appApi.getFirmwareUpdateInfo().then(result => {
-            console.log('from advanced settings screen getFirmwareUpdateInfo: ' + JSON.stringify(result))
         })
         this.appApi.getFirmwareUpdateState().then(result => {
-            console.log('from advanced settings screen getFirmwareUpdateState: ' + JSON.stringify(result))
         })
     }
 
@@ -469,7 +464,6 @@ import AppApi from '../../api/AppApi'
                 }
                 _handleEnter(){
                     this.appApi.reboot().then(result => {
-                        console.log('from advanced settings screen reboot: ' + JSON.stringify(result))
                     }) 
                 }
             },

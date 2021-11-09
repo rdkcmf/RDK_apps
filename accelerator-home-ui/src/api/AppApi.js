@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import ThunderJS from 'ThunderJS'
+import ThunderJS from 'ThunderJS';
+
 var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
@@ -32,7 +33,7 @@ const config = {
   port: 9998,
   default: 1,
 }
-var thunder = ThunderJS(config)
+const thunder = ThunderJS(config)
 /**
  * Class that contains functions which commuicates with thunder API's
  */
@@ -122,7 +123,7 @@ export default class AppApi {
         .then(() => {
           thunder
             .call(systemcCallsign, 'getSupportedResolutions', { params: 'HDMI0' })
-            .then(result => { 
+            .then(result => {
               resolve(result.supportedResolutions)
             })
             .catch(err => {
@@ -151,6 +152,107 @@ export default class AppApi {
             })
             .then(result => {
               resolve(result.success)
+            })
+            .catch(err => {
+              resolve(false)
+            })
+        })
+        .catch(err => {
+          console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  /**
+   * Function to get HDCP Status.
+   */
+   getHDCPStatus() {
+    console.log("checking hdcp status")
+    return new Promise((resolve, reject) => {
+
+      const systemcCallsign = 'org.rdk.HdcpProfile.1'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'getHDCPStatus')
+            .then(result => { 
+              resolve(result.HDCPStatus)
+              console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus))
+            })
+            .catch(err => {
+              resolve(false)
+            })
+        })
+        .catch(err => {
+          console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  /**
+   * Function to get TV HDR Support.
+   */
+   getTvHDRSupport() {
+    return new Promise((resolve, reject) => {
+
+      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'getTvHDRSupport')
+            .then(result => { 
+              resolve(result)
+              console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result))
+            })
+            .catch(err => {
+              resolve(false)
+            })
+        })
+        .catch(err => {
+          console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  /**
+   * Function to get settop box HDR Support.
+   */
+   getSettopHDRSupport() {
+    return new Promise((resolve, reject) => {
+
+      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'getSettopHDRSupport')
+            .then(result => { 
+              resolve(result)
+              console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result))
+            })
+            .catch(err => {
+              resolve(false)
+            })
+        })
+        .catch(err => {
+          console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  /**
+   * Function to get HDR Format in use.
+   */
+   getHDRSetting () {
+    return new Promise((resolve, reject) => {
+
+      const systemcCallsign = 'DisplayInfo.1'
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(() => {
+          thunder
+            .call(systemcCallsign, 'hdrsetting')
+            .then(result => { 
+              resolve(result)
+              console.log("HDR format in use from AppApi.js : " + JSON.stringify(result))
             })
             .catch(err => {
               resolve(false)
@@ -368,6 +470,28 @@ export default class AppApi {
       visible: visible,
     })
   }
+      /**
+     * Function to set the configuration of premium apps.
+     * @param {appName} Name of the application
+     * @param {config_data} config_data configuration data
+     */
+
+       configureApplication(appName, config_data) {
+        let plugin = 'Controller';
+        let method = 'configuration@'+appName;
+        return new Promise((resolve, reject) => {
+        thunder.call(plugin, method).then((res) => {
+          res.querystring = config_data;
+          thunder.call(plugin, method, res).then((resp) => {
+            resolve(true);
+          }).catch((err) => {
+            resolve(true);
+          });
+        }).catch((err) => {
+          reject(err);
+        });
+      })
+      }
   /**
    * Function to launch Native app.
    * @param {String} url url of app.
@@ -433,7 +557,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
         .then(result => {
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -447,8 +570,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
-          console.log("############ audio_mute ############## value: " + value + " audio_source: " + audio_source)
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -464,7 +585,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": "HDMI0", "volumeLevel": value })
         .then(result => {
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -480,7 +600,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
         .then(result => {
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -491,6 +610,80 @@ export default class AppApi {
   }
 
 
+  getConnectedAudioPorts() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("audio mute error:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+
+    })
+  }
+
+  getSoundMode() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getSoundMode', {
+          "audioPort": "HDMI0"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  setSoundMode(mode) {
+
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'setSoundMode', {
+          "audioPort": "HDMI0",
+          "soundMode": mode,
+          "persist": true
+
+        })
+
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in setting sound mode:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  getSupportedAudioModes() {
+
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
+          "audioPort": "HDMI0"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting support audio sound mode:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+
+  //Tanjirou's Api's ________________________________________________________________________________________________
+
+
+  //Returns connected audio output ports (a subset of the ports supported on the device)
   getConnectedAudioPorts() {
     return new Promise((resolve, reject) => {
       thunder
@@ -508,56 +701,16 @@ export default class AppApi {
     })
   }
 
-  getSoundMode() {
+
+  //Enable or disable the specified audio port based on the input audio port ID. 
+  setEnableAudioPort(port){
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.DisplaySettings.1', 'getSoundMode', {
-         "audioPort": "HDMI0" 
+      .call('org.rdk.DisplaySettings.1', 'setEnableAudioPort', {
+         "audioPort": port ,"enable":true
       })
       .then(result => {
-        console.log("############ getSoundMode ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
-    })
-  }
-
-  setSoundMode(mode){
-
-    return new Promise((resolve, reject) => {
-      thunder
-      .call('org.rdk.DisplaySettings.1', 'setSoundMode', {
-        "audioPort": "HDMI0",
-        "soundMode": mode,
-        "persist": true
-
-      })
-
-      .then(result => {
-        console.log("############ setSoundMode ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in setting sound mode:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
-    })
-  }
-
-  getSupportedAudioModes(){
-
-    return new Promise((resolve, reject) => {
-      thunder
-      .call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
-         "audioPort": "HDMI0" 
-      })
-      .then(result => {
-        console.log("############ getSupportedAudioModes ############")
+        console.log(`############ SetEnableAudioPort ${port} #############`)
         console.log(JSON.stringify(result, 3, null))
         resolve(result)
       })
@@ -568,190 +721,341 @@ export default class AppApi {
     })
   }
 
-  //OTHER SETTINGS PAGE API
-  
-  //1. UI VOICE
 
-  //Start a speech
-  speak(){
+  //getDRC
+  getDRCMode(){
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.TextToSpeech.1', 'speak', {
-        "text": "speech_1" 
-      })
+      .call('org.rdk.DisplaySettings', 'getDRCMode',{"audioPort": "HDMI0" })
       .then(result => {
-        console.log("############ speak ############")
-        console.log(JSON.stringify(result, 3, null))
+        console.log(`############ getDRC #############`)
+        console.log(JSON.stringify(result));
         resolve(result)
       })
       .catch(err => {
-        console.log("error in speak:", JSON.stringify(err, 3, null))
+        console.log("error while getting the DRC", JSON.stringify(err))
         resolve(false)
       })
+    })
+  }
+  //setDRC
+  setDRCMode(DRCNum){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'setDRCMode', {
+            "DRCMode":DRCNum
+      })
+      .then(result => {
+        console.log(`############ DRC was set to ${DRCNum} #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while setting the DRC", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //getZoomSetting
+  getZoomSetting(){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getZoomSetting')
+      .then(result => {
+        console.log(`############ getZoomSetting #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while getting Zoom Setting", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+  //setZoomSetting 
+  setZoomSetting(zoom){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'setZoomSetting',{"zoomSetting":zoom})
+      .then(result => {
+        console.log(`############ setZoomSetting #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while setting the Zoom", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //getEnableAudioPort 
+  getEnableAudioPort(audioPort){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getEnableAudioPort',{"audioPort":audioPort})
+      .then(result => {
+        console.log(`############ getEnableAudioPort #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while getting Enabled Audio port ", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //getSupportedAudioPorts 
+
+  getSupportedAudioPorts (){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getSupportedAudioPorts')
+      .then(result => {
+        console.log(`############ getSupportedAudioPorts #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while getting S upported audio ports ", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //getVolumeLevel 
+  getVolumeLevel (){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getVolumeLevel')
+      .then(result => {
+        console.log(`############ getVolumeLevel #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error current volume level", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //setVolumeLevel
+  setVolumeLevel(port , volume){
+    return new Promise((resolve, reject) => {
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'setVolumeLevel',{"audioPort":port,"volumeLevel":volume})
+      .then(result => {
+        console.log(`############ setVolumeLevel #############`)
+        console.log(JSON.stringify(result));
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error while setting current volume level", JSON.stringify(err))
+        resolve(false)
+      })
+    })
+  }
+
+  //________________________________________________________________________________________________________________________
+  
+
+
+  //OTHER SETTINGS PAGE API
+
+  //1. UI VOICE
+
+  //Start a speech
+  speak() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.TextToSpeech.1', 'speak', {
+          "text": "speech_1"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in speak:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   //Resume a speech
-  resume(){
+  resume() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.TextToSpeech.1', 'resume', {
-        "speechid": 1 
-      })
-      .then(result => {
-        console.log("############ resume ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in resuming:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.TextToSpeech.1', 'resume', {
+          "speechid": 1
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in resuming:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   //Pause a speech
-  pause(){
+  pause() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.TextToSpeech.1', 'pause', {
-        "speechid": 1 
-      })
-      .then(result => {
-        console.log("############ pause ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in pausing:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.TextToSpeech.1', 'pause', {
+          "speechid": 1
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in pausing:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   // 2. TTS Options
-  getlistVoices(){
+  getlistVoices() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.TextToSpeech.1', 'listvoices', {
-        "language": "en-US" 
-      })
-      .then(result => {
-        console.log("############ list voices ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting voices:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.TextToSpeech.1', 'listvoices', {
+          "language": "en-US"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting voices:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   // 3. Sync Location
-  syncLocation(){
+  syncLocation() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('LocationSync.1', 'sync')
-      .then(result => {
-        console.log("############ sync location ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in syncing location:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('LocationSync.1', 'sync')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in syncing location:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
 
 
-  getLocation(){
+  getLocation() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('LocationSync.1', 'location')
-      .then(result => {
-        console.log("############ get location ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting location:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('LocationSync.1', 'location')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting location:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
   // 4. Check for Firmware Update
 
   //Get Firmware Update Info
-  getFirmwareUpdateInfo(){
+  getFirmwareUpdateInfo() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.System.1', 'getFirmwareUpdateInfo')
-      .then(result => {
-        console.log("############ firmware update info ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting firmware update info:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.System.1', 'getFirmwareUpdateInfo')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting firmware update info:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   // Get Firmware Update State
-  getFirmwareUpdateState(){
+  getFirmwareUpdateState() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.System.1', 'getFirmwareUpdateState')
-      .then(result => {
-        console.log("############ firmware update state ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting firmware update state:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.System.1', 'getFirmwareUpdateState')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting firmware update state:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   // 5. Device Info
-  systeminfo(){
+  systeminfo() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('DeviceInfo.1', 'systeminfo')
-      .then(result => {
-        console.log("############ system info ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in getting system info:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('DeviceInfo.1', 'systeminfo')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting system info:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
   }
 
   // 6. Reboot
-  reboot(){
+  reboot() {
     return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.System.1', 'reboot', {
-        "rebootReason": "FIRMWARE_FAILURE"
-      })
-      .then(result => {
-        console.log("############ reboot ############")
-        console.log(JSON.stringify(result, 3, null))
-        resolve(result)
-      })
-      .catch(err => {
-        console.log("error in reboot:", JSON.stringify(err, 3, null))
-        resolve(false)
-      })
+        .call('org.rdk.System.1', 'reboot', {
+          "rebootReason": "FIRMWARE_FAILURE"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in reboot:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
     })
+  }
+
+  async sendAppState(value) {
+    const state = await thunder
+      .call('org.rdk.RDKShell.1', 'getState', {})
+      .then(result => result.state);
+    this.state = state;
+    let params = { applicationName: value, state: 'stopped' };
+    for (var i = 0; i < state.length; i++) {
+      if (state[i].callsign == value) {
+
+        if (state[i].state == 'resumed') {
+          activatedCobalt = true
+          params.state = 'running';
+        } else if (state[i].state == 'suspended') {
+          params.state = 'suspended';
+        } else {
+          params.state = 'stopped'
+        };
+
+      }
+    }
+    if (params.state === 'stopped') {
+      activatedCobalt = false
+    }
+    await thunder
+      .call('org.rdk.Xcast', 'onApplicationStateChanged', params)
+      .then(result => result.success);
+
   }
 
 

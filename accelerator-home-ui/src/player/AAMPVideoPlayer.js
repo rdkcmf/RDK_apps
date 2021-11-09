@@ -55,7 +55,6 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.videoEl.style.zIndex = '1'
     this.videoEl.setAttribute('width', '100%')
     this.videoEl.setAttribute('height', '100%')
-    this.videoEl.setAttribute('src', 'placeholder.mp4')
     this.videoEl.setAttribute('type', 'video/ave')
     document.body.appendChild(this.videoEl)
     this.playbackSpeeds = [-16, -8, -4, -2, 1, 2, 4, 8, 16]
@@ -169,34 +168,34 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    * Function to create the video player instance for video playback and its initial settings.
    */
-  createPlayer() {
-    if (this.player !== null) {
-      this.destroy()
-      this.player = null
-    }
+  // createPlayer() {
+  //   if (this.player !== null) {
+  //     this.destroy()
+  //     this.player = null
+  //   }
 
-    try {
-      this.player = new AAMPMediaPlayer()
-      this.player.addEventListener('playbackStateChanged', this._playbackStateChanged)
-      this.player.addEventListener('playbackCompleted', this._mediaEndReached.bind(this))
-      this.player.addEventListener('playbackSpeedChanged', this._mediaSpeedChanged)
-      this.player.addEventListener('bitrateChanged', this._bitrateChanged)
-      this.player.addEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this))
-      this.player.addEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this))
-      this.player.addEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this))
-      this.player.addEventListener('durationChanged', this._mediaDurationChanged)
-      this.playerState = this.playerStatesEnum.idle
-    } catch (error) {
-      console.error('AAMPMediaPlayer is not defined')
-    }
-  }
+  //   try {
+  //     this.player = new AAMPMediaPlayer()
+  //     this.player.addEventListener('playbackStateChanged', this._playbackStateChanged)
+  //     this.player.addEventListener('playbackCompleted', this._mediaEndReached.bind(this))
+  //     this.player.addEventListener('playbackSpeedChanged', this._mediaSpeedChanged)
+  //     this.player.addEventListener('bitrateChanged', this._bitrateChanged)
+  //     this.player.addEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this))
+  //     this.player.addEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this))
+  //     this.player.addEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this))
+  //     this.player.addEventListener('durationChanged', this._mediaDurationChanged)
+  //     this.playerState = this.playerStatesEnum.idle
+  //   } catch (error) {
+  //     console.error('AAMPMediaPlayer is not defined')
+  //   }
+  // }
 
   /**
    * Loads the player with video URL.
    * @param videoInfo the url and the info regarding the video like title.
    */
   load(videoInfo) {
-    this.createPlayer()
+    //this.createPlayer()
     this.videoInfo = videoInfo
     this.configObj = this.defaultInitConfig
     this.configObj.drmConfig = this.videoInfo.drmConfig

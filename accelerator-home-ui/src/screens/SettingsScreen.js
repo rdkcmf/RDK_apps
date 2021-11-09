@@ -92,7 +92,7 @@ export default class SettingsScreen extends Lightning.Component {
           y: 45,
           mountY: 0.5,
           text: {
-            text: 'Bluetooth',
+            text: 'Pair Remote Control',
             textColor: COLORS.titleColor,
             fontFace: CONFIG.language.font,
             fontSize: 25,
@@ -156,30 +156,30 @@ export default class SettingsScreen extends Lightning.Component {
           src: Utils.asset('images/settings/Arrow.png'),
         },
       },
-      OtherSettings: {
-        y: 450,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Other Settings',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
-        },
-      },
+      // OtherSettings: {
+      //   y: 450,
+      //   type: SettingsMainItem,
+      //   Title: {
+      //     x: 10,
+      //     y: 45,
+      //     mountY: 0.5,
+      //     text: {
+      //       text: 'Other Settings',
+      //       textColor: COLORS.titleColor,
+      //       fontFace: CONFIG.language.font,
+      //       fontSize: 25,
+      //     }
+      //   },
+      //   Button: {
+      //     h: 45,
+      //     w: 45,
+      //     x: 1535,
+      //     mountX: 1,
+      //     y: 45,
+      //     mountY: 0.5,
+      //     src: Utils.asset('images/settings/Arrow.png'),
+      //   },
+      // },
       WiFiScreen: {
         type: WiFiScreen,
         visible: false,
@@ -345,7 +345,7 @@ export default class SettingsScreen extends Lightning.Component {
           this.hide()
         }
         _handleDown() {
-          this._setState('OtherSettings')
+          //this._setState('OtherSettings')
         }
         _handleBack() {
           this.home()
@@ -393,7 +393,7 @@ export default class SettingsScreen extends Lightning.Component {
       class BluetoothScreen extends this {
         $enter() {
           this.tag('BluetoothScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Bluetooth')
+          this.fireAncestors('$changeHomeText', 'Settings / Pair Remote Control')
         }
         _getFocused() {
           return this.tag('BluetoothScreen')

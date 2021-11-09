@@ -52,7 +52,6 @@ export default class AppListItem extends Lightning.Component {
   }
 
   _init() {
-    console.log(this.data)
     if (this.data.url.startsWith('/images')) {
       this.tag('Image').patch({
         w: this.w,

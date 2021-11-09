@@ -52,20 +52,16 @@ export default class VideoAndAudioItem extends Lightning.Component {
   }
 
   _init() {
-    console.log(`!! init comes first !!`)
     if(this.isTicked){
-      console.log(`!! is ticked was true for the object ${this}!!`)
       this.fireAncestors("$resetPrevTickObject",this);
     }
     this.appApi = new AppApi();
-    console.log(`item value was set to ${this._item} and is a Video Element ${this.videoElement}`);
   }
 
   _handleEnter(){
     var self = this;
     if(this.videoElement === true){
       this.appApi.setResolution(this._item).then(res=>{
-        console.log(`the resolution attempted to be set to ${this._item.split(" ")[1]} and the result was ${res}`);
         this.fireAncestors('$updateResolution', self._item)
         if(res === true){
           self.fireAncestors("$resetPrevTickObject",self)
@@ -77,10 +73,8 @@ export default class VideoAndAudioItem extends Lightning.Component {
       });
     }
     else{
-      console.log("else block");
       this.appApi.setSoundMode(this._item)
       .then(result => {
-        console.log(result);
         if(result.success === true){
           self.fireAncestors("$resetPrevTickObject",self)
           self.tag("Item.Tick").visible = true;
@@ -96,10 +90,8 @@ export default class VideoAndAudioItem extends Lightning.Component {
   }
 
   set item(item) {
-    console.log(`!! set comes first !!`)
     this._item = item
     var self = this;
-    console.log(`setting a video element and it ${self.isTicked}ly ticked`);
     this.tag('Item').patch({
         Tick: {
             x: 10,

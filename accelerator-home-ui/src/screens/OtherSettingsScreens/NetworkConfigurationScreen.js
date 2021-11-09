@@ -140,18 +140,13 @@ import NetworkApi from '../../api/NetworkApi'
         let _currentIPSettings = {}
         let _newIPSettings = {}
         let _newInterface = "ETHERNET" //new interface to be set
-
-        console.log('network configuration screen init called')
         this._network = new NetworkApi()
         this._network.getInterfaces().then(list => {
-            console.log('from network configuration screen ' + JSON.stringify(list))
         })
         this._network.getDefaultInterface().then(interfaceName => {
-            console.log('Interface name from network configuration screen: ' + interfaceName )
             _currentInterface = interfaceName
         })
         this._network.getIPSettings(_currentInterface).then(result => {
-            console.log('IP Settings from network configuration screen ' + JSON.stringify(result))
             _currentIPSettings = result
         }) // we get IP settings of default interface if we pass _currentInterface as ""
         
@@ -161,15 +156,12 @@ import NetworkApi from '../../api/NetworkApi'
 
 
         this._network.setIPSettings(_newIPSettings).then(result => {
-            console.log('setIPSettings from network configuration screen ' + JSON.stringify(result)) // result fails
         })
 
         this._network.setDefaultInterface(_newInterface).then(result => {
-            console.log('setDefaultInterface from network configuration screen ' + JSON.stringify(result)) // result fails
         })
 
         this._network.isConnectedToInternet().then(result => {
-            console.log('from network configuration screen isConnectedToInternet: ' + result)
         })
         
     }

@@ -46,13 +46,12 @@ export default class ResolutionScreen extends Lightning.Component {
 
 
     _init() {
-        console.log("Resolution screens init was called");
+        
         var options = []
         this.appApi = new AppApi();
         var self = this;
 
         this.appApi.getResolution().then(resolution => {
-            // self.fireAncestors("$updateResolutionText",resolution);
             //#############  settings the resolution items  ################
             //------------------------------------------------------------------------------
 
@@ -62,7 +61,7 @@ export default class ResolutionScreen extends Lightning.Component {
                 this.tag('ResolutionScreenContents').h = options.length * 90
                 this.tag('ResolutionScreenContents.List').h = options.length * 90
                 this.tag('List').items = options.map((item, index) => {
-                    console.log(` ------- condition = ${resolution} === ${item} --------------- `);
+                    
                     return {
                         ref: 'Option' + index,
                         w: 1920 - 300,
@@ -75,11 +74,6 @@ export default class ResolutionScreen extends Lightning.Component {
 
                     }
                 })
-                console.log(`
-                    
-                    Tanjirou's log - the supported resolutions are ${res}
-                    
-                    `);
             }).catch(err => {
                 console.log(`
                     
@@ -100,13 +94,13 @@ export default class ResolutionScreen extends Lightning.Component {
 
         if (!this.prevTicOb) {
             this.prevTicOb = prevTicObject;
-            console.log(`prevTicOb = ${this.prevTicOb}`);
+            
         }
         else {
             this.prevTicOb.tag("Item.Tick").visible = false;
-            console.log(`tried to reset the prev tickect object ie.${this.prevTicOb}`);
+            
             this.prevTicOb = prevTicObject;
-            console.log(`prevTicOb was reset to ${this.prevTicOb}`);
+            
         }
     }
 
