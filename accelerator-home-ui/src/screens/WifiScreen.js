@@ -36,7 +36,7 @@ export default class WiFiScreen extends Lightning.Component {
       x: 0,
       y: 0,
       FailScreen: {
-        x: 700,
+        x: 780,
         y: 100,
         type: WifiFailScreen,
         zIndex: 5,
@@ -113,7 +113,7 @@ export default class WiFiScreen extends Lightning.Component {
         visible: false,
       },
       PairingScreen: {
-        x: -300,
+        x: -220,
         y: -265,
         w: 1920,
         h: 1080,
@@ -122,7 +122,7 @@ export default class WiFiScreen extends Lightning.Component {
         type: WiFiPairingScreen
       },
       JoinAnotherNetworkScreen: {
-        x: -300,
+        x: -220,
         y: -265,
         w: 1920,
         h: 1080,
@@ -152,7 +152,6 @@ export default class WiFiScreen extends Lightning.Component {
   }
 
   $removeFailScreen() {
-    // clearTimeout(this.failScreen)
     this._setState('Switch');
     this.childList.remove(this.tag('FailScreen'))
   }
@@ -536,21 +535,15 @@ export default class WiFiScreen extends Lightning.Component {
         }
       })
     })
-    // this.tag('Networks.AvailableNetworks.Loader').visible = true
     this._wifi.registerEvent('onWIFIStateChanged', notification => {
       if (notification.state === 2 || notification.state === 5) {
         this._wifi.discoverSSIDs()
-        // this.tag('Networks.AvailableNetworks.Loader').visible = true
       }
       this._setState('Switch')
     })
     this._wifi.registerEvent('onError', notification => {
       this._wifi.discoverSSIDs()
       this._setfailState(this.onError[notification.code])
-      // this.failScreen = setTimeout(() => {
-      //   this.childList.remove(this.tag('FailScreen'))
-      //   this._setState('Switch')
-      // }, 5000)
     })
     this._wifi.registerEvent('onAvailableSSIDs', notification => {
       this.renderDeviceList(notification.ssids)

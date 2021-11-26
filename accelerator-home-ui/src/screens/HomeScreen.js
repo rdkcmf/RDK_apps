@@ -16,7 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Storage } from '@lightningjs/sdk'
+import ThunderJS from 'ThunderJS';
 import MainView from '../views/MainView.js'
 import SidePanel from '../views/SidePanel.js'
 import TopPanel from '../views/TopPanel.js'
@@ -33,6 +34,12 @@ var audio_mute = false;
 var audio_volume = 50;
 var appApi = new AppApi();
 var last_state = ''
+const config = {
+  host: '127.0.0.1',
+  port: 9998,
+  default: 1,
+};
+const thunder = ThunderJS(config);
 
 /** Class for home screen UI */
 export default class HomeScreen extends Lightning.Component {
@@ -82,17 +89,17 @@ export default class HomeScreen extends Lightning.Component {
         type: SettingsScreen,
       },
       IpAddress: {
-        x: 200,
+        x: 185,
         y: 1058,
         mount: 1,
         text: {
           fontFace: CONFIG.language.font,
           text: 'IP:NA',
           textColor: 0xffffffff,
-          fontSize: 22,
+          fontSize: 20,
         },
       },
-      // Player: { type: AAMPVideoPlayer },
+      Player: { type: AAMPVideoPlayer },
     }
   }
 
@@ -150,7 +157,6 @@ export default class HomeScreen extends Lightning.Component {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
-            // location.reload(true);
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
           }
@@ -162,47 +168,39 @@ export default class HomeScreen extends Lightning.Component {
     })
   }
 
-  removeAndAssign(){
-    if(this.timer){
-      // console.log(`the previous timer was cleared`);
+  removeAndAssign() {
+    if (this.timer) {
       clearTimeout(this.timer);
-      this.timer=null;
-    } 
+      this.timer = null;
+    }
 
-    if(this.time){
-      // console.log(`the new timer was set to time ${this.time}`);
-      this.timer = setTimeout(()=>{
+    if (this.time) {
+      this.timer = setTimeout(() => {
         last_state = this._getState();
         this.$standby('STANDBY');
-      } , parseInt(this.time));
+      }, parseInt(this.time));
     }
-    
+
   }
 
-  $resetSleepTimer(t){   
-    // console.log(`reset timer has been called with the time value ${t}`);
+  $resetSleepTimer(t) {
     var arr = t.split(" ");
-    if(arr.length<2){
-      // console.log(`detected sleeptimer is off`);
+    if (arr.length < 2) {
       this.time = null;
-    } 
-    else{
-    var temp = arr[1].substring(0,1);
-    // console.log( `current array value = ${arr[0]} , ${temp}`);
-    if(temp ==='H'){
-      this.time = 1000 * 60 * parseInt(arr[0]);
-      // console.log(`detected ${arr[0]} Hours`);
     }
-    else if(temp ==='M'){
-      this.time = 1000 * parseInt(arr[0]);
-      // console.log(`detected ${arr[0]} minutes`);
+    else {
+      var temp = arr[1].substring(0, 1);
+      if (temp === 'H') {
+        this.time = 1000 * 60 * 60 * parseInt(arr[0]);
+      }
+      else if (temp === 'M') {
+        this.time = 1000 * 60 * parseInt(arr[0]);
+      }
+      else {
+        this.time = 1000 * parseInt(arr[0]);
+      }
     }
-    else{
-      this.time = 1000 * parseInt(arr[0]);
-      // console.log(`detected ${arr[0]} seconds`);
-    }
-    }
-    this.removeAndAssign(); 
+    this.removeAndAssign();
   }
 
   _captureKeyRelease(key) {
@@ -213,9 +211,64 @@ export default class HomeScreen extends Lightning.Component {
     }
   }
 
+  deactivateChildApp(plugin) {
+    var appApi = new AppApi();
+    switch (plugin) {
+      case 'WebApp':
+        appApi.deactivateWeb();
+        break;
+      case 'Cobalt':
+        appApi.deactivateCobalt();
+        break;
+      case 'Lightning':
+        appApi.deactivateLightning();
+        break;
+      case 'Native':
+        appApi.killNative();
+        break;
+      case 'Amazon':
+        appApi.deactivateNativeApp('Amazon');
+      case 'Netflix':
+        appApi.deactivateNativeApp('Netflix')
+      default:
+        break;
+    }
+  }
+
   _captureKey(key) {
     this.removeAndAssign();
-    //console.log(" _captureKey home screen : " + key.keyCode)
+    //console.log(" _captureKey home screen : " + key.keyCode, ` ${key.key}`)
+
+    if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+      if (Storage.get('applicationType') != '') {
+        this.deactivateChildApp(Storage.get('applicationType'));
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+          console.log('ResidentApp moveToFront Success');
+        });
+        thunder
+          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+          .then(result => {
+            console.log('ResidentApp moveToFront Success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      } else {
+        if (this.state === 'Playing') {
+          this.$stopPlayer()
+        }
+        else {
+          this.$goToSidePanel(0)
+          this.$changeHomeText('Home')
+        }
+      }
+
+    }
+
+
+
 
     if (key.keyCode == 120 || key.keyCode == 217) {
       store.dispatch({ type: 'ACTION_LISTEN_START' })
@@ -226,9 +279,9 @@ export default class HomeScreen extends Lightning.Component {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         last_state = this.state
-        
+
         this.$standby('STANDBY');
-        
+
 
 
         return true
@@ -258,10 +311,10 @@ export default class HomeScreen extends Lightning.Component {
 
           if (res.success == true) {
             audio_mute = value;
-            new AppApi().zorder("moveToFront", "foreground");
-            new AppApi().setVisibility("foreground", audio_mute)
+            // new AppApi().zorder("moveToFront", "foreground");
+            // new AppApi().setVisibility("foreground", audio_mute)
           }
-          console.log("audio_mute:" + audio_mute);
+          console.log("audio_mute:" + audio_mute, audio_source);
         })
 
       });
@@ -274,8 +327,8 @@ export default class HomeScreen extends Lightning.Component {
       audio_volume += 10;
       if (audio_volume > 100) { audio_volume = 100 }
 
-      let value = "" + audio_volume;
-      appApi.setVolumeLevel(value).then(res => {
+      let value = audio_volume;
+      appApi.setVolumeLevel("HDMI0", value).then(res => {
         console.log("__________AUDIO_VOLUME_________Numberpad key plus")
         console.log(JSON.stringify(res, 3, null));
         console.log("setVolumeLevel:" + audio_volume);
@@ -288,7 +341,7 @@ export default class HomeScreen extends Lightning.Component {
       if (audio_volume < 0) { audio_volume = 0 }
       let value = "" + audio_volume;
 
-      appApi.setVolumeLevel(value).then(res => {
+      appApi.setVolumeLevel("HDMI0", value).then(res => {
         console.log("__________AUDIO_VOLUME____________Numberpad key minus")
         console.log(JSON.stringify(res, 3, null));
         console.log("setVolumeLevel:" + audio_volume);
@@ -391,8 +444,8 @@ export default class HomeScreen extends Lightning.Component {
    * Fireancestor to set the state to player.
    */
   $goToPlayer() {
-    // this._setState('Player')
-    // this.play()
+    this._setState('Player')
+    this.play()
   }
   /**
      * Fireancestor to change the IP.
@@ -433,6 +486,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').patch({ alpha: 0 });
     this.tag('TopPanel').patch({ alpha: 0 });
     this.tag('SidePanel').patch({ alpha: 0 });
+    this.tag('IpAddress').patch({ alpha: 0 });
   }
 
 
@@ -445,6 +499,7 @@ export default class HomeScreen extends Lightning.Component {
     this.tag('MainView').patch({ alpha: 1 });
     this.tag('TopPanel').patch({ alpha: 1 });
     this.tag('SidePanel').patch({ alpha: 1 });
+    this.tag('IpAddress').patch({ alpha: 1 });
   }
 
   /** this function is used to hide only the side and top panels  */
@@ -466,6 +521,12 @@ export default class HomeScreen extends Lightning.Component {
     this._setState('Settings')
   }
 
+  $stopPlayer() {
+    this._setState('MainView');
+    this.player.stop();
+    this.show();
+  }
+
   /**
    * Function to define various states needed for home screen.
    */
@@ -481,7 +542,7 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('SidePanel')
         }
       },
-      
+
       class MainView extends this {
         _getFocused() {
           return this.tag('MainView')
@@ -496,31 +557,22 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('Settings')
         }
         $exit(e) {
-          
-            this.tag('MainView').alpha = 1
-            this.tag('Settings').alpha = 0
-          
+          this.tag('MainView').alpha = 1
+          this.tag('Settings').alpha = 0
         }
       },
       class Playing extends this {
         _getFocused() {
           return this.tag('Player')
         }
-
-        stopPlayer() {
-          this._setState('MainView');
-          this.player.stop();
-          this.show();
-        }
-
-        _handleKey(key) {
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-            this.stopPlayer()
-          } else if (key.keyCode == 227 || key.keyCode == 179) {
-            this.stopPlayer()
-            return false;
-          }
-        }
+        // _handleKey(key) {
+        //   if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+        //     this.$stopPlayer()
+        //   } else if (key.keyCode == 227 || key.keyCode == 179) {
+        //     this.$stopPlayer()
+        //     return false;
+        //   }
+        // }
       },
     ]
   }

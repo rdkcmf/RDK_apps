@@ -100,14 +100,11 @@ export default class WiFiItem extends SettingsItem {
         mountY: 0.5,
         flex: { direction: 'row' },
         Lock: {
-          //color: 0xff000000,
-          //  x:1515,
           color: 0xffffffff,
           texture: Lightning.Tools.getSvgTexture(Lock, 32.5, 32.5),
           alpha: 1
         },
         Icon: {
-          //color: 0xff000000,
           color: 0xffffffff,
           flexItem: { marginLeft: 15 },
           texture: Lightning.Tools.getSvgTexture(wifiicon, 32.5, 32.5),

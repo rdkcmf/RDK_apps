@@ -23,9 +23,9 @@ import Tick from '../../static/images/settings/Tick.png'
 import AppApi from '../api/AppApi'
 
 export default class VideoAndAudioItem extends Lightning.Component {
-  static _template(){
+  static _template() {
     return {
-      zIndex:1,
+      zIndex: 1,
       TopLine: {
         y: 0,
         mountY: 0.5,
@@ -52,61 +52,59 @@ export default class VideoAndAudioItem extends Lightning.Component {
   }
 
   _init() {
-    if(this.isTicked){
-      this.fireAncestors("$resetPrevTickObject",this);
+    if (this.isTicked) {
+      this.fireAncestors("$resetPrevTickObject", this);
     }
     this.appApi = new AppApi();
   }
 
-  _handleEnter(){
-    var self = this;
-    if(this.videoElement === true){
-      this.appApi.setResolution(this._item).then(res=>{
-        this.fireAncestors('$updateResolution', self._item)
-        if(res === true){
-          self.fireAncestors("$resetPrevTickObject",self)
-          self.tag("Item.Tick").visible = true;
+  _handleEnter() {
+    if (this.videoElement === true) {
+      this.appApi.setResolution(this._item).then(res => {
+        this.fireAncestors('$updateResolution', this._item)
+        if (res === true) {
+          this.fireAncestors("$resetPrevTickObject", this)
+          this.tag("Item.Tick").visible = true;
         }
-        
-      }).catch(err=>{
+
+      }).catch(err => {
         console.log(`there was an error while setting the resolution.`);
       });
     }
-    else{
+    else {
       this.appApi.setSoundMode(this._item)
-      .then(result => {
-        if(result.success === true){
-          self.fireAncestors("$resetPrevTickObject",self)
-          self.tag("Item.Tick").visible = true;
-         // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
-        }
-        //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
-        this.fireAncestors("$updateSoundMode", this._item)
-      })
-      .catch(err => {
-        console.log('Some error while setting the sound mode ',err)
-      })
+        .then(result => {
+          if (result.success === true) {
+            this.fireAncestors("$resetPrevTickObject", this)
+            this.tag("Item.Tick").visible = true;
+            // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
+          }
+          //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
+          this.fireAncestors("$updateSoundMode", this._item)
+        })
+        .catch(err => {
+          console.log('Some error while setting the sound mode ', err)
+        })
     }
   }
 
   set item(item) {
     this._item = item
-    var self = this;
     this.tag('Item').patch({
-        Tick: {
-            x: 10,
-            y: 45,
-            mountY: 0.5,
-            texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
-            color: 0xffffffff,
-            visible : self.isTicked ? true : false //implement the logic to show the tick
-        },
-        Left: {
-            x: 50, 
-            y: 45,
-            mountY: 0.5,
-            text: { text: item, fontSize: 25, textColor: 0xffFFFFFF, fontFace: CONFIG.language.font, }, // update the text
-        },
+      Tick: {
+        x: 10,
+        y: 45,
+        mountY: 0.5,
+        texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
+        color: 0xffffffff,
+        visible: this.isTicked ? true : false //implement the logic to show the tick
+      },
+      Left: {
+        x: 50,
+        y: 45,
+        mountY: 0.5,
+        text: { text: item, fontSize: 25, textColor: 0xffFFFFFF, fontFace: CONFIG.language.font, }, // update the text
+      },
     })
 
   }
@@ -115,7 +113,7 @@ export default class VideoAndAudioItem extends Lightning.Component {
     this.tag('TopLine').color = CONFIG.theme.hex
     this.tag('BottomLine').color = CONFIG.theme.hex
     this.patch({
-      zIndex:2
+      zIndex: 2
     })
     this.tag('TopLine').h = 6
     this.tag('BottomLine').h = 6
@@ -125,9 +123,9 @@ export default class VideoAndAudioItem extends Lightning.Component {
     this.tag('TopLine').color = 0xFFFFFFFF
     this.tag('BottomLine').color = 0xFFFFFFFF
     this.patch({
-      zIndex:1
+      zIndex: 1
     })
     this.tag('TopLine').h = 3
     this.tag('BottomLine').h = 3
   }
- }
+}

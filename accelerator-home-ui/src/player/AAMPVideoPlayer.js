@@ -83,11 +83,6 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.y = y
     this.w = w
     this.h = h
-    var xPos = 0.67 * x
-    var yPos = 0.67 * y
-    var wPos = 0.67 * w
-    var hPos = 0.67 * h
-    this.player.setVideoRect(xPos, yPos, wPos, hPos)
   }
 
   /**
@@ -154,10 +149,10 @@ export default class AAMPVideoPlayer extends Lightning.Component {
    * Function to handle the event of starting the playback.
    */
   _mediaPlaybackStarted() {
-    // this.tag('PlayerControls').reset()
-    // this.tag('PlayerControls').setSmooth('alpha', 1)
-    // this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
-    // this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
+    this.tag('PlayerControls').reset()
+    this.tag('PlayerControls').setSmooth('alpha', 1)
+    this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
+    this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
   }
 
   /**
@@ -168,34 +163,34 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    * Function to create the video player instance for video playback and its initial settings.
    */
-  // createPlayer() {
-  //   if (this.player !== null) {
-  //     this.destroy()
-  //     this.player = null
-  //   }
+  createPlayer() {
+    if (this.player !== null) {
+      this.destroy()
+      this.player = null
+    }
 
-  //   try {
-  //     this.player = new AAMPMediaPlayer()
-  //     this.player.addEventListener('playbackStateChanged', this._playbackStateChanged)
-  //     this.player.addEventListener('playbackCompleted', this._mediaEndReached.bind(this))
-  //     this.player.addEventListener('playbackSpeedChanged', this._mediaSpeedChanged)
-  //     this.player.addEventListener('bitrateChanged', this._bitrateChanged)
-  //     this.player.addEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this))
-  //     this.player.addEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this))
-  //     this.player.addEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this))
-  //     this.player.addEventListener('durationChanged', this._mediaDurationChanged)
-  //     this.playerState = this.playerStatesEnum.idle
-  //   } catch (error) {
-  //     console.error('AAMPMediaPlayer is not defined')
-  //   }
-  // }
+    try {
+      this.player = new AAMPMediaPlayer()
+      this.player.addEventListener('playbackStateChanged', this._playbackStateChanged)
+      this.player.addEventListener('playbackCompleted', this._mediaEndReached.bind(this))
+      this.player.addEventListener('playbackSpeedChanged', this._mediaSpeedChanged)
+      this.player.addEventListener('bitrateChanged', this._bitrateChanged)
+      this.player.addEventListener('playbackFailed', this._mediaPlaybackFailed.bind(this))
+      this.player.addEventListener('playbackProgressUpdate', this._mediaProgressUpdate.bind(this))
+      this.player.addEventListener('playbackStarted', this._mediaPlaybackStarted.bind(this))
+      this.player.addEventListener('durationChanged', this._mediaDurationChanged)
+      this.playerState = this.playerStatesEnum.idle
+    } catch (error) {
+      console.error('AAMPMediaPlayer is not defined')
+    }
+  }
 
   /**
    * Loads the player with video URL.
    * @param videoInfo the url and the info regarding the video like title.
    */
   load(videoInfo) {
-    //this.createPlayer()
+    this.createPlayer()
     this.videoInfo = videoInfo
     this.configObj = this.defaultInitConfig
     this.configObj.drmConfig = this.videoInfo.drmConfig
@@ -319,6 +314,10 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.hidePlayerControls()
     this._setState('HideControls')
   }
+
+  _handleBack() {
+    this.fireAncestors('$stopPlayer')
+  }
   /**
    * Function to define the different states of the video player.
    */
@@ -328,9 +327,14 @@ export default class AAMPVideoPlayer extends Lightning.Component {
         _getFocused() {
           return this.tag('PlayerControls')
         }
+        // _handleBack(){
+        //   console.log('Go Back')
+        // }
       },
       class HideControls extends this {
-        _getFocused() { }
+        // _handleBack(){
+        //   console.log('go back from hidecontrol')
+        // }
       },
     ]
   }

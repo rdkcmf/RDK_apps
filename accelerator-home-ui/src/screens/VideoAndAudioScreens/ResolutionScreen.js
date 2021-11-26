@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Utils } from '@lightningjs/sdk'
 import VideoAndAudioItem from '../../items/VideoAndAudioItem'
 import AppApi from '../../api/AppApi'
 
@@ -29,6 +29,27 @@ export default class ResolutionScreen extends Lightning.Component {
         return {
             x: 0,
             y: 0,
+            Background: {
+                x: 0,
+                y: -10,
+                w: 1920,
+                h: 1080,
+                rect: true,
+                color: 0xff000000,
+                zIndex: 4,
+
+            },
+            Loader: {
+                x: 1920 / 2 - 400 + 180,
+                y: 1080 / 2 - 300 + 100,
+                w: 90,
+                h: 90,
+                mount: 0.5,
+                zIndex: 4,
+                src: Utils.asset("images/settings/Loading.gif")
+            },
+
+
             ResolutionScreenContents: {
                 List: {
                     type: Lightning.components.ListComponent,
@@ -40,28 +61,30 @@ export default class ResolutionScreen extends Lightning.Component {
                     rollMax: 900,
                     itemScrollOffset: -6,
                 },
-            }
+            },
+
         }
     }
 
 
-    _init() {
-        
+    _focus() {
+        this.loadingAnimation = this.tag('Loader').animation({
+            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+        });
+
+
         var options = []
         this.appApi = new AppApi();
-        var self = this;
-
+        this._setState("LoadingState");
         this.appApi.getResolution().then(resolution => {
-            //#############  settings the resolution items  ################
-            //------------------------------------------------------------------------------
-
             this.appApi.getSupportedResolutions().then(res => {
                 this._setState("Options")
                 options = [...res]
                 this.tag('ResolutionScreenContents').h = options.length * 90
                 this.tag('ResolutionScreenContents.List').h = options.length * 90
                 this.tag('List').items = options.map((item, index) => {
-                    
+
                     return {
                         ref: 'Option' + index,
                         w: 1920 - 300,
@@ -70,37 +93,25 @@ export default class ResolutionScreen extends Lightning.Component {
                         isTicked: (resolution === item) ? true : false,
                         item: item,
                         videoElement: true,
-
-
                     }
                 })
             }).catch(err => {
-                console.log(`
-                    
-                    Tanjirou's log - error while fetching the supported resolution ${err}
-                    
-                    `);
+                console.log(`error while fetching the supported resolution ${err}`);
             });
-
-            //------------------------------------------------------------------------------
-        }).catch(ex => { })
-
-
-
-
+        })
     }
 
     $resetPrevTickObject(prevTicObject) {
 
         if (!this.prevTicOb) {
             this.prevTicOb = prevTicObject;
-            
+
         }
         else {
             this.prevTicOb.tag("Item.Tick").visible = false;
-            
+
             this.prevTicOb = prevTicObject;
-            
+
         }
     }
 
@@ -117,10 +128,22 @@ export default class ResolutionScreen extends Lightning.Component {
                     this.tag('List').setPrevious()
                 }
                 _handleEnter() {
-                    // this.tag("List").element.patch({ "Item.Tick.visible": true });
                     this.tag("List").element.tag("Tick").visible = true;
-                    // enable the tick mark in VideoAudioItem.js
-                    //to update the resolution value on Video Screen
+                }
+            },
+            class LoadingState extends this{
+                $enter() {
+                    this.tag("Loader").visible = true;
+                    this.tag("Background").visible = true;
+                    this.loadingAnimation.start();
+                }
+                _getFocused() {
+
+                }
+                $exit() {
+                    this.tag("Loader").visible = false;
+                    this.tag("Background").visible = false;
+                    this.loadingAnimation.stop();
                 }
             }
         ]

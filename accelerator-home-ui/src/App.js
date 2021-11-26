@@ -55,7 +55,8 @@ export default class App extends Router.App {
 
   _init() {
 
-
+    appApi.enableDisplaySettings()
+    appApi.cobaltStateChangeEvent()
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
@@ -104,9 +105,6 @@ export default class App extends Router.App {
             keyCode: 27,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -120,9 +118,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 112,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -138,9 +133,6 @@ export default class App extends Router.App {
             keyCode: 116,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -154,9 +146,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 118,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -172,9 +161,6 @@ export default class App extends Router.App {
             keyCode: 175,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -188,9 +174,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 174,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -206,9 +189,6 @@ export default class App extends Router.App {
             keyCode: 113,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -222,9 +202,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 228,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -240,9 +217,6 @@ export default class App extends Router.App {
             keyCode: 142,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -256,9 +230,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 77,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -274,9 +245,6 @@ export default class App extends Router.App {
             keyCode: 36,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -290,9 +258,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 49,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -308,9 +273,6 @@ export default class App extends Router.App {
             keyCode: 158,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
-          })
           .catch(err => {
             console.log('Error', err);
           });
@@ -324,9 +286,6 @@ export default class App extends Router.App {
             client: 'ResidentApp',
             keyCode: 227,
             modifiers: [],
-          })
-          .then(result => {
-            console.log('addKeyIntercept success');
           })
           .catch(err => {
             console.log('Error', err);
@@ -342,8 +301,24 @@ export default class App extends Router.App {
             keyCode: 179,
             modifiers: [],
           })
-          .then(result => {
-            console.log('addKeyIntercept success');
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyListener', {
+            client: 'Cobalt',
+            keys: [
+              {
+                keycode: 77,
+                activate: false,
+                propogate: true
+              }
+            ]
           })
           .catch(err => {
             console.log('Error', err);
@@ -351,7 +326,139 @@ export default class App extends Router.App {
       })
       .catch(err => {
         console.log('Error', err);
-      });
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyListener', {
+            client: 'Amazon',
+            keys: [
+              {
+                keycode: 77,
+                activate: false,
+                propogate: true
+              }
+            ]
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Cobalt',
+            keyCode: 27,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Amazon',
+            keyCode: 27,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Cobalt',
+            keyCode: 49,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Amazon',
+            keyCode: 49,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Cobalt',
+            keyCode: 36,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Amazon',
+            keyCode: 36,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Cobalt',
+            keyCode: 8,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'Amazon',
+            keyCode: 8,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+
   }
 
   deactivateChildApp(plugin) {
@@ -361,7 +468,7 @@ export default class App extends Router.App {
         appApi.deactivateWeb();
         break;
       case 'Cobalt':
-        appApi.suspendCobalt();
+        appApi.deactivateCobalt();
         break;
       case 'Lightning':
         appApi.deactivateLightning();
@@ -370,9 +477,9 @@ export default class App extends Router.App {
         appApi.killNative();
         break;
       case 'Amazon':
-        appApi.suspendPremiumApp('Amazon');
+        appApi.deactivateNativeApp('Amazon');
       case 'Netflix':
-        appApi.suspendPremiumApp('Netflix')
+        appApi.deactivateNativeApp('Netflix')
       default:
         break;
     }
@@ -509,18 +616,18 @@ export default class App extends Router.App {
       }
     });
     this.xcastApi.registerEvent('onApplicationStateRequest', notification => {
-      console.log('Received a state request ' + JSON.stringify(notification));
+      //console.log('Received a state request ' + JSON.stringify(notification));
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        appApi.sendAppState(applicationName);
-        console.log(AppApi.pluginStatus(applicationName))
-        // let status = AppApi.pluginStatus(applicationName);
-        // let params = { applicationName: notification.applicationName, state: 'stopped' };
-        // if (status) {
-        //   params.state = 'running';
-        // }
-        // this.xcastApi.onApplicationStateChanged(params);
-        // console.log('State of ' + this.xcastApps(notification.applicationName) + JSON.stringify(params));
+        let params = { applicationName: notification.applicationName, state: 'stopped' };
+        appApi.registerEvent('statechange', results => {
+          if (results.callsign === applicationName && results.state === 'Activated') {
+            params.state = 'running'
+          }
+          this.xcastApi.onApplicationStateChanged(params);
+          console.log('State of ' + this.xcastApps(notification.applicationName))
+        })
+
       }
     });
   }
@@ -548,20 +655,26 @@ export default class App extends Router.App {
       Storage.set('applicationType', 'Cobalt');
       appApi.setVisibility('ResidentApp', false);
     } else if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-      this.deactivateChildApp(Storage.get('applicationType'));
-      Storage.set('applicationType', '');
-      appApi.setVisibility('ResidentApp', true);
-      thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-        console.log('ResidentApp moveToFront Success');
-      });
-      thunder
-        .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
-        .then(result => {
+      console.log(Storage.get('applicationType'))
+      if (Storage.get('applicationType') != '') {
+        this.deactivateChildApp(Storage.get('applicationType'));
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
           console.log('ResidentApp moveToFront Success');
-        })
-        .catch(err => {
-          console.log('Error', err);
         });
+        thunder
+          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+          .then(result => {
+            console.log('ResidentApp moveToFront Success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      } else {
+        console.log('Go to home screen')
+      }
+
     }
   }
 }

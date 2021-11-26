@@ -72,15 +72,6 @@ export default class VideoScreen extends Lightning.Component {
               fontSize: 25,
             }
           },
-          Button: {
-            h: 45,
-            w: 45,
-            x: 1535,
-            mountX: 1,
-            y: 45,
-            mountY: 0.5,
-            src: Utils.asset('images/settings/Arrow.png'),
-          },
         },
         MatchContent: {
           alpha: 0.3, // disabled
@@ -267,38 +258,6 @@ export default class VideoScreen extends Lightning.Component {
           }
           _handleDown() {
             // this._setState('MatchContent') //disabled
-          }
-          _handleEnter() {
-
-            // recommended, but this api does not provide the info whether hdr is supported by the TV
-            // this._appApi.getHDRSetting().then(result => {
-            //   const availableHDROptions = {
-            //     "HdrOff":"Off",
-            //     "Hdr10":"HDR 10",
-            //     "Hdr10Plus":"HDR 10+",
-            //     "HdrHlg": "HLG",
-            //     "HdrDolbyvision":"Dolby Vision",
-            //     "HdrTechnicolor": "Technicolor HDR"
-            //   }
-            //   this.tag("HDR.Title").text.text = 'High Dynamic Range: '+ availableHDROptions[result] ;
-            // })
-
-            // only shows HDR Screen if HDR is supported, otherwise HDR.Title updated accodringly
-
-            // this._appApi.getTvHDRSupport().then (tvResult => {
-            //   console.log("HDR Support Status from VideoScreen.js : " + JSON.stringify(tvResult))
-            //   this._appApi.getSettopHDRSupport().then (STBResult => {
-            //     console.log("HDR Support Status from VideoScreen.js : " + JSON.stringify(STBResult))
-            //     if ( !STBResult.supportsHDR ){
-            //       this.tag("HDR.Title").text.text = 'High Dynamic Range: Not Supported by Set-top Box';
-            //     }else if( !tvResult.supportsHDR ){
-            //       this.tag("HDR.Title").text.text = 'High Dynamic Range: Not Supported by TV';
-            //     }else{
-            //       this._setState('HDRScreen')
-            //     }
-            //   })
-            // })
-
           }
         },
         class MatchContent extends this{

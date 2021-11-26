@@ -20,43 +20,45 @@ import { Lightning, Utils } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import PrivacyPolicyScreen from './PrivacyPolicyScreen'
+import DeviceInformationScreen from './DeviceInformationScreen'
+import AppApi from '../../api/AppApi';
+import FirmwareScreen from './FirmwareScreen'
+import RebootConfirmationScreen from './RebootConfirmationScreen'
 
 /**
- * Class for Privacy Screen.
+ * Class for Video and Audio screen.
  */
 
-export default class PrivacyScreen extends Lightning.Component {
+export default class DeviceScreen extends Lightning.Component {
     static _template() {
         return {
             x: 0,
             y: 0,
-            PrivacyScreenContents: {
-                LocalDeviceDiscovery: {
-                    y: 0,
+            DeviceScreenContents: {
+                Info: {
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Local Device Discovery',
+                            text: 'Info',
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1535,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
-                        src: Utils.asset('images/settings/ToggleOffWhite.png'),
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
-                UsbMediaDevices: {
+                Firmware: {
                     y: 90,
                     type: SettingsMainItem,
                     Title: {
@@ -64,23 +66,23 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'USB Media Devices',
+                            text: 'Check for Firmware Update',
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1535,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
-                        src: Utils.asset('images/settings/ToggleOffWhite.png'),
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
-                AudioInput: {
+                Reboot: {
                     y: 180,
                     type: SettingsMainItem,
                     Title: {
@@ -88,31 +90,23 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Audio Input',
+                            text: 'Reboot',
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
-                    Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
-                        x: 1535,
-                        mountX: 1,
-                        y: 45,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/ToggleOffWhite.png'),
-                    },
                 },
-                ClearCookies: {
+                Reset: {
                     y: 270,
+                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Clear Cookies and App Data',
+                            text: 'Factory Reset',
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -128,161 +122,183 @@ export default class PrivacyScreen extends Lightning.Component {
                         src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
-                PrivacyPolicy: {
-                    y: 360,
-                    type: SettingsMainItem,
-                    Title: {
-                        x: 10,
-                        y: 45,
-                        mountY: 0.5,
-                        text: {
-                            text: 'Privacy Policy and License',
-                            textColor: COLORS.titleColor,
-                            fontFace: CONFIG.language.font,
-                            fontSize: 25,
-                        }
-                    },
-                    Button: {
-                        h: 45,
-                        w: 45,
-                        x: 1535,
-                        mountX: 1,
-                        y: 45,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-
-
             },
-            PrivacyPolicyScreen: {
-                type: PrivacyPolicyScreen,
+
+            DeviceInformationScreen: {
+                type: DeviceInformationScreen,
                 visible: false,
-            }
+            },
+            FirmwareScreen: {
+                type: FirmwareScreen,
+                visible: false,
+            },
+            RebootConfirmationScreen: {
+                x: 780,
+                y: 100,
+                type: RebootConfirmationScreen,
+                visible: false,
+            },
 
         }
+
     }
 
+    _init() {
+        this._appApi = new AppApi();
+    }
 
     _focus() {
-        this._setState('LocalDeviceDiscovery') //can be used on init as well
+        this._setState('Info')
     }
 
+
     hide() {
-        this.tag('PrivacyScreenContents').visible = false
+        this.tag('DeviceScreenContents').visible = false
     }
 
     show() {
-        this.tag('PrivacyScreenContents').visible = true
+        this.tag('DeviceScreenContents').visible = true
     }
 
     static _states() {
         return [
-            class LocalDeviceDiscovery extends this {
+            class Info extends this{
                 $enter() {
-                    this.tag('LocalDeviceDiscovery')._focus()
+                    this.tag('Info')._focus()
                 }
                 $exit() {
-                    this.tag('LocalDeviceDiscovery')._unfocus()
+                    this.tag('Info')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('PrivacyPolicy')
+                    this._setState('Reboot');
                 }
                 _handleDown() {
-                    this._setState('UsbMediaDevices')
+                    this._setState('Firmware')
                 }
                 _handleEnter() {
-                    // 
+                    this._setState('DeviceInformationScreen')
                 }
             },
-            class UsbMediaDevices extends this {
+            class Firmware extends this{
                 $enter() {
-                    this.tag('UsbMediaDevices')._focus()
+                    this.tag('Firmware')._focus()
                 }
                 $exit() {
-                    this.tag('UsbMediaDevices')._unfocus()
+                    this.tag('Firmware')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('LocalDeviceDiscovery')
+                    this._setState('Info');
                 }
                 _handleDown() {
-                    this._setState('AudioInput')
+                    this._setState('Reboot')
                 }
                 _handleEnter() {
-                    // 
+                    this._setState('FirmwareScreen')
                 }
             },
-            class AudioInput extends this {
+            class Reboot extends this{
                 $enter() {
-                    this.tag('AudioInput')._focus()
+                    this.tag('Reboot')._focus()
                 }
                 $exit() {
-                    this.tag('AudioInput')._unfocus()
+                    this.tag('Reboot')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('UsbMediaDevices')
+                    this._setState('Firmware');
                 }
                 _handleDown() {
-                    this._setState('ClearCookies')
+                    this._setState('Info')
                 }
                 _handleEnter() {
-                    // 
+                    this._setState('RebootConfirmationScreen')
                 }
             },
-            class ClearCookies extends this {
+            class Reset extends this{
                 $enter() {
-                    this.tag('ClearCookies')._focus()
+                    this.tag('Reset')._focus()
                 }
                 $exit() {
-                    this.tag('ClearCookies')._unfocus()
+                    this.tag('Reset')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('AudioInput')
+                    //this._setState('Reboot');
                 }
                 _handleDown() {
-                    this._setState('PrivacyPolicy')
+                    //this._setState('Info')
                 }
                 _handleEnter() {
-                    // 
+
                 }
             },
-            class PrivacyPolicy extends this {
+
+
+            //Inner Screens Classes
+            class DeviceInformationScreen extends this {
                 $enter() {
-                    this.tag('PrivacyPolicy')._focus()
-                }
-                $exit() {
-                    this.tag('PrivacyPolicy')._unfocus()
-                }
-                _handleUp() {
-                    this._setState('ClearCookies')
-                }
-                _handleDown() {
-                    this._setState('LocalDeviceDiscovery')
-                }
-                _handleEnter() {
-                    this._setState('PrivacyPolicyScreen')
                     this.hide()
-                }
-            },
-
-
-            class PrivacyPolicyScreen extends this {
-                $enter() {
-                    this.tag('PrivacyPolicyScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy / Privacy Policy')
+                    this.tag('DeviceInformationScreen').visible = true
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Info')
                 }
                 _getFocused() {
-                    return this.tag('PrivacyPolicyScreen')
+                    return this.tag('DeviceInformationScreen')
                 }
                 $exit() {
-                    this.tag('PrivacyPolicyScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy')
+                    this.show()
+                    this.tag('DeviceInformationScreen').visible = false
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
                 }
                 _handleBack() {
-                    this._setState('PrivacyPolicy')
-                    this.show()
+                    this._setState('Info')
                 }
-            }
+            },
+            //Inner Firmware Screen
+            class FirmwareScreen extends this {
+                $enter() {
+                    this.hide()
+                    this.tag('FirmwareScreen').visible = true
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Firmware')
+                }
+                _getFocused() {
+                    return this.tag('FirmwareScreen')
+                }
+                $exit() {
+                    this.show()
+                    this.tag('FirmwareScreen').visible = false
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
+                }
+                _handleBack() {
+                    this._setState('Firmware')
+                }
+            },
+
+            class RebootConfirmationScreen extends this{
+                $enter() {
+                    this.hide()
+                    this.tag('RebootConfirmationScreen').visible = true
+                }
+                _getFocused() {
+                    return this.tag('RebootConfirmationScreen')
+                }
+                $exit() {
+                    this.show()
+                    this.tag('RebootConfirmationScreen').visible = false
+                }
+                $confirmReboot() {
+                    this._appApi.reboot().then(result => {
+                        console.log('device rebooting from device screen ' + JSON.stringify(result))
+                    })
+                }
+
+                $cancelReboot() {
+                    this._handleBack()
+                }
+                _handleBack() {
+                    this._setState('Reboot')
+                }
+            },
+
         ]
     }
+
+
 }

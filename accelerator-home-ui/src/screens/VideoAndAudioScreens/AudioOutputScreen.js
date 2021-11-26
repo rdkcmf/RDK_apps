@@ -16,141 +16,84 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Utils } from '@lightningjs/sdk'
- import SettingsMainItem from '../../items/SettingsMainItem'
- import VideoAndAudioItem from '../../items/VideoAndAudioItem'
- import SettingsItem from '../../items/SettingsItem'
- import { COLORS } from '../../colors/Colors'
- import { CONFIG } from '../../Config/Config'
- import AppApi from '../../api/AppApi.js';
- import AudioOutputItem from "../../items/AudioOutputItem"
- /**
-  * Class for Resolution Screen.
-  */
+import { Lightning } from '@lightningjs/sdk'
+import AppApi from '../../api/AppApi.js';
+import AudioOutputItem from "../../items/AudioOutputItem"
+/**
+ * Class for Resolution Screen.
+ */
 
- export default class AudioOutputScreen extends Lightning.Component {
-     static _template() {
-         return {
-             x: 0,
-             y: 0,
-             AudioOutputScreenContents: {
-                 List: {
-                     type: Lightning.components.ListComponent,
-                     w: 1920 - 300,
-                     itemSize: 90,
-                     horizontal: false,
-                     invertDirection: true,
-                     roll: true,
-                 },
-             }
-         }
-     }
- 
-     $resetPrevTickObject(prevTicObject) {
-         if (!this.prevTicOb) {
-             this.prevTicOb = prevTicObject;
-             
-         }
-         else {
-             this.prevTicOb.tag("Item.Tick").visible = false;
-             
-             this.prevTicOb = prevTicObject;
-             
-         }
-     }
- 
- 
-     _init() {
+export default class AudioOutputScreen extends Lightning.Component {
+    static _template() {
+        return {
+            x: 0,
+            y: 0,
+            AudioOutputScreenContents: {
+                List: {
+                    type: Lightning.components.ListComponent,
+                    w: 1920 - 300,
+                    itemSize: 90,
+                    horizontal: false,
+                    invertDirection: true,
+                    roll: true,
+                },
+            }
+        }
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+        if (!this.prevTicOb) {
+            this.prevTicOb = prevTicObject;
+
+        }
+        else {
+            this.prevTicOb.tag("Item.Tick").visible = false;
+
+            this.prevTicOb = prevTicObject;
+
+        }
+    }
+
+
+    _focus() { //change to init if needed
         this.appApi = new AppApi();
-         var self = this;
-         var tappApi = this.appApi;
-         var options = []
-
-         this.appApi.getConnectedAudioPorts().then(res=>{
-            // logging
-            
+        this.appApi.getConnectedAudioPorts().then(res => {
             var options = [...res.connectedAudioPorts];
             this.tag('AudioOutputScreenContents').h = options.length * 90
-                         this.tag('AudioOutputScreenContents.List').h = options.length * 90
-                         this.tag('List').items = options.map((item, index) => {
-                             return {
-                                 ref: 'Option' + index,
-                                 w: 1920 - 300,
-                                 h: 90,
-                                 type: AudioOutputItem,
-                                 item:item
-                                // isTicked: (result.soundMode===item)?true:false,
-                                 
-                             }
-                         })
+            this.tag('AudioOutputScreenContents.List').h = options.length * 90
+            this.tag('AudioOutputScreenContents.List').items = options.map((item, index) => {
+                return {
+                    ref: 'Option' + index,
+                    w: 1920 - 300,
+                    h: 90,
+                    type: AudioOutputItem,
+                    item: item
+                }
+            })
             this._setState("Options");
-          }).catch(err=>{
-            console.log(`Tanjirou's Logs:
-            
-              Error while getting Connected AudioPorts :${err}
-              
-            `);
-          })
- 
-        //  appApi.getSoundMode()
-        //      .then(result => {
-        //          // updating on the audio screen
-        //          self.fireAncestors("$updateTheDefaultAudio", result.soundMode);
- 
-        //          // ###############  setting the audio items  ###############
-        //          tappApi.getSupportedAudioModes()
-        //              .then(res => {
-        //                  console.log(res);
-        //                  options = [...res.supportedAudioModes]
-        //                  this.tag('HdmiOutputScreenContents').h = options.length * 90
-        //                  this.tag('HdmiOutputScreenContents.List').h = options.length * 90
-        //                  this.tag('List').items = options.map((item, index) => {
-        //                      return {
-        //                          ref: 'Option' + index,
-        //                          w: 1920 - 300,
-        //                          h: 90,
-        //                          type: VideoAndAudioItem,
-        //                          isTicked: (result.soundMode===item)?true:false,
-        //                          item: item,
-        //                          videoElement: false
-        //                      }
-        //                  })
- 
-        //              })
-        //              .catch(err => {
-        //                  console.log('Some error')
-        //              })
-        //               this._setState("Options")
-        //              //--------------------------------------------------------
- 
-        //      })
-        //      .catch(err => {
-        //          console.log('Some error')
-        //      })
- 
- 
-         //options = ['Stereo', 'Auto Detect (Dolby Digital Plus)', 'Expert Mode'],
-     }
- 
-     
-     static _states() {
-         return [
-             class Options extends this{
-                 _getFocused() {
-                     return this.tag('List').element
-                 }
-                 _handleDown() {
-                     this.tag('List').setNext()
-                 }
-                 _handleUp() {
-                     this.tag('List').setPrevious()
-                 }
-                 _handleEnter() {
-                     // enable the tick mark in VideoAudioItem.js
-                     // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
-                 }
-             }
-         ]
-     }
- }
- 
+        }).catch(err => {
+            console.log(`Error while getting Connected AudioPorts :${err}`);
+        })
+    }
+
+
+    static _states() {
+        return [
+            class Options extends this{
+                _getFocused() {
+                    return this.tag('List').element
+                }
+                _handleDown() {
+                    this.tag('List').setNext()
+                }
+                _handleUp() {
+                    this.tag('List').setPrevious()
+                }
+                _handleEnter() {
+                    // enable the tick mark in VideoAudioItem.js
+                    // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
+                }
+            }
+        ]
+    }
+}

@@ -18,7 +18,6 @@
  **/
 import { Lightning, Router, Storage, Utils, Language } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
-import AppListItem from '../items/AppListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
 import { CONFIG } from '../Config/Config.js'
@@ -32,7 +31,7 @@ export default class MainView extends Lightning.Component {
   static _template() {
     return {
       MainView: {
-        x: 280,
+        x: 200,
         w: 1765,
         h: 1080,
         clipping: true,
@@ -65,7 +64,7 @@ export default class MainView extends Lightning.Component {
         },
         Text2: {
           // x: 10 + 25,
-          y: 425,
+          y: 395,
           h: 30,
           text: {
             fontFace: CONFIG.language.font,
@@ -77,7 +76,7 @@ export default class MainView extends Lightning.Component {
         },
         MetroApps: {
           x: -20,
-          y: 425 + 30 + 27,
+          y: 435,
           type: Lightning.components.ListComponent,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           w: 1745,
@@ -162,8 +161,6 @@ export default class MainView extends Lightning.Component {
         data: info,
         focus: 1.11,
         unfocus: 1,
-        x_text: 120,
-        y_text: 140,
         idx: idx
       }
     })
@@ -175,12 +172,11 @@ export default class MainView extends Lightning.Component {
       return {
         w: 268,
         h: 151,
-        type: AppListItem,
+        type: ListItem,
         data: info,
         focus: 1.15,
         unfocus: 1,
-        x_text: 106,
-        y_text: 140,
+        idx: index
       }
     })
     this.tag('MetroApps').start()
@@ -198,8 +194,6 @@ export default class MainView extends Lightning.Component {
         data: info,
         focus: 1.15,
         unfocus: 1,
-        x_text: 218,
-        y_text: 264,
         idx: idx
       }
     })
@@ -250,10 +244,12 @@ export default class MainView extends Lightning.Component {
             return this.tag('AppList').element
           }
         }
+        _handleDown() {
+          this._setState('MetroApps')
+        }
         _handleRight() {
           if (this.tag('AppList').length - 1 != this.tag('AppList').index) {
             this.tag('AppList').setNext()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('AppList').element.data.url)
             return this.tag('AppList').element
           }
         }
@@ -261,7 +257,6 @@ export default class MainView extends Lightning.Component {
           this.tag('Text1').text.fontStyle = 'normal'
           if (0 != this.tag('AppList').index) {
             this.tag('AppList').setPrevious()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('AppList').element.data.url)
             return this.tag('AppList').element
           } else {
             this.reset()
@@ -386,10 +381,15 @@ export default class MainView extends Lightning.Component {
             return this.tag('MetroApps').element
           }
         }
+        _handleUp() {
+          this._setState('AppList')
+        }
+        _handleDown() {
+          this._setState('TVShows')
+        }
         _handleRight() {
           if (this.tag('MetroApps').length - 1 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setNext()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('MetroApps').element.data.url)
             return this.tag('MetroApps').element
           }
         }
@@ -397,7 +397,6 @@ export default class MainView extends Lightning.Component {
           this.tag('Text2').text.fontStyle = 'normal'
           if (0 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setPrevious()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('MetroApps').element.data.url)
             return this.tag('MetroApps').element
           } else {
             this.reset()
@@ -476,6 +475,9 @@ export default class MainView extends Lightning.Component {
         $enter() {
           this.fireAncestors('$scroll', -350)
         }
+        _handleUp() {
+          this._setState('MetroApps')
+        }
         _getFocused() {
           this.tag('Text3').text.fontStyle = 'bold'
           if (this.tag('TVShows').length) {
@@ -487,7 +489,6 @@ export default class MainView extends Lightning.Component {
         _handleRight() {
           if (this.tag('TVShows').length - 1 != this.tag('TVShows').index) {
             this.tag('TVShows').setNext()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('TVShows').element.data.url)
             return this.tag('TVShows').element
           }
         }
@@ -495,7 +496,6 @@ export default class MainView extends Lightning.Component {
           this.tag('Text3').text.fontStyle = 'normal'
           if (0 != this.tag('TVShows').index) {
             this.tag('TVShows').setPrevious()
-            this.fireAncestors('$changeBackgroundImageOnNonFocus', this.tag('TVShows').element.data.url)
             return this.tag('TVShows').element
           } else {
             this.reset()

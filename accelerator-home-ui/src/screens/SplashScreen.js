@@ -43,12 +43,6 @@ export default class SplashScreen extends Lightning.Component {
           src: Utils.asset('/images/splash/RDKLogo.png'),
         },
       },
-      SplashVideo: {
-        w: 1920,
-        h: 1080,
-        alpha: 0,
-        Player: { type: AAMPVideoPlayer, w: 1920, h: 1080, x: 0, y: 0 },
-      },
       AutoRemotePair: {
         w: 1920,
         h: 1080,
@@ -169,7 +163,7 @@ export default class SplashScreen extends Lightning.Component {
 
         if (paired.length > 0) {
           this.remotePaired = true
-        }else{
+        } else {
           this.remotePaired = false
         }
       })
@@ -198,26 +192,6 @@ export default class SplashScreen extends Lightning.Component {
     })
   }
   /**
-   * Function to startVideo.
-   */
-  startVideo() {
-    this.player = this.tag('SplashVideo.Player')
-    try {
-      this.player.load({
-        title: '',
-        subtitle: '',
-        image: '',
-        url: 'https://rdkwiki.com/rdk-apps/splash/splash.MOV',
-        drmConfig: null,
-      })
-
-    } catch (error) {
-      this.player = null
-      console.log('###########', error)
-    }
-  }
-
-  /**
    * Function to handle the different states of the app.
    */
   static _states() {
@@ -243,7 +217,9 @@ export default class SplashScreen extends Lightning.Component {
           myAnimationLogo.start()
 
           this.screenTimeout = setTimeout(() => {
-            this._setState('SplashVideo')
+            if (this.remotePaired == false) this._setState('AutoRemotePair')
+            else if (this.hasInternet == false) this._setState('ConnectivityScreen')
+            else Router.navigate('home')
           }, 5000)
         }
         _handleKey(event) {
@@ -269,11 +245,9 @@ export default class SplashScreen extends Lightning.Component {
             actions: [{ p: 'alpha', v: { 0: 0, 1: 1 } }],
           })
           myAnimation.start()
-          this.startVideo()
+          //this.startVideo()
           this.timeout = setTimeout(() => {
-            if (this.remotePaired == false) this._setState('AutoRemotePair')
-            else if (this.hasInternet == false) this._setState('ConnectivityScreen')
-            else Router.navigate('home')
+
           }, 5000)
         }
         $exit() {
@@ -378,7 +352,7 @@ export default class SplashScreen extends Lightning.Component {
             let pairedDevices = this._bt.pairedDevices
             if (pairedDevices.length > 0) {
               this._bt.connect(pairedDevices[0].deviceID, pairedDevices[0].deviceType)
-              this.tag('AutoRemotePair.Description').text = pairedDevices[0].deviceType+'remote is paired'
+              this.tag('AutoRemotePair.Description').text = pairedDevices[0].deviceType + 'remote is paired'
             } else {
               setTimeout(() => {
                 this._bt.getPairedDevices().then(() => {
@@ -395,7 +369,7 @@ export default class SplashScreen extends Lightning.Component {
           this._bt.registerEvent('onConnectionChange', () => {
             let connectedDevices = this._bt.connectedDevices
             if (connectedDevices.length > 0) {
-              this.tag('AutoRemotePair.Description').text = 'Remote is Connected to ' + connectedDevices[0].name              
+              this.tag('AutoRemotePair.Description').text = 'Remote is Connected to ' + connectedDevices[0].name
               connected = true
               clearTimeout(timer)
               setTimeout(() => {

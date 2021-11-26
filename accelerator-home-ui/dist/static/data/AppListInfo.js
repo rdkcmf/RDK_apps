@@ -21,33 +21,33 @@
  */
 export var appListInfo = [
   {
-    displayName: 'Test Youtube',
-    applicationType: 'Cobalt',
-    uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.png',
+    displayName: 'Amazon Prime video',
+    applicationType: 'Amazon',
+    uri: '',
+    url: '/images/apps/amazon_prime.jpg',
   },
   {
-    displayName: 'Test Xumo',
-    applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/xumo.png',
+    displayName: 'Youtube',
+    applicationType: 'Cobalt',
+    uri: 'https://www.youtube.com/tv',
+    url: '/images/apps/youtube.jpg',
   },
   {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/netflix.png',
+    url: '/images/apps/content1.png',
   },
   {
-    displayName: 'Amazon Prime video',
-    applicationType: 'Amazon',
-    uri: '',
-    url: '/images/apps/prime.png',
+    displayName: 'Xumo',
+    applicationType: 'WebApp',
+    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    url: '/images/apps/content2.png',
   },
   {
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/netflix.png',
+    url: '/images/apps/content3.png',
   }
 ]

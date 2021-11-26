@@ -73,7 +73,7 @@ export default class XcastApi {
                   }
                 });
                 this._thunder.on(this.callsign, 'onApplicationStateRequest', notification => {
-                  console.log('onApplicationStateRequest ' + JSON.stringify(notification));
+                  // console.log('onApplicationStateRequest ' + JSON.stringify(notification));
                   if (this._events.has('onApplicationStateRequest')) {
                     this._events.get('onApplicationStateRequest')(notification);
                   }

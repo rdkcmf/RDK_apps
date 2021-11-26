@@ -26,7 +26,7 @@ export default class SidePanel extends Lightning.Component {
     return {
       SidePanel: {
         x: 0,
-        y: 0,
+        y: 127,
         w: 240,
         h: 750,
         type: Lightning.components.ListComponent,
@@ -55,9 +55,9 @@ export default class SidePanel extends Lightning.Component {
     this.tag('SidePanel').items = items.map((info, index) => {
       this.data = info
       return {
-        w: 70,
-        h: 70,
-        y: index == 0 ? 70 : (index + 1) * 70,
+        w: 50,
+        h: 50,
+        y: index == 0 ? 20 : (index + 1) * 20,
         type: SidePanelItem,
         data: info,
         focus: 1.1,

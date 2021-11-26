@@ -17,15 +17,11 @@
  * limitations under the License.
  **/
 import { Lightning, Utils } from '@lightningjs/sdk'
-import SettingsMainItem from '../../items/SettingsMainItem'
 import VideoAndAudioItem from '../../items/VideoAndAudioItem'
-import SettingsItem from '../../items/SettingsItem'
-import { COLORS } from '../../colors/Colors'
-import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
 
 /**
- * Class for Resolution Screen.
+ * Class for HDMI Output Screen.
  */
 var appApi = new AppApi();
 export default class HdmiOutputScreen extends Lightning.Component {
@@ -33,6 +29,26 @@ export default class HdmiOutputScreen extends Lightning.Component {
         return {
             x: 0,
             y: 0,
+            Background: {
+                x: 0,
+                y: -10,
+                w: 1920,
+                h: 1080,
+                rect: true,
+                color: 0xff000000,
+                zIndex: 4,
+                visible: false
+            },
+            Loader: {
+                x: 1920 / 2 - 400 + 180,
+                y: 1080 / 2 - 300 + 100,
+                w: 90,
+                h: 90,
+                mount: 0.5,
+                zIndex: 4,
+                src: Utils.asset("images/settings/Loading.gif"),
+                visible: false,
+            },
             HdmiOutputScreenContents: {
                 List: {
                     type: Lightning.components.ListComponent,
@@ -49,60 +65,56 @@ export default class HdmiOutputScreen extends Lightning.Component {
     $resetPrevTickObject(prevTicObject) {
         if (!this.prevTicOb) {
             this.prevTicOb = prevTicObject;
-            
+
         }
         else {
             this.prevTicOb.tag("Item.Tick").visible = false;
-            
+
             this.prevTicOb = prevTicObject;
-            
+
         }
     }
 
 
     _init() {
-        var self = this;
-        var tappApi = appApi;
-        var options = []
+        this.loadingAnimation = this.tag('Loader').animation({
+            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+        });
+    }
 
+    _focus() {
+        this._setState("LoadingState");
+        var options = []
         appApi.getSoundMode()
             .then(result => {
                 // updating on the audio screen
-                self.fireAncestors("$updateTheDefaultAudio", result.soundMode);
-
-                // ###############  setting the audio items  ###############
-                tappApi.getSupportedAudioModes()
+                this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
+                appApi.getSupportedAudioModes()
                     .then(res => {
-                        
                         options = [...res.supportedAudioModes]
                         this.tag('HdmiOutputScreenContents').h = options.length * 90
                         this.tag('HdmiOutputScreenContents.List').h = options.length * 90
-                        this.tag('List').items = options.map((item, index) => {
+                        this.tag('HdmiOutputScreenContents.List').items = options.map((item, index) => {
                             return {
                                 ref: 'Option' + index,
                                 w: 1920 - 300,
                                 h: 90,
                                 type: VideoAndAudioItem,
-                                isTicked: (result.soundMode===item)?true:false,
+                                isTicked: (result.soundMode === item) ? true : false,
                                 item: item,
                                 videoElement: false
                             }
                         })
-
+                        this._setState("Options")
                     })
                     .catch(err => {
-                        console.log('Some error')
+                        console.log('Some error', JSON.stringify(err))
                     })
-                     this._setState("Options")
-                    //--------------------------------------------------------
-
             })
             .catch(err => {
-                console.log('Some error')
+                console.log('Some error', JSON.stringify(err))
             })
-
-
-        //options = ['Stereo', 'Auto Detect (Dolby Digital Plus)', 'Expert Mode'],
     }
 
 
@@ -110,17 +122,28 @@ export default class HdmiOutputScreen extends Lightning.Component {
         return [
             class Options extends this{
                 _getFocused() {
-                    return this.tag('List').element
+                    return this.tag('HdmiOutputScreenContents.List').element
                 }
                 _handleDown() {
-                    this.tag('List').setNext()
+                    this.tag('HdmiOutputScreenContents.List').setNext()
                 }
                 _handleUp() {
-                    this.tag('List').setPrevious()
+                    this.tag('HdmiOutputScreenContents.List').setPrevious()
                 }
-                _handleEnter() {
-                    // enable the tick mark in VideoAudioItem.js
-                    // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
+            },
+            class LoadingState extends this{
+                $enter() {
+                    this.tag("Loader").visible = true;
+                    this.tag("Background").visible = true;
+                    this.loadingAnimation.start();
+                }
+                _getFocused() {
+
+                }
+                $exit() {
+                    this.tag("Loader").visible = false;
+                    this.tag("Background").visible = false;
+                    this.loadingAnimation.stop();
                 }
             }
         ]

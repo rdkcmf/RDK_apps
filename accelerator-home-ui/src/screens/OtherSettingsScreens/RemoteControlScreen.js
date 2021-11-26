@@ -21,7 +21,7 @@ import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 /**
- * Class for Other Settings Screen.
+ * Class for Remote Control Screen.
  */
 
 export default class RemoteControlScreen extends Lightning.Component {

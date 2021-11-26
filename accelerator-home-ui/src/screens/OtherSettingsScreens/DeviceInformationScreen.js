@@ -19,7 +19,7 @@
 import { Lightning, Utils } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import AppApi from '../../api/AppApi'
+import AppApi from '../../api/AppApi.js';
 
 /**
  * Class for Video and Audio screen.
@@ -28,99 +28,399 @@ import AppApi from '../../api/AppApi'
 export default class DeviceInformationScreen extends Lightning.Component {
     static _template() {
         return {
+            x: 0, y: 0,
+            h: 1080,
+            w: 1920,
+            clipping: true,
             DeviceInfoContents: {
+                y: 2,
+                Line1: {
+                    y: 0,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
+                },
                 ChipSet: {
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: `Chipset: XXXX`,
+                            text: `Chipset`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
+                    Value: {
+                        x: 400,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: `unavailable`,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    }
+                },
+                Line2: {
+                    y: 90,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
                 },
                 SerialNumber: {
                     Title: {
                         x: 10,
-                        y: 45 + 35,
+                        y: 135,
                         mountY: 0.5,
                         text: {
-                            text: `Serial Number: XXXX`,
+                            text: `Serial Number`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
+                    Value: {
+                        x: 400,
+                        y: 135,
+                        mountY: 0.5,
+                        text: {
+                            text: `unavailable`,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                },
+                Line3: {
+                    y: 180,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
                 },
                 Location: {
                     Title: {
                         x: 10,
-                        y: 45 + 35 + 35,
+                        y: 225,
                         mountY: 0.5,
                         text: {
-                            text: `Location: XXXX`,
+                            text: `Location`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
+                    Value: {
+                        x: 400,
+                        y: 225,
+                        mountY: 0.5,
+                        text: {
+                            text: `City: unavailable , Country: unavailable `,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                    Loader: {
+                        h: 45,
+                        w: 45,
+                        x: 500,
+                        y: 225,
+                        mountX: 1,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Loading.gif'),
+                        visible: false,
+                    },
+                    SyncLocation: {
+                        Button: {
+                            x: 925, y: 225, w: 160, mountY: 0.5, h: 40, rect: true, color: 0xFFFFFFFF,
+                            Title: {
+                                x: 80,
+                                y: 20,
+                                mount: 0.5,
+                                text: {
+                                    text: "Sync Location",
+                                    fontFace: CONFIG.language.font,
+                                    fontSize: 20,
+                                    textColor: 0xFF000000
+                                },
+                            }
+                        },
+                    },
+                },
+                Line4: {
+                    y: 270,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
                 },
                 SupportedDRM: {
                     Title: {
                         x: 10,
-                        y: 45 + 35 + 35 + 35,
+                        y: 360,
                         mountY: 0.5,
                         text: {
-                            text: `Supported DRM & Key-System: XXXX`,
+                            text: `Supported DRM & Key-System`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
+                            wordWrapWidth: 1600,
+                            wordWrap: true,
                             fontSize: 25,
                         }
                     },
+                    Value: {
+                        x: 400,
+                        y: 360,
+                        mountY: 0.5,
+                        text: {
+                            text: `unavailable`,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            wordWrapWidth: 735,
+                            wordWrap: true,
+                            fontSize: 20,
+                        }
+                    },
+                },
+                Line5: {
+                    y: 450,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
                 },
                 FirmwareVersions: {
                     Title: {
                         x: 10,
-                        y: 45 + 35 + 35 + 35 + 35,
+                        y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware version: UI Version, Build Version, Timestamp`,
+                            text: `Firmware version`,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                    Value: {
+                        x: 400,
+                        y: 540,
+                        mountY: 0.5,
+                        text: {
+                            text: `UI Version: , Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                 },
+                Line6: {
+                    y: 630,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
+                },
                 AppVersions: {
                     Title: {
                         x: 10,
-                        y: 45 + 35 + 35 + 35 + 35 + 45,
+                        y: 720,
                         mountY: 0.5,
                         text: {
-                            text: 'App Version: 3.2',
+                            text: `App Versions`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
-                            fontStyle: 'bold'
                         }
                     },
+                    Value: {
+                        x: 400,
+                        y: 720,
+                        mountY: 0.5,
+                        text: {
+                            text: "Youtube:\nAmazon Prime:\nNetflix:",
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                },
+                Line7: {
+                    y: 810,
+                    mountY: 0.5,
+                    w: 1535,
+                    h: 3,
+                    rect: true,
+                    color: 0xFFFFFFFF
                 },
             },
         }
     }
 
-    _init(){
+    _focus() {
+        this._setState('DeviceInformationScreen')
         this.appApi = new AppApi();
-        this.appApi.systeminfo().then(result => {
-            let ram = (result.totalram / 10**9).toFixed(2)
-            this.tag('SupportedDRM.Title').text.text = `Supported DRM & Key-System: ${ram} GB`
-            this.tag('SerialNumber.Title').text.text = `Serial Number: ${result.serialnumber}`
+        this.appApi.getSerialNumber().then(result => {
+            this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
+        })
+
+        this.appApi.getSystemVersions().then(res => {
+            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.3 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
+        })
+            .catch(err => { console.error(`error while getting the system versions`) })
+
+        this.appApi.getDRMS().then(result => {
+            console.log('from device info supported drms ' + JSON.stringify(result))
+            var drms = ""
+            result.forEach(element => {
+                drms += `${element.name} :`
+                if (element.keysystems) {
+                    drms += "\n\t\t\t\t"
+                    element.keysystems.forEach(keySystem => {
+                        drms += `${keySystem}, `
+                    })
+                    drms += "\n"
+                } else {
+                    drms += "\n"
+                }
+            });
+            this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`
         })
         this.appApi.getLocation().then(result => {
-            this.tag('Location.Title').text.text = `Location: ${result.city.length !== 0 ? result.city +", "+result.country : "NA" }`
+            console.log("getLocation from device info " + JSON.stringify(result))
+            var locationInfo = ""
+            if (result.city.length !== 0) {
+                locationInfo = "City: " + result.city
+            }
+            else {
+                locationInfo = "City: unavailable "
+            }
+            if (result.country.length !== 0) {
+                locationInfo += ", Country: " + result.country;
+            }
+            else {
+                locationInfo += ", Country: unavailable "
+            }
+            this.tag('Location.Value').text.text = `${locationInfo}`
         })
+
+        this.appApi.getDeviceIdentification().then(result => {
+            console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result))
+            this.tag('ChipSet.Value').text.text = `${result.chipset}`
+            // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+        })
+        this.appApi.registerChangeLocation()
+
+        this.loadingAnimation = this.tag('Location.Loader').animation({
+            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+        });
+
+        this.loadingAnimation.start()
+    }
+
+    _unfocus() {
+        this.loadingAnimation.stop()
+    }
+
+    _handleRight() {
+        this._setState('SyncLocation')
+    }
+
+    _handleDown() {
+        if (this.tag("DeviceInfoContents").y > -200) {
+            this.tag("DeviceInfoContents").y -= 35;
+        }
+    }
+    _handleUp() {
+        if (this.tag("DeviceInfoContents").y < 35) {
+            this.tag("DeviceInfoContents").y += 35;
+        }
+    }
+
+    static _states() {
+        return [
+
+
+            class SyncLocation extends this {
+                $enter() {
+                    this._focus()
+                }
+                _handleEnter() {
+                    this.appApi.syncLocation().then(result => {
+                        this.tag('Location.Value').visible = false
+                        this.tag('Location.Loader').visible = true
+                        this.appApi.getLocation().then(result => {
+                            var locationInfo = ""
+                            if (result.city.length !== 0) {
+                                locationInfo = "City: " + result.city
+                            }
+                            else {
+                                locationInfo = "City: unavailable "
+                            }
+                            if (result.country.length !== 0) {
+                                locationInfo += ", Country: " + result.country;
+                            }
+                            else {
+                                locationInfo += ", Country: unavailable "
+                            }
+                            this.tag('Location.Value').text.text = `${locationInfo}`
+
+                            setTimeout(() => {
+                                this.tag('Location.Value').visible = true
+                                this.tag('Location.Loader').visible = false
+                            }, 2000)
+
+                        })
+                    })
+                }
+                _handleLeft() {
+                    this._setState('DeviceInformationScreen')
+                }
+                _handleDown() {
+                    // to avoid scroll when button in focus
+                    this._setState('DeviceInformationScreen')
+                }
+                _handleUp() {
+                    // to avoid scroll when button in focus
+                    this._setState('DeviceInformationScreen')
+                }
+                _focus() {
+                    this.tag('SyncLocation.Button').patch({
+                        color: CONFIG.theme.hex
+                    })
+                    this.tag('SyncLocation.Button.Title').patch({
+                        text: {
+                            textColor: 0xFFFFFFFF
+                        }
+                    })
+                }
+                _unfocus() {
+                    this.tag('SyncLocation.Button').patch({
+                        color: 0xFFFFFFFF
+                    })
+                    this.tag('SyncLocation.Button.Title').patch({
+                        text: {
+                            textColor: 0xFF000000
+                        }
+                    })
+                }
+                $exit() {
+                    this._unfocus()
+                }
+            },
+
+        ]
     }
 }

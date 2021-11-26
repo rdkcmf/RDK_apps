@@ -16,267 +16,174 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Utils } from '@lightningjs/sdk'
- import SettingsMainItem from '../../items/SettingsMainItem'
- import SettingsItem from '../../items/SettingsItem'
- import { COLORS } from '../../colors/Colors'
+import { Lightning, Utils } from '@lightningjs/sdk'
+import SettingsMainItem from '../../items/SettingsMainItem'
+import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import DeviceInformationScreen from './DeviceInformationScreen'
-import AppApi from '../../api/AppApi'
+import DeviceScreen from './DeviceScreen'
 
- /**
-  * Class for Video and Audio screen.
-  */
+/**
+ * Class for AdvancedSettings screen.
+ */
 
- export default class AdvancedSettingsScreen extends Lightning.Component {
-    static _template(){
-        return { 
-            x:0,
-            y:0,
-            AdvanceScreenContents:{   
+export default class AdvanceSettingsScreen extends Lightning.Component {
+    static _template() {
+        return {
+            x: 0,
+            y: 0,
+            AdvanceScreenContents: {
                 UIVoice: {
+                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                    text: 'UI Voice',
-                    textColor: COLORS.titleColor,
-                    fontFace: CONFIG.language.font,
-                    fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'UI Voice',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 *1.5,
-                    w: 30 *1.5,
-                    x: 1535,
-                    mountX:1,
-                    y: 45,
-                    mountY:0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 TTSOptions: {
-                    y: 0+90,
+                    y: 90,
+                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'TTS Options',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'TTS Options',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 CECControl: {
-                    y: 0+90+90,
+                    y: 180,
+                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'CEC Control',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'CEC Control',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 Bug: {
-                    y: 0+90+90+90 ,
+                    y: 270,
+                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Bug Report',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Bug Report',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 Contact: {
-                    y: 0+90+90+90+90 ,
+                    alpha: 0.3, // disabled
+                    y: 360,
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Contact Support',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Contact Support',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
-                Sync: {
-                    y: 0+90+90+90+90+90 ,
+                Device: {
+                    y: 450,
                     type: SettingsMainItem,
                     Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Synchronize Location',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Device',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-                Firmware: {
-                    y: 0+90+90+90+90+90+90 ,
-                    type: SettingsMainItem,
-                    Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Check for Firmware Update',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
-                    },
-                    Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-                DeviceInfo: {
-                    y: 0+90+90+90+90+90+90+90 ,
-                    type: SettingsMainItem,
-                    Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Device Info',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
-                    },
-                    Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-                Reboot: {
-                    y: 0+90+90+90+90+90+90+90+90 ,
-                    type: SettingsMainItem,
-                    Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Reboot',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
-                    },
-                    Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-                Reset: {
-                    y: 0+90+90+90+90+90+90+90+90+90 ,
-                    type: SettingsMainItem,
-                    Title: {
-                    x: 10,
-                    y: 45,
-                    mountY: 0.5,
-                    text: {
-                        text: 'Factory Reset',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                    }
-                    },
-                    Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
-                    mountX: 1,
-                    y: 45,
-                    mountY: 0.5,
-                    src: Utils.asset('images/settings/Arrow.png'),
+                        h: 30 * 1.5,
+                        w: 30 * 1.5,
+                        x: 1535,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
             },
 
-            DeviceInformationScreen: {
-                type: DeviceInformationScreen,
+            DeviceScreen: {
+                type: DeviceScreen,
                 visible: false,
             },
 
@@ -284,228 +191,146 @@ import AppApi from '../../api/AppApi'
 
     }
 
-    _init(){
-        this.appApi = new AppApi();
-        this.appApi.syncLocation().then(result => {
-        })
-        this.appApi.speak().then(result => {
-        })
-        this.appApi.getlistVoices().then(result => {
-        })
-        this.appApi.getFirmwareUpdateInfo().then(result => {
-        })
-        this.appApi.getFirmwareUpdateState().then(result => {
-        })
+
+    _focus() {
+        this._setState('Device')
     }
 
-    _focus(){
-        this._setState('UIVoice')
-    }
-
-    hide(){
+    hide() {
         this.tag('AdvanceScreenContents').visible = false
     }
 
-    show(){
+    show() {
         this.tag('AdvanceScreenContents').visible = true
     }
 
-    static _states(){
-        return[
+    static _states() {
+        return [
             class UIVoice extends this{
-                $enter(){
+                $enter() {
                     this.tag('UIVoice')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('UIVoice')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('Reset');
+                _handleUp() {
+                    //this._setState('Reset');
                 }
-                _handleDown(){
-                    this._setState('TTSOptions')
+                _handleDown() {
+                    //this._setState('TTSOptions')
                 }
-                _handleEnter(){
-                    
+                _handleEnter() {
+
                 }
             },
             class TTSOptions extends this{
-                $enter(){
+                $enter() {
                     this.tag('TTSOptions')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('TTSOptions')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('UIVoice');
+                _handleUp() {
+                    //this._setState('UIVoice');
                 }
-                _handleDown(){
-                    this._setState('CECControl')
+                _handleDown() {
+                    //this._setState('CECControl')
                 }
-                _handleEnter(){
-                    
+                _handleEnter() {
+
                 }
             },
             class CECControl extends this{
-                $enter(){
+                $enter() {
                     this.tag('CECControl')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('CECControl')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('TTSOptions');
+                _handleUp() {
+                    //this._setState('TTSOptions');
                 }
-                _handleDown(){
-                    this._setState('Bug')
+                _handleDown() {
+                    //this._setState('Bug')
                 }
-                _handleEnter(){
-                    
+                _handleEnter() {
+
                 }
             },
             class Bug extends this{
-                $enter(){
+                $enter() {
                     this.tag('Bug')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('Bug')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('CECControl');
+                _handleUp() {
+                    //this._setState('CECControl');
                 }
-                _handleDown(){
-                    this._setState('Contact')
+                _handleDown() {
+                    //this._setState('Contact')
                 }
-                _handleEnter(){
-                    
+                _handleEnter() {
+
                 }
             },
             class Contact extends this{
-                $enter(){
+                $enter() {
                     this.tag('Contact')._focus()
                 }
-                $exit(){
+                $exit() {
                     this.tag('Contact')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('Bug');
+                _handleUp() {
+                    //this._setState('Bug');
                 }
-                _handleDown(){
-                    this._setState('Sync')
+                _handleDown() {
+                    //this._setState('Device')
                 }
-                _handleEnter(){
-                    
-                }
-            },
-            class Sync extends this{
-                $enter(){
-                    this.tag('Sync')._focus()
-                }
-                $exit(){
-                    this.tag('Sync')._unfocus()
-                }
-                _handleUp(){
-                    this._setState('Contact');
-                }
-                _handleDown(){
-                    this._setState('Firmware')
-                }
-                _handleEnter(){
-                    
+                _handleEnter() {
+
                 }
             },
-            class Firmware extends this{
-                $enter(){
-                    this.tag('Firmware')._focus()
+            class Device extends this{
+                $enter() {
+                    this.tag('Device')._focus()
                 }
-                $exit(){
-                    this.tag('Firmware')._unfocus()
+                $exit() {
+                    this.tag('Device')._unfocus()
                 }
-                _handleUp(){
-                    this._setState('Sync');
+                _handleUp() {
+                    //this._setState('Contact');
                 }
-                _handleDown(){
-                    this._setState('DeviceInfo')
+                _handleDown() {
+                    //this._setState('UI Voice')
                 }
-                _handleEnter(){
-                    
-                }
-            },
-            class DeviceInfo extends this{
-                $enter(){
-                    this.tag('DeviceInfo')._focus()
-                }
-                $exit(){
-                    this.tag('DeviceInfo')._unfocus()
-                }
-                _handleUp(){
-                    this._setState('Firmware');
-                }
-                _handleDown(){
-                    this._setState('Reboot')
-                }
-                _handleEnter(){
-                    this._setState('DeviceInformationScreen')
-                    this.hide()
-                }
-            },
-            class Reboot extends this{
-                $enter(){
-                    this.tag('Reboot')._focus()
-                }
-                $exit(){
-                    this.tag('Reboot')._unfocus()
-                }
-                _handleUp(){
-                    this._setState('DeviceInfo');
-                }
-                _handleDown(){
-                    this._setState('Reset')
-                }
-                _handleEnter(){
-                    this.appApi.reboot().then(result => {
-                    }) 
-                }
-            },
-            class Reset extends this{
-                $enter(){
-                    this.tag('Reset')._focus()
-                }
-                $exit(){
-                    this.tag('Reset')._unfocus()
-                }
-                _handleUp(){
-                    this._setState('Reboot');
-                }
-                _handleDown(){
-                    this._setState('UIVoice')
-                }
-                _handleEnter(){
-                    
+                _handleEnter() {
+                    this._setState('DeviceScreen')
                 }
             },
 
 
             //Inner Screens Classes
-            class DeviceInformationScreen extends this {
+            class DeviceScreen extends this {
                 $enter() {
-                  this.tag('DeviceInformationScreen').visible = true
-                  this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device Info')
+                    this.hide()
+                    this.tag('DeviceScreen').visible = true
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
                 }
                 _getFocused() {
-                  return this.tag('DeviceInformationScreen')
+                    return this.tag('DeviceScreen')
                 }
                 $exit() {
-                  this.tag('DeviceInformationScreen').visible = false
-                  this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
+                    this.show()
+                    this.tag('DeviceScreen').visible = false
+                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
                 }
                 _handleBack() {
-                  this._setState('DeviceInfo')
-                  this.show()
+                    this._setState('Device')
                 }
-              },
+            },
         ]
     }
 
 
- }
+}

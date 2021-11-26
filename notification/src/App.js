@@ -20,21 +20,18 @@
 import { Lightning, Utils } from '@lightningjs/sdk'
 
 export default class App extends Lightning.Component {
-
   static _template() {
     return {
-     
       Logo: {
         x: 1700,
         y: 30,
-        w:100,
-        h:100,
+        w: 100,
+        h: 100,
         src: Utils.asset('images/mute.png'),
-        alpha:0.7
-      }
+        alpha: 0.7,
+      },
     }
   }
 
-  _init() {
-  }
+  _init() {}
 }

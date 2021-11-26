@@ -26,6 +26,7 @@ import SleepTimerScreen from './SleepTimerScreen'
 import VideoScreen from './VideoAndAudioScreens/VideoScreen'
 import AudioScreen from './VideoAndAudioScreens/AudioScreen'
 import OtherSettingsScreen from './OtherSettingsScreens/OtherSettingsScreen'
+import NetworkConfigurationScreen from './OtherSettingsScreens/NetworkConfigurationScreen'
 
 /**
  * Class for settings screen.
@@ -34,155 +35,133 @@ import OtherSettingsScreen from './OtherSettingsScreens/OtherSettingsScreen'
 export default class SettingsScreen extends Lightning.Component {
   static _template() {
     return {
-      x: 280,
+      x: 200,
       y: 286,
-      SleepTimer: {
-        y: 0,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Sleep Timer: Off',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
+      SettingsScreenContents:{
+        NetworkConfiguration: {
+          y: 0,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Network Configuration',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
         },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
+        Bluetooth: {
+          y: 90,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Pair Remote Control',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        Video: {
+          y: 180,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Video',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        Audio: {
+          y: 270,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Audio',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
+        },
+        OtherSettings: {
+          y: 360,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Other Settings',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 45,
+            x: 1535,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Arrow.png'),
+          },
         },
       },
-      WiFi: {
-        y: 90,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'WiFi',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
-        },
-      },
-      Bluetooth: {
-        y: 180,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Pair Remote Control',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
-        },
-      },
-      Video: {
-        y: 270,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Video',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
-        },
-      },
-      Audio: {
-        y: 360,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Audio',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Button: {
-          h: 45,
-          w: 45,
-          x: 1535,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Arrow.png'),
-        },
-      },
-      // OtherSettings: {
-      //   y: 450,
-      //   type: SettingsMainItem,
-      //   Title: {
-      //     x: 10,
-      //     y: 45,
-      //     mountY: 0.5,
-      //     text: {
-      //       text: 'Other Settings',
-      //       textColor: COLORS.titleColor,
-      //       fontFace: CONFIG.language.font,
-      //       fontSize: 25,
-      //     }
-      //   },
-      //   Button: {
-      //     h: 45,
-      //     w: 45,
-      //     x: 1535,
-      //     mountX: 1,
-      //     y: 45,
-      //     mountY: 0.5,
-      //     src: Utils.asset('images/settings/Arrow.png'),
-      //   },
-      // },
-      WiFiScreen: {
-        type: WiFiScreen,
-        visible: false,
+      NetworkConfigurationScreen: {
+        type: NetworkConfigurationScreen,
+        visible: false
       },
       BluetoothScreen: {
         type: BluetoothScreen,
@@ -196,10 +175,6 @@ export default class SettingsScreen extends Lightning.Component {
         type: AudioScreen,
         visible: false,
       },
-      SleepTimerScreen: {
-        type: SleepTimerScreen,
-        visible: false
-      },
       OtherSettingsScreen: {
         type: OtherSettingsScreen,
         visible: false,
@@ -208,74 +183,38 @@ export default class SettingsScreen extends Lightning.Component {
     }
   }
 
-  _init() {
-    this._setState('SleepTimer')
+  _focus() {
+    this._setState('NetworkConfiguration')
   }
 
   hide() {
-    this.tag('WiFi').patch({ alpha: 0 });
-    this.tag('Bluetooth').patch({ alpha: 0 });
-    this.tag('Video').patch({ alpha: 0 });
-    this.tag('Audio').patch({ alpha: 0 });
-    this.tag('SleepTimer').patch({ alpha: 0 });
-    this.tag('OtherSettings').patch({ alpha: 0 });
-  }
+    this.tag('SettingsScreenContents').visible = false
+}
 
-  show() {
-    this.tag('WiFi').patch({ alpha: 1 });
-    this.tag('Bluetooth').patch({ alpha: 1 });
-    this.tag('Audio').patch({ alpha: 1 });
-    this.tag('Video').patch({ alpha: 1 });
-    this.tag('SleepTimer').patch({ alpha: 1 });
-    this.tag('OtherSettings').patch({ alpha: 1 });
-  }
+show() {
+    this.tag('SettingsScreenContents').visible = true
+}
+
 
   home() {
     this.fireAncestors('$changeHomeText', Language.translate('home'))
     this.fireAncestors('$goToSidePanel', 0)
   }
 
-  $sleepTimerText(text) {
-    this.tag('SleepTimer.Title').text.text = 'Sleep Timer: ' + text
-  }
-
   static _states() {
     return [
-      class SleepTimer extends this{
+      class NetworkConfiguration extends this{
         $enter() {
-          this.tag('SleepTimer')._focus()
+          this.tag('NetworkConfiguration')._focus()
         }
         $exit() {
-          this.tag('SleepTimer')._unfocus()
-        }
-        _handleDown() {
-          this._setState('WiFi')
-        }
-        _handleEnter() {
-          this._setState('SleepTimerScreen')
-          this.hide()
-        }
-        _handleBack() {
-          this.home()
-        }
-      },
-      class WiFi extends this {
-        $enter() {
-          this.tag('WiFi')._focus()
-        }
-        $exit() {
-          console.log('Botton exit')
-          this.tag('WiFi')._unfocus()
-        }
-        _handleUp() {
-          this._setState('SleepTimer')
+          this.tag('NetworkConfiguration')._unfocus()
         }
         _handleDown() {
           this._setState('Bluetooth')
         }
         _handleEnter() {
-          this._setState('WiFiScreen')
-          this.hide()
+          this._setState('NetworkConfigurationScreen')
         }
         _handleBack() {
           this.home()
@@ -283,15 +222,13 @@ export default class SettingsScreen extends Lightning.Component {
       },
       class Bluetooth extends this {
         $enter() {
-          console.log('Button enter')
           this.tag('Bluetooth')._focus()
         }
         $exit() {
-          console.log('Botton exit')
           this.tag('Bluetooth')._unfocus()
         }
         _handleUp() {
-          this._setState('WiFi')
+          this._setState('NetworkConfiguration')
         }
         _handleDown() {
           this._setState('Video')
@@ -300,7 +237,6 @@ export default class SettingsScreen extends Lightning.Component {
         }
         _handleEnter() {
           this._setState('BluetoothScreen')
-          this.hide()
         }
         _handleBack() {
           this.home()
@@ -322,7 +258,6 @@ export default class SettingsScreen extends Lightning.Component {
         }
         _handleEnter() {
           this._setState('VideoScreen')
-          this.hide()
         }
         _handleBack() {
           this.home()
@@ -342,10 +277,9 @@ export default class SettingsScreen extends Lightning.Component {
         }
         _handleEnter() {
           this._setState('AudioScreen')
-          this.hide()
         }
         _handleDown() {
-          //this._setState('OtherSettings')
+          this._setState('OtherSettings')
         }
         _handleBack() {
           this.home()
@@ -365,33 +299,33 @@ export default class SettingsScreen extends Lightning.Component {
         }
         _handleEnter() {
           this._setState('OtherSettingsScreen')
-          this.hide()
         }
         _handleBack() {
           this.home()
         }
 
       },
-
-      class SleepTimerScreen extends this{
+      class NetworkConfigurationScreen extends this{
         $enter() {
-          this.tag('SleepTimerScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Sleep Timer')
+          this.hide()
+          this.tag('NetworkConfigurationScreen').visible = true
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
         }
         _getFocused() {
-          return this.tag('SleepTimerScreen')
+          return this.tag('NetworkConfigurationScreen')
         }
         $exit() {
-          this.tag('SleepTimerScreen').visible = false
+          this.show()
+          this.tag('NetworkConfigurationScreen').visible = false
           this.fireAncestors('$changeHomeText', 'Settings')
         }
         _handleBack() {
-          this._setState('SleepTimer')
-          this.show()
+          this._setState('NetworkConfiguration')
         }
       },
       class BluetoothScreen extends this {
         $enter() {
+          this.hide()
           this.tag('BluetoothScreen').visible = true
           this.fireAncestors('$changeHomeText', 'Settings / Pair Remote Control')
         }
@@ -399,34 +333,18 @@ export default class SettingsScreen extends Lightning.Component {
           return this.tag('BluetoothScreen')
         }
         $exit() {
+          this.show()
           this.tag('BluetoothScreen').visible = false
           this.fireAncestors('$changeHomeText', 'Settings')
         }
         _handleBack() {
           this._setState('Bluetooth')
-          this.show()
-        }
-      },
-      class WiFiScreen extends this {
-        $enter() {
-          this.tag('WiFiScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / WiFi')
-        }
-        _getFocused() {
-          return this.tag('WiFiScreen')
-        }
-        $exit() {
-          this.tag('WiFiScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('WiFi')
-          this.show()
         }
       },
 
       class VideoScreen extends this {
         $enter() {
+          this.hide()
           this.tag('VideoScreen').visible = true
           this.fireAncestors('$changeHomeText', 'Settings / Video')
         }
@@ -434,17 +352,18 @@ export default class SettingsScreen extends Lightning.Component {
           return this.tag('VideoScreen')
         }
         $exit() {
+          this.show()
           this.tag('VideoScreen').visible = false
           this.fireAncestors('$changeHomeText', 'Settings')
         }
         _handleBack() {
           this._setState('Video')
-          this.show()
         }
       },
 
       class AudioScreen extends this {
         $enter() {
+          this.hide()
           this.tag('AudioScreen').visible = true
           this.fireAncestors('$changeHomeText', 'Settings / Audio')
         }
@@ -452,16 +371,17 @@ export default class SettingsScreen extends Lightning.Component {
           return this.tag('AudioScreen')
         }
         $exit() {
+          this.show()
           this.tag('AudioScreen').visible = false
           this.fireAncestors('$changeHomeText', 'Settings')
         }
         _handleBack() {
           this._setState('Audio')
-          this.show()
         }
       },
       class OtherSettingsScreen extends this {
         $enter() {
+          this.hide()
           this.tag('OtherSettingsScreen').visible = true
           this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
         }
@@ -469,12 +389,12 @@ export default class SettingsScreen extends Lightning.Component {
           return this.tag('OtherSettingsScreen')
         }
         $exit() {
+          this.show()
           this.tag('OtherSettingsScreen').visible = false
           this.fireAncestors('$changeHomeText', 'Settings')
         }
         _handleBack() {
           this._setState('OtherSettings')
-          this.show()
         }
       },
     ]

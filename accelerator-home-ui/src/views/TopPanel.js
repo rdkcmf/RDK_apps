@@ -33,20 +33,20 @@ export default class TopPanel extends Lightning.Component {
         Mic: {
           x: 105,
           // zIndex: 2,
-          y: 77,
+          y: 87,
           src: Utils.asset('/images/topPanel/microphone.png'),
-          w: 70,
-          h: 70,
+          w: 50,
+          h: 50,
         },
         Logo: {
-          x: 315 - 35,
+          x: 200,
           y: 90,
           src: Utils.asset('/images/' + CONFIG.theme.logo),
           w: 227,
           h: 43
         },
         Page: {
-          x: 315 - 35,
+          x: 200,
           y: 184,
           // mountY: 0.5,
           text: {
