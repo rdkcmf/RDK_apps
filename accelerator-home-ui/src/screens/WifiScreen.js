@@ -55,10 +55,21 @@ export default class WiFiScreen extends Lightning.Component {
             fontSize: 25,
           }
         },
+        Loader: {
+          visible: false,
+          h: 30 * 1.5,
+          w: 30 * 1.5,
+          x: 1500,
+          // x: 320,
+          mountX: 1,
+          y: 45,
+          mountY: 0.5,
+          src: Utils.asset('images/settings/Loading.gif'),
+        },
         Button: {
           h: 45,
           w: 66.9,
-          x: 1535,
+          x: 1600,
           mountX: 1,
           y: 45,
           mountY: 0.5,
@@ -164,6 +175,14 @@ export default class WiFiScreen extends Lightning.Component {
 
   _init() {
 
+    this.wifiLoading = this.tag('Switch.Loader').animation({
+      duration: 3,
+      repeat: -1,
+      stopMethod: 'immediate',
+      stopDelay: 0.2,
+      actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
+    })
+
     this.onError = {
       0: 'SSID_CHANGED - The SSID of the network changed',
       1: 'CONNECTION_LOST - The connection to the network was lost',
@@ -189,6 +208,7 @@ export default class WiFiScreen extends Lightning.Component {
       if (result) {
         this._network.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
+            location.reload(true)
             this.fireAncestors('$changeIp', 'IP:' + notification.ip4Address)
           } else if (notification.status == 'LOST') {
             this.fireAncestors('$changeIp', 'IP:' + 'NA')
@@ -196,12 +216,15 @@ export default class WiFiScreen extends Lightning.Component {
         })
         this._network.registerEvent('onDefaultInterfaceChanged', notification => {
           console.log(notification)
+          this.fireAncestors('$NetworkInterfaceText', notification.newInterfaceName)
           if (notification.newInterfaceName == 'WIFI') {
             this._wifi.setEnabled(true).then(result => {
               if (result.success) {
                 this.wifiStatus = true
                 this.tag('Networks').visible = true
                 this.tag('JoinAnotherNetwork').visible = true
+                this.wifiLoading.play()
+                this.tag('Switch.Loader').visible = true
                 this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
                 this._wifi.discoverSSIDs()
               }
@@ -214,6 +237,8 @@ export default class WiFiScreen extends Lightning.Component {
             this.wifiStatus = false
             this.tag('Networks').visible = false
             this.tag('JoinAnotherNetwork').visible = false
+            this.tag('Switch.Loader').visible = false
+            this.wifiLoading.stop()
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             this._setState('Switch')
           }
@@ -319,6 +344,8 @@ export default class WiFiScreen extends Lightning.Component {
       class PairedDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false
+            this.wifiLoading.stop()
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             this.tag('Switch.Button').scaleX = -1;
           }
@@ -342,6 +369,8 @@ export default class WiFiScreen extends Lightning.Component {
       class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false
+            this.wifiLoading.stop()
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
@@ -497,6 +526,8 @@ export default class WiFiScreen extends Lightning.Component {
               this.wifiStatus = false
               this.tag('Networks').visible = false
               this.tag('JoinAnotherNetwork').visible = false
+              this.tag('Switch.Loader').visible = false
+              this.wifiLoading.stop()
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             }
           })
@@ -512,6 +543,8 @@ export default class WiFiScreen extends Lightning.Component {
                   this.wifiStatus = true
                   this.tag('Networks').visible = true
                   this.tag('JoinAnotherNetwork').visible = true
+                  this.wifiLoading.play()
+                  this.tag('Switch.Loader').visible = true
                   this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
                   this._wifi.discoverSSIDs()
                 }
@@ -547,6 +580,13 @@ export default class WiFiScreen extends Lightning.Component {
     })
     this._wifi.registerEvent('onAvailableSSIDs', notification => {
       this.renderDeviceList(notification.ssids)
+      if (!notification.moreData){
+        setTimeout(() => {
+          this.tag('Switch.Loader').visible = false
+          this.wifiLoading.stop()
+        }, 1000)
+      }
+      
     })
   }
 }

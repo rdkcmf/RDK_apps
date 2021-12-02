@@ -4,8 +4,8 @@
   "dependencies": {
     "@lightningjs/sdk": "^4.7.0",
     "@lightningjs/ui-components": "^1.0.0",
-    "ThunderJS": "github:rdkcentral/ThunderJS",
-    "redux": "^4.1.0"
+    "redux": "^4.1.0",
+    "ThunderJS": "github:rdkcentral/ThunderJS"
   },
   "lint-staged": {
     "*.js": [
@@ -21,11 +21,11 @@
   "devDependencies": {
     "@babel/core": "^7.12.1",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.6.0",
+    "eslint": "^8.3.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
     "husky": "^3.1.0",
-    "lint-staged": "^9.4.3",
+    "lint-staged": "^12.1.2",
     "prettier": "^1.19.1"
   },
   "version": "1.0.0",

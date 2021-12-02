@@ -33,7 +33,8 @@ var powerState = 'ON';
 var audio_mute = false;
 var audio_volume = 50;
 var appApi = new AppApi();
-var last_state = ''
+var ls = { last_state: 'SidePanel', ref: {} }
+
 const config = {
   host: '127.0.0.1',
   port: 9998,
@@ -104,9 +105,9 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   _init() {
+    ls.ref = this;
     this.homeApi = new HomeApi()
-    this.timer;
-    this.time = 0;
+    this.timerIsOff = true;
 
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
@@ -157,8 +158,11 @@ export default class HomeScreen extends Lightning.Component {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
+            location.reload(true)
+            Storage.set('ipAddress', notification.ip4Address)
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
+            Storage.set('ipAddress', null)
           }
         })
         this.networkApi.getIP().then(ip => {
@@ -168,39 +172,44 @@ export default class HomeScreen extends Lightning.Component {
     })
   }
 
-  removeAndAssign() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
 
-    if (this.time) {
-      this.timer = setTimeout(() => {
-        last_state = this._getState();
-        this.$standby('STANDBY');
-      }, parseInt(this.time));
-    }
-
-  }
 
   $resetSleepTimer(t) {
     var arr = t.split(" ");
-    if (arr.length < 2) {
-      this.time = null;
-    }
-    else {
+
+    function setTimer() {
       var temp = arr[1].substring(0, 1);
       if (temp === 'H') {
-        this.time = 1000 * 60 * 60 * parseInt(arr[0]);
+        appApi.setInactivityInterval(parseInt(arr[0]) * 60).then(res => { }).catch(err => { console.error(`error while setting the timer`) });
       }
       else if (temp === 'M') {
-        this.time = 1000 * 60 * parseInt(arr[0]);
-      }
-      else {
-        this.time = 1000 * parseInt(arr[0]);
+        appApi.setInactivityInterval(parseInt(arr[0])).then(res => { }).catch(err => { console.error(`error while setting the timer`) });
       }
     }
-    this.removeAndAssign();
+
+    if (arr.length < 2) {
+      if (!this.timerIsOff) {
+        appApi.enabledisableinactivityReporting(false).then(res => {
+          if (res.success === true) {
+            this.timerIsOff = true;
+          }
+        }).catch(err => { console.error(`error : unable to set the reset; error = ${err}`) });
+      }
+    }
+    else {
+      if (this.timerIsOff) {
+        appApi.enabledisableinactivityReporting(true).then(res => {
+          if (res.success === true) {
+
+            this.timerIsOff = false;
+            setTimer();
+          }
+        })
+      }
+      else {
+        setTimer();
+      }
+    }
   }
 
   _captureKeyRelease(key) {
@@ -236,9 +245,6 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   _captureKey(key) {
-    this.removeAndAssign();
-    //console.log(" _captureKey home screen : " + key.keyCode, ` ${key.key}`)
-
     if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));
@@ -278,12 +284,8 @@ export default class HomeScreen extends Lightning.Component {
     if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
-        last_state = this.state
-
+        ls.last_state = this.state
         this.$standby('STANDBY');
-
-
-
         return true
       } else if (powerState == 'STANDBY') {
         appApi.standby("ON").then(res => {
@@ -300,7 +302,7 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
 
-    } else if (key.keyCode == 118 || key.keyCode == 113) {
+    } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
 
       appApi.getConnectedAudioPorts().then(res => {
         let audio_source = res.connectedAudioPorts[0]
@@ -414,9 +416,8 @@ export default class HomeScreen extends Lightning.Component {
 * @param {index} index index value of Top panel item.
 */
   $goToTopPanel(index) {
-    console.log('go to top panel')
+    this._setState('TopPanel', [index])
     this.tag('TopPanel').index = index
-    this._setState('TopPanel')
   }
   $changeBackgroundImageOnFocus(image) {
 
@@ -463,19 +464,99 @@ export default class HomeScreen extends Lightning.Component {
 
   $standby(value) {
     if (value == 'Back') {
-      this._setState(last_state)
+      this._setState(ls.last_state)
     } else {
       if (powerState == 'ON') {
         appApi.standby(value).then(res => {
           if (res.success) {
+            ls.last_state=this._getState();
             powerState = 'STANDBY'
+
+            var appApi = new AppApi();
+            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+              Storage.set('applicationType', '');
+              // appApi.deactivateWeb();
+              appApi.suspendWeb()
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+              Storage.set('applicationType', '');
+              // appApi.deactivateLightning();
+              appApi.suspendLightning() 
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+              Storage.set('applicationType', '');
+              appApi.killNative();
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Amazon') {
+              Storage.set('applicationType', '');
+              appApi.suspendPremiumApp('Amazon');
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Netflix') {
+              Storage.set('applicationType', '');
+              appApi.suspendPremiumApp('Netflix');
+              appApi.setVisibility('ResidentApp', true);
+            } else if (Storage.get('applicationType') == 'Cobalt') {
+              Storage.set('applicationType', '');
+              appApi.suspendCobalt();
+              appApi.setVisibility('ResidentApp', true);
+            }else{
+              if(ls.last_state==="Playing"){
+                ls.last_state = "MainView"
+                this.$stopPlayer();
+              }
+              
+            }
+
+            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+              console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+            }).catch(err=>{console.log(`error while moving the resident app to front = ${err}`)});
+            thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' }).then(result => {
+              console.log('ResidentApp setFocus Success' + JSON.stringify(result));
+            }).catch(err => {
+              console.log('Error', err);
+            });
+            this._setState(ls.last_state);
           }
-          this._setState(last_state);
+          
         })
         return true
       }
     }
   }
+
+  $registerInactivityMonitoringEvents() {
+    var self = this;
+    appApi.standby('ON').then(res => {
+      if (res.success) {
+        powerState = 'ON'
+      }
+    })
+
+    appApi.enabledisableinactivityReporting(false);
+
+    const systemcCallsign = "org.rdk.RDKShell.1";
+    thunder.Controller.activate({ callsign: systemcCallsign })
+      .then(res => {
+        thunder.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
+
+
+          
+              if(powerState === "ON"){
+                this.$standby("STANDBY");
+              }
+              
+           
+
+
+
+        }, err => {
+          console.error(`error while inactivity monitoring , ${err}`)
+        })
+      }).catch((err) => {
+        console.error(`error while activating the displaysettings plugin; err = ${err}`)
+      })
+  }
+
 
   /**
    * Function to hide the home UI.
@@ -533,6 +614,11 @@ export default class HomeScreen extends Lightning.Component {
   static _states() {
     return [
       class TopPanel extends this {
+        $enter(e) {
+          if (e.prevState === 'MainView') {
+            this.tag('SidePanel').deFocus = true
+          }
+        }
         _getFocused() {
           return this.tag('TopPanel')
         }
@@ -544,6 +630,10 @@ export default class HomeScreen extends Lightning.Component {
       },
 
       class MainView extends this {
+        $enter(e) {
+          if (e.prevState === 'TopPanel')
+            this.tag('SidePanel').deFocus = false
+        }
         _getFocused() {
           return this.tag('MainView')
         }

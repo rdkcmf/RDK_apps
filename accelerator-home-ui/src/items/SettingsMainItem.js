@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
 import SettingsItem from './SettingsItem'
 import { CONFIG } from '../Config/Config.js'
 
@@ -27,7 +26,7 @@ export default class SettingsMainItem extends SettingsItem {
       TopLine: {
         y: 0,
         mountY: 0.5,
-        w: 1535,
+        w: 1600,
         h: 3,
         rect: true,
         color: 0xFFFFFFFF
@@ -41,7 +40,7 @@ export default class SettingsMainItem extends SettingsItem {
       BottomLine: {
         y: 0 + 90,
         mountY: 0.5,
-        w: 1535,
+        w: 1600,
         h: 3,
         rect: true,
         color: 0xFFFFFFFF

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
@@ -37,7 +37,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 Line1: {
                     y: 0,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -69,7 +69,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 Line2: {
                     y: 90,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -101,7 +101,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 Line3: {
                     y: 180,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -129,37 +129,11 @@ export default class DeviceInformationScreen extends Lightning.Component {
                             fontSize: 25,
                         }
                     },
-                    Loader: {
-                        h: 45,
-                        w: 45,
-                        x: 500,
-                        y: 225,
-                        mountX: 1,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/Loading.gif'),
-                        visible: false,
-                    },
-                    SyncLocation: {
-                        Button: {
-                            x: 925, y: 225, w: 160, mountY: 0.5, h: 40, rect: true, color: 0xFFFFFFFF,
-                            Title: {
-                                x: 80,
-                                y: 20,
-                                mount: 0.5,
-                                text: {
-                                    text: "Sync Location",
-                                    fontFace: CONFIG.language.font,
-                                    fontSize: 20,
-                                    textColor: 0xFF000000
-                                },
-                            }
-                        },
-                    },
                 },
                 Line4: {
                     y: 270,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -186,16 +160,16 @@ export default class DeviceInformationScreen extends Lightning.Component {
                             text: `unavailable`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
-                            wordWrapWidth: 735,
+                            wordWrapWidth: 1200,
                             wordWrap: true,
-                            fontSize: 20,
+                            fontSize: 25,
                         }
                     },
                 },
                 Line5: {
                     y: 450,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -217,7 +191,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `UI Version: , Build Version: , Timestamp: `,
+                            text: `UI Version: 3.3, Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -227,7 +201,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 Line6: {
                     y: 630,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -259,7 +233,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 Line7: {
                     y: 810,
                     mountY: 0.5,
-                    w: 1535,
+                    w: 1600,
                     h: 3,
                     rect: true,
                     color: 0xFFFFFFFF
@@ -286,7 +260,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
             result.forEach(element => {
                 drms += `${element.name} :`
                 if (element.keysystems) {
-                    drms += "\n\t\t\t\t"
+                    drms += "\t"
                     element.keysystems.forEach(keySystem => {
                         drms += `${keySystem}, `
                     })
@@ -321,21 +295,6 @@ export default class DeviceInformationScreen extends Lightning.Component {
             // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
         })
         this.appApi.registerChangeLocation()
-
-        this.loadingAnimation = this.tag('Location.Loader').animation({
-            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
-            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
-        });
-
-        this.loadingAnimation.start()
-    }
-
-    _unfocus() {
-        this.loadingAnimation.stop()
-    }
-
-    _handleRight() {
-        this._setState('SyncLocation')
     }
 
     _handleDown() {
@@ -347,80 +306,5 @@ export default class DeviceInformationScreen extends Lightning.Component {
         if (this.tag("DeviceInfoContents").y < 35) {
             this.tag("DeviceInfoContents").y += 35;
         }
-    }
-
-    static _states() {
-        return [
-
-
-            class SyncLocation extends this {
-                $enter() {
-                    this._focus()
-                }
-                _handleEnter() {
-                    this.appApi.syncLocation().then(result => {
-                        this.tag('Location.Value').visible = false
-                        this.tag('Location.Loader').visible = true
-                        this.appApi.getLocation().then(result => {
-                            var locationInfo = ""
-                            if (result.city.length !== 0) {
-                                locationInfo = "City: " + result.city
-                            }
-                            else {
-                                locationInfo = "City: unavailable "
-                            }
-                            if (result.country.length !== 0) {
-                                locationInfo += ", Country: " + result.country;
-                            }
-                            else {
-                                locationInfo += ", Country: unavailable "
-                            }
-                            this.tag('Location.Value').text.text = `${locationInfo}`
-
-                            setTimeout(() => {
-                                this.tag('Location.Value').visible = true
-                                this.tag('Location.Loader').visible = false
-                            }, 2000)
-
-                        })
-                    })
-                }
-                _handleLeft() {
-                    this._setState('DeviceInformationScreen')
-                }
-                _handleDown() {
-                    // to avoid scroll when button in focus
-                    this._setState('DeviceInformationScreen')
-                }
-                _handleUp() {
-                    // to avoid scroll when button in focus
-                    this._setState('DeviceInformationScreen')
-                }
-                _focus() {
-                    this.tag('SyncLocation.Button').patch({
-                        color: CONFIG.theme.hex
-                    })
-                    this.tag('SyncLocation.Button.Title').patch({
-                        text: {
-                            textColor: 0xFFFFFFFF
-                        }
-                    })
-                }
-                _unfocus() {
-                    this.tag('SyncLocation.Button').patch({
-                        color: 0xFFFFFFFF
-                    })
-                    this.tag('SyncLocation.Button.Title').patch({
-                        text: {
-                            textColor: 0xFF000000
-                        }
-                    })
-                }
-                $exit() {
-                    this._unfocus()
-                }
-            },
-
-        ]
     }
 }

@@ -1,9 +1,9 @@
 /**
- * App version: 3.3 1/12/21
+ * App version: 3.3 8/12/21
  * SDK version: 4.7.0
  * CLI version: 2.7.1
- * 
- * Generated: Wed, 01 Dec 2021 09:15:32 GMT
+ *
+ * Generated: Thu, 09 Dec 2021 04:26:09 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6335,7 +6335,11 @@ var APP_accelerator_home_ui = (function () {
 
   var requestQueueResolver = data => {
     if (typeof data === 'string') {
-      data = JSON.parse(data.normalize().replace(/\\x([0-9A-Fa-f]{2})/g, ''));
+      let regex1 = /\\\\x([0-9A-Fa-f]{2})/g;
+      let regex2 = /\\x([0-9A-Fa-f]{2})/g;
+      data = data.normalize().replace(regex1, '');
+      data = data.normalize().replace(regex2, '');
+      data = JSON.parse(data);
     }
 
     if (data.id) {
@@ -6352,7 +6356,11 @@ var APP_accelerator_home_ui = (function () {
 
   var notificationListener = data => {
     if (typeof data === 'string') {
-      data = JSON.parse(data.normalize().replace(/\\x([0-9A-Fa-f]{2})/g, ''));
+      let regex1 = /\\\\x([0-9A-Fa-f]{2})/g;
+      let regex2 = /\\x([0-9A-Fa-f]{2})/g;
+      data = data.normalize().replace(regex1, '');
+      data = data.normalize().replace(regex2, '');
+      data = JSON.parse(data);
     }
 
     if (!data.id && data.method) {
@@ -6606,7 +6614,7 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  const resolve = (result, args) => {
+  const resolve$1 = (result, args) => {
     if (typeof result !== 'object' || typeof result === 'object' && (!result.then || typeof result.then !== 'function')) {
       result = new Promise((resolve, reject) => {
         result instanceof Error === false ? resolve(result) : reject(result);
@@ -6694,7 +6702,7 @@ var APP_accelerator_home_ui = (function () {
             }
 
             return function (...args) {
-              return resolve(prop.apply(this, args), args);
+              return resolve$1(prop.apply(this, args), args);
             };
           }
 
@@ -7026,19 +7034,23 @@ var APP_accelerator_home_ui = (function () {
 
     getResolution() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$2.call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
+          "videoDisplay": "HDMI0"
+        }).then(result => {
+          resolve(result.resolution);
+        }).catch(err => {
+          resolve(false);
+        });
+      });
+    }
+
+    activateDisplaySettings() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = "org.rdk.DisplaySettings.1";
         thunder$2.Controller.activate({
           callsign: systemcCallsign
-        }).then(() => {
-          thunder$2.call(systemcCallsign, 'getCurrentResolution', {
-            params: 'HDMI0'
-          }).then(result => {
-            resolve(result.resolution);
-          }).catch(err => {
-            resolve(false);
-          });
-        }).catch(err => {
-          console.log('Display Error', JSON.stringify(err));
+        }).then(res => {}).catch(err => {
+          console.error(`error while activating the displaysettings plugin`);
         });
       });
     }
@@ -7215,6 +7227,10 @@ var APP_accelerator_home_ui = (function () {
         }).then(() => {
           thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
+          }).then(() => {
+            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground'
+            });
           });
           thunder$2.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
@@ -7249,6 +7265,10 @@ var APP_accelerator_home_ui = (function () {
         }).then(() => {
           thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
+          }).then(() => {
+            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground'
+            });
           });
           thunder$2.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
@@ -7280,6 +7300,10 @@ var APP_accelerator_home_ui = (function () {
       }).then(() => {
         thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
+        }).then(() => {
+          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground'
+          });
         });
         thunder$2.call('Cobalt.1', 'deeplink', url);
         thunder$2.call('org.rdk.RDKShell', 'setFocus', {
@@ -7294,13 +7318,16 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchPremiumApp(childCallsign) {
-      // const childCallsign = "Amazon";
       thunder$2.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
         thunder$2.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
+        }).then(() => {
+          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground'
+          });
         });
         thunder$2.call("org.rdk.RDKShell", "setFocus", {
           client: childCallsign
@@ -7323,12 +7350,52 @@ var APP_accelerator_home_ui = (function () {
       }).then(() => {
         thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
+        }).then(() => {
+          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground'
+          });
         });
         thunder$2.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }).catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+      });
+    }
+
+    launchforeground() {
+      const childCallsign = 'foreground';
+      console.log("notification_url > location.protocol::" + location.protocol + '// location.host ' + location.host + " // '// location.pathname '" + location.pathname);
+      let notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+      thunder$2.call('org.rdk.RDKShell', 'launch', {
+        callsign: childCallsign,
+        type: 'HtmlApp',
+        uri: notification_url
+      }).then(() => {
+        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign
+        });
+        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+          client: 'ResidentApp'
+        });
+        thunder$2.call('org.rdk.RDKShell', 'setVisibility', {
+          client: 'foreground',
+          visible: false
+        });
+      }).catch(err => {}).catch(err => {
+        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+      });
+    }
+
+    zorder(value, cli) {
+      console.log("#################zorder###################");
+      thunder$2.call('org.rdk.RDKShell', value, {
+        client: cli
+      }).then(result => {
+        console.log(client + ":" + value + '  Success');
+        resolve(result);
+      }).catch(err => {
+        resolve(false);
       });
     }
     /**
@@ -7391,7 +7458,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateCobalt() {
-      thunder$2.call('org.RDK.RDKShell', 'destroy', {
+      thunder$2.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
@@ -7400,9 +7467,9 @@ var APP_accelerator_home_ui = (function () {
     cobaltStateChangeEvent() {
       try {
         thunder$2.on('Controller', 'statechange', notification => {
-          this._events.get('statechange')(notification);
-
-          console.log('Cobalt registeration ', JSON.stringify(notification));
+          if (this._events.has('statechange')) {
+            this._events.get('statechange')(notification);
+          }
         });
       } catch (e) {
         console.log('Failed to register statechange event' + e);
@@ -7445,6 +7512,31 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
+    enabledisableinactivityReporting(bool) {
+      return new Promise((resolve, reject) => {
+        thunder$2.call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
+          "enable": bool
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in getting sound mode:", JSON.stringify(err, 3, null));
+          reject(err);
+        });
+      });
+    }
+
+    setInactivityInterval(t) {
+      return new Promise((resolve, reject) => {
+        thunder$2.call('org.rdk.RDKShell.1', 'setInactivityInterval', {
+          "interval": t
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          reject(false);
+        });
+      });
+    }
+
     zorder(value, cli) {
       console.log("#################zorder###################");
       thunder$2.call('org.rdk.RDKShell', value, {
@@ -7461,6 +7553,29 @@ var APP_accelerator_home_ui = (function () {
     * @param {appName} Name of the application
     * @param {config_data} config_data configuration data
     */
+
+
+    configureApplication(appName, config_data) {
+      let plugin = 'Controller';
+      let method = 'configuration@' + appName;
+      return new Promise((resolve, reject) => {
+        thunder$2.call(plugin, method).then(res => {
+          res.querystring = config_data;
+          thunder$2.call(plugin, method, res).then(resp => {
+            resolve(true);
+          }).catch(err => {
+            resolve(true);
+          });
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    }
+    /**
+     * Function to set the configuration of premium apps.
+     * @param {appName} Name of the application
+     * @param {config_data} config_data configuration data
+     */
 
 
     configureApplication(appName, config_data) {
@@ -7583,21 +7698,7 @@ var APP_accelerator_home_ui = (function () {
           console.log('Failed to enable DisplaySettings Service', JSON.stringify(err));
         });
       });
-    } // setVolumeLevel(value) {
-    //   console.log(value)
-    //   return new Promise((resolve, reject) => {
-    //     thunder
-    //       .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "volumeLevel": value })
-    //       .then(result => {
-    //         resolve(result)
-    //       })
-    //       .catch(err => {
-    //         console.log("audio mute error:", JSON.stringify(err, 3, null))
-    //         resolve(false)
-    //       })
-    //   })
-    // }
-
+    }
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
@@ -7693,8 +7794,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //getDRC
-
+    }
 
     getDRCMode() {
       return new Promise((resolve, reject) => {
@@ -7709,8 +7809,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //setDRC
-
+    }
 
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
@@ -7725,8 +7824,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //getZoomSetting
-
+    }
 
     getZoomSetting() {
       return new Promise((resolve, reject) => {
@@ -7739,8 +7837,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //setZoomSetting 
-
+    }
 
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
@@ -7755,8 +7852,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //getEnableAudioPort 
-
+    }
 
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
@@ -7771,8 +7867,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //getSupportedAudioPorts 
-
+    }
 
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
@@ -7785,8 +7880,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //getVolumeLevel 
-
+    }
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
@@ -7799,8 +7893,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //setVolumeLevel
-
+    }
 
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
@@ -7929,8 +8022,6 @@ var APP_accelerator_home_ui = (function () {
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
         thunder$2.call('org.rdk.System.1', 'getDownloadedFirmwareInfo').then(result => {
-          console.log("############ firmware donwload info ############");
-          console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded info:", JSON.stringify(err, 3, null));
@@ -7968,8 +8059,6 @@ var APP_accelerator_home_ui = (function () {
     updateFirmware() {
       return new Promise((resolve, reject) => {
         thunder$2.call('org.rdk.System.1', 'updateFirmware').then(result => {
-          console.log("############ updateFirmware ############");
-          console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
           console.log("error in firmware update:", JSON.stringify(err, 3, null));
@@ -7982,8 +8071,6 @@ var APP_accelerator_home_ui = (function () {
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
         thunder$2.call('org.rdk.System.1', 'getFirmwareDownloadPercent').then(result => {
-          console.log("############ firmware donwload percent ############");
-          console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded percentage:", JSON.stringify(err, 3, null));
@@ -8141,7 +8228,7 @@ var APP_accelerator_home_ui = (function () {
           default: 1
         };
         this._thunder = thunderJS(config);
-        this.callsign = 'org.rdk.Xcast';
+        this.callsign = 'org.rdk.Xcast.1';
 
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
@@ -8246,7 +8333,7 @@ var APP_accelerator_home_ui = (function () {
       var xcastApps = {
         AmazonInstantVideo: 'Amazon',
         YouTube: 'Cobalt',
-        Netflix: 'Netflix'
+        NetflixApp: 'Netflix'
       };
       return xcastApps;
     }
@@ -8528,6 +8615,10 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
+        _handleUp() {
+          this.fireAncestors('$goToTopPanel', 2);
+        }
+
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal';
 
@@ -8552,13 +8643,13 @@ var APP_accelerator_home_ui = (function () {
           if (Storage.get('applicationType') == 'Cobalt') {
             appApi.launchCobalt(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp') {
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
             appApi.launchWeb(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning') {
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
             appApi.launchLightning(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native') {
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
             appApi.launchNative(this.uri);
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
@@ -8600,18 +8691,21 @@ var APP_accelerator_home_ui = (function () {
           };
           var thunder = thunderJS(config);
           console.log('_handleKey', key.keyCode);
-          var appApi = new AppApi();
+          var appApi = new AppApi(); // Detecting Ctrl
 
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-            if (Storage.get('applicationType') == 'WebApp') {
+          var _key = key.keyCode;
+          var ctrl = key.ctrlKey ? key.ctrlKey : _key === 17 ? true : false;
+
+          if (key.keyCode == 27 || ctrl && key.keyCode == 77 || key.keyCode == 36 || key.keyCode == 158) {
+            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning') {
+            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.deactivateLightning();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native') {
+            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.killNative();
               appApi.setVisibility('ResidentApp', true);
@@ -8627,7 +8721,7 @@ var APP_accelerator_home_ui = (function () {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            }
+            } else return false;
 
             thunder.call('org.rdk.RDKShell', 'moveToFront', {
               client: 'ResidentApp'
@@ -8646,7 +8740,7 @@ var APP_accelerator_home_ui = (function () {
             }).catch(err => {
               console.log('Error', err);
             });
-          } else return false;
+          }
         }
 
       }, class MetroApps extends this {
@@ -8698,13 +8792,13 @@ var APP_accelerator_home_ui = (function () {
           if (Storage.get('applicationType') == 'Cobalt') {
             appApi.launchCobalt(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp') {
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
             appApi.launchWeb(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning') {
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
             appApi.launchLightning(this.uri);
             appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native') {
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
             appApi.launchNative(this.uri);
             appApi.setVisibility('ResidentApp', false);
           }
@@ -8718,29 +8812,32 @@ var APP_accelerator_home_ui = (function () {
           };
           var thunder = thunderJS(config);
           var appApi = new AppApi();
-          console.log('_handleKey', key.keyCode);
+          console.log('_handleKey', key.keyCode); // Detecting Ctrl
 
-          if (Storage.get('applicationType') == 'Cobalt') {
-            if (key.ctrlKey && (key.keyCode == 77 || key.keyCode == 49) || key.keyCode == 36 || key.keyCode == 27 || key.keyCode == 158) {
-              // To minimise  application when user pressed ctrl+m, ctrl+1, or esc, home buttons
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            }
-          } else if ((key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) && !key.ctrlKey) {
-            if (Storage.get('applicationType') == 'WebApp') {
+          var _key = key.keyCode;
+          var ctrl = key.ctrlKey ? key.ctrlKey : _key === 17 ? true : false;
+
+          if (key.keyCode == 27 || ctrl && key.keyCode == 77 || key.keyCode == 36 || key.keyCode == 158) {
+            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.deactivateWeb();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning') {
+            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.deactivateLightning();
               appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native') {
+            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               appApi.killNative();
               appApi.setVisibility('ResidentApp', true);
-            } else return false;
+            } else if (Storage.get('applicationType') == 'Cobalt') {
+              Storage.set('applicationType', '');
+              appApi.suspendCobalt();
+              appApi.setVisibility('ResidentApp', true);
+            } else {
+              appApi.zorder("moveToFront", "foreground");
+              return false;
+            }
 
             thunder.call('org.rdk.RDKShell', 'moveToFront', {
               client: 'ResidentApp'
@@ -8750,6 +8847,7 @@ var APP_accelerator_home_ui = (function () {
             thunder.call('org.rdk.RDKShell', 'moveToFront', {
               client: 'ResidentApp'
             }).then(result => {
+              appApi.zorder("moveToFront", "foreground");
               console.log('ResidentApp moveToFront Success');
             });
             thunder.call('org.rdk.RDKShell', 'setFocus', {
@@ -8759,7 +8857,7 @@ var APP_accelerator_home_ui = (function () {
             }).catch(err => {
               console.log('Error', err);
             });
-          } else return false;
+          }
         }
 
       }, class TVShows extends this {
@@ -8797,14 +8895,12 @@ var APP_accelerator_home_ui = (function () {
             this.reset();
             this.fireAncestors('$goToSidePanel', 2);
           }
-        } // _handleUp() {
-        //   this.tag('Text3').text.fontStyle = 'normal'
-        //   this._setState('MetroApps')
-        // }
-
+        }
 
         _handleEnter() {
-          this.fireAncestors('$goToPlayer');
+          if (Storage.get('ipAddress')) {
+            this.fireAncestors('$goToPlayer');
+          }
         }
 
         $exit() {
@@ -9185,7 +9281,7 @@ var APP_accelerator_home_ui = (function () {
     url: '/images/tvShows/onward.jpg'
   }, {
     displayName: 'Let it Snow',
-    url: '/images/tvShows/let-it-snow.png'
+    url: '/images/tvShows/let-it-snow.jpg'
   }, {
     displayName: 'Do Little',
     url: '/images/tvShows/do-little.jpg'
@@ -9394,52 +9490,52 @@ var APP_accelerator_home_ui = (function () {
     displayName: "CNN",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
   }, {
     displayName: "VimeoRelease",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
   }, {
     displayName: "WeatherNetwork",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
   }, {
     displayName: "EuroNews",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
   }, {
     displayName: "AccuWeather",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
   }, {
     displayName: "BaebleMusic",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
   }, {
     displayName: "Aljazeera",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
   }, {
     displayName: "GuessThatCity",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
   }, {
     displayName: "Radioline",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
   }, {
     displayName: "WallStreetJournal",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
-    url: "http://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
+    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   }];
 
   /**
@@ -9468,52 +9564,52 @@ var APP_accelerator_home_ui = (function () {
     displayName: "CNN",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
-    url: "/images/metroApps/Test-01.png"
+    url: "/images/metroApps/Test-01.jpg"
   }, {
     displayName: "VimeoRelease",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
-    url: "/images/metroApps/Test-02.png"
+    url: "/images/metroApps/Test-02.jpg"
   }, {
     displayName: "WeatherNetwork",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
-    url: "/images/metroApps/Test-03.png"
+    url: "/images/metroApps/Test-03.jpg"
   }, {
     displayName: "EuroNews",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
-    url: "/images/metroApps/Test-04.png"
+    url: "/images/metroApps/Test-04.jpg"
   }, {
     displayName: "AccuWeather",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
-    url: "/images/metroApps/Test-05.png"
+    url: "/images/metroApps/Test-05.jpg"
   }, {
     displayName: "BaebleMusic",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "/images/metroApps/Test-06.png"
+    url: "/images/metroApps/Test-06.jpg"
   }, {
     displayName: "Aljazeera",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
-    url: "/images/metroApps/Test-07.png"
+    url: "/images/metroApps/Test-07.jpg"
   }, {
     displayName: "GuessThatCity",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
-    url: "/images/metroApps/Test-08.png"
+    url: "/images/metroApps/Test-08.jpg"
   }, {
     displayName: "Radioline",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
-    url: "/images/metroApps/Test-09.png"
+    url: "/images/metroApps/Test-09.jpg"
   }, {
     displayName: "WallStreetJournal",
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
-    url: "/images/metroApps/Test-10.png"
+    url: "/images/metroApps/Test-10.jpg"
   }];
 
   /**
@@ -9544,6 +9640,9 @@ var APP_accelerator_home_ui = (function () {
   var networkApi = new Network();
   networkApi.getIP().then(ip => {
     IpAddress1 = ip;
+    Storage.set('ipAddress', IpAddress1);
+  }).catch(() => {
+    Storage.set('ipAddress', null);
   });
   var appApi$3 = new AppApi();
   appApi$3.getIP().then(ip => {
@@ -9772,6 +9871,14 @@ var APP_accelerator_home_ui = (function () {
     set index(index) {
       this.tag('SidePanel').items[this.prevIndex].clearColor();
       this.indexVal = index;
+    }
+
+    set deFocus(val) {
+      if (val) {
+        this.tag('SidePanel').items[this.prevIndex].clearColor();
+      } else {
+        this.tag('SidePanel').items[this.prevIndex].setColor();
+      }
     }
 
     static _states() {
@@ -10371,6 +10478,8 @@ var APP_accelerator_home_ui = (function () {
       } else if (this.indexVal == 1) {
         this._setState('Search');
       } else if (this.indexVal == 2) {
+        this.tag('Settings').color = CONFIG.theme.hex;
+
         this._setState('Setting');
       }
     }
@@ -10469,7 +10578,10 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Settings').color = CONFIG.theme.hex;
         }
 
-        _handleDown() {}
+        _handleDown() {
+          this.fireAncestors('$goToMainView', 0);
+          this.tag('Settings').color = 0xffffffff;
+        }
 
         _handleLeft() {
           this._setState('Mic');
@@ -10547,19 +10659,19 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
         },
         Item: {
-          w: 1535,
+          w: 1600,
           h: 90
         },
         BottomLine: {
           y: 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -10645,7 +10757,7 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -10657,7 +10769,7 @@ var APP_accelerator_home_ui = (function () {
         BottomLine: {
           y: 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -10686,7 +10798,7 @@ var APP_accelerator_home_ui = (function () {
           }
         },
         Right: {
-          x: 1535 - 200,
+          x: 1600 - 200,
           y: 30,
           mountY: 0.5,
           mountX: 1,
@@ -10766,7 +10878,7 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -10780,7 +10892,7 @@ var APP_accelerator_home_ui = (function () {
         BottomLine: {
           y: 0 + 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -11651,7 +11763,7 @@ var APP_accelerator_home_ui = (function () {
           Button: {
             h: 30 * 1.5,
             w: 44.6 * 1.5,
-            x: 1535,
+            x: 1600,
             mountX: 1,
             y: 45,
             mountY: 0.5,
@@ -11675,7 +11787,7 @@ var APP_accelerator_home_ui = (function () {
           Loader: {
             h: 30 * 1.5,
             w: 30 * 1.5,
-            // x: 1535,
+            // x: 1600,
             x: 320,
             mountX: 1,
             y: 45,
@@ -11733,21 +11845,6 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
-      this.loadingAnimation = this.tag('Searching.Loader').animation({
-        duration: 1,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: Math.PI * 2
-          }
-        }]
-      });
-      this.loadingAnimation.play();
       this._bt = new BluetoothApi();
       this._bluetooth = false;
 
@@ -11779,7 +11876,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
-      this.loadingAnimation.start();
     }
 
     _active() {
@@ -12392,10 +12488,12 @@ var APP_accelerator_home_ui = (function () {
 
         this._bt.registerEvent('onDiscoveryCompleted', () => {
           this.tag('Searching.Loader').visible = false;
+          this.loadingAnimation.stop();
           this.renderDeviceList();
         });
 
         this._bt.registerEvent('onDiscoveryStarted', () => {
+          this.loadingAnimation.start();
           this.tag('Searching.Loader').visible = true;
         });
 
@@ -12462,19 +12560,19 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
         },
         Item: {
-          w: 1535,
+          w: 1600,
           h: 90
         },
         BottomLine: {
           y: 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -16658,10 +16756,21 @@ var APP_accelerator_home_ui = (function () {
               fontSize: 25
             }
           },
+          Loader: {
+            visible: false,
+            h: 30 * 1.5,
+            w: 30 * 1.5,
+            x: 1500,
+            // x: 320,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Loading.gif')
+          },
           Button: {
             h: 45,
             w: 66.9,
-            x: 1535,
+            x: 1600,
             mountX: 1,
             y: 45,
             mountY: 0.5,
@@ -16771,6 +16880,20 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
+      this.wifiLoading = this.tag('Switch.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: Math.PI * 2
+          }
+        }]
+      });
       this.onError = {
         0: 'SSID_CHANGED - The SSID of the network changed',
         1: 'CONNECTION_LOST - The connection to the network was lost',
@@ -16801,6 +16924,7 @@ var APP_accelerator_home_ui = (function () {
         if (result) {
           this._network.registerEvent('onIPAddressStatusChanged', notification => {
             if (notification.status == 'ACQUIRED') {
+              location.reload(true);
               this.fireAncestors('$changeIp', 'IP:' + notification.ip4Address);
             } else if (notification.status == 'LOST') {
               this.fireAncestors('$changeIp', 'IP:' + 'NA');
@@ -16809,6 +16933,7 @@ var APP_accelerator_home_ui = (function () {
 
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
             console.log(notification);
+            this.fireAncestors('$NetworkInterfaceText', notification.newInterfaceName);
 
             if (notification.newInterfaceName == 'WIFI') {
               this._wifi.setEnabled(true).then(result => {
@@ -16816,6 +16941,8 @@ var APP_accelerator_home_ui = (function () {
                   this.wifiStatus = true;
                   this.tag('Networks').visible = true;
                   this.tag('JoinAnotherNetwork').visible = true;
+                  this.wifiLoading.play();
+                  this.tag('Switch.Loader').visible = true;
                   this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
 
                   this._wifi.discoverSSIDs();
@@ -16827,6 +16954,8 @@ var APP_accelerator_home_ui = (function () {
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
               this.tag('JoinAnotherNetwork').visible = false;
+              this.tag('Switch.Loader').visible = false;
+              this.wifiLoading.stop();
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
@@ -16943,6 +17072,8 @@ var APP_accelerator_home_ui = (function () {
       }, class PairedDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
@@ -16970,6 +17101,8 @@ var APP_accelerator_home_ui = (function () {
       }, class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
@@ -17147,6 +17280,8 @@ var APP_accelerator_home_ui = (function () {
                 this.wifiStatus = false;
                 this.tag('Networks').visible = false;
                 this.tag('JoinAnotherNetwork').visible = false;
+                this.tag('Switch.Loader').visible = false;
+                this.wifiLoading.stop();
                 this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               }
             });
@@ -17163,6 +17298,8 @@ var APP_accelerator_home_ui = (function () {
                     this.wifiStatus = true;
                     this.tag('Networks').visible = true;
                     this.tag('JoinAnotherNetwork').visible = true;
+                    this.wifiLoading.play();
+                    this.tag('Switch.Loader').visible = true;
                     this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
 
                     this._wifi.discoverSSIDs();
@@ -17204,6 +17341,13 @@ var APP_accelerator_home_ui = (function () {
 
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
+
+        if (!notification.moreData) {
+          setTimeout(() => {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+          }, 1000);
+        }
       });
     }
 
@@ -17244,6 +17388,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
+      new AppApi();
+      this.fireAncestors('$registerInactivityMonitoringEvents');
       this.lastElement = false;
       this.options = [{
         value: 'Off',
@@ -17335,7 +17481,7 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -17349,7 +17495,7 @@ var APP_accelerator_home_ui = (function () {
         BottomLine: {
           y: 0 + 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -17501,6 +17647,11 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
+    _init() {
+      this.appApi = new AppApi();
+      this.appApi.activateDisplaySettings();
+    }
+
     _focus() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
@@ -17521,6 +17672,7 @@ var APP_accelerator_home_ui = (function () {
 
       this._setState("LoadingState");
 
+      var sIndex = 0;
       this.appApi.getResolution().then(resolution => {
         this.appApi.getSupportedResolutions().then(res => {
           this._setState("Options");
@@ -17529,18 +17681,28 @@ var APP_accelerator_home_ui = (function () {
           this.tag('ResolutionScreenContents').h = options.length * 90;
           this.tag('ResolutionScreenContents.List').h = options.length * 90;
           this.tag('List').items = options.map((item, index) => {
+            var bool = false;
+
+            if (resolution === item) {
+              bool = true;
+              sIndex = index;
+            }
+
             return {
               ref: 'Option' + index,
               w: 1920 - 300,
               h: 90,
               type: VideoAndAudioItem$1,
-              isTicked: resolution === item ? true : false,
+              isTicked: bool,
               item: item,
               videoElement: true
             };
           });
         }).catch(err => {
           console.log(`error while fetching the supported resolution ${err}`);
+        }).then(() => {
+          this.tag('List').setIndex(sIndex);
+          console.log(`focus on index's value = ${sIndex}`);
         });
       });
     }
@@ -17734,7 +17896,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -17775,7 +17937,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -17801,7 +17963,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -17827,7 +17989,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18143,7 +18305,7 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    _init() {
+    _focus() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
         repeat: -1,
@@ -18158,14 +18320,11 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
-    }
 
-    _focus() {
       this._setState("LoadingState");
 
       var options = [];
       appApi$2.getSoundMode().then(result => {
-        // updating on the audio screen
         this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
         appApi$2.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
@@ -18185,10 +18344,10 @@ var APP_accelerator_home_ui = (function () {
 
           this._setState("Options");
         }).catch(err => {
-          console.log('Some error', JSON.stringify(err));
+          console.log('error', JSON.stringify(err));
         });
       }).catch(err => {
-        console.log('Some error', JSON.stringify(err));
+        console.log('error', JSON.stringify(err));
       });
     }
 
@@ -18251,7 +18410,7 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -18265,7 +18424,7 @@ var APP_accelerator_home_ui = (function () {
         BottomLine: {
           y: 0 + 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -18472,7 +18631,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18496,7 +18655,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18521,7 +18680,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18546,7 +18705,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18571,7 +18730,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 66,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18596,7 +18755,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18877,7 +19036,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18901,7 +19060,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -18925,7 +19084,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -19080,7 +19239,7 @@ var APP_accelerator_home_ui = (function () {
           Line1: {
             y: 0,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19112,7 +19271,7 @@ var APP_accelerator_home_ui = (function () {
           Line2: {
             y: 90,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19144,7 +19303,7 @@ var APP_accelerator_home_ui = (function () {
           Line3: {
             y: 180,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19171,44 +19330,12 @@ var APP_accelerator_home_ui = (function () {
                 fontFace: CONFIG.language.font,
                 fontSize: 25
               }
-            },
-            Loader: {
-              h: 45,
-              w: 45,
-              x: 500,
-              y: 225,
-              mountX: 1,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
-              visible: false
-            },
-            SyncLocation: {
-              Button: {
-                x: 925,
-                y: 225,
-                w: 160,
-                mountY: 0.5,
-                h: 40,
-                rect: true,
-                color: 0xFFFFFFFF,
-                Title: {
-                  x: 80,
-                  y: 20,
-                  mount: 0.5,
-                  text: {
-                    text: "Sync Location",
-                    fontFace: CONFIG.language.font,
-                    fontSize: 20,
-                    textColor: 0xFF000000
-                  }
-                }
-              }
             }
           },
           Line4: {
             y: 270,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19235,16 +19362,16 @@ var APP_accelerator_home_ui = (function () {
                 text: `unavailable`,
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
-                wordWrapWidth: 735,
+                wordWrapWidth: 1200,
                 wordWrap: true,
-                fontSize: 20
+                fontSize: 25
               }
             }
           },
           Line5: {
             y: 450,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19266,7 +19393,7 @@ var APP_accelerator_home_ui = (function () {
               y: 540,
               mountY: 0.5,
               text: {
-                text: `UI Version: , Build Version: , Timestamp: `,
+                text: `UI Version: 3.3, Build Version: , Timestamp: `,
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -19276,7 +19403,7 @@ var APP_accelerator_home_ui = (function () {
           Line6: {
             y: 630,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19308,7 +19435,7 @@ var APP_accelerator_home_ui = (function () {
           Line7: {
             y: 810,
             mountY: 0.5,
-            w: 1535,
+            w: 1600,
             h: 3,
             rect: true,
             color: 0xFFFFFFFF
@@ -19336,7 +19463,7 @@ var APP_accelerator_home_ui = (function () {
           drms += `${element.name} :`;
 
           if (element.keysystems) {
-            drms += "\n\t\t\t\t";
+            drms += "\t";
             element.keysystems.forEach(keySystem => {
               drms += `${keySystem}, `;
             });
@@ -19370,29 +19497,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('ChipSet.Value').text.text = `${result.chipset}`; // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
       });
       this.appApi.registerChangeLocation();
-      this.loadingAnimation = this.tag('Location.Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: 2 * Math.PI
-          }
-        }]
-      });
-      this.loadingAnimation.start();
-    }
-
-    _unfocus() {
-      this.loadingAnimation.stop();
-    }
-
-    _handleRight() {
-      this._setState('SyncLocation');
     }
 
     _handleDown() {
@@ -19405,83 +19509,6 @@ var APP_accelerator_home_ui = (function () {
       if (this.tag("DeviceInfoContents").y < 35) {
         this.tag("DeviceInfoContents").y += 35;
       }
-    }
-
-    static _states() {
-      return [class SyncLocation extends this {
-        $enter() {
-          this._focus();
-        }
-
-        _handleEnter() {
-          this.appApi.syncLocation().then(result => {
-            this.tag('Location.Value').visible = false;
-            this.tag('Location.Loader').visible = true;
-            this.appApi.getLocation().then(result => {
-              var locationInfo = "";
-
-              if (result.city.length !== 0) {
-                locationInfo = "City: " + result.city;
-              } else {
-                locationInfo = "City: unavailable ";
-              }
-
-              if (result.country.length !== 0) {
-                locationInfo += ", Country: " + result.country;
-              } else {
-                locationInfo += ", Country: unavailable ";
-              }
-
-              this.tag('Location.Value').text.text = `${locationInfo}`;
-              setTimeout(() => {
-                this.tag('Location.Value').visible = true;
-                this.tag('Location.Loader').visible = false;
-              }, 2000);
-            });
-          });
-        }
-
-        _handleLeft() {
-          this._setState('DeviceInformationScreen');
-        }
-
-        _handleDown() {
-          // to avoid scroll when button in focus
-          this._setState('DeviceInformationScreen');
-        }
-
-        _handleUp() {
-          // to avoid scroll when button in focus
-          this._setState('DeviceInformationScreen');
-        }
-
-        _focus() {
-          this.tag('SyncLocation.Button').patch({
-            color: CONFIG.theme.hex
-          });
-          this.tag('SyncLocation.Button.Title').patch({
-            text: {
-              textColor: 0xFFFFFFFF
-            }
-          });
-        }
-
-        _unfocus() {
-          this.tag('SyncLocation.Button').patch({
-            color: 0xFFFFFFFF
-          });
-          this.tag('SyncLocation.Button.Title').patch({
-            text: {
-              textColor: 0xFF000000
-            }
-          });
-        }
-
-        $exit() {
-          this._unfocus();
-        }
-
-      }];
     }
 
   }
@@ -19612,24 +19639,19 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    getCurrentProgress() {
-      var self = this;
-      setInterval(function () {
-        self.getDownloadPercent();
-      }, 3000);
+    getDownloadFirmwareInfo() {
+      this._appApi.updateFirmware().then(res => {
+        this._appApi.getDownloadFirmwareInfo().then(result => {
+          this.tag('DownloadedVersion.Title').text.text = `Downloaded Firmware Version: ${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
+        });
+      });
     }
 
     static _states() {
       return [class FirmwareUpdate extends this {
         _handleEnter() {
-          this._appApi.updateFirmware().then(res => {
-            console.log("updateFirmware from firmware screen " + JSON.stringify(res));
-
-            this._appApi.getDownloadFirmwareInfo().then(res => {
-              this.tag('DownloadedVersion.Title').text.text = "Downloaded Firmware Version: " + res.downloadFWVersion;
-              this.getCurrentProgress();
-            });
-          });
+          this.getDownloadFirmwareInfo();
+          this.getDownloadPercent();
         }
 
       }];
@@ -19783,7 +19805,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
-      this.loadingAnimation.start();
     }
 
     static _states() {
@@ -19869,6 +19890,7 @@ var APP_accelerator_home_ui = (function () {
 
       }, class Rebooting extends this {
         $enter() {
+          this.loadingAnimation.start();
           this.tag("Loader").visible = true;
           this.tag("Title").text.text = "Rebooting...";
           this.tag('Buttons').visible = false;
@@ -19956,7 +19978,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -19980,7 +20002,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20021,7 +20043,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20267,7 +20289,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20293,7 +20315,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20319,7 +20341,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20345,7 +20367,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20371,7 +20393,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20395,7 +20417,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 30 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20754,7 +20776,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 44.6 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20778,7 +20800,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 44.6 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20802,7 +20824,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 30 * 1.5,
               w: 44.6 * 1.5,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20826,7 +20848,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -20850,7 +20872,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21033,7 +21055,7 @@ var APP_accelerator_home_ui = (function () {
         TopLine: {
           y: 0,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -21047,7 +21069,7 @@ var APP_accelerator_home_ui = (function () {
         BottomLine: {
           y: 0 + 90,
           mountY: 0.5,
-          w: 1535,
+          w: 1600,
           h: 3,
           rect: true,
           color: 0xFFFFFFFF
@@ -21277,7 +21299,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21303,7 +21325,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21329,7 +21351,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21353,7 +21375,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21379,7 +21401,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21405,7 +21427,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21429,7 +21451,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21883,7 +21905,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21909,7 +21931,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21935,7 +21957,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -21959,7 +21981,7 @@ var APP_accelerator_home_ui = (function () {
             Loader: {
               h: 45,
               w: 45,
-              // x: 1535,
+              // x: 1600,
               x: 420,
               mountX: 1,
               y: 45,
@@ -21987,7 +22009,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -22040,20 +22062,15 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
-      this.loadingAnimation.start();
+
+      this._network.getDefaultInterface().then(interfaceName => {
+        this.$NetworkInterfaceText(interfaceName);
+      });
     }
 
     _focus() {
       this._setState('WiFi'); //can be used on init as well
 
-
-      this._network.getDefaultInterface().then(interfaceName => {
-        if (interfaceName == 'WIFI') {
-          this.$NetworkInterfaceText('WiFi');
-        } else if (interfaceName == 'ETHERNET') {
-          this.$NetworkInterfaceText('Ethernet');
-        }
-      });
     }
 
     _unfocus() {
@@ -22069,7 +22086,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     $NetworkInterfaceText(text) {
-      this.tag('NetworkInterface.Title').text.text = 'Network Interface: ' + text;
+      this.tag('NetworkInterface.Title').text.text = `Network Interface: ${text}`;
     }
 
     static _states() {
@@ -22154,6 +22171,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
+          this.loadingAnimation.start();
           this.tag('TestInternetAccess.Loader').visible = true;
 
           this._network.isConnectedToInternet().then(result => {
@@ -22167,6 +22185,7 @@ var APP_accelerator_home_ui = (function () {
 
             setTimeout(() => {
               this.tag('TestInternetAccess.Loader').visible = false;
+              this.loadingAnimation.stop();
               this.tag('TestInternetAccess.Title').text.text = connectionStatus;
             }, 2000);
           });
@@ -22280,7 +22299,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -22304,7 +22323,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -22328,7 +22347,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -22352,7 +22371,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -22376,7 +22395,7 @@ var APP_accelerator_home_ui = (function () {
             Button: {
               h: 45,
               w: 45,
-              x: 1535,
+              x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
@@ -23564,7 +23583,10 @@ var APP_accelerator_home_ui = (function () {
   var audio_mute = false;
   var audio_volume = 50;
   var appApi$1 = new AppApi();
-  var last_state = '';
+  var ls = {
+    last_state: 'SidePanel',
+    ref: {}
+  };
   const config$1 = {
     host: '127.0.0.1',
     port: 9998,
@@ -23636,9 +23658,9 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
+      ls.ref = this;
       this.homeApi = new HomeApi();
-      this.timer;
-      this.time = 0;
+      this.timerIsOff = true;
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
       var prop_apps = 'applications';
@@ -23688,8 +23710,11 @@ var APP_accelerator_home_ui = (function () {
           this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
             if (notification.status == 'ACQUIRED') {
               this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
+              location.reload(true);
+              Storage.set('ipAddress', notification.ip4Address);
             } else if (notification.status == 'LOST') {
               this.tag('IpAddress').text.text = 'IP:NA';
+              Storage.set('ipAddress', null);
             }
           });
           this.networkApi.getIP().then(ip => {
@@ -23699,38 +23724,45 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    removeAndAssign() {
-      if (this.timer) {
-        clearTimeout(this.timer);
-        this.timer = null;
-      }
-
-      if (this.time) {
-        this.timer = setTimeout(() => {
-          last_state = this._getState();
-          this.$standby('STANDBY');
-        }, parseInt(this.time));
-      }
-    }
-
     $resetSleepTimer(t) {
       var arr = t.split(" ");
 
-      if (arr.length < 2) {
-        this.time = null;
-      } else {
+      function setTimer() {
         var temp = arr[1].substring(0, 1);
 
         if (temp === 'H') {
-          this.time = 1000 * 60 * 60 * parseInt(arr[0]);
+          appApi$1.setInactivityInterval(parseInt(arr[0]) * 60).then(res => {}).catch(err => {
+            console.error(`error while setting the timer`);
+          });
         } else if (temp === 'M') {
-          this.time = 1000 * 60 * parseInt(arr[0]);
-        } else {
-          this.time = 1000 * parseInt(arr[0]);
+          appApi$1.setInactivityInterval(parseInt(arr[0])).then(res => {}).catch(err => {
+            console.error(`error while setting the timer`);
+          });
         }
       }
 
-      this.removeAndAssign();
+      if (arr.length < 2) {
+        if (!this.timerIsOff) {
+          appApi$1.enabledisableinactivityReporting(false).then(res => {
+            if (res.success === true) {
+              this.timerIsOff = true;
+            }
+          }).catch(err => {
+            console.error(`error : unable to set the reset; error = ${err}`);
+          });
+        }
+      } else {
+        if (this.timerIsOff) {
+          appApi$1.enabledisableinactivityReporting(true).then(res => {
+            if (res.success === true) {
+              this.timerIsOff = false;
+              setTimer();
+            }
+          });
+        } else {
+          setTimer();
+        }
+      }
     }
 
     _captureKeyRelease(key) {
@@ -23772,8 +23804,6 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _captureKey(key) {
-      this.removeAndAssign(); //console.log(" _captureKey home screen : " + key.keyCode, ` ${key.key}`)
-
       if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
         if (Storage.get('applicationType') != '') {
           this.deactivateChildApp(Storage.get('applicationType'));
@@ -23811,7 +23841,7 @@ var APP_accelerator_home_ui = (function () {
       if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
         // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
-          last_state = this.state;
+          ls.last_state = this.state;
           this.$standby('STANDBY');
           return true;
         } else if (powerState == 'STANDBY') {
@@ -23826,7 +23856,7 @@ var APP_accelerator_home_ui = (function () {
           powerState = 'DEEP_SLEEP';
         });
         return true;
-      } else if (key.keyCode == 118 || key.keyCode == 113) {
+      } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
         appApi$1.getConnectedAudioPorts().then(res => {
           let audio_source = res.connectedAudioPorts[0];
           let value = !audio_mute;
@@ -23964,10 +23994,9 @@ var APP_accelerator_home_ui = (function () {
 
 
     $goToTopPanel(index) {
-      console.log('go to top panel');
-      this.tag('TopPanel').index = index;
+      this._setState('TopPanel', [index]);
 
-      this._setState('TopPanel');
+      this.tag('TopPanel').index = index;
     }
 
     $changeBackgroundImageOnFocus(image) {
@@ -24024,19 +24053,92 @@ var APP_accelerator_home_ui = (function () {
 
     $standby(value) {
       if (value == 'Back') {
-        this._setState(last_state);
+        this._setState(ls.last_state);
       } else {
         if (powerState == 'ON') {
           appApi$1.standby(value).then(res => {
             if (res.success) {
+              ls.last_state = this._getState();
               powerState = 'STANDBY';
-            }
+              var appApi = new AppApi();
 
-            this._setState(last_state);
+              if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+                Storage.set('applicationType', ''); // appApi.deactivateWeb();
+
+                appApi.suspendWeb();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+                Storage.set('applicationType', ''); // appApi.deactivateLightning();
+
+                appApi.suspendLightning();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+                Storage.set('applicationType', '');
+                appApi.killNative();
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Amazon') {
+                Storage.set('applicationType', '');
+                appApi.suspendPremiumApp('Amazon');
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Netflix') {
+                Storage.set('applicationType', '');
+                appApi.suspendPremiumApp('Netflix');
+                appApi.setVisibility('ResidentApp', true);
+              } else if (Storage.get('applicationType') == 'Cobalt') {
+                Storage.set('applicationType', '');
+                appApi.suspendCobalt();
+                appApi.setVisibility('ResidentApp', true);
+              } else {
+                if (ls.last_state === "Playing") {
+                  ls.last_state = "MainView";
+                  this.$stopPlayer();
+                }
+              }
+
+              thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+                client: 'ResidentApp'
+              }).then(result => {
+                console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+              }).catch(err => {
+                console.log(`error while moving the resident app to front = ${err}`);
+              });
+              thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+                client: 'ResidentApp'
+              }).then(result => {
+                console.log('ResidentApp setFocus Success' + JSON.stringify(result));
+              }).catch(err => {
+                console.log('Error', err);
+              });
+
+              this._setState(ls.last_state);
+            }
           });
           return true;
         }
       }
+    }
+
+    $registerInactivityMonitoringEvents() {
+      appApi$1.standby('ON').then(res => {
+        if (res.success) {
+          powerState = 'ON';
+        }
+      });
+      appApi$1.enabledisableinactivityReporting(false);
+      const systemcCallsign = "org.rdk.RDKShell.1";
+      thunder$1.Controller.activate({
+        callsign: systemcCallsign
+      }).then(res => {
+        thunder$1.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
+          if (powerState === "ON") {
+            this.$standby("STANDBY");
+          }
+        }, err => {
+          console.error(`error while inactivity monitoring , ${err}`);
+        });
+      }).catch(err => {
+        console.error(`error while activating the displaysettings plugin; err = ${err}`);
+      });
     }
     /**
      * Function to hide the home UI.
@@ -24132,6 +24234,12 @@ var APP_accelerator_home_ui = (function () {
 
     static _states() {
       return [class TopPanel extends this {
+        $enter(e) {
+          if (e.prevState === 'MainView') {
+            this.tag('SidePanel').deFocus = true;
+          }
+        }
+
         _getFocused() {
           return this.tag('TopPanel');
         }
@@ -24142,6 +24250,10 @@ var APP_accelerator_home_ui = (function () {
         }
 
       }, class MainView extends this {
+        $enter(e) {
+          if (e.prevState === 'TopPanel') this.tag('SidePanel').deFocus = false;
+        }
+
         _getFocused() {
           return this.tag('MainView');
         }
@@ -24975,9 +25087,10 @@ ${error.toString()}`;
             text: {
               fontFace: CONFIG.language.font,
               fontSize: 22,
-              textColor: 0xffffffff
+              textColor: 0xffffffff,
+              cutEx: 300
             },
-            mountX: 0.5,
+            mount: 0.5,
             alpha: 0
           }
         }
@@ -25064,6 +25177,53 @@ ${error.toString()}`;
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  /**
+   * Class to render items in Arrow Icon Item.
+   */
+
+  class ArrowIconItem extends lng$1.Component {
+    /**
+     * Function to render Arrow Icon elements in the Main View.
+     */
+    static _template() {
+      return {
+        Item: {
+          Image: {
+            x: 0,
+            alpha: 1
+          }
+        }
+      };
+    }
+
+    _init() {
+      this.tag('Image').patch({
+        src: Utils.asset(this.data.url),
+        w: this.w,
+        h: this.h
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   class UsbContent extends lng$1.Component {
     static _template() {
       return {
@@ -25095,16 +25255,16 @@ ${error.toString()}`;
             }
           },
           IpAddress: {
-            x: 1835,
-            y: 125,
-            mount: 1,
+            x: 1475,
+            y: 105,
+            mountY: 0.5,
             text: {
               fontFace: 'MS-Regular',
               text: 'IP:N/A',
               textColor: 0xffffffff,
-              fontSize: 32,
+              fontSize: 28,
               w: 360,
-              h: 40
+              h: 30
             }
           },
           Border: {
@@ -25131,7 +25291,7 @@ ${error.toString()}`;
         },
         ItemList: {
           x: 80,
-          y: 320,
+          y: 295,
           flex: {
             direction: 'row',
             paddingLeft: 20,
@@ -25140,7 +25300,7 @@ ${error.toString()}`;
           type: lng$1.components.ListComponent,
           w: 1761,
           h: 300,
-          itemSize: 185,
+          itemSize: 320,
           roll: true,
           rollMax: 815,
           horizontal: true,
@@ -25154,25 +25314,47 @@ ${error.toString()}`;
           h: 450
         },
         Message: {
-          x: 500,
-          y: 800,
+          x: 520,
+          y: 575,
           text: {
             fontFace: 'MS-Regular',
             textColor: 0xffffdf00,
-            fontSize: 38,
-            fontStyle: 'italic bold',
+            fontSize: 48,
+            textAlign: 'center',
             textColor: 0xffffdf00,
             shadow: true,
             shadowColor: 0xffff00ff,
             shadowOffsetX: 2,
             shadowOffsetY: 2,
             shadowBlur: 2,
-            w: 900,
+            w: 700,
             h: 100
           }
         },
         Player: {
           type: AAMPVideoPlayer
+        },
+        FullScreen: {
+          x: 0,
+          y: 0,
+          w: 1920,
+          h: 1080
+        },
+        RightArrow: {
+          x: 1835,
+          y: 540,
+          w: 40,
+          h: 50,
+          src: Utils.asset('images/right-small.png'),
+          alpha: 0
+        },
+        LeftArrow: {
+          x: 25,
+          y: 540,
+          w: 40,
+          h: 50,
+          src: Utils.asset('images/left-small.png'),
+          alpha: 0
         }
       };
     }
@@ -25193,17 +25375,42 @@ ${error.toString()}`;
       });
     }
 
+    imageOnFullScreen(image) {
+      if (image.startsWith('/images')) {
+        this.tag('FullScreen').patch({
+          src: Utils.asset(image)
+        });
+
+        this._setState('FullScreen');
+
+        this.hide();
+      } else {
+        this.tag('FullScreen').patch({
+          src: image
+        });
+
+        this._setState('FullScreen');
+
+        this.hide();
+      }
+    }
+    /**
+    * Function to set details of items in right Icons list.
+    *
+    */
+
+
     set itemList(items) {
       this.tag('ItemList').items = items.map(info => {
         return {
-          w: 175,
-          h: 175,
+          w: 300,
+          h: 200,
           type: AppListItem,
           data: info,
           focus: 1.2,
           unfocus: 1,
-          x_text: 106,
-          y_text: 215
+          x_text: 150,
+          y_text: 220
         };
       });
       this.tag('ItemList').start();
@@ -25211,6 +25418,7 @@ ${error.toString()}`;
 
     _init() {
       this.videoPlayback = false;
+      this.imageFullScreen = false;
       var networkApi = new Network();
       networkApi.getIP().then(ip => {
         this.tag('IpAddress').text.text = 'IP:' + ip;
@@ -25333,6 +25541,7 @@ ${error.toString()}`;
 
         _handleUp() {
           this.videoPlayback = false;
+          this.imageFullScreen = false;
 
           this._setState('Back');
         }
@@ -25343,10 +25552,87 @@ ${error.toString()}`;
           if (this.videoPlayback == true) {
             this.goToPlayer(item);
           }
+
+          if (this.imageFullScreen == true) {
+            this._setState('FullScreen');
+          }
         }
 
         $exit() {
           this.videoPlayback = false;
+        }
+
+      }, class FullScreen extends this {
+        $enter() {
+          this.tag('FullScreen').patch({
+            alpha: 1
+          });
+          this.tag('RightArrow').patch({
+            alpha: 1
+          });
+          this.tag('LeftArrow').patch({
+            alpha: 1
+          });
+        }
+
+        $exit() {
+          this.tag('RightArrow').patch({
+            alpha: 0
+          });
+          this.tag('LeftArrow').patch({
+            alpha: 0
+          });
+          this.tag('FullScreen').patch({
+            alpha: 0
+          });
+        }
+
+        _getFocused() {
+          if (this.tag('ItemList').length) {
+            this.imageOnFullScreen(this.tag('ItemList').element.data.url);
+            return this.tag('ItemList').element;
+          }
+        }
+
+        _handleRight() {
+          if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
+            this.tag('ItemList').setNext();
+            this.tag('LeftArrow').patch({
+              alpha: 1
+            });
+            return this.tag('ItemList').element;
+          } else {
+            this.tag('RightArrow').patch({
+              alpha: 0
+            });
+          }
+        }
+
+        _handleLeft() {
+          if (0 != this.tag('ItemList').index) {
+            this.tag('ItemList').setPrevious();
+            this.tag('RightArrow').patch({
+              alpha: 1
+            });
+            return this.tag('ItemList').element;
+          } else {
+            this.tag('LeftArrow').patch({
+              alpha: 0
+            });
+          }
+        }
+
+        _handleKey(key) {
+          console.log(key.keyCode);
+
+          if (key.keyCode == 8 || key.keyCode == 27) {
+            this._setState('ItemList');
+
+            this.show();
+            this.tag('FullScreen').patch({
+              alpha: 0
+            });
+          }
         }
 
       }, class Back extends this {
@@ -25476,6 +25762,7 @@ ${error.toString()}`;
   class UsbImageScreen extends UsbContent {
     _active() {
       this.contentTitle = 'Images';
+      this.imageFullScreen = true;
       this.itemList = imageListInfo;
 
       this._setState('ItemList');
@@ -25773,6 +26060,18 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call('org.rdk.RDKShell', 'setFocus', {
           client: 'ResidentApp'
+        });
+      }).catch(err => {
+        console.log('Error', err);
+      }).then(result => {
+        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
+          client: 'ResidentApp',
+          keyCode: 173,
+          modifiers: []
+        }).then(result => {
+          console.log('addKeyIntercept success');
+        }).catch(err => {
+          console.log('Error', err);
         });
       }).catch(err => {
         console.log('Error', err);

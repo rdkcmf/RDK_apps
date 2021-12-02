@@ -113,7 +113,6 @@ export default class RebootConfirmationScreen extends Lightning.Component {
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
 
-        this.loadingAnimation.start()
     }
 
 
@@ -194,6 +193,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
             },
             class Rebooting extends this {
                 $enter() {
+                    this.loadingAnimation.start()
                     this.tag("Loader").visible = true
                     this.tag("Title").text.text = "Rebooting..."
                     this.tag('Buttons').visible = false

@@ -120,23 +120,20 @@ export default class FirmwareScreen extends Lightning.Component {
         })
     }
 
-    getCurrentProgress() {
-        var self = this
-        setInterval(function () { self.getDownloadPercent() }, 3000);
+    getDownloadFirmwareInfo() {
+        this._appApi.updateFirmware().then(res => {
+            this._appApi.getDownloadFirmwareInfo().then(result => {
+                this.tag('DownloadedVersion.Title').text.text = `Downloaded Firmware Version: ${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
+            })
+        })
     }
 
     static _states() {
         return [
             class FirmwareUpdate extends this{
                 _handleEnter() {
-                    this._appApi.updateFirmware().then(res => {
-                        console.log("updateFirmware from firmware screen " + JSON.stringify(res))
-                        this._appApi.getDownloadFirmwareInfo().then(res => {
-                            this.tag('DownloadedVersion.Title').text.text = "Downloaded Firmware Version: " + res.downloadFWVersion
-                            this.getCurrentProgress()
-                        })
-                    })
-
+                    this.getDownloadFirmwareInfo()
+                    this.getDownloadPercent()
                 }
             }
         ]

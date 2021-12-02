@@ -342,7 +342,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
 
       },
       class Pair extends this {
-        $enter() { }
+        $enter() {}
         _getFocused() {
           return this.tag('List').element
         }

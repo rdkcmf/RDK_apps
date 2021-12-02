@@ -18,6 +18,7 @@
  **/
 import { Lightning } from '@lightningjs/sdk'
 import SettingsItem from '../items/SettingsItem'
+import AppApi from '../api/AppApi'
 
 export default class SleepTimerScreen extends Lightning.Component {
     static _template() {
@@ -35,6 +36,8 @@ export default class SleepTimerScreen extends Lightning.Component {
         }
     }
     _init() {
+        var appApi = new AppApi();
+        this.fireAncestors('$registerInactivityMonitoringEvents')
         this.lastElement = false
         this.options = [
             { value: 'Off', tick: true },

@@ -63,7 +63,7 @@ export default class BluetoothScreen extends Lightning.Component {
         Button: {
           h: 30 * 1.5,
           w: 44.6 * 1.5,
-          x: 1535,
+          x: 1600,
           mountX: 1,
           y: 45,
           mountY: 0.5,
@@ -72,7 +72,7 @@ export default class BluetoothScreen extends Lightning.Component {
       },
       Searching: {
         visible: false,
-        h:90,
+        h: 90,
         Title: {
           x: 10,
           y: 45,
@@ -87,7 +87,7 @@ export default class BluetoothScreen extends Lightning.Component {
         Loader: {
           h: 30 * 1.5,
           w: 30 * 1.5,
-          // x: 1535,
+          // x: 1600,
           x: 320,
           mountX: 1,
           y: 45,
@@ -145,14 +145,6 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   _init() {
-    this.loadingAnimation = this.tag('Searching.Loader').animation({
-      duration: 1,
-      repeat: -1,
-      stopMethod: 'immediate',
-      stopDelay: 0.2,
-      actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: Math.PI * 2 } }],
-    })
-    this.loadingAnimation.play()
     this._bt = new BluetoothApi()
     this._bluetooth = false
     this._activateBluetooth()
@@ -172,8 +164,6 @@ export default class BluetoothScreen extends Lightning.Component {
       duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
       actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
     });
-
-    this.loadingAnimation.start()
 
   }
 
@@ -357,14 +347,14 @@ export default class BluetoothScreen extends Lightning.Component {
             this.tag('Confirmation.Pairing').text = 'Connection Failed'
             this._setState('Confirmation')
           } else {
-            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID).then(res=>{
+            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID).then(res => {
               // console.log(`
               // Tanjirou's log:
-              
+
               //   the Audio stream was successfully set${res}
-              
+
               // `);
-            }).catch(err=>{
+            }).catch(err => {
               console.log(`
               Tanjirou's log:
               
@@ -550,7 +540,6 @@ export default class BluetoothScreen extends Lightning.Component {
         _getFocused() {
           return this.tag('PairingScreen')
         }
-
         $exit() {
           this.tag('PairingScreen').visible = false
           this._enable()
@@ -656,9 +645,11 @@ export default class BluetoothScreen extends Lightning.Component {
       })
       this._bt.registerEvent('onDiscoveryCompleted', () => {
         this.tag('Searching.Loader').visible = false
+        this.loadingAnimation.stop()
         this.renderDeviceList()
       })
       this._bt.registerEvent('onDiscoveryStarted', () => {
+        this.loadingAnimation.start()
         this.tag('Searching.Loader').visible = true
       })
       this._bt.registerEvent('onRequestFailed', notification => {

@@ -119,6 +119,7 @@ export default class TopPanel extends Lightning.Component {
     } else if (this.indexVal == 1) {
       this._setState('Search')
     } else if (this.indexVal == 2) {
+      this.tag('Settings').color = CONFIG.theme.hex
       this._setState('Setting')
     }
   }
@@ -204,7 +205,8 @@ export default class TopPanel extends Lightning.Component {
           this.tag('Settings').color = CONFIG.theme.hex
         }
         _handleDown() {
-
+          this.fireAncestors('$goToMainView', 0)
+          this.tag('Settings').color = 0xffffffff
         }
         _handleLeft() {
 

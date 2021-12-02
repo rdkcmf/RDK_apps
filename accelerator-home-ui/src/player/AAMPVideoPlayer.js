@@ -122,12 +122,12 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    * Event handler to handle the event of changing the playback speed.
    */
-  _mediaSpeedChanged() { }
+  _mediaSpeedChanged() {}
 
   /**
    * Event handler to handle the event of bit rate change.
    */
-  _bitrateChanged() { }
+  _bitrateChanged() {}
 
   /**
    * Function to handle the event of playback failure.
@@ -158,7 +158,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    * Function to handle the event of change in the duration of the playback content.
    */
-  _mediaDurationChanged() { }
+  _mediaDurationChanged() {}
 
   /**
    * Function to create the video player instance for video playback and its initial settings.

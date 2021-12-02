@@ -51,7 +51,7 @@ import AudioScreen from './AudioScreen'
                     Button: {
                     h: 30 *1.5,
                     w: 44.6 *1.5,
-                    x: 1535,
+                    x: 1600,
                     mountX:1,
                     y: 45,
                     mountY:0.5,
@@ -73,9 +73,9 @@ import AudioScreen from './AudioScreen'
                     }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
+                    h: 45,
+                    w: 45,
+                    x: 1600,
                     mountX: 1,
                     y: 45,
                     mountY: 0.5,
@@ -97,9 +97,9 @@ import AudioScreen from './AudioScreen'
                     }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
+                    h: 45,
+                    w: 45,
+                    x: 1600,
                     mountX: 1,
                     y: 45,
                     mountY: 0.5,
@@ -121,9 +121,9 @@ import AudioScreen from './AudioScreen'
                     }
                     },
                     Button: {
-                    h: 30 * 1.5,
-                    w: 30 * 1.5,
-                    x: 1535,
+                    h: 45,
+                    w: 45,
+                    x: 1600,
                     mountX: 1,
                     y: 45,
                     mountY: 0.5,

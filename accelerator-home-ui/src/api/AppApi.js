@@ -18,6 +18,7 @@
  **/
 import ThunderJS from 'ThunderJS';
 
+
 var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
@@ -109,26 +110,35 @@ export default class AppApi {
   /**
    * Function to get resolution of the display screen.
    */
-  getResolution() {
-    return new Promise((resolve, reject) => {
-
-      const systemcCallsign = 'org.rdk.DisplaySettings'
-      thunder.Controller.activate({ callsign: systemcCallsign })
-        .then(() => {
-          thunder
-            .call(systemcCallsign, 'getCurrentResolution', { params: 'HDMI0' })
-            .then(result => {
-              resolve(result.resolution)
-            })
-            .catch(err => {
-              resolve(false)
-            })
-        })
-        .catch(err => {
-          console.log('Display Error', JSON.stringify(err))
-        })
+   getResolution() {
+    return new Promise((resolve,reject)=>{
+      thunder
+      .call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
+        "videoDisplay": "HDMI0"
+      })
+      .then(result => {
+        resolve(result.resolution)
+      })
+      .catch(err => {
+        resolve(false)
+      });
     })
+        
   }
+
+  activateDisplaySettings(){
+   
+    return new Promise((resolve,reject)=>{
+      const systemcCallsign = "org.rdk.DisplaySettings.1"
+      thunder.Controller.activate({callsign:systemcCallsign})
+      .then(res=>{
+      })
+      .catch(err=>{console.error(`error while activating the displaysettings plugin`)})
+    });
+
+}
+
+
 
   getSupportedResolutions() {
     return new Promise((resolve, reject) => {
@@ -321,6 +331,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(() => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground',
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -353,6 +367,10 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
+          }).then(() => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'foreground',
+            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -383,6 +401,10 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         })
         thunder.call('Cobalt.1', 'deeplink', url)
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
@@ -395,7 +417,7 @@ export default class AppApi {
    * Function to launch Netflix/Amazon Prime app.
    */
   launchPremiumApp(childCallsign) {
-    // const childCallsign = "Amazon";
+
     thunder
       .call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
@@ -404,6 +426,10 @@ export default class AppApi {
       .then(() => {
         thunder.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         });
         thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
@@ -426,12 +452,50 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
+        }).then(() => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'foreground',
+          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
+  }
+
+  launchforeground() {
+    const childCallsign = 'foreground'
+    console.log("notification_url > location.protocol::" + location.protocol + '// location.host ' + location.host + " // '// location.pathname '" + location.pathname)
+    let notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+    thunder.call('org.rdk.RDKShell', 'launch', {
+      callsign: childCallsign,
+      type: 'HtmlApp',
+      uri: notification_url,
+    }).then(() => {
+      thunder.call('org.rdk.RDKShell', 'moveToFront', {
+        client: childCallsign,
+      })
+      thunder.call('org.rdk.RDKShell', 'setFocus', {
+        client: 'ResidentApp',
+      })
+      thunder.call('org.rdk.RDKShell', 'setVisibility', {
+        client: 'foreground',
+        visible: false,
+      })
+    }).catch(err => { })
+      .catch(err => {
+        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+      })
+  }
+
+  zorder(value, cli) {
+    console.log("#################zorder###################");
+    thunder.call('org.rdk.RDKShell', value, { client: cli })
+      .then(result => {
+        console.log(client + ":" + value + '  Success');
+        resolve(result)
+      }).catch(err => { resolve(false) });
   }
 
   /**
@@ -478,7 +542,7 @@ export default class AppApi {
    * Function to deactivate cobalt app.
    */
   deactivateCobalt() {
-    thunder.call('org.RDK.RDKShell', 'destroy', { callsign: 'Cobalt' })
+    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' })
     activatedCobalt = false
     cobaltUrl = ''
   }
@@ -486,8 +550,10 @@ export default class AppApi {
   cobaltStateChangeEvent() {
     try {
       thunder.on('Controller', 'statechange', notification => {
-        this._events.get('statechange')(notification)
-        console.log('Cobalt registeration ', JSON.stringify(notification))
+        if (this._events.has('statechange')) {
+          this._events.get('statechange')(notification)
+        }
+
       })
     } catch (e) {
       console.log('Failed to register statechange event' + e)
@@ -523,6 +589,41 @@ export default class AppApi {
     })
   }
 
+  enabledisableinactivityReporting(bool){
+   
+         return new Promise((resolve,reject)=>{
+               thunder
+                 .call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
+                   "enable": bool
+                 })
+                 .then(result => {
+                   resolve(result)
+                 })
+                 .catch(err => {
+                   console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
+                   reject(err)
+                 });
+                })
+  }
+
+  setInactivityInterval(t){
+   
+    return new Promise((resolve,reject)=>{
+          thunder
+            .call('org.rdk.RDKShell.1', 'setInactivityInterval', {
+              "interval": t
+            })
+            .then(result => {
+              resolve(result)
+            })
+            .catch(err => {
+              reject(false)
+            });
+           })
+  }
+
+
+
   zorder(value, cli) {
     console.log("#################zorder###################");
     thunder.call('org.rdk.RDKShell', value, { client: cli })
@@ -552,6 +653,28 @@ export default class AppApi {
       }).catch((err) => {
         reject(err);
       });
+    })
+  }
+  /**
+   * Function to set the configuration of premium apps.
+   * @param {appName} Name of the application
+   * @param {config_data} config_data configuration data
+   */
+
+  configureApplication(appName, config_data) {
+    let plugin = 'Controller';
+    let method = 'configuration@' + appName;
+    return new Promise((resolve, reject) => {
+      thunder.call(plugin, method).then((res) => {
+        res.querystring = config_data;
+        thunder.call(plugin, method, res).then((resp) => {
+          resolve(true);
+        }).catch((err) => {
+          resolve(true);
+        })
+      }).catch((err) => {
+        reject(err);
+      })
     })
   }
   /**
@@ -655,22 +778,7 @@ export default class AppApi {
     })
   }
 
-  // setVolumeLevel(value) {
-  //   console.log(value)
-  //   return new Promise((resolve, reject) => {
-  //     thunder
-  //       .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "volumeLevel": value })
-  //       .then(result => {
-  //         resolve(result)
-  //       })
-  //       .catch(err => {
-  //         console.log("audio mute error:", JSON.stringify(err, 3, null))
-  //         resolve(false)
-  //       })
-
-  //   })
-  // }
-
+ 
   getVolumeLevel() {
     return new Promise((resolve, reject) => {
       thunder
@@ -794,7 +902,6 @@ export default class AppApi {
   }
 
 
-  //getDRC
   getDRCMode() {
     return new Promise((resolve, reject) => {
       thunder
@@ -810,7 +917,7 @@ export default class AppApi {
         })
     })
   }
-  //setDRC
+
   setDRCMode(DRCNum) {
     return new Promise((resolve, reject) => {
       thunder
@@ -829,7 +936,7 @@ export default class AppApi {
     })
   }
 
-  //getZoomSetting
+
   getZoomSetting() {
     return new Promise((resolve, reject) => {
       thunder
@@ -845,7 +952,7 @@ export default class AppApi {
         })
     })
   }
-  //setZoomSetting 
+
   setZoomSetting(zoom) {
     return new Promise((resolve, reject) => {
       thunder
@@ -862,7 +969,7 @@ export default class AppApi {
     })
   }
 
-  //getEnableAudioPort 
+ 
   getEnableAudioPort(audioPort) {
     return new Promise((resolve, reject) => {
       thunder
@@ -879,7 +986,6 @@ export default class AppApi {
     })
   }
 
-  //getSupportedAudioPorts 
 
   getSupportedAudioPorts() {
     return new Promise((resolve, reject) => {
@@ -897,7 +1003,7 @@ export default class AppApi {
     })
   }
 
-  //getVolumeLevel 
+
   getVolumeLevel() {
     return new Promise((resolve, reject) => {
       thunder
@@ -914,7 +1020,7 @@ export default class AppApi {
     })
   }
 
-  //setVolumeLevel
+
   setVolumeLevel(port, volume) {
     return new Promise((resolve, reject) => {
       thunder
@@ -1074,8 +1180,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.System.1', 'getDownloadedFirmwareInfo')
         .then(result => {
-          console.log("############ firmware donwload info ############")
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -1122,8 +1226,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.System.1', 'updateFirmware')
         .then(result => {
-          console.log("############ updateFirmware ############")
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -1139,8 +1241,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.System.1', 'getFirmwareDownloadPercent')
         .then(result => {
-          console.log("############ firmware donwload percent ############")
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {

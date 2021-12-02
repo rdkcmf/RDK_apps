@@ -38,7 +38,7 @@ export default class XcastApi {
         default: 1,
       };
       this._thunder = ThunderJS(config);
-      this.callsign = 'org.rdk.Xcast';
+      this.callsign = 'org.rdk.Xcast.1';
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
@@ -126,7 +126,7 @@ export default class XcastApi {
   }
 
   static supportedApps() {
-    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', Netflix: 'Netflix' };
+    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' };
     return xcastApps;
   }
 }

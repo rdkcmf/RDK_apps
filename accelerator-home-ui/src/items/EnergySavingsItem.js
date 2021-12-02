@@ -29,7 +29,7 @@
        TopLine: {
          y: 0,
          mountY: 0.5,
-         w: 1535,
+         w: 1600,
          h: 3,
          rect: true,
          color: 0xFFFFFFFF
@@ -43,7 +43,7 @@
        BottomLine: {
          y: 0 + 90,
          mountY: 0.5,
-         w: 1535,
+         w: 1600,
          h: 3,
          rect: true,
          color: 0xFFFFFFFF

@@ -115,6 +115,15 @@ export default class SidePanel extends Lightning.Component {
     this.indexVal = index
   }
 
+  set deFocus(val) {
+    if (val) {
+      this.tag('SidePanel').items[this.prevIndex].clearColor()
+    } else {
+      this.tag('SidePanel').items[this.prevIndex].setColor()
+    }
+
+  }
+
   static _states() {
     return [
       class SidePanel extends this {
@@ -131,14 +140,14 @@ export default class SidePanel extends Lightning.Component {
         }
         _handleKey(key) {
           if (key.keyCode == 39 || key.keyCode == 13) {
-            if(this.prevIndex != this.indexVal){
+            if (this.prevIndex != this.indexVal) {
               this.tag('SidePanel').items[this.prevIndex].clearColor()
             }
-            
+
             this.fireAncestors('$goToMainView', this.indexVal == 3 ? 2 : this.indexVal)
             this.tag('SidePanel').items[this.indexVal].setColor()
             this.prevIndex = this.indexVal
-            
+
           } else if (key.keyCode == 40) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1
@@ -147,7 +156,7 @@ export default class SidePanel extends Lightning.Component {
           } else if (key.keyCode == 38) {
             if (0 === this.indexVal) {
               this.fireAncestors('$goToTopPanel', 0)
-            }else{
+            } else {
               this.indexVal = this.indexVal - 1
               return this.tag('SidePanel').items[this.indexVal]
             }

@@ -33,19 +33,19 @@ export default class WiFiItem extends SettingsItem {
       TopLine: {
         y: 0,
         mountY: 0.5,
-        w: 1535,
+        w: 1600,
         h: 3,
         rect: true,
         color: 0xFFFFFFFF
       },
       Item: {
-        w: 1535,
+        w: 1600,
         h: 90,
       },
       BottomLine: {
         y: 90,
         mountY: 0.5,
-        w: 1535,
+        w: 1600,
         h: 3,
         rect: true,
         color: 0xFFFFFFFF

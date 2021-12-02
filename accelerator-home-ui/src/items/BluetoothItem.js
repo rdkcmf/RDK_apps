@@ -30,7 +30,7 @@
        TopLine: {
          y: 0,
          mountY: 0.5,
-         w: 1535,
+         w: 1600,
          h: 3,
          rect: true,
          color: 0xFFFFFFFF
@@ -42,7 +42,7 @@
        BottomLine: {
          y: 90,
          mountY: 0.5,
-         w: 1535,
+         w: 1600,
          h: 3,
          rect: true,
          color: 0xFFFFFFFF
@@ -66,7 +66,7 @@
        },
  
        Right: {
-         x: 1535-200,
+         x: 1600-200,
          y: 30,
          mountY: 0.5,
          mountX:1,

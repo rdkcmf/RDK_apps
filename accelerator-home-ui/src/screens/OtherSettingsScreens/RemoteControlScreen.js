@@ -47,7 +47,7 @@ export default class RemoteControlScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -71,7 +71,7 @@ export default class RemoteControlScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -95,7 +95,7 @@ export default class RemoteControlScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,

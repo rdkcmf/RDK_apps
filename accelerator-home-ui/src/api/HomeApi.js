@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import { Storage } from '@lightningjs/sdk'
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './AppApi'
 import { appListInfo } from './../../static/data/AppListInfo.js'
@@ -39,6 +40,9 @@ var IpAddress2 = ''
 var networkApi = new NetworkApi()
 networkApi.getIP().then(ip => {
   IpAddress1 = ip
+  Storage.set('ipAddress', IpAddress1)
+}).catch(() => {
+  Storage.set('ipAddress', null)
 })
 
 var appApi = new AppApi()

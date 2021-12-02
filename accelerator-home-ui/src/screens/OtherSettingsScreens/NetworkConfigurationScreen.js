@@ -50,7 +50,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -75,7 +75,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -100,7 +100,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -124,7 +124,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Loader: {
                         h: 45,
                         w: 45,
-                        // x: 1535,
+                        // x: 1600,
                         x: 420,
                         mountX: 1,
                         y: 45,
@@ -151,7 +151,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -193,21 +193,15 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
 
-        this.loadingAnimation.start()
 
+        this._network.getDefaultInterface().then(interfaceName => {
+            this.$NetworkInterfaceText(interfaceName)
+        })
     }
 
 
     _focus() {
         this._setState('WiFi') //can be used on init as well
-
-        this._network.getDefaultInterface().then(interfaceName => {
-            if (interfaceName == 'WIFI') {
-                this.$NetworkInterfaceText('WiFi')
-            } else if (interfaceName == 'ETHERNET') {
-                this.$NetworkInterfaceText('Ethernet')
-            }
-        })
     }
     _unfocus() {
         this.tag('TestInternetAccess.Title').text.text = 'Test Internet Access'
@@ -222,7 +216,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
     }
 
     $NetworkInterfaceText(text) {
-        this.tag('NetworkInterface.Title').text.text = 'Network Interface: ' + text
+        this.tag('NetworkInterface.Title').text.text = `Network Interface: ${text}`
     }
 
     static _states() {
@@ -295,6 +289,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     // this._setState('StaticMode')
                 }
                 _handleEnter() {
+                    this.loadingAnimation.start()
                     this.tag('TestInternetAccess.Loader').visible = true
                     this._network.isConnectedToInternet().then(result => {
                         var connectionStatus = "Internet Access: "
@@ -306,6 +301,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
 
                         setTimeout(() => {
                             this.tag('TestInternetAccess.Loader').visible = false
+                            this.loadingAnimation.stop()
                             this.tag('TestInternetAccess.Title').text.text = connectionStatus
                         }, 2000)
                     })

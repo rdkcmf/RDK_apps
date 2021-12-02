@@ -49,7 +49,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     Button: {
                         h: 30 * 1.5,
                         w: 44.6 * 1.5,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -73,7 +73,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     Button: {
                         h: 30 * 1.5,
                         w: 44.6 * 1.5,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -97,7 +97,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     Button: {
                         h: 30 * 1.5,
                         w: 44.6 * 1.5,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -121,7 +121,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
@@ -145,7 +145,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     Button: {
                         h: 45,
                         w: 45,
-                        x: 1535,
+                        x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
