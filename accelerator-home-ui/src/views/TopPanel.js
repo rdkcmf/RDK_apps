@@ -17,9 +17,9 @@
  * limitations under the License.
  **/
 import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
-import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi'
 import { CONFIG } from '../Config/Config'
+import Keymap from '../Config/Keymap'
 import store from '../redux.js'
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
@@ -132,6 +132,22 @@ export default class TopPanel extends Lightning.Component {
 
   }
 
+  /**
+*
+* @param {boolean} toggle
+* Function to change the mic icon.
+*/
+
+  set changeMic(toggle) {
+    if (toggle) {
+      this.tag('Mic').src = Utils.asset('/images/topPanel/microphone_mute.png')
+    }
+    else {
+      this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png')
+    }
+  }
+
+
   _build() {
     setInterval(() => {
       let _date = this.updateTime()
@@ -192,9 +208,9 @@ export default class TopPanel extends Lightning.Component {
         }
 
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == Keymap.ArrowRight || key.keyCode == Keymap.Enter) {
             this._setState('Setting')
-          } else if (key.keyCode == 40) {
+          } else if (key.keyCode == Keymap.ArrowDown) {
             this.tag('Mic').color = 0xffffffff
             this.fireAncestors('$goToSidePanel', 0)
           }

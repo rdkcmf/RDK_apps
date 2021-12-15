@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import SettingsItem from '../../items/SettingsItem'
 import { COLORS } from '../../colors/Colors'
@@ -27,6 +27,7 @@ import PrivacyScreen from './PrivacyScreen'
 import EnergySavingsScreen from './EnergySavingsScreen'
 import AppApi from '../../api/AppApi'
 import SleepTimerScreen from '../SleepTimerScreen'
+import LanguageScreen from './LanguageScreen'
 
 /**
  * Class for Other Settings Screen.
@@ -46,7 +47,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Sleep Timer: Off',
+                            text: Language.translate('Sleep Timer: Off'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -120,7 +121,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Energy Saver: ',
+                            text: Language.translate('Energy Saver: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -137,7 +138,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     },
                 },
                 Language: {
-                    alpha: 0.3, // disabled
+                    //alpha: 0.3, // disabled
                     y: 450 - 90,
                     type: SettingsMainItem,
                     Title: {
@@ -145,7 +146,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Language: ',
+                            text: Language.translate('Language'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -162,7 +163,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     },
                 },
                 Privacy: {
-                    alpha: 0.3, // disabled
+                    //alpha: 0.3, // disabled
                     y: 540 - 90,
                     type: SettingsMainItem,
                     Title: {
@@ -170,7 +171,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Privacy',
+                            text: Language.translate('Privacy'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -194,7 +195,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Advanced Settings',
+                            text: Language.translate('Advanced Settings'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -227,7 +228,10 @@ export default class OtherSettingsScreen extends Lightning.Component {
                 visible: false,
             },
 
-            // 
+            LanguageScreen: {
+                type: LanguageScreen,
+                visible: false,
+            },
 
             PrivacyScreen: {
                 type: PrivacyScreen,
@@ -243,11 +247,11 @@ export default class OtherSettingsScreen extends Lightning.Component {
         this._appApi = new AppApi();
     }
     $updateStandbyMode(standbyMode) {
-        this.tag("EnergySaver.Title").text.text = "Energy Saver: " + standbyMode
+        this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode
     }
 
     $sleepTimerText(text) {
-        this.tag('SleepTimer.Title').text.text = 'Sleep Timer: ' + text
+        this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text
     }
 
     _focus() {
@@ -260,7 +264,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
             } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
                 currentStandbyMode = "Deep Sleep"
             }
-            this.tag("EnergySaver.Title").text.text = "Energy Saver: " + currentStandbyMode
+            this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode
         })
     }
 
@@ -340,7 +344,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                 }
                 _handleDown() {
                     // this._setState('Theme')
-                    this._setState('AdvancedSettings')
+                    this._setState('Language')
                 }
                 _handleEnter() {
                     this._setState('EnergySavingsScreen')
@@ -355,14 +359,13 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this.tag('Language')._unfocus()
                 }
                 _handleUp() {
-                    // this._setState('Theme')
                     this._setState('EnergySaver')
                 }
                 _handleDown() {
                     this._setState('Privacy')
                 }
                 _handleEnter() {
-                    // 
+                    this._setState('LanguageScreen')
                 }
             },
             class Privacy extends this {
@@ -373,8 +376,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this.tag('Privacy')._unfocus()
                 }
                 _handleUp() {
-                    // this._setState('Language')
-                    this._setState('EnergySaver')
+                    this._setState('Language')
                 }
                 _handleDown() {
                     this._setState('AdvancedSettings')
@@ -391,7 +393,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this.tag('AdvancedSettings')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('EnergySaver')
+                    this._setState('Privacy')
                 }
                 _handleDown() {
                     this._setState('SleepTimer')
@@ -498,6 +500,24 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('EnergySaver')
                 }
             },
+            class LanguageScreen extends this {
+                $enter() {
+                  this.hide()
+                  this.tag('LanguageScreen').visible = true
+                  this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Language')
+                }
+                _getFocused() {
+                  return this.tag('LanguageScreen')
+                }
+                $exit() {
+                  this.show()
+                  this.tag('LanguageScreen').visible = false
+                  this.fireAncestors('$changeHomeText', 'Settings')
+                }
+                _handleBack() {
+                  this._setState('Language')
+                }
+              },
         ]
     }
 }

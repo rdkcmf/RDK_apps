@@ -94,7 +94,7 @@ export default class WiFiItem extends SettingsItem {
       },
 
       Right: {
-        x: 1505,
+        x: 1560,
         mountX: 1,
         y: 45,
         mountY: 0.5,

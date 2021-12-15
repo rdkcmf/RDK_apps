@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import ResolutionScreen from './ResolutionScreen'
 import { COLORS } from '../../colors/Colors'
@@ -42,7 +42,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Resolution ',
+              text: Language.translate('Resolution: '),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -66,7 +66,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'High Dynamic Range ',
+              text: Language.translate('High Dynamic Range: '),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -157,7 +157,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'HDCP Status: ',
+              text: Language.translate('HDCP Status: '),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -186,7 +186,7 @@ export default class VideoScreen extends Lightning.Component {
 
   _focus() {
     this._appApi.getResolution().then(resolution => {
-      this.tag("Resolution.Title").text.text = 'Resolution: ' + resolution;
+      this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
 
     }).catch(err => {
       console.log("Error fetching the Resolution");
@@ -196,9 +196,9 @@ export default class VideoScreen extends Lightning.Component {
     this._appApi.getHDCPStatus().then(result => {
 
       if (result.isHDCPCompliant && result.isHDCPEnabled) {
-        this.tag("HDCP.Title").text.text = 'HDCP Status: Enabled, Version: ' + result.currentHDCPVersion;
+        this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Enabled, Version: ${result.currentHDCPVersion}`;
       } else {
-        this.tag("HDCP.Title").text.text = 'HDCP Status: Not Supported ';
+        this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Not Supported `;
       }
 
     })
@@ -212,7 +212,7 @@ export default class VideoScreen extends Lightning.Component {
           "HdrDolbyvision":"Dolby Vision",
           "HdrTechnicolor": "Technicolor HDR"
         }
-        this.tag("HDR.Title").text.text = 'High Dynamic Range: '+ availableHDROptions[result] ;
+        this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ')+ availableHDROptions[result] ;
       })
 
       this._setState('Resolution')

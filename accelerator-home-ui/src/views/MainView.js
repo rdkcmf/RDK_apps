@@ -20,8 +20,10 @@ import { Lightning, Storage, Language } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
+import UsbApi from '../api/UsbApi.js'
 import { CONFIG } from '../Config/Config.js'
 import XcastApi from '../api/XcastApi';
+import Keymap from '../Config/Keymap.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -33,7 +35,7 @@ export default class MainView extends Lightning.Component {
       MainView: {
         x: 200,
         w: 1765,
-        h: 1080,
+        h: 1250,
         clipping: true,
         Text1: {
           // x: 10 + 25,
@@ -49,13 +51,13 @@ export default class MainView extends Lightning.Component {
           zIndex: 0
         },
         AppList: {
-          y: 27 + 10,
+          y: 37,
           x: -20,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           type: Lightning.components.ListComponent,
           w: 1745,
           h: 400,
-          itemSize: 454 + 20,
+          itemSize: 474,
           roll: true,
           rollMax: 1745,
           horizontal: true,
@@ -69,7 +71,7 @@ export default class MainView extends Lightning.Component {
           text: {
             fontFace: CONFIG.language.font,
             fontSize: 25,
-            text: Language.translate('Featured Apps'),
+            text: Language.translate('Lightning Apps'),
             fontStyle: 'normal',
             textColor: 0xFFFFFFFF,
           },
@@ -81,7 +83,7 @@ export default class MainView extends Lightning.Component {
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           w: 1745,
           h: 300,
-          itemSize: 268 + 20,
+          itemSize: 288,
           roll: true,
           rollMax: 1745,
           horizontal: true,
@@ -90,7 +92,7 @@ export default class MainView extends Lightning.Component {
         },
         Text3: {
           // x: 10 + 25,
-          y: 633 + 40,
+          y: 673,
           h: 30,
           text: {
             fontFace: CONFIG.language.font,
@@ -102,18 +104,45 @@ export default class MainView extends Lightning.Component {
         },
         TVShows: {
           x: -20,
-          y: 673 + 10 + 27,
+          y: 710,
           w: 1745,
           h: 400,
           type: Lightning.components.ListComponent,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           roll: true,
-          itemSize: 257 + 20,
+          itemSize: 277,
           rollMax: 1745,
           horizontal: true,
           itemScrollOffset: -4,
           clipping: false,
         },
+        Text4: {
+          // x: 10 + 25,
+          y: 948,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Partner Apps'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
+        },
+        UsbApps: {
+          x: -20,
+          y: 988,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 400,
+          itemSize: 288,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+
       },
     }
   }
@@ -127,11 +156,14 @@ export default class MainView extends Lightning.Component {
       port: 9998,
       default: 1,
     };
+    let appApi = new AppApi();
+    this.usbApi = new UsbApi();
     this.xcastApi = new XcastApi();
-    var thunder = ThunderJS(config);
+    let thunder = ThunderJS(config);
     thunder.on('Controller', 'statechange', notification => {
-      if (notification && (notification.callsign == 'Cobalt' || notification.callsign == 'Amazon') && notification.state == 'Deactivation') {
-        var appApi = new AppApi();
+      console.log(JSON.stringify(notification))
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
+
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
@@ -200,6 +232,24 @@ export default class MainView extends Lightning.Component {
     this.tag('TVShows').start()
   }
 
+  set usbApps(items) {
+    console.log(`usb apps set function was called using the arguments ${items}`);
+    if (!items.length) {
+      this.tag('Text4').visible = false;
+    }
+    this.tag('UsbApps').items = items.map((info, index) => {
+      return {
+        w: 268,
+        h: 151,
+        type: ListItem,
+        data: info,
+        focus: 1.15,
+        unfocus: 1,
+        idx: index
+      }
+    })
+    this.tag('UsbApps').start()
+  }
   /**
    * Function to set the state in main view.
    */
@@ -220,14 +270,17 @@ export default class MainView extends Lightning.Component {
    * Function to reset the main view rows to initial state.
    */
   reset() {
-    for (var i = this.tag('AppList').index; i > 0; i--) {
+    for (let i = this.tag('AppList').index; i > 0; i--) {
       this.tag('AppList').setPrevious()
     }
-    for (var i = this.tag('MetroApps').index; i > 0; i--) {
+    for (let i = this.tag('MetroApps').index; i > 0; i--) {
       this.tag('MetroApps').setPrevious()
     }
-    for (var i = this.tag('TVShows').index; i > 0; i--) {
+    for (let i = this.tag('TVShows').index; i > 0; i--) {
       this.tag('TVShows').setPrevious()
+    }
+    for (let i = this.tag("UsbApps").index; i > 0; i--) {
+      this.tag('UsbApps').setPrevious()
     }
   }
 
@@ -267,10 +320,9 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          var appApi = new AppApi();
-          var applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+          let appApi = new AppApi();
+          let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          var appApi = new AppApi();
           applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
@@ -322,63 +374,16 @@ export default class MainView extends Lightning.Component {
                 console.log('Netflix not working')
               })
 
+          } else {
+            if (this.uri === 'USB') {
+              this.usbApi.getMountedDevices().then(result => {
+                if (result.mounted.length === 1) {
+                  this.fireAncestors('$goToUsb')
+                }
+              })
+
+            }
           }
-        }
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1,
-          };
-          var thunder = ThunderJS(config);
-          console.log('_handleKey', key.keyCode);
-          var appApi = new AppApi();
-
-          // Detecting Ctrl
-          var _key = key.keyCode;
-          var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
-          if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
-            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateWeb();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateLightning();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.killNative();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Amazon') {
-              Storage.set('applicationType', '');
-              appApi.suspendPremiumApp('Amazon');
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Netflix') {
-              Storage.set('applicationType', '');
-              appApi.suspendPremiumApp('Netflix');
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Cobalt') {
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            } else return false
-
-            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder
-              .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
-              .then(result => {
-                console.log('ResidentApp moveToFront Success')
-              })
-              .catch(err => {
-                console.log('Error', err)
-              })
-          };
         }
       },
       class MetroApps extends this {
@@ -412,10 +417,10 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          var appApi = new AppApi();
-          var applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
+          let appApi = new AppApi();
+          let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          var appApi = new AppApi();
+          
           applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
@@ -433,56 +438,6 @@ export default class MainView extends Lightning.Component {
             appApi.setVisibility('ResidentApp', false);
           }
         }
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1,
-          };
-          var thunder = ThunderJS(config);
-          var appApi = new AppApi();
-          console.log('_handleKey', key.keyCode);
-          // Detecting Ctrl
-          var _key = key.keyCode;
-          var ctrl = key.ctrlKey ? key.ctrlKey : ((_key === 17) ? true : false);
-          if (key.keyCode == 27 || (ctrl && key.keyCode == 77) || key.keyCode == 36 || key.keyCode == 158) {
-            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateWeb();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateLightning();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.killNative();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Cobalt') {
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            } else {
-              appApi.zorder("moveToFront", "foreground");
-              return false;
-            }
-            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-              appApi.zorder("moveToFront", "foreground");
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder
-              .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
-              .then(result => {
-                console.log('ResidentApp moveToFront Success')
-              })
-              .catch(err => {
-                console.log('Error', err)
-              })
-          }
-        }
       },
       class TVShows extends this {
         $enter() {
@@ -494,8 +449,6 @@ export default class MainView extends Lightning.Component {
         _getFocused() {
           this.tag('Text3').text.fontStyle = 'bold'
           if (this.tag('TVShows').length) {
-            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('TVShows').element.data.url)
-
             return this.tag('TVShows').element
           }
         }
@@ -515,14 +468,78 @@ export default class MainView extends Lightning.Component {
             this.fireAncestors('$goToSidePanel', 2)
           }
         }
+        _handleDown() {
+          if (this.tag('UsbApps').length) {
+            this._setState("UsbApps");
+          }
+        }
         _handleEnter() {
           if (Storage.get('ipAddress')) {
             this.fireAncestors('$goToPlayer')
           }
-
         }
         $exit() {
           this.fireAncestors('$scroll', 0)
+        }
+      },
+
+
+
+      class UsbApps extends this {
+        $enter() {
+          this.fireAncestors('$scroll', -550)
+        }
+        $exit() {
+          this.fireAncestors('$scroll', -350)
+        }
+        _getFocused() {
+          this.tag('Text4').text.fontStyle = 'bold'
+          if (this.tag('UsbApps').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbApps').element.data.url)
+            return this.tag('UsbApps').element
+          }
+        }
+        _handleUp() {
+          this._setState('TVShows')
+        }
+
+        _handleRight() {
+          if (this.tag('UsbApps').length - 1 != this.tag('MetroApps').index) {
+            this.tag('UsbApps').setNext()
+            return this.tag('UsbApps').element
+          }
+        }
+        _handleLeft() {
+          this.tag('Text4').text.fontStyle = 'normal'
+          if (0 != this.tag('UsbApps').index) {
+            this.tag('UsbApps').setPrevious()
+            return this.tag('UsbApps').element
+          } else {
+            this.reset()
+            this.fireAncestors('$goToSidePanel', 1)
+          }
+        }
+        _handleEnter() {
+          let appApi = new AppApi();
+          let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
+          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
+          
+          applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
+          Storage.set('applicationType', applicationType);
+          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
+          if (Storage.get('applicationType') == 'Cobalt') {
+            appApi.launchCobalt(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            appApi.launchWeb(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+            appApi.launchLightning(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+            appApi.launchNative(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          }
         }
       },
       class RightArrow extends this {

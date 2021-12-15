@@ -2,7 +2,7 @@
   "name": "accelerator-home-ui",
   "description": "accelerator-home-ui",
   "dependencies": {
-    "@lightningjs/sdk": "^4.7.0",
+    "@lightningjs/sdk": "^4.8.1",
     "@lightningjs/ui-components": "^1.0.0",
     "redux": "^4.1.0",
     "ThunderJS": "github:rdkcentral/ThunderJS"

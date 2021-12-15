@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Language } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi';
@@ -34,7 +34,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware State: `,
+                            text: Language.translate('Firmware State: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -47,7 +47,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 90,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware Versions: `,
+                            text: Language.translate('Firmware Versions: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -60,7 +60,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 135,
                         mountY: 0.5,
                         text: {
-                            text: `Downloaded Firmware Version: `,
+                            text: Language.translate(`Downloaded Firmware Version: `),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -73,7 +73,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 180,
                         mountY: 0.5,
                         text: {
-                            text: `Download Progress: `,
+                            text: Language.translate(`Download Progress: `),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -104,26 +104,26 @@ export default class FirmwareScreen extends Lightning.Component {
         const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot']
         this._appApi.getFirmwareUpdateState().then(res => {
             console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res))
-            this.tag('State.Title').text.text = "Firmware State: " + downloadState[res.firmwareUpdateState]
+            this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState]
         })
 
         this._appApi.getDownloadFirmwareInfo().then(res => {
             console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res))
-            this.tag('Version.Title').text.text = "Firmware Versions: " + res.currentFWVersion
+            this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion
         })
         this._setState('FirmwareUpdate')
     }
 
     getDownloadPercent() {
         this._appApi.getFirmwareDownloadPercent().then(res => {
-            this.tag('DownloadedPercent.Title').text.text = "Download Progress: " + res.downloadPercent + "%"
+            this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%"
         })
     }
 
     getDownloadFirmwareInfo() {
         this._appApi.updateFirmware().then(res => {
             this._appApi.getDownloadFirmwareInfo().then(result => {
-                this.tag('DownloadedVersion.Title').text.text = `Downloaded Firmware Version: ${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
+                this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') `${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
             })
         })
     }

@@ -1,9 +1,9 @@
 /**
- * App version: 3.3 8/12/21
- * SDK version: 4.7.0
+ * App version: 3.4 30/12/21
+ * SDK version: 4.8.1
  * CLI version: 2.7.1
- *
- * Generated: Thu, 09 Dec 2021 04:26:09 GMT
+ * 
+ * Generated: Fri, 07 Jan 2022 07:37:51 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -372,10 +372,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  let timeout$1 = null;
+  let timeout$2 = null;
   var easeExecution = ((cb, delay) => {
-    clearTimeout(timeout$1);
-    timeout$1 = setTimeout(() => {
+    clearTimeout(timeout$2);
+    timeout$2 = setTimeout(() => {
       cb();
     }, delay);
   });
@@ -1578,7 +1578,7 @@ var APP_accelerator_home_ui = (function () {
   const getRouteByHash = hash => {
     // @todo: clean up on handleHash
     hash = hash.replace(/^#/, '');
-    const getUrlParts = /(\/?:?[@!*\w%\s:-]+)/g; // grab possible candidates from stored routes
+    const getUrlParts = /(\/?:?[^/]+)/g; // grab possible candidates from stored routes
 
     const candidates = getRoutesByFloor(getFloor(hash)); // break hash down in chunks
 
@@ -2839,7 +2839,116 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  var version = "4.7.0";
+  var _args = [
+  	[
+  		"@lightningjs/sdk@4.8.1",
+  		"C:\\Users\\Arun Raj\\Project\\3.4 P 26\\RDK_apps\\accelerator-home-ui"
+  	]
+  ];
+  var _from = "@lightningjs/sdk@4.8.1";
+  var _id = "@lightningjs/sdk@4.8.1";
+  var _inBundle = false;
+  var _integrity = "sha512-gO8yzy43gLpBco6UDjmQehlu3HSwPKBLgDrSOf/WchRfMpU/T8ijr6Pe41Ife7yKEQLn67XrRtm3wX5AvLrhwg==";
+  var _location = "/@lightningjs/sdk";
+  var _phantomChildren = {
+  };
+  var _requested = {
+  	type: "version",
+  	registry: true,
+  	raw: "@lightningjs/sdk@4.8.1",
+  	name: "@lightningjs/sdk",
+  	escapedName: "@lightningjs%2fsdk",
+  	scope: "@lightningjs",
+  	rawSpec: "4.8.1",
+  	saveSpec: null,
+  	fetchSpec: "4.8.1"
+  };
+  var _requiredBy = [
+  	"/"
+  ];
+  var _resolved = "https://registry.npmjs.org/@lightningjs/sdk/-/sdk-4.8.1.tgz";
+  var _spec = "4.8.1";
+  var _where = "C:\\Users\\Arun Raj\\Project\\3.4 P 26\\RDK_apps\\accelerator-home-ui";
+  var bugs = {
+  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
+  };
+  var dependencies = {
+  	"@babel/polyfill": "^7.11.5",
+  	"@lightningjs/core": "*",
+  	"@michieljs/execute-as-promise": "^1.0.0",
+  	deepmerge: "^4.2.2",
+  	localCookie: "github:WebPlatformForEmbedded/localCookie",
+  	shelljs: "^0.8.4",
+  	"url-polyfill": "^1.1.10",
+  	"whatwg-fetch": "^3.0.0"
+  };
+  var description = "The Lightning-SDK helps you build great Lightning-based TV apps!";
+  var devDependencies = {
+  	"@babel/core": "^7.11.6",
+  	"@babel/plugin-transform-parameters": "^7.10.5 ",
+  	"@babel/plugin-transform-spread": "^7.11.0",
+  	"@babel/preset-env": "^7.11.5",
+  	"babel-eslint": "^10.1.0",
+  	eslint: "^7.10.0",
+  	"eslint-config-prettier": "^6.12.0",
+  	"eslint-plugin-prettier": "^3.1.4",
+  	husky: "^4.3.0",
+  	"lint-staged": "^10.4.0",
+  	prettier: "^1.19.1",
+  	rollup: "^1.32.1",
+  	"rollup-plugin-babel": "^4.4.0"
+  };
+  var homepage = "https://github.com/rdkcentral/Lightning-SDK#readme";
+  var husky = {
+  	hooks: {
+  		"pre-commit": "lint-staged"
+  	}
+  };
+  var license = "Apache-2.0";
+  var name = "@lightningjs/sdk";
+  var repository = {
+  	type: "git",
+  	url: "git+ssh://git@github.com/rdkcentral/Lightning-SDK.git"
+  };
+  var scripts = {
+  	lint: "eslint '**/*.js'",
+  	postinstall: "node ./scripts/postinstall.js",
+  	release: "npm publish --access public"
+  };
+  var version = "4.8.1";
+  var packageInfo = {
+  	_args: _args,
+  	_from: _from,
+  	_id: _id,
+  	_inBundle: _inBundle,
+  	_integrity: _integrity,
+  	_location: _location,
+  	_phantomChildren: _phantomChildren,
+  	_requested: _requested,
+  	_requiredBy: _requiredBy,
+  	_resolved: _resolved,
+  	_spec: _spec,
+  	_where: _where,
+  	bugs: bugs,
+  	dependencies: dependencies,
+  	description: description,
+  	devDependencies: devDependencies,
+  	homepage: homepage,
+  	husky: husky,
+  	license: license,
+  	"lint-staged": {
+  	"*.js": [
+  		"eslint --fix"
+  	],
+  	"src/startApp.js": [
+  		"rollup -c ./rollup.config.js"
+  	]
+  },
+  	name: name,
+  	repository: repository,
+  	scripts: scripts,
+  	version: version
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -2886,13 +2995,6 @@ var APP_accelerator_home_ui = (function () {
       409: 'Search'
     }
   };
-
-  if (window.innerHeight === 720) {
-    defaultOptions.stage['w'] = 1280;
-    defaultOptions.stage['h'] = 720;
-    defaultOptions.stage['precision'] = 0.6666666667;
-  }
-
   const customFontFaces = [];
 
   const fontLoader = (fonts, store) => new Promise((resolve, reject) => {
@@ -2916,9 +3018,32 @@ var APP_accelerator_home_ui = (function () {
   });
 
   function Application (App, appData, platformSettings) {
+    const {
+      width,
+      height
+    } = platformSettings;
+
+    if (width && height) {
+      defaultOptions.stage['w'] = width;
+      defaultOptions.stage['h'] = height;
+      defaultOptions.stage['precision'] = width / 1920;
+    } // support for 720p browser
+
+
+    if (!width && !height && window.innerHeight === 720) {
+      defaultOptions.stage['w'] = 1280;
+      defaultOptions.stage['h'] = 720;
+      defaultOptions.stage['precision'] = 1280 / 1920;
+    }
+
     return class Application extends lng$1.Application {
       constructor(options) {
-        const config = cjs(defaultOptions, options);
+        const config = cjs(defaultOptions, options); // Deepmerge breaks HTMLCanvasElement, so restore the passed in canvas.
+
+        if (options.stage.canvas) {
+          config.stage.canvas = options.stage.canvas;
+        }
+
         super(config);
         this.config = config;
       }
@@ -2945,14 +3070,14 @@ var APP_accelerator_home_ui = (function () {
           this._refocus();
 
           Log.info('App version', this.config.version);
-          Log.info('SDK version', version);
+          Log.info('SDK version', packageInfo.version);
 
           if (platformSettings.showVersion) {
             this.childList.a({
               ref: 'VersionLabel',
               type: VersionLabel,
               version: this.config.version,
-              sdkVersion: version,
+              sdkVersion: packageInfo.version,
               zIndex: 1
             });
           }
@@ -3553,7 +3678,7 @@ var APP_accelerator_home_ui = (function () {
   const getQueryStringParams = (hash = getActiveHash()) => {
     const resumeHash = getResumeHash();
 
-    if (hash === '$' || resumeHash) {
+    if ((hash === '$' || !hash) && resumeHash) {
       if (isString(resumeHash)) {
         hash = resumeHash;
       }
@@ -4683,6 +4808,19 @@ var APP_accelerator_home_ui = (function () {
     }
   };
   /**
+   * Force reload active hash
+   */
+
+
+  const reload = () => {
+    if (!isNavigating()) {
+      const hash = getActiveHash();
+      navigate(hash, {
+        reload: true
+      }, false);
+    }
+  };
+  /**
    * Query if the Router is still processing a Request
    * @returns {boolean}
    */
@@ -4754,6 +4892,26 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     });
+  };
+  /**
+   * Navigate to root hash
+   */
+
+
+  const root = () => {
+    const rootHash = getRootHash();
+
+    if (isString(rootHash)) {
+      navigate(rootHash);
+    } else if (isFunction(rootHash)) {
+      rootHash().then(res => {
+        if (isObject(res)) {
+          navigate(res.path, res.params);
+        } else {
+          navigate(res);
+        }
+      });
+    }
   }; // export API
 
 
@@ -4782,10 +4940,12 @@ var APP_accelerator_home_ui = (function () {
     getHistoryState,
     replaceHistoryState,
     getQueryStringParams,
+    reload,
     symbols,
     App: RoutedApp,
     // keep backwards compatible
     focusPage: restoreFocus,
+    root: root,
 
     /**
      * Deprecated api methods
@@ -5671,17 +5831,19 @@ var APP_accelerator_home_ui = (function () {
       return videoEls[0];
     } else {
       const videoEl = document.createElement('video');
+      const platformSettingsWidth = Settings.get('platform', 'width') ? Settings.get('platform', 'width') : 1920;
+      const platformSettingsHeight = Settings.get('platform', 'height') ? Settings.get('platform', 'height') : 1080;
       videoEl.setAttribute('id', 'video-player');
-      videoEl.setAttribute('width', withPrecision(1920));
-      videoEl.setAttribute('height', withPrecision(1080));
+      videoEl.setAttribute('width', withPrecision(platformSettingsWidth));
+      videoEl.setAttribute('height', withPrecision(platformSettingsHeight));
       videoEl.style.position = 'absolute';
       videoEl.style.zIndex = '1';
       videoEl.style.display = 'none';
       videoEl.style.visibility = 'hidden';
       videoEl.style.top = withPrecision(0);
       videoEl.style.left = withPrecision(0);
-      videoEl.style.width = withPrecision(1920);
-      videoEl.style.height = withPrecision(1080);
+      videoEl.style.width = withPrecision(platformSettingsWidth);
+      videoEl.style.height = withPrecision(platformSettingsHeight);
       document.body.appendChild(videoEl);
       return videoEl;
     }
@@ -6009,7 +6171,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
   };
-  autoSetupMixin(videoPlayerPlugin, () => {
+  var VideoPlayer = autoSetupMixin(videoPlayerPlugin, () => {
     precision = ApplicationInstance && ApplicationInstance.stage && ApplicationInstance.stage.getRenderPrecision() || precision;
     videoEl = setupVideoTag();
     textureMode = Settings.get('platform', 'textureMode', false);
@@ -6609,12 +6771,12 @@ var APP_accelerator_home_ui = (function () {
       options.token = window.thunder.token();
     }
 
-    return wrapper({ ...thunder$3(options),
+    return wrapper({ ...thunder$5(options),
       ...plugins
     });
   };
 
-  const resolve$1 = (result, args) => {
+  const resolve = (result, args) => {
     if (typeof result !== 'object' || typeof result === 'object' && (!result.then || typeof result.then !== 'function')) {
       result = new Promise((resolve, reject) => {
         result instanceof Error === false ? resolve(result) : reject(result);
@@ -6630,7 +6792,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const thunder$3 = options => ({
+  const thunder$5 = options => ({
     options,
     api: API(options),
     plugin: false,
@@ -6655,7 +6817,7 @@ var APP_accelerator_home_ui = (function () {
     },
 
     registerPlugin(name, plugin) {
-      this[name] = wrapper(Object.assign(Object.create(thunder$3), plugin, {
+      this[name] = wrapper(Object.assign(Object.create(thunder$5), plugin, {
         plugin: name
       }));
     },
@@ -6702,12 +6864,12 @@ var APP_accelerator_home_ui = (function () {
             }
 
             return function (...args) {
-              return resolve$1(prop.apply(this, args), args);
+              return resolve(prop.apply(this, args), args);
             };
           }
 
           if (typeof prop === 'object') {
-            return wrapper(Object.assign(Object.create(thunder$3(target.options)), prop, {
+            return wrapper(Object.assign(Object.create(thunder$5(target.options)), prop, {
               plugin: propKey
             }));
           }
@@ -6715,7 +6877,7 @@ var APP_accelerator_home_ui = (function () {
           return prop;
         } else {
           if (target.plugin === false) {
-            return wrapper(Object.assign(Object.create(thunder$3(target.options)), {}, {
+            return wrapper(Object.assign(Object.create(thunder$5(target.options)), {}, {
               plugin: propKey
             }));
           }
@@ -6776,7 +6938,7 @@ var APP_accelerator_home_ui = (function () {
   };
   var CONFIG = {
     theme: themeOptions['partnerOne'],
-    language: language['english']
+    language: localStorage.getItem('Language') != null ? language[localStorage.getItem('Language')] : language['english']
   };
 
   /**
@@ -6944,12 +7106,12 @@ var APP_accelerator_home_ui = (function () {
   var webUrl = '';
   var lightningUrl = '';
   var nativeUrl = '';
-  const config$2 = {
+  const config$4 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$2 = thunderJS(config$2);
+  const thunder$4 = thunderJS(config$4);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -6995,10 +7157,10 @@ var APP_accelerator_home_ui = (function () {
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getDeviceInfo', {
+          thunder$4.call(systemcCallsign, 'getDeviceInfo', {
             params: 'estb_ip'
           }).then(result => {
             resolve(result.success);
@@ -7016,10 +7178,10 @@ var APP_accelerator_home_ui = (function () {
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getTimeZoneDST').then(result => {
+          thunder$4.call(systemcCallsign, 'getTimeZoneDST').then(result => {
             resolve(result.timeZone);
           }).catch(err => {
             resolve(false);
@@ -7034,7 +7196,7 @@ var APP_accelerator_home_ui = (function () {
 
     getResolution() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
           "videoDisplay": "HDMI0"
         }).then(result => {
           resolve(result.resolution);
@@ -7047,7 +7209,7 @@ var APP_accelerator_home_ui = (function () {
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.DisplaySettings.1";
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {}).catch(err => {
           console.error(`error while activating the displaysettings plugin`);
@@ -7058,10 +7220,10 @@ var APP_accelerator_home_ui = (function () {
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getSupportedResolutions', {
+          thunder$4.call(systemcCallsign, 'getSupportedResolutions', {
             params: 'HDMI0'
           }).then(result => {
             resolve(result.supportedResolutions);
@@ -7081,10 +7243,10 @@ var APP_accelerator_home_ui = (function () {
     setResolution(res) {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'setCurrentResolution', {
+          thunder$4.call(systemcCallsign, 'setCurrentResolution', {
             videoDisplay: 'HDMI0',
             resolution: res,
             persist: true
@@ -7107,10 +7269,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdcpProfile.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getHDCPStatus').then(result => {
+          thunder$4.call(systemcCallsign, 'getHDCPStatus').then(result => {
             resolve(result.HDCPStatus);
             console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus));
           }).catch(err => {
@@ -7129,10 +7291,10 @@ var APP_accelerator_home_ui = (function () {
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getTvHDRSupport').then(result => {
+          thunder$4.call(systemcCallsign, 'getTvHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7151,10 +7313,10 @@ var APP_accelerator_home_ui = (function () {
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
+          thunder$4.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7173,10 +7335,10 @@ var APP_accelerator_home_ui = (function () {
     getHDRSetting() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'DisplayInfo.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'hdrsetting').then(result => {
+          thunder$4.call(systemcCallsign, 'hdrsetting').then(result => {
             resolve(result);
             console.log("HDR format in use from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7196,10 +7358,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'OCDM.1';
-        thunder$2.Controller.activate({
+        thunder$4.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$2.call(systemcCallsign, 'drms').then(result => {
+          thunder$4.call(systemcCallsign, 'drms').then(result => {
             resolve(result);
             console.log("supported drms from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7207,6 +7369,23 @@ var APP_accelerator_home_ui = (function () {
           });
         }).catch(err => {
           console.log('Display Error', JSON.stringify(err));
+        });
+      });
+    }
+    /**
+     * Function to clear cache.
+     */
+
+
+    clearCache() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'ResidentApp.1';
+        thunder$4.call(systemcCallsign, 'delete', {
+          path: ".cache"
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          resolve(err);
         });
       });
     }
@@ -7220,27 +7399,23 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'HtmlApp';
 
       if (webUrl != url) {
-        thunder$2.call('org.rdk.RDKShell', 'launch', {
+        thunder$4.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
           uri: url
         }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
-          }).then(() => {
-            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'foreground'
-            });
           });
-          thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {});
       } else {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7258,27 +7433,23 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'LightningApp';
 
       if (lightningUrl != url) {
-        thunder$2.call('org.rdk.RDKShell', 'launch', {
+        thunder$4.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
           uri: url
         }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
-          }).then(() => {
-            thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'foreground'
-            });
           });
-          thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {});
       } else {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7294,19 +7465,15 @@ var APP_accelerator_home_ui = (function () {
 
     launchCobalt(url) {
       const childCallsign = 'Cobalt';
-      thunder$2.call('org.rdk.RDKShell', 'launch', {
+      thunder$4.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
-        }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground'
-          });
         });
-        thunder$2.call('Cobalt.1', 'deeplink', url);
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$4.call('Cobalt.1', 'deeplink', url);
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }).catch(err => {});
@@ -7318,18 +7485,14 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchPremiumApp(childCallsign) {
-      thunder$2.call("org.rdk.RDKShell", "launch", {
+      thunder$4.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$2.call("org.rdk.RDKShell", "moveToFront", {
+        thunder$4.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
-        }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground'
-          });
         });
-        thunder$2.call("org.rdk.RDKShell", "setFocus", {
+        thunder$4.call("org.rdk.RDKShell", "setFocus", {
           client: childCallsign
         });
       }).catch(err => {});
@@ -7343,19 +7506,15 @@ var APP_accelerator_home_ui = (function () {
 
     launchResident(url) {
       const childCallsign = 'ResidentApp';
-      thunder$2.call('org.rdk.RDKShell', 'launch', {
+      thunder$4.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
         type: childCallsign,
         uri: url
       }).then(() => {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
-        }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground'
-          });
         });
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }).catch(err => {
@@ -7365,37 +7524,30 @@ var APP_accelerator_home_ui = (function () {
 
     launchforeground() {
       const childCallsign = 'foreground';
-      console.log("notification_url > location.protocol::" + location.protocol + '// location.host ' + location.host + " // '// location.pathname '" + location.pathname);
-      let notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
-      thunder$2.call('org.rdk.RDKShell', 'launch', {
+      let notification_url = location.protocol + '//' + location.host + "/static/notification/index.html";
+
+      if (location.host.includes('127.0.0.1')) {
+        notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+      }
+
+      console.log(notification_url, '|', location.host, JSON.stringify(location));
+      thunder$4.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
-        type: 'HtmlApp',
+        type: 'LightningApp',
         uri: notification_url
       }).then(() => {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign
-        });
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        // thunder.call('org.rdk.RDKShell', 'moveToFront', {
+        //   client: childCallsign,
+        // })
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: 'ResidentApp'
         });
-        thunder$2.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$4.call('org.rdk.RDKShell', 'setVisibility', {
           client: 'foreground',
           visible: false
         });
       }).catch(err => {}).catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
-      });
-    }
-
-    zorder(value, cli) {
-      console.log("#################zorder###################");
-      thunder$2.call('org.rdk.RDKShell', value, {
-        client: cli
-      }).then(result => {
-        console.log(client + ":" + value + '  Success');
-        resolve(result);
-      }).catch(err => {
-        resolve(false);
       });
     }
     /**
@@ -7405,7 +7557,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendWeb() {
       webUrl = '';
-      thunder$2.call('org.rdk.RDKShell', 'suspend', {
+      thunder$4.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'HtmlApp'
       });
     }
@@ -7416,7 +7568,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendLightning() {
       lightningUrl = '';
-      thunder$2.call('org.rdk.RDKShell', 'suspend', {
+      thunder$4.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'LightningApp'
       });
     }
@@ -7426,7 +7578,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     suspendCobalt() {
-      thunder$2.call('org.rdk.RDKShell', 'suspend', {
+      thunder$4.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'Cobalt'
       });
     }
@@ -7436,7 +7588,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     suspendPremiumApp(appName) {
-      thunder$2.call('org.rdk.RDKShell', 'suspend', {
+      thunder$4.call('org.rdk.RDKShell', 'suspend', {
         callsign: appName
       });
     }
@@ -7446,7 +7598,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateWeb() {
-      thunder$2.call('org.rdk.RDKShell', 'destroy', {
+      thunder$4.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'HtmlApp'
       });
       activatedWeb = false;
@@ -7458,7 +7610,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateCobalt() {
-      thunder$2.call('org.rdk.RDKShell', 'destroy', {
+      thunder$4.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
@@ -7466,7 +7618,7 @@ var APP_accelerator_home_ui = (function () {
 
     cobaltStateChangeEvent() {
       try {
-        thunder$2.on('Controller', 'statechange', notification => {
+        thunder$4.on('Controller', 'statechange', notification => {
           if (this._events.has('statechange')) {
             this._events.get('statechange')(notification);
           }
@@ -7481,7 +7633,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateNativeApp(appName) {
-      thunder$2.call('org.rdk.RDKShell', 'destroy', {
+      thunder$4.call('org.rdk.RDKShell', 'destroy', {
         callsign: appName
       });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
@@ -7492,7 +7644,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateLightning() {
-      thunder$2.call('org.rdk.RDKShell', 'destroy', {
+      thunder$4.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'LightningApp'
       });
       activatedLightning = false;
@@ -7506,15 +7658,25 @@ var APP_accelerator_home_ui = (function () {
 
 
     setVisibility(client, visible) {
-      thunder$2.call('org.rdk.RDKShell', 'setVisibility', {
-        client: client,
-        visible: visible
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.RDKShell', 'setVisibility', {
+          client: client,
+          visible: visible
+        });
+        thunder$4.call('org.rdk.RDKShell.1', 'setFocus', {
+          client: client
+        }).then(res => {
+          resolve(true);
+        }).catch(err => {
+          console.log('Set focus error', JSON.stringify(err));
+          reject(false);
+        });
       });
     }
 
     enabledisableinactivityReporting(bool) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
+        thunder$4.call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
           "enable": bool
         }).then(result => {
           resolve(result);
@@ -7527,7 +7689,7 @@ var APP_accelerator_home_ui = (function () {
 
     setInactivityInterval(t) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.RDKShell.1', 'setInactivityInterval', {
+        thunder$4.call('org.rdk.RDKShell.1', 'setInactivityInterval', {
           "interval": t
         }).then(result => {
           resolve(result);
@@ -7537,15 +7699,10 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    zorder(value, cli) {
-      console.log("#################zorder###################");
-      thunder$2.call('org.rdk.RDKShell', value, {
-        client: cli
-      }).then(result => {
-        console.log(client + ":" + value + '  Success');
-        console.log(JSON.stringify(result));
-      }).catch(err => {
-        console.log(JSON.stringify(err));
+    zorder(cli) {
+      thunder$4.call('org.rdk.RDKShell.1', 'moveToFront', {
+        client: cli,
+        callsign: cli
       });
     }
     /**
@@ -7559,9 +7716,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$2.call(plugin, method).then(res => {
+        thunder$4.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$2.call(plugin, method, res).then(resp => {
+          thunder$4.call(plugin, method, res).then(resp => {
             resolve(true);
           }).catch(err => {
             resolve(true);
@@ -7582,9 +7739,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$2.call(plugin, method).then(res => {
+        thunder$4.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$2.call(plugin, method, res).then(resp => {
+          thunder$4.call(plugin, method, res).then(resp => {
             resolve(true);
           }).catch(err => {
             resolve(true);
@@ -7604,25 +7761,25 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'testApp';
 
       if (nativeUrl != url) {
-        thunder$2.call('org.rdk.RDKShell', 'launchApplication', {
+        thunder$4.call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
         }).then(() => {
-          thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {
           console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
         });
       } else {
-        thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7635,7 +7792,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     killNative() {
-      thunder$2.call('org.rdk.RDKShell', 'kill', {
+      thunder$4.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
       nativeUrl = '';
@@ -7662,7 +7819,7 @@ var APP_accelerator_home_ui = (function () {
 
     standby(value) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'setPowerState', {
+        thunder$4.call('org.rdk.System.1', 'setPowerState', {
           "powerState": value,
           "standbyReason": "Requested by user"
         }).then(result => {
@@ -7675,7 +7832,7 @@ var APP_accelerator_home_ui = (function () {
 
     audio_mute(value, audio_source) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setMuted', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setMuted', {
           "audioPort": audio_source,
           "muted": value
         }).then(result => {
@@ -7687,9 +7844,22 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
+    muteStatus(port) {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getMuted', {
+          audioPort: port
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null));
+          reject(false);
+        });
+      });
+    }
+
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.RDKShell.1', 'launch', {
+        thunder$4.call('org.rdk.RDKShell.1', 'launch', {
           callsign: 'org.rdk.DisplaySettings.1'
         }).then(result => {
           console.log('Successfully emabled DisplaySettings Service');
@@ -7702,7 +7872,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getVolumeLevel', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getVolumeLevel', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -7715,7 +7885,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
           resolve(result);
         }).catch(err => {
           console.log("audio mute error:", JSON.stringify(err, 3, null));
@@ -7726,7 +7896,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSoundMode() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getSoundMode', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getSoundMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -7739,7 +7909,7 @@ var APP_accelerator_home_ui = (function () {
 
     setSoundMode(mode) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setSoundMode', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setSoundMode', {
           "audioPort": "HDMI0",
           "soundMode": mode,
           "persist": true
@@ -7754,7 +7924,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioModes() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -7768,9 +7938,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
-          console.log("############ getConnectedAudioPorts ############");
-          console.log(JSON.stringify(result, 3, null));
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
           resolve(result);
         }).catch(err => {
           console.log("audio mute error:", JSON.stringify(err, 3, null));
@@ -7782,12 +7950,10 @@ var APP_accelerator_home_ui = (function () {
 
     setEnableAudioPort(port) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setEnableAudioPort', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setEnableAudioPort', {
           "audioPort": port,
           "enable": true
         }).then(result => {
-          console.log(`############ SetEnableAudioPort ${port} #############`);
-          console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
           console.log("error in getting support audio sound mode:", JSON.stringify(err, 3, null));
@@ -7798,11 +7964,9 @@ var APP_accelerator_home_ui = (function () {
 
     getDRCMode() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings', 'getDRCMode', {
+        thunder$4.call('org.rdk.DisplaySettings', 'getDRCMode', {
           "audioPort": "HDMI0"
         }).then(result => {
-          console.log(`############ getDRC #############`);
-          console.log(JSON.stringify(result));
           resolve(result);
         }).catch(err => {
           console.log("error while getting the DRC", JSON.stringify(err));
@@ -7813,11 +7977,9 @@ var APP_accelerator_home_ui = (function () {
 
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setDRCMode', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setDRCMode', {
           "DRCMode": DRCNum
         }).then(result => {
-          console.log(`############ DRC was set to ${DRCNum} #############`);
-          console.log(JSON.stringify(result));
           resolve(result);
         }).catch(err => {
           console.log("error while setting the DRC", JSON.stringify(err));
@@ -7828,9 +7990,7 @@ var APP_accelerator_home_ui = (function () {
 
     getZoomSetting() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getZoomSetting').then(result => {
-          console.log(`############ getZoomSetting #############`);
-          console.log(JSON.stringify(result));
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getZoomSetting').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting Zoom Setting", JSON.stringify(err));
@@ -7841,11 +8001,9 @@ var APP_accelerator_home_ui = (function () {
 
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setZoomSetting', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setZoomSetting', {
           "zoomSetting": zoom
         }).then(result => {
-          console.log(`############ setZoomSetting #############`);
-          console.log(JSON.stringify(result));
           resolve(result);
         }).catch(err => {
           console.log("error while setting the Zoom", JSON.stringify(err));
@@ -7856,11 +8014,9 @@ var APP_accelerator_home_ui = (function () {
 
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getEnableAudioPort', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getEnableAudioPort', {
           "audioPort": audioPort
         }).then(result => {
-          console.log(`############ getEnableAudioPort #############`);
-          console.log(JSON.stringify(result));
           resolve(result);
         }).catch(err => {
           console.log("error while getting Enabled Audio port ", JSON.stringify(err));
@@ -7871,9 +8027,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getSupportedAudioPorts').then(result => {
-          console.log(`############ getSupportedAudioPorts #############`);
-          console.log(JSON.stringify(result));
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getSupportedAudioPorts').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting S upported audio ports ", JSON.stringify(err));
@@ -7884,9 +8038,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'getVolumeLevel').then(result => {
-          console.log(`############ getVolumeLevel #############`);
-          console.log(JSON.stringify(result));
+        thunder$4.call('org.rdk.DisplaySettings.1', 'getVolumeLevel').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error current volume level", JSON.stringify(err));
@@ -7897,12 +8049,10 @@ var APP_accelerator_home_ui = (function () {
 
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.DisplaySettings.1', 'setVolumeLevel', {
+        thunder$4.call('org.rdk.DisplaySettings.1', 'setVolumeLevel', {
           "audioPort": port,
           "volumeLevel": volume
         }).then(result => {
-          console.log(`############ setVolumeLevel #############`);
-          console.log(JSON.stringify(result));
           resolve(result);
         }).catch(err => {
           console.log("error while setting current volume level", JSON.stringify(err));
@@ -7917,7 +8067,7 @@ var APP_accelerator_home_ui = (function () {
 
     speak() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.TextToSpeech.1', 'speak', {
+        thunder$4.call('org.rdk.TextToSpeech.1', 'speak', {
           "text": "speech_1"
         }).then(result => {
           resolve(result);
@@ -7931,7 +8081,7 @@ var APP_accelerator_home_ui = (function () {
 
     resume() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.TextToSpeech.1', 'resume', {
+        thunder$4.call('org.rdk.TextToSpeech.1', 'resume', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -7945,7 +8095,7 @@ var APP_accelerator_home_ui = (function () {
 
     pause() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.TextToSpeech.1', 'pause', {
+        thunder$4.call('org.rdk.TextToSpeech.1', 'pause', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -7959,7 +8109,7 @@ var APP_accelerator_home_ui = (function () {
 
     getlistVoices() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.TextToSpeech.1', 'listvoices', {
+        thunder$4.call('org.rdk.TextToSpeech.1', 'listvoices', {
           "language": "en-US"
         }).then(result => {
           resolve(result);
@@ -7973,7 +8123,7 @@ var APP_accelerator_home_ui = (function () {
 
     syncLocation() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('LocationSync.1', 'sync').then(result => {
+        thunder$4.call('LocationSync.1', 'sync').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in syncing location:", JSON.stringify(err, 3, null));
@@ -7984,7 +8134,7 @@ var APP_accelerator_home_ui = (function () {
 
     getLocation() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('LocationSync.1', 'location').then(result => {
+        thunder$4.call('LocationSync.1', 'location').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting location:", JSON.stringify(err, 3, null));
@@ -7997,7 +8147,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateInfo() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getFirmwareUpdateInfo').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getFirmwareUpdateInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update info:", JSON.stringify(err, 3, null));
@@ -8009,7 +8159,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateState() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getFirmwareUpdateState').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getFirmwareUpdateState').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update state:", JSON.stringify(err, 3, null));
@@ -8021,7 +8171,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getDownloadedFirmwareInfo').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getDownloadedFirmwareInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded info:", JSON.stringify(err, 3, null));
@@ -8033,7 +8183,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSerialNumber() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getSerialNumber').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getSerialNumber').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -8045,7 +8195,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSystemVersions() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getSystemVersions').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getSystemVersions').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -8058,7 +8208,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateFirmware() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'updateFirmware').then(result => {
+        thunder$4.call('org.rdk.System.1', 'updateFirmware').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in firmware update:", JSON.stringify(err, 3, null));
@@ -8070,7 +8220,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getFirmwareDownloadPercent').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getFirmwareDownloadPercent').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded percentage:", JSON.stringify(err, 3, null));
@@ -8082,9 +8232,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDeviceIdentification() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('DeviceIdentification.1', 'deviceidentification').then(result => {
-          console.log("############ device Identification ############");
-          console.log(JSON.stringify(result, 3, null));
+        thunder$4.call('DeviceIdentification.1', 'deviceidentification').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting device Identification:", JSON.stringify(err, 3, null));
@@ -8096,7 +8244,7 @@ var APP_accelerator_home_ui = (function () {
 
     systeminfo() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('DeviceInfo.1', 'systeminfo').then(result => {
+        thunder$4.call('DeviceInfo.1', 'systeminfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting system info:", JSON.stringify(err, 3, null));
@@ -8108,7 +8256,7 @@ var APP_accelerator_home_ui = (function () {
 
     reboot() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'reboot', {
+        thunder$4.call('org.rdk.System.1', 'reboot', {
           "rebootReason": "FIRMWARE_FAILURE"
         }).then(result => {
           resolve(result);
@@ -8122,7 +8270,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPreferredStandbyMode() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'getPreferredStandbyMode').then(result => {
+        thunder$4.call('org.rdk.System.1', 'getPreferredStandbyMode').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getPreferredStandbyMode:", JSON.stringify(err, 3, null));
@@ -8134,7 +8282,7 @@ var APP_accelerator_home_ui = (function () {
     setPreferredStandbyMode(standbyMode) {
       console.log("setPreferredStandbyMode called : " + standbyMode);
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.System.1', 'setPreferredStandbyMode', {
+        thunder$4.call('org.rdk.System.1', 'setPreferredStandbyMode', {
           "standbyMode": standbyMode
         }).then(result => {
           resolve(result);
@@ -8147,10 +8295,10 @@ var APP_accelerator_home_ui = (function () {
 
     registerChangeLocation() {
       var callsign = "LocationSync.1";
-      thunder$2.call('Controller', 'activate', {
+      thunder$4.call('Controller', 'activate', {
         callsign: callsign
       }).then(result => {
-        thunder$2.on(callsign, "locationchange", notification => {
+        thunder$4.on(callsign, "locationchange", notification => {
           console.log("location was changed and the notification = ", notification);
         });
       }).catch(err => {
@@ -8159,7 +8307,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     async sendAppState(value) {
-      const state = await thunder$2.call('org.rdk.RDKShell.1', 'getState', {}).then(result => result.state);
+      const state = await thunder$4.call('org.rdk.RDKShell.1', 'getState', {}).then(result => result.state);
       this.state = state;
       let params = {
         applicationName: value,
@@ -8183,7 +8331,426 @@ var APP_accelerator_home_ui = (function () {
         activatedCobalt = false;
       }
 
-      await thunder$2.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
+      await thunder$4.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
+    } //NETWORK INFO APIS
+    //1. Get IP Setting
+
+
+    getIPSetting(defaultInterface) {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.Network.1', 'getIPSettings', {
+          "interface": defaultInterface
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in getting network info:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    } //2. Get default interface
+
+
+    getDefaultInterface() {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.Network.1', 'getDefaultInterface').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in getting default interface:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    } //3. Is interface enabled
+
+
+    isInterfaceEnabled() {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.Network.1', 'isInterfaceEnabled', {
+          "interface": "WIFI"
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in checking the interface:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    } //4. Get interfaces
+
+
+    getInterfaces() {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.Network.1', 'getInterfaces').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in getting interfaces:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    } //5. getConnectedSSID
+
+
+    getConnectedSSID() {
+      return new Promise((resolve, reject) => {
+        thunder$4.call('org.rdk.Wifi.1', 'getConnectedSSID').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("error in getting connected SSID:", JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class which contains data for app listings.
+   */
+  var imageListInfo = [];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class which contains data for app listings.
+   */
+  var musicListInfo = [];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class which contains data for app listings.
+   */
+  var videoListInfo = [];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class which contains data for app listings.
+   */
+  var UsbInnerFolderListInfo = [];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const config$3 = {
+    host: '127.0.0.1',
+    port: 9998,
+    versions: {
+      default: 2,
+      Controller: 1,
+      UsbAccess: 2
+    }
+  };
+  var thunder$3 = thunderJS(config$3);
+  /**
+   * Class that contains functions which commuicates with thunder API's
+   */
+
+  class UsbApi {
+    /**
+    *  Function to activate USB Access Plugin
+    */
+    activate() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.UsbAccess';
+        thunder$3.Controller.activate({
+          callsign: systemcCallsign
+        }).then(res => {
+          resolve(res);
+        }).catch(err => {
+          console.log('UsbAccess Plugin Activation Failed: ' + err);
+          reject(err);
+        });
+      });
+    }
+    /**
+    *  Function to deactivate USB Access Plugin
+    */
+
+
+    deactivate() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.UsbAccess';
+        thunder$3.Controller.deactivate({
+          callsign: systemcCallsign
+        }).then(res => {
+          resolve(res);
+        }).catch(err => {
+          console.log('UsbAccess Plugin Deactivation Failed: ' + err);
+          reject(err);
+        });
+      });
+    }
+    /**
+    *  Function to create link for USB content
+    */
+
+
+    clearLink() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.UsbAccess';
+        thunder$3.call(systemcCallsign, 'clearLink').then(result => {
+          resolve(result);
+        }).catch(err => {
+          resolve(false);
+        });
+      });
+    }
+    /**
+    *  Function to create link for USB content
+    */
+
+
+    createLink() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.UsbAccess';
+        thunder$3.call(systemcCallsign, 'createLink').then(result => {
+          resolve(result);
+        }).catch(err => {
+          resolve(false);
+        });
+      });
+    }
+    /**
+    *  Function to get getUsbList
+    */
+
+
+    getUsbFileList() {
+      if (arguments.length === 0) {
+        return new Promise((resolve, reject) => {
+          const systemcCallsign = 'org.rdk.UsbAccess';
+          thunder$3.call(systemcCallsign, 'getFileList').then(result => {
+            resolve(result.contents);
+          }).catch(err => {
+            resolve(false);
+          });
+        });
+      } else {
+        return new Promise((resolve, reject) => {
+          const systemcCallsign = 'org.rdk.UsbAccess';
+          thunder$3.call(systemcCallsign, 'getFileList', {
+            "path": arguments[0]
+          }).then(result => {
+            resolve(result.contents);
+          }).catch(err => {
+            resolve(false);
+          });
+        });
+      }
+    }
+
+    retrieUsb() {
+      this.usbLink = "";
+      var self = this;
+      return new Promise((resolve, reject) => {
+        self.clearLink().then(result => {
+          self.createLink().then(res => {
+            if (res.success) {
+              self.usbLink = res.baseURL;
+              self.getUsbFileList().then(result1 => {
+                self.getUsbContentList(result1);
+                resolve(true);
+              }).catch(err => {
+                reject(err);
+              });
+            }
+          }).catch(err => {
+            reject(err);
+          });
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    }
+
+    destroy() {
+      imageListInfo.length = 0;
+      videoListInfo.length = 0;
+      musicListInfo.length = 0;
+      UsbInnerFolderListInfo.length = 0;
+    }
+
+    cd(dname) {
+      return new Promise((resolve, reject) => {
+        this.getUsbFileList(dname).then(result1 => {
+          this.getUsbContentList(result1, dname);
+          resolve(true);
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    }
+
+    getMountedDevices() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = "org.rdk.UsbAccess";
+        thunder$3.call(systemcCallsign, 'getMounted').then(result => {
+          resolve(result);
+        }).catch(err => {
+          reject(err);
+          console.error(`Error while getting the mounted device ${JSON.stringify(err)}`);
+        });
+      });
+    }
+
+    getUsbContentList(result) {
+      this.destroy();
+      let cwd = this.usbLink;
+
+      if (arguments[1]) {
+        cwd = cwd + '/' + arguments[1];
+      } // to add support for more formats, extension can be added same as below 
+
+
+      var extensionForImage = ['.png', '.jpg', '.PNG', '.jpeg', '.JPEG', '.jpg', '.JPG'];
+      var extensionForVideo = ['.mp4', '.MP4', '.mov', '.MOV', '.avi', '.AVI', '.m3u8', '.M3U8', '.mpeg2', '.MPEG2'];
+      var extensionForAudio = ['.mp3', '.mpeg', '.MP3', '.MPEG'];
+      this._discoveredC = result; //   console.log("Discovered result :: " + JSON.stringify(result));
+
+      this._discoveredC.filter(device => {
+        for (let i in extensionForImage) {
+          if (device.name.indexOf(extensionForImage[i]) !== -1) {
+            var obj1 = {
+              displayName: device.name,
+              uri: cwd + '/' + device.name,
+              url: cwd + '/' + device.name // url: '/images/usb/picture-default-tile.jpg',
+              // url: '/images/usb/USB_Photo_Placeholder.jpg',
+              // uri: this.usbLink + '/' + device.name,
+
+            };
+            imageListInfo.push(obj1);
+            return device;
+          }
+        }
+      });
+
+      this._discoveredC.filter(device => {
+        for (let i in extensionForVideo) {
+          if (device.name.indexOf(extensionForVideo[i]) !== -1) {
+            var obj2 = {
+              displayName: device.name,
+              //  url: '/images/usb/video-default-tile.jpg',
+              url: '/images/usb/USB_Video_Placeholder.jpg',
+              uri: cwd + '/' + device.name
+            };
+            videoListInfo.push(obj2);
+            return device;
+          }
+        }
+      });
+
+      this._discoveredC.filter(device => {
+        for (let i in extensionForAudio) {
+          if (device.name.indexOf(extensionForAudio[i]) !== -1) {
+            var obj3 = {
+              displayName: device.name,
+              //  url: '/images/usb/music-default-tile.jpg',
+              url: '/images/usb/USB_Audio_Placeholder.jpg',
+              uri: cwd + '/' + device.name
+            };
+            musicListInfo.push(obj3);
+            return device;
+          }
+        }
+      });
+
+      this._discoveredC.filter(device => {
+        if (device.t === 'd') {
+          if (!(device.name === '.' || device.name === "..")) {
+            var obj4 = {
+              displayName: device.name,
+              url: "/images/usb/picture-folder.png",
+              uri: cwd + "/" + device.name
+            };
+            UsbInnerFolderListInfo.push(obj4);
+            return device;
+          }
+        }
+      });
     }
 
   }
@@ -8212,6 +8779,12 @@ var APP_accelerator_home_ui = (function () {
 
   class XcastApi {
     constructor() {
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      this._thunder = thunderJS(config);
       console.log('Xcast constructor');
       this._events = new Map();
     }
@@ -8222,12 +8795,6 @@ var APP_accelerator_home_ui = (function () {
 
     activate() {
       return new Promise((resolve, reject) => {
-        const config = {
-          host: '127.0.0.1',
-          port: 9998,
-          default: 1
-        };
-        this._thunder = thunderJS(config);
         this.callsign = 'org.rdk.Xcast.1';
 
         this._thunder.call('Controller', 'activate', {
@@ -8294,6 +8861,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
+    getEnabled() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('org.rdk.Xcast.1', 'getEnabled').then(res => {
+          resolve(res);
+        }).catch(err => {
+          console.log('Xdial error', err);
+        });
+      });
+    }
     /**
      *
      * @param {string} eventId
@@ -8311,8 +8888,15 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivate() {
-      this._events = new Map();
-      this._thunder = null;
+      return new Promise((resolve, reject) => {
+        this._thunder.call('org.rdk.Xcast.1', 'setEnabled', {
+          enabled: false
+        }).then(res => {
+          resolve(res.success);
+        }).catch(err => {
+          console.log('Failed to close Xcast', err);
+        });
+      });
     }
     /**
      * Function to notify the state of the app.
@@ -8323,7 +8907,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         console.log('Notifying back');
 
-        this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
+        this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
           resolve(result);
         });
       });
@@ -8358,6 +8942,124 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const keyMap = {
+    "0": 48,
+    "1": 49,
+    "2": 50,
+    "3": 51,
+    "4": 52,
+    "5": 53,
+    "6": 54,
+    "7": 55,
+    "8": 56,
+    "9": 57,
+    "F1": 112,
+    "F2": 113,
+    "F3": 114,
+    "F4": 115,
+    "F5": 116,
+    "F6": 117,
+    "F7": 118,
+    "F8": 119,
+    "F9": 120,
+    "F10": 121,
+    "F11": 122,
+    "F12": 123,
+    "q": 81,
+    "w": 87,
+    "e": 69,
+    "r": 82,
+    "t": 84,
+    "y": 89,
+    "u": 85,
+    "i": 73,
+    "o": 79,
+    "p": 80,
+    "a": 65,
+    "s": 83,
+    "d": 68,
+    "f": 70,
+    "g": 71,
+    "h": 72,
+    "j": 74,
+    "k": 75,
+    "l": 76,
+    "z": 90,
+    "x": 88,
+    "c": 67,
+    "v": 86,
+    "b": 66,
+    "n": 78,
+    "m": 77,
+    "Q": 81,
+    "W": 87,
+    "E": 69,
+    "R": 82,
+    "T": 84,
+    "Y": 89,
+    "U": 85,
+    "I": 73,
+    "O": 79,
+    "P": 80,
+    "A": 65,
+    "S": 83,
+    "D": 68,
+    "F": 70,
+    "G": 71,
+    "H": 72,
+    "J": 74,
+    "K": 75,
+    "L": 76,
+    "Z": 90,
+    "X": 88,
+    "C": 67,
+    "V": 86,
+    "B": 66,
+    "N": 78,
+    "M": 77,
+    "Enter": 13,
+    "Space": 32,
+    "ArrowUp": 38,
+    "ArrowLeft": 37,
+    "ArrowRight": 39,
+    "ArrowDown": 40,
+    "AudioVolumeDown": 174,
+    "AudioVolumeUp": 175,
+    "AudioVolumeMute": 173,
+    "MediaStop": 178,
+    "MediaTrackPrevious": 177,
+    "MediaPlay": 179,
+    "MediaTrackNext": 176,
+    "Escape": 27,
+    "Pause": 179,
+    "Backspace": 8,
+    "MediaRewind": 227,
+    "MediaFastForward": 228,
+    "Power": 116,
+    // F5
+    "PageUp": 33,
+    "PageDown": 34,
+    "Home": 36
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   /** Class for main view component in home UI */
 
   class MainView extends lng$1.Component {
@@ -8369,7 +9071,7 @@ var APP_accelerator_home_ui = (function () {
         MainView: {
           x: 200,
           w: 1765,
-          h: 1080,
+          h: 1250,
           clipping: true,
           Text1: {
             // x: 10 + 25,
@@ -8385,7 +9087,7 @@ var APP_accelerator_home_ui = (function () {
             zIndex: 0
           },
           AppList: {
-            y: 27 + 10,
+            y: 37,
             x: -20,
             flex: {
               direction: 'row',
@@ -8395,7 +9097,7 @@ var APP_accelerator_home_ui = (function () {
             type: lng$1.components.ListComponent,
             w: 1745,
             h: 400,
-            itemSize: 454 + 20,
+            itemSize: 474,
             roll: true,
             rollMax: 1745,
             horizontal: true,
@@ -8409,7 +9111,7 @@ var APP_accelerator_home_ui = (function () {
             text: {
               fontFace: CONFIG.language.font,
               fontSize: 25,
-              text: Language.translate('Featured Apps'),
+              text: Language.translate('Lightning Apps'),
               fontStyle: 'normal',
               textColor: 0xFFFFFFFF
             }
@@ -8425,7 +9127,7 @@ var APP_accelerator_home_ui = (function () {
             },
             w: 1745,
             h: 300,
-            itemSize: 268 + 20,
+            itemSize: 288,
             roll: true,
             rollMax: 1745,
             horizontal: true,
@@ -8434,7 +9136,7 @@ var APP_accelerator_home_ui = (function () {
           },
           Text3: {
             // x: 10 + 25,
-            y: 633 + 40,
+            y: 673,
             h: 30,
             text: {
               fontFace: CONFIG.language.font,
@@ -8446,7 +9148,7 @@ var APP_accelerator_home_ui = (function () {
           },
           TVShows: {
             x: -20,
-            y: 673 + 10 + 27,
+            y: 710,
             w: 1745,
             h: 400,
             type: lng$1.components.ListComponent,
@@ -8456,7 +9158,37 @@ var APP_accelerator_home_ui = (function () {
               wrap: false
             },
             roll: true,
-            itemSize: 257 + 20,
+            itemSize: 277,
+            rollMax: 1745,
+            horizontal: true,
+            itemScrollOffset: -4,
+            clipping: false
+          },
+          Text4: {
+            // x: 10 + 25,
+            y: 948,
+            h: 30,
+            text: {
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+              text: Language.translate('Partner Apps'),
+              fontStyle: 'normal',
+              textColor: 0xFFFFFFFF
+            }
+          },
+          UsbApps: {
+            x: -20,
+            y: 988,
+            type: lng$1.components.ListComponent,
+            flex: {
+              direction: 'row',
+              paddingLeft: 20,
+              wrap: false
+            },
+            w: 1745,
+            h: 400,
+            itemSize: 288,
+            roll: true,
             rollMax: 1745,
             horizontal: true,
             itemScrollOffset: -4,
@@ -8477,11 +9209,14 @@ var APP_accelerator_home_ui = (function () {
         port: 9998,
         default: 1
       };
+      let appApi = new AppApi();
+      this.usbApi = new UsbApi();
       this.xcastApi = new XcastApi();
-      var thunder = thunderJS(config);
+      let thunder = thunderJS(config);
       thunder.on('Controller', 'statechange', notification => {
-        if (notification && (notification.callsign == 'Cobalt' || notification.callsign == 'Amazon') && notification.state == 'Deactivation') {
-          var appApi = new AppApi();
+        console.log(JSON.stringify(notification));
+
+        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
           Storage.set('applicationType', '');
           appApi.setVisibility('ResidentApp', true);
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
@@ -8552,6 +9287,27 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('TVShows').start();
     }
+
+    set usbApps(items) {
+      console.log(`usb apps set function was called using the arguments ${items}`);
+
+      if (!items.length) {
+        this.tag('Text4').visible = false;
+      }
+
+      this.tag('UsbApps').items = items.map((info, index) => {
+        return {
+          w: 268,
+          h: 151,
+          type: ListItem,
+          data: info,
+          focus: 1.15,
+          unfocus: 1,
+          idx: index
+        };
+      });
+      this.tag('UsbApps').start();
+    }
     /**
      * Function to set the state in main view.
      */
@@ -8576,16 +9332,20 @@ var APP_accelerator_home_ui = (function () {
 
 
     reset() {
-      for (var i = this.tag('AppList').index; i > 0; i--) {
+      for (let i = this.tag('AppList').index; i > 0; i--) {
         this.tag('AppList').setPrevious();
       }
 
-      for (var i = this.tag('MetroApps').index; i > 0; i--) {
+      for (let i = this.tag('MetroApps').index; i > 0; i--) {
         this.tag('MetroApps').setPrevious();
       }
 
-      for (var i = this.tag('TVShows').index; i > 0; i--) {
+      for (let i = this.tag('TVShows').index; i > 0; i--) {
         this.tag('TVShows').setPrevious();
+      }
+
+      for (let i = this.tag("UsbApps").index; i > 0; i--) {
+        this.tag('UsbApps').setPrevious();
       }
     }
     /**
@@ -8632,10 +9392,9 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          var appApi = new AppApi();
-          var applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+          let appApi = new AppApi();
+          let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          var appApi = new AppApi();
           applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
@@ -8680,66 +9439,14 @@ var APP_accelerator_home_ui = (function () {
             }).catch(err => {
               console.log('Netflix not working');
             });
-          }
-        }
-
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1
-          };
-          var thunder = thunderJS(config);
-          console.log('_handleKey', key.keyCode);
-          var appApi = new AppApi(); // Detecting Ctrl
-
-          var _key = key.keyCode;
-          var ctrl = key.ctrlKey ? key.ctrlKey : _key === 17 ? true : false;
-
-          if (key.keyCode == 27 || ctrl && key.keyCode == 77 || key.keyCode == 36 || key.keyCode == 158) {
-            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateWeb();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateLightning();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.killNative();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Amazon') {
-              Storage.set('applicationType', '');
-              appApi.suspendPremiumApp('Amazon');
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Netflix') {
-              Storage.set('applicationType', '');
-              appApi.suspendPremiumApp('Netflix');
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Cobalt') {
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            } else return false;
-
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'setFocus', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            }).catch(err => {
-              console.log('Error', err);
-            });
+          } else {
+            if (this.uri === 'USB') {
+              this.usbApi.getMountedDevices().then(result => {
+                if (result.mounted.length === 1) {
+                  this.fireAncestors('$goToUsb');
+                }
+              });
+            }
           }
         }
 
@@ -8781,10 +9488,9 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          var appApi = new AppApi();
-          var applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
+          let appApi = new AppApi();
+          let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          var appApi = new AppApi();
           applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
@@ -8804,62 +9510,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
-        _handleKey(key) {
-          const config = {
-            host: '127.0.0.1',
-            port: 9998,
-            default: 1
-          };
-          var thunder = thunderJS(config);
-          var appApi = new AppApi();
-          console.log('_handleKey', key.keyCode); // Detecting Ctrl
-
-          var _key = key.keyCode;
-          var ctrl = key.ctrlKey ? key.ctrlKey : _key === 17 ? true : false;
-
-          if (key.keyCode == 27 || ctrl && key.keyCode == 77 || key.keyCode == 36 || key.keyCode == 158) {
-            if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateWeb();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.deactivateLightning();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-              Storage.set('applicationType', '');
-              appApi.killNative();
-              appApi.setVisibility('ResidentApp', true);
-            } else if (Storage.get('applicationType') == 'Cobalt') {
-              Storage.set('applicationType', '');
-              appApi.suspendCobalt();
-              appApi.setVisibility('ResidentApp', true);
-            } else {
-              appApi.zorder("moveToFront", "foreground");
-              return false;
-            }
-
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              appApi.zorder("moveToFront", "foreground");
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder.call('org.rdk.RDKShell', 'setFocus', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            }).catch(err => {
-              console.log('Error', err);
-            });
-          }
-        }
-
       }, class TVShows extends this {
         $enter() {
           this.fireAncestors('$scroll', -350);
@@ -8873,7 +9523,6 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Text3').text.fontStyle = 'bold';
 
           if (this.tag('TVShows').length) {
-            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('TVShows').element.data.url);
             return this.tag('TVShows').element;
           }
         }
@@ -8897,6 +9546,12 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
+        _handleDown() {
+          if (this.tag('UsbApps').length) {
+            this._setState("UsbApps");
+          }
+        }
+
         _handleEnter() {
           if (Storage.get('ipAddress')) {
             this.fireAncestors('$goToPlayer');
@@ -8905,6 +9560,70 @@ var APP_accelerator_home_ui = (function () {
 
         $exit() {
           this.fireAncestors('$scroll', 0);
+        }
+
+      }, class UsbApps extends this {
+        $enter() {
+          this.fireAncestors('$scroll', -550);
+        }
+
+        $exit() {
+          this.fireAncestors('$scroll', -350);
+        }
+
+        _getFocused() {
+          this.tag('Text4').text.fontStyle = 'bold';
+
+          if (this.tag('UsbApps').length) {
+            this.fireAncestors('$changeBackgroundImageOnFocus', this.tag('UsbApps').element.data.url);
+            return this.tag('UsbApps').element;
+          }
+        }
+
+        _handleUp() {
+          this._setState('TVShows');
+        }
+
+        _handleRight() {
+          if (this.tag('UsbApps').length - 1 != this.tag('MetroApps').index) {
+            this.tag('UsbApps').setNext();
+            return this.tag('UsbApps').element;
+          }
+        }
+
+        _handleLeft() {
+          this.tag('Text4').text.fontStyle = 'normal';
+
+          if (0 != this.tag('UsbApps').index) {
+            this.tag('UsbApps').setPrevious();
+            return this.tag('UsbApps').element;
+          } else {
+            this.reset();
+            this.fireAncestors('$goToSidePanel', 1);
+          }
+        }
+
+        _handleEnter() {
+          let appApi = new AppApi();
+          let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
+          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
+          applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
+          Storage.set('applicationType', applicationType);
+          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
+
+          if (Storage.get('applicationType') == 'Cobalt') {
+            appApi.launchCobalt(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            appApi.launchWeb(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+            appApi.launchLightning(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+            appApi.launchNative(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          }
         }
 
       }, class RightArrow extends this {//TODO
@@ -9062,6 +9781,12 @@ var APP_accelerator_home_ui = (function () {
           this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
             if (this._events.has('onDefaultInterfaceChanged')) {
               this._events.get('onDefaultInterfaceChanged')(notification);
+            }
+          });
+
+          this._thunder.on(this.callsign, 'onConnectionStatusChanged', notification => {
+            if (this._events.has('onConnectionStatusChanged')) {
+              this._events.get('onConnectionStatusChanged')(notification);
             }
           });
 
@@ -9225,6 +9950,12 @@ var APP_accelerator_home_ui = (function () {
    * Class which contains data for app listings.
    */
   var appListInfo = [{
+    displayName: 'USB',
+    applicationType: '',
+    uri: 'USB',
+    url: '/images/usb/USB_Featured_Item.jpg'
+  }, //the first item should be usb
+  {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
@@ -9235,20 +9966,15 @@ var APP_accelerator_home_ui = (function () {
     uri: 'https://www.youtube.com/tv',
     url: '/images/apps/youtube.jpg'
   }, {
+    displayName: 'Xumo',
+    applicationType: 'WebApp',
+    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    url: '/images/apps/xumo.png'
+  }, {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
     url: '/images/apps/content1.png'
-  }, {
-    displayName: 'Xumo',
-    applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/content2.png'
-  }, {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/content3.png'
   }];
 
   /**
@@ -9536,6 +10262,11 @@ var APP_accelerator_home_ui = (function () {
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
+  }, {
+    displayName: 'Bluetooth Audio',
+    applicationType: 'Lightning',
+    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
+    url: '/images/apps/content2.png'
   }];
 
   /**
@@ -9610,6 +10341,11 @@ var APP_accelerator_home_ui = (function () {
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "/images/metroApps/Test-10.jpg"
+  }, {
+    displayName: 'Bluetooth Audio',
+    applicationType: 'Lightning',
+    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
+    url: '/images/apps/content2.png'
   }];
 
   /**
@@ -9644,8 +10380,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage.set('ipAddress', null);
   });
-  var appApi$3 = new AppApi();
-  appApi$3.getIP().then(ip => {
+  var appApi$4 = new AppApi();
+  appApi$4.getIP().then(ip => {
     IpAddress2 = ip;
   });
   /**
@@ -9881,11 +10617,17 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
+    set scrollableLastRow(bool) {
+      this.isLastRowScrollable = bool;
+    }
+
     static _states() {
       return [class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
-            if (this.indexVal >= 2) {
+            if (this.indexVal >= 3 && this.isLastRowScrollable) {
+              this.fireAncestors('$scroll', -550);
+            } else if (this.indexVal >= 2) {
               this.fireAncestors('$scroll', -350);
             } else {
               this.fireAncestors('$scroll', 0);
@@ -9896,7 +10638,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == keyMap.ArrowRight || key.keyCode == keyMap.Enter) {
             if (this.prevIndex != this.indexVal) {
               this.tag('SidePanel').items[this.prevIndex].clearColor();
             }
@@ -9904,13 +10646,13 @@ var APP_accelerator_home_ui = (function () {
             this.fireAncestors('$goToMainView', this.indexVal == 3 ? 2 : this.indexVal);
             this.tag('SidePanel').items[this.indexVal].setColor();
             this.prevIndex = this.indexVal;
-          } else if (key.keyCode == 40) {
+          } else if (key.keyCode == keyMap.ArrowDown) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1;
             }
 
             return this.tag('SidePanel').items[this.indexVal];
-          } else if (key.keyCode == 38) {
+          } else if (key.keyCode == keyMap.ArrowUp) {
             if (0 === this.indexVal) {
               this.fireAncestors('$goToTopPanel', 0);
             } else {
@@ -10491,6 +11233,20 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Settings').color = 0xffffffff;
       }
     }
+    /**
+    *
+    * @param {boolean} toggle
+    * Function to change the mic icon.
+    */
+
+
+    set changeMic(toggle) {
+      if (toggle) {
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone_mute.png');
+      } else {
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png');
+      }
+    }
 
     _build() {
       setInterval(() => {
@@ -10565,9 +11321,9 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == keyMap.ArrowRight || key.keyCode == keyMap.Enter) {
             this._setState('Setting');
-          } else if (key.keyCode == 40) {
+          } else if (key.keyCode == keyMap.ArrowDown) {
             this.tag('Mic').color = 0xffffffff;
             this.fireAncestors('$goToSidePanel', 0);
           }
@@ -11046,7 +11802,7 @@ var APP_accelerator_home_ui = (function () {
         this._thunder.call('org.rdk.Bluetooth.1', 'disable').then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`Can't disable : ${err}`);
+          console.error(`Can't disable : ${JSON.stringify(err)}`);
           reject();
         });
       });
@@ -11061,7 +11817,7 @@ var APP_accelerator_home_ui = (function () {
         this._thunder.call('org.rdk.Bluetooth.1', 'enable').then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`Can't enable : ${err}`);
+          console.error(`Can't enable : ${JSON.stringify(err)}`);
           reject();
         });
       });
@@ -11113,7 +11869,7 @@ var APP_accelerator_home_ui = (function () {
           this._devices = result.discoveredDevices;
           resolve(result.discoveredDevices);
         }).catch(err => {
-          console.error(`Can't get discovered devices : ${err}`);
+          console.error(`Can't get discovered devices : ${JSON.stringify(err)}`);
           reject();
         });
       });
@@ -12526,6 +13282,4756 @@ var APP_accelerator_home_ui = (function () {
 
   }
 
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class VideoAndAudioItem$1 extends lng$1.Component {
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1920 - 300,
+          h: 90,
+          rect: true,
+          color: 0x00000000
+        },
+        BottomLine: {
+          y: 0 + 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        }
+      };
+    }
+
+    _init() {
+      if (this.isTicked) {
+        this.fireAncestors("$resetPrevTickObject", this);
+      }
+
+      this.appApi = new AppApi();
+    }
+
+    _handleEnter() {
+      if (this.videoElement === true) {
+        this.appApi.setResolution(this._item).then(res => {
+          this.fireAncestors('$updateResolution', this._item);
+
+          if (res === true) {
+            this.fireAncestors("$resetPrevTickObject", this);
+            this.tag("Item.Tick").visible = true;
+          }
+        }).catch(err => {
+          console.log(`there was an error while setting the resolution.`);
+        });
+      } else {
+        this.appApi.setSoundMode(this._item).then(result => {
+          if (result.success === true) {
+            this.fireAncestors("$resetPrevTickObject", this);
+            this.tag("Item.Tick").visible = true; // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
+          } //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
+
+
+          this.fireAncestors("$updateSoundMode", this._item);
+        }).catch(err => {
+          console.log('Some error while setting the sound mode ', err);
+        });
+      }
+    }
+
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Tick: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: this.isTicked ? true : false //implement the logic to show the tick
+
+        },
+        Left: {
+          x: 50,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item,
+            fontSize: 25,
+            textColor: 0xffFFFFFF,
+            fontFace: CONFIG.language.font
+          } // update the text
+
+        }
+      });
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Resolution Screen.
+   */
+
+  class ResolutionScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        Background: {
+          x: 0,
+          y: -10,
+          w: 1920,
+          h: 1080,
+          rect: true,
+          color: 0xff000000,
+          zIndex: 4
+        },
+        Loader: {
+          x: 1920 / 2 - 400 + 180,
+          y: 1080 / 2 - 300 + 100,
+          w: 90,
+          h: 90,
+          mount: 0.5,
+          zIndex: 4,
+          src: Utils.asset("images/settings/Loading.gif")
+        },
+        ResolutionScreenContents: {
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6
+          }
+        }
+      };
+    }
+
+    _init() {
+      this.appApi = new AppApi();
+      this.appApi.activateDisplaySettings();
+    }
+
+    _focus() {
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      var options = [];
+      this.appApi = new AppApi();
+
+      this._setState("LoadingState");
+
+      var sIndex = 0;
+      this.appApi.getResolution().then(resolution => {
+        this.appApi.getSupportedResolutions().then(res => {
+          this._setState("Options");
+
+          options = [...res];
+          this.tag('ResolutionScreenContents').h = options.length * 90;
+          this.tag('ResolutionScreenContents.List').h = options.length * 90;
+          this.tag('List').items = options.map((item, index) => {
+            var bool = false;
+
+            if (resolution === item) {
+              bool = true;
+              sIndex = index;
+            }
+
+            return {
+              ref: 'Option' + index,
+              w: 1920 - 300,
+              h: 90,
+              type: VideoAndAudioItem$1,
+              isTicked: bool,
+              item: item,
+              videoElement: true
+            };
+          });
+        }).catch(err => {
+          console.log(`error while fetching the supported resolution ${err}`);
+        }).then(() => {
+          this.tag('List').setIndex(sIndex);
+          console.log(`focus on index's value = ${sIndex}`);
+        });
+      });
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          this.tag("List").element.tag("Tick").visible = true;
+        }
+
+      }, class LoadingState extends this {
+        $enter() {
+          this.tag("Loader").visible = true;
+          this.tag("Background").visible = true;
+          this.loadingAnimation.start();
+        }
+
+        _getFocused() {}
+
+        $exit() {
+          this.tag("Loader").visible = false;
+          this.tag("Background").visible = false;
+          this.loadingAnimation.stop();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class HDRScreen extends lng$1.Component {
+    static _template() {
+      return {
+        List: {
+          w: 1920 - 300,
+          type: lng$1.components.ListComponent,
+          itemSize: 90,
+          horizontal: false,
+          invertDirection: true,
+          roll: true,
+          rollMax: 900,
+          itemScrollOffset: -5
+        }
+      };
+    }
+
+    _init() {
+      this.lastElement = false;
+      this.options = [{
+        value: 'Auto',
+        tick: true
+      }, {
+        value: 'Follow TV',
+        tick: false
+      }, {
+        value: 'SDR',
+        tick: false
+      }, {
+        value: 'HDR',
+        tick: false
+      }, {
+        value: 'Dolby Vision',
+        tick: false
+      }];
+      this.tag('List').h = this.options.length * 90;
+      this.tag('List').items = this.options.map(item => {
+        return {
+          w: 1920 - 300,
+          h: 90,
+          type: SettingsItem,
+          item: item.value
+        };
+      });
+      this.tag('List').getElement(0).tag('Tick').visible = true;
+
+      this._setState('Options');
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          this.options.forEach((element, idx) => {
+            if (element.tick) {
+              this.tag('List').getElement(idx).tag('Tick').visible = false;
+              this.options[idx].tick = false;
+            }
+          });
+          this.tag('List').element.tag('Tick').visible = true;
+          this.options[this.tag('List').index].tick = true;
+          this.fireAncestors('$updateHDR', this.options[this.tag('List').index].value);
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video screen.
+   */
+
+  class VideoScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        VideoScreenContents: {
+          Resolution: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Resolution: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          HDR: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('High Dynamic Range: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          MatchContent: {
+            alpha: 0.3,
+            // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Match Content: Match Dynamic Range',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          OutputFormat: {
+            alpha: 0.3,
+            // disabled
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Output Format: YCbCr',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Chroma: {
+            alpha: 0.3,
+            // disabled
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Chroma: 4:4:4',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          HDCP: {
+            y: 450,
+            h: 90,
+            // type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('HDCP Status: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        },
+        ResolutionScreen: {
+          type: ResolutionScreen,
+          visible: false
+        },
+        HDRScreen: {
+          type: HDRScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+    }
+
+    _focus() {
+      this._appApi.getResolution().then(resolution => {
+        this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
+      }).catch(err => {
+        console.log("Error fetching the Resolution"); // this.tag("Resolution.Title").text.text = "Error fetching Resolution";
+      });
+
+      this._appApi.getHDCPStatus().then(result => {
+        if (result.isHDCPCompliant && result.isHDCPEnabled) {
+          this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Enabled, Version: ${result.currentHDCPVersion}`;
+        } else {
+          this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Not Supported `;
+        }
+      });
+
+      this._appApi.getHDRSetting().then(result => {
+        const availableHDROptions = {
+          "HdrOff": "Off",
+          "Hdr10": "HDR 10",
+          "Hdr10Plus": "HDR 10+",
+          "HdrHlg": "HLG",
+          "HdrDolbyvision": "Dolby Vision",
+          "HdrTechnicolor": "Technicolor HDR"
+        };
+        this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
+      });
+
+      this._setState('Resolution');
+    }
+
+    hide() {
+      this.tag('VideoScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('VideoScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class Resolution extends this {
+        $enter() {
+          this.tag('Resolution')._focus();
+        }
+
+        $exit() {
+          this.tag('Resolution')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('HDR');
+        }
+
+        _handleEnter() {
+          this._appApi.getSupportedResolutions().then(result => {
+            if (result.length > 0) {
+              this._setState('ResolutionScreen');
+            }
+          });
+        }
+
+      }, class HDR extends this {
+        $enter() {
+          this.tag('HDR')._focus();
+        }
+
+        $exit() {
+          this.tag('HDR')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Resolution');
+        }
+
+        _handleDown() {// this._setState('MatchContent') //disabled
+        }
+
+      }, class MatchContent extends this {
+        $enter() {
+          this.tag('MatchContent')._focus();
+        }
+
+        $exit() {
+          this.tag('MatchContent')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('HDR');
+        }
+
+        _handleDown() {
+          this._setState('OutputFormat');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class OutputFormat extends this {
+        $enter() {
+          this.tag('OutputFormat')._focus();
+        }
+
+        $exit() {
+          this.tag('OutputFormat')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('MatchContent');
+        }
+
+        _handleDown() {
+          this._setState('Chroma');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class Chroma extends this {
+        $enter() {
+          this.tag('Chroma')._focus();
+        }
+
+        $exit() {
+          this.tag('Chroma')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OutputFormat');
+        }
+
+        _handleDown() {// this._setState('HDCP') 
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class HDCP extends this {
+        // class not required
+        $enter() {
+          this.tag('HDCP')._focus();
+        }
+
+        $exit() {
+          this.tag('HDCP')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Chroma');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class ResolutionScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('ResolutionScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Video / Resolution');
+        }
+
+        $exit() {
+          this.tag('ResolutionScreen').visible = false;
+          this.show();
+          this.fireAncestors('$changeHomeText', 'Settings / Video');
+        }
+
+        _getFocused() {
+          return this.tag('ResolutionScreen');
+        }
+
+        _handleBack() {
+          this._setState('Resolution');
+        }
+
+        $updateResolution(value) {
+          this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
+        }
+
+      }, class HDRScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('HDRScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Video / High Dynamic Range');
+        }
+
+        $exit() {
+          this.tag('HDRScreen').visible = false;
+          this.show();
+          this.fireAncestors('$changeHomeText', 'Settings / Video');
+        }
+
+        _getFocused() {
+          return this.tag('HDRScreen');
+        }
+
+        _handleBack() {
+          this._setState('HDR');
+        }
+
+        $updateHDR(value) {
+          this.tag('HDR.Title').text.text = 'High Dynamic Range: ' + value;
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for HDMI Output Screen.
+   */
+
+  var appApi$3 = new AppApi();
+  class HdmiOutputScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        Background: {
+          x: 0,
+          y: -10,
+          w: 1920,
+          h: 1080,
+          rect: true,
+          color: 0xff000000,
+          zIndex: 4,
+          visible: false
+        },
+        Loader: {
+          x: 1920 / 2 - 400 + 180,
+          y: 1080 / 2 - 300 + 100,
+          w: 90,
+          h: 90,
+          mount: 0.5,
+          zIndex: 4,
+          src: Utils.asset("images/settings/Loading.gif"),
+          visible: false
+        },
+        HdmiOutputScreenContents: {
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true
+          }
+        }
+      };
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    }
+
+    _focus() {
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+
+      this._setState("LoadingState");
+
+      var options = [];
+      appApi$3.getSoundMode().then(result => {
+        this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
+        appApi$3.getSupportedAudioModes().then(res => {
+          options = [...res.supportedAudioModes];
+          this.tag('HdmiOutputScreenContents').h = options.length * 90;
+          this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
+          this.tag('HdmiOutputScreenContents.List').items = options.map((item, index) => {
+            return {
+              ref: 'Option' + index,
+              w: 1920 - 300,
+              h: 90,
+              type: VideoAndAudioItem$1,
+              isTicked: result.soundMode === item ? true : false,
+              item: item,
+              videoElement: false
+            };
+          });
+
+          this._setState("Options");
+        }).catch(err => {
+          console.log('error', JSON.stringify(err));
+        });
+      }).catch(err => {
+        console.log('error', JSON.stringify(err));
+      });
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('HdmiOutputScreenContents.List').element;
+        }
+
+        _handleDown() {
+          this.tag('HdmiOutputScreenContents.List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('HdmiOutputScreenContents.List').setPrevious();
+        }
+
+      }, class LoadingState extends this {
+        $enter() {
+          this.tag("Loader").visible = true;
+          this.tag("Background").visible = true;
+          this.loadingAnimation.start();
+        }
+
+        _getFocused() {}
+
+        $exit() {
+          this.tag("Loader").visible = false;
+          this.tag("Background").visible = false;
+          this.loadingAnimation.stop();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class VideoAndAudioItem extends lng$1.Component {
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1920 - 300,
+          h: 90,
+          rect: true,
+          color: 0x00000000
+        },
+        BottomLine: {
+          y: 0 + 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        }
+      };
+    }
+
+    _init() {
+      if (this.isTicked) {
+        this.fireAncestors("$resetPrevTickObject", this);
+      }
+
+      this.appApi = new AppApi();
+    }
+
+    set item(item) {
+      this._item = item;
+      var self = this;
+      this.tag('Item').patch({
+        Tick: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: self.isTicked ? true : false //implement the logic to show the tick
+
+        },
+        Left: {
+          x: 50,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item,
+            fontSize: 25,
+            textColor: 0xffFFFFFF,
+            fontFace: CONFIG.language.font
+          } // update the text
+
+        }
+      });
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Resolution Screen.
+   */
+
+  class AudioOutputScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        AudioOutputScreenContents: {
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true
+          }
+        }
+      };
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    }
+
+    _focus() {
+      //change to init if needed
+      this.appApi = new AppApi();
+      this.appApi.getConnectedAudioPorts().then(res => {
+        var options = [...res.connectedAudioPorts];
+        this.tag('AudioOutputScreenContents').h = options.length * 90;
+        this.tag('AudioOutputScreenContents.List').h = options.length * 90;
+        this.tag('AudioOutputScreenContents.List').items = options.map((item, index) => {
+          return {
+            ref: 'Option' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: VideoAndAudioItem,
+            item: item
+          };
+        });
+
+        this._setState("Options");
+      }).catch(err => {
+        console.log(`Error while getting Connected AudioPorts :${err}`);
+      });
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {// enable the tick mark in VideoAudioItem.js
+          // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Audio screen.
+   */
+
+  class AudioScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        Wrapper: {
+          AudioOutput: {
+            alpha: 0.3,
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Audio Output: HDMI',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          OutputMode: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Output Mode: Auto'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          DynamicRange: {
+            alpha: 0.3,
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Full Dynamic Range',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          AudioLanguage: {
+            y: 270,
+            alpha: 0.3,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Audio Language: Auto',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          NavigationFeedback: {
+            y: 360,
+            alpha: 0.3,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Navigation Feedback',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 66,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOnWhite.png')
+            }
+          },
+          Bluetooth: {
+            alpha: 0.3,
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Bluetooth: None',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        OutputModeScreen: {
+          type: HdmiOutputScreen,
+          visible: false
+        },
+        AudioOutputS: {
+          type: AudioOutputScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this.appApi = new AppApi();
+    }
+
+    $updateTheDefaultAudio(audio) {
+      //console.log(audio)
+      this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + audio;
+    }
+
+    $updateSoundMode(soundMode) {
+      this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + soundMode;
+    }
+
+    _focus() {
+      // this._setState('AudioOutput') 
+      this._setState('OutputMode');
+    }
+
+    hide() {
+      this.tag('Wrapper').visible = false;
+    }
+
+    show() {
+      this.tag('Wrapper').visible = true;
+    }
+
+    static _states() {
+      return [class AudioOutput extends this {
+        $enter() {
+          this.tag('AudioOutput')._focus();
+        }
+
+        $exit() {
+          this.tag('AudioOutput')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('OutputMode');
+        }
+
+        _handleEnter() {
+          this._setState('AudioOutputScreenState');
+        }
+
+      }, // BookMark 1
+      class AudioOutputScreenState extends this {
+        $enter() {
+          this.hide();
+          this.tag('AudioOutputS').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode');
+        }
+
+        $exit() {
+          this.tag("AudioOutputS").visible = false;
+          this.show();
+          this.fireAncestors('$changeHomeText', 'Settings / Audio');
+        }
+
+        _getFocused() {
+          return this.tag('AudioOutputS');
+        }
+
+        _handleBack() {
+          this._setState('AudioOutput');
+        }
+
+        $updateAudioOutputText(value) {// this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value
+        }
+
+      }, class OutputMode extends this {
+        $enter() {
+          this.tag('OutputMode')._focus();
+        }
+
+        $exit() {
+          this.tag('OutputMode')._unfocus();
+        }
+
+        _handleUp() {// this._setState('AudioOutput')
+        }
+
+        _handleDown() {// this._setState('DynamicRange');
+        }
+
+        _handleEnter() {
+          this._setState('HdmiAudioOutputStereoScreen');
+        }
+
+      }, class DynamicRange extends this {
+        $enter() {
+          this.tag('DynamicRange')._focus();
+        }
+
+        $exit() {
+          this.tag('DynamicRange')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OutputMode');
+        }
+
+        _handleDown() {
+          this._setState('Bluetooth');
+        }
+
+        _handleEnter() {
+          /**
+           * This handle Enter has api calls -
+           * 1 - get DRC Mode which doesnot return a drc mode and the success value is mostly false
+           * 2- set Volume - able to set the value to 100
+           * 3- get Volume - able to get the volume successfully as well
+           * 4- 
+           * 
+           */
+          //console.log(`Enter input was given to dynamic range ... `);
+          // gets the drc mode
+          this.appApi.getDRCMode().then(res => {}).catch(err => {
+            console.log(err);
+          });
+          this.appApi.setVolumeLevel("HDMI0", 100).then(res => {
+            this.appApi.getVolumeLevel().catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          });
+          this.appApi.getConnectedAudioPorts().then(res => {}).catch(err => {
+            console.log(err);
+          }); // gets the enabled Audio Port
+
+          this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
+            console.log(err);
+          });
+          this.appApi.getSupportedAudioPorts().catch(err => {
+            console.log(`Error while getting the supported Audio ports ie. ${err}`);
+          }); // set enable Audio POrt
+
+          this.appApi.setEnableAudioPort("HDMI0").then(res => {
+            this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          }); // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
+
+          this.appApi.setZoomSetting("FULL").then(res => {
+            this.appApi.getZoomSetting().then(res => {}).catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+
+      }, class NavigationFeedback extends this {
+        $enter() {
+          this.tag('NavigationFeedback')._focus();
+        }
+
+        $exit() {
+          this.tag('NavigationFeedback')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DynamicRange');
+        }
+
+        _handleDown() {
+          this._setState('Bluetooth');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class Bluetooth extends this {
+        $enter() {
+          this.tag('Bluetooth')._focus();
+        }
+
+        $exit() {
+          this.tag('Bluetooth')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DynamicRange');
+        }
+
+      }, class HdmiAudioOutputStereoScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('OutputModeScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode');
+        }
+
+        $exit() {
+          this.tag('OutputModeScreen').visible = false;
+          this.show();
+          this.fireAncestors('$changeHomeText', 'Settings / Audio');
+        }
+
+        _getFocused() {
+          return this.tag('OutputModeScreen');
+        }
+
+        _handleBack() {
+          this._setState('OutputMode');
+        }
+
+        $updateHdmiAudioOutputStereo(value) {
+          this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value;
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Remote Control Screen.
+   */
+
+  class RemoteControlScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        RemoteControlScreenContents: {
+          PairingStatus: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Pairing Status: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          FirmwareVersion: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Firmware Version: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          TestMicrophone: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Test Microphone',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Info: {
+            y: 270,
+            BatteryHealth: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Battery Health: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            SignalStrength: {
+              x: 10,
+              y: 45 + 35,
+              mountY: 0.5,
+              text: {
+                text: 'Signal Strength: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            VoiceCapable: {
+              x: 10,
+              y: 45 + 35 + 35,
+              mountY: 0.5,
+              text: {
+                text: 'Voice Capable: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        },
+        PairingStatusScreen: {// 
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('PairingStatus'); //can be used on init as well
+
+    }
+
+    hide() {
+      this.tag('RemoteControlScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('RemoteControlScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class PairingStatus extends this {
+        $enter() {
+          this.tag('PairingStatus')._focus();
+        }
+
+        $exit() {
+          this.tag('PairingStatus')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('FirmwareVersion');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class FirmwareVersion extends this {
+        $enter() {
+          this.tag('FirmwareVersion')._focus();
+        }
+
+        $exit() {
+          this.tag('FirmwareVersion')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('PairingStatus');
+        }
+
+        _handleDown() {
+          this._setState('TestMicrophone');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class TestMicrophone extends this {
+        $enter() {
+          this.tag('TestMicrophone')._focus();
+        }
+
+        $exit() {
+          this.tag('TestMicrophone')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('FirmwareVersion');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class DeviceInformationScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        h: 1080,
+        w: 1920,
+        clipping: true,
+        DeviceInfoContents: {
+          y: 2,
+          Line1: {
+            y: 0,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          ChipSet: {
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Chipset`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: `unavailable`,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line2: {
+            y: 90,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          SerialNumber: {
+            Title: {
+              x: 10,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Serial Number`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: `unavailable`,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line3: {
+            y: 180,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          Location: {
+            Title: {
+              x: 10,
+              y: 225,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Location`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 225,
+              mountY: 0.5,
+              text: {
+                text: `City: unavailable , Country: unavailable `,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line4: {
+            y: 270,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          SupportedDRM: {
+            Title: {
+              x: 10,
+              y: 360,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Supported DRM & Key-System`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                wordWrapWidth: 1600,
+                wordWrap: true,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 360,
+              mountY: 0.5,
+              text: {
+                text: `unavailable`,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                wordWrapWidth: 1200,
+                wordWrap: true,
+                fontSize: 25
+              }
+            }
+          },
+          Line5: {
+            y: 450,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          FirmwareVersions: {
+            Title: {
+              x: 10,
+              y: 540,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Firmware version`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 540,
+              mountY: 0.5,
+              text: {
+                text: `UI Version: 3.4, Build Version: , Timestamp: `,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line6: {
+            y: 630,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          AppVersions: {
+            Title: {
+              x: 10,
+              y: 720,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`App Versions`),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 720,
+              mountY: 0.5,
+              text: {
+                text: "Youtube:\nAmazon Prime:\nNetflix:",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line7: {
+            y: 810,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          }
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('DeviceInformationScreen');
+
+      this.appApi = new AppApi();
+      this.appApi.getSerialNumber().then(result => {
+        this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
+      });
+      this.appApi.getSystemVersions().then(res => {
+        this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.4 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `;
+      }).catch(err => {
+        console.error(`error while getting the system versions`);
+      });
+      this.appApi.getDRMS().then(result => {
+        console.log('from device info supported drms ' + JSON.stringify(result));
+        var drms = "";
+        result.forEach(element => {
+          drms += `${element.name} :`;
+
+          if (element.keysystems) {
+            drms += "\t";
+            element.keysystems.forEach(keySystem => {
+              drms += `${keySystem}, `;
+            });
+            drms += "\n";
+          } else {
+            drms += "\n";
+          }
+        });
+        this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`;
+      });
+      this.appApi.getLocation().then(result => {
+        console.log("getLocation from device info " + JSON.stringify(result));
+        var locationInfo = "";
+
+        if (result.city.length !== 0) {
+          locationInfo = "City: " + result.city;
+        } else {
+          locationInfo = "City: unavailable ";
+        }
+
+        if (result.country.length !== 0) {
+          locationInfo += ", Country: " + result.country;
+        } else {
+          locationInfo += ", Country: unavailable ";
+        }
+
+        this.tag('Location.Value').text.text = `${locationInfo}`;
+      });
+      this.appApi.getDeviceIdentification().then(result => {
+        console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
+        this.tag('ChipSet.Value').text.text = `${result.chipset}`; // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+      });
+      this.appApi.registerChangeLocation();
+    }
+
+    _handleDown() {
+      if (this.tag("DeviceInfoContents").y > -200) {
+        this.tag("DeviceInfoContents").y -= 35;
+      }
+    }
+
+    _handleUp() {
+      if (this.tag("DeviceInfoContents").y < 35) {
+        this.tag("DeviceInfoContents").y += 35;
+      }
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Firmware screen.
+   */
+
+  class FirmwareScreen extends lng$1.Component {
+    static _template() {
+      return {
+        DeviceInfoContents: {
+          State: {
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Firmware State: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          Version: {
+            Title: {
+              x: 10,
+              y: 90,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Firmware Versions: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          DownloadedVersion: {
+            Title: {
+              x: 10,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Downloaded Firmware Version: `),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          DownloadedPercent: {
+            Title: {
+              x: 10,
+              y: 180,
+              mountY: 0.5,
+              text: {
+                text: Language.translate(`Download Progress: `),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          FirmwareUpdate: {
+            RectangleDefault: {
+              x: 110,
+              y: 200,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: CONFIG.theme.hex,
+              Update: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: "Check for Update",
+                  fontFace: CONFIG.language.font,
+                  fontSize: 24
+                }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    _focus() {
+      this._appApi = new AppApi();
+      const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
+
+      this._appApi.getFirmwareUpdateState().then(res => {
+        console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res));
+        this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState];
+      });
+
+      this._appApi.getDownloadFirmwareInfo().then(res => {
+        console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res));
+        this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion;
+      });
+
+      this._setState('FirmwareUpdate');
+    }
+
+    getDownloadPercent() {
+      this._appApi.getFirmwareDownloadPercent().then(res => {
+        this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%";
+      });
+    }
+
+    getDownloadFirmwareInfo() {
+      this._appApi.updateFirmware().then(res => {
+        this._appApi.getDownloadFirmwareInfo().then(result => {
+          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ')`${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
+        });
+      });
+    }
+
+    static _states() {
+      return [class FirmwareUpdate extends this {
+        _handleEnter() {
+          this.getDownloadFirmwareInfo();
+          this.getDownloadPercent();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Reboot Confirmation Screen.
+   */
+
+  class RebootConfirmationScreen extends lng$1.Component {
+    static _template() {
+      return {
+        Background: {
+          x: 0,
+          y: 0,
+          w: 1920,
+          h: 2000,
+          mount: 0.5,
+          rect: true,
+          color: 0xff000000
+        },
+        Title: {
+          x: 0,
+          y: 0,
+          mountX: 0.5,
+          text: {
+            text: "Reboot",
+            fontFace: CONFIG.language.font,
+            fontSize: 40,
+            textColor: CONFIG.theme.hex
+          }
+        },
+        BorderTop: {
+          x: 0,
+          y: 75,
+          w: 1558,
+          h: 3,
+          rect: true,
+          mountX: 0.5
+        },
+        Info: {
+          x: 0,
+          y: 125,
+          mountX: 0.5,
+          text: {
+            text: "Click Confirm to reboot!",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        Buttons: {
+          x: 100,
+          y: 200,
+          w: 440,
+          mountX: 0.5,
+          h: 50,
+          Confirm: {
+            x: 0,
+            w: 200,
+            mountX: 0.5,
+            h: 50,
+            rect: true,
+            color: 0xFFFFFFFF,
+            Title: {
+              x: 100,
+              y: 25,
+              mount: 0.5,
+              text: {
+                text: "Confirm",
+                fontFace: CONFIG.language.font,
+                fontSize: 22,
+                textColor: 0xFF000000
+              }
+            }
+          },
+          Cancel: {
+            x: 220,
+            w: 200,
+            mountX: 0.5,
+            h: 50,
+            rect: true,
+            color: 0xFF7D7D7D,
+            Title: {
+              x: 100,
+              y: 25,
+              mount: 0.5,
+              text: {
+                text: "Cancel",
+                fontFace: CONFIG.language.font,
+                fontSize: 22,
+                textColor: 0xFF000000
+              }
+            }
+          }
+        },
+        BorderBottom: {
+          x: 0,
+          y: 300,
+          w: 1558,
+          h: 3,
+          rect: true,
+          mountX: 0.5
+        },
+        Loader: {
+          x: 0,
+          y: 150,
+          mountX: 0.5,
+          w: 90,
+          h: 90,
+          zIndex: 2,
+          src: Utils.asset("images/settings/Loading.gif"),
+          visible: false
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('Confirm');
+
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+
+    static _states() {
+      return [class Confirm extends this {
+        $enter() {
+          this._focus();
+        }
+
+        _handleEnter() {
+          this.fireAncestors('$confirmReboot');
+
+          this._setState('Rebooting');
+        }
+
+        _handleRight() {
+          this._setState('Cancel');
+        }
+
+        _focus() {
+          this.tag('Confirm').patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag('Confirm.Title').patch({
+            text: {
+              textColor: 0xFFFFFFFF
+            }
+          });
+        }
+
+        _unfocus() {
+          this.tag('Confirm').patch({
+            color: 0xFFFFFFFF
+          });
+          this.tag('Confirm.Title').patch({
+            text: {
+              textColor: 0xFF000000
+            }
+          });
+        }
+
+        $exit() {
+          this._unfocus();
+        }
+
+      }, class Cancel extends this {
+        $enter() {
+          this._focus();
+        }
+
+        _handleEnter() {
+          this.fireAncestors('$cancelReboot');
+        }
+
+        _handleLeft() {
+          this._setState('Confirm');
+        }
+
+        _focus() {
+          this.tag('Cancel').patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag('Cancel.Title').patch({
+            text: {
+              textColor: 0xFFFFFFFF
+            }
+          });
+        }
+
+        _unfocus() {
+          this.tag('Cancel').patch({
+            color: 0xFF7D7D7D
+          });
+          this.tag('Cancel.Title').patch({
+            text: {
+              textColor: 0xFF000000
+            }
+          });
+        }
+
+        $exit() {
+          this._unfocus();
+        }
+
+      }, class Rebooting extends this {
+        $enter() {
+          this.loadingAnimation.start();
+          this.tag("Loader").visible = true;
+          this.tag("Title").text.text = "Rebooting...";
+          this.tag('Buttons').visible = false;
+          this.tag('Info').visible = false;
+        }
+
+        _handleEnter() {// do nothing
+        }
+
+        _handleLeft() {// do nothing
+        }
+
+        _handleRight() {// do nothing
+        }
+
+        _handleBack() {// do nothing
+        }
+
+        _handleUp() {// do nothing
+        }
+
+        _handleDown() {// do nothing
+        }
+
+        _handleKey(key) {
+          console.log("key press after reboot ", key);
+        }
+
+        _handleHome() {
+          console.log("homekey pressed");
+        }
+
+        _captureKey(key) {
+          if (key) {
+            console.log("capture key press after reboot ", key);
+          }
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class DeviceScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        DeviceScreenContents: {
+          Info: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Info'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Firmware: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Check for Firmware Update'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Reboot: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Reboot'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Reset: {
+            y: 270,
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Factory Reset',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        DeviceInformationScreen: {
+          type: DeviceInformationScreen,
+          visible: false
+        },
+        FirmwareScreen: {
+          type: FirmwareScreen,
+          visible: false
+        },
+        RebootConfirmationScreen: {
+          x: 780,
+          y: 100,
+          type: RebootConfirmationScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+    }
+
+    _focus() {
+      this._setState('Info');
+    }
+
+    hide() {
+      this.tag('DeviceScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('DeviceScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class Info extends this {
+        $enter() {
+          this.tag('Info')._focus();
+        }
+
+        $exit() {
+          this.tag('Info')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Reboot');
+        }
+
+        _handleDown() {
+          this._setState('Firmware');
+        }
+
+        _handleEnter() {
+          this._setState('DeviceInformationScreen');
+        }
+
+      }, class Firmware extends this {
+        $enter() {
+          this.tag('Firmware')._focus();
+        }
+
+        $exit() {
+          this.tag('Firmware')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Info');
+        }
+
+        _handleDown() {
+          this._setState('Reboot');
+        }
+
+        _handleEnter() {
+          this._setState('FirmwareScreen');
+        }
+
+      }, class Reboot extends this {
+        $enter() {
+          this.tag('Reboot')._focus();
+        }
+
+        $exit() {
+          this.tag('Reboot')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Firmware');
+        }
+
+        _handleDown() {
+          this._setState('Info');
+        }
+
+        _handleEnter() {
+          this._setState('RebootConfirmationScreen');
+        }
+
+      }, class Reset extends this {
+        $enter() {
+          this.tag('Reset')._focus();
+        }
+
+        $exit() {
+          this.tag('Reset')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Reboot');
+        }
+
+        _handleDown() {//this._setState('Info')
+        }
+
+        _handleEnter() {}
+
+      }, //Inner Screens Classes
+      class DeviceInformationScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('DeviceInformationScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Info');
+        }
+
+        _getFocused() {
+          return this.tag('DeviceInformationScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('DeviceInformationScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
+        }
+
+        _handleBack() {
+          this._setState('Info');
+        }
+
+      }, //Inner Firmware Screen
+      class FirmwareScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('FirmwareScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Firmware');
+        }
+
+        _getFocused() {
+          return this.tag('FirmwareScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('FirmwareScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
+        }
+
+        _handleBack() {
+          this._setState('Firmware');
+        }
+
+      }, class RebootConfirmationScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('RebootConfirmationScreen').visible = true;
+        }
+
+        _getFocused() {
+          return this.tag('RebootConfirmationScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('RebootConfirmationScreen').visible = false;
+        }
+
+        $confirmReboot() {
+          this._appApi.reboot().then(result => {
+            console.log('device rebooting from device screen ' + JSON.stringify(result));
+          });
+        }
+
+        $cancelReboot() {
+          this._handleBack();
+        }
+
+        _handleBack() {
+          this._setState('Reboot');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const config$2 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+  const thunder$2 = thunderJS(config$2);
+  class CECApi {
+    activate() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.HdmiCec_2.1';
+        thunder$2.Controller.activate({
+          callsign: systemcCallsign
+        }).then(() => {
+          resolve(true);
+        }).catch(err => {
+          console.log('CEC Error', err);
+        });
+      });
+    }
+
+    deactivate() {
+      return new Promise((resolve, reject) => {
+        const systemcCallsign = 'org.rdk.HdmiCec_2.1';
+        thunder$2.Controller.deactivate({
+          callsign: systemcCallsign
+        }).then(() => {
+          resolve(true);
+        }).catch(err => {
+          console.log('CEC Error', err);
+        });
+      });
+    }
+
+    getEnabled() {
+      return new Promise((resolve, reject) => {
+        thunder$2.call('org.rdk.HdmiCec_2.1', 'getEnabled').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log('CEC error ', err);
+          resolve({
+            enabled: false
+          });
+        });
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for AdvancedSettings screen.
+   */
+
+  class AdvanceSettingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        AdvanceScreenContents: {
+          UIVoice: {
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'UI Voice',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          TTSOptions: {
+            y: 90,
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'TTS Options',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          CECControl: {
+            y: 180,
+            // alpha: 0.3, // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('CEC Control'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          Bug: {
+            y: 270,
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Bug Report',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Contact: {
+            alpha: 0.3,
+            // disabled
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Contact Support',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Device: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Device'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        DeviceScreen: {
+          type: DeviceScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this.cecApi = new CECApi();
+      this.cecApi.activate().then(() => {
+        this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+      });
+    }
+
+    _focus() {
+      this._setState('CECControl');
+    }
+
+    hide() {
+      this.tag('AdvanceScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('AdvanceScreenContents').visible = true;
+    }
+
+    toggleCEC() {
+      this.cecApi.getEnabled().then(res => {
+        console.log(res);
+
+        if (res.enabled) {
+          this.cecApi.deactivate().then(() => {
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+          });
+        } else {
+          this.cecApi.activate().then(() => {
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+          });
+        }
+      });
+    }
+
+    static _states() {
+      return [class UIVoice extends this {
+        $enter() {
+          this.tag('UIVoice')._focus();
+        }
+
+        $exit() {
+          this.tag('UIVoice')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Reset');
+        }
+
+        _handleDown() {//this._setState('TTSOptions')
+        }
+
+        _handleEnter() {}
+
+      }, class TTSOptions extends this {
+        $enter() {
+          this.tag('TTSOptions')._focus();
+        }
+
+        $exit() {
+          this.tag('TTSOptions')._unfocus();
+        }
+
+        _handleUp() {//this._setState('UIVoice');
+        }
+
+        _handleDown() {//this._setState('CECControl')
+        }
+
+        _handleEnter() {}
+
+      }, class CECControl extends this {
+        $enter() {
+          this.tag('CECControl')._focus();
+        }
+
+        $exit() {
+          this.tag('CECControl')._unfocus();
+        }
+
+        _handleUp() {//this._setState('TTSOptions');
+        }
+
+        _handleDown() {
+          this._setState('Device');
+        }
+
+        _handleEnter() {
+          this.toggleCEC();
+        }
+
+      }, class Bug extends this {
+        $enter() {
+          this.tag('Bug')._focus();
+        }
+
+        $exit() {
+          this.tag('Bug')._unfocus();
+        }
+
+        _handleUp() {//this._setState('CECControl');
+        }
+
+        _handleDown() {//this._setState('Contact')
+        }
+
+        _handleEnter() {}
+
+      }, class Contact extends this {
+        $enter() {
+          this.tag('Contact')._focus();
+        }
+
+        $exit() {
+          this.tag('Contact')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Bug');
+        }
+
+        _handleDown() {//this._setState('Device')
+        }
+
+        _handleEnter() {}
+
+      }, class Device extends this {
+        $enter() {
+          this.tag('Device')._focus();
+        }
+
+        $exit() {
+          this.tag('Device')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('CECControl');
+        }
+
+        _handleDown() {//this._setState('UI Voice')
+        }
+
+        _handleEnter() {
+          this._setState('DeviceScreen');
+        }
+
+      }, //Inner Screens Classes
+      class DeviceScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('DeviceScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
+        }
+
+        _getFocused() {
+          return this.tag('DeviceScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('DeviceScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
+        }
+
+        _handleBack() {
+          this._setState('Device');
+        }
+
+      } // class CECScreen extends this {
+      //     $enter() {
+      //         this.hide()
+      //         this.tag('CECScreen').visible = true
+      //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / CEC Control')
+      //     }
+      //     $exit() {
+      //         this.show()
+      //         this.tag('CECScreen').visible = false
+      //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
+      //     }
+      // }
+      ];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const _privacyPolicy = `Privacy
+ Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (“RDK Management,” “we,” or “us”). This privacy policy discloses the privacy practices for this website only, including an explanation of:
+ 
+ the categories of personally identifiable information about you that may be collected and how that information is used;
+ how we collect and use non-personally identifiable information about your use of the website;
+ the categories of persons or entities with whom the information may be shared;
+ the choices that are available to you regarding collection, use, and distribution of the information;
+ how you can opt out of RDK-related promotional e-mail;
+ the kind of security procedures that are in place to protect the loss, misuse or alteration of information;
+ how you can review and request changes to the information; and
+ how we notify users of this website of changes to this privacy policy.
+ Questions regarding this policy should be directed to “RDK Management – Privacy Feedback” and can be submitted via e-mail to info@rdkcentral.com.
+ 
+ 
+ What categories of information do we collect?
+ The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.
+ 
+ To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you’ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.
+ 
+ The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you’re still free to take advantage of the publicly available content on our website without registration.
+ 
+ Does RDK Management analyze my interaction with this website?
+ Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.
+ 
+ We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a “Do Not Track” Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to “Do Not Track” signals sent from browsers.
+ 
+ You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.
+ 
+ What categories of persons or entities do we share personally identifiable information with?
+ We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.
+ 
+ What do we do to personalize your use of this website?
+ We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.
+ 
+ To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a “cookie.” We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you’ve made so you don’t have to re-enter them.
+ 
+ RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.
+ 
+ The cookies we use don’t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user’s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user’s account information over our website, for example.
+ 
+ In connection with the standard operation of RDK Management’s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users’ experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.
+ 
+ We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management’s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.
+ 
+ Your Access to and Control over your information?
+ You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.
+ 
+ Request to see all the information stored in the system
+ Accuracy of your data can be checked or corrected.
+ Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com
+ Express any concern you have about our use of your data
+ Opt out from receiving emails by clicking unsubscribe.
+ How do users opt out of RDK-related promotional e-mail?
+ You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of “RDK Management – E-mail Opt Out” via e-mail to info@rdkcentral.com.
+ 
+ Other Websites
+ 
+ To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don’t control. Once you leave our website by linking to another one (you can tell where you are by checking the address – known as a URL – in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you’re visiting. That policy may differ from ours. If you can’t find the privacy policy of any of these websites via a link from the site’s homepage, you should contact the website directly for more information.
+ 
+ Security
+ 
+ All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won’t be intercepted while being transmitted to us over the Internet. If you don’t want us to know any particular information about you, don’t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.
+ 
+ Changes to this Privacy Policy
+ 
+ We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we’ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.
+ 
+ A Special Note About Children
+ 
+ This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.
+ 
+ Contacting us:
+ 
+ If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.
+ 
+ Data Protection Officer:  Herman-Jan Smith
+ 
+ Email us at: hj.smith@rdkcentral.com
+ 
+ Contacting the appropriate authority:
+ 
+ Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner’s Office.
+ 
+ Email: compliance_team@rdkcentral.com
+ 
+ Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A`;
+  class PrivacyPolicyScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        h: 1080,
+        w: 1920,
+        clipping: true,
+        PrivacyPolicy: {
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: `Privacy Policy`,
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontStyle: "bold",
+              fontSize: 40
+            }
+          },
+          Content: {
+            x: 10,
+            y: 100,
+            text: {
+              text: _privacyPolicy,
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 20,
+              wordWrapWidth: 1500,
+              wordWrap: true
+            }
+          }
+        }
+      };
+    }
+
+    _handleDown() {
+      if (this.tag("PrivacyPolicy").y > -2400) {
+        this.tag("PrivacyPolicy").y -= 35;
+      }
+    }
+
+    _handleUp() {
+      if (this.tag("PrivacyPolicy").y < 35) {
+        this.tag("PrivacyPolicy").y += 35;
+      }
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Privacy Screen.
+   */
+
+  const xcastApi = new XcastApi();
+  class PrivacyScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        PrivacyScreenContents: {
+          LocalDeviceDiscovery: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Local Device Discovery'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          UsbMediaDevices: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('USB Media Devices'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          AudioInput: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Audio Input'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          ClearCookies: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Clear Cookies and App Data'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          PrivacyPolicy: {
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Privacy Policy and License'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        PrivacyPolicyScreen: {
+          type: PrivacyPolicyScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      xcastApi.getEnabled().then(res => {
+        if (res.enabled) {
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        } else {
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+        }
+      });
+      this.USBApi = new UsbApi();
+      this.AppApi = new AppApi();
+
+      if (!Storage.get('UsbMedia')) {
+        this.USBApi.activate().then(res => {
+          // activate the api and set UsbMedia for the first time in storage
+          this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+          this.fireAncestors('$registerUsbEvent');
+          Storage.set('UsbMedia', 'ON');
+        });
+      } else if (Storage.get('UsbMedia') === 'ON') {
+        this.USBApi.activate().then(res => {
+          this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+          this.fireAncestors('$registerUsbEvent');
+        });
+      } else if (Storage.get('UsbMedia') === 'OFF') {
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png'); // this.USBApi.deactivate().then(res => {
+        //     this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+        // })
+      }
+    }
+
+    _focus() {
+      this._setState('LocalDeviceDiscovery'); //can be used on init as well
+
+    }
+
+    hide() {
+      this.tag('PrivacyScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('PrivacyScreenContents').visible = true;
+    }
+
+    toggleLocalDeviceDiscovery() {
+      xcastApi.getEnabled().then(res => {
+        if (!res.enabled) {
+          xcastApi.activate().then(res => {
+            if (res) {
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+            }
+          });
+        } else {
+          xcastApi.deactivate().then(res => {
+            if (res) {
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            }
+          });
+        }
+      });
+    }
+
+    static _states() {
+      return [class LocalDeviceDiscovery extends this {
+        $enter() {
+          this.tag('LocalDeviceDiscovery')._focus();
+        }
+
+        $exit() {
+          this.tag('LocalDeviceDiscovery')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('PrivacyPolicy');
+        }
+
+        _handleDown() {
+          this._setState('UsbMediaDevices');
+        }
+
+        _handleEnter() {
+          this.toggleLocalDeviceDiscovery();
+        }
+
+      }, class UsbMediaDevices extends this {
+        $enter() {
+          this.tag('UsbMediaDevices')._focus();
+        }
+
+        $exit() {
+          this.tag('UsbMediaDevices')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('LocalDeviceDiscovery');
+        }
+
+        _handleDown() {
+          this._setState('AudioInput');
+        }
+
+        _handleEnter() {
+          let _UsbMedia = Storage.get('UsbMedia');
+
+          if (_UsbMedia === 'ON') {
+            Storage.set('UsbMedia', 'OFF');
+            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            this.fireAncestors('$initializeUSB'); // this.USBApi.deactivate().then(res => {
+            //     Storage.set('UsbMedia','OFF')
+            //     this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            // })
+          } else if (_UsbMedia === 'OFF') {
+            this.USBApi.activate().then(res => {
+              Storage.set('UsbMedia', 'ON');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+              this.fireAncestors('$registerUsbEvent');
+              this.fireAncestors('$initializeUSB');
+            });
+          }
+        }
+
+      }, class AudioInput extends this {
+        $enter() {
+          this.tag('AudioInput')._focus();
+        }
+
+        $exit() {
+          this.tag('AudioInput')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('UsbMediaDevices');
+        }
+
+        _handleDown() {
+          this._setState('ClearCookies');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class ClearCookies extends this {
+        $enter() {
+          this.tag('ClearCookies')._focus();
+        }
+
+        $exit() {
+          this.tag('ClearCookies')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('AudioInput');
+        }
+
+        _handleDown() {
+          this._setState('PrivacyPolicy');
+        }
+
+        _handleEnter() {
+          this.AppApi.clearCache().then(() => {//location.reload(true)
+          });
+        }
+
+      }, class PrivacyPolicy extends this {
+        $enter() {
+          this.tag('PrivacyPolicy')._focus();
+        }
+
+        $exit() {
+          this.tag('PrivacyPolicy')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('ClearCookies');
+        }
+
+        _handleDown() {
+          this._setState('LocalDeviceDiscovery');
+        }
+
+        _handleEnter() {
+          this._setState('PrivacyPolicyScreen');
+
+          this.hide();
+        }
+
+      }, class PrivacyPolicyScreen extends this {
+        $enter() {
+          this.tag('PrivacyPolicyScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy / Privacy Policy');
+        }
+
+        _getFocused() {
+          return this.tag('PrivacyPolicyScreen');
+        }
+
+        $exit() {
+          this.tag('PrivacyPolicyScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy');
+        }
+
+        _handleBack() {
+          this._setState('PrivacyPolicy');
+
+          this.show();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class EnergySavingsItem extends lng$1.Component {
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1920 - 300,
+          h: 90,
+          rect: true,
+          color: 0x00000000
+        },
+        BottomLine: {
+          y: 0 + 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        }
+      };
+    }
+
+    _init() {
+      if (this.isTicked) {
+        this.fireAncestors("$resetPrevTickObject", this);
+      }
+
+      this.appApi = new AppApi();
+    }
+
+    _handleEnter() {
+      var self = this;
+      var standbyMode = "";
+
+      if (this._item === "Deep Sleep") {
+        standbyMode = "DEEP_SLEEP";
+      } else if (this._item === "Light Sleep") {
+        standbyMode = "LIGHT_SLEEP";
+      }
+
+      this.appApi.setPreferredStandbyMode(standbyMode).then(result => {
+        console.log("setPreferredStandbyMode " + JSON.stringify(result));
+        self.fireAncestors("$resetPrevTickObject", self);
+        this.fireAncestors("$updateStandbyMode", this._item);
+        self.tag("Item.Tick").visible = true;
+      });
+    }
+
+    set item(item) {
+      this._item = item;
+      var self = this;
+      this.tag('Item').patch({
+        Tick: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: self.isTicked ? true : false //implement the logic to show the tick
+
+        },
+        Left: {
+          x: 50,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item,
+            fontSize: 25,
+            textColor: 0xffFFFFFF,
+            fontFace: CONFIG.language.font
+          } // update the text
+
+        }
+      });
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class EnergySavingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        EnerygySavingContents: {
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6
+          }
+        }
+      };
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          // this.tag("List").element.patch({ "Item.Tick.visible": true });
+          this.tag("List").element.tag("Tick").visible = true; // enable the tick mark in VideoAudioItem.js
+          //to update the resolution value on Video Screen
+        }
+
+      }];
+    }
+
+    _focus() {
+      this._appApi = new AppApi();
+
+      this._setState("Options");
+
+      const options = ["Deep Sleep", "Light Sleep"];
+      this.tag('EnerygySavingContents').h = options.length * 90;
+      this.tag('EnerygySavingContents.List').h = options.length * 90;
+      var standbyMode = "";
+
+      this._appApi.getPreferredStandbyMode().then(result => {
+        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
+          standbyMode = "Light Sleep";
+        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
+          standbyMode = "Deep Sleep";
+        }
+
+        this.tag('List').items = options.map((item, index) => {
+          return {
+            ref: 'Option' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: EnergySavingsItem,
+            isTicked: standbyMode === item ? true : false,
+            item: item,
+            energyItem: true
+          };
+        });
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class SleepTimerScreen extends lng$1.Component {
+    static _template() {
+      return {
+        List: {
+          w: 1920 - 300,
+          type: lng$1.components.ListComponent,
+          itemSize: 90,
+          horizontal: false,
+          invertDirection: true,
+          roll: true,
+          rollMax: 900,
+          itemScrollOffset: -5
+        }
+      };
+    }
+
+    _init() {
+      new AppApi();
+      this.fireAncestors('$registerInactivityMonitoringEvents');
+      this.lastElement = false;
+      this.options = [{
+        value: 'Off',
+        tick: true
+      }, {
+        value: '30 Minutes',
+        tick: false
+      }, {
+        value: '1 Hour',
+        tick: false
+      }, {
+        value: '1.5 Hours',
+        tick: false
+      }, {
+        value: '2 Hours',
+        tick: false
+      }, {
+        value: '3 Hours',
+        tick: false
+      }];
+      this.tag('List').h = this.options.length * 90;
+      this.tag('List').items = this.options.map(item => {
+        return {
+          w: 1920 - 300,
+          h: 90,
+          type: SettingsItem,
+          item: item.value
+        };
+      });
+      this.tag('List').getElement(0).tag('Tick').visible = true;
+
+      this._setState('Options');
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          this.options.forEach((element, idx) => {
+            if (element.tick) {
+              this.tag('List').getElement(idx).tag('Tick').visible = false;
+              this.options[idx].tick = false;
+            }
+          });
+          this.tag('List').element.tag('Tick').visible = true;
+          this.options[this.tag('List').index].tick = true;
+          this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
+          this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class LanguageScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        h: 1080,
+        w: 1920,
+        clipping: true,
+        LanguageScreenContents: {
+          EnglishTick: {
+            y: 45,
+            mountY: 0.5,
+            texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+            color: 0xffffffff,
+            visible: localStorage.getItem('Language') === 'english' || localStorage.getItem('Language') === null ? true : false
+          },
+          English: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 60,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'English',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          SpanishTick: {
+            y: 130,
+            mountY: 0.5,
+            texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
+            color: 0xffffffff,
+            visible: localStorage.getItem('Language') === 'spanish' ? true : false
+          },
+          Spanish: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 60,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Spanish',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        }
+      };
+    }
+
+    _focus() {
+      if (localStorage.getItem('Language') === 'english' || localStorage.getItem('Language') === null) {
+        this._setState('English');
+      } else if (localStorage.getItem('Language') === 'spanish') {
+        this._setState('Spanish');
+      }
+    }
+
+    static _states() {
+      return [class English extends this {
+        $enter() {
+          this.tag('English')._focus();
+        }
+
+        $exit() {
+          this.tag('English')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Spanish');
+        }
+
+        _handleDown() {
+          this._setState('Spanish');
+        }
+
+        _handleEnter() {
+          localStorage.setItem('Language', 'english');
+          location.reload();
+        }
+
+      }, class Spanish extends this {
+        $enter() {
+          this.tag('Spanish')._focus();
+        }
+
+        $exit() {
+          this.tag('Spanish')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('English');
+        }
+
+        _handleDown() {
+          this._setState('English');
+        }
+
+        _handleEnter() {
+          localStorage.setItem('Language', 'spanish');
+          location.reload();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Other Settings Screen.
+   */
+
+  class OtherSettingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        OtherSettingsScreenContents: {
+          SleepTimer: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Sleep Timer: Off'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          RemoteControl: {
+            alpha: 0.3,
+            // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Remote Control',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          ScreenSaver: {
+            alpha: 0.3,
+            // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Screen-Saver: ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          EnergySaver: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Energy Saver: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Language: {
+            //alpha: 0.3, // disabled
+            y: 450 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Language'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Privacy: {
+            //alpha: 0.3, // disabled
+            y: 540 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Privacy'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          AdvancedSettings: {
+            y: 630 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Advanced Settings'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        SleepTimerScreen: {
+          type: SleepTimerScreen,
+          visible: false
+        },
+        RemoteControlScreen: {
+          type: RemoteControlScreen,
+          visible: false
+        },
+        EnergySavingsScreen: {
+          type: EnergySavingsScreen,
+          visible: false
+        },
+        LanguageScreen: {
+          type: LanguageScreen,
+          visible: false
+        },
+        PrivacyScreen: {
+          type: PrivacyScreen,
+          visible: false
+        },
+        AdvancedSettingsScreen: {
+          type: AdvanceSettingsScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+    }
+
+    $updateStandbyMode(standbyMode) {
+      this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode;
+    }
+
+    $sleepTimerText(text) {
+      this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text;
+    }
+
+    _focus() {
+      this._setState('SleepTimer'); //can be used on init as well
+
+
+      this._appApi.getPreferredStandbyMode().then(result => {
+        var currentStandbyMode = "";
+
+        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
+          currentStandbyMode = "Light Sleep";
+        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
+          currentStandbyMode = "Deep Sleep";
+        }
+
+        this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode;
+      });
+    }
+
+    hide() {
+      this.tag('OtherSettingsScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('OtherSettingsScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class SleepTimer extends this {
+        $enter() {
+          this.tag('SleepTimer')._focus();
+        }
+
+        $exit() {
+          this.tag('SleepTimer')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('AdvancedSettings');
+        }
+
+        _handleDown() {
+          // this._setState('RemoteControl')
+          this._setState('EnergySaver');
+        }
+
+        _handleEnter() {
+          this._setState('SleepTimerScreen');
+        }
+
+      }, class RemoteControl extends this {
+        $enter() {
+          this.tag('RemoteControl')._focus();
+        }
+
+        $exit() {
+          this.tag('RemoteControl')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('SleepTimer');
+        }
+
+        _handleDown() {
+          this._setState('ScreenSaver');
+        }
+
+        _handleEnter() {
+          this._setState('RemoteControlScreen');
+        }
+
+      }, class ScreenSaver extends this {
+        $enter() {
+          this.tag('ScreenSaver')._focus();
+        }
+
+        $exit() {
+          this.tag('ScreenSaver')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('RemoteControl');
+        }
+
+        _handleDown() {
+          this._setState('EnergySaver');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class EnergySaver extends this {
+        $enter() {
+          this.tag('EnergySaver')._focus();
+        }
+
+        $exit() {
+          this.tag('EnergySaver')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('SleepTimer');
+        }
+
+        _handleDown() {
+          // this._setState('Theme')
+          this._setState('Language');
+        }
+
+        _handleEnter() {
+          this._setState('EnergySavingsScreen');
+        }
+
+      }, class Language extends this {
+        $enter() {
+          this.tag('Language')._focus();
+        }
+
+        $exit() {
+          this.tag('Language')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('EnergySaver');
+        }
+
+        _handleDown() {
+          this._setState('Privacy');
+        }
+
+        _handleEnter() {
+          this._setState('LanguageScreen');
+        }
+
+      }, class Privacy extends this {
+        $enter() {
+          this.tag('Privacy')._focus();
+        }
+
+        $exit() {
+          this.tag('Privacy')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Language');
+        }
+
+        _handleDown() {
+          this._setState('AdvancedSettings');
+        }
+
+        _handleEnter() {
+          this._setState('PrivacyScreen');
+        }
+
+      }, class AdvancedSettings extends this {
+        $enter() {
+          this.tag('AdvancedSettings')._focus();
+        }
+
+        $exit() {
+          this.tag('AdvancedSettings')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Privacy');
+        }
+
+        _handleDown() {
+          this._setState('SleepTimer');
+        }
+
+        _handleEnter() {
+          this._setState('AdvancedSettingsScreen');
+        }
+
+      }, class SleepTimerScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('SleepTimerScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Sleep Timer');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('SleepTimerScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+        }
+
+        _getFocused() {
+          return this.tag('SleepTimerScreen');
+        }
+
+        _handleBack() {
+          this._setState('SleepTimer');
+        }
+
+      }, class RemoteControlScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('RemoteControlScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Remote Control');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('RemoteControlScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+        }
+
+        _getFocused() {
+          return this.tag('RemoteControlScreen');
+        }
+
+        _handleBack() {
+          this._setState('RemoteControl');
+        }
+
+      }, // 
+      class PrivacyScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('PrivacyScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('PrivacyScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+        }
+
+        _getFocused() {
+          return this.tag('PrivacyScreen');
+        }
+
+        _handleBack() {
+          this._setState('Privacy');
+        }
+
+      }, class AdvancedSettingsScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('AdvancedSettingsScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('AdvancedSettingsScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+        }
+
+        _getFocused() {
+          return this.tag('AdvancedSettingsScreen');
+        }
+
+        _handleBack() {
+          this._setState('AdvancedSettings');
+        }
+
+      }, class EnergySavingsScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('EnergySavingsScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Energy Saver');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('EnergySavingsScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
+        }
+
+        _getFocused() {
+          return this.tag('EnergySavingsScreen');
+        }
+
+        _handleBack() {
+          this._setState('EnergySaver');
+        }
+
+      }, class LanguageScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('LanguageScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Language');
+        }
+
+        _getFocused() {
+          return this.tag('LanguageScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('LanguageScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings');
+        }
+
+        _handleBack() {
+          this._setState('Language');
+        }
+
+      }];
+    }
+
+  }
+
   var img$4 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOTozOTo0NS0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMDEzODUxYy0xNWRiLTQ5ZjgtYTA5ZC0wMTVhMTJiMTViYmQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mzk6NDUtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjZqHi4AAA+hSURBVHic7d170G11WcDx73M4gICDIUiIlCSgAqcMI2a4REJxFae4lCJqJHghibGZyibswjTI6IimQkwFTI1myqQQpihoNAqeNAiwIBFEbsPFCQaIO3Ke/lib4ZzjubxrvWu9az97fz8zDDOcvdb7cM77+5611l57vZGZSFIFy8YeQJIWymBJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqY/nYA0yDiBh7hFIy84XAdsC2wDbAlsBWk38Atpj8+0kgJ/9+FHgMeAh4EHggIh5asqFnQGaOPcLoDJY2KDO3B/YH9gV+AfhZ4CU97fth4L+A64CVwNURcWcf+9ZsCqvtEdbqMnMT4EDg9cChNIFaSj8AvgRcDlweEU8u8defWq5VgwUYrMwMmkgdDxxDT0dQPXgEuBT4DPDliHh25HlG5Vo1WMD8BisztwVOAk4Gdht5nI25F7gQ+OuIuGvsYcbgWjVYwPwFKzN3BX4P+G2ev0BexbPAZ4EPR8R1Yw+zlFyrBguYn2Bl5iuAPwXeAmwy8jh9+GfgjHkJl2vVYAGzH6zM3Ab4M+B3gE1HHmcInwbeFxF3jz3IkFyrBguY3WBNLqa/A/gAzT1Ts+wJmv/PD0XE02MPMwTXqsECZjNYmfkq4G+BXxp7liV2I3ByRPz72IP0zbXqR3NmTmZGZp4K3MD8xQpgT+DqzPxAZs7i6e9c8wiL2TnCysztgL8Hjhx7linxH8DxEfH9sQfpg2vVYAGzEazM3Bv4HPDTS/ylnwDuAO4DHqD5zGACq2jeidyC5vrZTwI/Bbxoied7CHhzRFy2xF+3d65VgwXUD1ZmvgU4H9h84C91F3A18G2aU84bI+L+NjuYvGO5J81HfvYB9gNe2fOcP/ZlgdMj4qyBv86gXKsGC6gdrMx8P/AXA+1+FfBvwMU0H425dYgvkpkvAw4DjgKOAF4wxNeheRPilKof8XGtGiygZrAmtyycC5wywO5vAC4APhsRPxxg/+s1eXTNMTS3YxwwwJf4AvDGiHhigH0PyrVqsIB6wZo8UeHvaO5Y7223wOeBsyNiZY/77Swz96T5CNFbgc163PWVwFER8XiP+xyca9VgAbWClZnLgE8Cb+5rl8BFNB9x+Z+e9tmrzHwpzUeKTqK/O/XLRcu1arCAcsE6D3h3T7v7BvDeiPjPnvY3qMlnIT8MHN3TLr8IHFPlznjXqjeOlpKZZ9BPrB4A3hYRB1aJFUBE3BYRxwCHA7f3sMvXAxdOrgeqAINVRGa+lea0aLEuAXaPiE/2sK9RRMRXgBXAeT3s7gT6+X3VEvCUkOk/JczM/WhuL1jM9ZungNMi4m96GWpKZOYbaO7u32aRuzo+Ij7Tw0iDca0aLGC6gzX5IRDXATsuYjd3AsdGxDX9TDVdJte2Pg+8ZhG7eQzYJyJu6meq/rlWPSWcapPbF/6RxcXqWpqFOJOxgubaFs0d8/+yiN1sBfzT5D4wTSmDNd1+Hzh4Edt/CTiw7cdnKprcnvDrNHezd7U7cHYvA2kQnhIynaeEmfkams/sdb1h8gvAcVXesu/L5B2/jwG/u4jdHBURX+xppN64Vg0WMH3ByszlNLHaq+Mu5jJWq8vMc2keCd3FfcCrIuKRHkdaNNeqp4TT6jS6x+rrwJvmOVYTp9Jc/+tiB5rHLWvKeITFdB1hTZ5c8F2gy8Xf7wH7RsSD/U5VU2ZuBnyVbk9eTabszQrXqkdY0+hMusXqEZprL8ZqYnKUeTTd7ooP4KO9DqRFM1hTJDP3At7WcfMTI+KWPueZBRHxAPAbQJdT5AMys6/PLaoHBmu6nEXzN3tbn4iIi/seZlZMTuv+oOPmZ06ekKEp4DUspuMaVmbuA3yrw6Y3A3tVfCDdUprc7nAF8CsdNp+Kj+24Vg0WMDXBupjmxsdWmwEHRMQ3+59o9mTmzsBNND8Yo42bgBURMepica16SjgVMnM34Nc6bHq+sVq4iLgd+PMOm+4BHNLrMOrEYE2H02h/7eph4I8HmGXW/SXQ5YdpvLffMdSFwRpZZm4FnNhh0zMj4n97HmfmTW51eF+HTY+YPBVCIzJY4zuW9vdd3QecM8As8+Ji4PoO253Y7xhqy2CN7+0dtvmQ7wp2N7l4fkaHTX/LWxzG5buEjPcuYWbuCNxNu+tXjwA7RcT/DTPVfJjc5vBd2v/U6f3HeqPDteoR1tiOpv3F9guM1eJNjrI+3mHTY/ueRQvnERajHmF9lfY3Mr46Im4eYp55k5lb01wPbHNf1h0RsfMwE22Ya9UjrNFk5pa0f4rASmPVn8nzrj7XcrOXZ2bb00j1xGCN53W0f5po1+c7af3+ocM2h/U+hRbEYI3noJavT9ofDWjjvkZzE24bbf/s1BODNZ79W77+moi4Z5BJ5lhEPANc1nKzfYeYRRtnsEYweRLma1tu9pUhZhEAl7d8/Q6TD1JriRmscewBbN5ymyuHGERAc1rYVtu/cNQDgzWOFS1fv4rmp+hoABFxJ3Bvy81+bohZtGEGaxxtg3VjRDw6yCR6TtuHJ+45yBTaIIM1jl1avv47g0yh1d3Q8vVt/wzVA4M1jpe3fP2Ng0yh1bX9Pd55iCG0YQZrHG2D9f1BptDqftDy9dtMPq2gJWSwxrFdy9ffOcgUWt3tHbbZoe8htGEGa4ll5otp//ve9h0stTR5euuzLTd78RCzaP0M1tLbusM2D/Q+hdal7e/zTwwxhNbPYC291j+G3lsalkzbp7i2/rPU4hispbe85eufGmQKrctDYw+gDTNY0+/JsQfQem019gDzxmBJ3W069gDzxmBJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSrDYEkqw2BJKsNgSSpj+dgDzIrM3B7YCdh6Iy/dteWul2fm6zoNpbZe2PL1r17An82jwH0RcXe3kbS6yMyxZxhdRLTeJjN3An4TOBjYD9im57E0Wx4FvgX8K3BRRNzadgeuVYMFtAtWZv4y8IfAEUD70kmNq4CzgMsiYkGL0LVqsICFBSszdwHOAQ4ffCDNk5XAKRFxw8Ze6Fr1ovuCZObJwH9jrNS/fYFrM/OPMtMj9o3wCIv1H2Fl5ibAucC7lnQgzauLgeMj4ql1/aJr1WAB6w7WJFafprmwLi2VK4GjIuLxtX/Bteop4Yacg7HS0jsI+NTkL0ytxWCtQ2a+A3j32HNobh0NvH/sIaaRp4SseUqYmbsB1wNbjjWPBKwCDoiIlc/9B9eqR1jr8nGMlca3DPgrTw3XZLBWk5kH460Lmh4/D5ww9hDTxFNCnj8lzMzLgUPGnUZaw03AiohI16rBAppgZebPALd13MVjwPnApcD3aD43Jm0B7AIcCbwT2Lbjfg6IiKtdqz6tYXVv6rjdpcA7I+L+PofRTHgIuBe4KjM/CHwEeHuH/ZwAXN3jXGUZrOcd1mGbS4DjIuLZnmfRjImIh4GTMvNx4NSWmx86wEgleUrYCOAJYPMW29wF7BERnv5pwTJzOc0HnvduuenmwNP9T1SL7xI2NqVdrADONFZqKyJ+BJzeYdOt+p6lIo+wGlvSXDhfqFXASyLiwYHm0QzLzGXA/cB2LTZ7GXDPMBPV4RFWo+3NebcaK3UVEauAa1pu5g2kGKzntH0O0Q8HmULzpO33kMHCYHXlu4JaLK/FdGCwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbAklWGwJJVhsCSVYbC62WTsAVRejD1ARQarkS1fv/0gU2ietP0eWjXIFMUYrEbbb4ZdM3PbQSbRzMvMZcDeLTd7dohZqjFYjWdavn4Z8MYhBtFcOATYruU2TwwxSDWR2fZsaCYF8BSwaYtt7gF2j4hHhhlJsygzlwMraX+E9QKa79G55hEWEBEJXNtysx2BT02+AaWF+ijtY3VHRMx9rMBgre6KDtu8AfhyZr6072E0WzLzRZl5AXBqh82/1vc8VXlKCEQEmbk7cFPHXTwOXAhcAtwMPNrTaKptC+AVwJHAu4Cub9QcGhFXuFYNFtAECyAzvwnsO+400hpuA14ZEc+6Vj0lXNsHxx5AWsvZEeEtDRMeYbHGEVYAVwH7jTqQ1LgFWBERTwO4Vj3CWsPk3cL3AD8aexYJOPW5WKlhsNYSEdcDp489h+beJyLi8rGHmDaeEvL8KeFzJqeGFwHHjTKQ5t3XgUPWPrpyrRos4MeDBZCZmwOXAQct+UCaZ98BDoyIh9f+Bdeqp4TrNbmz+HCae6ukpfAN1hMrNQzWBkwOyY8F/gQf76FhfQz4VWO1YZ4Ssu5TwrVl5j7AecBrBx9I8+QW4D0RsdGPhrlWPcJasIj4NvCLwPHA9eNOoxlwK83HdVYsJFZqeITFwo6w1paZe9HE62Caoy4feauNuRG4kuYd6Ksm9/0tmGvVYAHdgrW6yW0QmwHLaY5ajZegefT2KpobkZ+JiEVdB3WtGixJhXgNS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZBktSGQZLUhkGS1IZ/w/J2dR228nFJQAAAABJRU5ErkJggg==";
 
   var img$3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAACXBIWXMAACxLAAAsSwGlPZapAAAGuWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4wLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjQgKE1hY2ludG9zaCkiIHhtcDpDcmVhdGVEYXRlPSIyMDIxLTA4LTAyVDE2OjE4OjUyLTA2OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMS0wOS0yMVQwOToyOToyNi0wNjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NWQ4ZGU4YmItMTYyZC00MDg5LWI4NjktMDI2M2RmN2ZjZDEzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo1ZDhkZThiYi0xNjJkLTQwODktYjg2OS0wMjYzZGY3ZmNkMTMiIHN0RXZ0OndoZW49IjIwMjEtMDgtMDJUMTY6MTg6NTItMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChNYWNpbnRvc2gpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmN2JiZjlkNi03OTY5LTQ4M2EtYTdlYi1iNDM4NGMzNDJjM2EiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6MjQ6NDgtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpmYmIzZDcwOC02MGMxLTQ4MTAtOGRkMi05MDY1MzQ3NDA0MTQiIHN0RXZ0OndoZW49IjIwMjEtMDktMjFUMDk6Mjk6MjYtMDY6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMi41IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk7s+1gAACNQSURBVHic7d15nFdV/cfx17AjiySICAaG+4orrmhimuIWbrmXpmKmqbllWW6VS1pppl8k08pcU1PcNfc1ww3cUSwgBBVkkUXA+f3xvvMbkJlh5jvnLuf7fT8fj/tggJlzL8x33t9zz/2cc2pqa2sxM4tBm7wvwMysuRxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm0XBgmVk0HFhmFg0HlplFw4FlZtFwYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm0XBgmVk0HFhmFg0HlplFw4FlZtFwYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUXDgWVm0XBgmVk0HFhmFg0HlplFw4FlZtFwYJlZNBxYZhYNB5aZRcOBZWbRcGCZWTQcWGYWDQeWmUWjZsSIEXlfg+WjA9AR6AR0ST7+CtANWBVYOfm4O9ADaA+sBHQFegFtgYXJn3VpxvnmAx8n7cwBZgOLgZlfOmYA04HPgP8Bs4C5wDzg8+TPF5T/z7YiKZVKLfr8dildhxVDB2BFFD6roHDpC3wV6J/8ee/k4+4pX8uKyTWUYy4Kr+nAROA/ycfvAdNQyM0APk0Oq1AOrMqxKgqi1YA1gH7Jr32A1VGvKFYrAGsmHw9u4O/noUD7HzA+OaYC7wKTgf+i3qBFzoEVp68C6wCbA+uintLqKKR65HZV+emMwnkNYMgSfz4fhdgkFFrvA+8ArwCvZ3uJFoIDq/g6ANsBmwFboGDqnRxd87usKHQCBibHkupCbDIwFhgDvIB6ZVZgDqxi6YwGvtdDIbUtsDa6neuW43VVmr7JATAc3VLOQL2w51B4vYAeEszJ4wKtYQ6sfLVDPzgD0K3M14EtUTi1ze+yqk7n5OgLbA3UoieSrwFPA48Cb6Ge2dycrtFwYOWhB7ARur3bEgXVanlekC2jBpV5bJkcp6CSi2eS4yVgHLqttAw5sLKxCvW9p23QrZ7FZUVgWHKABu3rAuxpNKBvKXNgpWcgCqddUG9qg3wvxwLbIDmORfVgbwPPA/eiHpilwIEV1kDgG8A+6LavH57+VA3qSiqGASei28VngNvQU8ja/C6tsjiwWq8XeqK3PzAUFWo6pKrXysBOyXECqvu6DbgVlVEszu/S4ufAKk9vVHqwT3J8uc7HDPSAZXBy/Aq4HhiNemATcruqiDmwWmYL9OI7Btgk30tJzSJUIf4Zmng8PzlmoEf6i5K/I/nz6TSvBGMxmq9YV+zaCU256YJeh12Tv++UfNyj1f+SYmmPXjfHoPKIv6ByiYfzvKjYOLCa51Bge+AQ0p8knIUJ6IdmBppM/BEKnlnotmUuKpicgYoq636flhr0FK4HqodaEd1qr5D82gfdavVAcyYHJr/vlOI1pakv8OPkGA3cB9wFTMnzomLgwGrcKsCZqBRh+5yvpRyfo6dVk9Fk4HeoD6YPgU9QCC3K6wKXUEvzV1rohgKsbhWK3qiObU30oONraFWKWOyVHCcBj6PxrkfzvKAic2AtrS2wA3A8CqoB+V5Os8xHBYxvAx8Az6IaoXloakmlrR81Ozm+rAboiQKtB5rStAYwCNgYfS87UNwZBOsmxyHAy8B1wC3o+2sJB5b0QQH1fVTg2TnXq2ncLHSbNgGtODAWeAL1nBagXlW1PkKvRQH9cfL7l5Nf26PvZw9gQzQGuRUKh26oN1aT5YUuR3dgR9SrPxO4HLgH9ZSrXrUHVj9gD+AstApC0cxEFdSTgKfQhNwx1A962/ItTI5ZaHLzfcmfdwDWR3MHt0XL9QykOOuGtUVPokvoFv56VBrxchNfU/GqNbAGAnsCx6EXRVEsQo+8xwKvAi+iW7wijDNVms9RL/UVFAqgXvZW6DZyveT3HXK4ti/rgwboT0c9rpvRa6PqVFtgrY4msu6BxjeKYCZ6tP08GiQfS/1tjWXrReqDoDMKr/WATVEVe7+crqtOW+BHwPeAO4ArqbJpQNUSWKuid6g9KUaR52T0gnsMLeP7BvBFrldkXzYPPbV7PPn9Wui1sxOwOxrIz8uKwJEoRB8ELkTL31S8Sg+sAWhu10Hk++44H22WcCeqt3kb1UFZPN5NjgeBS9Fr62BgN9Rzb87OQaGtAhyRXMNo4LdU+NLPlRpYqwIHAj8nv5qcedQPlt+Ibvk8WF4Z6p5GjgF+hp44HoQmvq9D9uHVG90mHgJcC4xEY6EVp9ICa1V023c66sLn4Q00kHsreiLl3Voq2zz05K7u6d0e6FatbvG/LHVGE65/AFwC/AkVDFeMSgqsY9Dt30Y5nPtTtA7Sc+gJzic5XIMVw73J0Rb4FvBNYGeyHTutQTVcRwC/B65CD3eiVwmBNQw4DQ2GZu1FVNR3D1X2tMaWazFwe3IMREthf4dsX6erolUi9kVV85cTeY8/5sBaCzgbrUO1QobnnYUC6iZUyPlRhue2OL2fHHeiMa6Dk6NPRuffIjmGAWcA/87ovMHFGFi90RSaEegdJAu1qNr4RuAaNDUm6ncqy8Us6mu9LkEBcjYKriymg+2Eav5uBq4A3szgnEHFtDJmDfoGPwScSzZhtRgNpp6AJtOehgYxHVbWWh+iQfFN0S3bXWSzB2IPNMPjIeBksr07abVYAmtd9Lj2XjRtIm3z0NjDd9B28FfhDTUtHTOBB9AA/QFoqCGLmQ6robqtW9CE/yjEEFjfQ+sDHZnBub4AbkClEfsDf6N6Vz+w7D2Aaql2Ay4im63D9kQzLi4huzG1shU5sLYCHgH+SDa3f9eitbAOxwuoWb7GoBVEdkGD5FnMijgd+CcqhSisIgZWe/Qo9l5Uv5Kmuh7VYOBotDWTWVG8D/wa7cr0I9Kv71uf+oUD10n5XGUpWmBti7qnZ6HVI9MyCy1FOwTdalblUh0WjQ/QeNNGwDmku/Z7GzSt7SHgMNSBKIyiBFZ3NCfrUfRukpa6oBqGvilea8piMgU4H+3YdCEKsrT0B/6KnmRmVT60XEUIrI3RUivnAx1TPM9oYDgKKt/6WcymAT9BdVU3p3yuw9Cc2L1TPk+z5B1YR6OB9TTHqv4FfBv9h3sw3SrJB6hifm807pSWTVCd2G/IeQXWvAJrIPB3YBTaqikNk1Ag7oFWTjCrVKPR8jYHogn4aTkFeJp85u0C+QTWrug/eL+U2v8c+B0awL8WLzds1eM2VFd1DOntsrMl8A9UJZ+5LAOrE3ABcDd6fBraF6jwbgf0TjAxhXOYFd10VLv4TXQXMzeFc3RHTy1HosH5zGQVWP3RxOGzSWdg/U3gWLTW9gsptG8Wm9fRVJ+DSK9s51jgfmCblNpfRhaBtRMaWB+eUvvXoF7VtSm1bxaz0agw+iS0CW9o66NlwH+UQtvLSDuwzkDLWaSxXPHz6OnICDxOZbY8V6CpPqNTaLstcBmq20rrIRqQXmCtBPwFuBj9Y0KaTf2WXWn855tVqjHoNvFo0pmfeBga+E9tz880AmsTNLB+eAptP4xqti7G66ablWMBGj4ZipayCb0f5o7AE8ChgdsFwgfWbiisQk+vmYOm7gzD8/7MQngbhcpxhC+B6IdC8XgCZ0zIxs5ATwy+GrBN0AqfBwC/wPP+zEKqRcXbO6C7l5A6An9AwVUTqtFQgXVxcoQ2EnVdH0ihbTOT99GMkLMI/wDru2hcK8jigK0NrN5o4vIZAa5lSR8Ae5FOd9XMlrUQrXK6K/Ba4Lb3Q4sDbt/ahloTWOujWdyh66vuRWtM3xO4XTNbvpdRlfxlgdtdH/W0WjUPsdzA2gxt0rB5a07+JQvQEjMHAv8J2K6ZtcyHaIeoQ5KPQ+mDpguVXUFQTmDtg+qf1i33pA34AC2TcQ7pzH0ys5a7Cd3OPRWwzboazfPK+eKWBtaxaKmWvuWcrBEPotqNOwO2aWZhPIsq5EcGbvfnaO+GFqkZMWJEcz/3ePSYMqQr0MoKoYvXLLyeQBegG9p8swd6LN4eWBHNaGhsS7Q2aK/HGcnnz0BDAPNRAfCc5GMrtiPR3N2QO8ZfXCqVftzcT25uYJ1B2LKFOcCZaINSy1cNWlCxD1pVYyVgdaAX8BUUTp3RkiKdk993BLqigGpH8zcqmIuCbQ56KrUArbM/L/m72Si4JqJlgD8G/oueFE9KPtfy9Q3U0VgvYJvXlEqlZgVRcwLrLMroujXhdeAotHSxZaMd6gVtgMKoL5rvtRHqMXWnvvcU8t0zhNko4OYAn6EHMm8vcUxBoeai4uysipaL+nrANkcDR5dKpWlNfVJTgdUBuBzVQoVyP/ADYELANq1eGxQ63YC10QYfGwCboqDqjHpHoSek52Ex6o0tRL2vl4D30NpoY1DQzUQr0Fp4PVBH5vsB23wQ+G6pVGr0yWRjgdUOrVr4nYAXcxVaM2dBwDarXQ3qLQ1AG19uBWyIek7dc7yuIngH+Deae/oq6oVNwq+/0E5Bm1OE8iJwQKlUarC0qaHAagtcj5aKCOVnaC6gtV5v1GsahBZmG0Q6S05XmskowF5BvbHXSHdfv2pyBKqSD7V/4UvAt0ql0jLLnH85sNqhGomDA514FrqlvClQe9VqEBrs3Dj5eGMCTiitUuOBsej28UW0BZzHwcq3AdoKLNRaWOOA4aVSafySf7hkYLUDriNcz2pa0lboWeDVYk80r2sjdLtXmN13K9Bc4A00iH8rmvf2Wa5XFKd10P6IgwK1Nw7Yr1QqvVP3B3WB1RYtM3FkoBONR+X3zwdqrxqsgLZQOhQYgkoMVsj1iqrTXDQd5RX0JOwJVCvWWI2ZLW0AKnsItVP0S2hM632oD6wL0bLDITyGikzfCtReJeuNutD7oW9wf9LZVcjKswgNa9yNel6vks7SwpWmCxqIPzZQew8Be5dKpQXt0JLGZwZq+EHUQ/DyxU3bDK3OeigeMC+ydqiQ9rvJMQFN+n8K7QTlea8N+wyNXc8HfhigvV3Rz8qfakaMGFFCO8+01n1opQXf+zdsdbSy4zC0JE+HXK/GWushtBTS44RfP6qSXEWYWq1xwLB2aO2b1robLUXhsFrWDiig9gTWzPlaLJxdk2MaGue6LTlsaccDn6IZM62xIbBtG1q/j9goVAbhsKrXGfg2mm5wF3AyDqtK1RvtOXAT2nX8NDTP0ur9BDg3QDtfbYfmaHUps4GrgRPwagt1eqIiumOBrxHfAPoiNJVlYfLxNOAjNF9vVnJMQdXidROVZ6J30KbmIC5Gr7FeSdsrJ7+vm1zdF/2Q90uOdsnRgXj+D9uiQt7B6Gn7o2hlg7F5XlSBnIdeKxdR/vf003ZoMvIqZXzxSOBEHFaggfO9UHivlvO1NMdMFD7TUdiMQ5OKJ6EpLNPQo/0FKGy+IN3H+jXJ0TY5VkKhNgDNieyLVpQYiOZJdiHlHYZbaf3kOBb9nFyPgmthjtdUBL9Db3h/puWhNRd4ox267x7awi++Fg2kVXttymA03/L7FLfy/GO0XMtUFEgvogLJCSiciqA2Ob5AP9T/S45XG/jcPijAtgLWQj3ZVVDPrH8WF9sCHdCb+onAzeiO5Mlcryh/t6A3wZto2cog9wBv1YwYMaIbqkbfqplfeD3hCkxjtT16zH04xXvaV7fsygT0rv5a8vtKXkuqLQqvjdDg7HrJsWGeF9WIW1AP4/68LyRn+wM30Lye1jxg81Kp9GZd4Wh/VPA5cDlf+EfUza3WntVgdNs3nOIMrH6CxkueR0urvE5xek55WhWFWN3yOjugqSNF8AUKrD9Q3cF1HOp1NmUecHCpVLoLlp5L2B+tVXUyy/YapqCR/r9QnWNW/dDSOEeggeM8fQ48g4oXH0W3Th/g8ZHlqbtl3ArYBpWZ5D316TO0i8yv0HI41Wg3lC1DGvi7h4FflEql/7+Nbmh5mQ3R5MX10L3mM2heVZMrAVaoXqg84RTCzUJvqS/Q//04dB8/Ovn9nJyupxJ0QOG1DSrk3QqNi+X1RHI6ulW8giqb0lYqlTjuuOO6oRk3g9HDlE9QbdvrpVJpqXKplmxCUU06oHvsX6IK9TyMRyF1P/AAvs1LU0fU49od/dCsTz6rss5Bj/9vIOx+gIVVKpVa9PlFW7+7CHZE85/2zeHc09E7y7NoYPajHK6hGi1AcwRvRxtq7IfWHxuKnkJmpSvwa/Qw5zI0BGNLcGDVWw2N352aw7kfRj2pZ/DmHHlbiEoQbkazE3ZDva6Dye7nZWP0hrUnGph/IqPzFp4DS0agoForw3POQy/Gf6IJtN6Xr3jGA1cmH/8B9boOJewWV005AN2mjgTOp7JLU5qlnK3qK8mGaHyoRDZhVYsGVQ9Hg4ynJ+d3WBXfC2hMcyia1XAn2Syp3BW9mT6JentFLVDORLUGVne0VfYThFmtYnlmAv9AZRFbo0HVan2MHbsP0dPag4Cdgb+RzQD5IBSSfyaO6V+pqMZbwq3RLtY7ZHCuGWiht8vR+JRVjs9Rr+dJVCJxHHpQk2ZxaifUO98ZldrcmuK5CqmaelgdUa/qKdIPq6lopv5eaFFDh1Vl+y/1xY8XAe+mfL6+qG7rWrJ9ipm7agmsjdDyzeeRbq9yNnAJus0cgYOq2nyEFqrbFb3W0q6dOwqtfJpHCU4uqiGwjkRhtWOK5/gcPcXZDq2P39AqA1Y9PkAL1g1FA+Zp1tOtiW4Nz0Pbx1e0Sg6sXmhwexTp7ek3Hy3PMwQ4By/WZkt7D+0esznqeaW1OUtbNNxxR3KuilWpgbUdqm06lHSmWCxCL45dUUGhiz2tKRPR2NYmqKYqreXEd0J3E0dQoT/blfiPOgmtYrBBSu2PQWth7YcG8BendB6rPJPQ08QDUGlEGnqi0odRFGcJpGAqKbB6o2/S70hnUb3paLPZ7VDtjVm57kdPkA9CK6Gk4ShU+7dJSu3nolICawP0tOTolNofiaZlXIwmypqFcAt6ovxz0qma3xndIu6ZQtu5qITAOhhNHh6UQttvAt9C3fiXU2jfbBpwAZpg/WAK7fdGD4bOT6HtzMUcWG3QI+PrCf8U8DPgUlRgelfgts0a8jIaFz2G8GUQnYCfAb9H09KiFWtgdUVbYF9K+PGqp9EM+dPRjjNmWfkM7ZuwDemMk56AenHRVsfHGFg90TrYoZdKXUR9sd9Tgds2a4n3gMPQwPn/Are9Nfr52TRwu5mILbAGAfcRfoWFV4G9UbWwN3OworgOLSkTugRiMzTue1jgdlMXU2ANRWtHDQ7c7tXoRVHN2y1ZcY1F28qdQdgniT2Bv6Jt+6IRS2DVLZjWJ2CbU1FF8PFUyYL/Fq1FaK33ndDO3SGNREuDRyGGwDoEDUCGfLrxNLAHeocxi8XTaGWGPwZu97eoKDqPnYJapOiBdQTwJ6BbwDavRmNgYwK2aZaVSaj04VS0QGQoF6I13DoFbDO4IgfW6SisQm1uORsVgB4PzA3UpllefoMeFL0XsM2jgBspcK1WUQPrF2ghvFBd1Dep333ErFI8jVYMuTNgm8NR2cOKAdsMpoiBdQ7w04Dt3Y1uAb36p1Wi91GF/KiAbe6C9mXsEbDNIIoWWOcmRyhXoBnxEwO2aVY0taiQegThZmfshpap+Uqg9oIoUmCdi3pXISwGTkRrY80L1KZZkdWiQfMjCLfh6t5oo4vCjGkVJbCOJ1xYLUBPUa5c3ieaVaD70ThUqJ17hqM15gqhCIHVHzg7UFsT0f38dYHaM4vRo2ilkScCtfcdNLifuyIE1iGEWR7m3+g/9d4AbZnF7kNgGJp721ptKEg1fBEC6xsB2ngOLbT3VoC2zCrFXLSR7z8CtLUpmn+YqyIEVmsXyn8GPQmcHOBazCrNZ+guprU1iG2BVVp/Oa1ThMBqzXIuj6N3kLR32DWL2Tw0y+NXrWijhgLMEClCYI0v8+seQRNBQy9wZlapfoqmvJXjQ7Sjda6KEFjllB/8E+3tFnLyp1k1uBQ4s4yvS2sfxRZpl/cFoFUTRqHaqeZ4GIXVzNSuyBrSHlgZDbx2QSto9Ej+vBOae1aDChiX1Ab4HG3Tvhj4FE1En4n2elyQ/GrZuQR9ry5q5uePoSC1WEUILIAfomraby/n8+5Auy7PTvuCqlR3YG1gHaBfcgxAg61dkmMFtPFHBxRUbWheT/0LFGbzUYDNR2Mri1BP+WM0FjkdeB34T3L4YUo6Lkbfj4uX83lj0c/l1NSvqBmKEljzURBNSH7tid65QYPyM9FyGr9NPtfK1wGFThf0qHprVLy7Lgqour9r31gDZaoLtbrga8qSgTYLeAdtg/UyKl2ZCszBm9q21iXA22iWyTroe19nFtph51QKNBe3KIEFeoGehe6xd0U/QLXoP/QFNCvdytMPWA1tPrA9sBGwJtA5z4tqQl0Prjvq3a2FVogF3VZORK+JF1EPYDzqiTnAWu4uNJ3n62h7sXaox/skKsYulCIFVp1PgJvyvojI9UK3dhujHtS26Ie+ErQFVk+OuiGEaage7zngNfQm90H2lxatz4GHkqPQihhYVp5uqBeyPbAVsAnV8/3tjSbpDk9+/y7qITyTHO/kdF0WWLW8oCtVJxRSe6Le1Gb5Xk5hrJUc30MD9y+gicB3ozXRLVIOrPh0RNs9HQZsgbYd75DrFRXbgOQ4ENUf/RsF1x34aXN0HFhxaIPGbIaj6v5NKe6AeZH1T4690b4Bo9BqBuPw0+coOLCKrSNa12hfVCyb+2z5CtEOPTU9LznuAG5B412u+yowB1Yx9UWlHfuiXa8tXfsmx1uorOZl4KVcr8ga5MAqlh7AD9ByORvmeylVaV20q/IMVJ90NfCvXK/IluLAKoYuwCloYHijnK/FtFPMd9HT1wfRsixv5HlBJg6sfPVCu+0ehaZGxGQxmh9YN0dwcROfWzffsCb5NZbXXS/gULRP3/3Ar1FwfXmCt2UklhdOpVkZVWmfip7+FdFs9ORsTnJMQNXjM9Dczo+TP5+BKqU/ReFV00Bb3dE8tfbotndV9AChblL1GsBKaPXZurmGRXpt9kYbMewP3ABcRrhdaawFivSiqBa7oIHdjfO+kCV8iCYUTwXeRD+M45Pfv4uW2c3CQFR2MADNdVwfBXofFG5tM7qOxnRBm5XuhXpbtwBTcr2iKuPAys4QtP/iQXlfCJo8PC45XkXLuWQZTI15n2UnubdHg+FroQBbG1X0b5DtpS2lL1o55Ei0Rd3oHK+lqjiw0tcd7Wp9HPkVey4AHgOeQiH1DvHsMLQQrcgwFtVLgVafWA89SR0M7Ixu27K2MaqavxXVc3lgPmUOrHTtA5xPPrd/M9Cyto8Cr6CQyn0TgUAmJ8cjaMxs7eQYAnyT7P+/DwS2Q+Nbv8RTflLjwErHGugddz80QTkLtWgw/BFUS/Q6GptalNH581K3Ztrb6NbsYhReu6P5lv3IZq5lPzRXcQe02cNjGZyz6jiwwjsS3QL2z+h8H6Le023oB3YielpXrT5B62I9h+qnhqEnfIPQYH7atkEbl16JVvT03gMBObDC6QNcAByd0fleQj+UV6PelC1rPhr3ugOVUhyKJj5vS7pPHLsDP0HhdRIaf7MAirDNVyX4JvAA2YTVY2j6zhDgBBxWzTUFlZPUTSa/MYNz7oS2pMvqTaziObBa74docHtQyucZhep/9gCuonIG0PNwN/UV7L9BBbBpWRl9725A5RDWCg6s8q2CbjUuJ71b61rgz2ihvmNRMM5L6VzV6BE022AwunX7KMVzHYrGGLdI8RwVz4FVnqFoUuzw5X1imeYBN6MxkKPRRpaWnjeBK9DE88vQNKM0bIY2Av5hSu1XPAdWyx0G3E56t4BPojlrB6O1yCu9LKFIpgKnoS2v7iCdyv8eqEr+ArRxiLWAA6tlLgX+il50ob2Ebk92RMv2Wn5eRTV0+6Pb8NDaoCk9t6OlbKyZHFjN0wm4HgVKaLPRO+5QNABsxfEAetBxPFqFNLRdknN4t6NmcmAt31rAnaj4MLR7UI/qR7jAsMiuRpXzVxP+Fn0wWmtrz8DtViQHVtO2Be4Fdgvc7odomZJvk847t4U3FfW0dgaeDtx2b1QXtm/gdiuOA6txg1HtTOgt3m9HOzNfg2upYvQkKhS+kLCTnLuh0DouYJsVx4HVsG3Ri+drAdv8CE2O3R/4b8B2LXtz0dSbfQi7pExHdNt5dsA2K4oDa1lD0djSGgHbfBBVqF8SsE3L32NoO7aRgdu9AL9WGuTAWto3UP1NyEfNF6MVA14M2KYVx2R0G3c4YQtOTwcuCtheRXBg1dsdhdWKgdr7GL2If0x1L/dSLW5AE9IfDdjmmTi0luLAkiHAXwhXefw8qrG5IVB7FodxaLrW7QHbPBOtr2Y4sEB7z12e/BrC39CaS68Eas/iMguVq5xMuJqt01G9XtVzYClcNg3U1i/RXMM0Z/1b8S1Gb4JHEqYgeIWkrYb2fKwq1R5YbQn3znUqfhxtS7sBvSGG2KFoW7yeVtUHVle0YWdrTEcD9p4HaA15Eo1ntnaJoLqdsqtatQfWIrTud7nGo5KFB8JcjlWoSeh18kIr2miDbwmrPrDmoh2PyzEeOITWvQitekxDu34/XObXT0E1X1Wt2gOrlvLqZiaiJW9dDGot8QF6KPNQGV/7DJo0X9WqPbBA73jPtuDzpwDfAv6VytVYpZuGeuYt2Wh1HvD7dC4nLg4sbel+bPLr8kxBS828lOoVWaX7BBWYPtOMz/0C+D7wWqpXFAkHlryOnuQ0Nb5wC5oY7ReOhTATDcRfDixo5HOmot7Yn7O6qKLzzs/1xqB1vHdFNS9rone3d9BTwKfwhhAW1ixUEf9XtOLohmh62HS0yu0Y4P28Lq6IHFhLm43mgd2O1nGvpfF3P7NQxiRHB1TMvAhYmOsVFVRNbW1t3tdgZtYsHsMys2g4sMwsGg4sM4uGA8vMouHAMrNoOLDMLBoOLDOLhgPLzKLhwDKzaDiwzCwaDiwzi4YDy8yi4cAys2g4sMwsGg4sM4uGA8vMouHAMrNoOLDMLBpe091C6AVsCqwNrIjWJgf4GPgPMA6YkM+lWSVxYFlr7IV2GtocWAvo2MDn1KKwege4F7gys6uziuNNKKwcQ4Bz0HZonVv4tS8CVwPXhb4oq3wOLGuJjsDpwJlA11a0sxi4HvglvlW0FnBgWXN1RTsQ7xuwzTHAPsDkgG1aBXNgWXN0A/6OdsUO7VW06/GkFNq2CuOyBmuOc0gnrAAGAXejUDRrkgPLlmcv4KSUz7EpGhcza5JvCa0pXYB/AetncK7FKLjGZnAui5R7WNaU/ckmrADaAidmdC6LlAPLmnJYxuc7COid8TktIg4sa8zqqII9S12B3TI+p0XEgWWNGQp0z/icNTiwrAkOLGvM2mhcKY/zmjXIgWWN6ZvTeb+CJ+VbIxxY1ph+OZ23PS4itUY4sKwx83I896Icz20F5sCyxkzN6bzzgTk5ndsKzoFljZmY03nHo0X/zJbhwLLGvAIszOG8r+VwTouEA8sa8yD53BY+nMM5LRIOLGvMPOC+jM85Fng243NaRBxY1pTfku3TwlEZn88i48CyprwFXJvRuV4BbsroXBYpr4dly9MPeBxYM+Xz7A48kPI5LHLuYdnyTCb91UAvw2FlzeDAsua4A23vlYbLU2zbKowDy5rrUuA0tP18yDZPxoWi1kwew7KW2hIYidZfL9dk4FzgjyEuyKqHA8vK0RM4ADgG2KwFX/cRcCNwDfBGCtdlFc6BZa2xCupxfR3YERgIrLTE3y8CxgEvAS8ATwFvZnuJVkm8UJq1xnQUSD2BlYEFwIAl/v5T1JMah6rYvbuztYp7WGYWDT8lNLNoOLDMLBoOLDOLhgPLzKLhwDKzaDiwzCwaDiwzi4YDy8yi4cAys2g4sMwsGg4sM4uGA8vMouHAMrNoOLDMLBoOLDOLhgPLzKLhwDKzaDiwzCwaDiwzi4YDy8yi4cAys2g4sMwsGg4sM4uGA8vMouHAMrNoOLDMLBoOLDOLhgPLzKLhwDKzaDiwzCwaDiwzi4YDy8yi4cAys2g4sMwsGg4sM4uGA8vMouHAMrNoOLDMLBoOLDOLhgPLzKLhwDKzaDiwzCwaDiwzi8b/Ac2o0MMA6XQDAAAAAElFTkSuQmCC";
@@ -12620,7 +18126,7 @@ var APP_accelerator_home_ui = (function () {
           }
         },
         Right: {
-          x: 1505,
+          x: 1560,
           mountX: 1,
           y: 45,
           mountY: 0.5,
@@ -12725,6 +18231,14 @@ var APP_accelerator_home_ui = (function () {
             if (state === WiFiState.DISABLED) {
               this.setEnabled(true);
             }
+
+            if (state === WiFiState.CONNECTED) {
+              this.setInterface('WIFI', true).then(res => {
+                if (res.success) {
+                  this.setDefaultInterface('WIFI', true);
+                }
+              });
+            }
           });
 
           this._thunder.on(this.callsign, 'onWIFIStateChanged', notification => {
@@ -12804,7 +18318,7 @@ var APP_accelerator_home_ui = (function () {
           ssid: '',
           frequency: ''
         }).then(result => {
-          console.log('startScan success');
+          //console.log('startScan success')
           resolve(result);
         }).catch(err => {
           console.error(`startScan fail: ${err}`);
@@ -12820,7 +18334,7 @@ var APP_accelerator_home_ui = (function () {
     stopScan() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'stopScan').then(result => {
-          console.log('stopScan success');
+          //console.log('stopScan success')
           resolve(result);
         }).catch(err => {
           console.error(`stopScan fail: ${err}`);
@@ -12846,6 +18360,11 @@ var APP_accelerator_home_ui = (function () {
             securityMode: device.security
           }).then(result => {
             console.log(`connected SSID ${device.ssid}`);
+            this.setInterface('WIFI', true).then(res => {
+              if (res.success) {
+                this.setDefaultInterface('WIFI', true);
+              }
+            });
             resolve(result);
           }).catch(err => {
             console.error(`Connection failed: ${err}`);
@@ -12863,11 +18382,16 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'disconnect', {}).then(result => {
           console.log('WiFi disconnected: ' + JSON.stringify(result));
+          this.setInterface('ETHERNET', true).then(res => {
+            if (res.success) {
+              this.setDefaultInterface('ETHERNET', true);
+            }
+          });
           resolve(result);
-        }, err => {
-          console.error(`Can't disconnect WiFi: ${err}`);
-          reject(err);
         });
+      }).catch(err => {
+        console.error(`Can't disconnect WiFi: ${err}`);
+        reject(err);
       });
     }
     /**
@@ -12921,7 +18445,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network', 'getDefaultInterface', {}).then(result => {
+        this._thunder.call('org.rdk.Network.1', 'getDefaultInterface', {}).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -12931,27 +18455,27 @@ var APP_accelerator_home_ui = (function () {
 
     setInterface(inter, bool) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network', 'setInterfaceEnabled', {
+        this._thunder.call('org.rdk.Network.1', 'setInterfaceEnabled', {
           interface: inter,
           persist: true,
           enabled: bool
         }).then(result => {
           resolve(result);
         }).catch(err => {
-          reject(err);
+          console.error('SetInterface Error', JSON.stringify(err));
         });
       });
     }
 
     setDefaultInterface(interfaceName, bool) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network', 'setDefaultInterface', {
+        this._thunder.call('org.rdk.Network.1', 'setDefaultInterface', {
           interface: interfaceName,
           persist: bool
         }).then(result => {
           resolve(result);
         }).catch(err => {
-          reject(err);
+          console.error('SetDefaultInterface Error', JSON.stringify(err));
         });
       });
     }
@@ -13089,6 +18613,16 @@ var APP_accelerator_home_ui = (function () {
 
     _init() {
       this.isOn = false;
+    }
+
+    _disable() {
+      if (this.isOn) {
+        this.isOn = false;
+        this.patch({
+          src: Utils.asset("images/settings/ToggleOffWhite.png")
+        });
+        this.fireAncestors('$handleEnter', this.isOn);
+      }
     }
 
   }
@@ -13594,9 +19128,9 @@ var APP_accelerator_home_ui = (function () {
    * SPDX-License-Identifier: Apache-2.0
    */
   const styles = {
-    w: 200,
+    w: 113,
     //150
-    h: 80,
+    h: 90,
     //40
     radius: 0,
     background: {
@@ -15080,7 +20614,7 @@ var APP_accelerator_home_ui = (function () {
    */
   const KEY_DIMENSIONS = {
     h: 90,
-    w: 113,
+    w: 109,
     padding: 0,
     fixed: true
   }; // actualize key values : 60 ,60  ; 90,100
@@ -15146,7 +20680,7 @@ var APP_accelerator_home_ui = (function () {
         small: 50,
         medium: 110,
         large: 273,
-        xlarge: 760,
+        xlarge: 718,
         ...this.sizes
       }; // actualize values 50,110,212,350 ; 50,110,212,750
     }
@@ -15699,10 +21233,9 @@ var APP_accelerator_home_ui = (function () {
           }
         },
         RectangleWithColor: {
-          x: w => w / 2,
-          mountX: 0.5,
+          x: 180,
           y: 164,
-          w: 1550,
+          w: 1515,
           h: 2,
           rect: true,
           color: 0xFFFFFFFF,
@@ -15751,7 +21284,7 @@ var APP_accelerator_home_ui = (function () {
           },
           RightBorder: {
             rect: true,
-            x: 0 + 1321,
+            x: 1279,
             y: 0,
             w: 3,
             h: 88,
@@ -15762,7 +21295,7 @@ var APP_accelerator_home_ui = (function () {
             rect: true,
             x: 0,
             y: 0,
-            w: 1321,
+            w: 1279,
             h: 3,
             mountY: 0.5,
             color: 0xffffffff
@@ -15770,8 +21303,8 @@ var APP_accelerator_home_ui = (function () {
           BottomBorder: {
             rect: true,
             x: 0,
-            y: 0 + 88,
-            w: 1321,
+            y: 88,
+            w: 1279,
             h: 3,
             mountY: 0.5,
             color: 0xffffffff
@@ -15780,14 +21313,14 @@ var APP_accelerator_home_ui = (function () {
         PasswrdSwitch: {
           h: 45,
           w: 66.9,
-          x: 1920 - 222,
+          x: 1656,
           y: 255,
           zIndex: 2,
           type: PasswordSwitch,
           mount: 0.5
         },
         ShowPassword: {
-          x: 1920 - 480,
+          x: 1398,
           y: 240,
           w: 300,
           h: 75,
@@ -15813,10 +21346,9 @@ var APP_accelerator_home_ui = (function () {
           zIndex: 2
         },
         RectangleWithColor2: {
-          x: w => 1920 / 2,
-          mountX: 0.5,
+          x: 180,
           y: 451,
-          w: 1550,
+          w: 1515,
           h: 2,
           rect: true,
           color: 0xFFFFFFFF,
@@ -15825,20 +21357,9 @@ var APP_accelerator_home_ui = (function () {
         KeyBoard: {
           y: 501,
           x: 420,
-          // mountX:0.5,
-          // w:1080,
           type: Keyboard,
           visible: true,
           zIndex: 2,
-          // formats: {
-          //   qwerty: [
-          //     ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', { label: 'backspace', size: 'large' }],
-          //     [{ label: 'tab', size: 'large' }, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
-          //     [{ label: 'caps', size: 'medium', w: 170 }, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', { label: '< enter', size: 'medium', w: 170 }],
-          //     [{ label: 'shift', size: 'large' }, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', { label: 'shift', size: 'large', w: 195 }],
-          //     [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-          //   ]
-          // }, 
           formats: KEYBOARD_FORMATS.qwerty
         }
       };
@@ -15872,7 +21393,7 @@ var APP_accelerator_home_ui = (function () {
       this.tag('List').items = options.map((item, index) => {
         return {
           ref: item,
-          x: index === 0 ? 0 : 0 + 325 * index,
+          x: index === 0 ? 0 : 325 * index,
           w: 325,
           h: 85,
           type: ConfirmAndCancel,
@@ -15884,6 +21405,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.hidePasswd = true;
       this.fireAncestors("$hideSideAndTopPanels");
     }
 
@@ -15892,9 +21414,9 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
-      this.hidePasswd = true;
       this.star = "";
-      this.passwd = ""; // this.tag('KeyBoard').patch({scale:1558/1080})
+      this.passwd = "";
+      this.isOn = false; // this.tag('KeyBoard').patch({scale:1558/1080})
     }
 
     static _states() {
@@ -15907,74 +21429,6 @@ var APP_accelerator_home_ui = (function () {
         _getFocused() {
           return this.tag("KeyBoard"); //  return this.tag('Password')
         }
-
-        $exit() {// this.tag('Password').alpha = 0
-        } // $onSoftKey(key) {
-        //   // if(key.key.length > 1){
-        //   //   if(key.key === "caps"){
-        //   //     if(this.capsLock){
-        //   //       this.capsLock = false;
-        //   //       this.tag("KeyBoard").patch({
-        //   //         formats: {
-        //   //           qwerty:  [
-        //   //             ['~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', { label: 'backspace', size: 'large' }],
-        //   //             [{ label: 'tab', size: 'large' }, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|'],
-        //   //             [{ label: 'caps', size: 'medium', w: 170 }, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '\"', { label: '< enter', size: 'medium', w: 170 }],
-        //   //             [{ label: 'shift', size: 'large' }, 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', { label: 'shift', size: 'large', w: 195 }],
-        //   //             [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-        //   //           ]
-        //   //         } 
-        //   //       });
-        //   //     }
-        //   //     else{
-        //   //       this.capsLock = true;
-        //   //       this.tag("KeyBoard").patch({
-        //   //         formats: {
-        //   //           qwerty: [
-        //   //             ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', { label: 'backspace', size: 'large' }],
-        //   //             [{ label: 'tab', size: 'large' }, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
-        //   //             [{ label: 'caps', size: 'medium', w: 170 }, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', { label: '< enter', size: 'medium', w: 170 }],
-        //   //             [{ label: 'shift', size: 'large' }, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', { label: 'shift', size: 'large', w: 195 }],
-        //   //             [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-        //   //           ]
-        //   //         }
-        //   //       });
-        //   //     }
-        //   //   }
-        //   //   else if(key.key === 'shift'){
-        //   //     this.shifter  = true;
-        //   //   }
-        //   //   else if(key.key === 'backspace'){
-        //   //     this.passwd = this.passwd.substring(0,this.passwd.length - 1);
-        //   //   }
-        //   //   else if(key.key === 'tab'){
-        //   //     this.passwd += '\t'
-        //   //   }
-        //   //   else if(key.key === '.com'){
-        //   //     this.passwd += '.com'
-        //   //   }
-        //   //   else if(key.key === '< enter'){
-        //   //     this.fireAncestors('$startConnect', this.passwd)
-        //   //   }
-        //   // }
-        //   // else{
-        //     if(this.capsLock){
-        //       key.key = key.key.toUpperCase();
-        //     }
-        //     else if(this.shifter){
-        //       key.key = key.key.toUpperCase();
-        //       this.shifter = false;
-        //     }
-        //     this.passwd+= key.key;
-        //   // }
-        //   if(this.hidePasswd){
-        //     this.tag("Pwd").text.text =  this.getStars();
-        //   } 
-        //   else{
-        //     this.tag("Pwd").text.text = this.passwd
-        //   }
-        // }
-
 
         $onSoftKey({
           key
@@ -16008,18 +21462,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleUp() {
           this._setState("Pair");
-        } // _handleKey(event) {
-        //   if
-        //   // if (
-        //   //   event.keyCode == 27 ||
-        //   //   event.keyCode == 77 ||
-        //   //   event.keyCode == 49 ||
-        //   //   event.keyCode == 158
-        //   // ) {
-        //   //   this._setState('Pair')
-        //   // } else return false
-        // }
-
+        }
 
       }, class Pair extends this {
         $enter() {}
@@ -16058,15 +21501,10 @@ var APP_accelerator_home_ui = (function () {
 
       }, class PasswordSwitchState extends this {
         $enter() {
-          // this.tag("PasswordBox").patch({
-          //   //  texture: Lightning.Tools.getRoundRect(  1321 , 88 , 0, 2, CONFIG.theme.hex, false)
-          //   shader: { type: Lightning.shaders.RoundedRectangle, radius: 0}
-          //   })
           this.tag("PasswordBox.TopBorder").color = CONFIG.theme.hex;
           this.tag("PasswordBox.RightBorder").color = CONFIG.theme.hex;
           this.tag("PasswordBox.BottomBorder").color = CONFIG.theme.hex;
           this.tag("PasswordBox.LeftBorder").color = CONFIG.theme.hex;
-          this.isOn = false;
         }
 
         _handleDown() {
@@ -16087,13 +21525,11 @@ var APP_accelerator_home_ui = (function () {
 
             this.hidePasswd = true; // this.tag('Pwd').text.text = this.getStars();
           }
+
+          this.isOn = bool;
         }
 
         $exit() {
-          // this.tag("PasswordBox").patch({ 
-          //   // texture: Lightning.Tools.getRoundRect(  1321 , 88 , 0, 2, 0xffffffff, false)
-          //   shader: { type: Lightning.shaders.RoundedRectangle, radius: 0}
-          // });
           this.tag("PasswordBox.TopBorder").color = 0xFFFFFFFF;
           this.tag("PasswordBox.RightBorder").color = 0xFFFFFFFF;
           this.tag("PasswordBox.BottomBorder").color = 0xFFFFFFFF;
@@ -16156,7 +21592,7 @@ var APP_accelerator_home_ui = (function () {
           color: 0xff000000
         },
         Text: {
-          x: 800,
+          x: 758,
           y: 70,
           text: {
             text: "Find and join a WiFi network",
@@ -16168,7 +21604,7 @@ var APP_accelerator_home_ui = (function () {
         BorderTop: {
           x: 190,
           y: 130,
-          w: 1530,
+          w: 1488,
           h: 2,
           rect: true
         },
@@ -16192,12 +21628,12 @@ var APP_accelerator_home_ui = (function () {
           BorderTop: {
             x: 400,
             y: 160,
-            w: 1315,
+            w: 1273,
             h: 3,
             rect: true
           },
           BorderRight: {
-            x: 1715,
+            x: 1673,
             y: 160,
             w: 3,
             h: 59,
@@ -16206,7 +21642,7 @@ var APP_accelerator_home_ui = (function () {
           BorderBottom: {
             x: 400,
             y: 188 + 28,
-            w: 1315,
+            w: 1273,
             h: 3,
             rect: true
           }
@@ -16245,12 +21681,12 @@ var APP_accelerator_home_ui = (function () {
           BorderTop: {
             x: 400,
             y: 230,
-            w: 1315,
+            w: 1273,
             h: 3,
             rect: true
           },
           BorderRight: {
-            x: 1715,
+            x: 1673,
             y: 230,
             w: 3,
             h: 59,
@@ -16258,15 +21694,15 @@ var APP_accelerator_home_ui = (function () {
           },
           BorderBottom: {
             x: 400,
-            y: 258 + 28,
-            w: 1315,
+            y: 286,
+            w: 1273,
             h: 3,
             rect: true
           },
           ArrowForward: {
             h: 30,
             w: 45,
-            x: 1655,
+            x: 1613,
             y: 245,
             src: Utils.asset('images/settings/Arrow.png')
           },
@@ -16314,12 +21750,12 @@ var APP_accelerator_home_ui = (function () {
           BorderTop: {
             x: 403,
             y: 300,
-            w: 1315,
+            w: 1273,
             h: 3,
             rect: true
           },
           BorderRight: {
-            x: 1715,
+            x: 1673,
             y: 300,
             w: 3,
             h: 59,
@@ -16327,8 +21763,8 @@ var APP_accelerator_home_ui = (function () {
           },
           BorderBottom: {
             x: 403,
-            y: 328 + 28,
-            w: 1315,
+            y: 356,
+            w: 1273,
             h: 3,
             rect: true
           }
@@ -16350,7 +21786,7 @@ var APP_accelerator_home_ui = (function () {
         BorderBottom: {
           x: 190,
           y: 396,
-          w: 1530,
+          w: 1488,
           h: 2,
           rect: true
         },
@@ -16758,8 +22194,8 @@ var APP_accelerator_home_ui = (function () {
           },
           Loader: {
             visible: false,
-            h: 30 * 1.5,
-            w: 30 * 1.5,
+            h: 45,
+            w: 45,
             x: 1500,
             // x: 320,
             mountX: 1,
@@ -16769,7 +22205,7 @@ var APP_accelerator_home_ui = (function () {
           },
           Button: {
             h: 45,
-            w: 66.9,
+            w: 67,
             x: 1600,
             mountX: 1,
             y: 45,
@@ -16905,7 +22341,7 @@ var APP_accelerator_home_ui = (function () {
       };
       this._wifi = new Wifi();
       this._network = new Network();
-      this.wifiStatus = false;
+      this.wifiStatus = true;
       this._wifiIcon = true;
 
       this._activateWiFi();
@@ -16923,29 +22359,43 @@ var APP_accelerator_home_ui = (function () {
       this._network.activate().then(result => {
         if (result) {
           this._network.registerEvent('onIPAddressStatusChanged', notification => {
+            console.log(JSON.stringify(notification));
+
             if (notification.status == 'ACQUIRED') {
-              location.reload(true);
+              //location.reload(true)
               this.fireAncestors('$changeIp', 'IP:' + notification.ip4Address);
             } else if (notification.status == 'LOST') {
               this.fireAncestors('$changeIp', 'IP:' + 'NA');
+
+              if (notification.interface === 'WIFI') {
+                this._wifi.setInterface('ETHERNET', true).then(res => {
+                  if (res.success) {
+                    this._wifi.setDefaultInterface('ETHERNET', true);
+                  }
+                });
+              }
             }
           });
 
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
-            console.log(notification);
+            console.log(JSON.stringify(notification));
             this.fireAncestors('$NetworkInterfaceText', notification.newInterfaceName);
 
-            if (notification.newInterfaceName == 'WIFI') {
-              this._wifi.setEnabled(true).then(result => {
+            if (notification.newInterfaceName === 'ETHERNET') {
+              this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
-                  this.wifiStatus = true;
-                  this.tag('Networks').visible = true;
-                  this.tag('JoinAnotherNetwork').visible = true;
-                  this.wifiLoading.play();
-                  this.tag('Switch.Loader').visible = true;
-                  this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
+                    if (result.success) {
+                      this._wifi.disconnect();
 
-                  this._wifi.discoverSSIDs();
+                      this.wifiStatus = false;
+                      this.tag('Networks').visible = false;
+                      this.tag('JoinAnotherNetwork').visible = false;
+                      this.tag('Switch.Loader').visible = false;
+                      this.wifiLoading.stop();
+                      this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+                    }
+                  });
                 }
               });
             } else if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
@@ -16959,6 +22409,16 @@ var APP_accelerator_home_ui = (function () {
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
+            }
+          });
+
+          this._network.registerEvent('onConnectionStatusChanged', notification => {
+            if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
+              this._wifi.setInterface('ETHERNET', true).then(res => {
+                if (res.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true);
+                }
+              });
             }
           });
         }
@@ -17202,9 +22662,9 @@ var APP_accelerator_home_ui = (function () {
 
             this._setState('Switch');
           } else if (option === 'Disconnect') {
-            this._wifi.disconnect().then(() => {});
-
-            this._setState('Switch');
+            this._wifi.disconnect().then(() => {
+              this._setState('Switch');
+            });
           }
         }
 
@@ -17271,6 +22731,10 @@ var APP_accelerator_home_ui = (function () {
 
     switch() {
       if (this.wifiStatus) {
+        this._wifi.disconnect();
+
+        console.log('turning off wifi');
+
         this._wifi.setInterface('ETHERNET', true).then(result => {
           if (result.success) {
             this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
@@ -17288,27 +22752,15 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       } else {
-        this._wifi.setInterface('WIFI', true).then(result => {
-          if (result.success) {
-            this._wifi.setDefaultInterface('WIFI', false).then(result => {
-              //try changing this to true
-              if (result.success) {
-                this._wifi.setEnabled(true).then(result => {
-                  if (result.success) {
-                    this.wifiStatus = true;
-                    this.tag('Networks').visible = true;
-                    this.tag('JoinAnotherNetwork').visible = true;
-                    this.wifiLoading.play();
-                    this.tag('Switch.Loader').visible = true;
-                    this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        console.log('turning on wifi');
+        this.wifiStatus = true;
+        this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
+        this.wifiLoading.play();
+        this.tag('Switch.Loader').visible = true;
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
 
-                    this._wifi.discoverSSIDs();
-                  }
-                });
-              }
-            });
-          }
-        });
+        this._wifi.discoverSSIDs();
       }
     }
     /**
@@ -17318,14 +22770,12 @@ var APP_accelerator_home_ui = (function () {
 
     _activateWiFi() {
       this._wifi.activate().then(() => {
-        this._wifi.getDefaultInterface().then(result => {
-          if (result.interface == 'WIFI') {
-            this.switch();
-          }
-        });
+        this.switch();
       });
 
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
+        console.log(JSON.stringify(notification));
+
         if (notification.state === 2 || notification.state === 5) {
           this._wifi.discoverSSIDs();
         }
@@ -17335,6 +22785,12 @@ var APP_accelerator_home_ui = (function () {
 
       this._wifi.registerEvent('onError', notification => {
         this._wifi.discoverSSIDs();
+
+        this._wifi.setInterface('ETHERNET', true).then(res => {
+          if (res.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true);
+          }
+        });
 
         this._setfailState(this.onError[notification.code]);
       });
@@ -17371,4523 +22827,13 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  class SleepTimerScreen extends lng$1.Component {
-    static _template() {
-      return {
-        List: {
-          w: 1920 - 300,
-          type: lng$1.components.ListComponent,
-          itemSize: 90,
-          horizontal: false,
-          invertDirection: true,
-          roll: true,
-          rollMax: 900,
-          itemScrollOffset: -5
-        }
-      };
-    }
-
-    _init() {
-      new AppApi();
-      this.fireAncestors('$registerInactivityMonitoringEvents');
-      this.lastElement = false;
-      this.options = [{
-        value: 'Off',
-        tick: true
-      }, {
-        value: '30 Minutes',
-        tick: false
-      }, {
-        value: '1 Hour',
-        tick: false
-      }, {
-        value: '1.5 Hours',
-        tick: false
-      }, {
-        value: '2 Hours',
-        tick: false
-      }, {
-        value: '3 Hours',
-        tick: false
-      }];
-      this.tag('List').h = this.options.length * 90;
-      this.tag('List').items = this.options.map(item => {
-        return {
-          w: 1920 - 300,
-          h: 90,
-          type: SettingsItem,
-          item: item.value
-        };
-      });
-      this.tag('List').getElement(0).tag('Tick').visible = true;
-
-      this._setState('Options');
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {
-          this.options.forEach((element, idx) => {
-            if (element.tick) {
-              this.tag('List').getElement(idx).tag('Tick').visible = false;
-              this.options[idx].tick = false;
-            }
-          });
-          this.tag('List').element.tag('Tick').visible = true;
-          this.options[this.tag('List').index].tick = true;
-          this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
-          this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class VideoAndAudioItem$1 extends lng$1.Component {
-    static _template() {
-      return {
-        zIndex: 1,
-        TopLine: {
-          y: 0,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        },
-        Item: {
-          w: 1920 - 300,
-          h: 90,
-          rect: true,
-          color: 0x00000000
-        },
-        BottomLine: {
-          y: 0 + 90,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        }
-      };
-    }
-
-    _init() {
-      if (this.isTicked) {
-        this.fireAncestors("$resetPrevTickObject", this);
-      }
-
-      this.appApi = new AppApi();
-    }
-
-    _handleEnter() {
-      if (this.videoElement === true) {
-        this.appApi.setResolution(this._item).then(res => {
-          this.fireAncestors('$updateResolution', this._item);
-
-          if (res === true) {
-            this.fireAncestors("$resetPrevTickObject", this);
-            this.tag("Item.Tick").visible = true;
-          }
-        }).catch(err => {
-          console.log(`there was an error while setting the resolution.`);
-        });
-      } else {
-        this.appApi.setSoundMode(this._item).then(result => {
-          if (result.success === true) {
-            this.fireAncestors("$resetPrevTickObject", this);
-            this.tag("Item.Tick").visible = true; // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
-          } //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
-
-
-          this.fireAncestors("$updateSoundMode", this._item);
-        }).catch(err => {
-          console.log('Some error while setting the sound mode ', err);
-        });
-      }
-    }
-
-    set item(item) {
-      this._item = item;
-      this.tag('Item').patch({
-        Tick: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
-          color: 0xffffffff,
-          visible: this.isTicked ? true : false //implement the logic to show the tick
-
-        },
-        Left: {
-          x: 50,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: item,
-            fontSize: 25,
-            textColor: 0xffFFFFFF,
-            fontFace: CONFIG.language.font
-          } // update the text
-
-        }
-      });
-    }
-
-    _focus() {
-      this.tag('TopLine').color = CONFIG.theme.hex;
-      this.tag('BottomLine').color = CONFIG.theme.hex;
-      this.patch({
-        zIndex: 2
-      });
-      this.tag('TopLine').h = 6;
-      this.tag('BottomLine').h = 6;
-    }
-
-    _unfocus() {
-      this.tag('TopLine').color = 0xFFFFFFFF;
-      this.tag('BottomLine').color = 0xFFFFFFFF;
-      this.patch({
-        zIndex: 1
-      });
-      this.tag('TopLine').h = 3;
-      this.tag('BottomLine').h = 3;
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Resolution Screen.
-   */
-
-  class ResolutionScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        Background: {
-          x: 0,
-          y: -10,
-          w: 1920,
-          h: 1080,
-          rect: true,
-          color: 0xff000000,
-          zIndex: 4
-        },
-        Loader: {
-          x: 1920 / 2 - 400 + 180,
-          y: 1080 / 2 - 300 + 100,
-          w: 90,
-          h: 90,
-          mount: 0.5,
-          zIndex: 4,
-          src: Utils.asset("images/settings/Loading.gif")
-        },
-        ResolutionScreenContents: {
-          List: {
-            type: lng$1.components.ListComponent,
-            w: 1920 - 300,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true,
-            rollMax: 900,
-            itemScrollOffset: -6
-          }
-        }
-      };
-    }
-
-    _init() {
-      this.appApi = new AppApi();
-      this.appApi.activateDisplaySettings();
-    }
-
-    _focus() {
-      this.loadingAnimation = this.tag('Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: 2 * Math.PI
-          }
-        }]
-      });
-      var options = [];
-      this.appApi = new AppApi();
-
-      this._setState("LoadingState");
-
-      var sIndex = 0;
-      this.appApi.getResolution().then(resolution => {
-        this.appApi.getSupportedResolutions().then(res => {
-          this._setState("Options");
-
-          options = [...res];
-          this.tag('ResolutionScreenContents').h = options.length * 90;
-          this.tag('ResolutionScreenContents.List').h = options.length * 90;
-          this.tag('List').items = options.map((item, index) => {
-            var bool = false;
-
-            if (resolution === item) {
-              bool = true;
-              sIndex = index;
-            }
-
-            return {
-              ref: 'Option' + index,
-              w: 1920 - 300,
-              h: 90,
-              type: VideoAndAudioItem$1,
-              isTicked: bool,
-              item: item,
-              videoElement: true
-            };
-          });
-        }).catch(err => {
-          console.log(`error while fetching the supported resolution ${err}`);
-        }).then(() => {
-          this.tag('List').setIndex(sIndex);
-          console.log(`focus on index's value = ${sIndex}`);
-        });
-      });
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-      if (!this.prevTicOb) {
-        this.prevTicOb = prevTicObject;
-      } else {
-        this.prevTicOb.tag("Item.Tick").visible = false;
-        this.prevTicOb = prevTicObject;
-      }
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {
-          this.tag("List").element.tag("Tick").visible = true;
-        }
-
-      }, class LoadingState extends this {
-        $enter() {
-          this.tag("Loader").visible = true;
-          this.tag("Background").visible = true;
-          this.loadingAnimation.start();
-        }
-
-        _getFocused() {}
-
-        $exit() {
-          this.tag("Loader").visible = false;
-          this.tag("Background").visible = false;
-          this.loadingAnimation.stop();
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class HDRScreen extends lng$1.Component {
-    static _template() {
-      return {
-        List: {
-          w: 1920 - 300,
-          type: lng$1.components.ListComponent,
-          itemSize: 90,
-          horizontal: false,
-          invertDirection: true,
-          roll: true,
-          rollMax: 900,
-          itemScrollOffset: -5
-        }
-      };
-    }
-
-    _init() {
-      this.lastElement = false;
-      this.options = [{
-        value: 'Auto',
-        tick: true
-      }, {
-        value: 'Follow TV',
-        tick: false
-      }, {
-        value: 'SDR',
-        tick: false
-      }, {
-        value: 'HDR',
-        tick: false
-      }, {
-        value: 'Dolby Vision',
-        tick: false
-      }];
-      this.tag('List').h = this.options.length * 90;
-      this.tag('List').items = this.options.map(item => {
-        return {
-          w: 1920 - 300,
-          h: 90,
-          type: SettingsItem,
-          item: item.value
-        };
-      });
-      this.tag('List').getElement(0).tag('Tick').visible = true;
-
-      this._setState('Options');
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {
-          this.options.forEach((element, idx) => {
-            if (element.tick) {
-              this.tag('List').getElement(idx).tag('Tick').visible = false;
-              this.options[idx].tick = false;
-            }
-          });
-          this.tag('List').element.tag('Tick').visible = true;
-          this.options[this.tag('List').index].tick = true;
-          this.fireAncestors('$updateHDR', this.options[this.tag('List').index].value);
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Video screen.
-   */
-
-  class VideoScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        VideoScreenContents: {
-          Resolution: {
-            y: 0,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Resolution ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          HDR: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'High Dynamic Range ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          MatchContent: {
-            alpha: 0.3,
-            // disabled
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Match Content: Match Dynamic Range',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          OutputFormat: {
-            alpha: 0.3,
-            // disabled
-            y: 270,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Output Format: YCbCr',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Chroma: {
-            alpha: 0.3,
-            // disabled
-            y: 360,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Chroma: 4:4:4',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          HDCP: {
-            y: 450,
-            h: 90,
-            // type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'HDCP Status: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          }
-        },
-        ResolutionScreen: {
-          type: ResolutionScreen,
-          visible: false
-        },
-        HDRScreen: {
-          type: HDRScreen,
-          visible: false
-        }
-      };
-    }
-
-    _init() {
-      this._appApi = new AppApi();
-    }
-
-    _focus() {
-      this._appApi.getResolution().then(resolution => {
-        this.tag("Resolution.Title").text.text = 'Resolution: ' + resolution;
-      }).catch(err => {
-        console.log("Error fetching the Resolution"); // this.tag("Resolution.Title").text.text = "Error fetching Resolution";
-      });
-
-      this._appApi.getHDCPStatus().then(result => {
-        if (result.isHDCPCompliant && result.isHDCPEnabled) {
-          this.tag("HDCP.Title").text.text = 'HDCP Status: Enabled, Version: ' + result.currentHDCPVersion;
-        } else {
-          this.tag("HDCP.Title").text.text = 'HDCP Status: Not Supported ';
-        }
-      });
-
-      this._appApi.getHDRSetting().then(result => {
-        const availableHDROptions = {
-          "HdrOff": "Off",
-          "Hdr10": "HDR 10",
-          "Hdr10Plus": "HDR 10+",
-          "HdrHlg": "HLG",
-          "HdrDolbyvision": "Dolby Vision",
-          "HdrTechnicolor": "Technicolor HDR"
-        };
-        this.tag("HDR.Title").text.text = 'High Dynamic Range: ' + availableHDROptions[result];
-      });
-
-      this._setState('Resolution');
-    }
-
-    hide() {
-      this.tag('VideoScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('VideoScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class Resolution extends this {
-        $enter() {
-          this.tag('Resolution')._focus();
-        }
-
-        $exit() {
-          this.tag('Resolution')._unfocus();
-        }
-
-        _handleDown() {
-          this._setState('HDR');
-        }
-
-        _handleEnter() {
-          this._appApi.getSupportedResolutions().then(result => {
-            if (result.length > 0) {
-              this._setState('ResolutionScreen');
-            }
-          });
-        }
-
-      }, class HDR extends this {
-        $enter() {
-          this.tag('HDR')._focus();
-        }
-
-        $exit() {
-          this.tag('HDR')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('Resolution');
-        }
-
-        _handleDown() {// this._setState('MatchContent') //disabled
-        }
-
-      }, class MatchContent extends this {
-        $enter() {
-          this.tag('MatchContent')._focus();
-        }
-
-        $exit() {
-          this.tag('MatchContent')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('HDR');
-        }
-
-        _handleDown() {
-          this._setState('OutputFormat');
-        }
-
-        _handleEnter() {//
-        }
-
-      }, class OutputFormat extends this {
-        $enter() {
-          this.tag('OutputFormat')._focus();
-        }
-
-        $exit() {
-          this.tag('OutputFormat')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('MatchContent');
-        }
-
-        _handleDown() {
-          this._setState('Chroma');
-        }
-
-        _handleEnter() {//
-        }
-
-      }, class Chroma extends this {
-        $enter() {
-          this.tag('Chroma')._focus();
-        }
-
-        $exit() {
-          this.tag('Chroma')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('OutputFormat');
-        }
-
-        _handleDown() {// this._setState('HDCP') 
-        }
-
-        _handleEnter() {//
-        }
-
-      }, class HDCP extends this {
-        // class not required
-        $enter() {
-          this.tag('HDCP')._focus();
-        }
-
-        $exit() {
-          this.tag('HDCP')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('Chroma');
-        }
-
-        _handleEnter() {//
-        }
-
-      }, class ResolutionScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('ResolutionScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Video / Resolution');
-        }
-
-        $exit() {
-          this.tag('ResolutionScreen').visible = false;
-          this.show();
-          this.fireAncestors('$changeHomeText', 'Settings / Video');
-        }
-
-        _getFocused() {
-          return this.tag('ResolutionScreen');
-        }
-
-        _handleBack() {
-          this._setState('Resolution');
-        }
-
-        $updateResolution(value) {
-          this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
-        }
-
-      }, class HDRScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('HDRScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Video / High Dynamic Range');
-        }
-
-        $exit() {
-          this.tag('HDRScreen').visible = false;
-          this.show();
-          this.fireAncestors('$changeHomeText', 'Settings / Video');
-        }
-
-        _getFocused() {
-          return this.tag('HDRScreen');
-        }
-
-        _handleBack() {
-          this._setState('HDR');
-        }
-
-        $updateHDR(value) {
-          this.tag('HDR.Title').text.text = 'High Dynamic Range: ' + value;
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for HDMI Output Screen.
-   */
-
-  var appApi$2 = new AppApi();
-  class HdmiOutputScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        Background: {
-          x: 0,
-          y: -10,
-          w: 1920,
-          h: 1080,
-          rect: true,
-          color: 0xff000000,
-          zIndex: 4,
-          visible: false
-        },
-        Loader: {
-          x: 1920 / 2 - 400 + 180,
-          y: 1080 / 2 - 300 + 100,
-          w: 90,
-          h: 90,
-          mount: 0.5,
-          zIndex: 4,
-          src: Utils.asset("images/settings/Loading.gif"),
-          visible: false
-        },
-        HdmiOutputScreenContents: {
-          List: {
-            type: lng$1.components.ListComponent,
-            w: 1920 - 300,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true
-          }
-        }
-      };
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-      if (!this.prevTicOb) {
-        this.prevTicOb = prevTicObject;
-      } else {
-        this.prevTicOb.tag("Item.Tick").visible = false;
-        this.prevTicOb = prevTicObject;
-      }
-    }
-
-    _focus() {
-      this.loadingAnimation = this.tag('Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: 2 * Math.PI
-          }
-        }]
-      });
-
-      this._setState("LoadingState");
-
-      var options = [];
-      appApi$2.getSoundMode().then(result => {
-        this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
-        appApi$2.getSupportedAudioModes().then(res => {
-          options = [...res.supportedAudioModes];
-          this.tag('HdmiOutputScreenContents').h = options.length * 90;
-          this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
-          this.tag('HdmiOutputScreenContents.List').items = options.map((item, index) => {
-            return {
-              ref: 'Option' + index,
-              w: 1920 - 300,
-              h: 90,
-              type: VideoAndAudioItem$1,
-              isTicked: result.soundMode === item ? true : false,
-              item: item,
-              videoElement: false
-            };
-          });
-
-          this._setState("Options");
-        }).catch(err => {
-          console.log('error', JSON.stringify(err));
-        });
-      }).catch(err => {
-        console.log('error', JSON.stringify(err));
-      });
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('HdmiOutputScreenContents.List').element;
-        }
-
-        _handleDown() {
-          this.tag('HdmiOutputScreenContents.List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('HdmiOutputScreenContents.List').setPrevious();
-        }
-
-      }, class LoadingState extends this {
-        $enter() {
-          this.tag("Loader").visible = true;
-          this.tag("Background").visible = true;
-          this.loadingAnimation.start();
-        }
-
-        _getFocused() {}
-
-        $exit() {
-          this.tag("Loader").visible = false;
-          this.tag("Background").visible = false;
-          this.loadingAnimation.stop();
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class VideoAndAudioItem extends lng$1.Component {
-    static _template() {
-      return {
-        zIndex: 1,
-        TopLine: {
-          y: 0,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        },
-        Item: {
-          w: 1920 - 300,
-          h: 90,
-          rect: true,
-          color: 0x00000000
-        },
-        BottomLine: {
-          y: 0 + 90,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        }
-      };
-    }
-
-    _init() {
-      if (this.isTicked) {
-        this.fireAncestors("$resetPrevTickObject", this);
-      }
-
-      this.appApi = new AppApi();
-    }
-
-    set item(item) {
-      this._item = item;
-      var self = this;
-      this.tag('Item').patch({
-        Tick: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
-          color: 0xffffffff,
-          visible: self.isTicked ? true : false //implement the logic to show the tick
-
-        },
-        Left: {
-          x: 50,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: item,
-            fontSize: 25,
-            textColor: 0xffFFFFFF,
-            fontFace: CONFIG.language.font
-          } // update the text
-
-        }
-      });
-    }
-
-    _focus() {
-      this.tag('TopLine').color = CONFIG.theme.hex;
-      this.tag('BottomLine').color = CONFIG.theme.hex;
-      this.patch({
-        zIndex: 2
-      });
-      this.tag('TopLine').h = 6;
-      this.tag('BottomLine').h = 6;
-    }
-
-    _unfocus() {
-      this.tag('TopLine').color = 0xFFFFFFFF;
-      this.tag('BottomLine').color = 0xFFFFFFFF;
-      this.patch({
-        zIndex: 1
-      });
-      this.tag('TopLine').h = 3;
-      this.tag('BottomLine').h = 3;
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Resolution Screen.
-   */
-
-  class AudioOutputScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        AudioOutputScreenContents: {
-          List: {
-            type: lng$1.components.ListComponent,
-            w: 1920 - 300,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true
-          }
-        }
-      };
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-      if (!this.prevTicOb) {
-        this.prevTicOb = prevTicObject;
-      } else {
-        this.prevTicOb.tag("Item.Tick").visible = false;
-        this.prevTicOb = prevTicObject;
-      }
-    }
-
-    _focus() {
-      //change to init if needed
-      this.appApi = new AppApi();
-      this.appApi.getConnectedAudioPorts().then(res => {
-        var options = [...res.connectedAudioPorts];
-        this.tag('AudioOutputScreenContents').h = options.length * 90;
-        this.tag('AudioOutputScreenContents.List').h = options.length * 90;
-        this.tag('AudioOutputScreenContents.List').items = options.map((item, index) => {
-          return {
-            ref: 'Option' + index,
-            w: 1920 - 300,
-            h: 90,
-            type: VideoAndAudioItem,
-            item: item
-          };
-        });
-
-        this._setState("Options");
-      }).catch(err => {
-        console.log(`Error while getting Connected AudioPorts :${err}`);
-      });
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {// enable the tick mark in VideoAudioItem.js
-          // this.fireAncestors('$updateResolution', "current resolution") //to update the resolution value on Video Screen
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Audio screen.
-   */
-
-  class AudioScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        Wrapper: {
-          AudioOutput: {
-            alpha: 0.3,
-            y: 0,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Audio Output: HDMI',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          OutputMode: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Output Mode: Auto',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          DynamicRange: {
-            alpha: 0.3,
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Full Dynamic Range',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          AudioLanguage: {
-            y: 270,
-            alpha: 0.3,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Audio Language: Auto',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          NavigationFeedback: {
-            y: 360,
-            alpha: 0.3,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Navigation Feedback',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 66,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/ToggleOnWhite.png')
-            }
-          },
-          Bluetooth: {
-            alpha: 0.3,
-            y: 450,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Bluetooth: None',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          }
-        },
-        OutputModeScreen: {
-          type: HdmiOutputScreen,
-          visible: false
-        },
-        AudioOutputS: {
-          type: AudioOutputScreen,
-          visible: false
-        }
-      };
-    }
-
-    _init() {
-      this.appApi = new AppApi();
-    }
-
-    $updateTheDefaultAudio(audio) {
-      //console.log(audio)
-      this.tag('OutputMode.Title').text.text = 'Output Mode: ' + audio;
-    }
-
-    $updateSoundMode(soundMode) {
-      this.tag('OutputMode.Title').text.text = 'Output Mode: ' + soundMode;
-    }
-
-    _focus() {
-      // this._setState('AudioOutput') 
-      this._setState('OutputMode');
-    }
-
-    hide() {
-      this.tag('Wrapper').visible = false;
-    }
-
-    show() {
-      this.tag('Wrapper').visible = true;
-    }
-
-    static _states() {
-      return [class AudioOutput extends this {
-        $enter() {
-          this.tag('AudioOutput')._focus();
-        }
-
-        $exit() {
-          this.tag('AudioOutput')._unfocus();
-        }
-
-        _handleDown() {
-          this._setState('OutputMode');
-        }
-
-        _handleEnter() {
-          this._setState('AudioOutputScreenState');
-        }
-
-      }, // BookMark 1
-      class AudioOutputScreenState extends this {
-        $enter() {
-          this.hide();
-          this.tag('AudioOutputS').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode');
-        }
-
-        $exit() {
-          this.tag("AudioOutputS").visible = false;
-          this.show();
-          this.fireAncestors('$changeHomeText', 'Settings / Audio');
-        }
-
-        _getFocused() {
-          return this.tag('AudioOutputS');
-        }
-
-        _handleBack() {
-          this._setState('AudioOutput');
-        }
-
-        $updateAudioOutputText(value) {// this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value
-        }
-
-      }, class OutputMode extends this {
-        $enter() {
-          this.tag('OutputMode')._focus();
-        }
-
-        $exit() {
-          this.tag('OutputMode')._unfocus();
-        }
-
-        _handleUp() {// this._setState('AudioOutput')
-        }
-
-        _handleDown() {// this._setState('DynamicRange');
-        }
-
-        _handleEnter() {
-          this._setState('HdmiAudioOutputStereoScreen');
-        }
-
-      }, class DynamicRange extends this {
-        $enter() {
-          this.tag('DynamicRange')._focus();
-        }
-
-        $exit() {
-          this.tag('DynamicRange')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('OutputMode');
-        }
-
-        _handleDown() {
-          this._setState('Bluetooth');
-        }
-
-        _handleEnter() {
-          /**
-           * This handle Enter has api calls -
-           * 1 - get DRC Mode which doesnot return a drc mode and the success value is mostly false
-           * 2- set Volume - able to set the value to 100
-           * 3- get Volume - able to get the volume successfully as well
-           * 4- 
-           * 
-           */
-          //console.log(`Enter input was given to dynamic range ... `);
-          // gets the drc mode
-          this.appApi.getDRCMode().then(res => {}).catch(err => {
-            console.log(err);
-          });
-          this.appApi.setVolumeLevel("HDMI0", 100).then(res => {
-            this.appApi.getVolumeLevel().catch(err => {
-              console.log(err);
-            });
-          }).catch(err => {
-            console.log(err);
-          });
-          this.appApi.getConnectedAudioPorts().then(res => {}).catch(err => {
-            console.log(err);
-          }); // gets the enabled Audio Port
-
-          this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
-            console.log(err);
-          });
-          this.appApi.getSupportedAudioPorts().catch(err => {
-            console.log(`Error while getting the supported Audio ports ie. ${err}`);
-          }); // set enable Audio POrt
-
-          this.appApi.setEnableAudioPort("HDMI0").then(res => {
-            this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
-              console.log(err);
-            });
-          }).catch(err => {
-            console.log(err);
-          }); // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
-
-          this.appApi.setZoomSetting("FULL").then(res => {
-            this.appApi.getZoomSetting().then(res => {}).catch(err => {
-              console.log(err);
-            });
-          }).catch(err => {
-            console.log(err);
-          });
-        }
-
-      }, class NavigationFeedback extends this {
-        $enter() {
-          this.tag('NavigationFeedback')._focus();
-        }
-
-        $exit() {
-          this.tag('NavigationFeedback')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('DynamicRange');
-        }
-
-        _handleDown() {
-          this._setState('Bluetooth');
-        }
-
-        _handleEnter() {//
-        }
-
-      }, class Bluetooth extends this {
-        $enter() {
-          this.tag('Bluetooth')._focus();
-        }
-
-        $exit() {
-          this.tag('Bluetooth')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('DynamicRange');
-        }
-
-      }, class HdmiAudioOutputStereoScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('OutputModeScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode');
-        }
-
-        $exit() {
-          this.tag('OutputModeScreen').visible = false;
-          this.show();
-          this.fireAncestors('$changeHomeText', 'Settings / Audio');
-        }
-
-        _getFocused() {
-          return this.tag('OutputModeScreen');
-        }
-
-        _handleBack() {
-          this._setState('OutputMode');
-        }
-
-        $updateHdmiAudioOutputStereo(value) {
-          this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value;
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Remote Control Screen.
-   */
-
-  class RemoteControlScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        RemoteControlScreenContents: {
-          PairingStatus: {
-            y: 0,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Pairing Status: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          FirmwareVersion: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Firmware Version: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          TestMicrophone: {
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Test Microphone',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Info: {
-            y: 270,
-            BatteryHealth: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Battery Health: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            SignalStrength: {
-              x: 10,
-              y: 45 + 35,
-              mountY: 0.5,
-              text: {
-                text: 'Signal Strength: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            VoiceCapable: {
-              x: 10,
-              y: 45 + 35 + 35,
-              mountY: 0.5,
-              text: {
-                text: 'Voice Capable: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          }
-        },
-        PairingStatusScreen: {// 
-        }
-      };
-    }
-
-    _focus() {
-      this._setState('PairingStatus'); //can be used on init as well
-
-    }
-
-    hide() {
-      this.tag('RemoteControlScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('RemoteControlScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class PairingStatus extends this {
-        $enter() {
-          this.tag('PairingStatus')._focus();
-        }
-
-        $exit() {
-          this.tag('PairingStatus')._unfocus();
-        }
-
-        _handleDown() {
-          this._setState('FirmwareVersion');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class FirmwareVersion extends this {
-        $enter() {
-          this.tag('FirmwareVersion')._focus();
-        }
-
-        $exit() {
-          this.tag('FirmwareVersion')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('PairingStatus');
-        }
-
-        _handleDown() {
-          this._setState('TestMicrophone');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class TestMicrophone extends this {
-        $enter() {
-          this.tag('TestMicrophone')._focus();
-        }
-
-        $exit() {
-          this.tag('TestMicrophone')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('FirmwareVersion');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Video and Audio screen.
-   */
-
-  class DeviceInformationScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        h: 1080,
-        w: 1920,
-        clipping: true,
-        DeviceInfoContents: {
-          y: 2,
-          Line1: {
-            y: 0,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          ChipSet: {
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: `Chipset`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: `unavailable`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line2: {
-            y: 90,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          SerialNumber: {
-            Title: {
-              x: 10,
-              y: 135,
-              mountY: 0.5,
-              text: {
-                text: `Serial Number`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 135,
-              mountY: 0.5,
-              text: {
-                text: `unavailable`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line3: {
-            y: 180,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          Location: {
-            Title: {
-              x: 10,
-              y: 225,
-              mountY: 0.5,
-              text: {
-                text: `Location`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 225,
-              mountY: 0.5,
-              text: {
-                text: `City: unavailable , Country: unavailable `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line4: {
-            y: 270,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          SupportedDRM: {
-            Title: {
-              x: 10,
-              y: 360,
-              mountY: 0.5,
-              text: {
-                text: `Supported DRM & Key-System`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                wordWrapWidth: 1600,
-                wordWrap: true,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 360,
-              mountY: 0.5,
-              text: {
-                text: `unavailable`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                wordWrapWidth: 1200,
-                wordWrap: true,
-                fontSize: 25
-              }
-            }
-          },
-          Line5: {
-            y: 450,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          FirmwareVersions: {
-            Title: {
-              x: 10,
-              y: 540,
-              mountY: 0.5,
-              text: {
-                text: `Firmware version`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 540,
-              mountY: 0.5,
-              text: {
-                text: `UI Version: 3.3, Build Version: , Timestamp: `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line6: {
-            y: 630,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          AppVersions: {
-            Title: {
-              x: 10,
-              y: 720,
-              mountY: 0.5,
-              text: {
-                text: `App Versions`,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Value: {
-              x: 400,
-              y: 720,
-              mountY: 0.5,
-              text: {
-                text: "Youtube:\nAmazon Prime:\nNetflix:",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line7: {
-            y: 810,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          }
-        }
-      };
-    }
-
-    _focus() {
-      this._setState('DeviceInformationScreen');
-
-      this.appApi = new AppApi();
-      this.appApi.getSerialNumber().then(result => {
-        this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
-      });
-      this.appApi.getSystemVersions().then(res => {
-        this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.3 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `;
-      }).catch(err => {
-        console.error(`error while getting the system versions`);
-      });
-      this.appApi.getDRMS().then(result => {
-        console.log('from device info supported drms ' + JSON.stringify(result));
-        var drms = "";
-        result.forEach(element => {
-          drms += `${element.name} :`;
-
-          if (element.keysystems) {
-            drms += "\t";
-            element.keysystems.forEach(keySystem => {
-              drms += `${keySystem}, `;
-            });
-            drms += "\n";
-          } else {
-            drms += "\n";
-          }
-        });
-        this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`;
-      });
-      this.appApi.getLocation().then(result => {
-        console.log("getLocation from device info " + JSON.stringify(result));
-        var locationInfo = "";
-
-        if (result.city.length !== 0) {
-          locationInfo = "City: " + result.city;
-        } else {
-          locationInfo = "City: unavailable ";
-        }
-
-        if (result.country.length !== 0) {
-          locationInfo += ", Country: " + result.country;
-        } else {
-          locationInfo += ", Country: unavailable ";
-        }
-
-        this.tag('Location.Value').text.text = `${locationInfo}`;
-      });
-      this.appApi.getDeviceIdentification().then(result => {
-        console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
-        this.tag('ChipSet.Value').text.text = `${result.chipset}`; // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
-      });
-      this.appApi.registerChangeLocation();
-    }
-
-    _handleDown() {
-      if (this.tag("DeviceInfoContents").y > -200) {
-        this.tag("DeviceInfoContents").y -= 35;
-      }
-    }
-
-    _handleUp() {
-      if (this.tag("DeviceInfoContents").y < 35) {
-        this.tag("DeviceInfoContents").y += 35;
-      }
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Firmware screen.
-   */
-
-  class FirmwareScreen extends lng$1.Component {
-    static _template() {
-      return {
-        DeviceInfoContents: {
-          State: {
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: `Firmware State: `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 22
-              }
-            }
-          },
-          Version: {
-            Title: {
-              x: 10,
-              y: 90,
-              mountY: 0.5,
-              text: {
-                text: `Firmware Versions: `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 22
-              }
-            }
-          },
-          DownloadedVersion: {
-            Title: {
-              x: 10,
-              y: 135,
-              mountY: 0.5,
-              text: {
-                text: `Downloaded Firmware Version: `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 22
-              }
-            }
-          },
-          DownloadedPercent: {
-            Title: {
-              x: 10,
-              y: 180,
-              mountY: 0.5,
-              text: {
-                text: `Download Progress: `,
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 22
-              }
-            }
-          },
-          FirmwareUpdate: {
-            RectangleDefault: {
-              x: 110,
-              y: 200,
-              w: 200,
-              mountX: 0.5,
-              h: 50,
-              rect: true,
-              color: CONFIG.theme.hex,
-              Update: {
-                x: 100,
-                y: 25,
-                mount: 0.5,
-                text: {
-                  text: "Check for Update",
-                  fontFace: CONFIG.language.font,
-                  fontSize: 24
-                }
-              }
-            }
-          }
-        }
-      };
-    }
-
-    _focus() {
-      this._appApi = new AppApi();
-      const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
-
-      this._appApi.getFirmwareUpdateState().then(res => {
-        console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res));
-        this.tag('State.Title').text.text = "Firmware State: " + downloadState[res.firmwareUpdateState];
-      });
-
-      this._appApi.getDownloadFirmwareInfo().then(res => {
-        console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res));
-        this.tag('Version.Title').text.text = "Firmware Versions: " + res.currentFWVersion;
-      });
-
-      this._setState('FirmwareUpdate');
-    }
-
-    getDownloadPercent() {
-      this._appApi.getFirmwareDownloadPercent().then(res => {
-        this.tag('DownloadedPercent.Title').text.text = "Download Progress: " + res.downloadPercent + "%";
-      });
-    }
-
-    getDownloadFirmwareInfo() {
-      this._appApi.updateFirmware().then(res => {
-        this._appApi.getDownloadFirmwareInfo().then(result => {
-          this.tag('DownloadedVersion.Title').text.text = `Downloaded Firmware Version: ${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
-        });
-      });
-    }
-
-    static _states() {
-      return [class FirmwareUpdate extends this {
-        _handleEnter() {
-          this.getDownloadFirmwareInfo();
-          this.getDownloadPercent();
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Reboot Confirmation Screen.
-   */
-
-  class RebootConfirmationScreen extends lng$1.Component {
-    static _template() {
-      return {
-        Background: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 2000,
-          mount: 0.5,
-          rect: true,
-          color: 0xff000000
-        },
-        Title: {
-          x: 0,
-          y: 0,
-          mountX: 0.5,
-          text: {
-            text: "Reboot",
-            fontFace: CONFIG.language.font,
-            fontSize: 40,
-            textColor: CONFIG.theme.hex
-          }
-        },
-        BorderTop: {
-          x: 0,
-          y: 75,
-          w: 1558,
-          h: 3,
-          rect: true,
-          mountX: 0.5
-        },
-        Info: {
-          x: 0,
-          y: 125,
-          mountX: 0.5,
-          text: {
-            text: "Click Confirm to reboot!",
-            fontFace: CONFIG.language.font,
-            fontSize: 25
-          }
-        },
-        Buttons: {
-          x: 100,
-          y: 200,
-          w: 440,
-          mountX: 0.5,
-          h: 50,
-          Confirm: {
-            x: 0,
-            w: 200,
-            mountX: 0.5,
-            h: 50,
-            rect: true,
-            color: 0xFFFFFFFF,
-            Title: {
-              x: 100,
-              y: 25,
-              mount: 0.5,
-              text: {
-                text: "Confirm",
-                fontFace: CONFIG.language.font,
-                fontSize: 22,
-                textColor: 0xFF000000
-              }
-            }
-          },
-          Cancel: {
-            x: 220,
-            w: 200,
-            mountX: 0.5,
-            h: 50,
-            rect: true,
-            color: 0xFF7D7D7D,
-            Title: {
-              x: 100,
-              y: 25,
-              mount: 0.5,
-              text: {
-                text: "Cancel",
-                fontFace: CONFIG.language.font,
-                fontSize: 22,
-                textColor: 0xFF000000
-              }
-            }
-          }
-        },
-        BorderBottom: {
-          x: 0,
-          y: 300,
-          w: 1558,
-          h: 3,
-          rect: true,
-          mountX: 0.5
-        },
-        Loader: {
-          x: 0,
-          y: 150,
-          mountX: 0.5,
-          w: 90,
-          h: 90,
-          zIndex: 2,
-          src: Utils.asset("images/settings/Loading.gif"),
-          visible: false
-        }
-      };
-    }
-
-    _focus() {
-      this._setState('Confirm');
-
-      this.loadingAnimation = this.tag('Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: 2 * Math.PI
-          }
-        }]
-      });
-    }
-
-    static _states() {
-      return [class Confirm extends this {
-        $enter() {
-          this._focus();
-        }
-
-        _handleEnter() {
-          this.fireAncestors('$confirmReboot');
-
-          this._setState('Rebooting');
-        }
-
-        _handleRight() {
-          this._setState('Cancel');
-        }
-
-        _focus() {
-          this.tag('Confirm').patch({
-            color: CONFIG.theme.hex
-          });
-          this.tag('Confirm.Title').patch({
-            text: {
-              textColor: 0xFFFFFFFF
-            }
-          });
-        }
-
-        _unfocus() {
-          this.tag('Confirm').patch({
-            color: 0xFFFFFFFF
-          });
-          this.tag('Confirm.Title').patch({
-            text: {
-              textColor: 0xFF000000
-            }
-          });
-        }
-
-        $exit() {
-          this._unfocus();
-        }
-
-      }, class Cancel extends this {
-        $enter() {
-          this._focus();
-        }
-
-        _handleEnter() {
-          this.fireAncestors('$cancelReboot');
-        }
-
-        _handleLeft() {
-          this._setState('Confirm');
-        }
-
-        _focus() {
-          this.tag('Cancel').patch({
-            color: CONFIG.theme.hex
-          });
-          this.tag('Cancel.Title').patch({
-            text: {
-              textColor: 0xFFFFFFFF
-            }
-          });
-        }
-
-        _unfocus() {
-          this.tag('Cancel').patch({
-            color: 0xFF7D7D7D
-          });
-          this.tag('Cancel.Title').patch({
-            text: {
-              textColor: 0xFF000000
-            }
-          });
-        }
-
-        $exit() {
-          this._unfocus();
-        }
-
-      }, class Rebooting extends this {
-        $enter() {
-          this.loadingAnimation.start();
-          this.tag("Loader").visible = true;
-          this.tag("Title").text.text = "Rebooting...";
-          this.tag('Buttons').visible = false;
-          this.tag('Info').visible = false;
-        }
-
-        _handleEnter() {// do nothing
-        }
-
-        _handleLeft() {// do nothing
-        }
-
-        _handleRight() {// do nothing
-        }
-
-        _handleBack() {// do nothing
-        }
-
-        _handleUp() {// do nothing
-        }
-
-        _handleDown() {// do nothing
-        }
-
-        _handleKey(key) {
-          console.log("key press after reboot ", key);
-        }
-
-        _handleHome() {
-          console.log("homekey pressed");
-        }
-
-        _captureKey(key) {
-          if (key) {
-            console.log("capture key press after reboot ", key);
-          }
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Video and Audio screen.
-   */
-
-  class DeviceScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        DeviceScreenContents: {
-          Info: {
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Info',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Firmware: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Check for Firmware Update',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Reboot: {
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Reboot',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Reset: {
-            y: 270,
-            alpha: 0.3,
-            // disabled
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Factory Reset',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          }
-        },
-        DeviceInformationScreen: {
-          type: DeviceInformationScreen,
-          visible: false
-        },
-        FirmwareScreen: {
-          type: FirmwareScreen,
-          visible: false
-        },
-        RebootConfirmationScreen: {
-          x: 780,
-          y: 100,
-          type: RebootConfirmationScreen,
-          visible: false
-        }
-      };
-    }
-
-    _init() {
-      this._appApi = new AppApi();
-    }
-
-    _focus() {
-      this._setState('Info');
-    }
-
-    hide() {
-      this.tag('DeviceScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('DeviceScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class Info extends this {
-        $enter() {
-          this.tag('Info')._focus();
-        }
-
-        $exit() {
-          this.tag('Info')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('Reboot');
-        }
-
-        _handleDown() {
-          this._setState('Firmware');
-        }
-
-        _handleEnter() {
-          this._setState('DeviceInformationScreen');
-        }
-
-      }, class Firmware extends this {
-        $enter() {
-          this.tag('Firmware')._focus();
-        }
-
-        $exit() {
-          this.tag('Firmware')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('Info');
-        }
-
-        _handleDown() {
-          this._setState('Reboot');
-        }
-
-        _handleEnter() {
-          this._setState('FirmwareScreen');
-        }
-
-      }, class Reboot extends this {
-        $enter() {
-          this.tag('Reboot')._focus();
-        }
-
-        $exit() {
-          this.tag('Reboot')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('Firmware');
-        }
-
-        _handleDown() {
-          this._setState('Info');
-        }
-
-        _handleEnter() {
-          this._setState('RebootConfirmationScreen');
-        }
-
-      }, class Reset extends this {
-        $enter() {
-          this.tag('Reset')._focus();
-        }
-
-        $exit() {
-          this.tag('Reset')._unfocus();
-        }
-
-        _handleUp() {//this._setState('Reboot');
-        }
-
-        _handleDown() {//this._setState('Info')
-        }
-
-        _handleEnter() {}
-
-      }, //Inner Screens Classes
-      class DeviceInformationScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('DeviceInformationScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Info');
-        }
-
-        _getFocused() {
-          return this.tag('DeviceInformationScreen');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('DeviceInformationScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
-        }
-
-        _handleBack() {
-          this._setState('Info');
-        }
-
-      }, //Inner Firmware Screen
-      class FirmwareScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('FirmwareScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Firmware');
-        }
-
-        _getFocused() {
-          return this.tag('FirmwareScreen');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('FirmwareScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
-        }
-
-        _handleBack() {
-          this._setState('Firmware');
-        }
-
-      }, class RebootConfirmationScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('RebootConfirmationScreen').visible = true;
-        }
-
-        _getFocused() {
-          return this.tag('RebootConfirmationScreen');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('RebootConfirmationScreen').visible = false;
-        }
-
-        $confirmReboot() {
-          this._appApi.reboot().then(result => {
-            console.log('device rebooting from device screen ' + JSON.stringify(result));
-          });
-        }
-
-        $cancelReboot() {
-          this._handleBack();
-        }
-
-        _handleBack() {
-          this._setState('Reboot');
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for AdvancedSettings screen.
-   */
-
-  class AdvanceSettingsScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        AdvanceScreenContents: {
-          UIVoice: {
-            alpha: 0.3,
-            // disabled
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'UI Voice',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          TTSOptions: {
-            y: 90,
-            alpha: 0.3,
-            // disabled
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'TTS Options',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          CECControl: {
-            y: 180,
-            alpha: 0.3,
-            // disabled
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'CEC Control',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Bug: {
-            y: 270,
-            alpha: 0.3,
-            // disabled
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Bug Report',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Contact: {
-            alpha: 0.3,
-            // disabled
-            y: 360,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Contact Support',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Device: {
-            y: 450,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Device',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 30 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          }
-        },
-        DeviceScreen: {
-          type: DeviceScreen,
-          visible: false
-        }
-      };
-    }
-
-    _focus() {
-      this._setState('Device');
-    }
-
-    hide() {
-      this.tag('AdvanceScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('AdvanceScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class UIVoice extends this {
-        $enter() {
-          this.tag('UIVoice')._focus();
-        }
-
-        $exit() {
-          this.tag('UIVoice')._unfocus();
-        }
-
-        _handleUp() {//this._setState('Reset');
-        }
-
-        _handleDown() {//this._setState('TTSOptions')
-        }
-
-        _handleEnter() {}
-
-      }, class TTSOptions extends this {
-        $enter() {
-          this.tag('TTSOptions')._focus();
-        }
-
-        $exit() {
-          this.tag('TTSOptions')._unfocus();
-        }
-
-        _handleUp() {//this._setState('UIVoice');
-        }
-
-        _handleDown() {//this._setState('CECControl')
-        }
-
-        _handleEnter() {}
-
-      }, class CECControl extends this {
-        $enter() {
-          this.tag('CECControl')._focus();
-        }
-
-        $exit() {
-          this.tag('CECControl')._unfocus();
-        }
-
-        _handleUp() {//this._setState('TTSOptions');
-        }
-
-        _handleDown() {//this._setState('Bug')
-        }
-
-        _handleEnter() {}
-
-      }, class Bug extends this {
-        $enter() {
-          this.tag('Bug')._focus();
-        }
-
-        $exit() {
-          this.tag('Bug')._unfocus();
-        }
-
-        _handleUp() {//this._setState('CECControl');
-        }
-
-        _handleDown() {//this._setState('Contact')
-        }
-
-        _handleEnter() {}
-
-      }, class Contact extends this {
-        $enter() {
-          this.tag('Contact')._focus();
-        }
-
-        $exit() {
-          this.tag('Contact')._unfocus();
-        }
-
-        _handleUp() {//this._setState('Bug');
-        }
-
-        _handleDown() {//this._setState('Device')
-        }
-
-        _handleEnter() {}
-
-      }, class Device extends this {
-        $enter() {
-          this.tag('Device')._focus();
-        }
-
-        $exit() {
-          this.tag('Device')._unfocus();
-        }
-
-        _handleUp() {//this._setState('Contact');
-        }
-
-        _handleDown() {//this._setState('UI Voice')
-        }
-
-        _handleEnter() {
-          this._setState('DeviceScreen');
-        }
-
-      }, //Inner Screens Classes
-      class DeviceScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('DeviceScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device');
-        }
-
-        _getFocused() {
-          return this.tag('DeviceScreen');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('DeviceScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
-        }
-
-        _handleBack() {
-          this._setState('Device');
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  const _privacyPolicy = `Privacy
- Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (“RDK Management,” “we,” or “us”). This privacy policy discloses the privacy practices for this website only, including an explanation of:
- 
- the categories of personally identifiable information about you that may be collected and how that information is used;
- how we collect and use non-personally identifiable information about your use of the website;
- the categories of persons or entities with whom the information may be shared;
- the choices that are available to you regarding collection, use, and distribution of the information;
- how you can opt out of RDK-related promotional e-mail;
- the kind of security procedures that are in place to protect the loss, misuse or alteration of information;
- how you can review and request changes to the information; and
- how we notify users of this website of changes to this privacy policy.
- Questions regarding this policy should be directed to “RDK Management – Privacy Feedback” and can be submitted via e-mail to info@rdkcentral.com.
- 
- 
- What categories of information do we collect?
- The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.
- 
- To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you’ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.
- 
- The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you’re still free to take advantage of the publicly available content on our website without registration.
- 
- Does RDK Management analyze my interaction with this website?
- Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.
- 
- We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a “Do Not Track” Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to “Do Not Track” signals sent from browsers.
- 
- You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.
- 
- What categories of persons or entities do we share personally identifiable information with?
- We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.
- 
- What do we do to personalize your use of this website?
- We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.
- 
- To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a “cookie.” We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you’ve made so you don’t have to re-enter them.
- 
- RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.
- 
- The cookies we use don’t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user’s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user’s account information over our website, for example.
- 
- In connection with the standard operation of RDK Management’s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users’ experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.
- 
- We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management’s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.
- 
- Your Access to and Control over your information?
- You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.
- 
- Request to see all the information stored in the system
- Accuracy of your data can be checked or corrected.
- Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com
- Express any concern you have about our use of your data
- Opt out from receiving emails by clicking unsubscribe.
- How do users opt out of RDK-related promotional e-mail?
- You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of “RDK Management – E-mail Opt Out” via e-mail to info@rdkcentral.com.
- 
- Other Websites
- 
- To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don’t control. Once you leave our website by linking to another one (you can tell where you are by checking the address – known as a URL – in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you’re visiting. That policy may differ from ours. If you can’t find the privacy policy of any of these websites via a link from the site’s homepage, you should contact the website directly for more information.
- 
- Security
- 
- All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won’t be intercepted while being transmitted to us over the Internet. If you don’t want us to know any particular information about you, don’t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.
- 
- Changes to this Privacy Policy
- 
- We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we’ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.
- 
- A Special Note About Children
- 
- This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.
- 
- Contacting us:
- 
- If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.
- 
- Data Protection Officer:  Herman-Jan Smith
- 
- Email us at: hj.smith@rdkcentral.com
- 
- Contacting the appropriate authority:
- 
- Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner’s Office.
- 
- Email: compliance_team@rdkcentral.com
- 
- Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A`;
-  class PrivacyPolicyScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        h: 1080,
-        w: 1920,
-        clipping: true,
-        PrivacyPolicy: {
-          Title: {
-            x: 10,
-            y: 45,
-            mountY: 0.5,
-            text: {
-              text: `Privacy Policy`,
-              textColor: COLORS.titleColor,
-              fontFace: CONFIG.language.font,
-              fontStyle: "bold",
-              fontSize: 40
-            }
-          },
-          Content: {
-            x: 10,
-            y: 100,
-            text: {
-              text: _privacyPolicy,
-              textColor: COLORS.titleColor,
-              fontFace: CONFIG.language.font,
-              fontSize: 20,
-              wordWrapWidth: 1500,
-              wordWrap: true
-            }
-          }
-        }
-      };
-    }
-
-    _handleDown() {
-      if (this.tag("PrivacyPolicy").y > -2400) {
-        this.tag("PrivacyPolicy").y -= 35;
-      }
-    }
-
-    _handleUp() {
-      if (this.tag("PrivacyPolicy").y < 35) {
-        this.tag("PrivacyPolicy").y += 35;
-      }
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Privacy Screen.
-   */
-
-  class PrivacyScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        PrivacyScreenContents: {
-          LocalDeviceDiscovery: {
-            y: 0,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Local Device Discovery',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 44.6 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/ToggleOffWhite.png')
-            }
-          },
-          UsbMediaDevices: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'USB Media Devices',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 44.6 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/ToggleOffWhite.png')
-            }
-          },
-          AudioInput: {
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Audio Input',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 30 * 1.5,
-              w: 44.6 * 1.5,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/ToggleOffWhite.png')
-            }
-          },
-          ClearCookies: {
-            y: 270,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Clear Cookies and App Data',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          PrivacyPolicy: {
-            y: 360,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Privacy Policy and License',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          }
-        },
-        PrivacyPolicyScreen: {
-          type: PrivacyPolicyScreen,
-          visible: false
-        }
-      };
-    }
-
-    _focus() {
-      this._setState('LocalDeviceDiscovery'); //can be used on init as well
-
-    }
-
-    hide() {
-      this.tag('PrivacyScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('PrivacyScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class LocalDeviceDiscovery extends this {
-        $enter() {
-          this.tag('LocalDeviceDiscovery')._focus();
-        }
-
-        $exit() {
-          this.tag('LocalDeviceDiscovery')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('PrivacyPolicy');
-        }
-
-        _handleDown() {
-          this._setState('UsbMediaDevices');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class UsbMediaDevices extends this {
-        $enter() {
-          this.tag('UsbMediaDevices')._focus();
-        }
-
-        $exit() {
-          this.tag('UsbMediaDevices')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('LocalDeviceDiscovery');
-        }
-
-        _handleDown() {
-          this._setState('AudioInput');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class AudioInput extends this {
-        $enter() {
-          this.tag('AudioInput')._focus();
-        }
-
-        $exit() {
-          this.tag('AudioInput')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('UsbMediaDevices');
-        }
-
-        _handleDown() {
-          this._setState('ClearCookies');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class ClearCookies extends this {
-        $enter() {
-          this.tag('ClearCookies')._focus();
-        }
-
-        $exit() {
-          this.tag('ClearCookies')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('AudioInput');
-        }
-
-        _handleDown() {
-          this._setState('PrivacyPolicy');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class PrivacyPolicy extends this {
-        $enter() {
-          this.tag('PrivacyPolicy')._focus();
-        }
-
-        $exit() {
-          this.tag('PrivacyPolicy')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('ClearCookies');
-        }
-
-        _handleDown() {
-          this._setState('LocalDeviceDiscovery');
-        }
-
-        _handleEnter() {
-          this._setState('PrivacyPolicyScreen');
-
-          this.hide();
-        }
-
-      }, class PrivacyPolicyScreen extends this {
-        $enter() {
-          this.tag('PrivacyPolicyScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy / Privacy Policy');
-        }
-
-        _getFocused() {
-          return this.tag('PrivacyPolicyScreen');
-        }
-
-        $exit() {
-          this.tag('PrivacyPolicyScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy');
-        }
-
-        _handleBack() {
-          this._setState('PrivacyPolicy');
-
-          this.show();
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class EnergySavingsItem extends lng$1.Component {
-    static _template() {
-      return {
-        zIndex: 1,
-        TopLine: {
-          y: 0,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        },
-        Item: {
-          w: 1920 - 300,
-          h: 90,
-          rect: true,
-          color: 0x00000000
-        },
-        BottomLine: {
-          y: 0 + 90,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        }
-      };
-    }
-
-    _init() {
-      if (this.isTicked) {
-        this.fireAncestors("$resetPrevTickObject", this);
-      }
-
-      this.appApi = new AppApi();
-    }
-
-    _handleEnter() {
-      var self = this;
-      var standbyMode = "";
-
-      if (this._item === "Deep Sleep") {
-        standbyMode = "DEEP_SLEEP";
-      } else if (this._item === "Light Sleep") {
-        standbyMode = "LIGHT_SLEEP";
-      }
-
-      this.appApi.setPreferredStandbyMode(standbyMode).then(result => {
-        console.log("setPreferredStandbyMode " + JSON.stringify(result));
-        self.fireAncestors("$resetPrevTickObject", self);
-        this.fireAncestors("$updateStandbyMode", this._item);
-        self.tag("Item.Tick").visible = true;
-      });
-    }
-
-    set item(item) {
-      this._item = item;
-      var self = this;
-      this.tag('Item').patch({
-        Tick: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          texture: lng$1.Tools.getSvgTexture(img$5, 32.5, 32.5),
-          color: 0xffffffff,
-          visible: self.isTicked ? true : false //implement the logic to show the tick
-
-        },
-        Left: {
-          x: 50,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: item,
-            fontSize: 25,
-            textColor: 0xffFFFFFF,
-            fontFace: CONFIG.language.font
-          } // update the text
-
-        }
-      });
-    }
-
-    _focus() {
-      this.tag('TopLine').color = CONFIG.theme.hex;
-      this.tag('BottomLine').color = CONFIG.theme.hex;
-      this.patch({
-        zIndex: 2
-      });
-      this.tag('TopLine').h = 6;
-      this.tag('BottomLine').h = 6;
-    }
-
-    _unfocus() {
-      this.tag('TopLine').color = 0xFFFFFFFF;
-      this.tag('BottomLine').color = 0xFFFFFFFF;
-      this.patch({
-        zIndex: 1
-      });
-      this.tag('TopLine').h = 3;
-      this.tag('BottomLine').h = 3;
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class EnergySavingsScreen extends lng$1.Component {
-    static _template() {
-      return {
-        EnerygySavingContents: {
-          List: {
-            type: lng$1.components.ListComponent,
-            w: 1920 - 300,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true,
-            rollMax: 900,
-            itemScrollOffset: -6
-          }
-        }
-      };
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-      if (!this.prevTicOb) {
-        this.prevTicOb = prevTicObject;
-      } else {
-        this.prevTicOb.tag("Item.Tick").visible = false;
-        this.prevTicOb = prevTicObject;
-      }
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {
-          // this.tag("List").element.patch({ "Item.Tick.visible": true });
-          this.tag("List").element.tag("Tick").visible = true; // enable the tick mark in VideoAudioItem.js
-          //to update the resolution value on Video Screen
-        }
-
-      }];
-    }
-
-    _focus() {
-      this._appApi = new AppApi();
-
-      this._setState("Options");
-
-      const options = ["Deep Sleep", "Light Sleep"];
-      this.tag('EnerygySavingContents').h = options.length * 90;
-      this.tag('EnerygySavingContents.List').h = options.length * 90;
-      var standbyMode = "";
-
-      this._appApi.getPreferredStandbyMode().then(result => {
-        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
-          standbyMode = "Light Sleep";
-        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
-          standbyMode = "Deep Sleep";
-        }
-
-        this.tag('List').items = options.map((item, index) => {
-          return {
-            ref: 'Option' + index,
-            w: 1920 - 300,
-            h: 90,
-            type: EnergySavingsItem,
-            isTicked: standbyMode === item ? true : false,
-            item: item,
-            energyItem: true
-          };
-        });
-      });
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Other Settings Screen.
-   */
-
-  class OtherSettingsScreen extends lng$1.Component {
-    static _template() {
-      return {
-        x: 0,
-        y: 0,
-        OtherSettingsScreenContents: {
-          SleepTimer: {
-            y: 0,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Sleep Timer: Off',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          RemoteControl: {
-            alpha: 0.3,
-            // disabled
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Remote Control',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          ScreenSaver: {
-            alpha: 0.3,
-            // disabled
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Screen-Saver: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          EnergySaver: {
-            y: 270,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Energy Saver: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Language: {
-            alpha: 0.3,
-            // disabled
-            y: 450 - 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Language: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          Privacy: {
-            alpha: 0.3,
-            // disabled
-            y: 540 - 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Privacy',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          AdvancedSettings: {
-            y: 630 - 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Advanced Settings',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          }
-        },
-        SleepTimerScreen: {
-          type: SleepTimerScreen,
-          visible: false
-        },
-        RemoteControlScreen: {
-          type: RemoteControlScreen,
-          visible: false
-        },
-        EnergySavingsScreen: {
-          type: EnergySavingsScreen,
-          visible: false
-        },
-        // 
-        PrivacyScreen: {
-          type: PrivacyScreen,
-          visible: false
-        },
-        AdvancedSettingsScreen: {
-          type: AdvanceSettingsScreen,
-          visible: false
-        }
-      };
-    }
-
-    _init() {
-      this._appApi = new AppApi();
-    }
-
-    $updateStandbyMode(standbyMode) {
-      this.tag("EnergySaver.Title").text.text = "Energy Saver: " + standbyMode;
-    }
-
-    $sleepTimerText(text) {
-      this.tag('SleepTimer.Title').text.text = 'Sleep Timer: ' + text;
-    }
-
-    _focus() {
-      this._setState('SleepTimer'); //can be used on init as well
-
-
-      this._appApi.getPreferredStandbyMode().then(result => {
-        var currentStandbyMode = "";
-
-        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
-          currentStandbyMode = "Light Sleep";
-        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
-          currentStandbyMode = "Deep Sleep";
-        }
-
-        this.tag("EnergySaver.Title").text.text = "Energy Saver: " + currentStandbyMode;
-      });
-    }
-
-    hide() {
-      this.tag('OtherSettingsScreenContents').visible = false;
-    }
-
-    show() {
-      this.tag('OtherSettingsScreenContents').visible = true;
-    }
-
-    static _states() {
-      return [class SleepTimer extends this {
-        $enter() {
-          this.tag('SleepTimer')._focus();
-        }
-
-        $exit() {
-          this.tag('SleepTimer')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('AdvancedSettings');
-        }
-
-        _handleDown() {
-          // this._setState('RemoteControl')
-          this._setState('EnergySaver');
-        }
-
-        _handleEnter() {
-          this._setState('SleepTimerScreen');
-        }
-
-      }, class RemoteControl extends this {
-        $enter() {
-          this.tag('RemoteControl')._focus();
-        }
-
-        $exit() {
-          this.tag('RemoteControl')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('SleepTimer');
-        }
-
-        _handleDown() {
-          this._setState('ScreenSaver');
-        }
-
-        _handleEnter() {
-          this._setState('RemoteControlScreen');
-        }
-
-      }, class ScreenSaver extends this {
-        $enter() {
-          this.tag('ScreenSaver')._focus();
-        }
-
-        $exit() {
-          this.tag('ScreenSaver')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('RemoteControl');
-        }
-
-        _handleDown() {
-          this._setState('EnergySaver');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class EnergySaver extends this {
-        $enter() {
-          this.tag('EnergySaver')._focus();
-        }
-
-        $exit() {
-          this.tag('EnergySaver')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('SleepTimer');
-        }
-
-        _handleDown() {
-          // this._setState('Theme')
-          this._setState('AdvancedSettings');
-        }
-
-        _handleEnter() {
-          this._setState('EnergySavingsScreen');
-        }
-
-      }, class Language extends this {
-        $enter() {
-          this.tag('Language')._focus();
-        }
-
-        $exit() {
-          this.tag('Language')._unfocus();
-        }
-
-        _handleUp() {
-          // this._setState('Theme')
-          this._setState('EnergySaver');
-        }
-
-        _handleDown() {
-          this._setState('Privacy');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class Privacy extends this {
-        $enter() {
-          this.tag('Privacy')._focus();
-        }
-
-        $exit() {
-          this.tag('Privacy')._unfocus();
-        }
-
-        _handleUp() {
-          // this._setState('Language')
-          this._setState('EnergySaver');
-        }
-
-        _handleDown() {
-          this._setState('AdvancedSettings');
-        }
-
-        _handleEnter() {
-          this._setState('PrivacyScreen');
-        }
-
-      }, class AdvancedSettings extends this {
-        $enter() {
-          this.tag('AdvancedSettings')._focus();
-        }
-
-        $exit() {
-          this.tag('AdvancedSettings')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('EnergySaver');
-        }
-
-        _handleDown() {
-          this._setState('SleepTimer');
-        }
-
-        _handleEnter() {
-          this._setState('AdvancedSettingsScreen');
-        }
-
-      }, class SleepTimerScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('SleepTimerScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Sleep Timer');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('SleepTimerScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
-        }
-
-        _getFocused() {
-          return this.tag('SleepTimerScreen');
-        }
-
-        _handleBack() {
-          this._setState('SleepTimer');
-        }
-
-      }, class RemoteControlScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('RemoteControlScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Remote Control');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('RemoteControlScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
-        }
-
-        _getFocused() {
-          return this.tag('RemoteControlScreen');
-        }
-
-        _handleBack() {
-          this._setState('RemoteControl');
-        }
-
-      }, // 
-      class PrivacyScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('PrivacyScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('PrivacyScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
-        }
-
-        _getFocused() {
-          return this.tag('PrivacyScreen');
-        }
-
-        _handleBack() {
-          this._setState('Privacy');
-        }
-
-      }, class AdvancedSettingsScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('AdvancedSettingsScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('AdvancedSettingsScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
-        }
-
-        _getFocused() {
-          return this.tag('AdvancedSettingsScreen');
-        }
-
-        _handleBack() {
-          this._setState('AdvancedSettings');
-        }
-
-      }, class EnergySavingsScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('EnergySavingsScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Energy Saver');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('EnergySavingsScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings');
-        }
-
-        _getFocused() {
-          return this.tag('EnergySavingsScreen');
-        }
-
-        _handleBack() {
-          this._setState('EnergySaver');
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
+  const wifi = new Wifi();
   class NetworkInterfaceScreen extends lng$1.Component {
     static _template() {
       return {
-        List: {
-          w: 1920 - 300,
-          type: lng$1.components.ListComponent,
-          itemSize: 90,
-          horizontal: false,
-          invertDirection: true,
-          roll: true,
-          rollMax: 900,
-          itemScrollOffset: -5
-        }
-      };
-    }
-
-    _focus() {
-      this._network.getDefaultInterface().then(interfaceName => {
-        this.options.forEach((element, idx) => {
-          if (element.interface === interfaceName) {
-            this.tag('List').getElement(idx).tag('Tick').visible = true;
-          }
-        });
-      });
-    }
-
-    static _states() {
-      return [class Options extends this {
-        _getFocused() {
-          return this.tag('List').element;
-        }
-
-        _handleDown() {
-          this.tag('List').setNext();
-        }
-
-        _handleUp() {
-          this.tag('List').setPrevious();
-        }
-
-        _handleEnter() {
-          this._network.setDefaultInterface(this.options[this.tag('List').index].interface).then(result => {
-            const thisInterface = this.options[this.tag('List').index].interface;
-
-            if (result.success) {
-              this.tag('List').element.tag('Tick').visible = true;
-              this.fireAncestors('$NetworkInterfaceText', thisInterface === 'WIFI' ? 'WiFi' : thisInterface === 'ETHERNET' ? 'Ethernet' : thisInterface);
-              this.options.forEach((element, idx) => {
-                if (element.interface !== thisInterface) {
-                  this.tag('List').getElement(idx).tag('Tick').visible = false;
-                }
-              });
-            }
-          });
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-    * Class for Other Settings Screen.
-    */
-
-  class NetworkConfigurationScreen extends lng$1.Component {
-    static _template() {
-      return {
         x: 0,
         y: 0,
-        NetworkConfigurationScreenContents: {
+        NetworkInterfaceScreenContents: {
           WiFi: {
             y: 0,
             type: SettingsMainItem,
@@ -21912,9 +22858,7 @@ var APP_accelerator_home_ui = (function () {
               src: Utils.asset('images/settings/Arrow.png')
             }
           },
-          NetworkInterface: {
-            alpha: 0.3,
-            // disabled
+          Ethernet: {
             y: 90,
             type: SettingsMainItem,
             Title: {
@@ -21922,104 +22866,13 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Network Interface: ',
+                text: 'Ethernet',
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
               }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          InternetProtocol: {
-            alpha: 0.3,
-            // disabled
-            y: 180,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Internet Protocol: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
-            }
-          },
-          TestInternetAccess: {
-            y: 270,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Test Internet Access',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Loader: {
-              h: 45,
-              w: 45,
-              // x: 1600,
-              x: 420,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
-              visible: false
-            }
-          },
-          StaticMode: {
-            alpha: 0.3,
-            // disabled
-            y: 360,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Static Mode: ',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Arrow.png')
             }
           }
-        },
-        NetworkInterfaceScreen: {
-          type: NetworkInterfaceScreen,
-          visible: false
         },
         WiFiScreen: {
           type: WiFiScreen,
@@ -22028,65 +22881,24 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    _init() {
-      let _currentInterface = ""; //getDefaultInterface
-
-      let _currentIPSettings = {};
-      let _newIPSettings = {};
-      this._network = new Network();
-
-      this._network.getDefaultInterface().then(interfaceName => {
-        _currentInterface = interfaceName;
-      });
-
-      this._network.getIPSettings(_currentInterface).then(result => {
-        _currentIPSettings = result;
-      }); // we get IP settings of default interface if we pass _currentInterface as ""
-
-
-      _newIPSettings = _currentIPSettings;
-      _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
-      // loader animation for testing internet
-
-      this.loadingAnimation = this.tag('TestInternetAccess.Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: 2 * Math.PI
-          }
-        }]
-      });
-
-      this._network.getDefaultInterface().then(interfaceName => {
-        this.$NetworkInterfaceText(interfaceName);
-      });
-    }
-
     _focus() {
-      this._setState('WiFi'); //can be used on init as well
-
-    }
-
-    _unfocus() {
-      this.tag('TestInternetAccess.Title').text.text = 'Test Internet Access';
+      this._setState('WiFi');
     }
 
     hide() {
-      this.tag('NetworkConfigurationScreenContents').visible = false;
+      this.tag('NetworkInterfaceScreenContents').visible = false;
     }
 
     show() {
-      this.tag('NetworkConfigurationScreenContents').visible = true;
+      this.tag('NetworkInterfaceScreenContents').visible = true;
     }
 
-    $NetworkInterfaceText(text) {
-      this.tag('NetworkInterface.Title').text.text = `Network Interface: ${text}`;
+    setEthernetInterface() {
+      wifi.setInterface('ETHERNET', true).then(res => {
+        if (res.success) {
+          wifi.setDefaultInterface('ETHERNET', true);
+        }
+      });
     }
 
     static _states() {
@@ -22100,145 +22912,45 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleDown() {
-          this._setState('TestInternetAccess');
+          this._setState('Ethernet');
         }
 
         _handleEnter() {
           this._setState('WiFiScreen');
         }
 
-      }, class NetworkInterface extends this {
+      }, class Ethernet extends this {
         $enter() {
-          this.tag('NetworkInterface')._focus();
+          this.tag('Ethernet')._focus();
         }
 
         $exit() {
-          this.tag('NetworkInterface')._unfocus();
+          this.tag('Ethernet')._unfocus();
+        }
+
+        _handleEnter() {
+          this.setEthernetInterface();
+        }
+
+        _handleDown() {
+          this._setState('WiFi');
         }
 
         _handleUp() {
           this._setState('WiFi');
-        }
-
-        _handleDown() {
-          // this._setState('InternetProtocol')
-          this._setState('TestInternetAccess');
-        }
-
-        _handleEnter() {
-          this._network.getInterfaces().then(interfaces => {
-            if (interfaces.length > 0) {
-              this._setState('NetworkInterfaceScreen');
-            }
-          });
-        }
-
-      }, class InternetProtocol extends this {
-        $enter() {
-          this.tag('InternetProtocol')._focus();
-        }
-
-        $exit() {
-          this.tag('InternetProtocol')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('NetworkInterface');
-        }
-
-        _handleDown() {
-          this._setState('TestInternetAccess');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class TestInternetAccess extends this {
-        $enter() {
-          this.tag('TestInternetAccess')._focus();
-        }
-
-        $exit() {
-          this.tag('TestInternetAccess')._unfocus();
-        }
-
-        _handleUp() {
-          // this._setState('InternetProtocol')
-          this._setState('WiFi');
-        }
-
-        _handleDown() {// this._setState('StaticMode')
-        }
-
-        _handleEnter() {
-          this.loadingAnimation.start();
-          this.tag('TestInternetAccess.Loader').visible = true;
-
-          this._network.isConnectedToInternet().then(result => {
-            var connectionStatus = "Internet Access: ";
-
-            if (result) {
-              connectionStatus += "Connected";
-            } else {
-              connectionStatus += "Not Connected";
-            }
-
-            setTimeout(() => {
-              this.tag('TestInternetAccess.Loader').visible = false;
-              this.loadingAnimation.stop();
-              this.tag('TestInternetAccess.Title').text.text = connectionStatus;
-            }, 2000);
-          });
-        }
-
-      }, class StaticMode extends this {
-        $enter() {
-          this.tag('StaticMode')._focus();
-        }
-
-        $exit() {
-          this.tag('StaticMode')._unfocus();
-        }
-
-        _handleUp() {
-          this._setState('TestInternetAccess');
-        }
-
-        _handleEnter() {// 
-        }
-
-      }, class NetworkInterfaceScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('NetworkInterfaceScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('NetworkInterfaceScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
-        }
-
-        _getFocused() {
-          return this.tag('NetworkInterfaceScreen');
-        }
-
-        _handleBack() {
-          this._setState('NetworkInterface');
         }
 
       }, class WiFiScreen extends this {
         $enter() {
           this.hide();
           this.tag('WiFiScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / WiFi');
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface / WiFi');
         }
 
         $exit() {
           this.show();
           this.tag('WiFiScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface');
         }
 
         _getFocused() {
@@ -22273,9 +22985,1338 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
   /**
+    * Class for Other Settings Screen.
+    */
+
+  var appApi$2 = new AppApi();
+  var defaultInterface = "";
+  var currentInterface = [];
+  class NetworkInfo extends lng$1.Component {
+    static _template() {
+      return {
+        NetworkInfoScreenContents: {
+          Status: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Status: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          ConnectionType: {
+            //alpha: 0.3, // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Connection Type: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          IPAddress: {
+            //alpha: 0.3, // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('IP Address: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Gateway: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Gateway: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          MACAddress: {
+            //alpha: 0.3, // disabled
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('MAC Address: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          InternetProtocol: {
+            //alpha: 0.3, // disabled
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Internet Protocol: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          SSID: {
+            //alpha: 0.3, // disabled
+            y: 540,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('SSID: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          SignalStrength: {
+            //alpha: 0.3, // disabled
+            y: 630,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Signal Strength: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        }
+      };
+    }
+
+    getIPSetting(interfaceName) {
+      appApi$2.getIPSetting(interfaceName).then(result => {
+        this.tag('InternetProtocol.Value').text.text = result.ipversion;
+      }).catch(err => console.log(err));
+    }
+
+    _focus() {
+      //Getting the default interface
+      appApi$2.getDefaultInterface().then(result => {
+        defaultInterface = result.interface;
+        this.getIPSetting(defaultInterface);
+
+        if (defaultInterface === "WIFI") {
+          this.tag("ConnectionType.Value").text.text = `Wireless`;
+          this.tag("SSID").alpha = 1;
+          this.tag("SignalStrength").alpha = 1;
+        } else if (defaultInterface === "ETHERNET") {
+          this.tag("ConnectionType.Value").text.text = `Ethernet`;
+          this.tag("SSID").alpha = 0;
+          this.tag("SignalStrength").alpha = 0;
+        } else {
+          this.tag("ConnectionType.Value").text.text = `NA`;
+          this.tag("Status.Value").text.text = `Disconnected`;
+          this.tag("IPAddress.Value").text.text = `NA`;
+          this.tag("Gateway.Value").text.text = `NA`;
+          this.tag("MACAddress.Value").text.text = `NA`;
+        } //Filtering the current interface
+
+
+        appApi$2.getInterfaces().then(result => {
+          currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
+
+          if (currentInterface[0].connected) {
+            this.tag("Status.Value").text.text = `Connected`;
+            appApi$2.getConnectedSSID().then(result => {
+              if (parseInt(result.signalStrength) >= -50) {
+                this.tag("SignalStrength.Value").text.text = `Excellent`;
+              } else if (parseInt(result.signalStrength) >= -60) {
+                this.tag("SignalStrength.Value").text.text = `Good`;
+              } else if (parseInt(result.signalStrength) >= -67) {
+                this.tag("SignalStrength.Value").text.text = `Fair`;
+              } else {
+                this.tag("SignalStrength.Value").text.text = `Poor`;
+              }
+
+              this.tag("SSID.Value").text.text = `${result.ssid}`;
+            }).catch(error => console.log(error));
+            appApi$2.getIPSetting(defaultInterface).then(result => {
+              this.tag('IPAddress.Value').text.text = `${result.ipaddr}`;
+              this.tag("Gateway.Value").text.text = `${result.gateway}`;
+            }).catch(error => console.log(error));
+          } else {
+            this.tag('Status.Value').text.text = `Disconnected`;
+          }
+
+          this.tag('MACAddress.Value').text.text = `${currentInterface[0].macAddress}`;
+        }).catch(error => console.log(error));
+      }).catch(error => console.log(error));
+    }
+
+    _unfocus() {
+      this.tag('SSID.Value').text.text = 'NA';
+      this.tag('SignalStrength.Value').text.text = 'NA';
+      this.tag('MACAddress.Value').text.text = 'NA';
+      this.tag('Gateway.Value').text.text = 'NA';
+      this.tag('IPAddress.Value').text.text = 'NA';
+      this.tag('ConnectionType.Value').text.text = 'NA';
+      this.tag('InternetProtocol.Value').text.text = 'NA';
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class ConfigureManuallyScreen extends lng$1.Component {
+    static _template() {
+      return {
+        Text: {
+          x: 700,
+          y: -140,
+          text: {
+            text: "Configure Manually",
+            fontFace: CONFIG.language.font,
+            fontSize: 35,
+            textColor: CONFIG.theme.hex
+          }
+        },
+        BorderTop: {
+          x: 122,
+          y: -60,
+          w: 1530,
+          h: 2,
+          rect: true
+        },
+        IPv4: {
+          x: 120,
+          y: -10,
+          text: {
+            text: "IPv4 Address: ",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        IPv4Box: {
+          BorderLeft: {
+            x: 330,
+            y: -20,
+            w: 3,
+            h: 58,
+            rect: true
+          },
+          BorderTop: {
+            x: 330,
+            y: -20,
+            w: 1320,
+            h: 3,
+            rect: true
+          },
+          BorderRight: {
+            x: 1650,
+            y: -20,
+            w: 3,
+            h: 59,
+            rect: true
+          },
+          BorderBottom: {
+            x: 330,
+            y: 10 + 28,
+            w: 1320,
+            h: 3,
+            rect: true
+          }
+        },
+        IPv4Text: {
+          x: 380,
+          y: -10,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        Subnet: {
+          x: 120,
+          y: 80,
+          text: {
+            text: "Subnet Mask: ",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        SubnetBox: {
+          BorderLeft: {
+            x: 330,
+            y: 60,
+            w: 3,
+            h: 58,
+            rect: true
+          },
+          BorderTop: {
+            x: 330,
+            y: 60,
+            w: 1320,
+            h: 3,
+            rect: true
+          },
+          BorderRight: {
+            x: 1650,
+            y: 60,
+            w: 3,
+            h: 59,
+            rect: true
+          },
+          BorderBottom: {
+            x: 330,
+            y: 88 + 28,
+            w: 1320,
+            h: 3,
+            rect: true
+          }
+        },
+        SubnetText: {
+          x: 380,
+          y: 70,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        Gateway: {
+          x: 120,
+          y: 160,
+          text: {
+            text: "Gateway: ",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        GatewayBox: {
+          BorderLeft: {
+            x: 330,
+            y: 140,
+            w: 3,
+            h: 58,
+            rect: true
+          },
+          BorderTop: {
+            x: 330,
+            y: 140,
+            w: 1320,
+            h: 3,
+            rect: true
+          },
+          BorderRight: {
+            x: 1650,
+            y: 140,
+            w: 3,
+            h: 59,
+            rect: true
+          },
+          BorderBottom: {
+            x: 330,
+            y: 168 + 28,
+            w: 1320,
+            h: 3,
+            rect: true
+          }
+        },
+        GatewayText: {
+          x: 380,
+          y: 150,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        BorderBottom: {
+          x: 122,
+          y: 240,
+          w: 1530,
+          h: 2,
+          rect: true
+        },
+        Keyboard: {
+          y: 270,
+          x: 335,
+          type: Keyboard,
+          visible: true,
+          zIndex: 2,
+          formats: KEYBOARD_FORMATS.qwerty
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('EnterIPv4');
+
+      this.textCollection = {
+        'EnterIPv4': '',
+        'EnterSubnet': '',
+        'EnterGateway': ''
+      };
+      this.tag('IPv4Text').text.text = "";
+      this.tag("SubnetText").text.text = "";
+      this.tag("GatewayText").text.text = "";
+      this.fireAncestors("$hideSideAndTopPanels");
+    }
+
+    _unfocus() {
+      this.fireAncestors("$showSideAndTopPanels");
+    }
+
+    static _states() {
+      return [class EnterIPv4 extends this {
+        $enter() {
+          this.tag('IPv4Box.BorderLeft').color = CONFIG.theme.hex;
+          this.tag("IPv4Box.BorderBottom").color = CONFIG.theme.hex;
+          this.tag("IPv4Box.BorderRight").color = CONFIG.theme.hex;
+          this.tag("IPv4Box.BorderTop").color = CONFIG.theme.hex;
+        }
+
+        _handleDown() {
+          this._setState("EnterSubnet");
+        }
+
+        _handleEnter() {
+          this._setState('Keyboard');
+        }
+
+        $exit() {
+          this.tag('IPv4Box.BorderLeft').color = 0xffffffff;
+          this.tag("IPv4Box.BorderBottom").color = 0xffffffff;
+          this.tag("IPv4Box.BorderRight").color = 0xffffffff;
+          this.tag("IPv4Box.BorderTop").color = 0xffffffff;
+        }
+
+      }, class EnterSubnet extends this {
+        $enter() {
+          this.tag("SubnetBox.BorderBottom").color = CONFIG.theme.hex;
+          this.tag("SubnetBox.BorderLeft").color = CONFIG.theme.hex;
+          this.tag("SubnetBox.BorderRight").color = CONFIG.theme.hex;
+          this.tag("SubnetBox.BorderTop").color = CONFIG.theme.hex;
+        }
+
+        _handleUp() {
+          this._setState("EnterIPv4");
+        }
+
+        _handleEnter() {
+          this._setState('Keyboard');
+        }
+
+        _handleDown() {
+          this._setState("EnterGateway");
+        }
+
+        $exit() {
+          this.tag("SubnetBox.BorderBottom").color = 0xffffffff;
+          this.tag("SubnetBox.BorderLeft").color = 0xffffffff;
+          this.tag("SubnetBox.BorderRight").color = 0xffffffff;
+          this.tag("SubnetBox.BorderTop").color = 0xffffffff;
+        }
+
+      }, class EnterGateway extends this {
+        $enter() {
+          this.tag('GatewayBox.BorderBottom').color = CONFIG.theme.hex;
+          this.tag('GatewayBox.BorderLeft').color = CONFIG.theme.hex;
+          this.tag('GatewayBox.BorderRight').color = CONFIG.theme.hex;
+          this.tag('GatewayBox.BorderTop').color = CONFIG.theme.hex;
+        }
+
+        _handleUp() {
+          this._setState("EnterSubnet");
+        }
+
+        _handleDown() {
+          this._setState("EnterIPv4");
+        }
+
+        _handleEnter() {
+          this._setState('Keyboard');
+        }
+
+        $exit() {
+          this.tag('GatewayBox.BorderBottom').color = 0xffffffff;
+          this.tag('GatewayBox.BorderLeft').color = 0xffffffff;
+          this.tag('GatewayBox.BorderRight').color = 0xffffffff;
+          this.tag('GatewayBox.BorderTop').color = 0xffffffff;
+        }
+
+      }, class Keyboard extends this {
+        $enter(state) {
+          this.prevState = state.prevState;
+
+          if (this.prevState === 'EnterIPv4') {
+            this.element = 'IPv4Text';
+          }
+
+          if (this.prevState === 'EnterSubnet') {
+            this.element = 'SubnetText';
+          }
+
+          if (this.prevState === 'EnterGateway') {
+            this.element = 'GatewayText';
+          }
+        }
+
+        _getFocused() {
+          return this.tag('Keyboard');
+        }
+
+        $onSoftKey({
+          key
+        }) {
+          if (key === 'Done') {
+            this.handleDone();
+          } else if (key === 'Clear') {
+            this.textCollection[this.prevState] = this.textCollection[this.prevState].substring(0, this.textCollection[this.prevState].length - 1);
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else if (key === '#@!' || key === 'abc' || key === 'áöû' || key === 'shift') {
+            console.log('no saving');
+          } else if (key === 'Space') {
+            this.textCollection[this.prevState] += ' ';
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else if (key === 'Delete') {
+            this.textCollection[this.prevState] = '';
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else {
+            this.textCollection[this.prevState] += key;
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          }
+        }
+
+        _handleBack() {
+          this._setState(this.prevState);
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+    * Class for Other Settings Screen.
+    */
+
+  class ConfigureScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        ConfigureScreenContents: {
+          DHCP: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'DHCP',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          DHCPManual: {
+            //alpha: 0.3, // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'DHCP with Manual Address ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          BootP: {
+            //alpha: 0.3, // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'BootP ',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Manually: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Manually',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        ConfigureManuallyScreen: {
+          x: -100,
+          y: -100,
+          type: ConfigureManuallyScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {}
+
+    _focus() {
+      this._setState('DHCP');
+    }
+
+    hide() {
+      this.tag('ConfigureScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('ConfigureScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class DHCP extends this {
+        $enter() {
+          this.tag('DHCP')._focus();
+        }
+
+        $exit() {
+          this.tag('DHCP')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('DHCPManual');
+        }
+
+        _handleEnter() {}
+
+      }, class DHCPManual extends this {
+        $enter() {
+          this.tag('DHCPManual')._focus();
+        }
+
+        $exit() {
+          this.tag('DHCPManual')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DHCP');
+        }
+
+        _handleDown() {
+          this._setState('BootP');
+        }
+
+        _handleEnter() {}
+
+      }, class BootP extends this {
+        $enter() {
+          this.tag('BootP')._focus();
+        }
+
+        $exit() {
+          this.tag('BootP')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DHCPManual');
+        }
+
+        _handleDown() {
+          this._setState('Manually');
+        }
+
+        _handleEnter() {}
+
+      }, class Manually extends this {
+        $enter() {
+          this.tag('Manually')._focus();
+        }
+
+        $exit() {
+          this.tag('Manually')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('BootP');
+        }
+
+        _handleDown() {
+          this._setState('DHCP');
+        }
+
+        _handleEnter() {
+          this._setState('ConfigureManuallyScreen');
+        }
+
+      }, class ConfigureManuallyScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('ConfigureManuallyScreen').visible = true;
+          this.fireAncestors('$changeHomeText', '');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('ConfigureManuallyScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Configure');
+        }
+
+        _getFocused() {
+          return this.tag('ConfigureManuallyScreen');
+        }
+
+        _handleBack() {
+          this._setState('Manually');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+    * Class for Other Network Config Screen.
+    */
+
+  new AppApi();
+  class NetworkConfigurationScreen extends lng$1.Component {
+    static _template() {
+      return {
+        x: 0,
+        y: 0,
+        NetworkConfigurationScreenContents: {
+          NetworkInfo: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Network Info'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          NetworkInterface: {
+            //alpha: 0.3, // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Network Interface: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          TestInternetAccess: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Test Internet Access: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              x: 420,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif'),
+              visible: false
+            }
+          },
+          StaticMode: {
+            alpha: 0,
+            // disabled
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Static Mode'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        NetworkInfoScreen: {
+          type: NetworkInfo,
+          visible: false
+        },
+        NetworkInterfaceScreen: {
+          type: NetworkInterfaceScreen,
+          visible: false
+        },
+        WiFiScreen: {
+          type: WiFiScreen,
+          visible: false
+        },
+        ConfigureScreen: {
+          type: ConfigureScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+
+      let _currentIPSettings = {};
+      let _newIPSettings = {};
+      this._network = new Network();
+
+      this._network.getDefaultInterface().then(interfaceName => {
+      });
+
+      _newIPSettings = _currentIPSettings;
+      _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
+      // loader animation for testing internet
+
+      this.loadingAnimation = this.tag('TestInternetAccess.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      this.loadingAnimation.start();
+    }
+
+    _focus() {
+      this._setState('NetworkInfo'); //can be used on init as well
+
+    }
+
+    _focus() {
+      this._setState('NetworkInfo'); //can be used on init as well
+
+
+      this._network.getDefaultInterface().then(interfaceName => {
+        this.$NetworkInterfaceText(interfaceName);
+      });
+    }
+
+    _unfocus() {
+      this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ');
+    }
+
+    hide() {
+      this.tag('NetworkConfigurationScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('NetworkConfigurationScreenContents').visible = true;
+    }
+
+    $NetworkInterfaceText(text) {
+      this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text;
+    }
+
+    static _states() {
+      return [class NetworkInfo extends this {
+        $enter() {
+          this.tag('NetworkInfo')._focus();
+        }
+
+        $exit() {
+          this.tag('NetworkInfo')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('NetworkInterface');
+        }
+
+        _handleEnter() {
+          this._setState('NetworkInfoScreen');
+        }
+
+      }, class NetworkInterface extends this {
+        $enter() {
+          this.tag('NetworkInterface')._focus();
+        }
+
+        $exit() {
+          this.tag('NetworkInterface')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleDown() {
+          this._setState('TestInternetAccess');
+        }
+
+        _handleEnter() {
+          this._setState('NetworkInterfaceScreen');
+        }
+
+      }, class TestInternetAccess extends this {
+        $enter() {
+          this.tag('TestInternetAccess')._focus();
+        }
+
+        $exit() {
+          this.tag('TestInternetAccess')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('NetworkInterface');
+        }
+
+        _handleDown() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleEnter() {
+          this.tag('TestInternetAccess.Loader').visible = true;
+
+          this._network.isConnectedToInternet().then(result => {
+            var connectionStatus = Language.translate("Internet Access: ");
+
+            if (result) {
+              connectionStatus += "Connected";
+            } else {
+              connectionStatus += "Not Connected";
+            }
+
+            setTimeout(() => {
+              this.tag('TestInternetAccess.Loader').visible = false;
+              this.tag('TestInternetAccess.Title').text.text = connectionStatus;
+              this.loadingAnimation.stop();
+            }, 2000);
+          });
+        }
+
+      }, class StaticMode extends this {
+        $enter() {
+          this.tag('StaticMode')._focus();
+        }
+
+        $exit() {
+          this.tag('StaticMode')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('TestInternetAccess');
+        }
+
+        _handleDown() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleEnter() {
+          this._setState('ConfigureScreen');
+        }
+
+      }, class NetworkInterfaceScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('NetworkInterfaceScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('NetworkInterfaceScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('NetworkInterfaceScreen');
+        }
+
+        _handleBack() {
+          this._setState('NetworkInterface');
+        }
+
+      }, class NetworkInfoScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('NetworkInfoScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Info');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('NetworkInfoScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('NetworkInfoScreen');
+        }
+
+        _handleBack() {
+          this._setState('NetworkInfo');
+        }
+
+      }, class WiFiScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('WiFiScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / WiFi');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('WiFiScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('WiFiScreen');
+        }
+
+        _handleBack() {
+          this._setState('WiFi');
+        }
+
+      }, class ConfigureScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('ConfigureScreen').visible = true;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Configure');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('ConfigureScreen').visible = false;
+          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('ConfigureScreen');
+        }
+
+        _handleBack() {
+          this._setState('StaticMode');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
    * Class for settings screen.
    */
 
+  let stateTracker = 'NetworkConfiguration';
   class SettingsScreen extends lng$1.Component {
     static _template() {
       return {
@@ -22290,7 +24331,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Network Configuration',
+                text: Language.translate('Network Configuration'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22314,7 +24355,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Pair Remote Control',
+                text: Language.translate('Pair Remote Control'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22338,7 +24379,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Video',
+                text: Language.translate('Video'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22362,7 +24403,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Audio',
+                text: Language.translate('Audio'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22386,7 +24427,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Other Settings',
+                text: Language.translate('Other Settings'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22425,9 +24466,21 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+    /**
+    * @param {any} e
+    */
+
+
+    set setState(e) {
+      stateTracker = 'BluetoothScreen';
+    }
 
     _focus() {
-      this._setState('NetworkConfiguration');
+      this._setState(stateTracker);
+    }
+
+    _unfocus() {
+      stateTracker = 'NetworkConfiguration';
     }
 
     hide() {
@@ -22695,7 +24748,7 @@ var APP_accelerator_home_ui = (function () {
    * Variable to store the timer
    */
 
-  var timeout;
+  var timeout$1;
   /**
    * Class to render the UI controls for the video player.
    */
@@ -22838,7 +24891,7 @@ var APP_accelerator_home_ui = (function () {
     _unfocus() {
       this._setState('Hidden');
 
-      clearTimeout(timeout);
+      clearTimeout(timeout$1);
     }
     /**
      * Function to set the title in the video controls.
@@ -22973,8 +25026,8 @@ var APP_accelerator_home_ui = (function () {
 
 
     timer() {
-      clearTimeout(timeout);
-      timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
+      clearTimeout(timeout$1);
+      timeout$1 = setTimeout(this.hidePlayerControls.bind(this), 5000);
     }
     /**
      * Function that defines the different states of the player controls.
@@ -23548,10 +25601,7 @@ var APP_accelerator_home_ui = (function () {
       return [class ShowControls extends this {
         _getFocused() {
           return this.tag('PlayerControls');
-        } // _handleBack(){
-        //   console.log('Go Back')
-        // }
-
+        }
 
       }, class HideControls extends this {// _handleBack(){
         //   console.log('go back from hidecontrol')
@@ -23579,9 +25629,1557 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  /**
+   * Class to render items in main view.
+   */
+
+  class UsbListItem extends lng$1.Component {
+    /**
+     * Function to render various elements in the main view item.
+     */
+    static _template() {
+      return {
+        Item: {
+          Shadow: {
+            alpha: 0
+          },
+          y: 20,
+          Image: {},
+          Info: {}
+        }
+      };
+    }
+
+    _init() {
+      this.tag('Shadow').patch({
+        color: CONFIG.theme.hex,
+        rect: true,
+        h: this.h + 24,
+        w: this.w,
+        x: this.x,
+        y: this.y - 12
+      });
+
+      if (this.data.url.startsWith('/images')) {
+        this.tag('Image').patch({
+          rtt: true,
+          x: this.x,
+          y: this.y,
+          w: this.w,
+          h: this.h,
+          src: Utils.asset(this.data.url),
+          scale: this.unfocus
+        });
+      } else {
+        this.tag('Image').patch({
+          rtt: true,
+          x: this.x,
+          y: this.y,
+          w: this.w,
+          h: this.h,
+          src: this.data.url
+        });
+      }
+      /* Used static data for develpment purpose ,
+      it wil replaced with Dynamic data once implimetation is completed.*/
+
+
+      this.tag('Info').patch({
+        x: this.x - 20,
+        y: this.y + this.h + 10,
+        w: this.w,
+        h: 140,
+        alpha: 0,
+        PlayIcon: {
+          Label: {
+            x: this.idx === 0 ? this.x + 20 : this.x + 10,
+            y: this.y + 10,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: this.data.displayName,
+              fontSize: 20,
+              maxLines: 2,
+              wordWrapWidth: this.w
+            }
+          }
+        }
+      });
+    }
+    /**
+     * Function to change properties of item during focus.
+     */
+
+
+    _focus() {
+      this.tag('Image').patch({
+        x: this.x,
+        y: this.y,
+        w: this.w,
+        h: this.h,
+        zIndex: 1,
+        scale: this.focus
+      });
+      this.tag('Info').alpha = 1;
+      this.tag('Item').patch({
+        zIndex: 2
+      });
+      this.tag('Shadow').patch({
+        scale: this.focus,
+        alpha: 1
+      });
+    }
+    /**
+     * Function to change properties of item during unfocus.
+     */
+
+
+    _unfocus() {
+      this.tag('Image').patch({
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus
+      });
+      this.tag('Item').patch({
+        zIndex: 0
+      });
+      this.tag('Info').alpha = 0;
+      this.tag('Shadow').patch({
+        alpha: 0
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Variable to store the timer
+   */
+
+  var timeout;
+  /**
+   * Class to render the UI controls for the video player.
+   */
+
+  class LightningPlayerControls extends lng$1.Component {
+    /**
+     * Function to create components for the player controls.
+     */
+    static _template() {
+      return {
+        rect: true,
+        w: 1920,
+        h: 410,
+        color: 0x4025262a,
+        Title: {
+          x: 90,
+          y: 15
+        },
+        Subtitle: {
+          x: 90,
+          y: 88.5
+        },
+        NetworkLogo: {
+          x: 1740,
+          y: 82.5
+        },
+        TimeBar: {
+          x: 90,
+          y: 163.5,
+          texture: lng$1.Tools.getRoundRect(1740, 6, 6, 0, 0, true, 0x80eef1f3)
+        },
+        ProgressBar: {
+          x: 90,
+          y: 163.5
+        },
+        CurrentTime: {
+          x: 90,
+          y: 184.5
+        },
+        TotalTime: {
+          x: 1680,
+          y: 184.5
+        },
+        Buttons: {
+          x: 820,
+          y: 240,
+          children: [{
+            src: Utils.asset('images/player/rewind.png'),
+            x: 17,
+            y: 17
+          }, {
+            src: Utils.asset('images/player/pause-focus.png'),
+            x: 17,
+            y: 17
+          }, {
+            src: Utils.asset('images/player/fast-forward.png'),
+            x: 17,
+            y: 17
+          }].map((item, idx) => ({
+            x: idx * 100,
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+            ControlIcon: {
+              x: item.x,
+              y: item.y,
+              texture: lng$1.Tools.getSvgTexture(item.src, 50, 50)
+            }
+          }))
+        },
+        Audio: {
+          x: 90,
+          y: 240,
+          texture: lng$1.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xff8e8e8e),
+          AudioOptions: {
+            x: 0,
+            y: 25,
+            w: 240,
+            h: 90,
+            text: {
+              fontSize: 30,
+              text: 'Audio Options',
+              textColor: 0xffffffff,
+              textAlign: 'center'
+            }
+          }
+        },
+        Extras: {
+          x: 1700,
+          y: 240,
+          texture: lng$1.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xff8e8e8e),
+          ExtrasOptions: {
+            x: 0,
+            y: 25,
+            w: 130,
+            h: 90,
+            text: {
+              fontSize: 30,
+              text: 'Extras',
+              textColor: 0xffffffff,
+              textAlign: 'center'
+            }
+          }
+        }
+      };
+    }
+
+    _init() {
+      /**
+       * Variable to store the duration of the video content.
+       */
+      this.videoDuration = 0;
+      this.tag('Buttons').children[0].patch({
+        alpha: 0.4
+      });
+      this.tag('Buttons').children[2].patch({
+        alpha: 0.4
+      });
+      this.tag('Audio').patch({
+        alpha: 0.4
+      });
+      this.tag('Extras').patch({
+        alpha: 0.4
+      });
+    }
+    /**
+     * Function to set focus to player controls when the player controls are shown.
+     */
+
+
+    _focus() {
+      this._index = 1;
+      this.toggle = false;
+
+      this._setState('PlayPause');
+    }
+    /**
+     * Function to handle the player controls when they are hidden.
+     */
+
+
+    _unfocus() {
+      this._setState('Hidden');
+
+      clearTimeout(timeout);
+    }
+    /**
+     * Function to set the title in the video controls.
+     * @param {String} title title to be displayed in video controls.
+     */
+
+
+    set title(title) {
+      this.tag('Title').patch({
+        text: {
+          fontSize: 52.5,
+          textAlign: 'center',
+          text: title
+        }
+      });
+    }
+    /**
+     * Function to set the subtitle in the video control menu.
+     * @param {String} subtitle sub title to be displayed.
+     */
+
+
+    set subtitle(subtitle) {
+      this.tag('Subtitle').patch({
+        text: {
+          fontSize: 36,
+          textAlign: 'center',
+          text: subtitle
+        }
+      });
+    }
+    /**
+     * Function to set the network logo in the video control menu.
+     * @param {String} logoPath path to the logo.
+     */
+
+
+    set logoPath(logoPath) {
+      this.tag('NetworkLogo').patch({
+        src: logoPath
+      });
+    }
+    /**
+     * Function to set the duration of the video.
+     * @param {String} duration video duration to be set.
+     */
+
+
+    set duration(duration) {
+      console.log(`duration was set = ${duration}`);
+      this.videoDuration = duration;
+      this.tag('TotalTime').patch({
+        text: {
+          fontSize: 33,
+          textAlign: 'center',
+          text: this.SecondsTohhmmss(duration)
+        }
+      });
+    }
+    /**
+     * Function to set the current video time.
+     * @param {String} currentTime current time to be set.
+     */
+
+
+    set currentTime(currentTime) {
+      // console.log(`current time was set to ${currentTime}`);
+      this.tag('CurrentTime').patch({
+        text: {
+          fontSize: 33,
+          textAlign: 'center',
+          text: this.SecondsTohhmmss(currentTime)
+        }
+      });
+      this.tag('ProgressBar').patch({
+        texture: lng$1.Tools.getRoundRect(1740 * currentTime / this.videoDuration, 6, 6, 0, 0, true, 0xffffffff),
+        SeekBar: {
+          x: 1740 * currentTime / this.videoDuration,
+          y: -12,
+          texture: lng$1.Tools.getRoundRect(30, 30, 15, 0, 0, true, 0xffffffff)
+        }
+      });
+    }
+    /**
+     * Function to convert time in seconds to hh:mm:ss format.
+     * @param {String} totalSeconds time in seconds.
+     */
+
+
+    SecondsTohhmmss(totalSeconds) {
+      this.hours = Math.floor(totalSeconds / 3600);
+      this.minutes = Math.floor((totalSeconds - this.hours * 3600) / 60);
+      this.seconds = totalSeconds - this.hours * 3600 - this.minutes * 60;
+      this.seconds = Math.round(totalSeconds) - this.hours * 3600 - this.minutes * 60;
+      this.result = this.hours < 10 ? '0' + this.hours : this.hours;
+      this.result += ':' + (this.minutes < 10 ? '0' + this.minutes : this.minutes);
+      this.result += ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds);
+      return this.result;
+    }
+    /**
+     * Function to hide player controls.
+     */
+
+
+    hideLightningPlayerControls() {
+      this.signal('hide');
+    }
+    /**
+     * Function to reset the player controls.
+     */
+
+
+    reset(state = 'play') {
+      this._setState('PlayPause');
+
+      if (state === 'pause' || state === 'stop') {
+        this.tag('Buttons').children[1].tag('ControlIcon').patch({
+          texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/play-focus.png'), 50, 50),
+          x: 17
+        });
+        this.toggle = 1;
+        return;
+      }
+
+      this.tag('Buttons').children[1].tag('ControlIcon').patch({
+        texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/pause-focus.png'), 50, 50),
+        x: 17
+      });
+      this.toggle = 0;
+    }
+    /**
+     * Timer function to track the inactivity of the player controls.
+     */
+
+
+    timer() {
+      clearTimeout(timeout);
+      timeout = setTimeout(this.hideLightningPlayerControls.bind(this), 5000);
+    }
+    /**
+     * Function that defines the different states of the player controls.
+     */
+
+
+    static _states() {
+      return [class AudioOptions extends this {
+        $enter() {
+          this.timer();
+          this.tag('Audio').patch({
+            texture: lng$1.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xffffffff),
+            scale: 1.1
+          });
+          this.tag('Audio').tag('AudioOptions').color = 0xff000000;
+        }
+
+        $exit() {
+          this.tag('Audio').patch({
+            texture: lng$1.Tools.getRoundRect(240, 90, 6, 0, 0, true, 0xff8e8e8e),
+            scale: 1
+          });
+          this.tag('Audio').tag('AudioOptions').color = 0xffffffff;
+        }
+
+        _handleRight() {
+          this._setState('Rewind');
+        }
+
+        _getFocused() {
+          this.timer();
+        }
+
+      }, class PlayPause extends this {
+        $enter() {
+          this.focus = this.toggle ? Utils.asset('images/player/play-focus.png') : Utils.asset('images/player/pause-focus.png');
+          this.timer();
+          this.tag('Buttons').children[1].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+            scale: 1.1
+          });
+          this.tag('Buttons').children[1].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
+          });
+        }
+
+        $exit() {
+          this.unfocus = this.toggle ? Utils.asset('images/player/play.png') : Utils.asset('images/player/pause.png');
+          this.tag('Buttons').children[1].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+            scale: 1
+          });
+          this.tag('Buttons').children[1].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(this.unfocus, 50, 50)
+          });
+        }
+
+        _handleEnter() {
+          if (this.toggle) {
+            this.fireAncestors('$play');
+          } else {
+            this.fireAncestors('$pause');
+          }
+
+          this.toggle = !this.toggle;
+          this.focus = this.toggle ? Utils.asset('images/player/play-focus.png') : Utils.asset('images/player/pause-focus.png');
+          this.timer();
+          this.tag('Buttons').children[1].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff)
+          });
+          this.tag('Buttons').children[1].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
+          });
+        }
+
+        _handleRight() {
+          this._setState('Forward');
+        }
+
+        _handleLeft() {
+          this._setState('Rewind');
+        }
+
+        _getFocused() {
+          this.timer();
+        }
+
+      }, class Forward extends this {
+        $enter() {
+          this.timer();
+          this.tag('Buttons').children[2].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+            scale: 1.1
+          });
+          this.tag('Buttons').children[2].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/fast-forward-focus.png'), 50, 50)
+          });
+        }
+
+        $exit() {
+          this.tag('Buttons').children[2].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+            scale: 1
+          });
+          this.tag('Buttons').children[2].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/fast-forward.png'), 50, 50)
+          });
+        }
+
+        _handleRight() {
+          this._setState('Extras');
+        }
+
+        _handleLeft() {
+          this._setState('PlayPause');
+        }
+
+        _handleEnter() {
+          this.fireAncestors('$next'); // this.signal('$fastfwd')
+        }
+
+        _getFocused() {
+          this.timer();
+        }
+
+      }, class Rewind extends this {
+        $enter() {
+          this.timer();
+          this.tag('Buttons').children[0].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xffffffff),
+            scale: 1.1
+          });
+          this.tag('Buttons').children[0].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/rewind-focus.png'), 50, 50)
+          });
+        }
+
+        $exit() {
+          this.tag('Buttons').children[0].patch({
+            texture: lng$1.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
+            scale: 1
+          });
+          this.tag('Buttons').children[0].tag('ControlIcon').patch({
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/player/rewind.png'), 50, 50)
+          });
+        }
+
+        _handleLeft() {
+          this._setState('AudioOptions');
+        }
+
+        _handleRight() {
+          this._setState('PlayPause');
+        }
+
+        _handleEnter() {
+          this.fireAncestors('$previous'); //this.signal('fastrwd')
+        }
+
+        _getFocused() {
+          this.timer();
+        }
+
+      }, class Extras extends this {
+        $enter() {
+          this.tag('Extras').patch({
+            texture: lng$1.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xffffffff),
+            scale: 1.1
+          });
+          this.tag('Extras').tag('ExtrasOptions').color = 0xff000000;
+          this.timer();
+        }
+
+        _handleLeft() {
+          this._setState('Forward');
+        }
+
+        _getFocused() {
+          this.timer();
+        }
+
+        $exit() {
+          this.tag('Extras').patch({
+            texture: lng$1.Tools.getRoundRect(130, 90, 6, 0, 0, true, 0xff8e8e8e),
+            scale: 1
+          });
+          this.tag('Extras').tag('ExtrasOptions').color = 0xffffffff;
+        }
+
+      }, class Hidden extends this {
+        _getFocused() {}
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  let videoAudioUrl = "";
+  let videoAudioTitle = "";
+  let isAudio = false;
+  var usbApi = new UsbApi();
+  class UsbAppsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        UsbAppsScreenContents: {
+          w: 1765,
+          h: 1250,
+          clipping: true,
+          Wrapper: {
+            x: 0,
+            w: 1765,
+            h: 1250,
+            clipping: true,
+            Text1: {
+              y: 0,
+              h: 30,
+              text: {
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                text: "Videos",
+                fontStyle: 'normal',
+                textColor: 0xFFFFFFFF
+              },
+              zIndex: 0
+            },
+            Row1: {
+              y: 30,
+              x: -20,
+              flex: {
+                direction: 'row',
+                paddingLeft: 20,
+                wrap: false
+              },
+              type: lng$1.components.ListComponent,
+              w: 1745,
+              h: 300,
+              itemSize: 277,
+              roll: true,
+              rollMax: 1745,
+              horizontal: true,
+              itemScrollOffset: -4,
+              clipping: false
+            },
+            Text2: {
+              // x: 10 + 25,
+              y: 243,
+              h: 30,
+              text: {
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                text: "Audio",
+                fontStyle: 'normal',
+                textColor: 0xFFFFFFFF
+              },
+              zIndex: 0
+            },
+            Row2: {
+              y: 273,
+              x: -20,
+              flex: {
+                direction: 'row',
+                paddingLeft: 20,
+                wrap: false
+              },
+              type: lng$1.components.ListComponent,
+              w: 1745,
+              h: 300,
+              itemSize: 171,
+              roll: true,
+              rollMax: 1745,
+              horizontal: true,
+              itemScrollOffset: -4,
+              clipping: false
+            },
+            Text3: {
+              // x: 10 + 25,
+              y: 486,
+              h: 30,
+              text: {
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                text: "Photos",
+                fontStyle: 'normal',
+                textColor: 0xFFFFFFFF
+              },
+              zIndex: 0
+            },
+            Row3: {
+              y: 516,
+              x: -20,
+              flex: {
+                direction: 'row',
+                paddingLeft: 20,
+                wrap: false
+              },
+              type: lng$1.components.ListComponent,
+              w: 1745,
+              h: 400,
+              itemSize: 165,
+              roll: true,
+              rollMax: 1745,
+              horizontal: true,
+              itemScrollOffset: -4,
+              clipping: false
+            },
+            Text4: {
+              // x: 10 + 25,
+              y: 729,
+              h: 30,
+              text: {
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                text: "Folders",
+                fontStyle: 'normal',
+                textColor: 0xFFFFFFFF
+              },
+              zIndex: 0
+            },
+            Row4: {
+              y: 759,
+              x: -20,
+              flex: {
+                direction: 'row',
+                paddingLeft: 20,
+                wrap: false
+              },
+              type: lng$1.components.ListComponent,
+              w: 1745,
+              h: 400,
+              itemSize: 165,
+              roll: true,
+              rollMax: 1745,
+              horizontal: true,
+              itemScrollOffset: -4,
+              clipping: false
+            }
+          },
+          NoUSB: {
+            x: 0,
+            w: 1765,
+            h: 800,
+            clipping: true,
+            visible: false,
+            Image: {
+              x: 800,
+              y: 400,
+              mount: 0.5,
+              texture: {
+                type: lng$1.textures.ImageTexture,
+                src: 'static/images/usb/USB_Featured_Item.jpg',
+                resizeMode: {
+                  type: 'contain',
+                  w: 640,
+                  h: 360
+                }
+              }
+            },
+            NoUSBTitle: {
+              x: 800,
+              y: 500,
+              mount: 0.5,
+              text: {
+                fontFace: CONFIG.language.font,
+                text: 'USB Not Mounted / No Data available',
+                fontSize: 35
+              }
+            }
+          }
+        },
+        ImageViewer: {
+          h: 1080,
+          w: 1920,
+          x: -200,
+          y: -275,
+          // mount:0.5,
+          rect: true,
+          color: 0xff000000,
+          zIndex: 2,
+          visible: false,
+          Image: {
+            x: 960,
+            y: 540,
+            mount: 0.5,
+            texture: {
+              type: lng$1.textures.ImageTexture,
+              src: 'static/images/usb/USB_Photo_Placeholder.jpg',
+              resizeMode: {
+                type: 'contain',
+                w: 1920,
+                h: 1080
+              }
+            }
+          }
+        },
+        AudioInfo: {
+          zIndex: 2,
+          visible: false,
+          h: 1080,
+          w: 1920,
+          x: -200,
+          y: -286,
+          Image: {
+            scale: 0.5,
+            x: 960,
+            y: 560,
+            mount: 0.5,
+            src: 'static/images/usb/USB_Audio_Placeholder.jpg'
+          },
+          Title: {
+            x: 960,
+            y: 900,
+            mount: 0.5,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: 'file_name.mp3',
+              fontSize: 35
+            }
+          }
+        },
+        PlayerControls: {
+          type: LightningPlayerControls,
+          x: -200,
+          y: -286,
+          y: 810,
+          alpha: 0,
+          signals: {
+            pause: 'pause',
+            play: 'play',
+            hide: 'hidePlayerControls',
+            fastfwd: 'fastfwd',
+            fastrwd: 'fastrwd'
+          },
+          zIndex: 4
+        }
+      };
+    }
+
+    _handleBack() {
+      console.log(`handle back is called`);
+
+      if (!(this.cwd.length === 0)) {
+        let clone = [...this.cwd];
+        clone.pop();
+        let cwdname = clone.join("/");
+        usbApi.cd(cwdname).then(res => {
+          this.cwd.pop();
+          this.loadData();
+        }).catch(err => {
+          console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+        });
+      } else {
+        this.fireAncestors('$setStateMainView');
+      }
+    }
+
+    reset() {
+      for (let i = this.tag('Row1').index; i > 0; i--) {
+        this.tag('Row1').setPrevious();
+      }
+
+      for (let i = this.tag('Row2').index; i > 0; i--) {
+        this.tag('Row2').setPrevious();
+      }
+
+      for (let i = this.tag("Row3").index; i > 0; i--) {
+        this.tag('Row3').setPrevious();
+      }
+
+      for (let i = this.tag("Row3").index; i > 0; i--) {
+        this.tag('Row4').setPrevious();
+      }
+    }
+
+    _firstActive() {
+      VideoPlayer.consumer(this);
+    }
+
+    hide() {
+      this.tag('UsbAppsScreenContents').visible = false;
+      this.fireAncestors('$hideAllforVideo');
+    }
+
+    show() {
+      this.tag('UsbAppsScreenContents').visible = true;
+      this.fireAncestors('$showAllforVideo');
+    }
+
+    exitFunctionality() {
+      VideoPlayer.close();
+      this.tag('ImageViewer').visible = false;
+      this.tag('ImageViewer.Image').texture.src = 'static/images/usb/USB_Photo_Placeholder.jpg';
+      this.hidePlayerControls();
+      VideoPlayer.close();
+      this.show();
+      videoAudioUrl = "";
+      videoAudioTitle = "";
+      this.tag('AudioInfo').visible = false;
+      this.tag('AudioInfo.Title').text.text = 'file_name.mp3';
+      this.tag('UsbAppsScreenContents').visible = true;
+    }
+
+    traverseMinus() {
+      this.index = (this.traversableRows.length + --this.index) % this.traversableRows.length;
+
+      this._setState(this.traversableRows[this.index]);
+    }
+
+    traversePlus() {
+      this.index = ++this.index % this.traversableRows.length;
+
+      this._setState(this.traversableRows[this.index]);
+    }
+
+    static _states() {
+      return [class Video extends this {
+        $enter() {
+          this.scroll(0);
+        }
+
+        _getFocused() {
+          this.tag('Text1').text.fontStyle = 'bold';
+
+          if (this.tag('Row1').length) {
+            return this.tag('Row1').element;
+          }
+        }
+
+        _handleDown() {
+          // this._setState('Audio')
+          this.traversePlus();
+        }
+
+        _handleUp() {
+          this.traverseMinus();
+        }
+
+        _handleRight() {
+          if (this.tag('Row1').length - 1 != this.tag('Row1').index) {
+            this.tag('Row1').setNext();
+            return this.tag('Row1').element;
+          }
+        }
+
+        _handleEnter() {
+          isAudio = false;
+          videoAudioUrl = this.tag('Row1').element.data.uri;
+          videoAudioTitle = this.tag('Row1').element.data.displayName;
+
+          this._setState('Playing');
+        }
+
+        _handleLeft() {
+          this.tag('Text1').text.fontStyle = 'normal';
+
+          if (0 != this.tag('Row1').index) {
+            this.tag('Row1').setPrevious();
+            return this.tag('Row1').element;
+          } else {
+            this.reset();
+          }
+        }
+
+      }, class Audio extends this {
+        $enter() {
+          this.scroll(0);
+        }
+
+        _getFocused() {
+          this.tag('Text2').text.fontStyle = 'bold';
+
+          if (this.tag('Row2').length) {
+            return this.tag('Row2').element;
+          }
+        }
+
+        _handleDown() {
+          this.traversePlus();
+        }
+
+        _handleUp() {
+          this.traverseMinus();
+        }
+
+        _handleEnter() {
+          isAudio = true;
+          this.tag('AudioInfo.Title').text.text = this.tag('Row2').element.data.displayName;
+          videoAudioUrl = this.tag('Row2').element.data.uri;
+          videoAudioTitle = this.tag('Row2').element.data.displayName;
+
+          this._setState('Playing');
+        }
+
+        _handleRight() {
+          if (this.tag('Row2').length - 1 != this.tag('Row2').index) {
+            this.tag('Row2').setNext();
+            return this.tag('Row2').element;
+          }
+        }
+
+        _handleLeft() {
+          this.tag('Text2').text.fontStyle = 'normal';
+
+          if (0 != this.tag('Row2').index) {
+            this.tag('Row2').setPrevious();
+            return this.tag('Row2').element;
+          } else {
+            this.reset();
+          }
+        }
+
+      }, class Picture extends this {
+        $enter() {
+          this.scroll(0);
+        }
+
+        _getFocused() {
+          this.tag('Text3').text.fontStyle = 'bold';
+
+          if (this.tag('Row3').length) {
+            return this.tag('Row3').element;
+          }
+        }
+
+        _handleDown() {
+          this.traversePlus();
+        }
+
+        _handleUp() {
+          this.traverseMinus();
+        }
+
+        _handleEnter() {
+          this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri;
+
+          this._setState('ImageViewer');
+        }
+
+        _handleRight() {
+          if (this.tag('Row3').length - 1 != this.tag('Row3').index) {
+            this.tag('Row3').setNext();
+            return this.tag('Row3').element;
+          }
+        }
+
+        _handleLeft() {
+          this.tag('Text3').text.fontStyle = 'normal';
+
+          if (0 != this.tag('Row3').index) {
+            this.tag('Row3').setPrevious();
+            return this.tag('Row3').element;
+          } else {
+            this.reset();
+          }
+        }
+
+      }, class Folder extends this {
+        $enter() {
+          if (this.traversableRows.length > 3) {
+            this.scroll(-243);
+          }
+        }
+
+        _getFocused() {
+          this.tag('Text4').text.fontStyle = 'bold';
+
+          if (this.tag('Row4').length) {
+            return this.tag('Row4').element;
+          }
+        }
+
+        _handleDown() {
+          this.traversePlus();
+        }
+
+        _handleUp() {
+          this.traverseMinus();
+        }
+
+        _handleEnter() {
+          //do something after folder click.
+          let dname = this.cwd.join("/") + "/" + this.tag('Row4').element.data.displayName;
+          usbApi.cd(dname).then(res => {
+            this.cwd.push(this.tag('Row4').element.data.displayName);
+            console.log(`loading the data from the directory ${this.cwd}
+
+            and its data = music:${JSON.stringify(musicListInfo)}
+
+            Pictures : ${JSON.stringify(imageListInfo)}
+
+            videos : ${JSON.stringify(videoListInfo)}
+
+            folders : ${JSON.stringify(UsbInnerFolderListInfo)}
+
+            `);
+            this.loadData();
+          }).catch(err => {
+            console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+          });
+        }
+
+        _handleRight() {
+          if (this.tag('Row4').length - 1 != this.tag('Row4').index) {
+            this.tag('Row4').setNext();
+            return this.tag('Row4').element;
+          }
+        }
+
+        _handleLeft() {
+          this.tag('Text4').text.fontStyle = 'normal';
+
+          if (0 != this.tag('Row4').index) {
+            this.tag('Row4').setPrevious();
+            return this.tag('Row4').element;
+          } else {
+            this.reset();
+          }
+        }
+
+      }, class ImageViewer extends this {
+        $enter() {
+          this.tag('ImageViewer').visible = true;
+        }
+
+        $exit() {
+          this.tag('ImageViewer').visible = false;
+          this.tag('ImageViewer.Image').texture.src = 'static/images/usb/USB_Photo_Placeholder.jpg';
+        }
+
+        _handleBack() {
+          this._setState(this.traversableRows[this.index]);
+        }
+
+        _handleRight() {
+          if (this.tag('Row3').length - 1 != this.tag('Row3').index) {
+            this.tag('Row3').setNext();
+            this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri;
+            return this.tag('Row3').element;
+          }
+        }
+
+        _handleLeft() {
+          this.tag('Text3').text.fontStyle = 'normal';
+
+          if (0 != this.tag('Row3').index) {
+            this.tag('Row3').setPrevious();
+            this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri;
+            return this.tag('Row3').element;
+          } else {
+            this.reset();
+          }
+        }
+
+      }, class Playing extends this {
+        $videoPlayerLoadedData(LoadedData) {
+          this.player = this.tag('PlayerControls');
+          this.player.duration = VideoPlayer.duration;
+          this.player.currentTime = VideoPlayer.currentTime;
+        }
+
+        $videoPlayerProgress(progress) {
+          this.player.currentTime = VideoPlayer.currentTime;
+        }
+
+        start() {
+          VideoPlayer.size(1920, 1080);
+          VideoPlayer.loop(true);
+          VideoPlayer.open(videoAudioUrl);
+
+          this._mediaPlaybackStarted();
+
+          this.initializePlayer();
+        }
+
+        $enter() {
+          this.player = null;
+          this.hide();
+
+          if (isAudio) {
+            this.tag('AudioInfo').visible = true;
+            this.tag('AudioInfo.Title').text.text = videoAudioTitle;
+          }
+
+          this.start();
+        }
+
+        initializePlayer() {
+          this.player = this.tag('PlayerControls');
+          this.player.title = videoAudioTitle;
+          this.player.subtitle = "None"; //player.logoPath = ""
+          //this.tag('PlayerControls').duration = VideoPlayer.getDurationSec()
+          // player.currentTime = 1
+        }
+
+        $pause() {
+          VideoPlayer.pause();
+        }
+
+        $play() {
+          VideoPlayer.play();
+        }
+
+        $next() {
+          if (isAudio) {
+            if (this.tag('Row2').length - 1 != this.tag('Row2').index) {
+              this.tag('Row2').setNext();
+              videoAudioUrl = this.tag('Row2').element.data.uri;
+              videoAudioTitle = this.tag('Row2').element.data.displayName;
+              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
+              VideoPlayer.close();
+              this.start();
+              return this.tag('Row2').element;
+            }
+          } else {
+            if (this.tag('Row1').length - 1 != this.tag('Row1').index) {
+              this.tag('Row1').setNext();
+              videoAudioUrl = this.tag('Row1').element.data.uri;
+              videoAudioTitle = this.tag('Row1').element.data.displayName;
+              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
+              VideoPlayer.close();
+              this.start();
+              return this.tag('Row1').element;
+            }
+          }
+        }
+
+        $previous() {
+          if (isAudio) {
+            if (0 != this.tag('Row2').index) {
+              this.tag('Row2').setPrevious();
+              videoAudioUrl = this.tag('Row2').element.data.uri;
+              videoAudioTitle = this.tag('Row2').element.data.displayName;
+              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
+              VideoPlayer.close();
+              this.start();
+              return this.tag('Row2').element;
+            } else {
+              this.reset();
+            }
+          } else {
+            if (0 != this.tag('Row1').index) {
+              this.tag('Row1').setPrevious();
+              videoAudioUrl = this.tag('Row1').element.data.uri;
+              videoAudioTitle = this.tag('Row1').element.data.displayName;
+              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
+              VideoPlayer.close();
+              this.start();
+              return this.tag('Row1').element;
+            } else {
+              this.reset();
+            }
+          }
+        }
+
+        $exit() {
+          this.hidePlayerControls();
+          VideoPlayer.close();
+          this.show();
+          videoAudioUrl = "";
+          this.tag('AudioInfo').visible = false;
+          this.tag('AudioInfo.Title').text.text = 'file_name.mp3';
+        }
+
+        _handleBack() {
+          this._setState(this.traversableRows[this.index]);
+        }
+
+        hidePlayerControls() {
+          this.tag('PlayerControls').setSmooth('y', 1080, {
+            duration: 0.7
+          });
+          this.tag('PlayerControls').setSmooth('alpha', 0, {
+            duration: 0.7
+          });
+        }
+
+        showPlayerControls() {
+          this.tag('PlayerControls').reset();
+          this.tag('PlayerControls').setSmooth('alpha', 1);
+          this.tag('PlayerControls').setSmooth('y', 389, {
+            duration: 0.7
+          });
+
+          this._setState('Playing.ShowControls');
+
+          this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
+        }
+
+        _handleDown() {
+          this.tag('PlayerControls').setSmooth('alpha', 1, {
+            duration: 1
+          });
+          this.tag('PlayerControls').setSmooth('y', 389, {
+            duration: 1
+          });
+
+          this._setState('Playing.ShowControls');
+
+          clearTimeout(this.timeout);
+        }
+
+        _handleUp() {
+          this.hidePlayerControls();
+        }
+
+        _mediaPlaybackStarted() {
+          this.tag('PlayerControls').reset();
+          this.tag('PlayerControls').setSmooth('alpha', 1);
+          this.tag('PlayerControls').setSmooth('y', 389, {
+            duration: 1
+          });
+          this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
+        }
+
+        static _states() {
+          return [class ShowControls extends this {
+            _getFocused() {
+              return this.tag('PlayerControls');
+            }
+
+          }, class HideControls extends this {}];
+        }
+
+      }];
+    }
+
+    set Row1Items(items) {
+      this.tag('Row1').items = items.map((info, idx) => {
+        return {
+          w: 257,
+          h: 145,
+          type: UsbListItem,
+          data: info,
+          focus: 1.11,
+          unfocus: 1,
+          idx: idx
+        };
+      });
+      this.tag('Row1').start();
+    }
+
+    set Row2Items(items) {
+      this.tag('Row2').items = items.map((info, idx) => {
+        return {
+          w: 151,
+          h: 151,
+          type: UsbListItem,
+          data: info,
+          focus: 1.11,
+          unfocus: 1,
+          idx: idx
+        };
+      });
+      this.tag('Row2').start();
+    }
+
+    set Row3Items(items) {
+      this.tag('Row3').items = items.map((info, idx) => {
+        return {
+          w: 145,
+          h: 145,
+          type: UsbListItem,
+          data: info,
+          focus: 1.11,
+          unfocus: 1,
+          idx: idx
+        };
+      });
+      this.tag('Row3').start();
+    }
+
+    set Row4Items(items) {
+      this.tag('Row4').items = items.map((info, idx) => {
+        return {
+          w: 145,
+          h: 145,
+          type: UsbListItem,
+          data: info,
+          focus: 1.11,
+          unfocus: 1,
+          idx: idx
+        };
+      });
+      this.tag('Row4').start();
+    }
+
+    scroll(y) {
+      this.tag('Wrapper').setSmooth('y', y, {
+        duration: 0.5
+      });
+    }
+
+    loadData() {
+      console.log(`loading data from the directory ${this.cwd}`);
+      let sumY = 0;
+      this.index = 0;
+      this.traversableRows = [];
+      this.Row1Items = videoListInfo;
+      this.Row2Items = musicListInfo;
+      this.Row3Items = imageListInfo;
+      this.Row4Items = UsbInnerFolderListInfo;
+      let text1 = this.tag("Text1");
+      let row1 = this.tag('Row1');
+      let text2 = this.tag("Text2");
+      let row2 = this.tag('Row2');
+      let text3 = this.tag("Text3");
+      let row3 = this.tag('Row3');
+      let text4 = this.tag('Text4');
+      let row4 = this.tag('Row4');
+
+      if (videoListInfo.length === 0 && musicListInfo.length === 0 && imageListInfo.length === 0 && UsbInnerFolderListInfo.length === 0) {
+        this.tag('NoUSB').visible = true;
+        text1.visible = false;
+        row1.visible = false;
+        text2.visible = false;
+        row2.visible = false;
+        text3.visible = false;
+        row3.visible = false;
+        text4.visible = false;
+        row4.visible = false; //either the usb is not mounted or there aren't any videos , images or audio files. 
+      } else {
+        this.tag('NoUSB').visible = false;
+
+        if (videoListInfo.length === 0) {
+          text1.visible = false;
+          row1.visible = false;
+        } else {
+          this.traversableRows.push("Video");
+          text1.visible = true;
+          row1.visible = true;
+          text1.y = sumY;
+          row1.y = sumY + 30;
+          sumY += 243;
+        }
+
+        if (musicListInfo.length === 0) {
+          text2.visible = false;
+          row2.visible = false;
+        } else {
+          this.traversableRows.push("Audio");
+          text2.visible = true;
+          row2.visible = true;
+          text2.y = sumY;
+          row2.y = sumY + 30;
+          sumY += 243;
+        }
+
+        if (imageListInfo.length === 0) {
+          text3.visible = false;
+          row3.visible = false;
+        } else {
+          this.traversableRows.push("Picture");
+          text3.visible = true;
+          row3.visible = true;
+          text3.y = sumY;
+          row3.y = sumY + 30;
+          sumY += 243;
+        }
+
+        if (UsbInnerFolderListInfo.length === 0) {
+          text4.visible = false;
+          row4.visible = false;
+        } else {
+          this.traversableRows.push("Folder");
+          text4.visible = true;
+          row4.visible = true;
+          text4.y = sumY;
+          row4.y = sumY + 30;
+          sumY += 243;
+        }
+
+        this._setState(this.traversableRows[0]);
+      }
+    }
+
+    _focus() {
+      this.index = 0;
+      this.traversableRows = [];
+      this.cwd = [];
+      usbApi.retrieUsb().then(res => {
+        this.loadData();
+      }).catch(err => {
+        console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+      });
+
+      this._setState(this.traversableRows[this.index]);
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   var powerState = 'ON';
-  var audio_mute = false;
-  var audio_volume = 50;
   var appApi$1 = new AppApi();
   var ls = {
     last_state: 'SidePanel',
@@ -23596,9 +27194,19 @@ var APP_accelerator_home_ui = (function () {
   /** Class for home screen UI */
 
   class HomeScreen extends lng$1.Component {
+    /** * Function to render various elements in home screen. * @param {{ path: string; }} args */
+    set params(args) {
+      if (args.path === 'settings') {
+        this.tag('Settings').setState = args.path;
+
+        this._setState('Settings');
+      }
+    }
     /**
      * Function to render various elements in home screen.
      */
+
+
     static _template() {
       return {
         BackgroundImage: {
@@ -23640,6 +27248,12 @@ var APP_accelerator_home_ui = (function () {
           h: 1080,
           type: SettingsScreen
         },
+        UsbAppsScreen: {
+          x: 200,
+          y: 275,
+          type: UsbAppsScreen,
+          visible: false
+        },
         IpAddress: {
           x: 185,
           y: 1058,
@@ -23669,6 +27283,7 @@ var APP_accelerator_home_ui = (function () {
       var prop_apptype = 'applicationType';
       var appdetails = [];
       var appdetails_format = [];
+      var usbAppsArr = [];
       var usbApps = 0;
 
       try {
@@ -23677,7 +27292,7 @@ var APP_accelerator_home_ui = (function () {
 
           for (var i = 0; i < appdetails.length; i++) {
             if (appdetails[i].hasOwnProperty(prop_displayname) && appdetails[i].hasOwnProperty(prop_uri) && appdetails[i].hasOwnProperty(prop_apptype)) {
-              appdetails_format.push(appdetails[i]);
+              usbAppsArr.push(appdetails[i]);
               usbApps++;
             }
           }
@@ -23691,15 +27306,33 @@ var APP_accelerator_home_ui = (function () {
       } catch (e) {
         appdetails_format = appItems;
         console.log('Query data is not proper: ' + e);
+      } //to dynamically hide or show usb tile
+
+
+      this.firstRowItems = appdetails_format;
+      this.tempRow = JSON.parse(JSON.stringify(this.firstRowItems));
+
+      if (this.firstRowItems[0].uri === 'USB') {
+        this.tempRow.shift();
       }
 
-      this.tag('MainView').appItems = appdetails_format;
+      this.USBApi = new UsbApi();
+      this.tag('MainView').appItems = this.tempRow;
+      this.$initializeUSB(); //--------------------
+
       this.tag('MainView').metroApps = this.homeApi.getMetroInfo();
+      this.tag('MainView').usbApps = usbAppsArr;
       this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo();
       this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo();
       this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo();
       this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo();
       this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo();
+
+      if (usbAppsArr.length <= 0) {
+        this.tag("View.SidePanel").scrollableLastRow = false;
+      } else {
+        this.tag("View.SidePanel").scrollableLastRow = true;
+      }
 
       this._setState('SidePanel');
 
@@ -23709,8 +27342,8 @@ var APP_accelerator_home_ui = (function () {
         if (result) {
           this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
             if (notification.status == 'ACQUIRED') {
-              this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address;
-              location.reload(true);
+              this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address; //location.reload(true)
+
               Storage.set('ipAddress', notification.ip4Address);
             } else if (notification.status == 'LOST') {
               this.tag('IpAddress').text.text = 'IP:NA';
@@ -23720,6 +27353,49 @@ var APP_accelerator_home_ui = (function () {
           this.networkApi.getIP().then(ip => {
             this.tag('IpAddress').text.text = 'IP:' + ip;
           });
+        }
+      });
+    }
+
+    $initializeUSB() {
+      if (Storage.get('UsbMedia') === 'ON') {
+        this.USBApi.getMountedDevices().then(result => {
+          if (result.mounted.length === 1) {
+            this.tag('MainView').appItems = this.firstRowItems;
+          } else {
+            this.tag('MainView').appItems = this.tempRow;
+          }
+        });
+      } else if (Storage.get('UsbMedia') === 'OFF') {
+        this.tag('MainView').appItems = this.tempRow;
+      }
+    }
+
+    $registerUsbEvent() {
+      console.log('$registerUsbEvent got called');
+      thunder$1.on('org.rdk.UsbAccess', 'onUSBMountChanged', notification => {
+        console.log('onUsbMountChanged notification: ', notification);
+
+        if (Storage.get('UsbMedia') === 'ON') {
+          if (!notification.mounted) {
+            //if mounted is false
+            this.tag('MainView').appItems = this.tempRow;
+
+            if (this.state === 'UsbAppsScreen') {
+              this.$changeHomeText('Home');
+              this.tag('UsbAppsScreen').visible = false;
+              this.show();
+              this.tag('UsbAppsScreen').exitFunctionality();
+              this.tag('MainView').patch({
+                alpha: 1
+              });
+
+              this._setState('MainView');
+            }
+          } else if (notification.mounted) {
+            //if mounted is true
+            this.tag('MainView').appItems = this.firstRowItems;
+          }
         }
       });
     }
@@ -23766,7 +27442,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _captureKeyRelease(key) {
-      if (key.keyCode == 120 || key.keyCode == 217) {
+      if (key.keyCode == keyMap.F9) {
         store.dispatch({
           type: 'ACTION_LISTEN_STOP'
         }); //app launch code need add here.
@@ -23804,7 +27480,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _captureKey(key) {
-      if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+      if (key.keyCode == keyMap.Escape || key.keyCode == keyMap.Home || key.keyCode === keyMap.m) {
         if (Storage.get('applicationType') != '') {
           this.deactivateChildApp(Storage.get('applicationType'));
           Storage.set('applicationType', '');
@@ -23824,6 +27500,15 @@ var APP_accelerator_home_ui = (function () {
         } else {
           if (this.state === 'Playing') {
             this.$stopPlayer();
+          } else if (this.state === 'UsbAppsScreen') {
+            this.tag('UsbAppsScreen').visible = false;
+            this.tag('MainView').patch({
+              alpha: 1
+            });
+
+            this._setState('MainView');
+
+            this.$changeHomeText('Home');
           } else {
             this.$goToSidePanel(0);
             this.$changeHomeText('Home');
@@ -23831,14 +27516,14 @@ var APP_accelerator_home_ui = (function () {
         }
       }
 
-      if (key.keyCode == 120 || key.keyCode == 217) {
+      if (key.keyCode == keyMap.F9) {
         store.dispatch({
           type: 'ACTION_LISTEN_START'
         });
         return true;
       }
 
-      if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
+      if (key.keyCode == keyMap.Power) {
         // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
           ls.last_state = this.state;
@@ -23856,50 +27541,17 @@ var APP_accelerator_home_ui = (function () {
           powerState = 'DEEP_SLEEP';
         });
         return true;
-      } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
-        appApi$1.getConnectedAudioPorts().then(res => {
-          let audio_source = res.connectedAudioPorts[0];
-          let value = !audio_mute;
-          new AppApi().audio_mute(value, audio_source).then(res => {
-            console.log("__________AUDIO_MUTE_______________________F7");
-            console.log(JSON.stringify(res, 3, null));
-
-            if (res.success == true) {
-              audio_mute = value; // new AppApi().zorder("moveToFront", "foreground");
-              // new AppApi().setVisibility("foreground", audio_mute)
-            }
-
-            console.log("audio_mute:" + audio_mute, audio_source);
-          });
-        });
+      } else if (key.keyCode == keyMap.AudioVolumeMute) {
+        appApi$1.setVisibility("foreground", true);
+        appApi$1.zorder('foreground');
         return true;
-      } else if (key.keyCode == 175) {
-        audio_volume += 10;
-
-        if (audio_volume > 100) {
-          audio_volume = 100;
-        }
-
-        let value = audio_volume;
-        appApi$1.setVolumeLevel("HDMI0", value).then(res => {
-          console.log("__________AUDIO_VOLUME_________Numberpad key plus");
-          console.log(JSON.stringify(res, 3, null));
-          console.log("setVolumeLevel:" + audio_volume);
-        });
+      } else if (key.keyCode == keyMap.AudioVolumeUp) {
+        appApi$1.setVisibility("foreground", true);
+        appApi$1.zorder('foreground');
         return true;
-      } else if (key.keyCode == 174) {
-        audio_volume -= 10;
-
-        if (audio_volume < 0) {
-          audio_volume = 0;
-        }
-
-        let value = "" + audio_volume;
-        appApi$1.setVolumeLevel("HDMI0", value).then(res => {
-          console.log("__________AUDIO_VOLUME____________Numberpad key minus");
-          console.log(JSON.stringify(res, 3, null));
-          console.log("setVolumeLevel:" + audio_volume);
-        });
+      } else if (key.keyCode == keyMap.AudioVolumeDown) {
+        appApi$1.setVisibility("foreground", true);
+        appApi$1.zorder('foreground');
         return true;
       }
 
@@ -23988,9 +27640,9 @@ var APP_accelerator_home_ui = (function () {
       this._setState('SidePanel');
     }
     /**
-    * Fireancestor to set the state to side panel.
-    * @param {index} index index value of Top panel item.
-    */
+     * Fireancestor to set the state to side panel.
+     * @param {index} index index value of Top panel item.
+     */
 
 
     $goToTopPanel(index) {
@@ -24015,8 +27667,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('BackgroundImage').patch({});
     }
     /**
-       * Fireancestor to change the text on top panel.
-       */
+     * Fireancestor to change the text on top panel.
+     */
 
 
     $changeHomeText(text) {
@@ -24033,8 +27685,8 @@ var APP_accelerator_home_ui = (function () {
       this.play();
     }
     /**
-       * Fireancestor to change the IP.
-       */
+     * Fireancestor to change the IP.
+     */
 
 
     $changeIp(ip) {
@@ -24092,6 +27744,9 @@ var APP_accelerator_home_ui = (function () {
                 if (ls.last_state === "Playing") {
                   ls.last_state = "MainView";
                   this.$stopPlayer();
+                } else if (ls.last_state === "UsbAppsScreen") {
+                  this.$goToSidePanel(0);
+                  this.show();
                 }
               }
 
@@ -24140,6 +27795,14 @@ var APP_accelerator_home_ui = (function () {
         console.error(`error while activating the displaysettings plugin; err = ${err}`);
       });
     }
+
+    $goToUsb() {
+      this._setState('UsbAppsScreen');
+    }
+
+    $setStateMainView() {
+      this._setState('MainView');
+    }
     /**
      * Function to hide the home UI.
      */
@@ -24166,7 +27829,7 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     /**
-       * Function to show home UI.
+     * Function to show home UI.
      */
 
 
@@ -24178,6 +27841,28 @@ var APP_accelerator_home_ui = (function () {
         alpha: 1
       });
       this.tag('MainView').patch({
+        alpha: 1
+      });
+      this.tag('TopPanel').patch({
+        alpha: 1
+      });
+      this.tag('SidePanel').patch({
+        alpha: 1
+      });
+      this.tag('IpAddress').patch({
+        alpha: 1
+      });
+    }
+
+    $hideAllforVideo() {
+      this.hide();
+    }
+
+    $showAllforVideo() {
+      this.tag('BackgroundImage').patch({
+        alpha: 1
+      });
+      this.tag('BackgroundColor').patch({
         alpha: 1
       });
       this.tag('TopPanel').patch({
@@ -24258,6 +27943,30 @@ var APP_accelerator_home_ui = (function () {
           return this.tag('MainView');
         }
 
+      }, class UsbAppsScreen extends this {
+        $enter() {
+          this.$changeHomeText('USB');
+          this.tag('MainView').patch({
+            alpha: 0
+          });
+          this.tag('UsbAppsScreen').visible = true;
+        }
+
+        $exit() {
+          this.$changeHomeText('Home');
+          this.tag('UsbAppsScreen').visible = false;
+          this.show();
+          this.tag('UsbAppsScreen').exitFunctionality();
+        }
+
+        _getFocused() {
+          return this.tag('UsbAppsScreen');
+        }
+
+        _handleBack() {
+          this._setState('MainView');
+        }
+
       }, class Settings extends this {
         $enter() {
           this.tag('MainView').alpha = 0;
@@ -24276,15 +27985,7 @@ var APP_accelerator_home_ui = (function () {
       }, class Playing extends this {
         _getFocused() {
           return this.tag('Player');
-        } // _handleKey(key) {
-        //   if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-        //     this.$stopPlayer()
-        //   } else if (key.keyCode == 227 || key.keyCode == 179) {
-        //     this.$stopPlayer()
-        //     return false;
-        //   }
-        // }
-
+        }
 
       }];
     }
@@ -24612,12 +28313,14 @@ var APP_accelerator_home_ui = (function () {
           });
           myAnimationLogo.start();
           this.screenTimeout = setTimeout(() => {
-            if (this.remotePaired == false) this._setState('AutoRemotePair');else if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+            if (this.remotePaired == false) this._setState('AutoRemotePair');else if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+              path: 'settings'
+            });
           }, 5000);
         }
 
         _handleKey(event) {
-          if (event.keyCode == 83) this._setState('UISwitch');
+          if (event.keyCode == keyMap.s) this._setState('UISwitch');
         }
 
         $exit() {
@@ -24677,7 +28380,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleKey(event) {
-          if (event.keyCode == 83) this._setState('UISwitch');
+          if (event.keyCode == keyMap.s) this._setState('UISwitch');
         }
 
       }, class ConnectivityScreen extends this {
@@ -24702,7 +28405,9 @@ var APP_accelerator_home_ui = (function () {
           });
           myAnimation.start();
           setTimeout(() => {
-            Router.navigate('home');
+            Router.navigate('home', {
+              path: 'settings'
+            });
           }, 5000);
         }
 
@@ -24723,7 +28428,9 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleKey() {
-          Router.navigate('home');
+          Router.navigate('home', {
+            path: 'settings'
+          });
         }
 
       }, class AutoRemotePair extends this {
@@ -24750,14 +28457,18 @@ var APP_accelerator_home_ui = (function () {
           var timer = setTimeout(() => {
             if (!connected) this.tag('AutoRemotePair.Description').text = 'Please put the remote in pairing mode, No Bluetooth device found';
             setTimeout(() => {
-              if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+              if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+                path: 'settings'
+              });
             }, 1000);
           }, 10000);
 
           var error = () => {
             this.tag('AutoRemotePair.Description').text = 'Please put the remote in pairing mode, , No Bluetooth device found';
             setTimeout(() => {
-              if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+              if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+                path: 'settings'
+              });
             }, 1000);
           };
 
@@ -24824,7 +28535,9 @@ var APP_accelerator_home_ui = (function () {
               connected = true;
               clearTimeout(timer);
               setTimeout(() => {
-                if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+                if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+                  path: 'settings'
+                });
               }, 2000);
             } else {
               setTimeout(() => {
@@ -24836,7 +28549,9 @@ var APP_accelerator_home_ui = (function () {
                     connected = true;
                     clearTimeout(timer);
                     setTimeout(() => {
-                      if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+                      if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+                        path: 'settings'
+                      });
                     }, 2000);
                   } else {
                     error();
@@ -24931,7 +28646,9 @@ var APP_accelerator_home_ui = (function () {
           if (this.tag('UISwitch.UIList').element._item.title != 'DEFAULT') {
             this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.uri);
           } else {
-            if (this.remotePaired == false) this._setState('AutoRemotePair');else if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home');
+            if (this.remotePaired == false) this._setState('AutoRemotePair');else if (this.hasInternet == false) this._setState('ConnectivityScreen');else Router.navigate('home', {
+              path: 'settings'
+            });
           }
         }
 
@@ -25042,900 +28759,6 @@ ${error.toString()}`;
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
-  /**
-   * Class which contains data for app listings.
-   */
-  var musicListInfo = [];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class to render items in main view.
-   */
-
-  class AppListItem extends lng$1.Component {
-    /**
-     * Function to render various elements in the main view item.
-     */
-    static _template() {
-      return {
-        Item: {
-          Shadow: {
-            alpha: 0,
-            color: CONFIG.theme.hex
-          },
-          x: 0,
-          Image: {},
-          Title: {
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 22,
-              textColor: 0xffffffff,
-              cutEx: 300
-            },
-            mount: 0.5,
-            alpha: 0
-          }
-        }
-      };
-    }
-
-    _init() {
-      if (this.data.url.startsWith('/images')) {
-        this.tag('Image').patch({
-          w: this.w,
-          h: this.h,
-          src: Utils.asset(this.data.url),
-          scale: this.unfocus
-        });
-      } else {
-        this.tag('Image').patch({
-          src: this.data.url,
-          w: this.w,
-          h: this.h
-        });
-      }
-    }
-    /**
-     * Function to change properties of item during focus.
-     */
-
-
-    _focus() {
-      this.tag('Image').patch({
-        x: this.x,
-        w: this.w,
-        h: this.h,
-        zIndex: 1,
-        scale: this.focus
-      });
-      this.tag('Item').patch({
-        zIndex: 2
-      });
-      this.tag('Shadow').patch({
-        scale: this.focus,
-        alpha: 1,
-        y: -12,
-        texture: lng.Tools.getShadowRect(this.w, this.h + 24, 0, 0, 0)
-      });
-    }
-    /**
-     * Function to change properties of item during unfocus.
-     */
-
-
-    _unfocus() {
-      this.tag('Image').patch({
-        x: 0,
-        y: 0,
-        w: this.w,
-        h: this.h,
-        scale: this.unfocus
-      });
-      this.tag('Item').patch({
-        zIndex: 0
-      });
-      this.tag('Shadow').patch({
-        alpha: 0
-      });
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class to render items in Arrow Icon Item.
-   */
-
-  class ArrowIconItem extends lng$1.Component {
-    /**
-     * Function to render Arrow Icon elements in the Main View.
-     */
-    static _template() {
-      return {
-        Item: {
-          Image: {
-            x: 0,
-            alpha: 1
-          }
-        }
-      };
-    }
-
-    _init() {
-      this.tag('Image').patch({
-        src: Utils.asset(this.data.url),
-        w: this.w,
-        h: this.h
-      });
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class UsbContent extends lng$1.Component {
-    static _template() {
-      return {
-        Background: {
-          w: 1920,
-          h: 1080,
-          src: Utils.asset('images/tvShows/background_new.jpg')
-        },
-        UsbHomeTopPanel: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 171,
-          Back: {
-            x: 81,
-            y: 100,
-            mountY: 0.5,
-            src: Utils.asset('/images/settings/Back_icon.png'),
-            w: 70,
-            h: 70
-          },
-          IconTitle: {
-            x: 200,
-            y: 78,
-            text: {
-              text: 'USB Content Screen',
-              fontSize: 40,
-              fontFace: 'MS-Regular'
-            }
-          },
-          IpAddress: {
-            x: 1475,
-            y: 105,
-            mountY: 0.5,
-            text: {
-              fontFace: 'MS-Regular',
-              text: 'IP:N/A',
-              textColor: 0xffffffff,
-              fontSize: 28,
-              w: 360,
-              h: 30
-            }
-          },
-          Border: {
-            x: 81,
-            y: 171,
-            mountY: 0.5,
-            RoundRectangle: {
-              zIndex: 2,
-              texture: lng.Tools.getRoundRect(1761, 0, 0, 3, 0xffffffff, true, 0xffffffff)
-            },
-            alpha: 0.4
-          }
-        },
-        ContentTitle: {
-          x: 80,
-          y: 220,
-          text: {
-            fontFace: 'MS-Regular',
-            textColor: 0xffffffff,
-            fontSize: 40,
-            w: 360,
-            h: 60
-          }
-        },
-        ItemList: {
-          x: 80,
-          y: 295,
-          flex: {
-            direction: 'row',
-            paddingLeft: 20,
-            wrap: false
-          },
-          type: lng$1.components.ListComponent,
-          w: 1761,
-          h: 300,
-          itemSize: 320,
-          roll: true,
-          rollMax: 815,
-          horizontal: true,
-          itemScrollOffset: -5,
-          clipping: true
-        },
-        Preview: {
-          x: 500,
-          y: 580,
-          w: 750,
-          h: 450
-        },
-        Message: {
-          x: 520,
-          y: 575,
-          text: {
-            fontFace: 'MS-Regular',
-            textColor: 0xffffdf00,
-            fontSize: 48,
-            textAlign: 'center',
-            textColor: 0xffffdf00,
-            shadow: true,
-            shadowColor: 0xffff00ff,
-            shadowOffsetX: 2,
-            shadowOffsetY: 2,
-            shadowBlur: 2,
-            w: 700,
-            h: 100
-          }
-        },
-        Player: {
-          type: AAMPVideoPlayer
-        },
-        FullScreen: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 1080
-        },
-        RightArrow: {
-          x: 1835,
-          y: 540,
-          w: 40,
-          h: 50,
-          src: Utils.asset('images/right-small.png'),
-          alpha: 0
-        },
-        LeftArrow: {
-          x: 25,
-          y: 540,
-          w: 40,
-          h: 50,
-          src: Utils.asset('images/left-small.png'),
-          alpha: 0
-        }
-      };
-    }
-
-    set contentTitle(title) {
-      this.tag('ContentTitle').patch({
-        text: {
-          text: title
-        }
-      });
-    }
-
-    set message(message) {
-      this.tag('Message').patch({
-        text: {
-          text: message
-        }
-      });
-    }
-
-    imageOnFullScreen(image) {
-      if (image.startsWith('/images')) {
-        this.tag('FullScreen').patch({
-          src: Utils.asset(image)
-        });
-
-        this._setState('FullScreen');
-
-        this.hide();
-      } else {
-        this.tag('FullScreen').patch({
-          src: image
-        });
-
-        this._setState('FullScreen');
-
-        this.hide();
-      }
-    }
-    /**
-    * Function to set details of items in right Icons list.
-    *
-    */
-
-
-    set itemList(items) {
-      this.tag('ItemList').items = items.map(info => {
-        return {
-          w: 300,
-          h: 200,
-          type: AppListItem,
-          data: info,
-          focus: 1.2,
-          unfocus: 1,
-          x_text: 150,
-          y_text: 220
-        };
-      });
-      this.tag('ItemList').start();
-    }
-
-    _init() {
-      this.videoPlayback = false;
-      this.imageFullScreen = false;
-      var networkApi = new Network();
-      networkApi.getIP().then(ip => {
-        this.tag('IpAddress').text.text = 'IP:' + ip;
-      });
-    }
-
-    previewImageOnFocus(image) {
-      if (image.startsWith('/images')) {
-        this.tag('Preview').patch({
-          src: Utils.asset(image)
-        });
-      } else {
-        this.tag('Preview').patch({
-          src: image
-        });
-      }
-    }
-
-    goToPlayer(item) {
-      this._setState('Player');
-
-      this.play(item);
-    }
-    /**
-    * Function to hide the home UI.
-    */
-
-
-    hide() {
-      this.tag('Background').patch({
-        alpha: 0
-      });
-      this.tag('UsbHomeTopPanel').patch({
-        alpha: 0
-      });
-      this.tag('ContentTitle').patch({
-        alpha: 0
-      });
-      this.tag('ItemList').patch({
-        alpha: 0
-      });
-      this.tag('Preview').patch({
-        alpha: 0
-      });
-    }
-    /**
-       * Function to show home UI.
-     */
-
-
-    show() {
-      console.log('show -from content');
-      this.tag('Background').patch({
-        alpha: 1
-      });
-      this.tag('UsbHomeTopPanel').patch({
-        alpha: 1
-      });
-      this.tag('ContentTitle').patch({
-        alpha: 1
-      });
-      this.tag('ItemList').patch({
-        alpha: 1
-      });
-      this.tag('Preview').patch({
-        alpha: 1
-      });
-    }
-    /**
-    * Function to start video playback.
-    */
-
-
-    play(item) {
-      this.player = this.tag('Player');
-
-      try {
-        this.player.load({
-          title: item.data.displayName,
-          subtitle: 'm3u8',
-          url: item.data.uri,
-          drmConfig: null
-        });
-        this.hide();
-
-        this._setState('Playing');
-
-        this.player.setVideoRect(0, 0, 1920, 1080);
-      } catch (error) {
-        this._setState('ItemList');
-
-        console.error('Playback Failed ' + error);
-      }
-    }
-
-    static _states() {
-      return [class ItemList extends this {
-        _getFocused() {
-          if (this.tag('ItemList').length) {
-            this.previewImageOnFocus(this.tag('ItemList').element.data.url);
-            return this.tag('ItemList').element;
-          }
-        }
-
-        _handleRight() {
-          if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
-            this.tag('ItemList').setNext();
-            return this.tag('ItemList').element;
-          }
-        }
-
-        _handleLeft() {
-          if (0 != this.tag('ItemList').index) {
-            this.tag('ItemList').setPrevious();
-            return this.tag('ItemList').element;
-          }
-        }
-
-        _handleDown() {}
-
-        _handleUp() {
-          this.videoPlayback = false;
-          this.imageFullScreen = false;
-
-          this._setState('Back');
-        }
-
-        _handleEnter() {
-          let item = this.tag('ItemList').element;
-
-          if (this.videoPlayback == true) {
-            this.goToPlayer(item);
-          }
-
-          if (this.imageFullScreen == true) {
-            this._setState('FullScreen');
-          }
-        }
-
-        $exit() {
-          this.videoPlayback = false;
-        }
-
-      }, class FullScreen extends this {
-        $enter() {
-          this.tag('FullScreen').patch({
-            alpha: 1
-          });
-          this.tag('RightArrow').patch({
-            alpha: 1
-          });
-          this.tag('LeftArrow').patch({
-            alpha: 1
-          });
-        }
-
-        $exit() {
-          this.tag('RightArrow').patch({
-            alpha: 0
-          });
-          this.tag('LeftArrow').patch({
-            alpha: 0
-          });
-          this.tag('FullScreen').patch({
-            alpha: 0
-          });
-        }
-
-        _getFocused() {
-          if (this.tag('ItemList').length) {
-            this.imageOnFullScreen(this.tag('ItemList').element.data.url);
-            return this.tag('ItemList').element;
-          }
-        }
-
-        _handleRight() {
-          if (this.tag('ItemList').length - 1 != this.tag('ItemList').index) {
-            this.tag('ItemList').setNext();
-            this.tag('LeftArrow').patch({
-              alpha: 1
-            });
-            return this.tag('ItemList').element;
-          } else {
-            this.tag('RightArrow').patch({
-              alpha: 0
-            });
-          }
-        }
-
-        _handleLeft() {
-          if (0 != this.tag('ItemList').index) {
-            this.tag('ItemList').setPrevious();
-            this.tag('RightArrow').patch({
-              alpha: 1
-            });
-            return this.tag('ItemList').element;
-          } else {
-            this.tag('LeftArrow').patch({
-              alpha: 0
-            });
-          }
-        }
-
-        _handleKey(key) {
-          console.log(key.keyCode);
-
-          if (key.keyCode == 8 || key.keyCode == 27) {
-            this._setState('ItemList');
-
-            this.show();
-            this.tag('FullScreen').patch({
-              alpha: 0
-            });
-          }
-        }
-
-      }, class Back extends this {
-        $enter() {
-          this.tag('Back').patch({
-            src: Utils.asset('/images/settings/back-arrow-small.png')
-          });
-        }
-
-        _handleDown() {
-          this.tag('Back').patch({
-            src: Utils.asset('/images/settings/Back_icon.png')
-          });
-
-          this._setState('ItemList');
-        }
-
-        _handleKey(key) {
-          console.log(key.keyCode);
-
-          if (key.keyCode == 13) {
-            this.tag('Back').patch({
-              src: Utils.asset('/images/settings/Back_icon.png')
-            });
-            this.fireAncestors('$goToSideMenubar', 2);
-            Router.navigate('settings/SettingsScreen/2', false);
-          }
-        }
-
-      }, class Playing extends this {
-        _getFocused() {
-          return this.tag('Player');
-        }
-
-        stopPlayer() {
-          this._setState('ItemList');
-
-          if (this.player != null) this.player.stop();
-          this.show();
-        }
-
-        _handleKey(key) {
-          if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-            this.stopPlayer();
-          } else if (key.keyCode == 227 || key.keyCode == 179) {
-            this.stopPlayer();
-            return false;
-          }
-        }
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class UsbAudioScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Audio files';
-      this.message = 'Audio playback functionality not yet implemented';
-      this.itemList = musicListInfo;
-
-      this._setState('ItemList');
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class which contains data for app listings.
-   */
-  var imageListInfo = [];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class UsbImageScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Images';
-      this.imageFullScreen = true;
-      this.itemList = imageListInfo;
-
-      this._setState('ItemList');
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-
-  /**
-   * Class which contains data for app listings.
-   */
-  var videoListInfo = [];
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  class UsbVideoScreen extends UsbContent {
-    _active() {
-      this.contentTitle = 'Video files';
-      this.videoPlayback = true;
-      this.itemList = videoListInfo;
-
-      this._setState('ItemList');
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-   * Class for Usb Home screen.
-   */
-
-  class UsbContentScreen extends lng$1.Component {
-    static _template() {
-      return {
-        UsbVideoScreen: {
-          type: UsbVideoScreen,
-          visible: false
-        },
-        UsbAudioScreen: {
-          type: UsbAudioScreen,
-          visible: false
-        },
-        UsbImageScreen: {
-          type: UsbImageScreen,
-          visible: false
-        }
-      };
-    }
-
-    set screen(screen) {
-      this._setState(screen);
-    }
-
-    static _states() {
-      return [class UsbVideoScreen extends this {
-        $enter() {
-          this.tag('UsbVideoScreen').visible = true;
-        }
-
-        _getFocused() {
-          return this.tag('UsbVideoScreen');
-        }
-
-        $exit() {
-          this.tag('UsbVideoScreen').visible = false;
-        }
-
-        _handleKey(key) {}
-
-      }, class UsbAudioScreen extends this {
-        $enter() {
-          this.tag('UsbAudioScreen').visible = true;
-        }
-
-        _getFocused() {
-          return this.tag('UsbAudioScreen');
-        }
-
-        $exit() {
-          this.tag('UsbAudioScreen').visible = false;
-        }
-
-        _handleKey(key) {}
-
-      }, class UsbImageScreen extends this {
-        $enter() {
-          this.tag('UsbImageScreen').visible = true;
-        }
-
-        _getFocused() {
-          return this.tag('UsbImageScreen');
-        }
-
-        $exit() {
-          this.tag('UsbImageScreen').visible = false;
-        }
-
-        _handleKey(key) {}
-
-      }];
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
   var routes = {
     boot: queryParam => {
       let homeApi = new HomeApi();
@@ -25953,15 +28776,6 @@ ${error.toString()}`;
 
       cache: 10
     }, {
-      path: 'settings/:screen/:id',
-      options: {
-        preventStorage: true,
-        clearHistory: true,
-        reuseInstance: true
-      },
-      component: SettingsScreen,
-      cache: 10
-    }, {
       path: 'splash',
       component: SplashScreen,
       options: {
@@ -25969,15 +28783,6 @@ ${error.toString()}`;
         clearHistory: true,
         reuseInstance: false
       },
-      cache: 10
-    }, {
-      path: 'usbContent/:screen',
-      options: {
-        preventStorage: true,
-        clearHistory: true,
-        reuseInstance: true
-      },
-      component: UsbContentScreen,
       cache: 10
     }, {
       path: '!',
@@ -26025,7 +28830,7 @@ ${error.toString()}`;
       Router.startRouter(routes, this);
 
       document.onkeydown = e => {
-        if (e.keyCode == 8) {
+        if (e.keyCode == keyMap.Backspace) {
           e.preventDefault();
         }
       };
@@ -26041,15 +28846,16 @@ ${error.toString()}`;
     }
 
     _init() {
+      var thunder = thunderJS(config);
       appApi.enableDisplaySettings();
       appApi.cobaltStateChangeEvent();
+      appApi.launchforeground();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result => {
         if (result) {
           this.registerXcastListeners();
         }
       });
-      var thunder = thunderJS(config);
       const rdkshellCallsign = 'org.rdk.RDKShell';
       thunder.Controller.activate({
         callsign: rdkshellCallsign
@@ -26066,7 +28872,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 173,
+          keyCode: keyMap.AudioVolumeMute,
           modifiers: []
         }).then(result => {
           console.log('addKeyIntercept success');
@@ -26101,7 +28907,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 27,
+          keyCode: keyMap.Escape,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26111,7 +28917,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 112,
+          keyCode: keyMap.F1,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26121,7 +28927,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 116,
+          keyCode: keyMap.Power,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26131,7 +28937,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 118,
+          keyCode: keyMap.F7,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26141,7 +28947,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 175,
+          keyCode: keyMap.AudioVolumeUp,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26151,7 +28957,37 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 174,
+          keyCode: keyMap.AudioVolumeDown,
+          modifiers: []
+        }).catch(err => {
+          console.log('Error', err);
+        });
+      }).catch(err => {
+        console.log('Error', err);
+      }).then(result => {
+        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
+          client: 'foreground',
+          keyCode: keyMap.AudioVolumeDown,
+          modifiers: []
+        }).catch(err => {
+          console.log('Error', err);
+        });
+      }).catch(err => {
+        console.log('Error', err);
+      }).then(result => {
+        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
+          client: 'foreground',
+          keyCode: keyMap.AudioVolumeUp,
+          modifiers: []
+        }).catch(err => {
+          console.log('Error', err);
+        });
+      }).catch(err => {
+        console.log('Error', err);
+      }).then(result => {
+        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
+          client: 'foreground',
+          keyCode: keyMap.AudioVolumeMute,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26161,17 +28997,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 113,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'ResidentApp',
-          keyCode: 228,
+          keyCode: keyMap.MediaFastForward,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26191,7 +29017,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 77,
+          keyCode: keyMap.Home,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26201,7 +29027,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 36,
+          keyCode: keyMap.MediaRewind,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26211,83 +29037,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'ResidentApp',
-          keyCode: 49,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'ResidentApp',
-          keyCode: 158,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'ResidentApp',
-          keyCode: 227,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'ResidentApp',
-          keyCode: 179,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyListener', {
-          client: 'Cobalt',
-          keys: [{
-            keycode: 77,
-            activate: false,
-            propogate: true
-          }]
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyListener', {
-          client: 'Amazon',
-          keys: [{
-            keycode: 77,
-            activate: false,
-            propogate: true
-          }]
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'Cobalt',
-          keyCode: 27,
-          modifiers: []
-        }).catch(err => {
-          console.log('Error', err);
-        });
-      }).catch(err => {
-        console.log('Error', err);
-      }).then(result => {
-        thunder.call(rdkshellCallsign, 'addKeyIntercept', {
-          client: 'Amazon',
-          keyCode: 27,
+          keyCode: keyMap.Pause,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26297,7 +29047,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Cobalt',
-          keyCode: 49,
+          keyCode: keyMap.Escape,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26307,7 +29057,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Amazon',
-          keyCode: 49,
+          keyCode: keyMap.Escape,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26317,7 +29067,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Cobalt',
-          keyCode: 36,
+          keyCode: keyMap.Home,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26327,7 +29077,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Amazon',
-          keyCode: 36,
+          keyCode: keyMap.Home,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26337,7 +29087,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Cobalt',
-          keyCode: 8,
+          keyCode: keyMap.Backspace,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26347,7 +29097,7 @@ ${error.toString()}`;
       }).then(result => {
         thunder.call(rdkshellCallsign, 'addKeyIntercept', {
           client: 'Amazon',
-          keyCode: 8,
+          keyCode: keyMap.Backspace,
           modifiers: []
         }).catch(err => {
           console.log('Error', err);
@@ -26599,18 +29349,18 @@ ${error.toString()}`;
     }
 
     _handleKey(key) {
-      if (key.keyCode == 227) {
+      if (key.keyCode == keyMap.MediaRewind) {
         var showMax = 'https://ott-app.dstv.com/';
         this.deactivateChildApp(Storage.get('applicationType'));
         appApi.launchWeb(showMax);
         Storage.set('applicationType', 'WebApp');
         appApi.setVisibility('ResidentApp', false);
-      } else if (key.keyCode == 179 && Storage.get('applicationType') != 'Cobalt') {
+      } else if (key.keyCode == keyMap.Pause && Storage.get('applicationType') != 'Cobalt') {
         this.deactivateChildApp(Storage.get('applicationType'));
         appApi.launchCobalt();
         Storage.set('applicationType', 'Cobalt');
         appApi.setVisibility('ResidentApp', false);
-      } else if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+      } else if (key.keyCode == keyMap.Escape || key.keyCode == keyMap.Home) {
         console.log(Storage.get('applicationType'));
 
         if (Storage.get('applicationType') != '') {

@@ -47,6 +47,6 @@
   
   export var CONFIG = {
     theme: themeOptions['partnerOne'],
-    language: language['english']
+    language: localStorage.getItem('Language')!=null ? language[localStorage.getItem('Language')] : language['english']
   }
   

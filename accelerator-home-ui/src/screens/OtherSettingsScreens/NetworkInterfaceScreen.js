@@ -16,62 +16,138 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Utils } from '@lightningjs/sdk'
+import SettingsMainItem from '../../items/SettingsMainItem'
+import { COLORS } from '../../colors/Colors'
+import { CONFIG } from '../../Config/Config'
+import WiFiScreen from '../WifiScreen'
+import Wifi from '../../api/WifiApi'
 
+const wifi = new Wifi()
 export default class NetworkInterfaceScreen extends Lightning.Component {
     static _template() {
         return {
-            List: {
-                w: 1920 - 300,
-                type: Lightning.components.ListComponent,
-                itemSize: 90,
-                horizontal: false,
-                invertDirection: true,
-                roll: true,
-                rollMax: 900,
-                itemScrollOffset: -5,
+            x: 0,
+            y: 0,
+            NetworkInterfaceScreenContents: {
+                WiFi: {
+                    y: 0,
+                    type: SettingsMainItem,
+                    Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'WiFi',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                    Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1600,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                    },
+                },
+                Ethernet: {
+                    y: 90,
+                    type: SettingsMainItem,
+                    Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: 'Ethernet',
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                },
+            },
+            WiFiScreen: {
+                type: WiFiScreen,
+                visible: false,
             }
         }
     }
 
     _focus() {
-        this._network.getDefaultInterface().then(interfaceName => {
-            this.options.forEach((element, idx) => {
-                if (element.interface === interfaceName) {
-                    this.tag('List').getElement(idx).tag('Tick').visible = true
-                }
-            });
-        })
+        this._setState('WiFi');
+    }
 
+    hide() {
+        this.tag('NetworkInterfaceScreenContents').visible = false
+    }
+
+    show() {
+        this.tag('NetworkInterfaceScreenContents').visible = true
+    }
+
+    setEthernetInterface() {
+        wifi.setInterface('ETHERNET', true).then(res => {
+            if (res.success) {
+                wifi.setDefaultInterface('ETHERNET', true)
+            }
+        })
     }
 
     static _states() {
         return [
-            class Options extends this{
-                _getFocused() {
-                    return this.tag('List').element
+            class WiFi extends this {
+                $enter() {
+                    this.tag('WiFi')._focus()
+                }
+                $exit() {
+                    this.tag('WiFi')._unfocus()
                 }
                 _handleDown() {
-                    this.tag('List').setNext()
-                }
-                _handleUp() {
-                    this.tag('List').setPrevious()
+                    this._setState('Ethernet')
                 }
                 _handleEnter() {
-                    this._network.setDefaultInterface(this.options[this.tag('List').index].interface).then(result => {
-                        const thisInterface = this.options[this.tag('List').index].interface
-                        if (result.success) {
-                            this.tag('List').element.tag('Tick').visible = true
-                            this.fireAncestors('$NetworkInterfaceText', (thisInterface === 'WIFI') ? 'WiFi' : (thisInterface === 'ETHERNET') ? 'Ethernet' : thisInterface)
-                            this.options.forEach((element, idx) => {
-                                if (element.interface !== thisInterface) {
-                                    this.tag('List').getElement(idx).tag('Tick').visible = false
-                                }
-                            });
-                        }
-                    })
+                    this._setState('WiFiScreen')
                 }
-            }
+            },
+            class Ethernet extends this {
+                $enter() {
+                    this.tag('Ethernet')._focus()
+                }
+                $exit() {
+                    this.tag('Ethernet')._unfocus()
+                }
+                _handleEnter() {
+                    this.setEthernetInterface()
+                }
+                _handleDown() {
+                    this._setState('WiFi')
+                }
+                _handleUp() {
+                    this._setState('WiFi')
+                }
+            },
+            class WiFiScreen extends this {
+                $enter() {
+                    this.hide()
+                    this.tag('WiFiScreen').visible = true
+                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface / WiFi')
+                }
+                $exit() {
+                    this.show()
+                    this.tag('WiFiScreen').visible = false
+                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface')
+                }
+                _getFocused() {
+                    return this.tag('WiFiScreen')
+                }
+                _handleBack() {
+                    this._setState('WiFi')
+                }
+            },
         ]
     }
 }

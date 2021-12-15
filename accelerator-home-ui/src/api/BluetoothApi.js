@@ -115,7 +115,7 @@ export default class BluetoothApi {
           resolve(result)
         })
         .catch(err => {
-          console.error(`Can't disable : ${err}`)
+          console.error(`Can't disable : ${JSON.stringify(err)}`)
           reject()
         })
     })
@@ -132,7 +132,7 @@ export default class BluetoothApi {
           resolve(result)
         })
         .catch(err => {
-          console.error(`Can't enable : ${err}`)
+          console.error(`Can't enable : ${JSON.stringify(err)}`)
           reject()
         })
     })
@@ -192,7 +192,7 @@ export default class BluetoothApi {
           resolve(result.discoveredDevices)
         })
         .catch(err => {
-          console.error(`Can't get discovered devices : ${err}`)
+          console.error(`Can't get discovered devices : ${JSON.stringify(err)}`)
           reject()
         })
     })

@@ -16,13 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-var running = false
+
 import ThunderJS from 'ThunderJS';
 /**
  * Class for Xcast thunder plugin apis.
  */
 export default class XcastApi {
   constructor() {
+    const config = {
+      host: '127.0.0.1',
+      port: 9998,
+      default: 1,
+    };
+    this._thunder = ThunderJS(config);
     console.log('Xcast constructor');
     this._events = new Map();
   }
@@ -32,12 +38,6 @@ export default class XcastApi {
    */
   activate() {
     return new Promise((resolve, reject) => {
-      const config = {
-        host: '127.0.0.1',
-        port: 9998,
-        default: 1,
-      };
-      this._thunder = ThunderJS(config);
       this.callsign = 'org.rdk.Xcast.1';
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
@@ -95,6 +95,18 @@ export default class XcastApi {
     });
   }
 
+  getEnabled() {
+    return new Promise((resolve, reject) => {
+      this._thunder.call('org.rdk.Xcast.1', 'getEnabled')
+        .then(res => {
+          resolve(res)
+        })
+        .catch(err => {
+          console.log('Xdial error', err)
+        })
+    })
+  }
+
   /**
    *
    * @param {string} eventId
@@ -109,8 +121,15 @@ export default class XcastApi {
    * Function to deactivate the Xcast plugin.
    */
   deactivate() {
-    this._events = new Map();
-    this._thunder = null;
+    return new Promise((resolve, reject) => {
+      this._thunder.call('org.rdk.Xcast.1', 'setEnabled', { enabled: false })
+        .then(res => {
+          resolve(res.success)
+        })
+        .catch(err => {
+          console.log('Failed to close Xcast', err)
+        })
+    })
   }
 
   /**
@@ -119,7 +138,7 @@ export default class XcastApi {
   onApplicationStateChanged(params) {
     return new Promise((resolve, reject) => {
       console.log('Notifying back');
-      this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
+      this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
         resolve(result);
       });
     });

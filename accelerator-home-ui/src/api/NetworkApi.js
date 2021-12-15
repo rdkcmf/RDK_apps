@@ -45,6 +45,11 @@ export default class Network {
             this._events.get('onDefaultInterfaceChanged')(notification);
           }
         });
+        this._thunder.on(this.callsign, 'onConnectionStatusChanged', notification => {
+          if (this._events.has('onConnectionStatusChanged')) {
+            this._events.get('onConnectionStatusChanged')(notification);
+          }
+        });
         console.log('Activation success')
         resolve(true)
       });

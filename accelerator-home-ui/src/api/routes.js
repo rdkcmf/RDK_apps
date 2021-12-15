@@ -18,10 +18,8 @@
  **/
 import Home from './../screens/HomeScreen'
 import SplashScreen from './../screens/SplashScreen'
-import Settings from './../screens/SettingsScreen'
 import Error from './../screens/Error'
 import HomeApi from '../api/HomeApi.js'
-import UsbContentScreen from '../screens/UsbScreens/UsbContentScreen'
 
 export default {
   boot: (queryParam) => {
@@ -40,16 +38,6 @@ export default {
       cache: 10,
     },
     {
-      path: 'settings/:screen/:id',
-      options: {
-        preventStorage: true,
-        clearHistory: true,
-        reuseInstance: true
-      },
-      component: Settings,
-      cache: 10,
-    },
-    {
       path: 'splash',
       component: SplashScreen,
       options: {
@@ -57,16 +45,6 @@ export default {
         clearHistory: true,
         reuseInstance: false
       },
-      cache: 10,
-    },
-    {
-      path: 'usbContent/:screen',
-      options: {
-        preventStorage: true,
-        clearHistory: true,
-        reuseInstance: true
-      },
-      component: UsbContentScreen,
       cache: 10,
     },
     {

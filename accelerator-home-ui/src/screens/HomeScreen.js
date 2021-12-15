@@ -16,7 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Storage } from '@lightningjs/sdk'
+import {
+  Lightning,
+  Utils,
+  Storage
+} from '@lightningjs/sdk'
 import ThunderJS from 'ThunderJS';
 import MainView from '../views/MainView.js'
 import SidePanel from '../views/SidePanel.js'
@@ -27,13 +31,22 @@ import HomeApi from '../api/HomeApi.js'
 import NetworkApi from '../api/NetworkApi'
 import AppApi from './../api/AppApi';
 import store from '../redux.js'
-import { CONFIG } from '../Config/Config.js'
+import {
+  CONFIG
+} from '../Config/Config.js'
+import UsbAppsScreen from './UsbAppsScreen.js';
+import Keymap from '../Config/Keymap.js';
+import UsbApi from '../api/UsbApi.js';
 
 var powerState = 'ON';
 var audio_mute = false;
 var audio_volume = 50;
 var appApi = new AppApi();
-var ls = { last_state: 'SidePanel', ref: {} }
+var ls = {
+  last_state: 'SidePanel',
+  ref: {}
+}
+var last_val = false
 
 const config = {
   host: '127.0.0.1',
@@ -44,6 +57,13 @@ const thunder = ThunderJS(config);
 
 /** Class for home screen UI */
 export default class HomeScreen extends Lightning.Component {
+  /** * Function to render various elements in home screen. * @param {{ path: string; }} args */
+  set params(args) {
+    if (args.path === 'settings') {
+      this.tag('Settings').setState = args.path 
+      this._setState('Settings')
+    }
+  }
   /**
    * Function to render various elements in home screen.
    */
@@ -89,6 +109,12 @@ export default class HomeScreen extends Lightning.Component {
         h: 1080,
         type: SettingsScreen,
       },
+      UsbAppsScreen: {
+        x: 200,
+        y: 275,
+        type: UsbAppsScreen,
+        visible: false
+      },
       IpAddress: {
         x: 185,
         y: 1058,
@@ -100,7 +126,9 @@ export default class HomeScreen extends Lightning.Component {
           fontSize: 20,
         },
       },
-      Player: { type: AAMPVideoPlayer },
+      Player: {
+        type: AAMPVideoPlayer
+      },
     }
   }
 
@@ -118,6 +146,7 @@ export default class HomeScreen extends Lightning.Component {
     var prop_url = 'url'
     var appdetails = []
     var appdetails_format = []
+    var usbAppsArr = [];
     var usbApps = 0
     try {
       if (data != null && JSON.parse(data).hasOwnProperty(prop_apps)) {
@@ -128,13 +157,15 @@ export default class HomeScreen extends Lightning.Component {
             appdetails[i].hasOwnProperty(prop_uri) &&
             appdetails[i].hasOwnProperty(prop_apptype)
           ) {
-            appdetails_format.push(appdetails[i])
+            usbAppsArr.push(appdetails[i])
             usbApps++
           }
         }
+
         for (var i = 0; i < appItems.length; i++) {
           appdetails_format.push(appItems[i])
         }
+
       } else {
         appdetails_format = appItems
       }
@@ -142,13 +173,28 @@ export default class HomeScreen extends Lightning.Component {
       appdetails_format = appItems
       console.log('Query data is not proper: ' + e)
     }
-    this.tag('MainView').appItems = appdetails_format
+    //to dynamically hide or show usb tile
+    this.firstRowItems = appdetails_format
+    this.tempRow = JSON.parse(JSON.stringify(this.firstRowItems));
+    if (this.firstRowItems[0].uri === 'USB') {
+      this.tempRow.shift()
+    }
+    this.USBApi = new UsbApi()
+    this.tag('MainView').appItems = this.tempRow
+    this.$initializeUSB()
+    //--------------------
     this.tag('MainView').metroApps = this.homeApi.getMetroInfo()
+    this.tag('MainView').usbApps = usbAppsArr;
     this.tag('MainView').tvShowItems = this.homeApi.getTVShowsInfo()
     this.tag('MainView').settingsItems = this.homeApi.getSettingsInfo()
     this.tag('MainView').rightArrowIcons = this.homeApi.getRightArrowInfo()
     this.tag('MainView').leftArrowIcons = this.homeApi.getLeftArrowInfo()
     this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
+    if (usbAppsArr.length <= 0) {
+      this.tag("View.SidePanel").scrollableLastRow = false
+    } else {
+      this.tag("View.SidePanel").scrollableLastRow = true
+    }
 
     this._setState('SidePanel')
     this.initialLoad = true
@@ -158,7 +204,7 @@ export default class HomeScreen extends Lightning.Component {
         this.networkApi.registerEvent('onIPAddressStatusChanged', notification => {
           if (notification.status == 'ACQUIRED') {
             this.tag('IpAddress').text.text = 'IP:' + notification.ip4Address
-            location.reload(true)
+            //location.reload(true)
             Storage.set('ipAddress', notification.ip4Address)
           } else if (notification.status == 'LOST') {
             this.tag('IpAddress').text.text = 'IP:NA'
@@ -173,6 +219,44 @@ export default class HomeScreen extends Lightning.Component {
   }
 
 
+  $initializeUSB() {
+    if (Storage.get('UsbMedia') === 'ON') {
+      this.USBApi.getMountedDevices().then(result => {
+        if (result.mounted.length === 1) {
+          this.tag('MainView').appItems = this.firstRowItems
+        } else {
+          this.tag('MainView').appItems = this.tempRow
+        }
+      })
+
+    } else if (Storage.get('UsbMedia') === 'OFF') {
+      this.tag('MainView').appItems = this.tempRow
+    }
+  }
+
+  $registerUsbEvent() {
+    console.log('$registerUsbEvent got called')
+    const listener = thunder.on('org.rdk.UsbAccess', 'onUSBMountChanged', (notification) => {
+      console.log('onUsbMountChanged notification: ', notification)
+      if (Storage.get('UsbMedia') === 'ON') {
+        if (!notification.mounted) { //if mounted is false
+          this.tag('MainView').appItems = this.tempRow
+          if (this.state === 'UsbAppsScreen') {
+            this.$changeHomeText('Home')
+            this.tag('UsbAppsScreen').visible = false
+            this.show()
+            this.tag('UsbAppsScreen').exitFunctionality()
+            this.tag('MainView').patch({
+              alpha: 1
+            });
+            this._setState('MainView')
+          }
+        } else if (notification.mounted) { //if mounted is true
+          this.tag('MainView').appItems = this.firstRowItems
+        }
+      }
+    })
+  }
 
   $resetSleepTimer(t) {
     var arr = t.split(" ");
@@ -180,10 +264,13 @@ export default class HomeScreen extends Lightning.Component {
     function setTimer() {
       var temp = arr[1].substring(0, 1);
       if (temp === 'H') {
-        appApi.setInactivityInterval(parseInt(arr[0]) * 60).then(res => { }).catch(err => { console.error(`error while setting the timer`) });
-      }
-      else if (temp === 'M') {
-        appApi.setInactivityInterval(parseInt(arr[0])).then(res => { }).catch(err => { console.error(`error while setting the timer`) });
+        appApi.setInactivityInterval(parseInt(arr[0]) * 60).then(res => {}).catch(err => {
+          console.error(`error while setting the timer`)
+        });
+      } else if (temp === 'M') {
+        appApi.setInactivityInterval(parseInt(arr[0])).then(res => {}).catch(err => {
+          console.error(`error while setting the timer`)
+        });
       }
     }
 
@@ -193,10 +280,11 @@ export default class HomeScreen extends Lightning.Component {
           if (res.success === true) {
             this.timerIsOff = true;
           }
-        }).catch(err => { console.error(`error : unable to set the reset; error = ${err}`) });
+        }).catch(err => {
+          console.error(`error : unable to set the reset; error = ${err}`)
+        });
       }
-    }
-    else {
+    } else {
       if (this.timerIsOff) {
         appApi.enabledisableinactivityReporting(true).then(res => {
           if (res.success === true) {
@@ -205,16 +293,17 @@ export default class HomeScreen extends Lightning.Component {
             setTimer();
           }
         })
-      }
-      else {
+      } else {
         setTimer();
       }
     }
   }
 
   _captureKeyRelease(key) {
-    if (key.keyCode == 120 || key.keyCode == 217) {
-      store.dispatch({ type: 'ACTION_LISTEN_STOP' })
+    if (key.keyCode == Keymap.F9) {
+      store.dispatch({
+        type: 'ACTION_LISTEN_STOP'
+      })
       //app launch code need add here.
       return true
     }
@@ -245,16 +334,21 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   _captureKey(key) {
-    if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+
+    if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
-        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: 'ResidentApp'
+        }).then(result => {
           console.log('ResidentApp moveToFront Success');
         });
         thunder
-          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+          .call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          })
           .then(result => {
             console.log('ResidentApp moveToFront Success');
           })
@@ -264,8 +358,14 @@ export default class HomeScreen extends Lightning.Component {
       } else {
         if (this.state === 'Playing') {
           this.$stopPlayer()
-        }
-        else {
+        } else if (this.state === 'UsbAppsScreen') {
+          this.tag('UsbAppsScreen').visible = false
+          this.tag('MainView').patch({
+            alpha: 1
+          });
+          this._setState('MainView')
+          this.$changeHomeText('Home')
+        } else {
           this.$goToSidePanel(0)
           this.$changeHomeText('Home')
         }
@@ -276,12 +376,14 @@ export default class HomeScreen extends Lightning.Component {
 
 
 
-    if (key.keyCode == 120 || key.keyCode == 217) {
-      store.dispatch({ type: 'ACTION_LISTEN_START' })
+    if (key.keyCode == Keymap.F9) {
+      store.dispatch({
+        type: 'ACTION_LISTEN_START'
+      })
       return true
     }
 
-    if (key.keyCode == 112 || key.keyCode == 142 || key.keyCode == 116) {
+    if (key.keyCode == Keymap.Power) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
       if (powerState == 'ON') {
         ls.last_state = this.state
@@ -302,52 +404,19 @@ export default class HomeScreen extends Lightning.Component {
       })
       return true
 
-    } else if (key.keyCode == 118 || key.keyCode == 113 || key.keyCode == 173) {
-
-      appApi.getConnectedAudioPorts().then(res => {
-        let audio_source = res.connectedAudioPorts[0]
-        let value = !audio_mute;
-        new AppApi().audio_mute(value, audio_source).then(res => {
-          console.log("__________AUDIO_MUTE_______________________F7")
-          console.log(JSON.stringify(res, 3, null));
-
-          if (res.success == true) {
-            audio_mute = value;
-            // new AppApi().zorder("moveToFront", "foreground");
-            // new AppApi().setVisibility("foreground", audio_mute)
-          }
-          console.log("audio_mute:" + audio_mute, audio_source);
-        })
-
-      });
-
-
+    } else if (key.keyCode == Keymap.AudioVolumeMute) {
+      appApi.setVisibility("foreground", true)
+      appApi.zorder('foreground')
       return true
 
-    } else if (key.keyCode == 175) {
-
-      audio_volume += 10;
-      if (audio_volume > 100) { audio_volume = 100 }
-
-      let value = audio_volume;
-      appApi.setVolumeLevel("HDMI0", value).then(res => {
-        console.log("__________AUDIO_VOLUME_________Numberpad key plus")
-        console.log(JSON.stringify(res, 3, null));
-        console.log("setVolumeLevel:" + audio_volume);
-      })
+    } else if (key.keyCode == Keymap.AudioVolumeUp) {
+      appApi.setVisibility("foreground", true)
+      appApi.zorder('foreground')
       return true
 
-    } else if (key.keyCode == 174) {
-
-      audio_volume -= 10;
-      if (audio_volume < 0) { audio_volume = 0 }
-      let value = "" + audio_volume;
-
-      appApi.setVolumeLevel("HDMI0", value).then(res => {
-        console.log("__________AUDIO_VOLUME____________Numberpad key minus")
-        console.log(JSON.stringify(res, 3, null));
-        console.log("setVolumeLevel:" + audio_volume);
-      })
+    } else if (key.keyCode == Keymap.AudioVolumeDown) {
+      appApi.setVisibility("foreground", true)
+      appApi.zorder('foreground')
       return true
     }
     return false
@@ -360,10 +429,27 @@ export default class HomeScreen extends Lightning.Component {
         duration: 0.5,
         repeat: 0,
         stopMethod: 'immediate',
-        actions: [
-          { p: 'scale', v: { 0: 5, 1: 1 } },
-          { p: 'x', v: { 0: -1920, 1: 0 } },
-          { p: 'y', v: { 0: -1080, 1: 0 } },
+        actions: [{
+            p: 'scale',
+            v: {
+              0: 5,
+              1: 1
+            }
+          },
+          {
+            p: 'x',
+            v: {
+              0: -1920,
+              1: 0
+            }
+          },
+          {
+            p: 'y',
+            v: {
+              0: -1080,
+              1: 0
+            }
+          },
         ],
       })
       this._homeAnimation.start()
@@ -380,8 +466,7 @@ export default class HomeScreen extends Lightning.Component {
       this.player.load({
         title: 'Parkour event',
         subtitle: 'm3u8',
-        url:
-          'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
+        url: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         drmConfig: null,
       })
       this.hide()
@@ -412,9 +497,9 @@ export default class HomeScreen extends Lightning.Component {
   }
 
   /**
-* Fireancestor to set the state to side panel.
-* @param {index} index index value of Top panel item.
-*/
+   * Fireancestor to set the state to side panel.
+   * @param {index} index index value of Top panel item.
+   */
   $goToTopPanel(index) {
     this._setState('TopPanel', [index])
     this.tag('TopPanel').index = index
@@ -426,7 +511,9 @@ export default class HomeScreen extends Lightning.Component {
         src: Utils.asset(image),
       });
     } else {
-      this.tag('BackgroundImage').patch({ src: image });
+      this.tag('BackgroundImage').patch({
+        src: image
+      });
     }
   }
 
@@ -436,8 +523,8 @@ export default class HomeScreen extends Lightning.Component {
     })
   }
   /**
-     * Fireancestor to change the text on top panel.
-     */
+   * Fireancestor to change the text on top panel.
+   */
   $changeHomeText(text) {
     this.tag('TopPanel').changeText = text
   }
@@ -449,8 +536,8 @@ export default class HomeScreen extends Lightning.Component {
     this.play()
   }
   /**
-     * Fireancestor to change the IP.
-     */
+   * Fireancestor to change the IP.
+   */
   $changeIp(ip) {
     this.tag('IpAddress').text.text = ip
   }
@@ -459,7 +546,9 @@ export default class HomeScreen extends Lightning.Component {
    * Function to scroll
    */
   $scroll(y) {
-    this.tag('MainView').setSmooth('y', y, { duration: 0.5 })
+    this.tag('MainView').setSmooth('y', y, {
+      duration: 0.5
+    })
   }
 
   $standby(value) {
@@ -469,7 +558,7 @@ export default class HomeScreen extends Lightning.Component {
       if (powerState == 'ON') {
         appApi.standby(value).then(res => {
           if (res.success) {
-            ls.last_state=this._getState();
+            ls.last_state = this._getState();
             powerState = 'STANDBY'
 
             var appApi = new AppApi();
@@ -481,7 +570,7 @@ export default class HomeScreen extends Lightning.Component {
             } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
               // appApi.deactivateLightning();
-              appApi.suspendLightning() 
+              appApi.suspendLightning()
               appApi.setVisibility('ResidentApp', true);
             } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
               Storage.set('applicationType', '');
@@ -499,25 +588,34 @@ export default class HomeScreen extends Lightning.Component {
               Storage.set('applicationType', '');
               appApi.suspendCobalt();
               appApi.setVisibility('ResidentApp', true);
-            }else{
-              if(ls.last_state==="Playing"){
+            } else {
+              if (ls.last_state === "Playing") {
                 ls.last_state = "MainView"
                 this.$stopPlayer();
+              } else if (ls.last_state === "UsbAppsScreen") {
+                this.$goToSidePanel(0)
+                this.show()
               }
-              
+
             }
 
-            thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'ResidentApp'
+            }).then(result => {
               console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-            }).catch(err=>{console.log(`error while moving the resident app to front = ${err}`)});
-            thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' }).then(result => {
+            }).catch(err => {
+              console.log(`error while moving the resident app to front = ${err}`)
+            });
+            thunder.call('org.rdk.RDKShell', 'setFocus', {
+              client: 'ResidentApp'
+            }).then(result => {
               console.log('ResidentApp setFocus Success' + JSON.stringify(result));
             }).catch(err => {
               console.log('Error', err);
             });
             this._setState(ls.last_state);
           }
-          
+
         })
         return true
       }
@@ -535,17 +633,19 @@ export default class HomeScreen extends Lightning.Component {
     appApi.enabledisableinactivityReporting(false);
 
     const systemcCallsign = "org.rdk.RDKShell.1";
-    thunder.Controller.activate({ callsign: systemcCallsign })
+    thunder.Controller.activate({
+        callsign: systemcCallsign
+      })
       .then(res => {
         thunder.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
 
 
-          
-              if(powerState === "ON"){
-                this.$standby("STANDBY");
-              }
-              
-           
+
+          if (powerState === "ON") {
+            this.$standby("STANDBY");
+          }
+
+
 
 
 
@@ -558,41 +658,104 @@ export default class HomeScreen extends Lightning.Component {
   }
 
 
+
+
+  $goToUsb() {
+    this._setState('UsbAppsScreen')
+  }
+
+  $setStateMainView() {
+    this._setState('MainView')
+  }
+
   /**
    * Function to hide the home UI.
    */
   hide() {
-    this.tag('BackgroundImage').patch({ alpha: 0 });
-    this.tag('BackgroundColor').patch({ alpha: 0 });
-    this.tag('MainView').patch({ alpha: 0 });
-    this.tag('TopPanel').patch({ alpha: 0 });
-    this.tag('SidePanel').patch({ alpha: 0 });
-    this.tag('IpAddress').patch({ alpha: 0 });
+    this.tag('BackgroundImage').patch({
+      alpha: 0
+    });
+    this.tag('BackgroundColor').patch({
+      alpha: 0
+    });
+    this.tag('MainView').patch({
+      alpha: 0
+    });
+    this.tag('TopPanel').patch({
+      alpha: 0
+    });
+    this.tag('SidePanel').patch({
+      alpha: 0
+    });
+    this.tag('IpAddress').patch({
+      alpha: 0
+    });
   }
 
 
   /**
-     * Function to show home UI.
+   * Function to show home UI.
    */
   show() {
-    this.tag('BackgroundImage').patch({ alpha: 1 });
-    this.tag('BackgroundColor').patch({ alpha: 1 });
-    this.tag('MainView').patch({ alpha: 1 });
-    this.tag('TopPanel').patch({ alpha: 1 });
-    this.tag('SidePanel').patch({ alpha: 1 });
-    this.tag('IpAddress').patch({ alpha: 1 });
+    this.tag('BackgroundImage').patch({
+      alpha: 1
+    });
+    this.tag('BackgroundColor').patch({
+      alpha: 1
+    });
+    this.tag('MainView').patch({
+      alpha: 1
+    });
+    this.tag('TopPanel').patch({
+      alpha: 1
+    });
+    this.tag('SidePanel').patch({
+      alpha: 1
+    });
+    this.tag('IpAddress').patch({
+      alpha: 1
+    });
+  }
+
+  $hideAllforVideo() {
+    this.hide()
+  }
+  $showAllforVideo() {
+    this.tag('BackgroundImage').patch({
+      alpha: 1
+    });
+    this.tag('BackgroundColor').patch({
+      alpha: 1
+    });
+    this.tag('TopPanel').patch({
+      alpha: 1
+    });
+    this.tag('SidePanel').patch({
+      alpha: 1
+    });
+    this.tag('IpAddress').patch({
+      alpha: 1
+    });
   }
 
   /** this function is used to hide only the side and top panels  */
   $hideSideAndTopPanels() {
-    this.tag('TopPanel').patch({ alpha: 0 });
-    this.tag('SidePanel').patch({ alpha: 0 });
+    this.tag('TopPanel').patch({
+      alpha: 0
+    });
+    this.tag('SidePanel').patch({
+      alpha: 0
+    });
   }
 
   /** this function will show side and top panels only */
   $showSideAndTopPanels() {
-    this.tag('TopPanel').patch({ alpha: 1 });
-    this.tag('SidePanel').patch({ alpha: 1 });
+    this.tag('TopPanel').patch({
+      alpha: 1
+    });
+    this.tag('SidePanel').patch({
+      alpha: 1
+    });
   }
 
   /**
@@ -623,7 +786,7 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('TopPanel')
         }
       },
-      class SidePanel extends this{
+      class SidePanel extends this {
         _getFocused() {
           return this.tag('SidePanel')
         }
@@ -638,7 +801,29 @@ export default class HomeScreen extends Lightning.Component {
           return this.tag('MainView')
         }
       },
-      class Settings extends this{
+      class UsbAppsScreen extends this {
+        $enter() {
+          this.$changeHomeText('USB')
+          this.tag('MainView').patch({
+            alpha: 0
+          });
+          this.tag('UsbAppsScreen').visible = true
+        }
+        $exit() {
+          this.$changeHomeText('Home')
+          this.tag('UsbAppsScreen').visible = false
+          this.show()
+          this.tag('UsbAppsScreen').exitFunctionality()
+        }
+        _getFocused() {
+          return this.tag('UsbAppsScreen')
+        }
+        _handleBack() {
+          this._setState('MainView')
+        }
+
+      },
+      class Settings extends this {
         $enter() {
           this.tag('MainView').alpha = 0
           this.tag('Settings').alpha = 1
@@ -655,14 +840,6 @@ export default class HomeScreen extends Lightning.Component {
         _getFocused() {
           return this.tag('Player')
         }
-        // _handleKey(key) {
-        //   if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
-        //     this.$stopPlayer()
-        //   } else if (key.keyCode == 227 || key.keyCode == 179) {
-        //     this.$stopPlayer()
-        //     return false;
-        //   }
-        // }
       },
     ]
   }

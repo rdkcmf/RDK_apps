@@ -52,7 +52,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         color: 0xff000000,
       },
       Text: {
-        x: 800,
+        x: 758,
         y: 70,
         text: {
           text: "Find and join a WiFi network",
@@ -62,7 +62,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       BorderTop: {
-        x: 190, y: 130, w: 1530, h: 2, rect: true,
+        x: 190, y: 130, w: 1488, h: 2, rect: true,
       },
       Network: {
         x: 190,
@@ -75,9 +75,9 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
       },
       NetworkBox: {
         BorderLeft: { x: 400, y: 160, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 400, y: 160, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 160, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 400, y: 188 + 28, w: 1315, h: 3, rect: true, }
+        BorderTop: { x: 400, y: 160, w: 1273, h: 3, rect: true, },
+        BorderRight: { x: 1673, y: 160, w: 3, h: 59, rect: true, },
+        BorderBottom: { x: 400, y: 188 + 28, w: 1273, h: 3, rect: true, }
       },
       NetworkText: {
         x: 420,
@@ -104,13 +104,13 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
       },
       TypeBox: {
         BorderLeft: { x: 400, y: 230, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 400, y: 230, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 230, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 400, y: 258 + 28, w: 1315, h: 3, rect: true, },
+        BorderTop: { x: 400, y: 230, w: 1273, h: 3, rect: true, },
+        BorderRight: { x: 1673, y: 230, w: 3, h: 59, rect: true, },
+        BorderBottom: { x: 400, y: 286, w: 1273, h: 3, rect: true, },
         ArrowForward: {
           h: 30,
           w: 45,
-          x: 1655,
+          x: 1613,
           y: 245,
           src: Utils.asset('images/settings/Arrow.png'),
         },
@@ -149,9 +149,9 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
       },
       PasswordBox: {
         BorderLeft: { x: 400, y: 300, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 403, y: 300, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 300, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 403, y: 328 + 28, w: 1315, h: 3, rect: true, },
+        BorderTop: { x: 403, y: 300, w: 1273, h: 3, rect: true, },
+        BorderRight: { x: 1673, y: 300, w: 3, h: 59, rect: true, },
+        BorderBottom: { x: 403, y: 356, w: 1273, h: 3, rect: true, },
       },
 
       Pwd: {
@@ -169,7 +169,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       BorderBottom: {
-        x: 190, y: 396, w: 1530, h: 2, rect: true,
+        x: 190, y: 396, w: 1488, h: 2, rect: true,
       },
       Keyboard: {
         y: 437,

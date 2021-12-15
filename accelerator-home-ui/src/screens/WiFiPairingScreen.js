@@ -25,7 +25,6 @@ import { KEYBOARD_FORMATS } from '../ui-components/components/Keyboard'
 export default class BluetoothPairingScreen extends Lightning.Component {
   static _template() {
     return {
-
       PairingScreen: {
         x: 0,
         y: 0,
@@ -43,7 +42,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         text: { text: '', fontSize: 40, textColor: CONFIG.theme.hex },
       },
       RectangleWithColor: {
-        x: w => w / 2, mountX: 0.5, y: 164, w: 1550, h: 2, rect: true, color: 0xFFFFFFFF, zIndex: 2
+        x: 180, y: 164, w: 1515, h: 2, rect: true, color: 0xFFFFFFFF, zIndex: 2
       },
       PasswordLabel: {
         x: 180,
@@ -81,7 +80,8 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         },
         RightBorder: {
           rect: true,
-          x: 0 + 1321, y: 0,
+          x: 1279,
+          y: 0,
           w: 3,
           h: 88,
           mountX: 1,
@@ -89,16 +89,18 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         },
         TopBorder: {
           rect: true,
-          x: 0, y: 0,
-          w: 1321,
+          x: 0,
+          y: 0,
+          w: 1279,
           h: 3,
           mountY: 0.5,
           color: 0xffffffff,
         },
         BottomBorder: {
           rect: true,
-          x: 0, y: 0 + 88,
-          w: 1321,
+          x: 0,
+          y: 88,
+          w: 1279,
           h: 3,
           mountY: 0.5,
           color: 0xffffffff,
@@ -108,14 +110,14 @@ export default class BluetoothPairingScreen extends Lightning.Component {
       PasswrdSwitch: {
         h: 45,
         w: 66.9,
-        x: 1920 - 222,
+        x: 1656,
         y: 255,
         zIndex: 2,
         type: PasswordSwitch,
         mount: 0.5,
       },
       ShowPassword: {
-        x: 1920 - 480,
+        x: 1398,
         y: 240,
         w: 300,
         h: 75,
@@ -135,25 +137,14 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         zIndex: 2
       },
       RectangleWithColor2: {
-        x: w => 1920 / 2, mountX: 0.5, y: 451, w: 1550, h: 2, rect: true, color: 0xFFFFFFFF, zIndex: 2
+        x: 180, y: 451, w: 1515, h: 2, rect: true, color: 0xFFFFFFFF, zIndex: 2
       },
       KeyBoard: {
         y: 501,
         x: 420,
-        // mountX:0.5,
-        // w:1080,
         type: Keyboard,
         visible: true,
         zIndex: 2,
-        // formats: {
-        //   qwerty: [
-        //     ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', { label: 'backspace', size: 'large' }],
-        //     [{ label: 'tab', size: 'large' }, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
-        //     [{ label: 'caps', size: 'medium', w: 170 }, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', { label: '< enter', size: 'medium', w: 170 }],
-        //     [{ label: 'shift', size: 'large' }, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', { label: 'shift', size: 'large', w: 195 }],
-        //     [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-        //   ]
-        // }, 
         formats: KEYBOARD_FORMATS.qwerty
       }
 
@@ -187,7 +178,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
     this.tag('List').items = options.map((item, index) => {
       return {
         ref: item,
-        x: index === 0 ? 0 : 0 + 325 * index,
+        x: index === 0 ? 0 : 325 * index,
         w: 325,
         h: 85,
         type: ConfirmAndCancel,
@@ -198,17 +189,18 @@ export default class BluetoothPairingScreen extends Lightning.Component {
   }
 
   _focus() {
+    this.hidePasswd = true;
     this.fireAncestors("$hideSideAndTopPanels");
   }
   _unfocus() {
     this.fireAncestors("$showSideAndTopPanels");
   }
 
-  _init() {
-    this.hidePasswd = true;
+  _init() { 
     this.star = "";
 
     this.passwd = "";
+    this.isOn = false;
     // this.tag('KeyBoard').patch({scale:1558/1080})
   }
 
@@ -225,79 +217,6 @@ export default class BluetoothPairingScreen extends Lightning.Component {
           return this.tag("KeyBoard")
           //  return this.tag('Password')
         }
-        $exit() {
-          // this.tag('Password').alpha = 0
-        }
-
-
-        // $onSoftKey(key) {
-        //   // if(key.key.length > 1){
-
-        //   //   if(key.key === "caps"){
-        //   //     if(this.capsLock){
-        //   //       this.capsLock = false;
-        //   //       this.tag("KeyBoard").patch({
-        //   //         formats: {
-        //   //           qwerty:  [
-        //   //             ['~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', { label: 'backspace', size: 'large' }],
-        //   //             [{ label: 'tab', size: 'large' }, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|'],
-        //   //             [{ label: 'caps', size: 'medium', w: 170 }, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '\"', { label: '< enter', size: 'medium', w: 170 }],
-        //   //             [{ label: 'shift', size: 'large' }, 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', { label: 'shift', size: 'large', w: 195 }],
-        //   //             [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-        //   //           ]
-        //   //         } 
-        //   //       });
-        //   //     }
-        //   //     else{
-        //   //       this.capsLock = true;
-        //   //       this.tag("KeyBoard").patch({
-        //   //         formats: {
-        //   //           qwerty: [
-        //   //             ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', { label: 'backspace', size: 'large' }],
-        //   //             [{ label: 'tab', size: 'large' }, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
-        //   //             [{ label: 'caps', size: 'medium', w: 170 }, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', { label: '< enter', size: 'medium', w: 170 }],
-        //   //             [{ label: 'shift', size: 'large' }, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', { label: 'shift', size: 'large', w: 195 }],
-        //   //             [{ label: '.com', size: 'medium', w: 170 }, '@', { label: ' ', size: 'xlarge', w: 850 }]
-        //   //           ]
-        //   //         }
-        //   //       });
-        //   //     }
-
-        //   //   }
-        //   //   else if(key.key === 'shift'){
-        //   //     this.shifter  = true;
-        //   //   }
-        //   //   else if(key.key === 'backspace'){
-        //   //     this.passwd = this.passwd.substring(0,this.passwd.length - 1);
-        //   //   }
-        //   //   else if(key.key === 'tab'){
-        //   //     this.passwd += '\t'
-        //   //   }
-        //   //   else if(key.key === '.com'){
-        //   //     this.passwd += '.com'
-        //   //   }
-        //   //   else if(key.key === '< enter'){
-        //   //     this.fireAncestors('$startConnect', this.passwd)
-        //   //   }
-        //   // }
-        //   // else{
-        //     if(this.capsLock){
-        //       key.key = key.key.toUpperCase();
-        //     }
-        //     else if(this.shifter){
-        //       key.key = key.key.toUpperCase();
-        //       this.shifter = false;
-        //     }
-        //     this.passwd+= key.key;
-        //   // }
-        //   if(this.hidePasswd){
-        //     this.tag("Pwd").text.text =  this.getStars();
-        //   } 
-        //   else{
-        //     this.tag("Pwd").text.text = this.passwd
-        //   }
-        // }
-
         $onSoftKey({ key }) {
 
           if (key === 'Done') {
@@ -327,22 +246,9 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         _handleUp() {
           this._setState("Pair")
         }
-        // _handleKey(event) {
-        //   if
-        //   // if (
-        //   //   event.keyCode == 27 ||
-        //   //   event.keyCode == 77 ||
-        //   //   event.keyCode == 49 ||
-        //   //   event.keyCode == 158
-        //   // ) {
-        //   //   this._setState('Pair')
-        //   // } else return false
-        // }
-
-
       },
       class Pair extends this {
-        $enter() {}
+        $enter() { }
         _getFocused() {
           return this.tag('List').element
         }
@@ -371,20 +277,12 @@ export default class BluetoothPairingScreen extends Lightning.Component {
         }
 
       },
-
-
-
       class PasswordSwitchState extends this{
         $enter() {
-          // this.tag("PasswordBox").patch({
-          //   //  texture: Lightning.Tools.getRoundRect(  1321 , 88 , 0, 2, CONFIG.theme.hex, false)
-          //   shader: { type: Lightning.shaders.RoundedRectangle, radius: 0}
-          //   })
           this.tag("PasswordBox.TopBorder").color = CONFIG.theme.hex
           this.tag("PasswordBox.RightBorder").color = CONFIG.theme.hex
           this.tag("PasswordBox.BottomBorder").color = CONFIG.theme.hex
           this.tag("PasswordBox.LeftBorder").color = CONFIG.theme.hex
-          this.isOn = false;
         }
         _handleDown() {
           this._setState("Pair");
@@ -404,13 +302,10 @@ export default class BluetoothPairingScreen extends Lightning.Component {
             this.hidePasswd = true;
             // this.tag('Pwd').text.text = this.getStars();
           }
+          this.isOn = bool;
         }
 
         $exit() {
-          // this.tag("PasswordBox").patch({ 
-          //   // texture: Lightning.Tools.getRoundRect(  1321 , 88 , 0, 2, 0xffffffff, false)
-          //   shader: { type: Lightning.shaders.RoundedRectangle, radius: 0}
-          // });
           this.tag("PasswordBox.TopBorder").color = 0xFFFFFFFF
           this.tag("PasswordBox.RightBorder").color = 0xFFFFFFFF
           this.tag("PasswordBox.BottomBorder").color = 0xFFFFFFFF

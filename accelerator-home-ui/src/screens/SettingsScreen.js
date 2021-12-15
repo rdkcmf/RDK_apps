@@ -18,11 +18,9 @@
  **/
 import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import BluetoothScreen from './BluetoothScreen'
-import WiFiScreen from './WifiScreen'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
-import SleepTimerScreen from './SleepTimerScreen'
 import VideoScreen from './VideoAndAudioScreens/VideoScreen'
 import AudioScreen from './VideoAndAudioScreens/AudioScreen'
 import OtherSettingsScreen from './OtherSettingsScreens/OtherSettingsScreen'
@@ -31,13 +29,13 @@ import NetworkConfigurationScreen from './OtherSettingsScreens/NetworkConfigurat
 /**
  * Class for settings screen.
  */
-
+let stateTracker = 'NetworkConfiguration'
 export default class SettingsScreen extends Lightning.Component {
   static _template() {
     return {
       x: 200,
       y: 286,
-      SettingsScreenContents:{
+      SettingsScreenContents: {
         NetworkConfiguration: {
           y: 0,
           type: SettingsMainItem,
@@ -46,7 +44,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Network Configuration',
+              text: Language.translate('Network Configuration'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -70,7 +68,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Pair Remote Control',
+              text: Language.translate('Pair Remote Control'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -94,7 +92,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Video',
+              text: Language.translate('Video'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -118,7 +116,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Audio',
+              text: Language.translate('Audio'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -142,7 +140,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Other Settings',
+              text: Language.translate('Other Settings'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -183,17 +181,28 @@ export default class SettingsScreen extends Lightning.Component {
     }
   }
 
+  /**
+ * @param {any} e
+ */
+  set setState(e) {
+    stateTracker = 'BluetoothScreen'
+  }
+
   _focus() {
-    this._setState('NetworkConfiguration')
+    this._setState(stateTracker)
+  }
+
+  _unfocus() {
+    stateTracker = 'NetworkConfiguration'
   }
 
   hide() {
     this.tag('SettingsScreenContents').visible = false
-}
+  }
 
-show() {
+  show() {
     this.tag('SettingsScreenContents').visible = true
-}
+  }
 
 
   home() {

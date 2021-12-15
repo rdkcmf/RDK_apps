@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Language } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
@@ -48,7 +48,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: `Chipset`,
+                            text: Language.translate(`Chipset`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -80,7 +80,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 135,
                         mountY: 0.5,
                         text: {
-                            text: `Serial Number`,
+                            text: Language.translate(`Serial Number`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -112,7 +112,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 225,
                         mountY: 0.5,
                         text: {
-                            text: `Location`,
+                            text: Language.translate(`Location`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -144,7 +144,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 360,
                         mountY: 0.5,
                         text: {
-                            text: `Supported DRM & Key-System`,
+                            text: Language.translate(`Supported DRM & Key-System`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             wordWrapWidth: 1600,
@@ -180,7 +180,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware version`,
+                            text: Language.translate(`Firmware version`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -191,7 +191,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `UI Version: 3.3, Build Version: , Timestamp: `,
+                            text: `UI Version: 3.4, Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -212,7 +212,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 720,
                         mountY: 0.5,
                         text: {
-                            text: `App Versions`,
+                            text: Language.translate(`App Versions`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -250,7 +250,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
         })
 
         this.appApi.getSystemVersions().then(res => {
-            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.3 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
+            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.4 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
         })
             .catch(err => { console.error(`error while getting the system versions`) })
 

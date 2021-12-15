@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import DeviceScreen from './DeviceScreen'
+import CECApi from '../../api/CECApi'
 
 /**
  * Class for AdvancedSettings screen.
@@ -47,8 +48,8 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -72,8 +73,8 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -83,27 +84,27 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                 },
                 CECControl: {
                     y: 180,
-                    alpha: 0.3, // disabled
+                    // alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'CEC Control',
+                            text: Language.translate('CEC Control'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 67,
                         x: 1600,
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
-                        src: Utils.asset('images/settings/Arrow.png'),
+                        src: Utils.asset('images/settings/ToggleOffWhite.png'),
                     },
                 },
                 Bug: {
@@ -122,8 +123,8 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -147,8 +148,8 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -164,15 +165,15 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Device',
+                            text: Language.translate('Device'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 30 * 1.5,
+                        h: 45,
+                        w: 45,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -191,9 +192,16 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
 
     }
 
+    _init() {
+        this.cecApi = new CECApi()
+        this.cecApi.activate()
+            .then(() => {
+                this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+            })
 
+    }
     _focus() {
-        this._setState('Device')
+        this._setState('CECControl')
     }
 
     hide() {
@@ -204,6 +212,24 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
         this.tag('AdvanceScreenContents').visible = true
     }
 
+    toggleCEC() {
+        this.cecApi.getEnabled()
+            .then(res => {
+                console.log(res)
+                if (res.enabled) {
+                    this.cecApi.deactivate()
+                        .then(() => {
+                            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+                        })
+                }
+                else {
+                    this.cecApi.activate()
+                        .then(() => {
+                            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                        })
+                }
+            })
+    }
     static _states() {
         return [
             class UIVoice extends this{
@@ -251,10 +277,10 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     //this._setState('TTSOptions');
                 }
                 _handleDown() {
-                    //this._setState('Bug')
+                    this._setState('Device')
                 }
                 _handleEnter() {
-
+                    this.toggleCEC()
                 }
             },
             class Bug extends this{
@@ -299,7 +325,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     this.tag('Device')._unfocus()
                 }
                 _handleUp() {
-                    //this._setState('Contact');
+                    this._setState('CECControl');
                 }
                 _handleDown() {
                     //this._setState('UI Voice')
@@ -329,6 +355,18 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     this._setState('Device')
                 }
             },
+            // class CECScreen extends this {
+            //     $enter() {
+            //         this.hide()
+            //         this.tag('CECScreen').visible = true
+            //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / CEC Control')
+            //     }
+            //     $exit() {
+            //         this.show()
+            //         this.tag('CECScreen').visible = false
+            //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
+            //     }
+            // }
         ]
     }
 

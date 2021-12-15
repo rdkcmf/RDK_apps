@@ -31,12 +31,21 @@ export default class PasswordSwitch extends Lightning.Component {
             this.patch({ src: Utils.asset("images/settings/ToggleOnOrange.png") });
         }
         this.isOn = !this.isOn;
-        this.fireAncestors('$handleEnter',this.isOn);
+        this.fireAncestors('$handleEnter', this.isOn);
 
-        
+
     }
     _init() {
         this.isOn = false;
+    }
+
+    _disable() {
+        if (this.isOn) {
+            this.isOn = false
+            this.patch({ src: Utils.asset("images/settings/ToggleOffWhite.png") })
+            this.fireAncestors('$handleEnter', this.isOn);
+        }
+
     }
 
 }

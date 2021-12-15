@@ -19,6 +19,7 @@
 import { Lightning } from '@lightningjs/sdk'
 import SidePanelItem from '../items/SidePanelItem.js'
 import HomeApi from '../api/HomeApi.js'
+import Keymap from '../Config/Keymap.js'
 
 /** Class for side panel in home UI */
 export default class SidePanel extends Lightning.Component {
@@ -123,13 +124,19 @@ export default class SidePanel extends Lightning.Component {
     }
 
   }
+  set scrollableLastRow(bool) {
+    this.isLastRowScrollable = bool;
+  }
 
   static _states() {
     return [
       class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
-            if (this.indexVal >= 2) {
+            if (this.indexVal >= 3 && this.isLastRowScrollable) {
+              this.fireAncestors('$scroll', -550)
+            }
+            else if (this.indexVal >= 2) {
               this.fireAncestors('$scroll', -350)
             }
             else {
@@ -139,7 +146,7 @@ export default class SidePanel extends Lightning.Component {
           }
         }
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == Keymap.ArrowRight || key.keyCode == Keymap.Enter) {
             if (this.prevIndex != this.indexVal) {
               this.tag('SidePanel').items[this.prevIndex].clearColor()
             }
@@ -148,12 +155,12 @@ export default class SidePanel extends Lightning.Component {
             this.tag('SidePanel').items[this.indexVal].setColor()
             this.prevIndex = this.indexVal
 
-          } else if (key.keyCode == 40) {
+          } else if (key.keyCode == Keymap.ArrowDown) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1
             }
             return this.tag('SidePanel').items[this.indexVal]
-          } else if (key.keyCode == 38) {
+          } else if (key.keyCode == Keymap.ArrowUp) {
             if (0 === this.indexVal) {
               this.fireAncestors('$goToTopPanel', 0)
             } else {

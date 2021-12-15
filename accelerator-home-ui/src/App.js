@@ -22,6 +22,7 @@ import routes from './api/routes';
 import AppApi from '../src/api/AppApi.js';
 import XcastApi from '../src/api/XcastApi';
 import { CONFIG } from './Config/Config';
+import Keymap from './Config/Keymap';
 
 const config = {
   host: '127.0.0.1',
@@ -38,7 +39,7 @@ export default class App extends Router.App {
   _setup() {
     Router.startRouter(routes, this);
     document.onkeydown = e => {
-      if (e.keyCode == 8) {
+      if (e.keyCode == Keymap.Backspace) {
         e.preventDefault();
       }
     };
@@ -54,16 +55,17 @@ export default class App extends Router.App {
   }
 
   _init() {
-
+    var thunder = ThunderJS(config);
     appApi.enableDisplaySettings()
     appApi.cobaltStateChangeEvent()
+    appApi.launchforeground()
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
         this.registerXcastListeners()
       }
     })
-    var thunder = ThunderJS(config);
+
     const rdkshellCallsign = 'org.rdk.RDKShell';
     thunder.Controller.activate({ callsign: rdkshellCallsign })
       .then(result => {
@@ -79,12 +81,11 @@ export default class App extends Router.App {
         console.log('Error', err);
       })
 
-
       .then(result => {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 173,
+            keyCode: Keymap.AudioVolumeMute,
             modifiers: [],
           })
           .then(result => {
@@ -97,6 +98,7 @@ export default class App extends Router.App {
       .catch(err => {
         console.log('Error', err);
       })
+
 
 
       .then(result => {
@@ -123,7 +125,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 27,
+            keyCode: Keymap.Escape,
             modifiers: [],
           })
           .catch(err => {
@@ -137,7 +139,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 112,
+            keyCode: Keymap.F1,
             modifiers: [],
           })
           .catch(err => {
@@ -151,7 +153,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 116,
+            keyCode: Keymap.Power,
             modifiers: [],
           })
           .catch(err => {
@@ -165,7 +167,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 118,
+            keyCode: Keymap.F7,
             modifiers: [],
           })
           .catch(err => {
@@ -179,7 +181,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 175,
+            keyCode: Keymap.AudioVolumeUp,
             modifiers: [],
           })
           .catch(err => {
@@ -193,7 +195,49 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 174,
+            keyCode: Keymap.AudioVolumeDown,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'foreground',
+            keyCode: Keymap.AudioVolumeDown,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'foreground',
+            keyCode: Keymap.AudioVolumeUp,
+            modifiers: [],
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      })
+      .catch(err => {
+        console.log('Error', err);
+      })
+      .then(result => {
+        thunder
+          .call(rdkshellCallsign, 'addKeyIntercept', {
+            client: 'foreground',
+            keyCode: Keymap.AudioVolumeMute,
             modifiers: [],
           })
           .catch(err => {
@@ -207,21 +251,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 113,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'ResidentApp',
-            keyCode: 228,
+            keyCode: Keymap.MediaFastForward,
             modifiers: [],
           })
           .catch(err => {
@@ -249,7 +279,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 77,
+            keyCode: Keymap.Home,
             modifiers: [],
           })
           .catch(err => {
@@ -263,7 +293,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 36,
+            keyCode: Keymap.MediaRewind,
             modifiers: [],
           })
           .catch(err => {
@@ -277,115 +307,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'ResidentApp',
-            keyCode: 49,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'ResidentApp',
-            keyCode: 158,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'ResidentApp',
-            keyCode: 227,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'ResidentApp',
-            keyCode: 179,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyListener', {
-            client: 'Cobalt',
-            keys: [
-              {
-                keycode: 77,
-                activate: false,
-                propogate: true
-              }
-            ]
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyListener', {
-            client: 'Amazon',
-            keys: [
-              {
-                keycode: 77,
-                activate: false,
-                propogate: true
-              }
-            ]
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'Cobalt',
-            keyCode: 27,
-            modifiers: [],
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      })
-      .catch(err => {
-        console.log('Error', err);
-      })
-      .then(result => {
-        thunder
-          .call(rdkshellCallsign, 'addKeyIntercept', {
-            client: 'Amazon',
-            keyCode: 27,
+            keyCode: Keymap.Pause,
             modifiers: [],
           })
           .catch(err => {
@@ -399,7 +321,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Cobalt',
-            keyCode: 49,
+            keyCode: Keymap.Escape,
             modifiers: [],
           })
           .catch(err => {
@@ -413,7 +335,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Amazon',
-            keyCode: 49,
+            keyCode: Keymap.Escape,
             modifiers: [],
           })
           .catch(err => {
@@ -427,7 +349,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Cobalt',
-            keyCode: 36,
+            keyCode: Keymap.Home,
             modifiers: [],
           })
           .catch(err => {
@@ -441,7 +363,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Amazon',
-            keyCode: 36,
+            keyCode: Keymap.Home,
             modifiers: [],
           })
           .catch(err => {
@@ -455,7 +377,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Cobalt',
-            keyCode: 8,
+            keyCode: Keymap.Backspace,
             modifiers: [],
           })
           .catch(err => {
@@ -469,7 +391,7 @@ export default class App extends Router.App {
         thunder
           .call(rdkshellCallsign, 'addKeyIntercept', {
             client: 'Amazon',
-            keyCode: 8,
+            keyCode: Keymap.Backspace,
             modifiers: [],
           })
           .catch(err => {
@@ -479,7 +401,6 @@ export default class App extends Router.App {
       .catch(err => {
         console.log('Error', err);
       })
-
   }
 
   deactivateChildApp(plugin) {
@@ -664,18 +585,18 @@ export default class App extends Router.App {
   }
 
   _handleKey(key) {
-    if (key.keyCode == 227) {
+    if (key.keyCode == Keymap.MediaRewind) {
       var showMax = 'https://ott-app.dstv.com/';
       this.deactivateChildApp(Storage.get('applicationType'));
       appApi.launchWeb(showMax);
       Storage.set('applicationType', 'WebApp');
       appApi.setVisibility('ResidentApp', false);
-    } else if (key.keyCode == 179 && Storage.get('applicationType') != 'Cobalt') {
+    } else if (key.keyCode == Keymap.Pause && Storage.get('applicationType') != 'Cobalt') {
       this.deactivateChildApp(Storage.get('applicationType'));
       appApi.launchCobalt();
       Storage.set('applicationType', 'Cobalt');
       appApi.setVisibility('ResidentApp', false);
-    } else if (key.keyCode == 27 || key.keyCode == 77 || key.keyCode == 49 || key.keyCode == 36 || key.keyCode == 158) {
+    } else if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home) {
       console.log(Storage.get('applicationType'))
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));

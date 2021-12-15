@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
@@ -67,7 +67,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Output Mode: Auto',
+              text: Language.translate('Output Mode: Auto'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -204,11 +204,11 @@ export default class AudioScreen extends Lightning.Component {
 
   $updateTheDefaultAudio(audio) {
     //console.log(audio)
-    this.tag('OutputMode.Title').text.text = 'Output Mode: ' + audio
+    this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + audio
   }
 
   $updateSoundMode(soundMode) {
-    this.tag('OutputMode.Title').text.text = 'Output Mode: ' + soundMode
+    this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + soundMode
   }
 
   _focus() {

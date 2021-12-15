@@ -21,6 +21,12 @@
  */
 export var appListInfo = [
   {
+    displayName: 'USB',
+    applicationType: '',
+    uri: 'USB',
+    url: '/images/usb/USB_Featured_Item.jpg',
+  }, //the first item should be usb
+  {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
@@ -33,21 +39,15 @@ export var appListInfo = [
     url: '/images/apps/youtube.jpg',
   },
   {
+    displayName: 'Xumo',
+    applicationType: 'WebApp',
+    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    url: '/images/apps/xumo.png',
+  },
+  {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
     url: '/images/apps/content1.png',
-  },
-  {
-    displayName: 'Xumo',
-    applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/content2.png',
-  },
-  {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/content3.png',
   }
 ]
