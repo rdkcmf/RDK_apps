@@ -21,33 +21,33 @@
  */
 export var appListInfo = [
   {
+    displayName: 'USB',
+    applicationType: '',
+    uri: 'USB',
+    url: '/images/usb/USB_Featured_Item.jpg',
+  }, //the first item should be usb
+  {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/amazon_prime.jpg',
+    url: '/images/apps/App_Amazon_Prime_454x255.png',//replace with online url
   },
   {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.jpg',
+    url: '/images/apps/App_YouTube_454x255.png',//replace with online url
+  },
+  {
+    displayName: 'Xumo',
+    applicationType: 'WebApp',
+    uri: 'https://x1box-app.xumo.com/index.html',
+    url: '/images/apps/App_Xumo_454x255.png',//replace with online url
   },
   {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/content1.png',
+    url: '/images/apps/App_Netflix_454x255.png',//replace with online url
   },
-  {
-    displayName: 'Xumo',
-    applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/content2.png',
-  },
-  {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/content3.png',
-  }
 ]

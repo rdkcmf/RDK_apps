@@ -16,12 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import { CONFIG } from '../Config/Config';
 import { Keyboard } from '../ui-components/index'
 import { KEYBOARD_FORMATS } from '../ui-components/components/Keyboard'
+import Wifi from '../api/WifiApi';
+
+const wifi = new Wifi()
 
 export default class JoinAnotherNetworkComponent extends Lightning.Component {
+
+  pageTransition() {
+    return 'left'
+  }
+
+
   handleDone() {
     var securityCode = this.securityCodes[this.securityCodeIndex].value;
     if (!this.textCollection['EnterSSID']) {
@@ -40,9 +49,16 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
       }
 
       var self = this;
-      this.fireAncestors("$startConnectForAnotherNetwork", { ssid: self.textCollection['EnterSSID'], security: securityCode }, self.textCollection['EnterPassword']);
+      this.startConnectForAnotherNetwork({ ssid: self.textCollection['EnterSSID'], security: securityCode }, self.textCollection['EnterPassword']);
     }
   }
+
+  startConnectForAnotherNetwork(device, passphrase) {
+    wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
+    Router.back()
+  }
+
+
   static _template() {
     return {
       Background: {
@@ -52,7 +68,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         color: 0xff000000,
       },
       Text: {
-        x: 800,
+        x: 758,
         y: 70,
         text: {
           text: "Find and join a WiFi network",
@@ -62,7 +78,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       BorderTop: {
-        x: 190, y: 130, w: 1530, h: 2, rect: true,
+        x: 190, y: 130, w: 1488, h: 2, rect: true,
       },
       Network: {
         x: 190,
@@ -74,10 +90,9 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       NetworkBox: {
-        BorderLeft: { x: 400, y: 160, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 400, y: 160, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 160, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 400, y: 188 + 28, w: 1315, h: 3, rect: true, }
+        x: 400,
+        y: 160,
+        texture: Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
       },
       NetworkText: {
         x: 420,
@@ -103,29 +118,28 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       TypeBox: {
-        BorderLeft: { x: 400, y: 230, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 400, y: 230, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 230, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 400, y: 258 + 28, w: 1315, h: 3, rect: true, },
+        x: 400,
+        y: 230,
+        texture: Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false),
         ArrowForward: {
           h: 30,
           w: 45,
-          x: 1655,
-          y: 245,
+          y: 15,
+          x: 1220,
           src: Utils.asset('images/settings/Arrow.png'),
         },
         ArrowBackward: {
           h: 30,
           w: 45,
-          x: 415,
+          x: 10,
           scaleX: -1,
-          y: 245,
+          y: 15,
           src: Utils.asset('images/settings/Arrow.png'),
         },
       },
       TypeText: {
         x: 470,
-        y: 260,
+        y: 263,
         mountY: 0.5,
         zIndex: 2,
         text: {
@@ -148,10 +162,9 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       PasswordBox: {
-        BorderLeft: { x: 400, y: 300, w: 3, h: 58, rect: true, },
-        BorderTop: { x: 403, y: 300, w: 1315, h: 3, rect: true, },
-        BorderRight: { x: 1715, y: 300, w: 3, h: 59, rect: true, },
-        BorderBottom: { x: 403, y: 328 + 28, w: 1315, h: 3, rect: true, },
+        x: 400,
+        y: 300,
+        texture: Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
       },
 
       Pwd: {
@@ -169,7 +182,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
         },
       },
       BorderBottom: {
-        x: 190, y: 396, w: 1530, h: 2, rect: true,
+        x: 190, y: 396, w: 1488, h: 2, rect: true,
       },
       Keyboard: {
         y: 437,
@@ -199,14 +212,15 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
       this.tag("Password").alpha = 1;
     }
   }
+
+  _handleBack() {
+    Router.back()
+  }
   static _states() {
     return [
       class EnterSSID extends this{
         $enter() {
-          this.tag('NetworkBox.BorderLeft').color = CONFIG.theme.hex;
-          this.tag("NetworkBox.BorderBottom").color = CONFIG.theme.hex;
-          this.tag("NetworkBox.BorderRight").color = CONFIG.theme.hex;
-          this.tag("NetworkBox.BorderTop").color = CONFIG.theme.hex;
+          this.tag('NetworkBox').texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false)
         }
         _handleDown() {
           this._setState("EnterSecurity");
@@ -215,18 +229,12 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
           this._setState('Keyboard')
         }
         $exit() {
-          this.tag('NetworkBox.BorderLeft').color = 0xffffffff;
-          this.tag("NetworkBox.BorderBottom").color = 0xffffffff;
-          this.tag("NetworkBox.BorderRight").color = 0xffffffff;
-          this.tag("NetworkBox.BorderTop").color = 0xffffffff;
+          this.tag('NetworkBox').texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
         }
       },
       class EnterSecurity extends this{
         $enter() {
-          this.tag("TypeBox.BorderBottom").color = CONFIG.theme.hex;
-          this.tag("TypeBox.BorderLeft").color = CONFIG.theme.hex;
-          this.tag("TypeBox.BorderRight").color = CONFIG.theme.hex;
-          this.tag("TypeBox.BorderTop").color = CONFIG.theme.hex;
+          this.tag("TypeBox").texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false)
         }
         _handleUp() {
           this._setState("EnterSSID");
@@ -262,10 +270,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
           }
         }
         $exit() {
-          this.tag("TypeBox.BorderBottom").color = 0xffffffff;
-          this.tag("TypeBox.BorderLeft").color = 0xffffffff;
-          this.tag("TypeBox.BorderRight").color = 0xffffffff;
-          this.tag("TypeBox.BorderTop").color = 0xffffffff;
+          this.tag("TypeBox").texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
         }
       },
       class EnterPassword extends this{
@@ -273,10 +278,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
           if (this.pwdUnReachable) {
             this._setState("EnterSecurity");
           }
-          this.tag('PasswordBox.BorderBottom').color = CONFIG.theme.hex;
-          this.tag('PasswordBox.BorderLeft').color = CONFIG.theme.hex;
-          this.tag('PasswordBox.BorderRight').color = CONFIG.theme.hex;
-          this.tag('PasswordBox.BorderTop').color = CONFIG.theme.hex;
+          this.tag('PasswordBox').texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false)
         }
         _handleUp() {
           this._setState("EnterSecurity");
@@ -288,10 +290,7 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
           this._setState('Keyboard')
         }
         $exit() {
-          this.tag('PasswordBox.BorderBottom').color = 0xffffffff;
-          this.tag('PasswordBox.BorderLeft').color = 0xffffffff;
-          this.tag('PasswordBox.BorderRight').color = 0xffffffff;
-          this.tag('PasswordBox.BorderTop').color = 0xffffffff;
+          this.tag('PasswordBox').texture = Lightning.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
       },
       class Keyboard extends this{

@@ -19,11 +19,17 @@
 import { Lightning } from '@lightningjs/sdk'
 import SidePanelItem from '../items/SidePanelItem.js'
 import HomeApi from '../api/HomeApi.js'
+import Keymap from '../Config/Keymap.js'
 
 /** Class for side panel in home UI */
 export default class SidePanel extends Lightning.Component {
   static _template() {
     return {
+      color: 0xff000000,
+      rect: true,
+      y: 270,
+      w: 200,
+      h: 1080,
       SidePanel: {
         x: 0,
         y: 127,
@@ -38,7 +44,6 @@ export default class SidePanel extends Lightning.Component {
   }
 
   _init() {
-    console.log('Side Panel init')
     this.homeApi = new HomeApi()
     this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo()
     this.sidePanelData = this.homeApi.getSidePanelInfo()
@@ -123,44 +128,51 @@ export default class SidePanel extends Lightning.Component {
     }
 
   }
+  set scrollableLastRow(bool) {
+    this.isLastRowScrollable = bool;
+  }
 
   static _states() {
     return [
       class SidePanel extends this {
         _getFocused() {
           if (this.tag('SidePanel').length) {
-            if (this.indexVal >= 2) {
-              this.fireAncestors('$scroll', -350)
-            }
-            else {
-              this.fireAncestors('$scroll', 0)
-            }
             return this.tag('SidePanel').items[this.indexVal]
           }
         }
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == Keymap.ArrowRight || key.keyCode == Keymap.Enter) {
             if (this.prevIndex != this.indexVal) {
               this.tag('SidePanel').items[this.prevIndex].clearColor()
             }
-
-            this.fireAncestors('$goToMainView', this.indexVal == 3 ? 2 : this.indexVal)
-            this.tag('SidePanel').items[this.indexVal].setColor()
             this.prevIndex = this.indexVal
-
-          } else if (key.keyCode == 40) {
+            this.fireAncestors('$goToMainView', this.tag('SidePanel').items[this.indexVal], this.indexVal)
+          } else if (key.keyCode == Keymap.ArrowDown) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1
             }
+            if (this.indexVal === 2) {
+              this.fireAncestors('$scroll', -130)
+            }
+            if (this.indexVal === 1) {
+              this.fireAncestors('$scroll', 270)
+            }
             return this.tag('SidePanel').items[this.indexVal]
-          } else if (key.keyCode == 38) {
+          } else if (key.keyCode == Keymap.ArrowUp) {
             if (0 === this.indexVal) {
               this.fireAncestors('$goToTopPanel', 0)
             } else {
               this.indexVal = this.indexVal - 1
+              if (this.indexVal === 2) {
+                this.fireAncestors('$scroll', -130)
+              }
+              if (this.indexVal === 1) {
+                this.fireAncestors('$scroll', 270)
+              }
               return this.tag('SidePanel').items[this.indexVal]
             }
-          } else return false;
+
+          }
         }
       },
     ]

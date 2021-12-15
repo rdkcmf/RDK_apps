@@ -18,7 +18,6 @@
  **/
 import ThunderJS from 'ThunderJS';
 
-
 var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
@@ -41,6 +40,7 @@ const thunder = ThunderJS(config)
 export default class AppApi {
 
   constructor() {
+    this.activatedForeground = false
     this._events = new Map()
   }
 
@@ -110,40 +110,40 @@ export default class AppApi {
   /**
    * Function to get resolution of the display screen.
    */
-   getResolution() {
-    return new Promise((resolve,reject)=>{
+  getResolution() {
+    return new Promise((resolve, reject) => {
       thunder
-      .call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
-        "videoDisplay": "HDMI0"
-      })
-      .then(result => {
-        resolve(result.resolution)
-      })
-      .catch(err => {
-        resolve(false)
-      });
+        .call('org.rdk.DisplaySettings', 'getCurrentResolution', {
+          "videoDisplay": "HDMI0"
+        })
+        .then(result => {
+          resolve(result.resolution)
+        })
+        .catch(err => {
+          resolve('NA')
+        });
     })
-        
+
   }
 
-  activateDisplaySettings(){
-   
-    return new Promise((resolve,reject)=>{
-      const systemcCallsign = "org.rdk.DisplaySettings.1"
-      thunder.Controller.activate({callsign:systemcCallsign})
-      .then(res=>{
-      })
-      .catch(err=>{console.error(`error while activating the displaysettings plugin`)})
+  activateDisplaySettings() {
+
+    return new Promise((resolve, reject) => {
+      const systemcCallsign = "org.rdk.DisplaySettings"
+      thunder.Controller.activate({ callsign: systemcCallsign })
+        .then(res => {
+        })
+        .catch(err => { console.error(`error while activating the displaysettings plugin`) })
     });
 
-}
+  }
 
 
 
   getSupportedResolutions() {
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      const systemcCallsign = 'org.rdk.DisplaySettings'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -195,7 +195,7 @@ export default class AppApi {
     console.log("checking hdcp status")
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'org.rdk.HdcpProfile.1'
+      const systemcCallsign = 'org.rdk.HdcpProfile'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -220,7 +220,7 @@ export default class AppApi {
   getTvHDRSupport() {
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      const systemcCallsign = 'org.rdk.DisplaySettings'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -245,7 +245,7 @@ export default class AppApi {
   getSettopHDRSupport() {
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'org.rdk.DisplaySettings.1'
+      const systemcCallsign = 'org.rdk.DisplaySettings'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -270,7 +270,7 @@ export default class AppApi {
   getHDRSetting() {
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'DisplayInfo.1'
+      const systemcCallsign = 'DisplayInfo'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -296,7 +296,7 @@ export default class AppApi {
     console.log("calling getDDRMS")
     return new Promise((resolve, reject) => {
 
-      const systemcCallsign = 'OCDM.1'
+      const systemcCallsign = 'OCDM'
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           thunder
@@ -311,6 +311,23 @@ export default class AppApi {
         })
         .catch(err => {
           console.log('Display Error', JSON.stringify(err))
+        })
+    })
+  }
+
+  /**
+   * Function to clear cache.
+   */
+  clearCache() {
+    return new Promise((resolve, reject) => {
+      const systemcCallsign = 'ResidentApp'
+      thunder
+        .call(systemcCallsign, 'delete', { path: ".cache" })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          resolve(err)
         })
     })
   }
@@ -331,10 +348,6 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
-          }).then(() => {
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'foreground',
-            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -367,10 +380,6 @@ export default class AppApi {
         .then(() => {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
-          }).then(() => {
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'foreground',
-            })
           })
           thunder.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign,
@@ -401,12 +410,8 @@ export default class AppApi {
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
-        }).then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground',
-          })
         })
-        thunder.call('Cobalt.1', 'deeplink', url)
+        thunder.call('Cobalt', 'deeplink', url)
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
       .catch(err => { })
@@ -426,11 +431,7 @@ export default class AppApi {
       .then(() => {
         thunder.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
-        }).then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground',
-          })
-        });
+        })
         thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
       })
       .catch(err => { });
@@ -441,21 +442,17 @@ export default class AppApi {
    * Function to launch Resident app.
    * @param {String} url url of app.
    */
-  launchResident(url) {
-    const childCallsign = 'ResidentApp'
+  launchResident(url, client) {
+    const childCallsign = client
     thunder
       .call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
-        type: childCallsign,
+        type: 'ResidentApp',
         uri: url,
       })
       .then(() => {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
-        }).then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'foreground',
-          })
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
       })
@@ -466,16 +463,19 @@ export default class AppApi {
 
   launchforeground() {
     const childCallsign = 'foreground'
-    console.log("notification_url > location.protocol::" + location.protocol + '// location.host ' + location.host + " // '// location.pathname '" + location.pathname)
-    let notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+    let url = location.href.split(location.hash)[0].split('index.html')[0]
+    let notification_url = url + "static/notification/index.html";
+    if (location.host.includes('127.0.0.1')) {
+      notification_url = url + "lxresui/static/notification/index.html";
+    }
+
+    console.log(notification_url, '|', location.host, location)
     thunder.call('org.rdk.RDKShell', 'launch', {
       callsign: childCallsign,
-      type: 'HtmlApp',
+      type: 'LightningApp',
       uri: notification_url,
     }).then(() => {
-      thunder.call('org.rdk.RDKShell', 'moveToFront', {
-        client: childCallsign,
-      })
+      this.activatedForeground = true
       thunder.call('org.rdk.RDKShell', 'setFocus', {
         client: 'ResidentApp',
       })
@@ -488,16 +488,6 @@ export default class AppApi {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
   }
-
-  zorder(value, cli) {
-    console.log("#################zorder###################");
-    thunder.call('org.rdk.RDKShell', value, { client: cli })
-      .then(result => {
-        console.log(client + ":" + value + '  Success');
-        resolve(result)
-      }).catch(err => { resolve(false) });
-  }
-
   /**
    * Function to suspend html app.
    */
@@ -578,59 +568,71 @@ export default class AppApi {
   }
 
   /**
+   * Function to deactivate resident app.
+   */
+  deactivateResidentApp(client) {
+    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: client })
+  }
+
+  /**
    * Function to set visibility to client apps.
    * @param {client} client client app.
    * @param {visible} visible value of visibility.
    */
   setVisibility(client, visible) {
-    thunder.call('org.rdk.RDKShell', 'setVisibility', {
-      client: client,
-      visible: visible,
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.RDKShell', 'setVisibility', {
+        client: client,
+        visible: visible,
+      })
+      thunder.call('org.rdk.RDKShell', 'setFocus', { client: client })
+        .then(res => {
+          resolve(true)
+        })
+        .catch(err => {
+          console.log('Set focus error', JSON.stringify(err))
+          reject(false)
+        })
     })
   }
 
-  enabledisableinactivityReporting(bool){
-   
-         return new Promise((resolve,reject)=>{
-               thunder
-                 .call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
-                   "enable": bool
-                 })
-                 .then(result => {
-                   resolve(result)
-                 })
-                 .catch(err => {
-                   console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
-                   reject(err)
-                 });
-                })
+  enabledisableinactivityReporting(bool) {
+
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.RDKShell', 'enableInactivityReporting', {
+          "enable": bool
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting sound mode:", JSON.stringify(err, 3, null))
+          reject(err)
+        });
+    })
   }
 
-  setInactivityInterval(t){
-   
-    return new Promise((resolve,reject)=>{
-          thunder
-            .call('org.rdk.RDKShell.1', 'setInactivityInterval', {
-              "interval": t
-            })
-            .then(result => {
-              resolve(result)
-            })
-            .catch(err => {
-              reject(false)
-            });
-           })
+  setInactivityInterval(t) {
+
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.RDKShell', 'setInactivityInterval', {
+          "interval": t
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          reject(false)
+        });
+    })
   }
 
 
 
-  zorder(value, cli) {
-    console.log("#################zorder###################");
-    thunder.call('org.rdk.RDKShell', value, { client: cli })
-      .then(result => {
-        console.log(client + ":" + value + '  Success');
-        console.log(JSON.stringify(result))
-      }).catch(err => { console.log(JSON.stringify(err)) });
+  zorder(cli) {
+    thunder.call('org.rdk.RDKShell', 'moveToFront', { client: cli, callsign: cli })
   }
 
   /**
@@ -740,7 +742,7 @@ export default class AppApi {
   standby(value) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
+        .call('org.rdk.System', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
         .then(result => {
           resolve(result)
         })
@@ -753,7 +755,7 @@ export default class AppApi {
   audio_mute(value, audio_source) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setMuted', { "audioPort": audio_source, "muted": value })
+        .call('org.rdk.DisplaySettings', 'setMuted', { "audioPort": audio_source, "muted": value })
         .then(result => {
           resolve(result)
         })
@@ -765,9 +767,23 @@ export default class AppApi {
     })
   }
 
+  muteStatus(port) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'getMuted', { audioPort: port })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null))
+          reject(false)
+        })
+    })
+  }
+
   enableDisplaySettings() {
     return new Promise((resolve, reject) => {
-      thunder.call('org.rdk.RDKShell.1', 'launch', { callsign: 'org.rdk.DisplaySettings.1' })
+      thunder.call('org.rdk.RDKShell', 'launch', { callsign: 'org.rdk.DisplaySettings' })
         .then(result => {
           console.log('Successfully emabled DisplaySettings Service')
           resolve(result)
@@ -778,11 +794,11 @@ export default class AppApi {
     })
   }
 
- 
+
   getVolumeLevel() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getVolumeLevel', { "audioPort": "HDMI0" })
+        .call('org.rdk.DisplaySettings', 'getVolumeLevel', { "audioPort": "HDMI0" })
         .then(result => {
           resolve(result)
         })
@@ -790,29 +806,13 @@ export default class AppApi {
           console.log("audio mute error:", JSON.stringify(err, 3, null))
           resolve(false)
         })
-    })
-  }
-
-
-  getConnectedAudioPorts() {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("audio mute error:", JSON.stringify(err, 3, null))
-          resolve(false)
-        })
-
     })
   }
 
   getSoundMode() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getSoundMode', {
+        .call('org.rdk.DisplaySettings', 'getSoundMode', {
           "audioPort": "HDMI0"
         })
         .then(result => {
@@ -829,7 +829,7 @@ export default class AppApi {
 
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setSoundMode', {
+        .call('org.rdk.DisplaySettings', 'setSoundMode', {
           "audioPort": "HDMI0",
           "soundMode": mode,
           "persist": true
@@ -850,7 +850,7 @@ export default class AppApi {
 
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
+        .call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
           "audioPort": "HDMI0"
         })
         .then(result => {
@@ -858,7 +858,7 @@ export default class AppApi {
         })
         .catch(err => {
           console.log("error in getting support audio sound mode:", JSON.stringify(err, 3, null))
-          resolve(false)
+          reject(false)
         })
     })
   }
@@ -867,10 +867,8 @@ export default class AppApi {
   getConnectedAudioPorts() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {})
+        .call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {})
         .then(result => {
-          console.log("############ getConnectedAudioPorts ############")
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -886,12 +884,10 @@ export default class AppApi {
   setEnableAudioPort(port) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setEnableAudioPort', {
+        .call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
           "audioPort": port, "enable": true
         })
         .then(result => {
-          console.log(`############ SetEnableAudioPort ${port} #############`)
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -907,8 +903,6 @@ export default class AppApi {
       thunder
         .call('org.rdk.DisplaySettings', 'getDRCMode', { "audioPort": "HDMI0" })
         .then(result => {
-          console.log(`############ getDRC #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -921,12 +915,10 @@ export default class AppApi {
   setDRCMode(DRCNum) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setDRCMode', {
+        .call('org.rdk.DisplaySettings', 'setDRCMode', {
           "DRCMode": DRCNum
         })
         .then(result => {
-          console.log(`############ DRC was set to ${DRCNum} #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -940,10 +932,8 @@ export default class AppApi {
   getZoomSetting() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getZoomSetting')
+        .call('org.rdk.DisplaySettings', 'getZoomSetting')
         .then(result => {
-          console.log(`############ getZoomSetting #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -956,10 +946,8 @@ export default class AppApi {
   setZoomSetting(zoom) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setZoomSetting', { "zoomSetting": zoom })
+        .call('org.rdk.DisplaySettings', 'setZoomSetting', { "zoomSetting": zoom })
         .then(result => {
-          console.log(`############ setZoomSetting #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -969,14 +957,12 @@ export default class AppApi {
     })
   }
 
- 
+
   getEnableAudioPort(audioPort) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getEnableAudioPort', { "audioPort": audioPort })
+        .call('org.rdk.DisplaySettings', 'getEnableAudioPort', { "audioPort": audioPort })
         .then(result => {
-          console.log(`############ getEnableAudioPort #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -990,10 +976,8 @@ export default class AppApi {
   getSupportedAudioPorts() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getSupportedAudioPorts')
+        .call('org.rdk.DisplaySettings', 'getSupportedAudioPorts')
         .then(result => {
-          console.log(`############ getSupportedAudioPorts #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -1007,10 +991,8 @@ export default class AppApi {
   getVolumeLevel() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'getVolumeLevel')
+        .call('org.rdk.DisplaySettings', 'getVolumeLevel')
         .then(result => {
-          console.log(`############ getVolumeLevel #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -1024,10 +1006,8 @@ export default class AppApi {
   setVolumeLevel(port, volume) {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.DisplaySettings.1', 'setVolumeLevel', { "audioPort": port, "volumeLevel": volume })
+        .call('org.rdk.DisplaySettings', 'setVolumeLevel', { "audioPort": port, "volumeLevel": volume })
         .then(result => {
-          console.log(`############ setVolumeLevel #############`)
-          console.log(JSON.stringify(result));
           resolve(result)
         })
         .catch(err => {
@@ -1049,7 +1029,7 @@ export default class AppApi {
   speak() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.TextToSpeech.1', 'speak', {
+        .call('org.rdk.TextToSpeech', 'speak', {
           "text": "speech_1"
         })
         .then(result => {
@@ -1066,7 +1046,7 @@ export default class AppApi {
   resume() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.TextToSpeech.1', 'resume', {
+        .call('org.rdk.TextToSpeech', 'resume', {
           "speechid": 1
         })
         .then(result => {
@@ -1083,7 +1063,7 @@ export default class AppApi {
   pause() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.TextToSpeech.1', 'pause', {
+        .call('org.rdk.TextToSpeech', 'pause', {
           "speechid": 1
         })
         .then(result => {
@@ -1100,7 +1080,7 @@ export default class AppApi {
   getlistVoices() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.TextToSpeech.1', 'listvoices', {
+        .call('org.rdk.TextToSpeech', 'listvoices', {
           "language": "en-US"
         })
         .then(result => {
@@ -1117,7 +1097,7 @@ export default class AppApi {
   syncLocation() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('LocationSync.1', 'sync')
+        .call('LocationSync', 'sync')
         .then(result => {
           resolve(result)
         })
@@ -1133,7 +1113,7 @@ export default class AppApi {
   getLocation() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('LocationSync.1', 'location')
+        .call('LocationSync', 'location')
         .then(result => {
           resolve(result)
         })
@@ -1149,7 +1129,7 @@ export default class AppApi {
   getFirmwareUpdateInfo() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getFirmwareUpdateInfo')
+        .call('org.rdk.System', 'getFirmwareUpdateInfo')
         .then(result => {
           resolve(result)
         })
@@ -1164,7 +1144,7 @@ export default class AppApi {
   getFirmwareUpdateState() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getFirmwareUpdateState')
+        .call('org.rdk.System', 'getFirmwareUpdateState')
         .then(result => {
           resolve(result)
         })
@@ -1178,7 +1158,7 @@ export default class AppApi {
   getDownloadFirmwareInfo() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getDownloadedFirmwareInfo')
+        .call('org.rdk.System', 'getDownloadedFirmwareInfo')
         .then(result => {
           resolve(result)
         })
@@ -1193,13 +1173,13 @@ export default class AppApi {
   getSerialNumber() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getSerialNumber')
+        .call('org.rdk.System', 'getSerialNumber')
         .then(result => {
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
-          resolve(false)
+          resolve('N/A')
         })
     })
   }
@@ -1208,7 +1188,7 @@ export default class AppApi {
   getSystemVersions() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getSystemVersions')
+        .call('org.rdk.System', 'getSystemVersions')
         .then(result => {
           console.log(JSON.stringify(result, 3, null))
           resolve(result)
@@ -1224,7 +1204,7 @@ export default class AppApi {
   updateFirmware() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'updateFirmware')
+        .call('org.rdk.System', 'updateFirmware')
         .then(result => {
           resolve(result)
         })
@@ -1239,7 +1219,7 @@ export default class AppApi {
   getFirmwareDownloadPercent() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getFirmwareDownloadPercent')
+        .call('org.rdk.System', 'getFirmwareDownloadPercent')
         .then(result => {
           resolve(result)
         })
@@ -1254,10 +1234,8 @@ export default class AppApi {
   getDeviceIdentification() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('DeviceIdentification.1', 'deviceidentification')
+        .call('DeviceIdentification', 'deviceidentification')
         .then(result => {
-          console.log("############ device Identification ############")
-          console.log(JSON.stringify(result, 3, null))
           resolve(result)
         })
         .catch(err => {
@@ -1273,7 +1251,7 @@ export default class AppApi {
   systeminfo() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('DeviceInfo.1', 'systeminfo')
+        .call('DeviceInfo', 'systeminfo')
         .then(result => {
           resolve(result)
         })
@@ -1288,7 +1266,7 @@ export default class AppApi {
   reboot() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'reboot', {
+        .call('org.rdk.System', 'reboot', {
           "rebootReason": "FIRMWARE_FAILURE"
         })
         .then(result => {
@@ -1306,7 +1284,7 @@ export default class AppApi {
   getPreferredStandbyMode() {
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'getPreferredStandbyMode').then(result => {
+        .call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
           resolve(result)
         })
         .catch(err => {
@@ -1320,7 +1298,7 @@ export default class AppApi {
     console.log("setPreferredStandbyMode called : " + standbyMode)
     return new Promise((resolve, reject) => {
       thunder
-        .call('org.rdk.System.1', 'setPreferredStandbyMode', {
+        .call('org.rdk.System', 'setPreferredStandbyMode', {
           "standbyMode": standbyMode
         }).then(result => {
           resolve(result)
@@ -1333,7 +1311,7 @@ export default class AppApi {
   }
 
   registerChangeLocation() {
-    var callsign = "LocationSync.1"
+    var callsign = "LocationSync"
     thunder
       .call('Controller', 'activate', { callsign: callsign })
       .then(result => {
@@ -1347,7 +1325,7 @@ export default class AppApi {
 
   async sendAppState(value) {
     const state = await thunder
-      .call('org.rdk.RDKShell.1', 'getState', {})
+      .call('org.rdk.RDKShell', 'getState', {})
       .then(result => result.state);
     this.state = state;
     let params = { applicationName: value, state: 'stopped' };
@@ -1373,6 +1351,85 @@ export default class AppApi {
       .then(result => result.success);
 
   }
+  //NETWORK INFO APIS
 
+  //1. Get IP Setting
+  getIPSetting(defaultInterface) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'getIPSettings', {
+          "interface": defaultInterface,
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting network info:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  //2. Get default interface
+  getDefaultInterface() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'getDefaultInterface')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting default interface:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  //3. Is interface enabled
+  isInterfaceEnabled() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'isInterfaceEnabled', {
+          "interface": "WIFI"
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in checking the interface:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  //4. Get interfaces
+  getInterfaces() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'getInterfaces')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting interfaces:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  //5. getConnectedSSID
+  getConnectedSSID() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Wifi', 'getConnectedSSID')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting connected SSID:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
 
 }

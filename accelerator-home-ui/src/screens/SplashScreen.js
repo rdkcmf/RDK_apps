@@ -17,13 +17,12 @@
  * limitations under the License.
  **/
 import { Lightning, Utils, Router } from '@lightningjs/sdk'
-import AAMPVideoPlayer from './../player/AAMPVideoPlayer'
-import ThunderCalls from './../api/AppApi'
 import BluetoothApi from './../api/BluetoothApi'
 import HomeApi from '../api/HomeApi'
 import AppApi from '../api/AppApi'
 import Item from './../items/item'
 import { CONFIG } from '../Config/Config'
+import Keymap from '../Config/Keymap'
 
 /**
  * Class for splash screen.
@@ -219,11 +218,11 @@ export default class SplashScreen extends Lightning.Component {
           this.screenTimeout = setTimeout(() => {
             if (this.remotePaired == false) this._setState('AutoRemotePair')
             else if (this.hasInternet == false) this._setState('ConnectivityScreen')
-            else Router.navigate('home')
+            else Router.navigate('home', { path: 'settings' })
           }, 5000)
         }
         _handleKey(event) {
-          if (event.keyCode == 83) this._setState('UISwitch')
+          if (event.keyCode == Keymap.s) this._setState('UISwitch')
         }
         $exit() {
           const myAnimation = this.tag('Splashscreen').animation({
@@ -264,7 +263,7 @@ export default class SplashScreen extends Lightning.Component {
           window.clearTimeout(this.timeout)
         }
         _handleKey(event) {
-          if (event.keyCode == 83) this._setState('UISwitch')
+          if (event.keyCode == Keymap.s) this._setState('UISwitch')
         }
       },
       class ConnectivityScreen extends this {
@@ -280,7 +279,7 @@ export default class SplashScreen extends Lightning.Component {
           })
           myAnimation.start()
           setTimeout(() => {
-            Router.navigate('home')
+            Router.navigate('home', { path: 'settings' })
           }, 5000)
         }
         $exit() {
@@ -293,7 +292,7 @@ export default class SplashScreen extends Lightning.Component {
           myAnimation.start()
         }
         _handleKey() {
-          Router.navigate('home')
+          Router.navigate('home', { path: 'settings' })
         }
       },
       class AutoRemotePair extends this {
@@ -314,7 +313,7 @@ export default class SplashScreen extends Lightning.Component {
                 'Please put the remote in pairing mode, No Bluetooth device found'
             setTimeout(() => {
               if (this.hasInternet == false) this._setState('ConnectivityScreen')
-              else Router.navigate('home')
+              else Router.navigate('home', { path: 'settings' })
             }, 1000)
           }, 10000)
           var error = () => {
@@ -322,7 +321,7 @@ export default class SplashScreen extends Lightning.Component {
               'Please put the remote in pairing mode, , No Bluetooth device found'
             setTimeout(() => {
               if (this.hasInternet == false) this._setState('ConnectivityScreen')
-              else Router.navigate('home')
+              else Router.navigate('home', { path: 'settings' })
             }, 1000)
           }
           myAnimation.start()
@@ -374,7 +373,7 @@ export default class SplashScreen extends Lightning.Component {
               clearTimeout(timer)
               setTimeout(() => {
                 if (this.hasInternet == false) this._setState('ConnectivityScreen')
-                else Router.navigate('home')
+                else Router.navigate('home', { path: 'settings' })
               }, 2000)
             } else {
               setTimeout(() => {
@@ -388,7 +387,7 @@ export default class SplashScreen extends Lightning.Component {
                     clearTimeout(timer)
                     setTimeout(() => {
                       if (this.hasInternet == false) this._setState('ConnectivityScreen')
-                      else Router.navigate('home')
+                      else Router.navigate('home', { path: 'settings' })
                     }, 2000)
                   } else {
                     error()
@@ -456,11 +455,11 @@ export default class SplashScreen extends Lightning.Component {
         }
         _handleEnter() {
           if (this.tag('UISwitch.UIList').element._item.title != 'DEFAULT') {
-            this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.uri)
+            this.appApi.launchResident(this.tag('UISwitch.UIList').element._item.uri, 'ResidentApp')
           } else {
             if (this.remotePaired == false) this._setState('AutoRemotePair')
             else if (this.hasInternet == false) this._setState('ConnectivityScreen')
-            else Router.navigate('home')
+            else Router.navigate('home', { path: 'settings' })
           }
         }
         $exit() {

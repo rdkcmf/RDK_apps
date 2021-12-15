@@ -16,25 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import DeviceInformationScreen from './DeviceInformationScreen'
 import AppApi from '../../api/AppApi';
-import FirmwareScreen from './FirmwareScreen'
-import RebootConfirmationScreen from './RebootConfirmationScreen'
+
 
 /**
  * Class for Video and Audio screen.
  */
 
 export default class DeviceScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device'));
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             DeviceScreenContents: {
+                x: 200,
+                y: 275,
                 Info: {
                     type: SettingsMainItem,
                     Title: {
@@ -42,7 +53,7 @@ export default class DeviceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Info',
+                            text: Language.translate('Info'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -66,7 +77,7 @@ export default class DeviceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Check for Firmware Update',
+                            text: Language.translate('Check for Firmware Update'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -90,7 +101,7 @@ export default class DeviceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Reboot',
+                            text: Language.translate('Reboot'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -123,41 +134,21 @@ export default class DeviceScreen extends Lightning.Component {
                     },
                 },
             },
-
-            DeviceInformationScreen: {
-                type: DeviceInformationScreen,
-                visible: false,
-            },
-            FirmwareScreen: {
-                type: FirmwareScreen,
-                visible: false,
-            },
-            RebootConfirmationScreen: {
-                x: 780,
-                y: 100,
-                type: RebootConfirmationScreen,
-                visible: false,
-            },
-
         }
 
     }
 
     _init() {
         this._appApi = new AppApi();
-    }
-
-    _focus() {
         this._setState('Info')
     }
 
-
-    hide() {
-        this.tag('DeviceScreenContents').visible = false
+    _focus() {
+        this._setState(this.state)
     }
 
-    show() {
-        this.tag('DeviceScreenContents').visible = true
+    _handleBack() {
+        Router.navigate('settings/advanced')
     }
 
     static _states() {
@@ -176,7 +167,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware')
                 }
                 _handleEnter() {
-                    this._setState('DeviceInformationScreen')
+                    Router.navigate('settings/advanced/device/info')
                 }
             },
             class Firmware extends this{
@@ -193,7 +184,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Reboot')
                 }
                 _handleEnter() {
-                    this._setState('FirmwareScreen')
+                    Router.navigate('settings/advanced/device/firmware')
                 }
             },
             class Reboot extends this{
@@ -210,7 +201,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Info')
                 }
                 _handleEnter() {
-                    this._setState('RebootConfirmationScreen')
+                    Router.navigate('settings/advanced/device/reboot')
                 }
             },
             class Reset extends this{
@@ -230,73 +221,6 @@ export default class DeviceScreen extends Lightning.Component {
 
                 }
             },
-
-
-            //Inner Screens Classes
-            class DeviceInformationScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('DeviceInformationScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Info')
-                }
-                _getFocused() {
-                    return this.tag('DeviceInformationScreen')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('DeviceInformationScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
-                }
-                _handleBack() {
-                    this._setState('Info')
-                }
-            },
-            //Inner Firmware Screen
-            class FirmwareScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('FirmwareScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device / Firmware')
-                }
-                _getFocused() {
-                    return this.tag('FirmwareScreen')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('FirmwareScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
-                }
-                _handleBack() {
-                    this._setState('Firmware')
-                }
-            },
-
-            class RebootConfirmationScreen extends this{
-                $enter() {
-                    this.hide()
-                    this.tag('RebootConfirmationScreen').visible = true
-                }
-                _getFocused() {
-                    return this.tag('RebootConfirmationScreen')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('RebootConfirmationScreen').visible = false
-                }
-                $confirmReboot() {
-                    this._appApi.reboot().then(result => {
-                        console.log('device rebooting from device screen ' + JSON.stringify(result))
-                    })
-                }
-
-                $cancelReboot() {
-                    this._handleBack()
-                }
-                _handleBack() {
-                    this._setState('Reboot')
-                }
-            },
-
         ]
     }
 

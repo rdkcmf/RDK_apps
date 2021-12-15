@@ -17,7 +17,6 @@
  * limitations under the License.
  **/
 import { Lightning } from '@lightningjs/sdk'
-import { COLORS } from '../colors/Colors'
 import { CONFIG } from "../Config/Config"
 /**
  * Class for rendering items in Settings screen.
@@ -26,7 +25,7 @@ export default class ConfirmAndCancel extends Lightning.Component {
   static _template() {
     return {
       Item: {
-        w:  325, // previous value : ((1920 / 2) - 350) / 2
+        w: 325, // previous value : ((1920 / 2) - 350) / 2
         h: 85, // previous value: 65
         rect: true,
         color: 0xffffffff,
@@ -44,7 +43,7 @@ export default class ConfirmAndCancel extends Lightning.Component {
       Left: {
         x: this.tag("Item").w / 2, // orginal = 10
         y: this.tag('Item').h / 2,
-        mountX:0.5,
+        mountX: 0.5,
         mountY: 0.5,
         text: { text: item, fontSize: 25, textColor: 0xff000000, fontFace: CONFIG.language.font, },
       },

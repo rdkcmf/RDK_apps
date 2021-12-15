@@ -112,8 +112,10 @@ export default class ListItem extends Lightning.Component {
       zIndex: 2,
     })
     this.tag('Shadow').patch({
-      scale: this.focus,
-      alpha: 1,
+      smooth: {
+        scale: [this.focus, { timingFunction: 'ease', duration: 0.7 }],
+        alpha: 1,
+      }
     });
   }
 
@@ -131,7 +133,10 @@ export default class ListItem extends Lightning.Component {
     })
     this.tag('Info').alpha = 0
     this.tag('Shadow').patch({
-      alpha: 0
+      smooth: {
+        alpha: 0,
+        scale: [this.unfocus, { timingFunction: 'ease', duration: 0.7 }]
+      }
     });
   }
 }

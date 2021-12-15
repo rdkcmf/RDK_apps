@@ -16,24 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import NetworkApi from '../../api/NetworkApi'
-import NetworkInterfaceScreen from './NetworkInterfaceScreen'
-import WiFiScreen from '../WifiScreen'
 /**
-  * Class for Other Settings Screen.
+  * Class for Other Network Config Screen.
   */
 
 export default class NetworkConfigurationScreen extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             NetworkConfigurationScreenContents: {
-                WiFi: {
+                x: 200,
+                y: 275,
+                NetworkInfo: {
                     y: 0,
                     type: SettingsMainItem,
                     Title: {
@@ -41,7 +47,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'WiFi',
+                            text: Language.translate('Network Info'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -58,7 +64,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     },
                 },
                 NetworkInterface: {
-                    alpha: 0.3, // disabled
+                    //alpha: 0.3, // disabled
                     y: 90,
                     type: SettingsMainItem,
                     Title: {
@@ -66,32 +72,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Network Interface: ',
-                            textColor: COLORS.titleColor,
-                            fontFace: CONFIG.language.font,
-                            fontSize: 25,
-                        }
-                    },
-                    Button: {
-                        h: 45,
-                        w: 45,
-                        x: 1600,
-                        mountX: 1,
-                        y: 45,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
-                InternetProtocol: {
-                    alpha: 0.3, // disabled
-                    y: 180,
-                    type: SettingsMainItem,
-                    Title: {
-                        x: 10,
-                        y: 45,
-                        mountY: 0.5,
-                        text: {
-                            text: 'Internet Protocol: ',
+                            text: Language.translate('Network Interface: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -108,14 +89,14 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     },
                 },
                 TestInternetAccess: {
-                    y: 270,
+                    y: 180,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Test Internet Access',
+                            text: Language.translate('Test Internet Access: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -124,7 +105,6 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     Loader: {
                         h: 45,
                         w: 45,
-                        // x: 1600,
                         x: 420,
                         mountX: 1,
                         y: 45,
@@ -134,15 +114,15 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     },
                 },
                 StaticMode: {
-                    alpha: 0.3, // disabled
-                    y: 360,
+                    alpha: 0, // disabled
+                    y: 270,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Static Mode: ',
+                            text: Language.translate('Static Mode'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -159,18 +139,11 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     },
                 },
             },
-            NetworkInterfaceScreen: {
-                type: NetworkInterfaceScreen,
-                visible: false,
-            },
-            WiFiScreen: {
-                type: WiFiScreen,
-                visible: false,
-            }
         }
     }
 
     _init() {
+        this._setState('NetworkInfo')
         let _currentInterface = "" //getDefaultInterface
         let _currentIPSettings = {}
         let _newIPSettings = {}
@@ -179,10 +152,6 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
         this._network.getDefaultInterface().then(interfaceName => {
             _currentInterface = interfaceName
         })
-        this._network.getIPSettings(_currentInterface).then(result => {
-            _currentIPSettings = result
-        }) // we get IP settings of default interface if we pass _currentInterface as ""
-
 
         _newIPSettings = _currentIPSettings
         _newIPSettings.ipversion = "IPV6" // this fails, need to verify how to set proper ip settings
@@ -192,47 +161,44 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
             duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
-
+    }
+    _focus() {
+        this._setState(this.state) //can be used on init as well
 
         this._network.getDefaultInterface().then(interfaceName => {
             this.$NetworkInterfaceText(interfaceName)
         })
     }
-
-
-    _focus() {
-        this._setState('WiFi') //can be used on init as well
-    }
     _unfocus() {
-        this.tag('TestInternetAccess.Title').text.text = 'Test Internet Access'
-    }
-
-    hide() {
-        this.tag('NetworkConfigurationScreenContents').visible = false
-    }
-
-    show() {
-        this.tag('NetworkConfigurationScreenContents').visible = true
+        this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ')
     }
 
     $NetworkInterfaceText(text) {
-        this.tag('NetworkInterface.Title').text.text = `Network Interface: ${text}`
+        this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text
+    }
+
+    _handleBack() {
+        Router.navigate('settings')
+    }
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration'))
     }
 
     static _states() {
         return [
-            class WiFi extends this {
+            class NetworkInfo extends this {
                 $enter() {
-                    this.tag('WiFi')._focus()
+                    this.tag('NetworkInfo')._focus()
                 }
                 $exit() {
-                    this.tag('WiFi')._unfocus()
+                    this.tag('NetworkInfo')._unfocus()
                 }
                 _handleDown() {
-                    this._setState('TestInternetAccess')
+                    this._setState('NetworkInterface')
                 }
                 _handleEnter() {
-                    this._setState('WiFiScreen')
+                    Router.navigate('settings/network/info')
+
                 }
             },
             class NetworkInterface extends this {
@@ -243,35 +209,16 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this.tag('NetworkInterface')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('WiFi')
-                }
-                _handleDown() {
-                    // this._setState('InternetProtocol')
-                    this._setState('TestInternetAccess')
-                }
-                _handleEnter() {
-                    this._network.getInterfaces().then(interfaces => {
-                        if (interfaces.length > 0) {
-                            this._setState('NetworkInterfaceScreen')
-                        }
-                    })
-                }
-            },
-            class InternetProtocol extends this {
-                $enter() {
-                    this.tag('InternetProtocol')._focus()
-                }
-                $exit() {
-                    this.tag('InternetProtocol')._unfocus()
-                }
-                _handleUp() {
-                    this._setState('NetworkInterface')
+                    this._setState('NetworkInfo')
                 }
                 _handleDown() {
                     this._setState('TestInternetAccess')
+
                 }
                 _handleEnter() {
-                    // 
+                    if (!Router.isNavigating()) {
+                        Router.navigate('settings/network/interface')
+                    }
                 }
             },
             class TestInternetAccess extends this {
@@ -282,17 +229,16 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this.tag('TestInternetAccess')._unfocus()
                 }
                 _handleUp() {
-                    // this._setState('InternetProtocol')
-                    this._setState('WiFi')
+                    this._setState('NetworkInterface')
                 }
                 _handleDown() {
-                    // this._setState('StaticMode')
+                    this._setState('NetworkInfo')
                 }
                 _handleEnter() {
                     this.loadingAnimation.start()
                     this.tag('TestInternetAccess.Loader').visible = true
                     this._network.isConnectedToInternet().then(result => {
-                        var connectionStatus = "Internet Access: "
+                        var connectionStatus = Language.translate("Internet Access: ")
                         if (result) {
                             connectionStatus += "Connected"
                         } else {
@@ -301,8 +247,8 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
 
                         setTimeout(() => {
                             this.tag('TestInternetAccess.Loader').visible = false
-                            this.loadingAnimation.stop()
                             this.tag('TestInternetAccess.Title').text.text = connectionStatus
+                            this.loadingAnimation.stop()
                         }, 2000)
                     })
                 }
@@ -317,44 +263,11 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                 _handleUp() {
                     this._setState('TestInternetAccess')
                 }
+                _handleDown() {
+                    this._setState('NetworkInfo')
+                }
                 _handleEnter() {
-                    // 
-                }
-            },
-            class NetworkInterfaceScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('NetworkInterfaceScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('NetworkInterfaceScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('NetworkInterfaceScreen')
-                }
-                _handleBack() {
-                    this._setState('NetworkInterface')
-                }
-            },
-            class WiFiScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('WiFiScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / WiFi')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('WiFiScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('WiFiScreen')
-                }
-                _handleBack() {
-                    this._setState('WiFi')
+                   
                 }
             },
         ]

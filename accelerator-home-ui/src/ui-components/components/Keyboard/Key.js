@@ -18,7 +18,7 @@
 
 import Button from '../Button';
 
-export const KEY_DIMENSIONS = { h: 90, w: 113, padding: 0, fixed: true }; // actualize key values : 60 ,60  ; 90,100
+export const KEY_DIMENSIONS = { h: 90, w: 109, padding: 0, fixed: true }; // actualize key values : 60 ,60  ; 90,100
 const isUpperCase = string => /^[A-Z]$/.test(string);
 export default class Key extends Button {
   static _template() {
@@ -76,7 +76,7 @@ export default class Key extends Button {
   get _sizes() {
     return this.styles.sizes
       ? { ...this.styles.sizes, ...this.sizes }
-      : { small: 50, medium: 110, large: 273, xlarge: 760, ...this.sizes }; // actualize values 50,110,212,350 ; 50,110,212,750
+      : { small: 50, medium: 110, large: 273, xlarge: 718, ...this.sizes }; // actualize values 50,110,212,350 ; 50,110,212,750
   }
 
   _handleEnter() {

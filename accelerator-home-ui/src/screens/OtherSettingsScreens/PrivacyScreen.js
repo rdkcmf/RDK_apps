@@ -16,22 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import AppApi from '../../api/AppApi'
+import { Lightning, Utils, Storage, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import PrivacyPolicyScreen from './PrivacyPolicyScreen'
+import XcastApi from '../../api/XcastApi'
+import UsbApi from '../../api/UsbApi'
 
 /**
  * Class for Privacy Screen.
  */
 
+const xcastApi = new XcastApi()
+
 export default class PrivacyScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy'));
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             PrivacyScreenContents: {
+                x: 200,
+                y: 275,
                 LocalDeviceDiscovery: {
                     y: 0,
                     type: SettingsMainItem,
@@ -40,15 +58,15 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Local Device Discovery',
+                            text: Language.translate('Local Device Discovery'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
+                        h: 45,
+                        w: 67,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -64,15 +82,15 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'USB Media Devices',
+                            text: Language.translate('USB Media Devices'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
+                        h: 45,
+                        w: 67,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -88,15 +106,15 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Audio Input',
+                            text: Language.translate('Audio Input'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
                     },
                     Button: {
-                        h: 30 * 1.5,
-                        w: 44.6 * 1.5,
+                        h: 45,
+                        w: 67,
                         x: 1600,
                         mountX: 1,
                         y: 45,
@@ -112,20 +130,11 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Clear Cookies and App Data',
+                            text: Language.translate('Clear Cookies and App Data'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
                         }
-                    },
-                    Button: {
-                        h: 45,
-                        w: 45,
-                        x: 1600,
-                        mountX: 1,
-                        y: 45,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
                 PrivacyPolicy: {
@@ -136,7 +145,7 @@ export default class PrivacyScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Privacy Policy and License',
+                            text: Language.translate('Privacy Policy and License'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -155,25 +164,71 @@ export default class PrivacyScreen extends Lightning.Component {
 
 
             },
-            PrivacyPolicyScreen: {
-                type: PrivacyPolicyScreen,
-                visible: false,
-            }
-
         }
+    }
+
+    _init() {
+        this._setState('LocalDeviceDiscovery')
+        this.checkLocalDeviceStatus()
+        this.USBApi = new UsbApi()
+        this.AppApi = new AppApi()
     }
 
 
     _focus() {
-        this._setState('LocalDeviceDiscovery') //can be used on init as well
+        this._setState(this.state)
+        this.checkLocalDeviceStatus()
+        this.checkUSBDeviceStatus()
+    }
+    _handleBack() {
+        Router.navigate('settings/other')
     }
 
-    hide() {
-        this.tag('PrivacyScreenContents').visible = false
+    checkUSBDeviceStatus() {
+        if (!Storage.get('UsbMedia')) {
+                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                Storage.set('UsbMedia', 'ON')
+        } else if (Storage.get('UsbMedia') === 'ON') {
+                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+        } else if (Storage.get('UsbMedia') === 'OFF') {
+            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+        }
     }
 
-    show() {
-        this.tag('PrivacyScreenContents').visible = true
+    checkLocalDeviceStatus() {
+        xcastApi.getEnabled().then(res => {
+            if (res.enabled) {
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+            } else {
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+        })
+            .catch(err => {
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            })
+    }
+
+    toggleLocalDeviceDiscovery() {
+        xcastApi.getEnabled().then(res => {
+            if (!res.enabled) {
+                xcastApi.activate().then(res => {
+                    if (res) {
+                        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                    }
+                })
+            }
+            else {
+                xcastApi.deactivate().then(res => {
+                    if (res) {
+                        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+                    }
+                })
+            }
+        })
+            .catch(err => {
+                console.log('Service not active')
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            })
     }
 
     static _states() {
@@ -192,7 +247,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('UsbMediaDevices')
                 }
                 _handleEnter() {
-                    // 
+                    this.toggleLocalDeviceDiscovery()
                 }
             },
             class UsbMediaDevices extends this {
@@ -209,7 +264,25 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('AudioInput')
                 }
                 _handleEnter() {
-                    // 
+                    let _UsbMedia = Storage.get('UsbMedia')
+                    if (_UsbMedia === 'ON') {
+                        this.fireAncestors('$deRegisterUsbMount')
+                        this.USBApi.deactivate().then((res)=>{
+                            Storage.set('UsbMedia', 'OFF')
+                            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+                            this.widgets.menu.refreshMainView()
+                        }).catch(err=>{
+                            console.error(`error while disabling the usb plugin = ${err}`)
+                            this.fireAncestors('$registerUsbMount')
+                        })
+                    } else if (_UsbMedia === 'OFF') {
+                        this.USBApi.activate().then(res => {
+                            Storage.set('UsbMedia', 'ON')
+                            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                            this.fireAncestors('$registerUsbMount')
+                            this.widgets.menu.refreshMainView()
+                        })
+                    }
                 }
             },
             class AudioInput extends this {
@@ -243,7 +316,10 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('PrivacyPolicy')
                 }
                 _handleEnter() {
-                    // 
+                    this.AppApi.clearCache()
+                        .then(() => {
+                            //location.reload(true)
+                        })
                 }
             },
             class PrivacyPolicy extends this {
@@ -260,29 +336,9 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('LocalDeviceDiscovery')
                 }
                 _handleEnter() {
-                    this._setState('PrivacyPolicyScreen')
-                    this.hide()
+                    Router.navigate('settings/other/privacyPolicy')
                 }
             },
-
-
-            class PrivacyPolicyScreen extends this {
-                $enter() {
-                    this.tag('PrivacyPolicyScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy / Privacy Policy')
-                }
-                _getFocused() {
-                    return this.tag('PrivacyPolicyScreen')
-                }
-                $exit() {
-                    this.tag('PrivacyPolicyScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy')
-                }
-                _handleBack() {
-                    this._setState('PrivacyPolicy')
-                    this.show()
-                }
-            }
         ]
     }
 }

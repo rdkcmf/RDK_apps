@@ -16,25 +16,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi';
+import ThunderJS from 'ThunderJS';
 /**
  * Class for Firmware screen.
  */
 
 export default class FirmwareScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Firmware Update'));
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            DeviceInfoContents: {
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
+            FirmwareContents: {
+                x: 200,
+                y: 270,
                 State: {
                     Title: {
                         x: 10,
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware State: `,
+                            text: Language.translate('Firmware State: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -47,7 +64,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 90,
                         mountY: 0.5,
                         text: {
-                            text: `Firmware Versions: `,
+                            text: Language.translate('Firmware Versions: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -60,7 +77,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 135,
                         mountY: 0.5,
                         text: {
-                            text: `Downloaded Firmware Version: `,
+                            text: Language.translate(`Downloaded Firmware Version: `),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -73,7 +90,7 @@ export default class FirmwareScreen extends Lightning.Component {
                         y: 180,
                         mountY: 0.5,
                         text: {
-                            text: `Download Progress: `,
+                            text: "",
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
@@ -99,33 +116,98 @@ export default class FirmwareScreen extends Lightning.Component {
         }
     }
 
+    _init(){      
+        
+        
+        let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot']
+
+        const config = {
+        host: '127.0.0.1',
+        port: 9998,
+            default: 1,
+        }
+
+        const thunder = ThunderJS(config)
+        const systemcCallsign = "org.rdk.System.1"
+        thunder.Controller.activate({callsign:systemcCallsign})
+        .then(res=>{
+            
+        thunder.on(callsign,"onFirmwareUpdateStateChange",notification=>{
+            console.log(`Tanjirou's notification : on Firmware update state changed notifcation = ${JSON.stringify(notification)}`);
+
+            if( state[notification.firmwareUpdateStateChange] == "Downloading"){
+            this.downloadInterval = setInterval(()=>{
+                    console.log(`Downloading...`);
+                    this.getDownloadPercent();
+                },1000)
+            }else if(state[notification.firmwareUpdateStateChange]!= "Downloading" && this.downloadInterval){ 
+                clearInterval(this.downloadInterval); 
+                this.downloadInterval = null
+            }
+
+        },err=>{
+            console.error(`error while fetching notification ie. ${err}`)
+        })
+
+
+        })
+        .catch(err=>{console.error(`error while activating the system plugin`)})
+
+    }
+
+    _unfocus(){
+        if(this.downloadInterval){
+            clearInterval(this.downloadInterval);
+            this.downloadInterval = null
+        }
+    }
+
     _focus() {
+        this.downloadInterval = null;
         this._appApi = new AppApi();
         const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot']
         this._appApi.getFirmwareUpdateState().then(res => {
             console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res))
-            this.tag('State.Title').text.text = "Firmware State: " + downloadState[res.firmwareUpdateState]
+            this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState]
         })
 
         this._appApi.getDownloadFirmwareInfo().then(res => {
             console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res))
-            this.tag('Version.Title').text.text = "Firmware Versions: " + res.currentFWVersion
+            this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion
         })
         this._setState('FirmwareUpdate')
     }
 
     getDownloadPercent() {
         this._appApi.getFirmwareDownloadPercent().then(res => {
-            this.tag('DownloadedPercent.Title').text.text = "Download Progress: " + res.downloadPercent + "%"
+            console.log(`getFirmwareDownloadPercent : ${JSON.stringify(res)}`);
+            if(res.downloadPercent  < 0){
+                this.tag('DownloadedPercent.Title').text.text = "";
+            }
+            else{
+                this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%";
+            }
+
+        }).catch(err=>{
+            console.error(err);
         })
     }
 
     getDownloadFirmwareInfo() {
         this._appApi.updateFirmware().then(res => {
             this._appApi.getDownloadFirmwareInfo().then(result => {
-                this.tag('DownloadedVersion.Title').text.text = `Downloaded Firmware Version: ${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
+                console.log(`getDownloadFirmwareInfo : ${JSON.stringify(result.downloadFWVersion)}`);
+                this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ')+`${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
+            }).catch(err=>{
+                console.error(err);
             })
+        }).catch(err=>{
+            console.error(err);
         })
+    }
+
+    _handleBack() {
+        Router.navigate('settings/advanced/device')
     }
 
     static _states() {

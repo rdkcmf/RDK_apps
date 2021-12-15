@@ -79,5 +79,11 @@ export var metroAppsInfoOffline = [
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "/images/metroApps/Test-10.jpg"
+  },
+  {
+    displayName: 'Bluetooth Audio',
+    applicationType: 'Lightning',
+    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
+    url: '/images/metroApps/Bluetooth_app.jpg',
   }
 ];

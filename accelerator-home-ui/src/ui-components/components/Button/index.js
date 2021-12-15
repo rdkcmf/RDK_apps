@@ -29,8 +29,8 @@ import Icon from '../Icon';
 import { CONFIG } from '../../../Config/Config';
 
 export const styles = {
-  w: 200,//150
-  h: 80,//40
+  w: 113,//150
+  h: 90,//40
   radius: 0,
   background: { color: 0xffffffff },// 0xff1f1f1f
   icon: { color: 0xffffffff },

@@ -26,7 +26,7 @@ export default class Network {
       default: 1,
     };
     this._thunder = ThunderJS(config);
-    this.callsign = 'org.rdk.Network.1';
+    this.callsign = 'org.rdk.Network';
   }
 
   /**
@@ -43,6 +43,11 @@ export default class Network {
         this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
           if (this._events.has('onDefaultInterfaceChanged')) {
             this._events.get('onDefaultInterfaceChanged')(notification);
+          }
+        });
+        this._thunder.on(this.callsign, 'onConnectionStatusChanged', notification => {
+          if (this._events.has('onConnectionStatusChanged')) {
+            this._events.get('onConnectionStatusChanged')(notification);
           }
         });
         console.log('Activation success')

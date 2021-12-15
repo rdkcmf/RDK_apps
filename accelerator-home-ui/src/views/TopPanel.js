@@ -17,19 +17,19 @@
  * limitations under the License.
  **/
 import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
-import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi'
 import { CONFIG } from '../Config/Config'
+import Keymap from '../Config/Keymap'
 import store from '../redux.js'
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
   static _template() {
     return {
       TopPanel: {
-        x: 0,
-        y: 0,
+        color: 0xff000000,
+        rect: true,
         w: 1920,
-        h: 171,
+        h: 270,
         Mic: {
           x: 105,
           // zIndex: 2,
@@ -54,7 +54,9 @@ export default class TopPanel extends Lightning.Component {
             text: Language.translate('home'),
             textColor: CONFIG.theme.hex,
             fontStyle: 'bolder',
-            fontFace: CONFIG.language.font
+            fontFace: CONFIG.language.font,
+            wordWrapWidth: 1720,
+            maxLines: 1,
           }
         },
         Settings: {
@@ -78,8 +80,8 @@ export default class TopPanel extends Lightning.Component {
   }
 
   _init() {
-    this.indexVal = 0,
-      this.timeZone = null;
+    this.indexVal = 1;
+    this.timeZone = null;
     this.audiointerval = null;
     new AppApi().getZone().then(function (res) {
       this.timeZone = res;
@@ -110,18 +112,16 @@ export default class TopPanel extends Lightning.Component {
     }
     store.subscribe(render.bind(this));
     this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this._setState('Setting')
   }
 
   set index(index) {
     this.indexVal = index
-    if (this.indexVal == 0) {
-      this._setState('Mic')
-    } else if (this.indexVal == 1) {
-      this._setState('Search')
-    } else if (this.indexVal == 2) {
-      this.tag('Settings').color = CONFIG.theme.hex
-      this._setState('Setting')
-    }
+  }
+
+  _focus() {
+    this._setState(this.state)
+    this.tag('Settings').color = CONFIG.theme.hex
   }
 
   set changeText(text) {
@@ -131,6 +131,22 @@ export default class TopPanel extends Lightning.Component {
     }
 
   }
+
+  /**
+*
+* @param {boolean} toggle
+* Function to change the mic icon.
+*/
+
+  set changeMic(toggle) {
+    if (toggle) {
+      this.tag('Mic').src = Utils.asset('/images/topPanel/microphone_mute.png')
+    }
+    else {
+      this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png')
+    }
+  }
+
 
   _build() {
     setInterval(() => {
@@ -182,8 +198,6 @@ export default class TopPanel extends Lightning.Component {
         $enter() {
           this.tag('Mic').color = CONFIG.theme.hex
         }
-        _handleEnter() {
-        }
         _getFocused() {
           this.tag('Mic').color = CONFIG.theme.hex
         }
@@ -192,9 +206,9 @@ export default class TopPanel extends Lightning.Component {
         }
 
         _handleKey(key) {
-          if (key.keyCode == 39 || key.keyCode == 13) {
+          if (key.keyCode == Keymap.ArrowRight) {
             this._setState('Setting')
-          } else if (key.keyCode == 40) {
+          } else if (key.keyCode == Keymap.ArrowDown) {
             this.tag('Mic').color = 0xffffffff
             this.fireAncestors('$goToSidePanel', 0)
           }
@@ -204,17 +218,18 @@ export default class TopPanel extends Lightning.Component {
         $enter() {
           this.tag('Settings').color = CONFIG.theme.hex
         }
-        _handleDown() {
-          this.fireAncestors('$goToMainView', 0)
-          this.tag('Settings').color = 0xffffffff
-        }
-        _handleLeft() {
-
-          this._setState('Mic')
-        }
-        _handleEnter() {
-          this.tag('Page').text.text = Language.translate('settings')
-          this.fireAncestors('$goToSettings')
+        _handleKey(key) {
+          if (key.keyCode === Keymap.ArrowDown) {
+            Router.focusPage()
+            this.tag('Settings').color = 0xffffffff
+          } else if (key.keyCode === Keymap.ArrowLeft) {
+            // this._setState('Mic')
+          } else if (key.keyCode === Keymap.Enter) {
+            //this.tag('Page').text.text = Language.translate('settings')
+            Router.navigate('settings')
+            Router.focusPage()
+            this.tag('Settings').color = 0xffffffff
+          }
         }
         $exit() {
           this.tag('Settings').color = 0xffffffff

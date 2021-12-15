@@ -2,7 +2,9 @@
   "name": "Foreground",
   "description": "Foreground",
   "dependencies": {
-    "@lightningjs/sdk": "^4.3.3"
+    "@lightningjs/sdk": "^4.7.0",
+    "@lightningjs/ui": "^1.2.0",
+    "ThunderJS": "github:rdkcentral/ThunderJS"
   },
   "lint-staged": {
     "*.js": [

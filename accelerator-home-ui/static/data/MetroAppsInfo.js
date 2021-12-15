@@ -19,7 +19,7 @@
 /**
  * Class which contains data for metro app listings.
  */
- export var metroAppsInfo = [
+export var metroAppsInfo = [
   {
     displayName: "CNN",
     applicationType: "Lightning",
@@ -79,5 +79,11 @@
     applicationType: "Lightning",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
+  },
+  {
+    displayName: 'Bluetooth Audio',
+    applicationType: 'Lightning',
+    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
+    url: '/images/metroApps/Bluetooth_app.jpg',
   }
 ];

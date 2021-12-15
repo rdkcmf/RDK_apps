@@ -26,9 +26,13 @@ import AudioOutputItem from "../../items/AudioOutputItem"
 export default class AudioOutputScreen extends Lightning.Component {
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             AudioOutputScreenContents: {
+                x: 200,
+                y: 275,
                 List: {
                     type: Lightning.components.ListComponent,
                     w: 1920 - 300,
@@ -54,9 +58,12 @@ export default class AudioOutputScreen extends Lightning.Component {
         }
     }
 
-
-    _focus() { //change to init if needed
+    _init() {
         this.appApi = new AppApi();
+    }
+
+
+    _focus() {
         this.appApi.getConnectedAudioPorts().then(res => {
             var options = [...res.connectedAudioPorts];
             this.tag('AudioOutputScreenContents').h = options.length * 90

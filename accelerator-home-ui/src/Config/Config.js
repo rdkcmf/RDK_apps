@@ -18,35 +18,36 @@
  **/
 /**Color constants */
 
-  const themeOptions = {
-    partnerOne: {
-      hex: 0xfff58233,
-      logo: 'RDKLogo.png',
-      background: '0xff000000'
-    },
-    partnerTwo: {
-      hex: 0xff91c848,
-      logo: 'RDKLogo.png',
-      background: '0xff000000'
-    },
-  }
-  
-  const language = {
-    english:{
-      id: 'en',
-      fontSrc: 'Play/Play-Regular.ttf',
-      font: 'Play'
-    },
-    spanish:{
-      id: 'sp',
-      fontSrc: 'Play/Play-Regular.ttf',
-      font: 'Play'
-    },
+const themeOptions = {
+  partnerOne: {
+    hex: 0xfff58233,
+    logo: 'RDKLogo.png',
+    background: '0xff000000'
+  },
+  partnerTwo: {
+    hex: 0xff91c848,
+    logo: 'RDKLogo.png',
+    background: '0xff000000'
+  },
+}
 
-  }
-  
-  export var CONFIG = {
-    theme: themeOptions['partnerOne'],
-    language: language['english']
-  }
-  
+const language = {
+  English: {
+    id: 'en',
+    fontSrc: 'Play/Play-Regular.ttf',
+    font: 'Play'
+  },
+  Spanish: {
+    id: 'sp',
+    fontSrc: 'Play/Play-Regular.ttf',
+    font: 'Play'
+  },
+
+}
+
+export const availableLanguages = ['English', 'Spanish'];
+
+export var CONFIG = {
+  theme: themeOptions['partnerOne'],
+  language: (localStorage.getItem('Language') != null && availableLanguages.includes(localStorage.getItem('Language'))) ? language[localStorage.getItem('Language')] : language['English']
+}

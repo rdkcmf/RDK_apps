@@ -17,12 +17,15 @@
  * limitations under the License.
  **/
 
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Utils } from '@lightningjs/sdk'
 import { CONFIG } from '../Config/Config.js'
-import Tick from '../../static/images/settings/Tick.png'
 import AppApi from '../api/AppApi'
 
 export default class VideoAndAudioItem extends Lightning.Component {
+
+  _construct() {
+    this.Tick = Utils.asset('/images/settings/Tick.png')
+  }
   static _template() {
     return {
       zIndex: 1,
@@ -71,7 +74,7 @@ export default class VideoAndAudioItem extends Lightning.Component {
         x: 10,
         y: 45,
         mountY: 0.5,
-        texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
+        texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
         color: 0xffffffff,
         visible: self.isTicked ? true : false //implement the logic to show the tick
       },
