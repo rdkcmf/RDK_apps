@@ -17,11 +17,10 @@
  * limitations under the License.
  **/
 import AppApi from '../../api/AppApi'
-import { Lightning, Utils, Storage, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Storage, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import PrivacyPolicyScreen from './PrivacyPolicyScreen'
 import XcastApi from '../../api/XcastApi'
 import UsbApi from '../../api/UsbApi'
 
@@ -32,11 +31,25 @@ import UsbApi from '../../api/UsbApi'
 const xcastApi = new XcastApi()
 
 export default class PrivacyScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy');
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             PrivacyScreenContents: {
+                x: 200,
+                y: 275,
                 LocalDeviceDiscovery: {
                     y: 0,
                     type: SettingsMainItem,
@@ -151,15 +164,53 @@ export default class PrivacyScreen extends Lightning.Component {
 
 
             },
-            PrivacyPolicyScreen: {
-                type: PrivacyPolicyScreen,
-                visible: false,
-            }
-
         }
     }
 
     _init() {
+        this._setState('LocalDeviceDiscovery')
+        this.checkLocalDeviceStatus()
+        this.USBApi = new UsbApi()
+        this.AppApi = new AppApi()
+        this.checkUSBDeviceStatus()
+    }
+
+
+    _focus() {
+        this._setState(this.state)
+        this.checkLocalDeviceStatus()
+        this.checkUSBDeviceStatus()
+    }
+    _handleBack() {
+        Router.navigate('settings/other')
+    }
+
+    checkUSBDeviceStatus() {
+        if (!Storage.get('UsbMedia')) {
+            this.USBApi.activate().then(res => {
+                // activate the api and set UsbMedia for the first time in storage can also set to OFF by default if needed
+                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                Storage.set('UsbMedia', 'ON')
+                this.fireAncestors('$registerUsbMount')
+
+            })
+        } else if (Storage.get('UsbMedia') === 'ON') {
+            this.USBApi.activate().then(res => {
+                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                this.fireAncestors('$registerUsbMount')
+            })
+        } else if (Storage.get('UsbMedia') === 'OFF') {
+            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            // deactivate usb Plugin here 
+            this.USBApi.deactivate().then((res)=>{
+                console.log(`disabled the Usb Plugin`);
+            }).catch(err=>{
+                console.error(`error while disabling the usb plugin = ${err}`)
+            })
+        }
+    }
+
+    checkLocalDeviceStatus() {
         xcastApi.getEnabled().then(res => {
             if (res.enabled) {
                 this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
@@ -167,39 +218,9 @@ export default class PrivacyScreen extends Lightning.Component {
                 this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             }
         })
-        this.USBApi = new UsbApi()
-        this.AppApi = new AppApi()
-        if(!Storage.get('UsbMedia')){
-            this.USBApi.activate().then(res => {
-                // activate the api and set UsbMedia for the first time in storage
-                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-                this.fireAncestors('$registerUsbEvent')
-                Storage.set('UsbMedia','ON')
+            .catch(err => {
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             })
-        }else if(Storage.get('UsbMedia') === 'ON'){
-            this.USBApi.activate().then(res => {
-                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-                this.fireAncestors('$registerUsbEvent')
-            })
-        }else if (Storage.get('UsbMedia') === 'OFF'){
-            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-            // this.USBApi.deactivate().then(res => {
-            //     this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-            // })
-        }
-    }
-
-
-    _focus() {
-        this._setState('LocalDeviceDiscovery') //can be used on init as well
-    }
-
-    hide() {
-        this.tag('PrivacyScreenContents').visible = false
-    }
-
-    show() {
-        this.tag('PrivacyScreenContents').visible = true
     }
 
     toggleLocalDeviceDiscovery() {
@@ -219,6 +240,10 @@ export default class PrivacyScreen extends Lightning.Component {
                 })
             }
         })
+            .catch(err => {
+                console.log('Service not active')
+                this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            })
     }
 
     static _states() {
@@ -255,21 +280,24 @@ export default class PrivacyScreen extends Lightning.Component {
                 }
                 _handleEnter() {
                     let _UsbMedia = Storage.get('UsbMedia')
-                    if(_UsbMedia ==='ON'){
-                        Storage.set('UsbMedia','OFF')
+                    if (_UsbMedia === 'ON') {
+                        Storage.set('UsbMedia', 'OFF')
                         this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-                        this.fireAncestors('$initializeUSB')
-                        // this.USBApi.deactivate().then(res => {
-                        //     Storage.set('UsbMedia','OFF')
-                        //     this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-                        // })
-                    }else if(_UsbMedia === 'OFF'){
+                        // deactivate usb plugin here 
+                        this.fireAncestors('$deRegisterUsbMount')
+                        this.USBApi.deactivate().then((res)=>{
+                            console.log(`disabled the Usb Plugin`);
+                            this.widgets.menu.refreshMainView()
+                        }).catch(err=>{
+                            console.error(`error while disabling the usb plugin = ${err}`)
+                        })
+                    } else if (_UsbMedia === 'OFF') {
                         this.USBApi.activate().then(res => {
-                            Storage.set('UsbMedia','ON')
+                            Storage.set('UsbMedia', 'ON')
                             this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-                            this.fireAncestors('$registerUsbEvent')
-                            this.fireAncestors('$initializeUSB')
-                        }) 
+                            this.fireAncestors('$registerUsbMount')
+                            this.widgets.menu.refreshMainView()
+                        })
                     }
                 }
             },
@@ -305,9 +333,9 @@ export default class PrivacyScreen extends Lightning.Component {
                 }
                 _handleEnter() {
                     this.AppApi.clearCache()
-                    .then(() => {
-                        //location.reload(true)
-                    })
+                        .then(() => {
+                            //location.reload(true)
+                        })
                 }
             },
             class PrivacyPolicy extends this {
@@ -324,29 +352,9 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('LocalDeviceDiscovery')
                 }
                 _handleEnter() {
-                    this._setState('PrivacyPolicyScreen')
-                    this.hide()
+                    Router.navigate('settings/other/privacyPolicy')
                 }
             },
-
-
-            class PrivacyPolicyScreen extends this {
-                $enter() {
-                    this.tag('PrivacyPolicyScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy / Privacy Policy')
-                }
-                _getFocused() {
-                    return this.tag('PrivacyPolicyScreen')
-                }
-                $exit() {
-                    this.tag('PrivacyPolicyScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy')
-                }
-                _handleBack() {
-                    this._setState('PrivacyPolicy')
-                    this.show()
-                }
-            }
         ]
     }
 }

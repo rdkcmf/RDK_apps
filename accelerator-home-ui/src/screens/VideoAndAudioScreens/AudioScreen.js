@@ -17,23 +17,35 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import HdmiOutputScreen from './HdmiOutputScreen'
 import AppApi from '../../api/AppApi.js';
-import AudioOutputScreen from './AudioOutputScreen'
+
 /**
  * Class for Audio screen.
  */
 
 export default class AudioScreen extends Lightning.Component {
+
+  pageTransition() {
+    return 'left'
+  }
+
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings / Audio');
+  }
+
   static _template() {
     return {
-      x: 0,
-      y: 0,
+      rect: true,
+      color: 0xff000000,
+      w: 1920,
+      h: 1080,
       Wrapper: {
+        x: 200,
+        y: 275,
         AudioOutput: {
           alpha: 0.3,
           y: 0,
@@ -187,19 +199,12 @@ export default class AudioScreen extends Lightning.Component {
           },
         },
       },
-      OutputModeScreen: {
-        type: HdmiOutputScreen,
-        visible: false,
-      },
-      AudioOutputS: {
-        type: AudioOutputScreen,
-        visible: false
-      }
     }
   }
 
   _init() {
     this.appApi = new AppApi();
+    this._setState('OutputMode')
   }
 
   $updateTheDefaultAudio(audio) {
@@ -212,8 +217,7 @@ export default class AudioScreen extends Lightning.Component {
   }
 
   _focus() {
-    // this._setState('AudioOutput') 
-    this._setState('OutputMode')
+    this._setState(this.state)
   }
 
   hide() {
@@ -221,6 +225,10 @@ export default class AudioScreen extends Lightning.Component {
   }
   show() {
     this.tag('Wrapper').visible = true
+  }
+
+  _handleBack() {
+    Router.navigate('settings')
   }
 
   static _states() {
@@ -236,36 +244,10 @@ export default class AudioScreen extends Lightning.Component {
           this._setState('OutputMode')
         }
         _handleEnter() {
-          this._setState('AudioOutputScreenState');
+          Router.navigate('settings/audio/output')
         }
 
       },
-
-      // BookMark 1
-      class AudioOutputScreenState extends this{
-        $enter() {
-          this.hide()
-          this.tag('AudioOutputS').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode')
-        }
-        $exit() {
-          this.tag("AudioOutputS").visible = false;
-          this.show()
-          this.fireAncestors('$changeHomeText', 'Settings / Audio')
-        }
-        _getFocused() {
-          return this.tag('AudioOutputS');
-        }
-        _handleBack() {
-          this._setState('AudioOutput')
-
-        }
-        $updateAudioOutputText(value) {
-          // this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value
-        }
-      }
-
-      ,
       class OutputMode extends this{
         $enter() {
           this.tag('OutputMode')._focus()
@@ -280,7 +262,7 @@ export default class AudioScreen extends Lightning.Component {
           // this._setState('DynamicRange');
         }
         _handleEnter() {
-          this._setState('HdmiAudioOutputStereoScreen')
+          Router.navigate('settings/audio/output')
         }
       },
       class DynamicRange extends this{
@@ -385,27 +367,6 @@ export default class AudioScreen extends Lightning.Component {
           this._setState('DynamicRange')
         }
       },
-      class HdmiAudioOutputStereoScreen extends this {
-        $enter() {
-          this.hide()
-          this.tag('OutputModeScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Audio / Output Mode')
-        }
-        $exit() {
-          this.tag('OutputModeScreen').visible = false
-          this.show()
-          this.fireAncestors('$changeHomeText', 'Settings / Audio')
-        }
-        _getFocused() {
-          return this.tag('OutputModeScreen')
-        }
-        _handleBack() {
-          this._setState('OutputMode')
-        }
-        $updateHdmiAudioOutputStereo(value) {
-          this.tag('OutputMode.Title').text.text = 'Output Mode: ' + value
-        }
-      }
     ]
 
   }

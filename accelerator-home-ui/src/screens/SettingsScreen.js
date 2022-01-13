@@ -16,28 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
-import BluetoothScreen from './BluetoothScreen'
+import { Lightning, Utils, Language, Router, Storage } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
-import VideoScreen from './VideoAndAudioScreens/VideoScreen'
-import AudioScreen from './VideoAndAudioScreens/AudioScreen'
-import OtherSettingsScreen from './OtherSettingsScreens/OtherSettingsScreen'
-import NetworkConfigurationScreen from './OtherSettingsScreens/NetworkConfigurationScreen'
 
 /**
  * Class for settings screen.
  */
-let stateTracker = 'NetworkConfiguration'
 export default class SettingsScreen extends Lightning.Component {
+
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings');
+  }
+
+  pageTransition() {
+    return 'left'
+  }
+
   static _template() {
     return {
-      x: 200,
-      y: 286,
+      rect: true,
+      color: 0xff000000,
+      w: 1920,
+      h: 1080,
       SettingsScreenContents: {
+        x: 200,
+        y: 275,
         NetworkConfiguration: {
-          y: 0,
           type: SettingsMainItem,
           Title: {
             x: 10,
@@ -157,57 +163,22 @@ export default class SettingsScreen extends Lightning.Component {
           },
         },
       },
-      NetworkConfigurationScreen: {
-        type: NetworkConfigurationScreen,
-        visible: false
-      },
-      BluetoothScreen: {
-        type: BluetoothScreen,
-        visible: false,
-      },
-      VideoScreen: {
-        type: VideoScreen,
-        visible: false,
-      },
-      AudioScreen: {
-        type: AudioScreen,
-        visible: false,
-      },
-      OtherSettingsScreen: {
-        type: OtherSettingsScreen,
-        visible: false,
-      }
-
     }
   }
 
-  /**
- * @param {any} e
- */
-  set setState(e) {
-    stateTracker = 'BluetoothScreen'
+  _init() {
+    this._setState('NetworkConfiguration')
   }
-
   _focus() {
-    this._setState(stateTracker)
+    this._setState(this.state)
   }
 
-  _unfocus() {
-    stateTracker = 'NetworkConfiguration'
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings')
   }
 
-  hide() {
-    this.tag('SettingsScreenContents').visible = false
-  }
-
-  show() {
-    this.tag('SettingsScreenContents').visible = true
-  }
-
-
-  home() {
-    this.fireAncestors('$changeHomeText', Language.translate('home'))
-    this.fireAncestors('$goToSidePanel', 0)
+  _handleBack() {
+    Router.navigate('menu')
   }
 
   static _states() {
@@ -223,10 +194,7 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Bluetooth')
         }
         _handleEnter() {
-          this._setState('NetworkConfigurationScreen')
-        }
-        _handleBack() {
-          this.home()
+          Router.navigate('settings/network')
         }
       },
       class Bluetooth extends this {
@@ -245,10 +213,7 @@ export default class SettingsScreen extends Lightning.Component {
         _handleLeft() {
         }
         _handleEnter() {
-          this._setState('BluetoothScreen')
-        }
-        _handleBack() {
-          this.home()
+          Router.navigate('settings/bluetooth')
         }
       },
 
@@ -266,10 +231,7 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Audio')
         }
         _handleEnter() {
-          this._setState('VideoScreen')
-        }
-        _handleBack() {
-          this.home()
+          Router.navigate('settings/video')
         }
 
       },
@@ -285,15 +247,11 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Video')
         }
         _handleEnter() {
-          this._setState('AudioScreen')
+          Router.navigate('settings/audio')
         }
         _handleDown() {
           this._setState('OtherSettings')
         }
-        _handleBack() {
-          this.home()
-        }
-
       },
 
       class OtherSettings extends this{
@@ -307,103 +265,7 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Audio')
         }
         _handleEnter() {
-          this._setState('OtherSettingsScreen')
-        }
-        _handleBack() {
-          this.home()
-        }
-
-      },
-      class NetworkConfigurationScreen extends this{
-        $enter() {
-          this.hide()
-          this.tag('NetworkConfigurationScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-        }
-        _getFocused() {
-          return this.tag('NetworkConfigurationScreen')
-        }
-        $exit() {
-          this.show()
-          this.tag('NetworkConfigurationScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('NetworkConfiguration')
-        }
-      },
-      class BluetoothScreen extends this {
-        $enter() {
-          this.hide()
-          this.tag('BluetoothScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Pair Remote Control')
-        }
-        _getFocused() {
-          return this.tag('BluetoothScreen')
-        }
-        $exit() {
-          this.show()
-          this.tag('BluetoothScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('Bluetooth')
-        }
-      },
-
-      class VideoScreen extends this {
-        $enter() {
-          this.hide()
-          this.tag('VideoScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Video')
-        }
-        _getFocused() {
-          return this.tag('VideoScreen')
-        }
-        $exit() {
-          this.show()
-          this.tag('VideoScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('Video')
-        }
-      },
-
-      class AudioScreen extends this {
-        $enter() {
-          this.hide()
-          this.tag('AudioScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Audio')
-        }
-        _getFocused() {
-          return this.tag('AudioScreen')
-        }
-        $exit() {
-          this.show()
-          this.tag('AudioScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('Audio')
-        }
-      },
-      class OtherSettingsScreen extends this {
-        $enter() {
-          this.hide()
-          this.tag('OtherSettingsScreen').visible = true
-          this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-        }
-        _getFocused() {
-          return this.tag('OtherSettingsScreen')
-        }
-        $exit() {
-          this.show()
-          this.tag('OtherSettingsScreen').visible = false
-          this.fireAncestors('$changeHomeText', 'Settings')
-        }
-        _handleBack() {
-          this._setState('OtherSettings')
+          Router.navigate('settings/other')
         }
       },
     ]

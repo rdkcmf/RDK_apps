@@ -16,11 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import DeviceScreen from './DeviceScreen'
 import CECApi from '../../api/CECApi'
 
 /**
@@ -28,11 +27,25 @@ import CECApi from '../../api/CECApi'
  */
 
 export default class AdvanceSettingsScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings');
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             AdvanceScreenContents: {
+                x: 200,
+                y: 275,
                 UIVoice: {
                     alpha: 0.3, // disabled
                     type: SettingsMainItem,
@@ -182,12 +195,6 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     },
                 },
             },
-
-            DeviceScreen: {
-                type: DeviceScreen,
-                visible: false,
-            },
-
         }
 
     }
@@ -198,18 +205,14 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
             .then(() => {
                 this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
             })
-
-    }
-    _focus() {
         this._setState('CECControl')
     }
-
-    hide() {
-        this.tag('AdvanceScreenContents').visible = false
+    _focus() {
+        this._setState(this.state)
     }
 
-    show() {
-        this.tag('AdvanceScreenContents').visible = true
+    _handleBack() {
+        Router.navigate('settings/other')
     }
 
     toggleCEC() {
@@ -331,42 +334,9 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     //this._setState('UI Voice')
                 }
                 _handleEnter() {
-                    this._setState('DeviceScreen')
+                    Router.navigate('settings/advanced/device')
                 }
             },
-
-
-            //Inner Screens Classes
-            class DeviceScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('DeviceScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / Device')
-                }
-                _getFocused() {
-                    return this.tag('DeviceScreen')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('DeviceScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
-                }
-                _handleBack() {
-                    this._setState('Device')
-                }
-            },
-            // class CECScreen extends this {
-            //     $enter() {
-            //         this.hide()
-            //         this.tag('CECScreen').visible = true
-            //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings / CEC Control')
-            //     }
-            //     $exit() {
-            //         this.show()
-            //         this.tag('CECScreen').visible = false
-            //         this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
-            //     }
-            // }
         ]
     }
 

@@ -16,121 +16,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning } from '@lightningjs/sdk'
- import { COLORS } from '../../colors/Colors'
- import { CONFIG } from '../../Config/Config'
- import SettingsMainItem from '../../items/SettingsMainItem'
- import Tick from '../../../static/images/settings/Tick.png'
- 
- /**
-  * Class for Video and Audio screen.
-  */
- 
- export default class LanguageScreen extends Lightning.Component {
-     static _template() {
-         return {
-             x: 0, y: 0,
-             h: 1080,
-             w: 1920,
-             clipping: true,
-             LanguageScreenContents: {
-                EnglishTick: {
-                  y: 45,
-                  mountY: 0.5,
-                  texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
-                  color: 0xffffffff,
-                  visible: localStorage.getItem('Language')==='english' || localStorage.getItem('Language')===null ? true : false
-                },
-                 English: {
-                    y: 0,
-                    type: SettingsMainItem,
-                    Title: {
-                      x: 60,
-                      y: 45,
-                      mountY: 0.5,
-                      text: {
-                        text: 'English',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                      }
-                    },
-                 },
-                 SpanishTick: {
-                  y: 130,
-                  mountY: 0.5,
-                  texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
-                  color: 0xffffffff,
-                  visible: localStorage.getItem('Language')==='spanish' ? true : false
-                },
-                 Spanish: {
-                    y: 90,
-                    type: SettingsMainItem,
-                    Title: {
-                      x: 60,
-                      y: 45,
-                      mountY: 0.5,
-                      text: {
-                        text: 'Spanish',
-                        textColor: COLORS.titleColor,
-                        fontFace: CONFIG.language.font,
-                        fontSize: 25,
-                      }
-                    },
-                 }
-             }
-         }
-     }
+import { Lightning, Router } from '@lightningjs/sdk'
+import LanguageItem from '../../items/LanguageItem'
+import { availableLanguages } from '../../Config/Config'
 
-     _focus() {
-        if(localStorage.getItem('Language')==='english' || localStorage.getItem('Language')===null){
-          this._setState('English')
-        }
-        else if(localStorage.getItem('Language')==='spanish'){
-          this._setState('Spanish')
-        }
 
-     }
+export default class LanguageScreen extends Lightning.Component {
 
-    static _states() {
-        return[
-            class English extends this{
-                $enter() {
-                  this.tag('English')._focus()
-                }
-                $exit() {
-                  this.tag('English')._unfocus()
-                }
-                _handleUp() {
-                  this._setState('Spanish')
-                }
-                _handleDown() {
-                  this._setState('Spanish')
-                }
-                _handleEnter() {
-                  localStorage.setItem('Language', 'english')
-                  location.reload();
-                }
-            },
-            class Spanish extends this{
-                $enter() {
-                  this.tag('Spanish')._focus()
-                }
-                $exit() {
-                  this.tag('Spanish')._unfocus()
-                }
-                _handleUp() {
-                  this._setState('English')
-                }
-                _handleDown() {
-                  this._setState('English')
-                }
-                _handleEnter() {
-                  localStorage.setItem('Language', 'spanish')
-                  location.reload();
-                }
-            },
-        ]
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings / Other Settings / Language');
+  }
+
+  pageTransition() {
+    return 'left'
+  }
+
+
+  static _template() {
+    return {
+      rect: true,
+      color: 0xff000000,
+      w: 1920,
+      h: 1080,
+      LanguageScreenContents: {
+        x: 200,
+        y: 275,
+        Languages: {
+          flexItem: { margin: 0 },
+          List: {
+            type: Lightning.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -4,
+          },
+        },
+      }
     }
- 
- }
+  }
+
+  _init() {
+    this._Languages = this.tag('LanguageScreenContents.Languages')
+    this._Languages.h = availableLanguages.length * 90
+    this._Languages.tag('List').h = availableLanguages.length * 90
+    this._Languages.tag('List').items = availableLanguages.map((item, index) => {
+      return {
+        ref: 'Lng' + index,
+        w: 1620,
+        h: 90,
+        type: LanguageItem,
+        item: item,
+      }
+    })
+  }
+
+  _focus() {
+    this._setState('Languages')
+
+  }
+
+  _handleBack() {
+    Router.navigate('settings/other')
+  }
+
+  static _states() {
+    return [
+      class Languages extends this{
+        $enter() {
+        }
+        _getFocused() {
+          return this._Languages.tag('List').element
+        }
+        _handleDown() {
+          this._navigate('down')
+        }
+        _handleUp() {
+          this._navigate('up')
+        }
+        _handleEnter() {
+          localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
+          location.reload();
+        }
+      },
+    ]
+  }
+
+  _navigate(dir) {
+    let list = this._Languages.tag('List')
+    if (dir === 'down') {
+      if (list.index < list.length - 1) list.setNext()
+    } else if (dir === 'up') {
+      if (list.index > 0) list.setPrevious()
+    }
+  }
+
+}

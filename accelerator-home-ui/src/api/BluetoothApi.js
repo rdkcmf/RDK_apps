@@ -27,6 +27,12 @@ export default class BluetoothApi {
     this._devices = []
     this._pairedDevices = []
     this._connectedDevices = []
+    const config = {
+      host: '127.0.0.1',
+      port: 9998,
+      default: 1,
+    }
+    this._thunder = ThunderJS(config)
   }
 
   /**
@@ -34,12 +40,6 @@ export default class BluetoothApi {
    */
   activate() {
     return new Promise((resolve, reject) => {
-      const config = {
-        host: '127.0.0.1',
-        port: 9998,
-        default: 1,
-      }
-      this._thunder = ThunderJS(config)
       this.callsign = 'org.rdk.Bluetooth.1'
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
@@ -51,9 +51,7 @@ export default class BluetoothApi {
           })
           this._thunder.on(this.callsign, 'onStatusChanged', notification => {
             if (notification.newStatus === 'PAIRING_CHANGE') {
-              this.getPairedDevices().then(() => {
-                this._events.get('onPairingChange')(notification)
-              })
+              this.getPairedDevices()
             } else if (notification.newStatus === 'CONNECTION_CHANGE') {
               this.getConnectedDevices().then(() => {
                 this._events.get('onConnectionChange')(notification)
@@ -101,7 +99,6 @@ export default class BluetoothApi {
    */
   deactivate() {
     this._events = new Map()
-    this._thunder = null
   }
 
   /**
@@ -300,8 +297,8 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth.1', 'unpair', { deviceID: deviceId })
         .then(result => {
-          if (result.success) resolve()
-          else reject()
+          if (result.success) resolve(result)
+          else reject(result)
         })
         .catch(err => {
           console.error('unpair failed', err)
@@ -319,8 +316,8 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth.1', 'pair', { deviceID: deviceId })
         .then(result => {
-          if (result.success) resolve()
-          else reject()
+          if (result.success) resolve(result)
+          else reject(result)
         })
         .catch(err => {
           console.error('Error on pairing', err)
@@ -366,12 +363,12 @@ export default class BluetoothApi {
   }
 
   setAudioStream(deviceID) {
-    
+
     return new Promise((resolve, reject) => {
       this._thunder
         .call('org.rdk.Bluetooth.1', 'setAudioStream', { "deviceID": deviceID, "audioStreamName": "AUXILIARY" })
         .then(result => {
-          
+
           // console.log(JSON.stringify(result))
           this._connectedDevices = result.connectedDevices
           resolve(result.connectedDevices)

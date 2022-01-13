@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Language } from '@lightningjs/sdk'
+import { Lightning, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
@@ -26,14 +26,25 @@ import AppApi from '../../api/AppApi.js';
  */
 
 export default class DeviceInformationScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device / Info');
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            x: 0, y: 0,
+            rect: true,
             h: 1080,
             w: 1920,
-            clipping: true,
+            color: 0xff000000,
             DeviceInfoContents: {
-                y: 2,
+                x: 200,
+                y: 275,
                 Line1: {
                     y: 0,
                     mountY: 0.5,
@@ -59,7 +70,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: `unavailable`,
+                            text: `N/A`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -91,7 +102,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 135,
                         mountY: 0.5,
                         text: {
-                            text: `unavailable`,
+                            text: `N/A`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -123,7 +134,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 225,
                         mountY: 0.5,
                         text: {
-                            text: `City: unavailable , Country: unavailable `,
+                            text: `City: N/A , Country: N/A `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -157,7 +168,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 360,
                         mountY: 0.5,
                         text: {
-                            text: `unavailable`,
+                            text: `N/A`,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             wordWrapWidth: 1200,
@@ -191,7 +202,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `UI Version: 3.4, Build Version: , Timestamp: `,
+                            text: `UI Version: 3.5, Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -250,7 +261,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
         })
 
         this.appApi.getSystemVersions().then(res => {
-            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.4 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
+            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.5 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
         })
             .catch(err => { console.error(`error while getting the system versions`) })
 
@@ -278,13 +289,13 @@ export default class DeviceInformationScreen extends Lightning.Component {
                 locationInfo = "City: " + result.city
             }
             else {
-                locationInfo = "City: unavailable "
+                locationInfo = "City: N/A "
             }
             if (result.country.length !== 0) {
                 locationInfo += ", Country: " + result.country;
             }
             else {
-                locationInfo += ", Country: unavailable "
+                locationInfo += ", Country: N/A "
             }
             this.tag('Location.Value').text.text = `${locationInfo}`
         })
@@ -297,14 +308,19 @@ export default class DeviceInformationScreen extends Lightning.Component {
         this.appApi.registerChangeLocation()
     }
 
+    _handleBack() {
+        Router.navigate('settings/advanced/device')
+    }
+
     _handleDown() {
-        if (this.tag("DeviceInfoContents").y > -200) {
-            this.tag("DeviceInfoContents").y -= 35;
+        if (this.tag("DeviceInfoContents").y > 215) {
+            this.tag("DeviceInfoContents").y -= 20;
         }
     }
     _handleUp() {
-        if (this.tag("DeviceInfoContents").y < 35) {
-            this.tag("DeviceInfoContents").y += 35;
+        if (this.tag("DeviceInfoContents").y < 275) {
+            this.tag("DeviceInfoContents").y += 20;
         }
     }
+
 }

@@ -16,18 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
-import SettingsItem from './SettingsItem'
+import { Lightning, Utils } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import { CONFIG } from '../Config/Config'
-import Lock from '../../static/images/settings/Lock.png'
-import WiFi1 from '../../static/images/settings/WiFi1.png'
-import WiFi2 from '../../static/images/settings/WiFi2.png'
-import WiFi3 from '../../static/images/settings/WiFi3.png'
-import WiFi4 from '../../static/images/settings/WiFi4.png'
-import Tick from '../../static/images/settings/Tick.png'
 
-export default class WiFiItem extends SettingsItem {
+export default class WiFiItem extends Lightning.Component {
+
+  _construct() {
+    this.Lock = Utils.asset('/images/settings/Lock.png')
+    this.WiFi1 = Utils.asset('/images/settings/WiFi1.png')
+    this.WiFi2 = Utils.asset('/images/settings/WiFi2.png')
+    this.WiFi3 = Utils.asset('/images/settings/WiFi3.png')
+    this.WiFi4 = Utils.asset('/images/settings/WiFi4.png')
+    this.Tick = Utils.asset('/images/settings/Tick.png')
+  }
   static _template() {
     return {
       TopLine: {
@@ -63,16 +65,16 @@ export default class WiFiItem extends SettingsItem {
 
     var wifiicon = "";
     if (item.signalStrength >= -50) {
-      wifiicon = WiFi4
+      wifiicon = this.WiFi4
     }
     else if (item.signalStrength >= -60) {
-      wifiicon = WiFi3
+      wifiicon = this.WiFi3
     }
     else if (item.signalStrength >= -67) {
-      wifiicon = WiFi2
+      wifiicon = this.WiFi2
     }
     else {
-      wifiicon = WiFi1
+      wifiicon = this.WiFi1
     }
 
 
@@ -82,7 +84,7 @@ export default class WiFiItem extends SettingsItem {
         x: 10,
         y: 45,
         mountY: 0.5,
-        texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
+        texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
         color: 0xffffffff,
         visible: item.connected ? true : false
       },
@@ -101,7 +103,7 @@ export default class WiFiItem extends SettingsItem {
         flex: { direction: 'row' },
         Lock: {
           color: 0xffffffff,
-          texture: Lightning.Tools.getSvgTexture(Lock, 32.5, 32.5),
+          texture: Lightning.Tools.getSvgTexture(this.Lock, 32.5, 32.5),
           alpha: 1
         },
         Icon: {

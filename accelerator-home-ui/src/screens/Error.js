@@ -26,41 +26,55 @@ export default class Error extends Lightning.Component {
       w: 1920,
       h: 1080,
       color: 0xffb70606,
-      Label: {
-        x: 100,
-        y: 100,
+      InvalidText: {
+        x: 960,
+        y: 540,
+        mount: 0.5,
         text: {
+          text: 'Invalid Route',
+          textColor: 0xff000000,
           fontFace: CONFIG.language.font,
-          text: 'Error',
-          fontSize: 22,
+          fontSize: 70,
+          fontStyle: 'bold'
         },
-      },
+        SubText: {
+          y: 80,
+          text: {
+            text: 'Press OK to return home',
+            textColor: 0xffffffff,
+            fontFace: CONFIG.language.font,
+            fontSize: 40,
+            fontStyle: 'bold',
+            textAlign: 'center'
+          }
+        }
+      }
     }
   }
 
   _handleEnter() {
-    Router.navigate('home')
+    Router.navigate('menu')
   }
 
   _focus() {
     console.log('focus error page')
   }
 
-  set error(obj) {
-    const { page, error } = obj
-    console.log(page, error)
+//   set error(obj) {
+//     const { page, error } = obj
+//     console.log(page, error)
 
-    const errorMessage = `
-error while loading page: ${page.constructor.name}
-press enter to navigate to home
---
-loaded via hash: ${page[Symbol.for('hash')]}
-resulted in route: ${page[Symbol.for('route')]}
---
-${error.toString()}`
+//     const errorMessage = `
+// error while loading page: ${page.constructor.name}
+// press enter to navigate to home
+// --
+// loaded via hash: ${page[Symbol.for('hash')]}
+// resulted in route: ${page[Symbol.for('route')]}
+// --
+// ${error.toString()}`
 
-    this.tag('Label').text = errorMessage
-  }
+//     this.tag('Label').text = errorMessage
+//   }
 
   pageTransition() {
     return 'up'

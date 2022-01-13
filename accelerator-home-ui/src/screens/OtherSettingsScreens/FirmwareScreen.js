@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Language } from '@lightningjs/sdk'
+import { Lightning, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi';
@@ -25,9 +25,25 @@ import AppApi from '../../api/AppApi';
  */
 
 export default class FirmwareScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device / Firmware Update');
+    }
+
+    pageTransition() {
+        return 'left'
+      }
+
+
     static _template() {
         return {
-            DeviceInfoContents: {
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
+            FirmwareContents: {
+                x: 200,
+                y: 270,
                 State: {
                     Title: {
                         x: 10,
@@ -123,9 +139,13 @@ export default class FirmwareScreen extends Lightning.Component {
     getDownloadFirmwareInfo() {
         this._appApi.updateFirmware().then(res => {
             this._appApi.getDownloadFirmwareInfo().then(result => {
-                this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') `${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
+                this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ')`${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`
             })
         })
+    }
+
+    _handleBack() {
+        Router.navigate('settings/advanced/device')
     }
 
     static _states() {

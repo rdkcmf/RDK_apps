@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
@@ -27,11 +27,14 @@ const wifi = new Wifi()
 export default class NetworkInterfaceScreen extends Lightning.Component {
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             NetworkInterfaceScreenContents: {
+                x: 200,
+                y: 275,
                 WiFi: {
-                    y: 0,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -97,6 +100,16 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
         })
     }
 
+    _handleBack() {
+        Router.navigate('settings/network')
+    }
+    pageTransition() {
+        return 'left'
+    }
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Interface')
+    }
+
     static _states() {
         return [
             class WiFi extends this {
@@ -110,7 +123,11 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                     this._setState('Ethernet')
                 }
                 _handleEnter() {
-                    this._setState('WiFiScreen')
+                    //this._setState('WiFiScreen')
+                    if (!Router.isNavigating()) {
+                        Router.navigate('settings/network/interface/wifi')
+                    }
+
                 }
             },
             class Ethernet extends this {
@@ -143,9 +160,6 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                 }
                 _getFocused() {
                     return this.tag('WiFiScreen')
-                }
-                _handleBack() {
-                    this._setState('WiFi')
                 }
             },
         ]

@@ -16,80 +16,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning } from '@lightningjs/sdk'
- import { COLORS } from '../colors/Colors'
- import { CONFIG } from '../Config/Config.js'
- import Tick from '../../static/images/settings/Tick.png'
- /**
-  * Class for rendering items in Settings screen.
-  */
- export default class NetworkItem extends Lightning.Component {
-   static _template() {
-     return {
-       zIndex: 1,
-       TopLine: {
-         y: 0,
-         mountY: 0.5,
-         w: 1600,
-         h: 3,
-         rect: true,
-         color: 0xFFFFFFFF
-       },
-       Item: {
-         w: 1600,
-         h: 90,
-       },
-       BottomLine: {
-         y: 90,
-         mountY: 0.5,
-         w: 1600,
-         h: 3,
-         rect: true,
-         color: 0xFFFFFFFF
-       },
-     }
-   }
- 
-   /**
-    * Function to set contents for an item in settings screen.
-    */
-   set item(item) {
-     this._item = item
-     this.tag('Item').patch({
-       Tick: {
-         y: 45,
-         mountY: 0.5,
-         texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
-         color: 0xffffffff,
-         visible: item.connected
-       },
-       Left: {
-         x: 40,
-         y: 45,
-         mountY: 0.5,
-         text: { text: (item.interface==='WIFI')? 'WiFi' : ((item.interface==='ETHERNET')? 'Ethenet': item.interface), fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
-       },
-     })
-   }
- 
-   _focus() {
-     this.tag('TopLine').color = CONFIG.theme.hex
-     this.tag('BottomLine').color = CONFIG.theme.hex
-     this.patch({
-       zIndex: 2
-     })
-     this.tag('TopLine').h = 6
-     this.tag('BottomLine').h = 6
-   }
- 
-   _unfocus() {
-     this.tag('TopLine').color = 0xFFFFFFFF
-     this.tag('BottomLine').color = 0xFFFFFFFF
-     this.patch({
-       zIndex: 1
-     })
-     this.tag('TopLine').h = 3
-     this.tag('BottomLine').h = 3
-   }
- }
- 
+import { Lightning, Utils } from '@lightningjs/sdk'
+import { COLORS } from '../colors/Colors'
+import { CONFIG } from '../Config/Config.js'
+/**
+ * Class for rendering items in Settings screen.
+ */
+export default class NetworkItem extends Lightning.Component {
+
+  _construct(){
+    this.Tick = Utils.asset('/images/settings/Tick.png')
+  }
+  static _template() {
+    return {
+      zIndex: 1,
+      TopLine: {
+        y: 0,
+        mountY: 0.5,
+        w: 1600,
+        h: 3,
+        rect: true,
+        color: 0xFFFFFFFF
+      },
+      Item: {
+        w: 1600,
+        h: 90,
+      },
+      BottomLine: {
+        y: 90,
+        mountY: 0.5,
+        w: 1600,
+        h: 3,
+        rect: true,
+        color: 0xFFFFFFFF
+      },
+    }
+  }
+
+  /**
+   * Function to set contents for an item in settings screen.
+   */
+  set item(item) {
+    this._item = item
+    this.tag('Item').patch({
+      Tick: {
+        y: 45,
+        mountY: 0.5,
+        texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+        color: 0xffffffff,
+        visible: item.connected
+      },
+      Left: {
+        x: 40,
+        y: 45,
+        mountY: 0.5,
+        text: { text: (item.interface === 'WIFI') ? 'WiFi' : ((item.interface === 'ETHERNET') ? 'Ethenet' : item.interface), fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
+      },
+    })
+  }
+
+  _focus() {
+    this.tag('TopLine').color = CONFIG.theme.hex
+    this.tag('BottomLine').color = CONFIG.theme.hex
+    this.patch({
+      zIndex: 2
+    })
+    this.tag('TopLine').h = 6
+    this.tag('BottomLine').h = 6
+  }
+
+  _unfocus() {
+    this.tag('TopLine').color = 0xFFFFFFFF
+    this.tag('BottomLine').color = 0xFFFFFFFF
+    this.patch({
+      zIndex: 1
+    })
+    this.tag('TopLine').h = 3
+    this.tag('BottomLine').h = 3
+  }
+}

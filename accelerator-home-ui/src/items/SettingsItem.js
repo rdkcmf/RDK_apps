@@ -16,14 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Utils } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import { CONFIG } from '../Config/Config.js'
-import Tick from '../../static/images/settings/Tick.png'
 /**
  * Class for rendering items in Settings screen.
  */
 export default class SettingsItem extends Lightning.Component {
+
+  _construct(){
+    this.Tick = Utils.asset('/images/settings/Tick.png')
+  }
   static _template() {
     return {
       zIndex: 1,
@@ -59,7 +62,7 @@ export default class SettingsItem extends Lightning.Component {
       Tick: {
         y: 45,
         mountY: 0.5,
-        texture: Lightning.Tools.getSvgTexture(Tick, 32.5, 32.5),
+        texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
         color: 0xffffffff,
         visible: false
       },

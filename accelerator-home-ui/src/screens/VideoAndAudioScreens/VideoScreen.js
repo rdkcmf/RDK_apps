@@ -16,26 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
-import ResolutionScreen from './ResolutionScreen'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi'
-import HDRScreen from './HDRScreen'
 
 /**
  * Class for Video screen.
  */
 
 export default class VideoScreen extends Lightning.Component {
+
+  pageTransition() {
+    return 'left'
+  }
+
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings / Video');
+  }
+
   static _template() {
     return {
-      x: 0,
-      y: 0,
+      rect: true,
+      color: 0xff000000,
+      w: 1920,
+      h: 1080,
       VideoScreenContents: {
+        x: 200,
+        y: 275,
         Resolution: {
-          y: 0,
           type: SettingsMainItem,
           Title: {
             x: 10,
@@ -151,7 +161,7 @@ export default class VideoScreen extends Lightning.Component {
         HDCP: {
           y: 450,
           h: 90,
-          // type: SettingsMainItem,
+          type: SettingsMainItem,
           Title: {
             x: 10,
             y: 45,
@@ -165,23 +175,12 @@ export default class VideoScreen extends Lightning.Component {
           },
         },
       },
-
-      ResolutionScreen: {
-        type: ResolutionScreen,
-        visible: false,
-      },
-      HDRScreen: {
-        type: HDRScreen,
-        visible: false,
-      },
     }
   }
 
   _init() {
     this._appApi = new AppApi()
-
-
-
+    this._setState('Resolution')
   }
 
   _focus() {
@@ -189,12 +188,10 @@ export default class VideoScreen extends Lightning.Component {
       this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
 
     }).catch(err => {
-      console.log("Error fetching the Resolution");
-      // this.tag("Resolution.Title").text.text = "Error fetching Resolution";
+      console.log("Error fetching the Resolution")
     })
 
     this._appApi.getHDCPStatus().then(result => {
-
       if (result.isHDCPCompliant && result.isHDCPEnabled) {
         this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Enabled, Version: ${result.currentHDCPVersion}`;
       } else {
@@ -204,170 +201,120 @@ export default class VideoScreen extends Lightning.Component {
     })
 
     this._appApi.getHDRSetting().then(result => {
-        const availableHDROptions = {
-          "HdrOff":"Off",
-          "Hdr10":"HDR 10",
-          "Hdr10Plus":"HDR 10+",
-          "HdrHlg": "HLG",
-          "HdrDolbyvision":"Dolby Vision",
-          "HdrTechnicolor": "Technicolor HDR"
-        }
-        this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ')+ availableHDROptions[result] ;
-      })
+      const availableHDROptions = {
+        "HdrOff": "Off",
+        "Hdr10": "HDR 10",
+        "Hdr10Plus": "HDR 10+",
+        "HdrHlg": "HLG",
+        "HdrDolbyvision": "Dolby Vision",
+        "HdrTechnicolor": "Technicolor HDR"
+      }
+      this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
+    })
+    this._setState(this.state)
+  }
 
-      this._setState('Resolution')
-    }
-
-  hide() {
-      this.tag('VideoScreenContents').visible = false
-    }
-  show() {
-      this.tag('VideoScreenContents').visible = true
-    }
+  _handleBack() {
+    Router.navigate('settings')
+  }
 
   static _states() {
-      return [
-        class Resolution extends this{
-          $enter() {
-            this.tag('Resolution')._focus()
-          }
-          $exit() {
-            this.tag('Resolution')._unfocus()
-          }
-          _handleDown() {
-            this._setState('HDR')
-          }
-          _handleEnter() {
-            this._appApi.getSupportedResolutions().then(result => {
-              if (result.length > 0) {
-                this._setState('ResolutionScreen')
-              }
-            })
-          }
-
-        },
-        class HDR extends this{
-          $enter() {
-            this.tag('HDR')._focus()
-          }
-          $exit() {
-            this.tag('HDR')._unfocus()
-          }
-          _handleUp() {
-            this._setState('Resolution')
-          }
-          _handleDown() {
-            // this._setState('MatchContent') //disabled
-          }
-        },
-        class MatchContent extends this{
-          $enter() {
-            this.tag('MatchContent')._focus()
-          }
-          $exit() {
-            this.tag('MatchContent')._unfocus()
-          }
-          _handleUp() {
-            this._setState('HDR')
-          }
-          _handleDown() {
-            this._setState('OutputFormat')
-          }
-          _handleEnter() {
-            //
-          }
-        },
-        class OutputFormat extends this{
-          $enter() {
-            this.tag('OutputFormat')._focus()
-          }
-          $exit() {
-            this.tag('OutputFormat')._unfocus()
-          }
-          _handleUp() {
-            this._setState('MatchContent')
-          }
-          _handleDown() {
-            this._setState('Chroma')
-          }
-          _handleEnter() {
-            //
-          }
-        },
-        class Chroma extends this{
-          $enter() {
-            this.tag('Chroma')._focus()
-          }
-          $exit() {
-            this.tag('Chroma')._unfocus()
-          }
-          _handleUp() {
-            this._setState('OutputFormat')
-          }
-          _handleDown() {
-            // this._setState('HDCP') 
-          }
-          _handleEnter() {
-            //
-          }
-        },
-        class HDCP extends this{ // class not required
-          $enter() {
-            this.tag('HDCP')._focus()
-          }
-          $exit() {
-            this.tag('HDCP')._unfocus()
-          }
-          _handleUp() {
-            this._setState('Chroma')
-          }
-          _handleEnter() {
-            //
-          }
-        },
-        class ResolutionScreen extends this {
-          $enter() {
-            this.hide()
-            this.tag('ResolutionScreen').visible = true
-            this.fireAncestors('$changeHomeText', 'Settings / Video / Resolution')
-          }
-          $exit() {
-            this.tag('ResolutionScreen').visible = false
-            this.show()
-            this.fireAncestors('$changeHomeText', 'Settings / Video')
-          }
-          _getFocused() {
-            return this.tag('ResolutionScreen')
-          }
-          _handleBack() {
-            this._setState('Resolution')
-          }
-          $updateResolution(value) {
-            this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
-          }
-        },
-        class HDRScreen extends this {
-          $enter() {
-            this.hide()
-            this.tag('HDRScreen').visible = true
-            this.fireAncestors('$changeHomeText', 'Settings / Video / High Dynamic Range')
-          }
-          $exit() {
-            this.tag('HDRScreen').visible = false
-            this.show()
-            this.fireAncestors('$changeHomeText', 'Settings / Video')
-          }
-          _getFocused() {
-            return this.tag('HDRScreen')
-          }
-          _handleBack() {
-            this._setState('HDR')
-          }
-          $updateHDR(value) {
-            this.tag('HDR.Title').text.text = 'High Dynamic Range: ' + value;
-          }
+    return [
+      class Resolution extends this{
+        $enter() {
+          this.tag('Resolution')._focus()
         }
-      ]
+        $exit() {
+          this.tag('Resolution')._unfocus()
+        }
+        _handleDown() {
+          this._setState('HDR')
+        }
+        _handleEnter() {
+          Router.navigate('settings/video/resolution')
+        }
 
-    }
+      },
+      class HDR extends this{
+        $enter() {
+          this.tag('HDR')._focus()
+        }
+        $exit() {
+          this.tag('HDR')._unfocus()
+        }
+        _handleUp() {
+          this._setState('Resolution')
+        }
+        _handleDown() {
+          this._setState('HDCP')
+        }
+      },
+      class MatchContent extends this{
+        $enter() {
+          this.tag('MatchContent')._focus()
+        }
+        $exit() {
+          this.tag('MatchContent')._unfocus()
+        }
+        _handleUp() {
+          this._setState('HDR')
+        }
+        _handleDown() {
+          this._setState('OutputFormat')
+        }
+        _handleEnter() {
+          //
+        }
+      },
+      class OutputFormat extends this{
+        $enter() {
+          this.tag('OutputFormat')._focus()
+        }
+        $exit() {
+          this.tag('OutputFormat')._unfocus()
+        }
+        _handleUp() {
+          this._setState('MatchContent')
+        }
+        _handleDown() {
+          this._setState('Chroma')
+        }
+        _handleEnter() {
+          //
+        }
+      },
+      class Chroma extends this{
+        $enter() {
+          this.tag('Chroma')._focus()
+        }
+        $exit() {
+          this.tag('Chroma')._unfocus()
+        }
+        _handleUp() {
+          this._setState('OutputFormat')
+        }
+        _handleDown() {
+          // this._setState('HDCP') 
+        }
+        _handleEnter() {
+          //
+        }
+      },
+      class HDCP extends this{ // class not required
+        $enter() {
+          this.tag('HDCP')._focus()
+        }
+        $exit() {
+          this.tag('HDCP')._unfocus()
+        }
+        _handleUp() {
+          this._setState('HDR')
+        }
+        _handleEnter() {
+          //
+        }
+      },
+    ]
+
+  }
 }

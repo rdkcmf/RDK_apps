@@ -16,29 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router, Storage } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
-import SettingsItem from '../../items/SettingsItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import RemoteControlScreen from './RemoteControlScreen'
-import AdvancedSettingsScreen from './AdvancedSettingsScreen'
-import PrivacyScreen from './PrivacyScreen'
-import EnergySavingsScreen from './EnergySavingsScreen'
 import AppApi from '../../api/AppApi'
-import SleepTimerScreen from '../SleepTimerScreen'
-import LanguageScreen from './LanguageScreen'
 
 /**
  * Class for Other Settings Screen.
  */
 
 export default class OtherSettingsScreen extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings');
+    }
+
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             OtherSettingsScreenContents: {
+                x: 200,
+                y: 275,
                 SleepTimer: {
                     y: 0,
                     type: SettingsMainItem,
@@ -212,39 +218,11 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     },
                 },
             },
-
-
-            SleepTimerScreen: {
-                type: SleepTimerScreen,
-                visible: false,
-            },
-            RemoteControlScreen: {
-                type: RemoteControlScreen,
-                visible: false,
-            },
-
-            EnergySavingsScreen: {
-                type: EnergySavingsScreen,
-                visible: false,
-            },
-
-            LanguageScreen: {
-                type: LanguageScreen,
-                visible: false,
-            },
-
-            PrivacyScreen: {
-                type: PrivacyScreen,
-                visible: false,
-            },
-            AdvancedSettingsScreen: {
-                type: AdvancedSettingsScreen,
-                visible: false,
-            },
         }
     }
     _init() {
         this._appApi = new AppApi();
+        this._setState('SleepTimer')
     }
     $updateStandbyMode(standbyMode) {
         this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode
@@ -255,7 +233,14 @@ export default class OtherSettingsScreen extends Lightning.Component {
     }
 
     _focus() {
-        this._setState('SleepTimer') //can be used on init as well
+        this._setState(this.state)
+
+        if (Storage.get('TimeoutInterval')) {
+            this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval')
+        }
+        else {
+            this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + 'Off'
+        }
 
         this._appApi.getPreferredStandbyMode().then(result => {
             var currentStandbyMode = ""
@@ -268,12 +253,8 @@ export default class OtherSettingsScreen extends Lightning.Component {
         })
     }
 
-    hide() {
-        this.tag('OtherSettingsScreenContents').visible = false
-    }
-
-    show() {
-        this.tag('OtherSettingsScreenContents').visible = true
+    _handleBack() {
+        Router.navigate('settings')
     }
 
     static _states() {
@@ -294,7 +275,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('EnergySaver')
                 }
                 _handleEnter() {
-                    this._setState('SleepTimerScreen')
+                    Router.navigate('settings/other/timer')
                 }
             },
 
@@ -312,7 +293,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('ScreenSaver')
                 }
                 _handleEnter() {
-                    this._setState('RemoteControlScreen')
+
                 }
             },
             class ScreenSaver extends this {
@@ -347,7 +328,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('Language')
                 }
                 _handleEnter() {
-                    this._setState('EnergySavingsScreen')
+                    Router.navigate('settings/other/energy')
                 }
             },
 
@@ -365,7 +346,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('Privacy')
                 }
                 _handleEnter() {
-                    this._setState('LanguageScreen')
+                    Router.navigate('settings/other/language')
                 }
             },
             class Privacy extends this {
@@ -382,7 +363,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('AdvancedSettings')
                 }
                 _handleEnter() {
-                    this._setState('PrivacyScreen')
+                    Router.navigate('settings/other/privacy')
                 }
             },
             class AdvancedSettings extends this {
@@ -399,125 +380,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('SleepTimer')
                 }
                 _handleEnter() {
-                    this._setState('AdvancedSettingsScreen')
+                    Router.navigate('settings/advanced')
                 }
             },
-
-
-            class SleepTimerScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('SleepTimerScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Sleep Timer')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('SleepTimerScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-                }
-                _getFocused() {
-                    return this.tag('SleepTimerScreen')
-                }
-                _handleBack() {
-                    this._setState('SleepTimer')
-                }
-            },
-            class RemoteControlScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('RemoteControlScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Remote Control')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('RemoteControlScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-                }
-                _getFocused() {
-                    return this.tag('RemoteControlScreen')
-                }
-                _handleBack() {
-                    this._setState('RemoteControl')
-                }
-            },
-
-
-            // 
-
-
-            class PrivacyScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('PrivacyScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Privacy')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('PrivacyScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-                }
-                _getFocused() {
-                    return this.tag('PrivacyScreen')
-                }
-                _handleBack() {
-                    this._setState('Privacy')
-                }
-            },
-
-            class AdvancedSettingsScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('AdvancedSettingsScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Advanced Settings')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('AdvancedSettingsScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-                }
-                _getFocused() {
-                    return this.tag('AdvancedSettingsScreen')
-                }
-                _handleBack() {
-                    this._setState('AdvancedSettings')
-                }
-            },
-            class EnergySavingsScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('EnergySavingsScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Energy Saver')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('EnergySavingsScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Other Settings')
-                }
-                _getFocused() {
-                    return this.tag('EnergySavingsScreen')
-                }
-                _handleBack() {
-                    this._setState('EnergySaver')
-                }
-            },
-            class LanguageScreen extends this {
-                $enter() {
-                  this.hide()
-                  this.tag('LanguageScreen').visible = true
-                  this.fireAncestors('$changeHomeText', 'Settings / Other Settings / Language')
-                }
-                _getFocused() {
-                  return this.tag('LanguageScreen')
-                }
-                $exit() {
-                  this.show()
-                  this.tag('LanguageScreen').visible = false
-                  this.fireAncestors('$changeHomeText', 'Settings')
-                }
-                _handleBack() {
-                  this._setState('Language')
-                }
-              },
         ]
     }
 }

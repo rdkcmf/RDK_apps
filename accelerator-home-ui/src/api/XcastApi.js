@@ -103,6 +103,7 @@ export default class XcastApi {
         })
         .catch(err => {
           console.log('Xdial error', err)
+          reject(err)
         })
     })
   }

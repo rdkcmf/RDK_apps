@@ -31,6 +31,12 @@ export const WiFiState = {
 export default class Wifi {
   constructor() {
     this._events = new Map()
+    const config = {
+      host: '127.0.0.1',
+      port: 9998,
+    }
+    this._thunder = ThunderJS(config)
+    this.callsign = 'org.rdk.Wifi.1'
   }
 
   /**
@@ -38,13 +44,7 @@ export default class Wifi {
    */
   activate() {
     return new Promise((resolve, reject) => {
-      const config = {
-        host: '127.0.0.1',
-        port: 9998,
-        default: 1,
-      }
-      this._thunder = ThunderJS(config)
-      this.callsign = 'org.rdk.Wifi.1'
+
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
@@ -109,7 +109,6 @@ export default class Wifi {
    */
   deactivate() {
     this._events = new Map()
-    this._thunder = null
   }
 
   /**
@@ -193,7 +192,7 @@ export default class Wifi {
             console.error(`Connection failed: ${err}`)
             reject(err)
           })
-      }, reject)
+      })
     })
   }
 
@@ -202,7 +201,7 @@ export default class Wifi {
    */
   disconnect() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign, 'disconnect', {})
+      this._thunder.call(this.callsign, 'disconnect')
         .then(result => {
           console.log('WiFi disconnected: ' + JSON.stringify(result))
           this.setInterface('ETHERNET', true).then(res => {
@@ -212,9 +211,10 @@ export default class Wifi {
           })
           resolve(result)
         })
-    }).catch(err => {
-      console.error(`Can't disconnect WiFi: ${err}`)
-      reject(err)
+        .catch(err => {
+          console.error(`Can't disconnect WiFi: ${err}`)
+          reject(false)
+        })
     })
   }
 

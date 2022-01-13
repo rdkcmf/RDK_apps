@@ -4,6 +4,7 @@
   "dependencies": {
     "@lightningjs/sdk": "^4.8.1",
     "@lightningjs/ui-components": "^1.0.0",
+    "esbuild": "^0.14.11",
     "redux": "^4.1.0",
     "ThunderJS": "github:rdkcentral/ThunderJS"
   },

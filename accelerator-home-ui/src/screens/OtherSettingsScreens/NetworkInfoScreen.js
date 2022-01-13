@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Language } from '@lightningjs/sdk'
+import { Lightning, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
@@ -29,9 +29,28 @@ var appApi = new AppApi();
 var defaultInterface = "";
 var currentInterface = [];
 export default class NetworkInfo extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
+
+    _handleBack() {
+        Router.navigate('settings/network')
+    }
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Info')
+    }
+
     static _template() {
         return {
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             NetworkInfoScreenContents: {
+                x: 200,
+                y: 275,
                 Status: {
                     y: 0,
                     type: SettingsMainItem,

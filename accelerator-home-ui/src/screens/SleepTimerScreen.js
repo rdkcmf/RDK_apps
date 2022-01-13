@@ -16,39 +16,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Router, Storage } from '@lightningjs/sdk'
 import SettingsItem from '../items/SettingsItem'
-import AppApi from '../api/AppApi'
 
 export default class SleepTimerScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Sleep Timer');
+    }
+
+    pageTransition() {
+        return 'left'
+    }
+
+
     static _template() {
         return {
-            List: {
-                w: 1920 - 300,
-                type: Lightning.components.ListComponent,
-                itemSize: 90,
-                horizontal: false,
-                invertDirection: true,
-                roll: true,
-                rollMax: 900,
-                itemScrollOffset: -5,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
+            SleepTimer: {
+                y: 275,
+                x: 200,
+                List: {
+                    w: 1920 - 300,
+                    type: Lightning.components.ListComponent,
+                    itemSize: 90,
+                    horizontal: false,
+                    invertDirection: true,
+                    roll: true,
+                    rollMax: 900,
+                    itemScrollOffset: -5,
+                }
             }
         }
     }
     _init() {
-        var appApi = new AppApi();
-        this.fireAncestors('$registerInactivityMonitoringEvents')
         this.lastElement = false
         this.options = [
             { value: 'Off', tick: true },
-            { value: '30 Minutes', tick: false },
+            { value: '1 Minutes', tick: false },
             { value: '1 Hour', tick: false },
             { value: '1.5 Hours', tick: false },
             { value: '2 Hours', tick: false },
             { value: '3 Hours', tick: false }
         ]
         this.tag('List').h = this.options.length * 90
-        this.tag('List').items = this.options.map(item => {
+        let timeoutInterval = Storage.get('TimeoutInterval');
+        if (!timeoutInterval) {
+            timeoutInterval = 'Off'
+        }
+        let index = 0;
+        this.tag('List').items = this.options.map((item, id) => {
+            if (timeoutInterval === item.value) {
+                index = id;
+            }
             return {
                 w: 1920 - 300,
                 h: 90,
@@ -56,8 +79,18 @@ export default class SleepTimerScreen extends Lightning.Component {
                 item: item.value
             }
         })
-        this.tag('List').getElement(0).tag('Tick').visible = true
+        this.tag('List').getElement(index).tag('Tick').visible = true
+        this.fireAncestors('$registerInactivityMonitoringEvents').then(res=>{
+            this.fireAncestors('$resetSleepTimer', timeoutInterval);
+        }).catch(err=>{
+            console.error(`error while registering the inactivity monitoring event`)
+        })
+        
         this._setState('Options')
+    }
+
+    _handleBack() {
+        Router.navigate('settings/other')
     }
 
     static _states() {
@@ -74,15 +107,15 @@ export default class SleepTimerScreen extends Lightning.Component {
                 }
                 _handleEnter() {
                     this.options.forEach((element, idx) => {
-                        if (element.tick) {
-                            this.tag('List').getElement(idx).tag('Tick').visible = false
-                            this.options[idx].tick = false
-                        }
+                        //if (element.tick) {
+                        this.tag('List').getElement(idx).tag('Tick').visible = false
+                        //this.options[idx].tick = false
+                        //}
                     });
                     this.tag('List').element.tag('Tick').visible = true
-                    this.options[this.tag('List').index].tick = true
+                    //this.options[this.tag('List').index].tick = true
                     this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value)
-                    this.fireAncestors('$resetSleepTimer',this.options[this.tag('List').index].value);
+                    this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
                 }
             }
         ]

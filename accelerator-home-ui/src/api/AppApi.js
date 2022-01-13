@@ -18,7 +18,6 @@
  **/
 import ThunderJS from 'ThunderJS';
 
-
 var activatedWeb = false
 var activatedLightning = false
 var activatedCobalt = false
@@ -41,6 +40,7 @@ const thunder = ThunderJS(config)
 export default class AppApi {
 
   constructor() {
+    this.activatedForeground = false
     this._events = new Map()
   }
 
@@ -120,7 +120,7 @@ export default class AppApi {
           resolve(result.resolution)
         })
         .catch(err => {
-          resolve(false)
+          resolve('NA')
         });
     })
 
@@ -318,17 +318,17 @@ export default class AppApi {
   /**
    * Function to clear cache.
    */
-   clearCache() {
+  clearCache() {
     return new Promise((resolve, reject) => {
       const systemcCallsign = 'ResidentApp.1'
-          thunder
-            .call(systemcCallsign, 'delete', { path: ".cache" } )
-            .then(result => {
-              resolve(result)
-            })
-            .catch(err => {
-              resolve(err)
-            })
+      thunder
+        .call(systemcCallsign, 'delete', { path: ".cache" })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          resolve(err)
+        })
     })
   }
 
@@ -474,9 +474,7 @@ export default class AppApi {
       type: 'LightningApp',
       uri: notification_url,
     }).then(() => {
-      // thunder.call('org.rdk.RDKShell', 'moveToFront', {
-      //   client: childCallsign,
-      // })
+      this.activatedForeground = true
       thunder.call('org.rdk.RDKShell', 'setFocus', {
         client: 'ResidentApp',
       })
@@ -868,7 +866,7 @@ export default class AppApi {
         })
         .catch(err => {
           console.log("error in getting support audio sound mode:", JSON.stringify(err, 3, null))
-          resolve(false)
+          reject(false)
         })
     })
   }
@@ -1189,7 +1187,7 @@ export default class AppApi {
           resolve(result)
         })
         .catch(err => {
-          resolve(false)
+          resolve('N/A')
         })
     })
   }

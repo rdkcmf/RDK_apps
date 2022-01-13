@@ -18,7 +18,6 @@
  **/
  import { Lightning, Utils } from '@lightningjs/sdk'
  import SettingsMainItem from '../../items/SettingsMainItem'
- import SettingsItem from '../../items/SettingsItem'
  import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import VideoScreen from './VideoScreen'

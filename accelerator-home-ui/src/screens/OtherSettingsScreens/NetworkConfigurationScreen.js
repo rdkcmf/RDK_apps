@@ -16,27 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import NetworkApi from '../../api/NetworkApi'
-import NetworkInterfaceScreen from './NetworkInterfaceScreen'
-import WiFiScreen from '../WifiScreen'
-import NetworkInfoScreen from './NetworkInfoScreen'
-import ConfigureScreen from './ConfigureScreen'
-import AppApi from '../../api/AppApi'
 /**
   * Class for Other Network Config Screen.
   */
 
-var appApi = new AppApi();
 export default class NetworkConfigurationScreen extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
     static _template() {
         return {
-            x: 0,
-            y: 0,
+            rect: true,
+            color: 0xff000000,
+            w: 1920,
+            h: 1080,
             NetworkConfigurationScreenContents: {
+                x: 200,
+                y: 275,
                 NetworkInfo: {
                     y: 0,
                     type: SettingsMainItem,
@@ -137,26 +139,11 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     },
                 },
             },
-            NetworkInfoScreen: {
-                type: NetworkInfoScreen,
-                visible: false,
-            },
-            NetworkInterfaceScreen: {
-                type: NetworkInterfaceScreen,
-                visible: false,
-            },
-            WiFiScreen: {
-                type: WiFiScreen,
-                visible: false,
-            },
-            ConfigureScreen: {
-                type: ConfigureScreen,
-                visible: false,
-            }
         }
     }
 
     _init() {
+        this._setState('NetworkInfo')
         let _currentInterface = "" //getDefaultInterface
         let _currentIPSettings = {}
         let _newIPSettings = {}
@@ -174,18 +161,9 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
             duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
-
-        this.loadingAnimation.start()
-
     }
-
     _focus() {
-        this._setState('NetworkInfo') //can be used on init as well
-
-    }
-
-    _focus() {
-        this._setState('NetworkInfo') //can be used on init as well
+        this._setState(this.state) //can be used on init as well
 
         this._network.getDefaultInterface().then(interfaceName => {
             this.$NetworkInterfaceText(interfaceName)
@@ -195,16 +173,15 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
         this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ')
     }
 
-    hide() {
-        this.tag('NetworkConfigurationScreenContents').visible = false
-    }
-
-    show() {
-        this.tag('NetworkConfigurationScreenContents').visible = true
-    }
-
     $NetworkInterfaceText(text) {
         this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text
+    }
+
+    _handleBack() {
+        Router.navigate('settings')
+    }
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Network Configuration')
     }
 
     static _states() {
@@ -220,7 +197,8 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInterface')
                 }
                 _handleEnter() {
-                    this._setState('NetworkInfoScreen')
+                    Router.navigate('settings/network/info')
+
                 }
             },
             class NetworkInterface extends this {
@@ -238,7 +216,9 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
 
                 }
                 _handleEnter() {
-                    this._setState('NetworkInterfaceScreen')
+                    if (!Router.isNavigating()) {
+                        Router.navigate('settings/network/interface')
+                    }
                 }
             },
             class TestInternetAccess extends this {
@@ -255,6 +235,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInfo')
                 }
                 _handleEnter() {
+                    this.loadingAnimation.start()
                     this.tag('TestInternetAccess.Loader').visible = true
                     this._network.isConnectedToInternet().then(result => {
                         var connectionStatus = Language.translate("Internet Access: ")
@@ -286,79 +267,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInfo')
                 }
                 _handleEnter() {
-                    this._setState('ConfigureScreen')
-                }
-            },
-            class NetworkInterfaceScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('NetworkInterfaceScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('NetworkInterfaceScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('NetworkInterfaceScreen')
-                }
-                _handleBack() {
-                    this._setState('NetworkInterface')
-                }
-            },
-            class NetworkInfoScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('NetworkInfoScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Info')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('NetworkInfoScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('NetworkInfoScreen')
-                }
-                _handleBack() {
-                    this._setState('NetworkInfo')
-                }
-            },
-            class WiFiScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('WiFiScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / WiFi')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('WiFiScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('WiFiScreen')
-                }
-                _handleBack() {
-                    this._setState('WiFi')
-                }
-            },
-            class ConfigureScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('ConfigureScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Configure')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('ConfigureScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration')
-                }
-                _getFocused() {
-                    return this.tag('ConfigureScreen')
-                }
-                _handleBack() {
-                    this._setState('StaticMode')
+                   
                 }
             },
         ]

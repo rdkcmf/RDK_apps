@@ -16,153 +16,142 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Utils } from '@lightningjs/sdk'
- import VideoAndAudioItem from '../../items/VideoAndAudioItem'
- import AppApi from '../../api/AppApi'
- 
- /**
-  * Class for Resolution Screen.
-  */
- 
- export default class ResolutionScreen extends Lightning.Component {
-     static _template() {
-         return {
-             x: 0,
-             y: 0,
-             Background: {
-                 x: 0,
-                 y: -10,
-                 w: 1920,
-                 h: 1080,
-                 rect: true,
-                 color: 0xff000000,
-                 zIndex: 4,
- 
-             },
-             Loader: {
-                 x: 1920 / 2 - 400 + 180,
-                 y: 1080 / 2 - 300 + 100,
-                 w: 90,
-                 h: 90,
-                 mount: 0.5,
-                 zIndex: 4,
-                 src: Utils.asset("images/settings/Loading.gif")
-             },
- 
- 
-             ResolutionScreenContents: {
-                 List: {
-                     type: Lightning.components.ListComponent,
-                     w: 1920 - 300,
-                     itemSize: 90,
-                     horizontal: false,
-                     invertDirection: true,
-                     roll: true,
-                     rollMax: 900,
-                     itemScrollOffset: -6,
-                 },
-             },
- 
-         }
-     }
- 
-     _init(){
-         this.appApi = new AppApi();
-         this.appApi.activateDisplaySettings(); 
-     }
- 
-     _focus() {
-         this.loadingAnimation = this.tag('Loader').animation({
-             duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
-             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
-         });
- 
- 
-         var options = []
-         this.appApi = new AppApi();
-         this._setState("LoadingState");
-         var sIndex = 0;
-         this.appApi.getResolution().then(resolution => {
-             this.appApi.getSupportedResolutions().then(res => {
-                 this._setState("Options")
-                 options = [...res]
-                 this.tag('ResolutionScreenContents').h = options.length * 90
-                 this.tag('ResolutionScreenContents.List').h = options.length * 90
-                 this.tag('List').items = options.map((item, index) => {
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
+import VideoAndAudioItem from '../../items/VideoAndAudioItem'
+import AppApi from '../../api/AppApi'
+
+/**
+ * Class for Resolution Screen.
+ */
+
+export default class ResolutionScreen extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Video / Resolution');
+      }
+
+    static _template() {
+        return {
+            w: 1920,
+            h: 1080,
+            rect: true,
+            color: 0xff000000,
+            ResolutionScreenContents: {
+                x: 200,
+                y: 275,
+                List: {
+                    type: Lightning.components.ListComponent,
+                    w: 1920 - 300,
+                    itemSize: 90,
+                    horizontal: false,
+                    invertDirection: true,
+                    roll: true,
+                    rollMax: 900,
+                    itemScrollOffset: -6,
+                },
+                Loader: {
+                    x: 740,
+                    y: 340,
+                    w: 90,
+                    h: 90,
+                    mount: 0.5,
+                    zIndex: 4,
+                    src: Utils.asset("images/settings/Loading.gif")
+                },
+            },
+
+        }
+    }
+
+
+
+    _init() {
+        this.appApi = new AppApi();
+        this.appApi.activateDisplaySettings();
+        this.loadingAnimation = this.tag('Loader').animation({
+            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+        });
+    }
+
+    _unfocus() {
+        if (this.loadingAnimation.isPlaying()) {
+            this.loadingAnimation.stop()
+        }
+    }
+
+    _handleBack() {
+        Router.back()
+    }
+
+    _focus() {
+        this.loadingAnimation.start()
+        var options = []
+        var sIndex = 0;
+        this.appApi.getResolution().then(resolution => {
+            this.appApi.getSupportedResolutions().then(res => {
+                options = [...res]
+                this.tag('ResolutionScreenContents').h = options.length * 90
+                this.tag('ResolutionScreenContents.List').h = options.length * 90
+                this.tag('List').items = options.map((item, index) => {
                     var bool = false;
-                    if(resolution === item){
+                    if (resolution === item) {
                         bool = true;
                         sIndex = index;
                     }
-                    
-                     return {
-                         ref: 'Option' + index,
-                         w: 1920 - 300,
-                         h: 90,
-                         type: VideoAndAudioItem,
-                         isTicked:bool,
-                         item: item,
-                         videoElement: true,
-                     }
-                 })
-             }).catch(err => {
-                 console.log(`error while fetching the supported resolution ${err}`);
-             }).then(()=>{
-                 this.tag('List').setIndex(sIndex);
-                 console.log(`focus on index's value = ${sIndex}`);
-                
-             })
-         })
+                    return {
+                        ref: 'Option' + index,
+                        w: 1920 - 300,
+                        h: 90,
+                        type: VideoAndAudioItem,
+                        isTicked: bool,
+                        item: item,
+                        videoElement: true,
+                    }
+                })
+                this.loadingAnimation.stop()
+                this.tag('Loader').visible = false
+                this._setState("Options")
+            }).catch(err => {
+                console.log(`error while fetching the supported resolution ${err}`);
+            }).then(() => {
+                this.tag('List').setIndex(sIndex)
+            })
+        })
 
-        
-     }
- 
-     $resetPrevTickObject(prevTicObject) {
- 
-         if (!this.prevTicOb) {
-             this.prevTicOb = prevTicObject;
- 
-         }
-         else {
-             this.prevTicOb.tag("Item.Tick").visible = false;
- 
-             this.prevTicOb = prevTicObject;
- 
-         }
-     }
- 
-     static _states() {
-         return [
-             class Options extends this{
-                 _getFocused() {
-                     return this.tag('List').element
-                 }
-                 _handleDown() {
-                     this.tag('List').setNext()
-                 }
-                 _handleUp() {
-                     this.tag('List').setPrevious()
-                 }
-                 _handleEnter() {
-                     this.tag("List").element.tag("Tick").visible = true;
-                 }
-             },
-             class LoadingState extends this{
-                 $enter() {
-                     this.tag("Loader").visible = true;
-                     this.tag("Background").visible = true;
-                     this.loadingAnimation.start();
-                 }
-                 _getFocused() {
- 
-                 }
-                 $exit() {
-                     this.tag("Loader").visible = false;
-                     this.tag("Background").visible = false;
-                     this.loadingAnimation.stop();
-                 }
-             }
-         ]
-     }
- }
- 
+
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+        if (!this.prevTicOb) {
+            this.prevTicOb = prevTicObject;
+        }
+        else {
+            this.prevTicOb.tag("Item.Tick").visible = false;
+            this.prevTicOb = prevTicObject;
+        }
+    }
+
+    static _states() {
+        return [
+            class Options extends this{
+                _getFocused() {
+                    return this.tag('List').element
+                }
+                _handleDown() {
+                    this.tag('List').setNext()
+                }
+                _handleUp() {
+                    this.tag('List').setPrevious()
+                }
+                _handleEnter() {
+                    this.tag("List").element.tag("Tick").visible = true;
+                }
+            },
+        ]
+    }
+}

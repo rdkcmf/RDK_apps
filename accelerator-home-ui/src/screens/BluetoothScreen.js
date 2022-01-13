@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import BluetoothItem from '../items/BluetoothItem'
 import SettingsMainItem from '../items/SettingsMainItem'
 import BluetoothApi from './../api/BluetoothApi'
@@ -29,119 +29,146 @@ import { CONFIG } from '../Config/Config'
  * Class for Bluetooth screen.
  */
 export default class BluetoothScreen extends Lightning.Component {
+
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('Settings / Bluetooth On/Off');
+  }
   static _template() {
     return {
-      x: 0,
-      y: 0,
-      Confirmation: {
-        x: 780,
-        y: 100,
-        type: BluetoothConfirmation,
-        visible: false
-      },
-      PairingScreen: {
-        x: 780,
-        y: 100,
-        type: BluetoothPairingScreen,
-        zIndex: 100,
-        visible: false
-      },
-      Switch: {
-        // y: 0 + 200,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Bluetooth On/Off',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
+      rect: true,
+      color: 0xff000000,
+      w: 1920,
+      h: 1080,
+      Bluetooth: {
+        y: 275,
+        x: 200,
+        Confirmation: {
+          x: 780,
+          y: 100,
+          type: BluetoothConfirmation,
+          visible: false
         },
-        Button: {
-          h: 30 * 1.5,
-          w: 44.6 * 1.5,
-          x: 1600,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/ToggleOffWhite.png'),
+        PairingScreen: {
+          x: 780,
+          y: 100,
+          type: BluetoothPairingScreen,
+          zIndex: 100,
+          visible: false
         },
-      },
-      Searching: {
-        visible: false,
-        h: 90,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Searching for Devices',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
-        },
-        Loader: {
-          h: 30 * 1.5,
-          w: 30 * 1.5,
-          // x: 1600,
-          x: 320,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          src: Utils.asset('images/settings/Loading.gif'),
-        },
-      },
-      Networks: {
-        PairedNetworks: {
-          y: 180,
-          List: {
-            type: Lightning.components.ListComponent,
-            w: 1920 - 300,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true,
-            rollMax: 900,
-            itemScrollOffset: -6,
+        Switch: {
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Bluetooth On/Off',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 67,
+            x: 1600,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/ToggleOffWhite.png'),
           },
         },
-        AvailableNetworks: {
-          y: 90,
+        Searching: {
           visible: false,
-          List: {
-            w: 1920 - 300,
-            type: Lightning.components.ListComponent,
-            itemSize: 90,
-            horizontal: false,
-            invertDirection: true,
-            roll: true,
-            rollMax: 900,
-            itemScrollOffset: -6,
+          h: 90,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Searching for Devices',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Loader: {
+            h: 45,
+            w: 45,
+            // x: 1600,
+            x: 320,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/Loading.gif'),
           },
         },
-        visible: false,
-      },
-      AddADevice: {
-        y: 90,
-        type: SettingsMainItem,
-        Title: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: 'Add A Device',
-            textColor: COLORS.titleColor,
-            fontFace: CONFIG.language.font,
-            fontSize: 25,
-          }
+        Networks: {
+          PairedNetworks: {
+            y: 180,
+            List: {
+              type: Lightning.components.ListComponent,
+              w: 1920 - 300,
+              itemSize: 90,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+              rollMax: 900,
+              itemScrollOffset: -6,
+            },
+          },
+          AvailableNetworks: {
+            y: 90,
+            visible: false,
+            List: {
+              w: 1920 - 300,
+              type: Lightning.components.ListComponent,
+              itemSize: 90,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+              rollMax: 900,
+              itemScrollOffset: -6,
+            },
+          },
+          visible: false,
         },
-        visible: false,
+        AddADevice: {
+          y: 90,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: 'Add A Device',
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          visible: false,
+        },
       },
+
     }
+  }
+
+  /**
+   * @param {{ action: String; }} args
+   */
+  set params(args) {
+    if (args.action) {
+      this.pressEnter(args.action)
+    }
+  }
+
+  _unfocus() {
+    this._disable()
+  }
+
+  pageTransition() {
+    return 'left'
   }
 
   _init() {
@@ -167,9 +194,13 @@ export default class BluetoothScreen extends Lightning.Component {
 
   }
 
-
-  _active() {
+  _focus() {
     this._setState('Switch')
+    this._enable()
+  }
+
+  _handleBack() {
+    Router.navigate('settings')
   }
   /**
    * Function to be excuted when the Bluetooth screen is enabled.
@@ -314,26 +345,20 @@ export default class BluetoothScreen extends Lightning.Component {
     })
   }
 
-  $pressEnter(option) {
+  pressEnter(option) {
     if (option === 'Cancel') {
       this._setState('Switch')
     } else if (option === 'Pair') {
       this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
-        this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+        let btName = this._availableNetworks.tag('List').element._item.name
         if (result.success) {
-          this.tag('Confirmation.Pairing').text = 'Pairing Succesful'
-          this._setState('Confirmation')
+          this.widgets.fail.notify({ title: btName, msg: 'Pairing Succesful' })
+          Router.focusWidget('Fail')
         } else {
-          this.tag('Confirmation.Pairing').text = 'Pairing Failed'
-          this._setState('Confirmation')
+          this.widgets.fail.notify({ title: btName, msg: 'Pairing Failed' })
+          Router.focusWidget('Fail')
         }
-        setTimeout(() => {
-          // this.tag('Message').text = ''
-          this._setState('Switch')
-          this.tag('Confirmation.Pairing').text = ''
-        }, 5000)
       })
-      this._setState('Switch')
     } else if (option === 'Connect') {
       this._bt
         .connect(
@@ -341,37 +366,16 @@ export default class BluetoothScreen extends Lightning.Component {
           this._pairedNetworks.tag('List').element._item.deviceType
         )
         .then(result => {
-          this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+          let btName = this._pairedNetworks.tag('List').element._item.name
           if (!result) {
-            // this.tag('Message').text = 'CONNECTION FAILED'
-            this.tag('Confirmation.Pairing').text = 'Connection Failed'
-            this._setState('Confirmation')
+            this.widgets.fail.notify({ title: btName, msg: 'Connection Failed' })
+            Router.focusWidget('Fail')
           } else {
-            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID).then(res => {
-              // console.log(`
-              // Tanjirou's log:
-
-              //   the Audio stream was successfully set${res}
-
-              // `);
-            }).catch(err => {
-              console.log(`
-              Tanjirou's log:
-              
-              Unable to set the audio stream , error = ${err}
-              
-              `);
-            });
-            this.tag('Confirmation.Pairing').text = 'Connection Successful'
-            this._setState('Confirmation')
+            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID)
+            this.widgets.fail.notify({ title: btName, msg: 'Connection Successful' })
+            Router.focusWidget('Fail')
           }
-          setTimeout(() => {
-            // this.tag('Message').text = ''
-            this._setState('Switch')
-            this.tag('Confirmation.Pairing').text = ''
-          }, 5000)
         })
-      this._setState('Switch')
     } else if (option === 'Disconnect') {
       this._bt
         .disconnect(
@@ -379,38 +383,26 @@ export default class BluetoothScreen extends Lightning.Component {
           this._pairedNetworks.tag('List').element._item.deviceType
         )
         .then(result => {
-          this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+          let btName = this._pairedNetworks.tag('List').element._item.name
           if (!result) {
-            this.tag('Confirmation.Pairing').text = 'Failed to Disconnect'
-            this._setState('Confirmation')
+            this.widgets.fail.notify({ title: btName, msg: 'Failed to Disconnect' })
+            Router.focusWidget('Fail')
           } else {
-            this.tag('Confirmation.Pairing').text = 'Disconnected'
-            this._setState('Confirmation')
+            this.widgets.fail.notify({ title: btName, msg: 'Disconnected' })
+            Router.focusWidget('Fail')
           }
-          setTimeout(() => {
-            // this.tag('Message').text = ''
-            this._setState('Switch')
-            this.tag('Confirmation.Pairing').text = ''
-          }, 5000)
         })
-      this._setState('Switch')
     } else if (option === 'Unpair') {
       this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
-        this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+        let btName = this._pairedNetworks.tag('List').element._item.name
         if (result.success) {
-          this.tag('Confirmation.Pairing').text = 'Unpaired'
-          this._setState('Confirmation')
+          this.widgets.fail.notify({ title: btName, msg: 'Unpaired' })
+          Router.focusWidget('Fail')
         } else {
-          this.tag('Confirmation.Pairing').text = 'Unpairing Failed'
-          this._setState('Confirmation')
+          this.widgets.fail.notify({ title: btName, msg: 'Unpairing Failed' })
+          Router.focusWidget('Fail')
         }
-        setTimeout(() => {
-          // this.tag('Message').text = ''
-          this._setState('Switch')
-          this.tag('Confirmation.Pairing').text = ''
-        }, 5000)
       })
-      this._setState('Switch')
     }
   }
 
@@ -459,9 +451,10 @@ export default class BluetoothScreen extends Lightning.Component {
           this._navigate('MyDevices', 'up')
         }
         _handleEnter() {
-          this.showPairingScreen()
-          this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
-          this._setState('PairingScreen')
+          //this.showPairingScreen()
+          //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
+          Router.navigate('settings/bluetooth/pairing', { bluetoothItem: this._pairedNetworks.tag('List').element._item })
+          //this._setState('PairingScreen')
         }
       },
       class AvailableDevices extends this {
@@ -475,8 +468,8 @@ export default class BluetoothScreen extends Lightning.Component {
           this._navigate('AvailableDevices', 'up')
         }
         _handleEnter() {
-          this.$pressEnter('Pair')
-          this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+          this.pressEnter('Pair')
+          //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
         }
         _handleBack() {
           this.hideAvailableDevices()
@@ -510,32 +503,11 @@ export default class BluetoothScreen extends Lightning.Component {
           }
         }
       },
-      class Searching extends this {
-        $enter() {
-          this.showAvailableDevices()
-        }
-
-        _handleBack() {
-          this.hideAvailableDevices()
-          this._setState('Switch')
-        }
-        _handleDown() {
-          this._setState('AvailableDevices')
-        }
-      },
       class PairingScreen extends this {
         $enter() {
           this._disable()
           this._bt.stopScan()
           return this.tag('PairingScreen')
-        }
-        _handleBack() {
-          this.hidePairingScreen()
-          this._setState('Switch')
-        }
-        $goBack() {
-          this.hidePairingScreen()
-          this._setState('Switch')
         }
         _getFocused() {
           return this.tag('PairingScreen')
@@ -611,37 +583,24 @@ export default class BluetoothScreen extends Lightning.Component {
       this._bt.registerEvent('onDiscoveredDevice', () => {
         this.renderDeviceList()
       })
-      this._bt.registerEvent('onPairingChange', status => {
-        this._bt.startScan()
-        this.renderDeviceList()
-        this._setState('Confirmation')
-        this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
-
-      })
       this._bt.registerEvent('onPairingRequest', notification => {
-        if (notification.pinRequired === 'true' && notification.pinValue) {
-          this.tag('PairingScreen').code = notification.pinValue
-        } else {
-          this.respondToPairingRequest(notification.deviceID, 'ACCEPTED')
-        }
+        this.respondToPairingRequest(notification.deviceID, 'ACCEPTED')
       })
       this._bt.registerEvent('onConnectionChange', notification => {
         this._bt.startScan()
         this.renderDeviceList()
-        //  this.tag('Confirmation').item = this._pairedNetworks.tag('List').element._item
+        let btName = notification.name
         if (notification.connected) {
-          // this.tag('Message').text = 'CONNECTION SUCCESS'
-          this.tag('Confirmation.Pairing').text = 'CONNECTION SUCCESS'
+          if (this.widgets.fail) {
+            this.widgets.fail.notify({ title: btName, msg: 'CONNECTION SUCCESS' })
+            Router.focusWidget('Fail')
+          }
         } else {
-          // this.tag('Message').text = 'CONNECTION FAILED'
-          this.tag('Confirmation.Pairing').text = 'CONNECTION FAILED'
+          if (this.widgets.fail) {
+            this.widgets.fail.notify({ title: btName, msg: 'CONNECTION FAILED' })
+            Router.focusWidget('Fail')
+          }
         }
-        setTimeout(() => {
-          // this.tag('Message').text = ''
-          this._setState('Switch')
-          this.tag('Confirmation.Pairing').text = ''
-        }, 5000)
-        this._setState('Confirmation')
       })
       this._bt.registerEvent('onDiscoveryCompleted', () => {
         this.tag('Searching.Loader').visible = false
@@ -655,12 +614,11 @@ export default class BluetoothScreen extends Lightning.Component {
       this._bt.registerEvent('onRequestFailed', notification => {
         this._bt.startScan()
         this.renderDeviceList()
-        this._setState('Confirmation')
-        this.tag('Confirmation.Pairing').text = notification.newStatus
-        setTimeout(() => {
-          this._setState('Switch')
-          this.tag('Confirmation.Pairing').text = ''
-        }, 5000)
+        if (this.widgets.fail) {
+          this.widgets.fail.notify({ title: notification.name, msg: notification.newStatus })
+          Router.focusWidget('Fail')
+        }
+
       })
     })
   }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, VideoPlayer } from "@lightningjs/sdk"
+import { Lightning, Router } from "@lightningjs/sdk"
 import UsbApi from '../api/UsbApi'
 import { CONFIG } from '../Config/Config.js'
 import { imageListInfo } from '../../static/data/ImageListInfo'
@@ -24,7 +24,7 @@ import { musicListInfo } from '../../static/data/MusicListInfo'
 import { videoListInfo } from '../../static/data/VideoListInfo'
 import { UsbInnerFolderListInfo } from "../../static/data/UsbInnerFolderListInfo"
 import UsbListItem from '../items/UsbListItem.js'
-import LightningPlayerControls from "../LightningPlayer/LightningPlayerControl"
+import LightningPlayerControls from "../MediaPlayer/LightningPlayerControl"
 
 let videoAudioUrl = "";
 let videoAudioTitle = "";
@@ -35,6 +35,10 @@ export default class UsbAppsScreen extends Lightning.Component {
   static _template() {
     return {
       UsbAppsScreenContents: {
+        rect: true,
+        color: 0xff000000,
+        x: 200,
+        y: 270,
         w: 1765,
         h: 1250,
         clipping: true,
@@ -187,40 +191,22 @@ export default class UsbAppsScreen extends Lightning.Component {
           }
         }
       },
-      ImageViewer: {
-        h: 1080,
-        w: 1920,
-        x: -200,
-        y: -275,
-        // mount:0.5,
-        rect: true,
-        color: 0xff000000,
-        zIndex: 2,
-        visible: false,
-        Image: {
-          x: 960,
-          y: 540,
-          mount: 0.5,
-          texture: {
-            type: Lightning.textures.ImageTexture,
-            src: 'static/images/usb/USB_Photo_Placeholder.jpg',
-            resizeMode: { type: 'contain', w: 1920, h: 1080 },
-          },
-        }
-      },
       AudioInfo: {
         zIndex: 2,
         visible: false,
         h: 1080,
         w: 1920,
-        x: -200,
-        y: -286,
+        // x: -200,
+        // y: -286,
         Image: {
           scale: 0.5,
           x: 960,
           y: 560,
           mount: 0.5,
-          src: 'static/images/usb/USB_Audio_Placeholder.jpg',
+          texture: {
+            type: Lightning.textures.ImageTexture,
+            src: 'static/images/Media Player/Audio_Background_16k.jpg'
+          }
         },
         Title: {
           x: 960,
@@ -235,8 +221,6 @@ export default class UsbAppsScreen extends Lightning.Component {
       },
       PlayerControls: {
         type: LightningPlayerControls,
-        x: -200,
-        y: -286,
         y: 810,
         alpha: 0,
         signals: {
@@ -246,27 +230,26 @@ export default class UsbAppsScreen extends Lightning.Component {
           fastfwd: 'fastfwd',
           fastrwd: 'fastrwd',
         },
-        zIndex:4
+        zIndex: 4
       },
     }
   }
 
-  _handleBack(){ 
-      console.log(`handle back is called`); 
-      if(!(this.cwd.length === 0)){ 
-        let clone = [...this.cwd] 
-        clone.pop(); 
-        let cwdname = clone.join("/"); 
-        usbApi.cd(cwdname).then(res => { 
-        this.cwd.pop(); 
-        this.loadData(); 
-        }).catch(err => { 
-        console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`); 
-        }); 
-      }else{ 
-        this.fireAncestors('$setStateMainView'); 
-      } 
+  _handleBack() {
+    if(!(this.cwd.length === 0)){ 
+      let clone = [...this.cwd] 
+      clone.pop(); 
+      let cwdname = clone.join("/"); 
+      usbApi.cd(cwdname).then(res => { 
+      this.cwd.pop(); 
+      this.loadData(); 
+      }).catch(err => { 
+      console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`); 
+      }); 
+    }else{ 
+      Router.navigate('menu');
     }
+  }
 
   reset() {
     for (let i = this.tag('Row1').index; i > 0; i--) {
@@ -283,10 +266,6 @@ export default class UsbAppsScreen extends Lightning.Component {
     }
   }
 
-  _firstActive() {
-    VideoPlayer.consumer(this)
-  }
-
   hide() {
     this.tag('UsbAppsScreenContents').visible = false
     this.fireAncestors('$hideAllforVideo')
@@ -295,21 +274,6 @@ export default class UsbAppsScreen extends Lightning.Component {
     this.tag('UsbAppsScreenContents').visible = true
     this.fireAncestors('$showAllforVideo')
   }
-
-  exitFunctionality() { 
-      VideoPlayer.close()
-      this.tag('ImageViewer').visible = false
-      this.tag('ImageViewer.Image').texture.src = 'static/images/usb/USB_Photo_Placeholder.jpg' 
-      this.hidePlayerControls();
-      VideoPlayer.close() 
-      this.show()
-      videoAudioUrl = ""
-      videoAudioTitle = ""
-      this.tag('AudioInfo').visible = false
-      this.tag('AudioInfo.Title').text.text = 'file_name.mp3'
-      this.tag('UsbAppsScreenContents').visible = true 
-  }
-
 
   traverseMinus() {
     this.index = (this.traversableRows.length + (--this.index)) % this.traversableRows.length;
@@ -334,7 +298,6 @@ export default class UsbAppsScreen extends Lightning.Component {
           }
         }
         _handleDown() {
-          // this._setState('Audio')
           this.traversePlus()
         }
         _handleUp() {
@@ -347,11 +310,11 @@ export default class UsbAppsScreen extends Lightning.Component {
           }
         }
         _handleEnter() {
-          isAudio = false
-          videoAudioUrl = this.tag('Row1').element.data.uri
-          videoAudioTitle = this.tag('Row1').element.data.displayName
-          this._setState('Playing')
-
+          Router.navigate('player', {
+            url: this.tag('Row1').element.data.uri,
+            currentIndex: this.tag('Row1').element.idx,
+            list: this.tag('Row1').items
+          })
         }
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal'
@@ -380,11 +343,12 @@ export default class UsbAppsScreen extends Lightning.Component {
           this.traverseMinus()
         }
         _handleEnter() {
-          isAudio = true
-          this.tag('AudioInfo.Title').text.text = this.tag('Row2').element.data.displayName
-          videoAudioUrl = this.tag('Row2').element.data.uri
-          videoAudioTitle = this.tag('Row2').element.data.displayName
-          this._setState('Playing')
+          Router.navigate('player', {
+            url: this.tag('Row2').element.data.uri,
+            isAudio: true,
+            list: this.tag('Row2').items,
+            currentIndex: this.tag('Row2').element.idx
+          })
         }
         _handleRight() {
           if (this.tag('Row2').length - 1 != this.tag('Row2').index) {
@@ -419,8 +383,13 @@ export default class UsbAppsScreen extends Lightning.Component {
           this.traverseMinus()
         }
         _handleEnter() {
-          this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri
-          this._setState('ImageViewer')
+          console.log(this.tag('Row3').items)
+          Router.navigate('image', {
+            src: this.tag('Row3').element.data.uri,
+            currentIndex: this.tag('Row3').element.idx,
+            list: this.tag('Row3').items,
+            cwd: this.cwd
+          })
         }
 
         _handleRight() {
@@ -443,7 +412,7 @@ export default class UsbAppsScreen extends Lightning.Component {
 
       class Folder extends this {
         $enter() {
-          if(this.traversableRows.length > 3){
+          if (this.traversableRows.length > 3) {
             this.scroll(-243);
           }
         }
@@ -459,11 +428,11 @@ export default class UsbAppsScreen extends Lightning.Component {
         _handleUp() {
           this.traverseMinus()
         }
-        _handleEnter() {      
+        _handleEnter() {
           //do something after folder click.
-          let dname = this.cwd.join("/") +"/"+ this.tag('Row4').element.data.displayName;
+          let dname = this.cwd.join("/") + "/" + this.tag('Row4').element.data.displayName;
           usbApi.cd(dname).then(res => {
-            
+
             this.cwd.push(this.tag('Row4').element.data.displayName);
             console.log(`loading the data from the directory ${this.cwd}
 
@@ -480,7 +449,7 @@ export default class UsbAppsScreen extends Lightning.Component {
           }).catch(err => {
             console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
           });
-        
+
         }
 
         _handleRight() {
@@ -498,205 +467,14 @@ export default class UsbAppsScreen extends Lightning.Component {
             this.reset()
           }
         }
-
       },
-
-
-
-      class ImageViewer extends this{
-        $enter() {
-          this.tag('ImageViewer').visible = true
-        }
-        $exit() {
-          this.tag('ImageViewer').visible = false
-          this.tag('ImageViewer.Image').texture.src = 'static/images/usb/USB_Photo_Placeholder.jpg'
-        }
-        _handleBack() {
-          this._setState(this.traversableRows[this.index])
-        }
-        _handleRight() {
-          if (this.tag('Row3').length - 1 != this.tag('Row3').index) {
-            this.tag('Row3').setNext()
-            this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri
-            return this.tag('Row3').element
-          }
-        }
-        _handleLeft() {
-          this.tag('Text3').text.fontStyle = 'normal'
-          if (0 != this.tag('Row3').index) {
-            this.tag('Row3').setPrevious()
-            this.tag('ImageViewer.Image').texture.src = this.tag('Row3').element.data.uri
-            return this.tag('Row3').element
-          } else {
-            this.reset()
-          }
-        }
-      },
-      class Playing extends this {
-
-        $videoPlayerLoadedData(LoadedData){
-          this.player = this.tag('PlayerControls');
-          this.player.duration = VideoPlayer.duration;
-          this.player.currentTime = VideoPlayer.currentTime;
-        }
-
-        $videoPlayerProgress(progress){
-         this.player.currentTime =  VideoPlayer.currentTime
-        }
-
-        start(){
-          VideoPlayer.size(1920, 1080)
-          VideoPlayer.loop(true);
-          VideoPlayer.open(videoAudioUrl)
-          this._mediaPlaybackStarted();
-          this.initializePlayer();
-        }
-
-        $enter() {
-          this.player = null;
-          this.hide()
-          if (isAudio) {
-            this.tag('AudioInfo').visible = true
-            this.tag('AudioInfo.Title').text.text = videoAudioTitle;
-          }
-          this.start();
-        }
-
-        initializePlayer(){
-          this.player = this.tag('PlayerControls');
-          this.player.title = videoAudioTitle;
-          this.player.subtitle = "None"
-          
-          //player.logoPath = ""
-          //this.tag('PlayerControls').duration = VideoPlayer.getDurationSec()
-          // player.currentTime = 1
-        }
-
-        $pause(){
-          VideoPlayer.pause();
-        }
-
-        $play(){
-          VideoPlayer.play();
-        }
-
-        $next(){
-          if(isAudio){
-            if (this.tag('Row2').length - 1 != this.tag('Row2').index) {
-              this.tag('Row2').setNext()
-              videoAudioUrl = this.tag('Row2').element.data.uri
-              videoAudioTitle = this.tag('Row2').element.data.displayName
-              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
-              VideoPlayer.close();
-              this.start();
-              return this.tag('Row2').element
-            }
-          }else{
-            if (this.tag('Row1').length - 1 != this.tag('Row1').index) {
-              this.tag('Row1').setNext()
-              videoAudioUrl = this.tag('Row1').element.data.uri
-              videoAudioTitle = this.tag('Row1').element.data.displayName
-              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
-              VideoPlayer.close();
-              this.start();
-              return this.tag('Row1').element
-            }
-          }
-         
-        }
-
-        $previous(){
-          if(isAudio){
-            if (0 != this.tag('Row2').index) {
-              this.tag('Row2').setPrevious()
-
-              videoAudioUrl = this.tag('Row2').element.data.uri
-              videoAudioTitle = this.tag('Row2').element.data.displayName
-              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
-              VideoPlayer.close();
-              this.start();
-
-              return this.tag('Row2').element
-            } else {
-              this.reset()
-            }
-          }else{
-            if (0 != this.tag('Row1').index) {
-              this.tag('Row1').setPrevious()
-
-              videoAudioUrl = this.tag('Row1').element.data.uri
-              videoAudioTitle = this.tag('Row1').element.data.displayName
-              this.tag('AudioInfo.Title').text.text = videoAudioTitle;
-              VideoPlayer.close();
-              this.start();
-
-              return this.tag('Row1').element
-            } else {
-              this.reset()
-            }
-          }
-        }
-
-        $exit() {
-          this.hidePlayerControls();
-          VideoPlayer.close()
-          this.show()
-          videoAudioUrl = ""
-          this.tag('AudioInfo').visible = false
-          this.tag('AudioInfo.Title').text.text = 'file_name.mp3'
-        }
-        _handleBack() {
-          this._setState(this.traversableRows[this.index])
-        }
-
-        hidePlayerControls() {
-          this.tag('PlayerControls').setSmooth('y', 1080, { duration: 0.7 })
-          this.tag('PlayerControls').setSmooth('alpha', 0, { duration: 0.7 })
-        }
-
-        showPlayerControls() {
-          this.tag('PlayerControls').reset()
-          this.tag('PlayerControls').setSmooth('alpha', 1)
-          this.tag('PlayerControls').setSmooth('y', 389, { duration: 0.7 })
-          this._setState('Playing.ShowControls')
-          this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
-        }
-
-        _handleDown() {
-          this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
-          this.tag('PlayerControls').setSmooth('y', 389, { duration: 1 })
-          this._setState('Playing.ShowControls')
-          clearTimeout(this.timeout)
-        }
-
-        _handleUp() {
-          this.hidePlayerControls()
-        }
-
-        _mediaPlaybackStarted() {
-          this.tag('PlayerControls').reset()
-          this.tag('PlayerControls').setSmooth('alpha', 1)
-          this.tag('PlayerControls').setSmooth('y', 389, { duration: 1 })
-          this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
-        }
-
-        static _states() {
-          return [
-            class ShowControls extends this {
-              _getFocused() {
-                return this.tag('PlayerControls')
-              }
-            },
-            class HideControls extends this {
-          
-            },
-          ]
-        }
-        
-
-      }
     ]
   }
+
+  set params(args) {
+    this.currentIndex = args.currentIndex
+    this.thisDir = args.cwd
+}
 
   set Row1Items(items) {
     this.tag('Row1').items = items.map((info, idx) => {
@@ -743,27 +521,27 @@ export default class UsbAppsScreen extends Lightning.Component {
     this.tag('Row3').start()
   }
 
-set Row4Items(items){
-  this.tag('Row4').items = items.map((info, idx) => {
-    return {
-      w: 145,
-      h: 145,
-      type: UsbListItem,
-      data: info,
-      focus: 1.11,
-      unfocus: 1,
-      idx: idx
-    }
-  })
-  this.tag('Row4').start()
-}
+  set Row4Items(items) {
+    this.tag('Row4').items = items.map((info, idx) => {
+      return {
+        w: 145,
+        h: 145,
+        type: UsbListItem,
+        data: info,
+        focus: 1.11,
+        unfocus: 1,
+        idx: idx
+      }
+    })
+    this.tag('Row4').start()
+  }
 
 
   scroll(y) { this.tag('Wrapper').setSmooth('y', y, { duration: 0.5 }) }
 
 
 
-  loadData(){
+  loadData() {
     console.log(`loading data from the directory ${this.cwd}`);
     let sumY = 0;
     this.index = 0;
@@ -781,7 +559,7 @@ set Row4Items(items){
     let row3 = this.tag('Row3');
     let text4 = this.tag('Text4');
     let row4 = this.tag('Row4');
-    
+
     if (videoListInfo.length === 0 && musicListInfo.length === 0 && imageListInfo.length === 0 && UsbInnerFolderListInfo.length === 0) {
       this.tag('NoUSB').visible = true;
       text1.visible = false;
@@ -818,7 +596,7 @@ set Row4Items(items){
         row2.y = sumY + 30;
         sumY += 243;
       }
-      
+
       if (imageListInfo.length === 0) {
         text3.visible = false;
         row3.visible = false;
@@ -849,19 +627,37 @@ set Row4Items(items){
   }
 
   _focus() {
-    this.index = 0;
-    this.traversableRows = [];
-    this.cwd = [];
-    usbApi.retrieUsb().then(res => {
-      this.loadData();
-    }).catch(err => {
-      console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
-    });
-    this._setState(this.traversableRows[this.index])
+    if (this.thisDir){
+      if( this.thisDir.length>0){
+        this.cwd = [...this.thisDir];
+        let dname = this.cwd.join("/")
+          usbApi.cd(dname).then(res => {
+            this.loadData();
+            this._setState(this.traversableRows[this.index]+`.${this.currentIndex}`)//focus on first element
+          }).catch(err => {
+            console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+          });
+      }
+    }else{
+      this.index = 0;
+      this.traversableRows = [];
+      this.cwd = [];
+      usbApi.retrieUsb().then(res => {
+        this.loadData();
+        this._setState(this.traversableRows[this.index])
+      }).catch(err => {
+        console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+      })
+    }
+    // this._setState(this.traversableRows[this.index])
+  }
+
+  _unfocus() {
+    //this.exitFunctionality()
   }
 
 
-  
+
 
 
 }

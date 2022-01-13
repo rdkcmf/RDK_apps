@@ -30,13 +30,13 @@ export var appListInfo = [
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/amazon_prime.jpg',
+    url: '/images/apps/amazon_prime.png',
   },
   {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.jpg',
+    url: '/images/apps/youtube.png',
   },
   {
     displayName: 'Xumo',
@@ -49,5 +49,5 @@ export var appListInfo = [
     applicationType: 'Netflix',
     uri: '',
     url: '/images/apps/content1.png',
-  }
+  },
 ]

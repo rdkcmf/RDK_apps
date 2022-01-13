@@ -108,13 +108,26 @@ const _privacyPolicy = `Privacy
  Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A`
 
 export default class PrivacyPolicyScreen extends Lightning.Component {
+
+    _onChanged() {
+        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy / Policy');
+    }
+
+    pageTransition() {
+        return 'left'
+      }
+
+
     static _template() {
         return {
-            x: 0, y: 0,
-            h: 1080,
+            rect: true,
+            color: 0xff000000,
             w: 1920,
+            h: 1080,
             clipping: true,
             PrivacyPolicy: {
+                x: 200,
+                y: 270,
                 Title: {
                     x: 10,
                     y: 45,
