@@ -32,6 +32,11 @@ let isAudio = false;
 var usbApi = new UsbApi();
 
 export default class UsbAppsScreen extends Lightning.Component {
+  
+  _onChanged() {
+    this.widgets.menu.updateTopPanelText('USB')
+  }
+  
   static _template() {
     return {
       UsbAppsScreenContents: {
@@ -310,7 +315,7 @@ export default class UsbAppsScreen extends Lightning.Component {
           }
         }
         _handleEnter() {
-          Router.navigate('player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row1').element.data.uri,
             currentIndex: this.tag('Row1').element.idx,
             list: this.tag('Row1').items
@@ -343,7 +348,7 @@ export default class UsbAppsScreen extends Lightning.Component {
           this.traverseMinus()
         }
         _handleEnter() {
-          Router.navigate('player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row2').element.data.uri,
             isAudio: true,
             list: this.tag('Row2').items,
@@ -384,7 +389,7 @@ export default class UsbAppsScreen extends Lightning.Component {
         }
         _handleEnter() {
           console.log(this.tag('Row3').items)
-          Router.navigate('image', {
+          Router.navigate('usb/image', {
             src: this.tag('Row3').element.data.uri,
             currentIndex: this.tag('Row3').element.idx,
             list: this.tag('Row3').items,

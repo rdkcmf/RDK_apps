@@ -165,9 +165,38 @@ export default class App extends Router.App {
       }
     })
     keyIntercept()
-    if( !availableLanguages.includes(localStorage.getItem('Language')) ){
+    if (!availableLanguages.includes(localStorage.getItem('Language'))) {
       localStorage.setItem('Language', 'English')
     }
+
+    thunder.on('Controller', 'statechange', notification => {
+      console.log(JSON.stringify(notification))
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
+
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+          console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+        });
+        thunder
+          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
+          .then(result => {
+            console.log('ResidentApp setFocus Success' + JSON.stringify(result));
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      }
+      if (notification && (notification.callsign === 'org.rdk.HdmiCec_2' && notification.state === 'Activated')) {
+        this.advanceScreen = Router.activePage()
+        if (typeof this.advanceScreen.performOTPAction === 'function') {
+          console.log('otp action')
+          this.advanceScreen.performOTPAction()
+        }
+      }
+    });
+
+
   }
 
   deactivateChildApp(plugin) {
@@ -452,7 +481,7 @@ export default class App extends Router.App {
           console.log(`activated the rdk shell plugin trying to set the inactivity listener; res = ${JSON.stringify(res)}`);
           thunder.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
             console.log(`user was inactive`);
-            if (powerState === "ON" && Storage.get('applicationType')=='') {
+            if (powerState === "ON" && Storage.get('applicationType') == '') {
               this.standby("STANDBY");
             }
           }, err => {

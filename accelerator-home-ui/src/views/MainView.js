@@ -170,30 +170,11 @@ export default class MainView extends Lightning.Component {
       port: 9998,
       default: 1,
     };
-    let appApi = new AppApi();
     this.usbApi = new UsbApi();
     this.homeApi = new HomeApi();
     this.xcastApi = new XcastApi();
     let thunder = ThunderJS(config);
-    thunder.on('Controller', 'statechange', notification => {
-      console.log(JSON.stringify(notification))
-      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
-
-        Storage.set('applicationType', '');
-        appApi.setVisibility('ResidentApp', true);
-        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-          console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-        });
-        thunder
-          .call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
-          .then(result => {
-            console.log('ResidentApp setFocus Success' + JSON.stringify(result));
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
-      }
-    });
+  
 
     // for initially showing/hiding usb icon
 
@@ -268,7 +249,7 @@ export default class MainView extends Lightning.Component {
           }
 
           if (!notification.mounted) { //if mounted is false
-            if (currentPage === 'usb') { // hot exit if we are on usb screen
+            if (currentPage === 'usb' || currentPage === 'usb/image' || currentPage === 'usb/player') { // hot exit if we are on usb screen or sub screens
               // this.$changeHomeText('Home')
               Router.navigate('menu');
             }
@@ -285,6 +266,27 @@ export default class MainView extends Lightning.Component {
 
     this.refreshFirstRow()
     this._setState('AppList.0')
+  }
+
+  _firstActive(){
+    if (!Storage.get('UsbMedia')) {
+      this.usbApi.activate().then(res => {
+          Storage.set('UsbMedia', 'ON')
+          this.fireAncestors('$registerUsbMount')
+
+      })
+  } else if (Storage.get('UsbMedia') === 'ON') {
+      this.usbApi.activate().then(res => {
+        this.fireAncestors('$registerUsbMount')
+      })
+  } else if (Storage.get('UsbMedia') === 'OFF') {
+      // deactivate usb Plugin here 
+      this.usbApi.deactivate().then((res)=>{
+          console.log(`disabled the Usb Plugin`);
+      }).catch(err=>{
+          console.error(`error while disabling the usb plugin = ${err}`)
+      })
+  }
   }
 
 
@@ -313,6 +315,17 @@ export default class MainView extends Lightning.Component {
       })
     } else if (Storage.get('UsbMedia') === 'OFF') {
       this.appItems = this.tempRow
+    } else{
+      Storage.set('UsbMedia', 'ON')
+      this.usbApi.activate().then(res => {
+        this.usbApi.getMountedDevices().then(result => {
+          if (result.mounted.length === 1) {
+            this.appItems = this.firstRowItems
+          } else {
+            this.appItems = this.tempRow
+          }
+        })
+      })
     }
   }
 

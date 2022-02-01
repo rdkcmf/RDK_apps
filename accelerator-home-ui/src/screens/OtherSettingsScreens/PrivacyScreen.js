@@ -172,7 +172,6 @@ export default class PrivacyScreen extends Lightning.Component {
         this.checkLocalDeviceStatus()
         this.USBApi = new UsbApi()
         this.AppApi = new AppApi()
-        this.checkUSBDeviceStatus()
     }
 
 
@@ -187,26 +186,12 @@ export default class PrivacyScreen extends Lightning.Component {
 
     checkUSBDeviceStatus() {
         if (!Storage.get('UsbMedia')) {
-            this.USBApi.activate().then(res => {
-                // activate the api and set UsbMedia for the first time in storage can also set to OFF by default if needed
                 this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
                 Storage.set('UsbMedia', 'ON')
-                this.fireAncestors('$registerUsbMount')
-
-            })
         } else if (Storage.get('UsbMedia') === 'ON') {
-            this.USBApi.activate().then(res => {
                 this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-                this.fireAncestors('$registerUsbMount')
-            })
         } else if (Storage.get('UsbMedia') === 'OFF') {
             this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-            // deactivate usb Plugin here 
-            this.USBApi.deactivate().then((res)=>{
-                console.log(`disabled the Usb Plugin`);
-            }).catch(err=>{
-                console.error(`error while disabling the usb plugin = ${err}`)
-            })
         }
     }
 
@@ -281,15 +266,14 @@ export default class PrivacyScreen extends Lightning.Component {
                 _handleEnter() {
                     let _UsbMedia = Storage.get('UsbMedia')
                     if (_UsbMedia === 'ON') {
-                        Storage.set('UsbMedia', 'OFF')
-                        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-                        // deactivate usb plugin here 
                         this.fireAncestors('$deRegisterUsbMount')
                         this.USBApi.deactivate().then((res)=>{
-                            console.log(`disabled the Usb Plugin`);
+                            Storage.set('UsbMedia', 'OFF')
+                            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
                             this.widgets.menu.refreshMainView()
                         }).catch(err=>{
                             console.error(`error while disabling the usb plugin = ${err}`)
+                            this.fireAncestors('$registerUsbMount')
                         })
                     } else if (_UsbMedia === 'OFF') {
                         this.USBApi.activate().then(res => {

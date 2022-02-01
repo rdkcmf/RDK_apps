@@ -68,6 +68,14 @@ export default {
       widgets: ['Menu'],
     },
     {
+      path: 'usb/player',
+      component: AAMPVideoPlayer
+    },
+    {
+      path: 'usb/image',
+      component: ImageViewer,
+    },
+    {
       path: 'image',
       component: ImageViewer,
     },

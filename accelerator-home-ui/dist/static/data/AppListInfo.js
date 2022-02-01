@@ -30,24 +30,24 @@ export var appListInfo = [
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/amazon_prime.png',
+    url: '/images/apps/content1.png',//replace with online url
   },
   {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.png',
+    url: '/images/apps/content2.png',//replace with online url
   },
   {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/xumo.png',
+    url: '/images/apps/content3.png',//replace with online url
   },
   {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/content1.png',
+    url: '/images/apps/content4.png',//replace with online url
   },
 ]

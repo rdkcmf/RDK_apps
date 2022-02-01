@@ -110,6 +110,7 @@ export default class TopPanel extends Lightning.Component {
     }
     store.subscribe(render.bind(this));
     this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this._setState('Setting')
   }
 
   set index(index) {
@@ -117,7 +118,8 @@ export default class TopPanel extends Lightning.Component {
   }
 
   _focus() {
-    this._setState('Mic')
+    this._setState(this.state)
+    this.tag('Settings').color = CONFIG.theme.hex
   }
 
   set changeText(text) {
@@ -219,7 +221,7 @@ export default class TopPanel extends Lightning.Component {
             Router.focusPage()
             this.tag('Settings').color = 0xffffffff
           } else if (key.keyCode === Keymap.ArrowLeft) {
-            this._setState('Mic')
+            // this._setState('Mic')
           } else if (key.keyCode === Keymap.Enter) {
             this.tag('Page').text.text = Language.translate('settings')
             Router.navigate('settings')

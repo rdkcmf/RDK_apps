@@ -1,9 +1,9 @@
 /**
- * App version: 3.5 27/1/22
+ * App version: 3.5 02/02/22
  * SDK version: 4.8.1
- * CLI version: 2.7.1
- *
- * Generated: Thu, 27 Jan 2022 12:46:03 GMT
+ * CLI version: 2.7.2
+ * 
+ * Generated: Thu, 03 Feb 2022 11:14:12 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -2208,7 +2208,7 @@ var APP_accelerator_home_ui = (function () {
    */
   let warned = false;
 
-  const deprecated = (force = false) => {
+  const deprecated$1 = (force = false) => {
     if (force === true || warned === false) {
       console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'Language'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language'].join('\n\n'));
     }
@@ -2245,7 +2245,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     setLanguage(lang) {
-      deprecated();
+      deprecated$1();
       this.__enabled = true;
       this.language = lang;
     }
@@ -2257,7 +2257,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     get tr() {
-      deprecated(true);
+      deprecated$1(true);
       return this.__trObj[this.language];
     }
     /**
@@ -2268,7 +2268,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     loadFromObject(trObj) {
-      deprecated();
+      deprecated$1();
       const fallbackLanguage = 'en';
 
       if (Object.keys(trObj).indexOf(this.language) === -1) {
@@ -2839,19 +2839,35 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  var name = "@lightningjs/sdk";
-  var version = "4.8.1";
-  var license = "Apache-2.0";
-  var scripts = {
-  	postinstall: "node ./scripts/postinstall.js",
-  	lint: "eslint '**/*.js'",
-  	release: "npm publish --access public"
+  var _from = "@lightningjs/sdk@^4.8.1";
+  var _id = "@lightningjs/sdk@4.8.1";
+  var _inBundle = false;
+  var _integrity = "sha512-gO8yzy43gLpBco6UDjmQehlu3HSwPKBLgDrSOf/WchRfMpU/T8ijr6Pe41Ife7yKEQLn67XrRtm3wX5AvLrhwg==";
+  var _location = "/@lightningjs/sdk";
+  var _phantomChildren = {
   };
-  var husky = {
-  	hooks: {
-  		"pre-commit": "lint-staged"
-  	}
+  var _requested = {
+  	type: "range",
+  	registry: true,
+  	raw: "@lightningjs/sdk@^4.8.1",
+  	name: "@lightningjs/sdk",
+  	escapedName: "@lightningjs%2fsdk",
+  	scope: "@lightningjs",
+  	rawSpec: "^4.8.1",
+  	saveSpec: null,
+  	fetchSpec: "^4.8.1"
   };
+  var _requiredBy = [
+  	"/"
+  ];
+  var _resolved = "https://registry.npmjs.org/@lightningjs/sdk/-/sdk-4.8.1.tgz";
+  var _shasum = "7f4214dae864965c4a4188d02f880c365484e605";
+  var _spec = "@lightningjs/sdk@^4.8.1";
+  var _where = "C:\\Users\\Arun Raj\\Project\\3.5 P 11\\RDK_apps\\accelerator-home-ui";
+  var bugs = {
+  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
+  };
+  var bundleDependencies = false;
   var dependencies = {
   	"@babel/polyfill": "^7.11.5",
   	"@lightningjs/core": "*",
@@ -2862,6 +2878,8 @@ var APP_accelerator_home_ui = (function () {
   	"url-polyfill": "^1.1.10",
   	"whatwg-fetch": "^3.0.0"
   };
+  var deprecated = false;
+  var description = "The Lightning-SDK helps you build great Lightning-based TV apps!";
   var devDependencies = {
   	"@babel/core": "^7.11.6",
   	"@babel/plugin-transform-parameters": "^7.10.5 ",
@@ -2877,18 +2895,46 @@ var APP_accelerator_home_ui = (function () {
   	rollup: "^1.32.1",
   	"rollup-plugin-babel": "^4.4.0"
   };
+  var homepage = "https://github.com/rdkcentral/Lightning-SDK#readme";
+  var husky = {
+  	hooks: {
+  		"pre-commit": "lint-staged"
+  	}
+  };
+  var license = "Apache-2.0";
+  var name = "@lightningjs/sdk";
   var repository = {
   	type: "git",
-  	url: "git@github.com:rdkcentral/Lightning-SDK.git"
+  	url: "git+ssh://git@github.com/rdkcentral/Lightning-SDK.git"
   };
-  var bugs = {
-  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
+  var scripts = {
+  	lint: "eslint '**/*.js'",
+  	postinstall: "node ./scripts/postinstall.js",
+  	release: "npm publish --access public"
   };
+  var version = "4.8.1";
   var packageInfo = {
-  	name: name,
-  	version: version,
+  	_from: _from,
+  	_id: _id,
+  	_inBundle: _inBundle,
+  	_integrity: _integrity,
+  	_location: _location,
+  	_phantomChildren: _phantomChildren,
+  	_requested: _requested,
+  	_requiredBy: _requiredBy,
+  	_resolved: _resolved,
+  	_shasum: _shasum,
+  	_spec: _spec,
+  	_where: _where,
+  	bugs: bugs,
+  	bundleDependencies: bundleDependencies,
+  	dependencies: dependencies,
+  	deprecated: deprecated,
+  	description: description,
+  	devDependencies: devDependencies,
+  	homepage: homepage,
+  	husky: husky,
   	license: license,
-  	scripts: scripts,
   	"lint-staged": {
   	"*.js": [
   		"eslint --fix"
@@ -2897,11 +2943,10 @@ var APP_accelerator_home_ui = (function () {
   		"rollup -c ./rollup.config.js"
   	]
   },
-  	husky: husky,
-  	dependencies: dependencies,
-  	devDependencies: devDependencies,
+  	name: name,
   	repository: repository,
-  	bugs: bugs
+  	scripts: scripts,
+  	version: version
   };
 
   /*
@@ -7194,12 +7239,12 @@ var APP_accelerator_home_ui = (function () {
   var webUrl = '';
   var lightningUrl = '';
   var nativeUrl = '';
-  const config$4 = {
+  const config$5 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$4 = thunderJS(config$4);
+  const thunder$4 = thunderJS(config$5);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -8520,22 +8565,76 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/amazon_prime.png'
+    url: '/images/apps/content1.png' //replace with online url
+
   }, {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/youtube.png'
+    url: '/images/apps/content2.png' //replace with online url
+
   }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/xumo.png'
+    url: '/images/apps/content3.png' //replace with online url
+
   }, {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
+    url: '/images/apps/content4.png' //replace with online url
+
+  }];
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  /**
+   * Class which contains data for app listings.
+   */
+  var appListInfoOffline = [{
+    displayName: 'USB',
+    applicationType: '',
+    uri: 'USB',
+    url: '/images/usb/USB_Featured_Item.jpg'
+  }, //the first item should be usb
+  {
+    displayName: 'Amazon Prime video',
+    applicationType: 'Amazon',
+    uri: '',
     url: '/images/apps/content1.png'
+  }, {
+    displayName: 'Youtube',
+    applicationType: 'Cobalt',
+    uri: 'https://www.youtube.com/tv',
+    url: '/images/apps/content2.png'
+  }, {
+    displayName: 'Xumo',
+    applicationType: 'WebApp',
+    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    url: '/images/apps/content3.png'
+  }, {
+    displayName: 'Netflix',
+    applicationType: 'Netflix',
+    uri: '',
+    url: '/images/apps/content4.png'
   }];
 
   /**
@@ -8954,7 +9053,15 @@ var APP_accelerator_home_ui = (function () {
      * Function to get details for app listing.
      */
     getAppListInfo() {
-      return appListInfo;
+      let appsMetaData;
+
+      if (IpAddress1 || IpAddress2) {
+        appsMetaData = appListInfo;
+      } else {
+        appsMetaData = appListInfoOffline;
+      }
+
+      return appsMetaData;
     }
     /**
      * Function to get details for tv shows listings.
@@ -9789,7 +9896,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$3 = {
+  const config$4 = {
     host: '127.0.0.1',
     port: 9998,
     versions: {
@@ -9798,7 +9905,7 @@ var APP_accelerator_home_ui = (function () {
       UsbAccess: 2
     }
   };
-  var thunder$3 = thunderJS(config$3);
+  var thunder$3 = thunderJS(config$4);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -10379,31 +10486,10 @@ var APP_accelerator_home_ui = (function () {
         port: 9998,
         default: 1
       };
-      let appApi = new AppApi();
       this.usbApi = new UsbApi();
       this.homeApi = new HomeApi();
       this.xcastApi = new XcastApi();
-      let thunder = thunderJS(config);
-      thunder.on('Controller', 'statechange', notification => {
-        console.log(JSON.stringify(notification));
-
-        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
-          Storage$1.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true);
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-          });
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp setFocus Success' + JSON.stringify(result));
-          }).catch(err => {
-            console.log('Error', err);
-          });
-        }
-      }); // for initially showing/hiding usb icon
+      let thunder = thunderJS(config); // for initially showing/hiding usb icon
 
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
@@ -10476,8 +10562,8 @@ var APP_accelerator_home_ui = (function () {
 
             if (!notification.mounted) {
               //if mounted is false
-              if (currentPage === 'usb') {
-                // hot exit if we are on usb screen
+              if (currentPage === 'usb' || currentPage === 'usb/image' || currentPage === 'usb/player') {
+                // hot exit if we are on usb screen or sub screens
                 // this.$changeHomeText('Home')
                 Router.navigate('menu');
               }
@@ -10493,6 +10579,26 @@ var APP_accelerator_home_ui = (function () {
       this.refreshFirstRow();
 
       this._setState('AppList.0');
+    }
+
+    _firstActive() {
+      if (!Storage$1.get('UsbMedia')) {
+        this.usbApi.activate().then(res => {
+          Storage$1.set('UsbMedia', 'ON');
+          this.fireAncestors('$registerUsbMount');
+        });
+      } else if (Storage$1.get('UsbMedia') === 'ON') {
+        this.usbApi.activate().then(res => {
+          this.fireAncestors('$registerUsbMount');
+        });
+      } else if (Storage$1.get('UsbMedia') === 'OFF') {
+        // deactivate usb Plugin here 
+        this.usbApi.deactivate().then(res => {
+          console.log(`disabled the Usb Plugin`);
+        }).catch(err => {
+          console.error(`error while disabling the usb plugin = ${err}`);
+        });
+      }
     }
 
     _focus() {
@@ -10523,6 +10629,17 @@ var APP_accelerator_home_ui = (function () {
         });
       } else if (Storage$1.get('UsbMedia') === 'OFF') {
         this.appItems = this.tempRow;
+      } else {
+        Storage$1.set('UsbMedia', 'ON');
+        this.usbApi.activate().then(res => {
+          this.usbApi.getMountedDevices().then(result => {
+            if (result.mounted.length === 1) {
+              this.appItems = this.firstRowItems;
+            } else {
+              this.appItems = this.tempRow;
+            }
+          });
+        });
       }
     }
     /**
@@ -19923,7 +20040,6 @@ var APP_accelerator_home_ui = (function () {
       this.checkLocalDeviceStatus();
       this.USBApi = new UsbApi();
       this.AppApi = new AppApi();
-      this.checkUSBDeviceStatus();
     }
 
     _focus() {
@@ -19939,25 +20055,12 @@ var APP_accelerator_home_ui = (function () {
 
     checkUSBDeviceStatus() {
       if (!Storage$1.get('UsbMedia')) {
-        this.USBApi.activate().then(res => {
-          // activate the api and set UsbMedia for the first time in storage can also set to OFF by default if needed
-          this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-          Storage$1.set('UsbMedia', 'ON');
-          this.fireAncestors('$registerUsbMount');
-        });
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        Storage$1.set('UsbMedia', 'ON');
       } else if (Storage$1.get('UsbMedia') === 'ON') {
-        this.USBApi.activate().then(res => {
-          this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-          this.fireAncestors('$registerUsbMount');
-        });
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
       } else if (Storage$1.get('UsbMedia') === 'OFF') {
-        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png'); // deactivate usb Plugin here 
-
-        this.USBApi.deactivate().then(res => {
-          console.log(`disabled the Usb Plugin`);
-        }).catch(err => {
-          console.error(`error while disabling the usb plugin = ${err}`);
-        });
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       }
     }
 
@@ -20037,15 +20140,14 @@ var APP_accelerator_home_ui = (function () {
           let _UsbMedia = Storage$1.get('UsbMedia');
 
           if (_UsbMedia === 'ON') {
-            Storage$1.set('UsbMedia', 'OFF');
-            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png'); // deactivate usb plugin here 
-
             this.fireAncestors('$deRegisterUsbMount');
             this.USBApi.deactivate().then(res => {
-              console.log(`disabled the Usb Plugin`);
+              Storage$1.set('UsbMedia', 'OFF');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               this.widgets.menu.refreshMainView();
             }).catch(err => {
               console.error(`error while disabling the usb plugin = ${err}`);
+              this.fireAncestors('$registerUsbMount');
             });
           } else if (_UsbMedia === 'OFF') {
             this.USBApi.activate().then(res => {
@@ -20308,35 +20410,35 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$2 = {
+  const config$3 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$2 = thunderJS(config$2);
+  const thunder$2 = thunderJS(config$3);
   class CECApi {
     activate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.HdmiCec_2.1';
+        const systemcCallsign = 'org.rdk.HdmiCec_2';
         thunder$2.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
         }).catch(err => {
-          console.log('CEC Error', err);
+          console.log('CEC Error Activation', err);
         });
       });
     }
 
     deactivate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.HdmiCec_2.1';
+        const systemcCallsign = 'org.rdk.HdmiCec_2';
         thunder$2.Controller.deactivate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
         }).catch(err => {
-          console.log('CEC Error', err);
+          console.log('CEC Error Deactivation', err);
         });
       });
     }
@@ -20346,9 +20448,36 @@ var APP_accelerator_home_ui = (function () {
         thunder$2.call('org.rdk.HdmiCec_2.1', 'getEnabled').then(result => {
           resolve(result);
         }).catch(err => {
-          console.log('CEC error ', err);
           resolve({
             enabled: false
+          });
+        });
+      });
+    }
+
+    setEnabled() {
+      return new Promise((resolve, reject) => {
+        thunder$2.call('org.rdk.HdmiCec_2.1', 'setEnabled', {
+          enabled: true
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.error('CEC Set Enabled', err);
+          resolve({
+            success: false
+          });
+        });
+      });
+    }
+
+    performOTP() {
+      return new Promise((resolve, reject) => {
+        thunder$2.call('org.rdk.HdmiCec_2.1', 'performOTPAction').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.error('CEC Otp Error', err);
+          resolve({
+            success: false
           });
         });
       });
@@ -20374,6 +20503,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const config$2 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+  thunderJS(config$2);
   /**
    * Class for AdvancedSettings screen.
    */
@@ -20556,6 +20691,7 @@ var APP_accelerator_home_ui = (function () {
       this.cecApi = new CECApi();
       this.cecApi.activate().then(() => {
         this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        this.performOTPAction();
       });
 
       this._setState('CECControl');
@@ -20567,6 +20703,18 @@ var APP_accelerator_home_ui = (function () {
 
     _handleBack() {
       Router.navigate('settings/other');
+    }
+
+    performOTPAction() {
+      this.cecApi.setEnabled().then(res => {
+        if (res.success) {
+          this.cecApi.performOTP().then(otpRes => {
+            if (otpRes.success) {
+              console.log('Otp Action success full');
+            }
+          });
+        }
+      });
     }
 
     toggleCEC() {
@@ -23222,6 +23370,10 @@ var APP_accelerator_home_ui = (function () {
    **/
   var usbApi = new UsbApi();
   class UsbAppsScreen extends lng.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText('USB');
+    }
+
     static _template() {
       return {
         UsbAppsScreenContents: {
@@ -23523,7 +23675,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router.navigate('player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row1').element.data.uri,
             currentIndex: this.tag('Row1').element.idx,
             list: this.tag('Row1').items
@@ -23563,7 +23715,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router.navigate('player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row2').element.data.uri,
             isAudio: true,
             list: this.tag('Row2').items,
@@ -23612,7 +23764,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           console.log(this.tag('Row3').items);
-          Router.navigate('image', {
+          Router.navigate('usb/image', {
             src: this.tag('Row3').element.data.uri,
             currentIndex: this.tag('Row3').element.idx,
             list: this.tag('Row3').items,
@@ -25284,6 +25436,12 @@ var APP_accelerator_home_ui = (function () {
       component: UsbAppsScreen,
       widgets: ['Menu']
     }, {
+      path: 'usb/player',
+      component: AAMPVideoPlayer
+    }, {
+      path: 'usb/image',
+      component: ImageViewer
+    }, {
       path: 'image',
       component: ImageViewer
     }, {
@@ -26271,6 +26429,8 @@ var APP_accelerator_home_ui = (function () {
 
       store$1.subscribe(render.bind(this));
       this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      this._setState('Setting');
     }
 
     set index(index) {
@@ -26278,7 +26438,9 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
-      this._setState('Mic');
+      this._setState(this.state);
+
+      this.tag('Settings').color = CONFIG.theme.hex;
     }
 
     set changeText(text) {
@@ -26391,9 +26553,7 @@ var APP_accelerator_home_ui = (function () {
           if (key.keyCode === keyMap.ArrowDown) {
             Router.focusPage();
             this.tag('Settings').color = 0xffffffff;
-          } else if (key.keyCode === keyMap.ArrowLeft) {
-            this._setState('Mic');
-          } else if (key.keyCode === keyMap.Enter) {
+          } else if (key.keyCode === keyMap.ArrowLeft) ; else if (key.keyCode === keyMap.Enter) {
             this.tag('Page').text.text = Language.translate('settings');
             Router.navigate('settings');
             Router.focusPage();
@@ -26956,6 +27116,36 @@ var APP_accelerator_home_ui = (function () {
       if (!availableLanguages.includes(localStorage.getItem('Language'))) {
         localStorage.setItem('Language', 'English');
       }
+
+      thunder.on('Controller', 'statechange', notification => {
+        console.log(JSON.stringify(notification));
+
+        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
+          Storage$1.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'ResidentApp'
+          }).then(result => {
+            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+          });
+          thunder.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          }).then(result => {
+            console.log('ResidentApp setFocus Success' + JSON.stringify(result));
+          }).catch(err => {
+            console.log('Error', err);
+          });
+        }
+
+        if (notification && notification.callsign === 'org.rdk.HdmiCec_2' && notification.state === 'Activated') {
+          this.advanceScreen = Router.activePage();
+
+          if (typeof this.advanceScreen.performOTPAction === 'function') {
+            console.log('otp action');
+            this.advanceScreen.performOTPAction();
+          }
+        }
+      });
     }
 
     deactivateChildApp(plugin) {

@@ -28,25 +28,25 @@ const thunder = ThunderJS(config)
 export default class CECApi {
     activate() {
         return new Promise((resolve, reject) => {
-            const systemcCallsign = 'org.rdk.HdmiCec_2.1'
+            const systemcCallsign = 'org.rdk.HdmiCec_2'
             thunder.Controller.activate({ callsign: systemcCallsign })
                 .then(() => {
                     resolve(true)
                 })
                 .catch(err => {
-                    console.log('CEC Error', err)
+                    console.log('CEC Error Activation', err)
                 })
         })
     }
     deactivate() {
         return new Promise((resolve, reject) => {
-            const systemcCallsign = 'org.rdk.HdmiCec_2.1'
+            const systemcCallsign = 'org.rdk.HdmiCec_2'
             thunder.Controller.deactivate({ callsign: systemcCallsign })
                 .then(() => {
                     resolve(true)
                 })
                 .catch(err => {
-                    console.log('CEC Error', err)
+                    console.log('CEC Error Deactivation', err)
                 })
         })
     }
@@ -57,8 +57,33 @@ export default class CECApi {
                     resolve(result)
                 })
                 .catch(err => {
-                    console.log('CEC error ', err)
                     resolve({ enabled: false })
+                })
+        })
+    }
+
+    setEnabled() {
+        return new Promise((resolve, reject) => {
+            thunder.call('org.rdk.HdmiCec_2.1', 'setEnabled', { enabled: true })
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(err => {
+                    console.error('CEC Set Enabled', err)
+                    resolve({ success: false })
+                })
+        })
+    }
+
+    performOTP() {
+        return new Promise((resolve, reject) => {
+            thunder.call('org.rdk.HdmiCec_2.1', 'performOTPAction')
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(err => {
+                    console.error('CEC Otp Error', err)
+                    resolve({ success: false })
                 })
         })
     }

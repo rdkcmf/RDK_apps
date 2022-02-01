@@ -21,7 +21,14 @@ import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import CECApi from '../../api/CECApi'
+import ThunderJS from 'ThunderJS'
 
+const config = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1,
+}
+let thunder = ThunderJS(config);
 /**
  * Class for AdvancedSettings screen.
  */
@@ -204,6 +211,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
         this.cecApi.activate()
             .then(() => {
                 this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+                this.performOTPAction()
             })
         this._setState('CECControl')
     }
@@ -213,6 +221,18 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
 
     _handleBack() {
         Router.navigate('settings/other')
+    }
+
+    performOTPAction() {
+        this.cecApi.setEnabled().then(res => {
+            if (res.success) {
+                this.cecApi.performOTP().then(otpRes => {
+                    if (otpRes.success) {
+                        console.log('Otp Action success full')
+                    }
+                })
+            }
+        })
     }
 
     toggleCEC() {
