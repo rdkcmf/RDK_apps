@@ -1,9 +1,9 @@
 /**
- * App version: 3.5 02/02/22
+ * App version: 3.5 06/02/22
  * SDK version: 4.8.1
  * CLI version: 2.7.2
- * 
- * Generated: Thu, 03 Feb 2022 11:14:12 GMT
+ *
+ * Generated: Sun, 06 Feb 2022 09:47:45 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -2208,7 +2208,7 @@ var APP_accelerator_home_ui = (function () {
    */
   let warned = false;
 
-  const deprecated$1 = (force = false) => {
+  const deprecated = (force = false) => {
     if (force === true || warned === false) {
       console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'Language'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language'].join('\n\n'));
     }
@@ -2245,7 +2245,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     setLanguage(lang) {
-      deprecated$1();
+      deprecated();
       this.__enabled = true;
       this.language = lang;
     }
@@ -2257,7 +2257,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     get tr() {
-      deprecated$1(true);
+      deprecated(true);
       return this.__trObj[this.language];
     }
     /**
@@ -2268,7 +2268,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     loadFromObject(trObj) {
-      deprecated$1();
+      deprecated();
       const fallbackLanguage = 'en';
 
       if (Object.keys(trObj).indexOf(this.language) === -1) {
@@ -2839,35 +2839,19 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  var _from = "@lightningjs/sdk@^4.8.1";
-  var _id = "@lightningjs/sdk@4.8.1";
-  var _inBundle = false;
-  var _integrity = "sha512-gO8yzy43gLpBco6UDjmQehlu3HSwPKBLgDrSOf/WchRfMpU/T8ijr6Pe41Ife7yKEQLn67XrRtm3wX5AvLrhwg==";
-  var _location = "/@lightningjs/sdk";
-  var _phantomChildren = {
+  var name = "@lightningjs/sdk";
+  var version = "4.8.1";
+  var license = "Apache-2.0";
+  var scripts = {
+  	postinstall: "node ./scripts/postinstall.js",
+  	lint: "eslint '**/*.js'",
+  	release: "npm publish --access public"
   };
-  var _requested = {
-  	type: "range",
-  	registry: true,
-  	raw: "@lightningjs/sdk@^4.8.1",
-  	name: "@lightningjs/sdk",
-  	escapedName: "@lightningjs%2fsdk",
-  	scope: "@lightningjs",
-  	rawSpec: "^4.8.1",
-  	saveSpec: null,
-  	fetchSpec: "^4.8.1"
+  var husky = {
+  	hooks: {
+  		"pre-commit": "lint-staged"
+  	}
   };
-  var _requiredBy = [
-  	"/"
-  ];
-  var _resolved = "https://registry.npmjs.org/@lightningjs/sdk/-/sdk-4.8.1.tgz";
-  var _shasum = "7f4214dae864965c4a4188d02f880c365484e605";
-  var _spec = "@lightningjs/sdk@^4.8.1";
-  var _where = "C:\\Users\\Arun Raj\\Project\\3.5 P 11\\RDK_apps\\accelerator-home-ui";
-  var bugs = {
-  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
-  };
-  var bundleDependencies = false;
   var dependencies = {
   	"@babel/polyfill": "^7.11.5",
   	"@lightningjs/core": "*",
@@ -2878,8 +2862,6 @@ var APP_accelerator_home_ui = (function () {
   	"url-polyfill": "^1.1.10",
   	"whatwg-fetch": "^3.0.0"
   };
-  var deprecated = false;
-  var description = "The Lightning-SDK helps you build great Lightning-based TV apps!";
   var devDependencies = {
   	"@babel/core": "^7.11.6",
   	"@babel/plugin-transform-parameters": "^7.10.5 ",
@@ -2895,46 +2877,18 @@ var APP_accelerator_home_ui = (function () {
   	rollup: "^1.32.1",
   	"rollup-plugin-babel": "^4.4.0"
   };
-  var homepage = "https://github.com/rdkcentral/Lightning-SDK#readme";
-  var husky = {
-  	hooks: {
-  		"pre-commit": "lint-staged"
-  	}
-  };
-  var license = "Apache-2.0";
-  var name = "@lightningjs/sdk";
   var repository = {
   	type: "git",
-  	url: "git+ssh://git@github.com/rdkcentral/Lightning-SDK.git"
+  	url: "git@github.com:rdkcentral/Lightning-SDK.git"
   };
-  var scripts = {
-  	lint: "eslint '**/*.js'",
-  	postinstall: "node ./scripts/postinstall.js",
-  	release: "npm publish --access public"
+  var bugs = {
+  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
   };
-  var version = "4.8.1";
   var packageInfo = {
-  	_from: _from,
-  	_id: _id,
-  	_inBundle: _inBundle,
-  	_integrity: _integrity,
-  	_location: _location,
-  	_phantomChildren: _phantomChildren,
-  	_requested: _requested,
-  	_requiredBy: _requiredBy,
-  	_resolved: _resolved,
-  	_shasum: _shasum,
-  	_spec: _spec,
-  	_where: _where,
-  	bugs: bugs,
-  	bundleDependencies: bundleDependencies,
-  	dependencies: dependencies,
-  	deprecated: deprecated,
-  	description: description,
-  	devDependencies: devDependencies,
-  	homepage: homepage,
-  	husky: husky,
+  	name: name,
+  	version: version,
   	license: license,
+  	scripts: scripts,
   	"lint-staged": {
   	"*.js": [
   		"eslint --fix"
@@ -2943,10 +2897,11 @@ var APP_accelerator_home_ui = (function () {
   		"rollup -c ./rollup.config.js"
   	]
   },
-  	name: name,
+  	husky: husky,
+  	dependencies: dependencies,
+  	devDependencies: devDependencies,
   	repository: repository,
-  	scripts: scripts,
-  	version: version
+  	bugs: bugs
   };
 
   /*
@@ -19303,7 +19258,7 @@ var APP_accelerator_home_ui = (function () {
         value: 'Off',
         tick: true
       }, {
-        value: '1 Minutes',
+        value: '15 Minutes',
         tick: false
       }, {
         value: '1 Hour',
@@ -27511,16 +27466,16 @@ var APP_accelerator_home_ui = (function () {
           let temp1 = parseFloat(arr[0]) * 60;
           appApi.setInactivityInterval(temp1).then(res => {
             Storage$1.set('TimeoutInterval', t);
-            console.log(`successfully set the timer`);
+            console.log(`successfully set the timer to ${t} hours`);
           }).catch(err => {
             console.error(`error while setting the timer`);
           });
         } else if (temp === 'M') {
-          console.log(`minutest`);
+          console.log(`minutes`);
           let temp1 = parseFloat(arr[0]);
           appApi.setInactivityInterval(temp1).then(res => {
             Storage$1.set('TimeoutInterval', t);
-            console.log(`successfully set the timer`);
+            console.log(`successfully set the timer to ${t} minutes`);
           }).catch(err => {
             console.error(`error while setting the timer`);
           });
@@ -27528,28 +27483,24 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (arr.length < 2) {
-        if (Storage$1.get('TimeoutInterval')) {
-          appApi.enabledisableinactivityReporting(false).then(res => {
-            if (res.success === true) {
-              Storage$1.set('TimeoutInterval', false); // this.timerIsOff = true;
-            }
-          }).catch(err => {
-            console.error(`error : unable to set the reset; error = ${err}`);
-          });
-        }
+        appApi.enabledisableinactivityReporting(false).then(res => {
+          if (res.success === true) {
+            Storage$1.set('TimeoutInterval', false);
+            console.log(`Disabled inactivity reporting`); // this.timerIsOff = true;
+          }
+        }).catch(err => {
+          console.error(`error : unable to set the reset; error = ${err}`);
+        });
       } else {
-        if (!Storage$1.get('TimeoutInterval')) {
-          appApi.enabledisableinactivityReporting(true).then(res => {
-            if (res.success === true) {
-              console.log(`enabling inactivity reporter and setting the timer`); // this.timerIsOff = false;
+        appApi.enabledisableinactivityReporting(true).then(res => {
+          if (res.success === true) {
+            console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`); // this.timerIsOff = false;
 
-              setTimer();
-            }
-          });
-        } else {
-          console.log(`inactivity reporter is on; setting the timer`);
-          setTimer();
-        }
+            setTimer();
+          }
+        }).catch(err => {
+          console.error(`error while enabling inactivity reporting`);
+        });
       }
     }
 

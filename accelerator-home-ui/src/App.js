@@ -508,16 +508,16 @@ export default class App extends Router.App {
         let temp1 = parseFloat(arr[0]) * 60;
         appApi.setInactivityInterval(temp1).then(res => {
           Storage.set('TimeoutInterval', t)
-          console.log(`successfully set the timer`)
+          console.log(`successfully set the timer to ${t} hours`)
         }).catch(err => {
           console.error(`error while setting the timer`)
         });
       } else if (temp === 'M') {
-        console.log(`minutest`);
+        console.log(`minutes`);
         let temp1 = parseFloat(arr[0]);
         appApi.setInactivityInterval(temp1).then(res => {
           Storage.set('TimeoutInterval', t)
-          console.log(`successfully set the timer`);
+          console.log(`successfully set the timer to ${t} minutes`);
         }).catch(err => {
           console.error(`error while setting the timer`)
         });
@@ -525,29 +525,23 @@ export default class App extends Router.App {
     }
 
     if (arr.length < 2) {
-      if (Storage.get('TimeoutInterval')) {
         appApi.enabledisableinactivityReporting(false).then(res => {
           if (res.success === true) {
             Storage.set('TimeoutInterval', false)
+            console.log(`Disabled inactivity reporting`);
             // this.timerIsOff = true;
           }
         }).catch(err => {
           console.error(`error : unable to set the reset; error = ${err}`)
         });
-      }
     } else {
-      if (!Storage.get('TimeoutInterval')) {
         appApi.enabledisableinactivityReporting(true).then(res => {
           if (res.success === true) {
-            console.log(`enabling inactivity reporter and setting the timer`);
+            console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`);
             // this.timerIsOff = false;
             setTimer();
           }
-        })
-      } else {
-        console.log(`inactivity reporter is on; setting the timer`);
-        setTimer();
-      }
+        }).catch(err=>{console.error(`error while enabling inactivity reporting`)});
     }
   }
 }
