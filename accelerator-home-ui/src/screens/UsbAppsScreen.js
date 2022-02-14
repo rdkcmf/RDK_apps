@@ -180,20 +180,10 @@ export default class UsbAppsScreen extends Lightning.Component {
             mount: 0.5,
             texture: {
               type: Lightning.textures.ImageTexture,
-              src: 'static/images/usb/USB_Featured_Item.jpg',
+              src: 'static/images/usb/Unsupported_file_640x360.jpg',
               resizeMode: { type: 'contain', w: 640, h: 360 },
             },
           },
-          NoUSBTitle: {
-            x: 800,
-            y: 500,
-            mount: 0.5,
-            text: {
-              fontFace: CONFIG.language.font,
-              text: 'USB Not Mounted / No Data available',
-              fontSize: 35,
-            },
-          }
         }
       },
       AudioInfo: {

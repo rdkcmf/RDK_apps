@@ -265,7 +265,7 @@ export default class UsbApi {
                 if(!(device.name === '.'|| device.name ==="..")){
                     var obj4 = {
                         displayName:device.name,
-                        url:"/images/usb/picture-folder.png",
+                        url:"/images/usb/USB_Folder.jpg",
                         uri:cwd+"/"+device.name
                     }
                     UsbInnerFolderListInfo.push(obj4);

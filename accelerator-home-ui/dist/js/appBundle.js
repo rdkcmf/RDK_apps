@@ -2,8 +2,8 @@
  * App version: 3.5 06/02/22
  * SDK version: 4.8.1
  * CLI version: 2.7.2
- *
- * Generated: Sun, 06 Feb 2022 09:47:45 GMT
+ * 
+ * Generated: Mon, 14 Feb 2022 12:19:17 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -2208,7 +2208,7 @@ var APP_accelerator_home_ui = (function () {
    */
   let warned = false;
 
-  const deprecated = (force = false) => {
+  const deprecated$1 = (force = false) => {
     if (force === true || warned === false) {
       console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'Language'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language'].join('\n\n'));
     }
@@ -2245,7 +2245,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     setLanguage(lang) {
-      deprecated();
+      deprecated$1();
       this.__enabled = true;
       this.language = lang;
     }
@@ -2257,7 +2257,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     get tr() {
-      deprecated(true);
+      deprecated$1(true);
       return this.__trObj[this.language];
     }
     /**
@@ -2268,7 +2268,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     loadFromObject(trObj) {
-      deprecated();
+      deprecated$1();
       const fallbackLanguage = 'en';
 
       if (Object.keys(trObj).indexOf(this.language) === -1) {
@@ -2839,19 +2839,35 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  var name = "@lightningjs/sdk";
-  var version = "4.8.1";
-  var license = "Apache-2.0";
-  var scripts = {
-  	postinstall: "node ./scripts/postinstall.js",
-  	lint: "eslint '**/*.js'",
-  	release: "npm publish --access public"
+  var _from = "@lightningjs/sdk@^4.8.1";
+  var _id = "@lightningjs/sdk@4.8.1";
+  var _inBundle = false;
+  var _integrity = "sha512-gO8yzy43gLpBco6UDjmQehlu3HSwPKBLgDrSOf/WchRfMpU/T8ijr6Pe41Ife7yKEQLn67XrRtm3wX5AvLrhwg==";
+  var _location = "/@lightningjs/sdk";
+  var _phantomChildren = {
   };
-  var husky = {
-  	hooks: {
-  		"pre-commit": "lint-staged"
-  	}
+  var _requested = {
+  	type: "range",
+  	registry: true,
+  	raw: "@lightningjs/sdk@^4.8.1",
+  	name: "@lightningjs/sdk",
+  	escapedName: "@lightningjs%2fsdk",
+  	scope: "@lightningjs",
+  	rawSpec: "^4.8.1",
+  	saveSpec: null,
+  	fetchSpec: "^4.8.1"
   };
+  var _requiredBy = [
+  	"/"
+  ];
+  var _resolved = "https://registry.npmjs.org/@lightningjs/sdk/-/sdk-4.8.1.tgz";
+  var _shasum = "7f4214dae864965c4a4188d02f880c365484e605";
+  var _spec = "@lightningjs/sdk@^4.8.1";
+  var _where = "C:\\Users\\Arun Raj\\Project\\3.5 P 16\\RDK_apps\\accelerator-home-ui";
+  var bugs = {
+  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
+  };
+  var bundleDependencies = false;
   var dependencies = {
   	"@babel/polyfill": "^7.11.5",
   	"@lightningjs/core": "*",
@@ -2862,6 +2878,8 @@ var APP_accelerator_home_ui = (function () {
   	"url-polyfill": "^1.1.10",
   	"whatwg-fetch": "^3.0.0"
   };
+  var deprecated = false;
+  var description = "The Lightning-SDK helps you build great Lightning-based TV apps!";
   var devDependencies = {
   	"@babel/core": "^7.11.6",
   	"@babel/plugin-transform-parameters": "^7.10.5 ",
@@ -2877,18 +2895,46 @@ var APP_accelerator_home_ui = (function () {
   	rollup: "^1.32.1",
   	"rollup-plugin-babel": "^4.4.0"
   };
+  var homepage = "https://github.com/rdkcentral/Lightning-SDK#readme";
+  var husky = {
+  	hooks: {
+  		"pre-commit": "lint-staged"
+  	}
+  };
+  var license = "Apache-2.0";
+  var name = "@lightningjs/sdk";
   var repository = {
   	type: "git",
-  	url: "git@github.com:rdkcentral/Lightning-SDK.git"
+  	url: "git+ssh://git@github.com/rdkcentral/Lightning-SDK.git"
   };
-  var bugs = {
-  	url: "https://github.com/rdkcentral/Lightning-SDK/issues"
+  var scripts = {
+  	lint: "eslint '**/*.js'",
+  	postinstall: "node ./scripts/postinstall.js",
+  	release: "npm publish --access public"
   };
+  var version = "4.8.1";
   var packageInfo = {
-  	name: name,
-  	version: version,
+  	_from: _from,
+  	_id: _id,
+  	_inBundle: _inBundle,
+  	_integrity: _integrity,
+  	_location: _location,
+  	_phantomChildren: _phantomChildren,
+  	_requested: _requested,
+  	_requiredBy: _requiredBy,
+  	_resolved: _resolved,
+  	_shasum: _shasum,
+  	_spec: _spec,
+  	_where: _where,
+  	bugs: bugs,
+  	bundleDependencies: bundleDependencies,
+  	dependencies: dependencies,
+  	deprecated: deprecated,
+  	description: description,
+  	devDependencies: devDependencies,
+  	homepage: homepage,
+  	husky: husky,
   	license: license,
-  	scripts: scripts,
   	"lint-staged": {
   	"*.js": [
   		"eslint --fix"
@@ -2897,11 +2943,10 @@ var APP_accelerator_home_ui = (function () {
   		"rollup -c ./rollup.config.js"
   	]
   },
-  	husky: husky,
-  	dependencies: dependencies,
-  	devDependencies: devDependencies,
+  	name: name,
   	repository: repository,
-  	bugs: bugs
+  	scripts: scripts,
+  	version: version
   };
 
   /*
@@ -8520,25 +8565,25 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/content1.png' //replace with online url
+    url: '/images/apps/App_Amazon_Prime_454x255.png' //replace with online url
 
   }, {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/content2.png' //replace with online url
+    url: '/images/apps/App_YouTube_454x255.png' //replace with online url
 
   }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/content3.png' //replace with online url
+    url: '/images/apps/App_Xumo_454x255.png' //replace with online url
 
   }, {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/content4.png' //replace with online url
+    url: '/images/apps/App_Netflix_454x255.png' //replace with online url
 
   }];
 
@@ -8574,22 +8619,22 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/content1.png'
+    url: '/images/apps/App_Amazon_Prime_454x255.png'
   }, {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/content2.png'
+    url: '/images/apps/App_YouTube_454x255.png'
   }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-    url: '/images/apps/content3.png'
+    url: '/images/apps/App_Xumo_454x255.png'
   }, {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/content4.png'
+    url: '/images/apps/App_Netflix_454x255.png'
   }];
 
   /**
@@ -8881,7 +8926,8 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/content2.png'
+    url: '/images/metroApps/Test-10.jpg' //replace with new image
+
   }];
 
   /**
@@ -8960,7 +9006,8 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/apps/content2.png'
+    url: '/images/metroApps/Test-10.jpg' //replace with new image
+
   }];
 
   /**
@@ -10079,7 +10126,7 @@ var APP_accelerator_home_ui = (function () {
           if (!(device.name === '.' || device.name === "..")) {
             var obj4 = {
               displayName: device.name,
-              url: "/images/usb/picture-folder.png",
+              url: "/images/usb/USB_Folder.jpg",
               uri: cwd + "/" + device.name
             };
             UsbInnerFolderListInfo.push(obj4);
@@ -23480,22 +23527,12 @@ var APP_accelerator_home_ui = (function () {
               mount: 0.5,
               texture: {
                 type: lng.textures.ImageTexture,
-                src: 'static/images/usb/USB_Featured_Item.jpg',
+                src: 'static/images/usb/Unsupported_file_640x360.jpg',
                 resizeMode: {
                   type: 'contain',
                   w: 640,
                   h: 360
                 }
-              }
-            },
-            NoUSBTitle: {
-              x: 800,
-              y: 500,
-              mount: 0.5,
-              text: {
-                fontFace: CONFIG.language.font,
-                text: 'USB Not Mounted / No Data available',
-                fontSize: 35
               }
             }
           }

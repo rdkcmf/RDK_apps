@@ -30,25 +30,25 @@
       displayName: 'Amazon Prime video',
       applicationType: 'Amazon',
       uri: '',
-      url: '/images/apps/content1.png',
+      url: '/images/apps/App_Amazon_Prime_454x255.png',
     },
     {
       displayName: 'Youtube',
       applicationType: 'Cobalt',
       uri: 'https://www.youtube.com/tv',
-      url: '/images/apps/content2.png',
+      url: '/images/apps/App_YouTube_454x255.png',
     },
     {
       displayName: 'Xumo',
       applicationType: 'WebApp',
       uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
-      url: '/images/apps/content3.png',
+      url: '/images/apps/App_Xumo_454x255.png',
     },
     {
       displayName: 'Netflix',
       applicationType: 'Netflix',
       uri: '',
-      url: '/images/apps/content4.png',
+      url: '/images/apps/App_Netflix_454x255.png',
     },
   ]
   
