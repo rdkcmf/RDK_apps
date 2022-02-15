@@ -36,7 +36,7 @@ let thunder = ThunderJS(config);
 export default class AdvanceSettingsScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings'));
     }
 
     pageTransition() {

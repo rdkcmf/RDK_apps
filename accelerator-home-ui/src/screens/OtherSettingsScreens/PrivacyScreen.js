@@ -33,7 +33,7 @@ const xcastApi = new XcastApi()
 export default class PrivacyScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy'));
     }
 
     pageTransition() {

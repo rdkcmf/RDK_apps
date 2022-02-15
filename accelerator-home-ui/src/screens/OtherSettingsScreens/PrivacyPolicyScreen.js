@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
+import { Language } from '@lightningjs/sdk';
 
 const _privacyPolicy = `Privacy
  Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (“RDK Management,” “we,” or “us”). This privacy policy discloses the privacy practices for this website only, including an explanation of:
@@ -110,12 +111,12 @@ const _privacyPolicy = `Privacy
 export default class PrivacyPolicyScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy / Policy');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy  Policy'));
     }
 
     pageTransition() {
         return 'left'
-      }
+    }
 
 
     static _template() {
@@ -161,8 +162,13 @@ export default class PrivacyPolicyScreen extends Lightning.Component {
             this.tag("PrivacyPolicy").y -= 35;
         }
     }
+
+    _handleBack() {
+        Router.navigate('settings/other/privacy')
+    }
+
     _handleUp() {
-        if (this.tag("PrivacyPolicy").y < 35) {
+        if (this.tag("PrivacyPolicy").y <= 235) {
             this.tag("PrivacyPolicy").y += 35;
         }
     }

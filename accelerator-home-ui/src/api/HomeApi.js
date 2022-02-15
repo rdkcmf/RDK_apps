@@ -113,6 +113,14 @@ export default class HomeApi {
     return metroAppsMetaData
   }
 
+  getOfflineMetroApps() {
+    return metroAppsInfoOffline
+  }
+
+  getOnlineMetroApps() {
+    return metroAppsInfo
+  }
+
   /**
    * Function to store partner app details.
    * @param {obj} data Partner app details.

@@ -39,7 +39,7 @@ export default class NetworkInfo extends Lightning.Component {
     }
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Info')
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Info'))
     }
 
     static _template() {

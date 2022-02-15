@@ -36,7 +36,7 @@ export default class Wifi {
       port: 9998,
     }
     this._thunder = ThunderJS(config)
-    this.callsign = 'org.rdk.Wifi.1'
+    this.callsign = 'org.rdk.Wifi'
   }
 
   /**
@@ -272,7 +272,7 @@ export default class Wifi {
   getDefaultInterface() {
     return new Promise((resolve, reject) => {
       this._thunder
-        .call('org.rdk.Network.1', 'getDefaultInterface', {})
+        .call('org.rdk.Network', 'getDefaultInterface', {})
         .then(result => {
           resolve(result)
         })
@@ -281,10 +281,22 @@ export default class Wifi {
         })
     })
   }
+  getInterfaces() {
+    return new Promise((resolve, reject) => {
+      this._thunder
+        .call('org.rdk.Network', 'getInterfaces')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('Failed to get Interfaces')
+        })
+    })
+  }
   setInterface(inter, bool) {
     return new Promise((resolve, reject) => {
       this._thunder
-        .call('org.rdk.Network.1', 'setInterfaceEnabled', {
+        .call('org.rdk.Network', 'setInterfaceEnabled', {
           interface: inter,
           persist: true,
           enabled: bool,
@@ -300,7 +312,7 @@ export default class Wifi {
   setDefaultInterface(interfaceName, bool) {
     return new Promise((resolve, reject) => {
       this._thunder
-        .call('org.rdk.Network.1', 'setDefaultInterface', {
+        .call('org.rdk.Network', 'setDefaultInterface', {
           interface: interfaceName,
           persist: bool,
         })

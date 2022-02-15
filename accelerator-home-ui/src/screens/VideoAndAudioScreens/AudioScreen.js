@@ -34,7 +34,7 @@ export default class AudioScreen extends Lightning.Component {
   }
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings / Audio');
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio'));
   }
 
   static _template() {
@@ -79,7 +79,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: Language.translate('Output Mode: Auto'),
+              text: Language.translate('Output Mode: '),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -207,17 +207,12 @@ export default class AudioScreen extends Lightning.Component {
     this._setState('OutputMode')
   }
 
-  $updateTheDefaultAudio(audio) {
-    //console.log(audio)
-    this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + audio
-  }
-
-  $updateSoundMode(soundMode) {
-    this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + soundMode
-  }
-
   _focus() {
     this._setState(this.state)
+    this.appApi.getSoundMode()
+      .then(result => {
+        this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode
+      })
   }
 
   hide() {

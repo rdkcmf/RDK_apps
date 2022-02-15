@@ -369,7 +369,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    * Function to display player controls on down key press.
    */
-  _handleDown() {
+  _handleUp() {
     this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
     this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
     this._setState('ShowControls')
@@ -379,7 +379,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   /**
    *Function to hide player control on up key press.
    */
-  _handleUp() {
+  _handleDown() {
     this.hidePlayerControls()
     this._setState('HideControls')
   }

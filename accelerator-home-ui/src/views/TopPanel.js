@@ -54,7 +54,9 @@ export default class TopPanel extends Lightning.Component {
             text: Language.translate('home'),
             textColor: CONFIG.theme.hex,
             fontStyle: 'bolder',
-            fontFace: CONFIG.language.font
+            fontFace: CONFIG.language.font,
+            wordWrapWidth: 1720,
+            maxLines: 1,
           }
         },
         Settings: {
@@ -223,7 +225,7 @@ export default class TopPanel extends Lightning.Component {
           } else if (key.keyCode === Keymap.ArrowLeft) {
             // this._setState('Mic')
           } else if (key.keyCode === Keymap.Enter) {
-            this.tag('Page').text.text = Language.translate('settings')
+            //this.tag('Page').text.text = Language.translate('settings')
             Router.navigate('settings')
             Router.focusPage()
             this.tag('Settings').color = 0xffffffff

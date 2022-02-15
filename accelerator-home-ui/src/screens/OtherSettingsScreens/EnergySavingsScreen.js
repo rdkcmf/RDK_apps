@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils, Language } from '@lightningjs/sdk'
 import AppApi from '../../api/AppApi';
 import EnergySavingsItem from '../../items/EnergySavingsItem'
 
@@ -25,7 +25,7 @@ import EnergySavingsItem from '../../items/EnergySavingsItem'
 export default class EnergySavingsScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Energy Saver');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Energy Saver'));
     }
 
     pageTransition() {

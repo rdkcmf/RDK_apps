@@ -23,7 +23,7 @@ import AppApi from '../api/AppApi'
 
 export default class VideoAndAudioItem extends Lightning.Component {
 
-  _construct(){
+  _construct() {
     this.Tick = Utils.asset('/images/settings/Tick.png')
   }
   static _template() {
@@ -63,14 +63,7 @@ export default class VideoAndAudioItem extends Lightning.Component {
 
   _handleEnter() {
     if (this.videoElement === true) {
-      this.appApi.setResolution(this._item).then(res => {
-        this.fireAncestors('$updateResolution', this._item)
-        if (res === true) {
-          this.fireAncestors("$resetPrevTickObject", this)
-          this.tag("Item.Tick").visible = true;
-        }
-
-      }).catch(err => {
+      this.appApi.setResolution(this._item).catch(err => {
         console.log(`there was an error while setting the resolution.`);
       });
     }

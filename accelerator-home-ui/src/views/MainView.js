@@ -31,7 +31,7 @@ export default class MainView extends Lightning.Component {
    * Function to render various elements in main view.
    */
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Home')
+    this.widgets.menu.updateTopPanelText(Language.translate('home'))
   }
   static _template() {
     return {
@@ -174,12 +174,13 @@ export default class MainView extends Lightning.Component {
     this.homeApi = new HomeApi();
     this.xcastApi = new XcastApi();
     let thunder = ThunderJS(config);
-  
+
 
     // for initially showing/hiding usb icon
 
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
+    this.metroApps = this.homeApi.getMetroInfo()
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -261,6 +262,18 @@ export default class MainView extends Lightning.Component {
       return listener;
     }
 
+    thunder.on('org.rdk.Network.1', 'onIPAddressStatusChanged', notification => {
+      console.log('IP ADDRESS changed', JSON.stringify(notification))
+      if (notification.status === 'ACQUIRED') {
+        Storage.set('ipAddress', notification.ip4Address)
+        this.metroApps = this.homeApi.getOnlineMetroApps()
+      } else {
+        Storage.set('ipAddress', null)
+        //this.metroApps = this.homeApi.getMetroInfo()
+      }
+
+    })
+
 
     this.fireAncestors("$mountEventConstructor", registerListener.bind(this))
 
@@ -268,25 +281,25 @@ export default class MainView extends Lightning.Component {
     this._setState('AppList.0')
   }
 
-  _firstActive(){
+  _firstActive() {
     if (!Storage.get('UsbMedia')) {
       this.usbApi.activate().then(res => {
-          Storage.set('UsbMedia', 'ON')
-          this.fireAncestors('$registerUsbMount')
+        Storage.set('UsbMedia', 'ON')
+        this.fireAncestors('$registerUsbMount')
 
       })
-  } else if (Storage.get('UsbMedia') === 'ON') {
+    } else if (Storage.get('UsbMedia') === 'ON') {
       this.usbApi.activate().then(res => {
         this.fireAncestors('$registerUsbMount')
       })
-  } else if (Storage.get('UsbMedia') === 'OFF') {
+    } else if (Storage.get('UsbMedia') === 'OFF') {
       // deactivate usb Plugin here 
-      this.usbApi.deactivate().then((res)=>{
-          console.log(`disabled the Usb Plugin`);
-      }).catch(err=>{
-          console.error(`error while disabling the usb plugin = ${err}`)
+      this.usbApi.deactivate().then((res) => {
+        console.log(`disabled the Usb Plugin`);
+      }).catch(err => {
+        console.error(`error while disabling the usb plugin = ${err}`)
       })
-  }
+    }
   }
 
 
@@ -315,7 +328,7 @@ export default class MainView extends Lightning.Component {
       })
     } else if (Storage.get('UsbMedia') === 'OFF') {
       this.appItems = this.tempRow
-    } else{
+    } else {
       Storage.set('UsbMedia', 'ON')
       this.usbApi.activate().then(res => {
         this.usbApi.getMountedDevices().then(result => {

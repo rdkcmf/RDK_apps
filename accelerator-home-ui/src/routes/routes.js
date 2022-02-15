@@ -30,7 +30,6 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
-import { Storage } from '@lightningjs/sdk'
 
 
 export default {
@@ -39,15 +38,7 @@ export default {
     homeApi.setPartnerAppsInfo(queryParam.data)
     return Promise.resolve()
   },
-  root: () => {
-    return new Promise(resolve => {
-      if (Storage.get('setup')) {
-        resolve('menu')
-      } else {
-        resolve('splash')
-      }
-    })
-  },
+  root: 'splash',
   routes: [
     {
       path: 'settings',
@@ -86,7 +77,7 @@ export default {
       before: (page) => {
         const homeApi = new HomeApi()
         //page.appItems = homeApi.getAppListInfo()
-        page.metroApps = homeApi.getMetroInfo()
+        //page.metroApps = homeApi.getMetroInfo()
         page.tvShowItems = homeApi.getTVShowsInfo()
         return Promise.resolve()
       },

@@ -27,7 +27,7 @@ import { CONFIG } from '../Config/Config'
 export default class SettingsScreen extends Lightning.Component {
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings');
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings'));
   }
 
   pageTransition() {
@@ -171,10 +171,6 @@ export default class SettingsScreen extends Lightning.Component {
   }
   _focus() {
     this._setState(this.state)
-  }
-
-  _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings')
   }
 
   _handleBack() {

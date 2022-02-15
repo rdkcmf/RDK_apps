@@ -16,15 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Language, Lightning, Router } from '@lightningjs/sdk'
 import LanguageItem from '../../items/LanguageItem'
 import { availableLanguages } from '../../Config/Config'
+import AppApi from '../../api/AppApi';
+import thunderJS from 'ThunderJS';
 
+const appApi = new AppApi()
+const thunder = thunderJS({
+  host: '127.0.0.1',
+  port: 9998,
+  default: 1,
+})
+const loader = 'Loader'
 
 export default class LanguageScreen extends Lightning.Component {
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings / Other Settings / Language');
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Language'));
   }
 
   pageTransition() {
@@ -71,11 +80,27 @@ export default class LanguageScreen extends Lightning.Component {
         item: item,
       }
     })
+    appApi.deactivateResidentApp(loader)
+    appApi.setVisibility('ResidentApp', true);
+    thunder.call('org.rdk.RDKShell', 'moveToFront', {
+      client: 'ResidentApp'
+    }).then(result => {
+      console.log('ResidentApp moveToFront Success');
+    });
+    thunder
+      .call('org.rdk.RDKShell', 'setFocus', {
+        client: 'ResidentApp'
+      })
+      .then(result => {
+        console.log('ResidentApp moveToFront Success');
+      })
+      .catch(err => {
+        console.log('Error', err);
+      });
   }
 
   _focus() {
     this._setState('Languages')
-
   }
 
   _handleBack() {
@@ -98,6 +123,12 @@ export default class LanguageScreen extends Lightning.Component {
         }
         _handleEnter() {
           localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
+          let path = location.pathname.split('index.html')[0]
+          let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"
+          let notification_url = location.origin + path + url
+          console.log(notification_url)
+          appApi.launchResident(notification_url, loader)
+          appApi.setVisibility('ResidentApp', false)
           location.reload();
         }
       },

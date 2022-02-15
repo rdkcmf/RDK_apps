@@ -52,7 +52,7 @@ export default class CECApi {
     }
     getEnabled() {
         return new Promise((resolve, reject) => {
-            thunder.call('org.rdk.HdmiCec_2.1', 'getEnabled')
+            thunder.call('org.rdk.HdmiCec_2', 'getEnabled')
                 .then(result => {
                     resolve(result)
                 })
@@ -64,7 +64,7 @@ export default class CECApi {
 
     setEnabled() {
         return new Promise((resolve, reject) => {
-            thunder.call('org.rdk.HdmiCec_2.1', 'setEnabled', { enabled: true })
+            thunder.call('org.rdk.HdmiCec_2', 'setEnabled', { enabled: true })
                 .then(result => {
                     resolve(result)
                 })
@@ -77,7 +77,7 @@ export default class CECApi {
 
     performOTP() {
         return new Promise((resolve, reject) => {
-            thunder.call('org.rdk.HdmiCec_2.1', 'performOTPAction')
+            thunder.call('org.rdk.HdmiCec_2', 'performOTPAction')
                 .then(result => {
                     resolve(result)
                 })

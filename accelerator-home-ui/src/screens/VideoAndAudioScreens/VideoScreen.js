@@ -33,7 +33,7 @@ export default class VideoScreen extends Lightning.Component {
   }
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings / Video');
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video'));
   }
 
   static _template() {

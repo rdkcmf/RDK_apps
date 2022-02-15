@@ -38,7 +38,7 @@ export default class XcastApi {
    */
   activate() {
     return new Promise((resolve, reject) => {
-      this.callsign = 'org.rdk.Xcast.1';
+      this.callsign = 'org.rdk.Xcast';
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
@@ -97,7 +97,7 @@ export default class XcastApi {
 
   getEnabled() {
     return new Promise((resolve, reject) => {
-      this._thunder.call('org.rdk.Xcast.1', 'getEnabled')
+      this._thunder.call('org.rdk.Xcast', 'getEnabled')
         .then(res => {
           resolve(res)
         })
@@ -123,7 +123,7 @@ export default class XcastApi {
    */
   deactivate() {
     return new Promise((resolve, reject) => {
-      this._thunder.call('org.rdk.Xcast.1', 'setEnabled', { enabled: false })
+      this._thunder.call('org.rdk.Xcast', 'setEnabled', { enabled: false })
         .then(res => {
           resolve(res.success)
         })
@@ -139,7 +139,7 @@ export default class XcastApi {
   onApplicationStateChanged(params) {
     return new Promise((resolve, reject) => {
       console.log('Notifying back');
-      this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
+      this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
         resolve(result);
       });
     });

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage } from '@lightningjs/sdk';
+import { Utils, Router, Storage, Registry } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -35,6 +35,7 @@ const config = {
 var powerState = 'ON';
 var thunder = ThunderJS(config);
 var appApi = new AppApi();
+
 
 export default class App extends Router.App {
   static getFonts() {
@@ -157,7 +158,7 @@ export default class App extends Router.App {
   _init() {
     appApi.enableDisplaySettings()
     appApi.cobaltStateChangeEvent()
-    appApi.launchforeground()
+    //appApi.launchforeground()
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
@@ -168,6 +169,28 @@ export default class App extends Router.App {
     if (!availableLanguages.includes(localStorage.getItem('Language'))) {
       localStorage.setItem('Language', 'English')
     }
+    thunder.on('Controller.1', 'all', noti => {
+      if (noti.data.url && noti.data.url.slice(-5) === "#boot") { // to exit metro apps by pressing back key
+        this.deactivateChildApp(Storage.get('applicationType'));
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: 'ResidentApp'
+        }).then(result => {
+          console.log('ResidentApp moveToFront Success');
+        });
+        thunder
+          .call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          })
+          .then(result => {
+            console.log('ResidentApp moveToFront Success');
+          })
+          .catch(err => {
+            console.log('Error', err);
+          });
+      }
+    })
 
     thunder.on('Controller', 'statechange', notification => {
       console.log(JSON.stringify(notification))
@@ -525,23 +548,23 @@ export default class App extends Router.App {
     }
 
     if (arr.length < 2) {
-        appApi.enabledisableinactivityReporting(false).then(res => {
-          if (res.success === true) {
-            Storage.set('TimeoutInterval', false)
-            console.log(`Disabled inactivity reporting`);
-            // this.timerIsOff = true;
-          }
-        }).catch(err => {
-          console.error(`error : unable to set the reset; error = ${err}`)
-        });
+      appApi.enabledisableinactivityReporting(false).then(res => {
+        if (res.success === true) {
+          Storage.set('TimeoutInterval', false)
+          console.log(`Disabled inactivity reporting`);
+          // this.timerIsOff = true;
+        }
+      }).catch(err => {
+        console.error(`error : unable to set the reset; error = ${err}`)
+      });
     } else {
-        appApi.enabledisableinactivityReporting(true).then(res => {
-          if (res.success === true) {
-            console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`);
-            // this.timerIsOff = false;
-            setTimer();
-          }
-        }).catch(err=>{console.error(`error while enabling inactivity reporting`)});
+      appApi.enabledisableinactivityReporting(true).then(res => {
+        if (res.success === true) {
+          console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`);
+          // this.timerIsOff = false;
+          setTimer();
+        }
+      }).catch(err => { console.error(`error while enabling inactivity reporting`) });
     }
   }
 }

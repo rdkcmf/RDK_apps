@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils, Language } from '@lightningjs/sdk'
 import BluetoothItem from '../items/BluetoothItem'
 import SettingsMainItem from '../items/SettingsMainItem'
 import BluetoothApi from './../api/BluetoothApi'
@@ -31,7 +31,7 @@ import { CONFIG } from '../Config/Config'
 export default class BluetoothScreen extends Lightning.Component {
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings / Bluetooth On/Off');
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings  Bluetooth On/Off'));
   }
   static _template() {
     return {
@@ -178,10 +178,6 @@ export default class BluetoothScreen extends Lightning.Component {
     this._setState('Switch')
     this.switch()
     //this._bluetooth = false
-    if (this._bluetooth) {
-      this.tag('Networks').visible = true
-      this.tag('AddADevice').visible = true
-    }
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
     this.renderDeviceList()
@@ -197,6 +193,13 @@ export default class BluetoothScreen extends Lightning.Component {
   _focus() {
     this._setState('Switch')
     this._enable()
+    if (this._bluetooth) {
+      this.tag('Networks').visible = true
+      this.tag('AddADevice').visible = true
+      this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+      this.renderDeviceList()
+      this._bt.startScan()
+    }
   }
 
   _handleBack() {

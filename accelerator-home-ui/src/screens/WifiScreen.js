@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Utils } from '@lightningjs/sdk'
+import { Language, Lightning, Router, Utils } from '@lightningjs/sdk'
 import NetworkApi from './../api/NetworkApi'
 import WiFiItem from '../items/WiFiItem'
 import SettingsMainItem from '../items/SettingsMainItem'
@@ -135,6 +135,7 @@ export default class WiFiScreen extends Lightning.Component {
 
   _focus() {
     this._setState('Switch')
+    this._enable()
   }
 
 
@@ -188,20 +189,10 @@ export default class WiFiScreen extends Lightning.Component {
           if (notification.newInterfaceName === 'ETHERNET') {
             this._wifi.setInterface('ETHERNET', true).then(result => {
               if (result.success) {
-                this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-                  if (result.success) {
-                    this._wifi.disconnect()
-                    this.wifiStatus = false
-                    this.tag('Networks').visible = false
-                    this.tag('JoinAnotherNetwork').visible = false
-                    this.tag('Switch.Loader').visible = false
-                    this.wifiLoading.stop()
-                    this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-                  }
-                })
+                this._wifi.setDefaultInterface('ETHERNET', true)
               }
             })
-          } else if (
+          } if (
             notification.newInterfaceName == 'ETHERNET' ||
             notification.oldInterfaceName == 'WIFI'
           ) {
@@ -213,6 +204,29 @@ export default class WiFiScreen extends Lightning.Component {
             this.wifiLoading.stop()
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
             this._setState('Switch')
+            this._wifi.setInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                  if (result1.success) {
+                    console.log('set default success', result1)
+                  }
+                })
+              }
+            })
+          }
+          if (
+            notification.newInterfaceName == '' &&
+            notification.oldInterfaceName == 'WIFI'
+          ) {
+            this._wifi.setInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                  if (result1.success) {
+                    console.log('set default success', result1)
+                  }
+                })
+              }
+            })
           }
         })
         this._network.registerEvent('onConnectionStatusChanged', notification => {
@@ -246,6 +260,7 @@ export default class WiFiScreen extends Lightning.Component {
    * Function to be executed when the Wi-Fi screen is disabled.
    */
   _disable() {
+    console.log('going out')
     clearInterval(this.scanTimer)
   }
 
@@ -299,7 +314,7 @@ export default class WiFiScreen extends Lightning.Component {
   }
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Interface / WiFi')
+    this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface  WiFi'))
   }
 
   static _states() {
@@ -473,7 +488,6 @@ export default class WiFiScreen extends Lightning.Component {
       if (notification.state === 2 || notification.state === 5) {
         this._wifi.discoverSSIDs()
       }
-      this._setState('Switch')
     })
     this._wifi.registerEvent('onError', notification => {
       console.log('on errro')

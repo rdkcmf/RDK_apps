@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Router } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
 import VideoAndAudioItem from '../../items/VideoAndAudioItem'
 import AppApi from '../../api/AppApi.js';
 
@@ -31,8 +31,8 @@ export default class HdmiOutputScreen extends Lightning.Component {
     }
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Audio / Output Mode');
-      }
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio  Output Mode'));
+    }
 
     static _template() {
         return {
@@ -97,7 +97,6 @@ export default class HdmiOutputScreen extends Lightning.Component {
         var options = []
         appApi.getSoundMode()
             .then(result => {
-                this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
                 appApi.getSupportedAudioModes()
                     .then(res => {
                         options = [...res.supportedAudioModes]

@@ -21,6 +21,9 @@ import { Lightning, Utils, Router } from '@lightningjs/sdk'
 import { CONFIG } from '../../Config/Config'
 import LanguageItem from '../../items/LanguageItem'
 import { availableLanguages } from '../../Config/Config'
+import AppApi from '../../api/AppApi'
+
+const appApi = new AppApi()
 
 export default class LanguageScreen extends Lightning.Component {
   static _template() {
@@ -148,6 +151,12 @@ export default class LanguageScreen extends Lightning.Component {
         }
         _handleEnter() {
           localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
+          let path = location.pathname.split('index.html')[0]
+          let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"
+          let notification_url = location.origin + path + url
+          console.log(notification_url)
+          appApi.launchResident(notification_url, loader)
+          appApi.setVisibility('ResidentApp', false)
           location.reload();
         }
       },

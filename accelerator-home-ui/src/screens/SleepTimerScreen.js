@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Storage } from '@lightningjs/sdk'
+import { Language, Lightning, Router, Storage } from '@lightningjs/sdk'
 import SettingsItem from '../items/SettingsItem'
 
 export default class SleepTimerScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Sleep Timer');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Sleep Timer'));
     }
 
     pageTransition() {

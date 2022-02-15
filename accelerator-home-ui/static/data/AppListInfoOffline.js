@@ -41,7 +41,7 @@
     {
       displayName: 'Xumo',
       applicationType: 'WebApp',
-      uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+      uri: 'https://x1box-app.xumo.com/index.html',
       url: '/images/apps/App_Xumo_454x255.png',
     },
     {

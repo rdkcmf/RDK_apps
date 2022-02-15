@@ -16,9 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Utils } from '@lightningjs/sdk'
+import { Lightning, Router, Utils, Language } from '@lightningjs/sdk'
 import VideoAndAudioItem from '../../items/VideoAndAudioItem'
 import AppApi from '../../api/AppApi'
+import thunderJS from 'ThunderJS';
+
+const thunder = thunderJS({
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1,
+})
 
 /**
  * Class for Resolution Screen.
@@ -31,8 +38,8 @@ export default class ResolutionScreen extends Lightning.Component {
     }
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Video / Resolution');
-      }
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video  Resolution'));
+    }
 
     static _template() {
         return {
@@ -76,6 +83,16 @@ export default class ResolutionScreen extends Lightning.Component {
             duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
+
+        thunder.on('org.rdk.DisplaySettings', 'resolutionChanged', notification => {
+            const items = this.tag('List').items
+            items.forEach(element => {
+                element.tag('Item.Tick').visible = false
+                if (element._item === notification.resolution) {
+                    element.tag('Item.Tick').visible = true
+                }
+            });
+        })
     }
 
     _unfocus() {
@@ -85,7 +102,7 @@ export default class ResolutionScreen extends Lightning.Component {
     }
 
     _handleBack() {
-        Router.back()
+        Router.navigate('settings/video')
     }
 
     _focus() {
@@ -115,25 +132,14 @@ export default class ResolutionScreen extends Lightning.Component {
                 })
                 this.loadingAnimation.stop()
                 this.tag('Loader').visible = false
+                this.tag('List').setIndex(sIndex)
                 this._setState("Options")
             }).catch(err => {
                 console.log(`error while fetching the supported resolution ${err}`);
-            }).then(() => {
-                this.tag('List').setIndex(sIndex)
             })
         })
 
 
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-        if (!this.prevTicOb) {
-            this.prevTicOb = prevTicObject;
-        }
-        else {
-            this.prevTicOb.tag("Item.Tick").visible = false;
-            this.prevTicOb = prevTicObject;
-        }
     }
 
     static _states() {
@@ -149,7 +155,7 @@ export default class ResolutionScreen extends Lightning.Component {
                     this.tag('List').setPrevious()
                 }
                 _handleEnter() {
-                    this.tag("List").element.tag("Tick").visible = true;
+                    //this.tag("List").element.tag("Tick").visible = true;
                 }
             },
         ]

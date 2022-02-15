@@ -137,16 +137,6 @@ export default class NetworkList extends Lightning.Component {
     }
   }
 
-  //  $removeFailScreen() {
-  //   this._setState('Switch');
-  //   this.childList.remove(this.tag('FailScreen'))
-  // }
-
-  // _setfailState(msg) {
-  //   this.tag('FailScreen').item = msg
-  //   this._setState('FailScreen');
-  // }
-
   pageTransition() {
     return 'left'
   }
@@ -177,10 +167,6 @@ export default class NetworkList extends Lightning.Component {
     this.wifiStatus = true
     this._wifiIcon = true
     this._activateWiFi()
-    // if (this._availableNetworks.tag('List').length > 0) {
-    //   this._setState('AvailableDevices')
-    // }
-
     if (this.wiFiStatus) {
       this.tag('Networks').visible = true
       this.tag('JoinAnotherNetwork').visible = true
@@ -191,9 +177,7 @@ export default class NetworkList extends Lightning.Component {
         this._network.registerEvent('onIPAddressStatusChanged', notification => {
           console.log(JSON.stringify(notification))
           if (notification.status == 'ACQUIRED') {
-            // this.fireAncestors('$changeIp', 'IP:' + notification.ip4Address)
           } else if (notification.status == 'LOST') {
-            // this.fireAncestors('$changeIp', 'IP:' + 'NA')
             if (notification.interface === 'WIFI') {
               this._wifi.setInterface('ETHERNET', true).then(res => {
                 if (res.success) {
@@ -205,20 +189,10 @@ export default class NetworkList extends Lightning.Component {
         })
         this._network.registerEvent('onDefaultInterfaceChanged', notification => {
           console.log(JSON.stringify(notification))
-          // this.fireAncestors('$NetworkInterfaceText', notification.newInterfaceName)
           if (notification.newInterfaceName === 'ETHERNET') {
             this._wifi.setInterface('ETHERNET', true).then(result => {
               if (result.success) {
-                this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-                  if (result.success) {
-                    this._wifi.disconnect()
-                    this.wifiStatus = false
-                    this.tag('Networks').visible = false
-                    this.tag('JoinAnotherNetwork').visible = false
-                    this.tag('Loader').visible = false
-                    this.wifiLoading.stop()
-                  }
-                })
+                this._wifi.setDefaultInterface('ETHERNET', true)
               }
             })
           } else if (
@@ -229,9 +203,26 @@ export default class NetworkList extends Lightning.Component {
             this.wifiStatus = false
             this.tag('Networks').visible = false
             this.tag('JoinAnotherNetwork').visible = false
-            this.tag('Loader').visible = false
+            this.tag('Switch.Loader').visible = false
             this.wifiLoading.stop()
-            // this._setState('Switch')
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+            this._setState('Switch')
+            this._wifi.setInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                  if (result1.success) {
+                    console.log('set default success', result1)
+                  }
+                })
+              }
+            })
+          }
+          else if (
+            notification.newInterfaceName === "" &&
+            notification.oldInterfaceName === "WIFI"
+          ) {
+            console.log('emplty new old wifi')
+            this._wifi.setDefaultInterface('ETHERNET', true)
           }
         })
         this._network.registerEvent('onConnectionStatusChanged', notification => {
@@ -274,7 +265,6 @@ export default class NetworkList extends Lightning.Component {
    * Function to render list of Wi-Fi networks.
    */
   renderDeviceList(ssids) {
-    console.log(ssids)
     this._wifi.getConnectedSSID().then(result => {
       if (result.ssid != '') {
         this._pairedList = [result]
@@ -315,41 +305,8 @@ export default class NetworkList extends Lightning.Component {
     })
   }
 
-  _focus() {
-    /*
-Calling the function to turn on the wifi. This method is also called inside activateWifi(previous implementation) from wifiScreen. In wifiScreen 
-this method is called inside activateWifi as well as inside handleEnter inside switch class
-*/
-    // this.switch()
-  }
-
   static _states() {
     return [
-      // class PairedDevices extends this {
-      //   $enter() {
-      //     if (this.wifiStatus === true) {
-      //       this.tag('Loader').visible = false
-      //       this.wifiLoading.stop()
-      //       // this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-      //       // this.tag('Switch.Button').scaleX = -1;
-      //     }
-
-      //   }
-      //   _getFocused() {
-      //     return this._pairedNetworks.tag('List').element
-      //   }
-      //   _handleDown() {
-      //     this._navigate('MyDevices', 'down')
-      //   }
-      //   _handleUp() {
-      //     this._navigate('MyDevices', 'up')
-      //   }
-      //   _handleEnter() {
-      //     this.tag('PairingScreen').visible = true
-      //     this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
-      //     // this._setState('PairingScreen')
-      //   }
-      // },
       class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
@@ -468,15 +425,11 @@ this method is called inside activateWifi as well as inside handleEnter inside s
     })
     this._wifi.registerEvent('onWIFIStateChanged', notification => {
       console.log(JSON.stringify(notification))
-      if (notification.state === 2) {
-        this._wifi.discoverSSIDs()
-      }
       if (notification.state === 5 && Router.getActiveRoute().includes('splash')) {
         Registry.setTimeout(() => {
           Router.navigate('menu')
         }, 2000)
       }
-      this._setState('JoinAnotherNetwork')
     })
     this._wifi.registerEvent('onError', notification => {
       this._wifi.discoverSSIDs()
@@ -485,7 +438,6 @@ this method is called inside activateWifi as well as inside handleEnter inside s
           this._wifi.setDefaultInterface('ETHERNET', true)
         }
       })
-      this._setfailState(this.onError[notification.code])
     })
     this._wifi.registerEvent('onAvailableSSIDs', notification => {
       this.renderDeviceList(notification.ssids)
@@ -497,10 +449,5 @@ this method is called inside activateWifi as well as inside handleEnter inside s
       }
 
     })
-
-    // if (this._availableNetworks.tag('List').length > 0) {
-    //   this._setState('AvailableDevices')
-    // }
   }
-
 }

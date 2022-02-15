@@ -84,6 +84,6 @@ export var metroAppsInfoOffline = [
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Test-10.jpg', //replace with new image
+    url: '/images/metroApps/Bluetooth_app.jpg', //replace with new image
   }
 ];

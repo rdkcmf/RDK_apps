@@ -18,7 +18,6 @@
  **/
 
 import { Lightning, Registry, Router, Utils } from '@lightningjs/sdk'
-import BluetoothApi from '../../api/BluetoothApi'
 import { CONFIG } from '../../Config/Config'
 
 export default class BluetoothScreen extends Lightning.Component {
@@ -104,24 +103,10 @@ export default class BluetoothScreen extends Lightning.Component {
     }
 
     _init() {
-        this.btApi = new BluetoothApi()
     }
 
     _focus() {
-        this.btApi.getPairedDevices()
-            .then(devices => {
-                console.log(devices)
-                if (devices.length > 0) {
-                    Router.navigate('menu')
-                }
-                else {
-                    this.initTimer()
-                }
-            })
-            .catch(() => {
-                console.error('Paired')
-                this.initTimer()
-            })
+        this.initTimer()
     }
 
     pageTransition() {

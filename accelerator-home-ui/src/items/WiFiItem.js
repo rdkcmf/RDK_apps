@@ -30,6 +30,13 @@ export default class WiFiItem extends Lightning.Component {
     this.WiFi4 = Utils.asset('/images/settings/WiFi4.png')
     this.Tick = Utils.asset('/images/settings/Tick.png')
   }
+
+  _init() {
+    this.tag('Item.Tick').on('txError', () => {
+      const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Tick.png'
+      this.tag('Item.Tick').src = url
+    })
+  }
   static _template() {
     return {
       TopLine: {
@@ -84,7 +91,10 @@ export default class WiFiItem extends Lightning.Component {
         x: 10,
         y: 45,
         mountY: 0.5,
-        texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+        h: 32.5,
+        w: 32.5,
+        src: this.Tick,
+        //texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
         color: 0xffffffff,
         visible: item.connected ? true : false
       },

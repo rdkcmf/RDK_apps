@@ -33,7 +33,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
     }
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings'));
     }
 
     static _template() {

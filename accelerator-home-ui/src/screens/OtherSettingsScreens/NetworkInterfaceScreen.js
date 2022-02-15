@@ -20,11 +20,16 @@ import { Lightning, Router, Utils } from '@lightningjs/sdk'
 import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
-import WiFiScreen from '../WifiScreen'
 import Wifi from '../../api/WifiApi'
+import { Language } from '@lightningjs/sdk';
+import ThunderJS from 'ThunderJS'
 
 const wifi = new Wifi()
 export default class NetworkInterfaceScreen extends Lightning.Component {
+
+    _construct() {
+        this.LoadingIcon = Utils.asset('images/settings/Loading.gif')
+    }
     static _template() {
         return {
             rect: true,
@@ -71,17 +76,64 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                             fontSize: 25,
                         }
                     },
+                    Loader: {
+                        h: 45,
+                        w: 45,
+                        x: 175,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Loading.gif'),
+                        visible: false,
+                    },
                 },
             },
-            WiFiScreen: {
-                type: WiFiScreen,
-                visible: false,
-            }
         }
     }
 
     _focus() {
         this._setState('WiFi');
+    }
+
+    _init() {
+        const config = {
+            host: '127.0.0.1',
+            port: 9998,
+            default: 1,
+        };
+        this._thunder = ThunderJS(config)
+        const systemcCallsign = 'org.rdk.Network'
+        const eventName = 'onDefaultInterfaceChanged'
+        const listener = this._thunder.on(systemcCallsign, eventName, (notification) => {
+            console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification)
+            if(notification.newInterfaceName==="ETHERNET"){
+                this.loadingAnimation.stop()
+                this.tag('Ethernet.Loader').visible = false
+                this.tag('Ethernet.Title').text.text = 'Ethernet: Connected'
+            } else if(notification.newInterfaceName==="" && notification.oldInterfaceName==="WIFI"){
+                this.loadingAnimation.stop()
+                this.tag('Ethernet.Loader').visible = false
+                this.tag('Ethernet.Title').text.text = 'Ethernet: Error, Retry!'
+            } else if(notification.newInterfaceName==="WIFI"){
+                this.loadingAnimation.stop()
+                this.tag('Ethernet.Loader').visible = false
+                this.tag('Ethernet.Title').text.text = 'Ethernet'
+            }
+        })
+
+        this.loadingAnimation = this.tag('Ethernet.Loader').animation({
+            duration: 3, repeat: -1, stopMethod: 'immediate', stopDelay: 0.2,
+            actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
+        });
+
+        this.tag('Ethernet.Loader').src=this.LoadingIcon
+    }
+
+    _firstActive() {
+        this.tag('Ethernet.Loader').on('txError', () => {
+            const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif'
+            this.tag('Ethernet.Loader').src = url
+        })
     }
 
     hide() {
@@ -93,10 +145,19 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
     }
 
     setEthernetInterface() {
-        wifi.setInterface('ETHERNET', true).then(res => {
-            if (res.success) {
-                wifi.setDefaultInterface('ETHERNET', true)
-            }
+        wifi.getInterfaces().then(res => {
+            res.interfaces.forEach(element => {
+                if (element.interface === "ETHERNET" && element.connected) {
+                    wifi.setInterface('ETHERNET', true).then(result => {
+                        if (result.success) {
+                            wifi.setDefaultInterface('ETHERNET', true)
+                            this.tag('Ethernet.Title').text.text = 'Ethernet'
+                            this.tag('Ethernet.Loader').visible = true
+                            this.loadingAnimation.start()
+                        }
+                    })
+                }
+            });
         })
     }
 
@@ -107,7 +168,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
         return 'left'
     }
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Interface')
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface'))
     }
 
     static _states() {
@@ -123,7 +184,6 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                     this._setState('Ethernet')
                 }
                 _handleEnter() {
-                    //this._setState('WiFiScreen')
                     if (!Router.isNavigating()) {
                         Router.navigate('settings/network/interface/wifi')
                     }
@@ -138,28 +198,19 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                     this.tag('Ethernet')._unfocus()
                 }
                 _handleEnter() {
-                    this.setEthernetInterface()
+                    wifi.getDefaultInterface().then(res => {
+                        if(res.success){
+                            if(res.interface !== "ETHERNET"){
+                                this.setEthernetInterface()                                
+                            }
+                        }
+                    })
                 }
                 _handleDown() {
                     this._setState('WiFi')
                 }
                 _handleUp() {
                     this._setState('WiFi')
-                }
-            },
-            class WiFiScreen extends this {
-                $enter() {
-                    this.hide()
-                    this.tag('WiFiScreen').visible = true
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface / WiFi')
-                }
-                $exit() {
-                    this.show()
-                    this.tag('WiFiScreen').visible = false
-                    this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface')
-                }
-                _getFocused() {
-                    return this.tag('WiFiScreen')
                 }
             },
         ]

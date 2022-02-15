@@ -1,9 +1,9 @@
 /**
- * App version: 3.5 06/02/22
+ * App version: 3.5 24/02/22
  * SDK version: 4.8.1
  * CLI version: 2.7.2
  * 
- * Generated: Mon, 14 Feb 2022 12:19:17 GMT
+ * Generated: Thu, 24 Feb 2022 14:06:14 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -4115,7 +4115,7 @@ var APP_accelerator_home_ui = (function () {
     let expired = false;
 
     try {
-      request = await loader$1(request);
+      request = await loader$3(request);
 
       if (request && !request.isCancelled) {
         // in case of on() providing we need to reset
@@ -4173,7 +4173,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const loader$1 = async request => {
+  const loader$3 = async request => {
     const route = request.route;
     const hash = request.hash;
     const register = request.register; // todo: grab from Route instance
@@ -5806,7 +5806,7 @@ var APP_accelerator_home_ui = (function () {
   let customLoader = null;
   let customUnloader = null;
 
-  const loader = (url, videoEl, config) => {
+  const loader$2 = (url, videoEl, config) => {
     return customLoader && typeof customLoader === 'function' ? customLoader(url, videoEl, config) : new Promise(resolve => {
       url = mediaUrl(url);
       videoEl.setAttribute('src', url);
@@ -5957,7 +5957,7 @@ var APP_accelerator_home_ui = (function () {
           state$1.playingAds = true;
           ads.prerolls().then(() => {
             state$1.playingAds = false;
-            loader(url, videoEl, config).then(() => {
+            loader$2(url, videoEl, config).then(() => {
               registerEventListeners();
               this.show();
               this.play();
@@ -6770,7 +6770,7 @@ var APP_accelerator_home_ui = (function () {
       options.token = window.thunder.token();
     }
 
-    return wrapper({ ...thunder$5(options),
+    return wrapper({ ...thunder$7(options),
       ...plugins
     });
   };
@@ -6791,7 +6791,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const thunder$5 = options => ({
+  const thunder$7 = options => ({
     options,
     api: API(options),
     plugin: false,
@@ -6816,7 +6816,7 @@ var APP_accelerator_home_ui = (function () {
     },
 
     registerPlugin(name, plugin) {
-      this[name] = wrapper(Object.assign(Object.create(thunder$5), plugin, {
+      this[name] = wrapper(Object.assign(Object.create(thunder$7), plugin, {
         plugin: name
       }));
     },
@@ -6868,7 +6868,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           if (typeof prop === 'object') {
-            return wrapper(Object.assign(Object.create(thunder$5(target.options)), prop, {
+            return wrapper(Object.assign(Object.create(thunder$7(target.options)), prop, {
               plugin: propKey
             }));
           }
@@ -6876,7 +6876,7 @@ var APP_accelerator_home_ui = (function () {
           return prop;
         } else {
           if (target.plugin === false) {
-            return wrapper(Object.assign(Object.create(thunder$5(target.options)), {}, {
+            return wrapper(Object.assign(Object.create(thunder$7(target.options)), {}, {
               plugin: propKey
             }));
           }
@@ -7046,7 +7046,7 @@ var APP_accelerator_home_ui = (function () {
         default: 1
       };
       this._thunder = thunderJS(config);
-      this.callsign = 'org.rdk.Network.1';
+      this.callsign = 'org.rdk.Network';
     }
     /**
      * Function to activate network plugin
@@ -7244,7 +7244,7 @@ var APP_accelerator_home_ui = (function () {
     port: 9998,
     default: 1
   };
-  const thunder$4 = thunderJS(config$5);
+  const thunder$6 = thunderJS(config$5);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -7291,10 +7291,10 @@ var APP_accelerator_home_ui = (function () {
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$4.Controller.activate({
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getDeviceInfo', {
+          thunder$6.call(systemcCallsign, 'getDeviceInfo', {
             params: 'estb_ip'
           }).then(result => {
             resolve(result.success);
@@ -7312,10 +7312,10 @@ var APP_accelerator_home_ui = (function () {
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$4.Controller.activate({
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getTimeZoneDST').then(result => {
+          thunder$6.call(systemcCallsign, 'getTimeZoneDST').then(result => {
             resolve(result.timeZone);
           }).catch(err => {
             resolve(false);
@@ -7330,7 +7330,7 @@ var APP_accelerator_home_ui = (function () {
 
     getResolution() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getCurrentResolution', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
           "videoDisplay": "HDMI0"
         }).then(result => {
           resolve(result.resolution);
@@ -7342,8 +7342,8 @@ var APP_accelerator_home_ui = (function () {
 
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings.1";
-        thunder$4.Controller.activate({
+        const systemcCallsign = "org.rdk.DisplaySettings";
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {}).catch(err => {
           console.error(`error while activating the displaysettings plugin`);
@@ -7353,11 +7353,11 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getSupportedResolutions', {
+          thunder$6.call(systemcCallsign, 'getSupportedResolutions', {
             params: 'HDMI0'
           }).then(result => {
             resolve(result.supportedResolutions);
@@ -7377,10 +7377,10 @@ var APP_accelerator_home_ui = (function () {
     setResolution(res) {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$4.Controller.activate({
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'setCurrentResolution', {
+          thunder$6.call(systemcCallsign, 'setCurrentResolution', {
             videoDisplay: 'HDMI0',
             resolution: res,
             persist: true
@@ -7402,11 +7402,11 @@ var APP_accelerator_home_ui = (function () {
     getHDCPStatus() {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.HdcpProfile.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'org.rdk.HdcpProfile';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getHDCPStatus').then(result => {
+          thunder$6.call(systemcCallsign, 'getHDCPStatus').then(result => {
             resolve(result.HDCPStatus);
             console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus));
           }).catch(err => {
@@ -7424,11 +7424,11 @@ var APP_accelerator_home_ui = (function () {
 
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getTvHDRSupport').then(result => {
+          thunder$6.call(systemcCallsign, 'getTvHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7446,11 +7446,11 @@ var APP_accelerator_home_ui = (function () {
 
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'org.rdk.DisplaySettings.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'org.rdk.DisplaySettings';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
+          thunder$6.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7468,11 +7468,11 @@ var APP_accelerator_home_ui = (function () {
 
     getHDRSetting() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'DisplayInfo.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'DisplayInfo';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'hdrsetting').then(result => {
+          thunder$6.call(systemcCallsign, 'hdrsetting').then(result => {
             resolve(result);
             console.log("HDR format in use from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7491,11 +7491,11 @@ var APP_accelerator_home_ui = (function () {
     getDRMS() {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'OCDM.1';
-        thunder$4.Controller.activate({
+        const systemcCallsign = 'OCDM';
+        thunder$6.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$4.call(systemcCallsign, 'drms').then(result => {
+          thunder$6.call(systemcCallsign, 'drms').then(result => {
             resolve(result);
             console.log("supported drms from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7513,8 +7513,8 @@ var APP_accelerator_home_ui = (function () {
 
     clearCache() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = 'ResidentApp.1';
-        thunder$4.call(systemcCallsign, 'delete', {
+        const systemcCallsign = 'ResidentApp';
+        thunder$6.call(systemcCallsign, 'delete', {
           path: ".cache"
         }).then(result => {
           resolve(result);
@@ -7533,23 +7533,23 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'HtmlApp';
 
       if (webUrl != url) {
-        thunder$4.call('org.rdk.RDKShell', 'launch', {
+        thunder$6.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
           uri: url
         }).then(() => {
-          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$6.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {});
       } else {
-        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7567,23 +7567,23 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'LightningApp';
 
       if (lightningUrl != url) {
-        thunder$4.call('org.rdk.RDKShell', 'launch', {
+        thunder$6.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign,
           uri: url
         }).then(() => {
-          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$6.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {});
       } else {
-        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7599,15 +7599,15 @@ var APP_accelerator_home_ui = (function () {
 
     launchCobalt(url) {
       const childCallsign = 'Cobalt';
-      thunder$4.call('org.rdk.RDKShell', 'launch', {
+      thunder$6.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$4.call('Cobalt.1', 'deeplink', url);
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('Cobalt', 'deeplink', url);
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }).catch(err => {});
@@ -7619,14 +7619,14 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchPremiumApp(childCallsign) {
-      thunder$4.call("org.rdk.RDKShell", "launch", {
+      thunder$6.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$4.call("org.rdk.RDKShell", "moveToFront", {
+        thunder$6.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
         });
-        thunder$4.call("org.rdk.RDKShell", "setFocus", {
+        thunder$6.call("org.rdk.RDKShell", "setFocus", {
           client: childCallsign
         });
       }).catch(err => {});
@@ -7638,17 +7638,17 @@ var APP_accelerator_home_ui = (function () {
      */
 
 
-    launchResident(url) {
-      const childCallsign = 'ResidentApp';
-      thunder$4.call('org.rdk.RDKShell', 'launch', {
+    launchResident(url, client) {
+      const childCallsign = client;
+      thunder$6.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
-        type: childCallsign,
+        type: 'ResidentApp',
         uri: url
       }).then(() => {
-        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }).catch(err => {
@@ -7658,23 +7658,24 @@ var APP_accelerator_home_ui = (function () {
 
     launchforeground() {
       const childCallsign = 'foreground';
-      let notification_url = location.protocol + '//' + location.host + "/static/notification/index.html";
+      let url = location.href.split(location.hash)[0].split('index.html')[0];
+      let notification_url = url + "static/notification/index.html";
 
       if (location.host.includes('127.0.0.1')) {
-        notification_url = location.protocol + '//' + location.host + "/lxresui/static/notification/index.html";
+        notification_url = url + "lxresui/static/notification/index.html";
       }
 
-      console.log(notification_url, '|', location.host, JSON.stringify(location));
-      thunder$4.call('org.rdk.RDKShell', 'launch', {
+      console.log(notification_url, '|', location.host, location);
+      thunder$6.call('org.rdk.RDKShell', 'launch', {
         callsign: childCallsign,
         type: 'LightningApp',
         uri: notification_url
       }).then(() => {
         this.activatedForeground = true;
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: 'ResidentApp'
         });
-        thunder$4.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$6.call('org.rdk.RDKShell', 'setVisibility', {
           client: 'foreground',
           visible: false
         });
@@ -7689,7 +7690,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendWeb() {
       webUrl = '';
-      thunder$4.call('org.rdk.RDKShell', 'suspend', {
+      thunder$6.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'HtmlApp'
       });
     }
@@ -7700,7 +7701,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendLightning() {
       lightningUrl = '';
-      thunder$4.call('org.rdk.RDKShell', 'suspend', {
+      thunder$6.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'LightningApp'
       });
     }
@@ -7710,7 +7711,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     suspendCobalt() {
-      thunder$4.call('org.rdk.RDKShell', 'suspend', {
+      thunder$6.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'Cobalt'
       });
     }
@@ -7720,7 +7721,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     suspendPremiumApp(appName) {
-      thunder$4.call('org.rdk.RDKShell', 'suspend', {
+      thunder$6.call('org.rdk.RDKShell', 'suspend', {
         callsign: appName
       });
     }
@@ -7730,7 +7731,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateWeb() {
-      thunder$4.call('org.rdk.RDKShell', 'destroy', {
+      thunder$6.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'HtmlApp'
       });
       activatedWeb = false;
@@ -7742,7 +7743,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateCobalt() {
-      thunder$4.call('org.rdk.RDKShell', 'destroy', {
+      thunder$6.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
@@ -7750,7 +7751,7 @@ var APP_accelerator_home_ui = (function () {
 
     cobaltStateChangeEvent() {
       try {
-        thunder$4.on('Controller', 'statechange', notification => {
+        thunder$6.on('Controller', 'statechange', notification => {
           if (this._events.has('statechange')) {
             this._events.get('statechange')(notification);
           }
@@ -7765,7 +7766,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateNativeApp(appName) {
-      thunder$4.call('org.rdk.RDKShell', 'destroy', {
+      thunder$6.call('org.rdk.RDKShell', 'destroy', {
         callsign: appName
       });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
@@ -7776,11 +7777,21 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateLightning() {
-      thunder$4.call('org.rdk.RDKShell', 'destroy', {
+      thunder$6.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'LightningApp'
       });
       activatedLightning = false;
       lightningUrl = '';
+    }
+    /**
+     * Function to deactivate resident app.
+     */
+
+
+    deactivateResidentApp(client) {
+      thunder$6.call('org.rdk.RDKShell', 'destroy', {
+        callsign: client
+      });
     }
     /**
      * Function to set visibility to client apps.
@@ -7791,11 +7802,11 @@ var APP_accelerator_home_ui = (function () {
 
     setVisibility(client, visible) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$6.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
-        thunder$4.call('org.rdk.RDKShell.1', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: client
         }).then(res => {
           resolve(true);
@@ -7808,7 +7819,7 @@ var APP_accelerator_home_ui = (function () {
 
     enabledisableinactivityReporting(bool) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.RDKShell.1', 'enableInactivityReporting', {
+        thunder$6.call('org.rdk.RDKShell', 'enableInactivityReporting', {
           "enable": bool
         }).then(result => {
           resolve(result);
@@ -7821,7 +7832,7 @@ var APP_accelerator_home_ui = (function () {
 
     setInactivityInterval(t) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.RDKShell.1', 'setInactivityInterval', {
+        thunder$6.call('org.rdk.RDKShell', 'setInactivityInterval', {
           "interval": t
         }).then(result => {
           resolve(result);
@@ -7832,7 +7843,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     zorder(cli) {
-      thunder$4.call('org.rdk.RDKShell.1', 'moveToFront', {
+      thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
         client: cli,
         callsign: cli
       });
@@ -7848,9 +7859,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$4.call(plugin, method).then(res => {
+        thunder$6.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$4.call(plugin, method, res).then(resp => {
+          thunder$6.call(plugin, method, res).then(resp => {
             resolve(true);
           }).catch(err => {
             resolve(true);
@@ -7871,9 +7882,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$4.call(plugin, method).then(res => {
+        thunder$6.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$4.call(plugin, method, res).then(resp => {
+          thunder$6.call(plugin, method, res).then(resp => {
             resolve(true);
           }).catch(err => {
             resolve(true);
@@ -7893,25 +7904,25 @@ var APP_accelerator_home_ui = (function () {
       const childCallsign = 'testApp';
 
       if (nativeUrl != url) {
-        thunder$4.call('org.rdk.RDKShell', 'launchApplication', {
+        thunder$6.call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
         }).then(() => {
-          thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$6.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
         }).catch(err => {
           console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
         });
       } else {
-        thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign
         });
-        thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        thunder$6.call('org.rdk.RDKShell', 'setFocus', {
           client: childCallsign
         });
       }
@@ -7924,7 +7935,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     killNative() {
-      thunder$4.call('org.rdk.RDKShell', 'kill', {
+      thunder$6.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
       nativeUrl = '';
@@ -7951,7 +7962,7 @@ var APP_accelerator_home_ui = (function () {
 
     standby(value) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'setPowerState', {
+        thunder$6.call('org.rdk.System', 'setPowerState', {
           "powerState": value,
           "standbyReason": "Requested by user"
         }).then(result => {
@@ -7964,7 +7975,7 @@ var APP_accelerator_home_ui = (function () {
 
     audio_mute(value, audio_source) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setMuted', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setMuted', {
           "audioPort": audio_source,
           "muted": value
         }).then(result => {
@@ -7978,7 +7989,7 @@ var APP_accelerator_home_ui = (function () {
 
     muteStatus(port) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getMuted', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getMuted', {
           audioPort: port
         }).then(result => {
           resolve(result);
@@ -7991,8 +8002,8 @@ var APP_accelerator_home_ui = (function () {
 
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.RDKShell.1', 'launch', {
-          callsign: 'org.rdk.DisplaySettings.1'
+        thunder$6.call('org.rdk.RDKShell', 'launch', {
+          callsign: 'org.rdk.DisplaySettings'
         }).then(result => {
           console.log('Successfully emabled DisplaySettings Service');
           resolve(result);
@@ -8004,7 +8015,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getVolumeLevel', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8015,20 +8026,9 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    getConnectedAudioPorts() {
-      return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
-          resolve(result);
-        }).catch(err => {
-          console.log("audio mute error:", JSON.stringify(err, 3, null));
-          resolve(false);
-        });
-      });
-    }
-
     getSoundMode() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getSoundMode', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getSoundMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8041,7 +8041,7 @@ var APP_accelerator_home_ui = (function () {
 
     setSoundMode(mode) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setSoundMode', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setSoundMode', {
           "audioPort": "HDMI0",
           "soundMode": mode,
           "persist": true
@@ -8056,7 +8056,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioModes() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getSupportedAudioModes', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8070,7 +8070,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getConnectedAudioPorts', {}).then(result => {
+        thunder$6.call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {}).then(result => {
           resolve(result);
         }).catch(err => {
           console.log("audio mute error:", JSON.stringify(err, 3, null));
@@ -8082,7 +8082,7 @@ var APP_accelerator_home_ui = (function () {
 
     setEnableAudioPort(port) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setEnableAudioPort', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
           "audioPort": port,
           "enable": true
         }).then(result => {
@@ -8096,7 +8096,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDRCMode() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings', 'getDRCMode', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getDRCMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8109,7 +8109,7 @@ var APP_accelerator_home_ui = (function () {
 
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setDRCMode', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setDRCMode', {
           "DRCMode": DRCNum
         }).then(result => {
           resolve(result);
@@ -8122,7 +8122,7 @@ var APP_accelerator_home_ui = (function () {
 
     getZoomSetting() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getZoomSetting').then(result => {
+        thunder$6.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting Zoom Setting", JSON.stringify(err));
@@ -8133,7 +8133,7 @@ var APP_accelerator_home_ui = (function () {
 
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setZoomSetting', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setZoomSetting', {
           "zoomSetting": zoom
         }).then(result => {
           resolve(result);
@@ -8146,7 +8146,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getEnableAudioPort', {
+        thunder$6.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
           "audioPort": audioPort
         }).then(result => {
           resolve(result);
@@ -8159,7 +8159,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getSupportedAudioPorts').then(result => {
+        thunder$6.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting S upported audio ports ", JSON.stringify(err));
@@ -8170,7 +8170,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'getVolumeLevel').then(result => {
+        thunder$6.call('org.rdk.DisplaySettings', 'getVolumeLevel').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error current volume level", JSON.stringify(err));
@@ -8181,7 +8181,7 @@ var APP_accelerator_home_ui = (function () {
 
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.DisplaySettings.1', 'setVolumeLevel', {
+        thunder$6.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
           "audioPort": port,
           "volumeLevel": volume
         }).then(result => {
@@ -8199,7 +8199,7 @@ var APP_accelerator_home_ui = (function () {
 
     speak() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.TextToSpeech.1', 'speak', {
+        thunder$6.call('org.rdk.TextToSpeech', 'speak', {
           "text": "speech_1"
         }).then(result => {
           resolve(result);
@@ -8213,7 +8213,7 @@ var APP_accelerator_home_ui = (function () {
 
     resume() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.TextToSpeech.1', 'resume', {
+        thunder$6.call('org.rdk.TextToSpeech', 'resume', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8227,7 +8227,7 @@ var APP_accelerator_home_ui = (function () {
 
     pause() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.TextToSpeech.1', 'pause', {
+        thunder$6.call('org.rdk.TextToSpeech', 'pause', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8241,7 +8241,7 @@ var APP_accelerator_home_ui = (function () {
 
     getlistVoices() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.TextToSpeech.1', 'listvoices', {
+        thunder$6.call('org.rdk.TextToSpeech', 'listvoices', {
           "language": "en-US"
         }).then(result => {
           resolve(result);
@@ -8255,7 +8255,7 @@ var APP_accelerator_home_ui = (function () {
 
     syncLocation() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('LocationSync.1', 'sync').then(result => {
+        thunder$6.call('LocationSync', 'sync').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in syncing location:", JSON.stringify(err, 3, null));
@@ -8266,7 +8266,7 @@ var APP_accelerator_home_ui = (function () {
 
     getLocation() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('LocationSync.1', 'location').then(result => {
+        thunder$6.call('LocationSync', 'location').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting location:", JSON.stringify(err, 3, null));
@@ -8279,7 +8279,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateInfo() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getFirmwareUpdateInfo').then(result => {
+        thunder$6.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update info:", JSON.stringify(err, 3, null));
@@ -8291,7 +8291,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateState() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getFirmwareUpdateState').then(result => {
+        thunder$6.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update state:", JSON.stringify(err, 3, null));
@@ -8303,7 +8303,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getDownloadedFirmwareInfo').then(result => {
+        thunder$6.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded info:", JSON.stringify(err, 3, null));
@@ -8315,7 +8315,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSerialNumber() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getSerialNumber').then(result => {
+        thunder$6.call('org.rdk.System', 'getSerialNumber').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -8327,7 +8327,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSystemVersions() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getSystemVersions').then(result => {
+        thunder$6.call('org.rdk.System', 'getSystemVersions').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -8340,7 +8340,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateFirmware() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'updateFirmware').then(result => {
+        thunder$6.call('org.rdk.System', 'updateFirmware').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in firmware update:", JSON.stringify(err, 3, null));
@@ -8352,7 +8352,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getFirmwareDownloadPercent').then(result => {
+        thunder$6.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded percentage:", JSON.stringify(err, 3, null));
@@ -8364,7 +8364,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDeviceIdentification() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('DeviceIdentification.1', 'deviceidentification').then(result => {
+        thunder$6.call('DeviceIdentification', 'deviceidentification').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting device Identification:", JSON.stringify(err, 3, null));
@@ -8376,7 +8376,7 @@ var APP_accelerator_home_ui = (function () {
 
     systeminfo() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('DeviceInfo.1', 'systeminfo').then(result => {
+        thunder$6.call('DeviceInfo', 'systeminfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting system info:", JSON.stringify(err, 3, null));
@@ -8388,7 +8388,7 @@ var APP_accelerator_home_ui = (function () {
 
     reboot() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'reboot', {
+        thunder$6.call('org.rdk.System', 'reboot', {
           "rebootReason": "FIRMWARE_FAILURE"
         }).then(result => {
           resolve(result);
@@ -8402,7 +8402,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPreferredStandbyMode() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'getPreferredStandbyMode').then(result => {
+        thunder$6.call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getPreferredStandbyMode:", JSON.stringify(err, 3, null));
@@ -8414,7 +8414,7 @@ var APP_accelerator_home_ui = (function () {
     setPreferredStandbyMode(standbyMode) {
       console.log("setPreferredStandbyMode called : " + standbyMode);
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.System.1', 'setPreferredStandbyMode', {
+        thunder$6.call('org.rdk.System', 'setPreferredStandbyMode', {
           "standbyMode": standbyMode
         }).then(result => {
           resolve(result);
@@ -8426,11 +8426,11 @@ var APP_accelerator_home_ui = (function () {
     }
 
     registerChangeLocation() {
-      var callsign = "LocationSync.1";
-      thunder$4.call('Controller', 'activate', {
+      var callsign = "LocationSync";
+      thunder$6.call('Controller', 'activate', {
         callsign: callsign
       }).then(result => {
-        thunder$4.on(callsign, "locationchange", notification => {
+        thunder$6.on(callsign, "locationchange", notification => {
           console.log("location was changed and the notification = ", notification);
         });
       }).catch(err => {
@@ -8439,7 +8439,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     async sendAppState(value) {
-      const state = await thunder$4.call('org.rdk.RDKShell.1', 'getState', {}).then(result => result.state);
+      const state = await thunder$6.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
       this.state = state;
       let params = {
         applicationName: value,
@@ -8463,14 +8463,14 @@ var APP_accelerator_home_ui = (function () {
         activatedCobalt = false;
       }
 
-      await thunder$4.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
+      await thunder$6.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
     } //NETWORK INFO APIS
     //1. Get IP Setting
 
 
     getIPSetting(defaultInterface) {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.Network.1', 'getIPSettings', {
+        thunder$6.call('org.rdk.Network', 'getIPSettings', {
           "interface": defaultInterface
         }).then(result => {
           resolve(result);
@@ -8484,7 +8484,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.Network.1', 'getDefaultInterface').then(result => {
+        thunder$6.call('org.rdk.Network', 'getDefaultInterface').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting default interface:", JSON.stringify(err, 3, null));
@@ -8496,7 +8496,7 @@ var APP_accelerator_home_ui = (function () {
 
     isInterfaceEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.Network.1', 'isInterfaceEnabled', {
+        thunder$6.call('org.rdk.Network', 'isInterfaceEnabled', {
           "interface": "WIFI"
         }).then(result => {
           resolve(result);
@@ -8510,7 +8510,7 @@ var APP_accelerator_home_ui = (function () {
 
     getInterfaces() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.Network.1', 'getInterfaces').then(result => {
+        thunder$6.call('org.rdk.Network', 'getInterfaces').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting interfaces:", JSON.stringify(err, 3, null));
@@ -8522,7 +8522,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedSSID() {
       return new Promise((resolve, reject) => {
-        thunder$4.call('org.rdk.Wifi.1', 'getConnectedSSID').then(result => {
+        thunder$6.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting connected SSID:", JSON.stringify(err, 3, null));
@@ -8576,7 +8576,7 @@ var APP_accelerator_home_ui = (function () {
   }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png' //replace with online url
 
   }, {
@@ -8628,7 +8628,7 @@ var APP_accelerator_home_ui = (function () {
   }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
-    uri: 'https://x1box-app.xumo.com/3.0.70/index.html',
+    uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png'
   }, {
     displayName: 'Netflix',
@@ -8926,7 +8926,7 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Test-10.jpg' //replace with new image
+    url: '/images/metroApps/Bluetooth_app.jpg' //replace with new image
 
   }];
 
@@ -9006,7 +9006,7 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Bluetooth Audio',
     applicationType: 'Lightning',
     uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Test-10.jpg' //replace with new image
+    url: '/images/metroApps/Bluetooth_app.jpg' //replace with new image
 
   }];
 
@@ -9042,8 +9042,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage$1.set('ipAddress', null);
   });
-  var appApi$5 = new AppApi();
-  appApi$5.getIP().then(ip => {
+  var appApi$7 = new AppApi();
+  appApi$7.getIP().then(ip => {
     IpAddress2 = ip;
   });
   /**
@@ -9112,6 +9112,14 @@ var APP_accelerator_home_ui = (function () {
       }
 
       return metroAppsMetaData;
+    }
+
+    getOfflineMetroApps() {
+      return metroAppsInfoOffline;
+    }
+
+    getOnlineMetroApps() {
+      return metroAppsInfo;
     }
     /**
      * Function to store partner app details.
@@ -9374,7 +9382,7 @@ var APP_accelerator_home_ui = (function () {
 
   class SettingsScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings'));
     }
 
     pageTransition() {
@@ -9519,10 +9527,6 @@ var APP_accelerator_home_ui = (function () {
 
     _focus() {
       this._setState(this.state);
-    }
-
-    _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings');
     }
 
     _handleBack() {
@@ -9907,7 +9911,7 @@ var APP_accelerator_home_ui = (function () {
       UsbAccess: 2
     }
   };
-  var thunder$3 = thunderJS(config$4);
+  var thunder$5 = thunderJS(config$4);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -9919,7 +9923,7 @@ var APP_accelerator_home_ui = (function () {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$3.Controller.activate({
+        thunder$5.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {
           resolve(res);
@@ -9937,7 +9941,7 @@ var APP_accelerator_home_ui = (function () {
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$3.Controller.deactivate({
+        thunder$5.Controller.deactivate({
           callsign: systemcCallsign
         }).then(res => {
           resolve(res);
@@ -9955,7 +9959,7 @@ var APP_accelerator_home_ui = (function () {
     clearLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$3.call(systemcCallsign, 'clearLink').then(result => {
+        thunder$5.call(systemcCallsign, 'clearLink').then(result => {
           resolve(result);
         }).catch(err => {
           resolve(false);
@@ -9970,7 +9974,7 @@ var APP_accelerator_home_ui = (function () {
     createLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$3.call(systemcCallsign, 'createLink').then(result => {
+        thunder$5.call(systemcCallsign, 'createLink').then(result => {
           resolve(result);
         }).catch(err => {
           resolve(false);
@@ -9986,7 +9990,7 @@ var APP_accelerator_home_ui = (function () {
       if (arguments.length === 0) {
         return new Promise((resolve, reject) => {
           const systemcCallsign = 'org.rdk.UsbAccess';
-          thunder$3.call(systemcCallsign, 'getFileList').then(result => {
+          thunder$5.call(systemcCallsign, 'getFileList').then(result => {
             resolve(result.contents);
           }).catch(err => {
             resolve(false);
@@ -9995,7 +9999,7 @@ var APP_accelerator_home_ui = (function () {
       } else {
         return new Promise((resolve, reject) => {
           const systemcCallsign = 'org.rdk.UsbAccess';
-          thunder$3.call(systemcCallsign, 'getFileList', {
+          thunder$5.call(systemcCallsign, 'getFileList', {
             "path": arguments[0]
           }).then(result => {
             resolve(result.contents);
@@ -10051,7 +10055,7 @@ var APP_accelerator_home_ui = (function () {
     getMountedDevices() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder$3.call(systemcCallsign, 'getMounted').then(result => {
+        thunder$5.call(systemcCallsign, 'getMounted').then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -10178,7 +10182,7 @@ var APP_accelerator_home_ui = (function () {
 
     activate() {
       return new Promise((resolve, reject) => {
-        this.callsign = 'org.rdk.Xcast.1';
+        this.callsign = 'org.rdk.Xcast';
 
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
@@ -10247,7 +10251,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnabled() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Xcast.1', 'getEnabled').then(res => {
+        this._thunder.call('org.rdk.Xcast', 'getEnabled').then(res => {
           resolve(res);
         }).catch(err => {
           console.log('Xdial error', err);
@@ -10273,7 +10277,7 @@ var APP_accelerator_home_ui = (function () {
 
     deactivate() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Xcast.1', 'setEnabled', {
+        this._thunder.call('org.rdk.Xcast', 'setEnabled', {
           enabled: false
         }).then(res => {
           resolve(res.success);
@@ -10291,7 +10295,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         console.log('Notifying back');
 
-        this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
+        this._thunder.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => {
           resolve(result);
         });
       });
@@ -10333,7 +10337,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to render various elements in main view.
      */
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Home');
+      this.widgets.menu.updateTopPanelText(Language.translate('home'));
     }
 
     static _template() {
@@ -10495,6 +10499,7 @@ var APP_accelerator_home_ui = (function () {
 
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
+      this.metroApps = this.homeApi.getMetroInfo();
       var prop_apps = 'applications';
       var prop_displayname = 'displayName';
       var prop_uri = 'uri';
@@ -10577,6 +10582,16 @@ var APP_accelerator_home_ui = (function () {
         return listener;
       };
 
+      thunder.on('org.rdk.Network.1', 'onIPAddressStatusChanged', notification => {
+        console.log('IP ADDRESS changed', JSON.stringify(notification));
+
+        if (notification.status === 'ACQUIRED') {
+          Storage$1.set('ipAddress', notification.ip4Address);
+          this.metroApps = this.homeApi.getOnlineMetroApps();
+        } else {
+          Storage$1.set('ipAddress', null); //this.metroApps = this.homeApi.getMetroInfo()
+        }
+      });
       this.fireAncestors("$mountEventConstructor", registerListener.bind(this));
       this.refreshFirstRow();
 
@@ -11540,7 +11555,7 @@ var APP_accelerator_home_ui = (function () {
 
     activate() {
       return new Promise((resolve, reject) => {
-        this.callsign = 'org.rdk.Bluetooth.1';
+        this.callsign = 'org.rdk.Bluetooth';
 
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
@@ -11614,7 +11629,7 @@ var APP_accelerator_home_ui = (function () {
 
     disable() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'disable').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'disable').then(result => {
           resolve(result);
         }).catch(err => {
           console.error(`Can't disable : ${JSON.stringify(err)}`);
@@ -11629,7 +11644,7 @@ var APP_accelerator_home_ui = (function () {
 
     enable() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'enable').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'enable').then(result => {
           resolve(result);
         }).catch(err => {
           console.error(`Can't enable : ${JSON.stringify(err)}`);
@@ -11644,7 +11659,7 @@ var APP_accelerator_home_ui = (function () {
 
     startScan() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'startScan', {
+        this._thunder.call('org.rdk.Bluetooth', 'startScan', {
           timeout: '10',
           profile: `KEYBOARD,
                     MOUSE,
@@ -11665,7 +11680,7 @@ var APP_accelerator_home_ui = (function () {
 
     stopScan() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'stopScan', {}).then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'stopScan', {}).then(result => {
           if (result.success) resolve();else reject();
         }).catch(err => {
           console.error('Error', err);
@@ -11680,7 +11695,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDiscoveredDevices() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'getDiscoveredDevices').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'getDiscoveredDevices').then(result => {
           this._devices = result.discoveredDevices;
           resolve(result.discoveredDevices);
         }).catch(err => {
@@ -11700,7 +11715,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPairedDevices() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'getPairedDevices').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'getPairedDevices').then(result => {
           this._pairedDevices = result.pairedDevices;
           resolve(result.pairedDevices);
         }).catch(err => {
@@ -11720,7 +11735,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedDevices() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'getConnectedDevices').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'getConnectedDevices').then(result => {
           this._connectedDevices = result.connectedDevices;
           resolve(result.connectedDevices);
         }).catch(err => {
@@ -11743,7 +11758,7 @@ var APP_accelerator_home_ui = (function () {
 
     connect(deviceID, deviceType) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'connect', {
+        this._thunder.call('org.rdk.Bluetooth', 'connect', {
           deviceID: deviceID,
           deviceType: deviceType,
           connectedProfile: deviceType
@@ -11764,7 +11779,7 @@ var APP_accelerator_home_ui = (function () {
 
     disconnect(deviceID, deviceType) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'disconnect', {
+        this._thunder.call('org.rdk.Bluetooth', 'disconnect', {
           deviceID: deviceID,
           deviceType: deviceType
         }).then(result => {
@@ -11783,7 +11798,7 @@ var APP_accelerator_home_ui = (function () {
 
     unpair(deviceId) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'unpair', {
+        this._thunder.call('org.rdk.Bluetooth', 'unpair', {
           deviceID: deviceId
         }).then(result => {
           if (result.success) resolve(result);else reject(result);
@@ -11801,7 +11816,7 @@ var APP_accelerator_home_ui = (function () {
 
     pair(deviceId) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'pair', {
+        this._thunder.call('org.rdk.Bluetooth', 'pair', {
           deviceID: deviceId
         }).then(result => {
           if (result.success) resolve(result);else reject(result);
@@ -11821,7 +11836,7 @@ var APP_accelerator_home_ui = (function () {
 
     respondToEvent(deviceID, eventType, responseValue) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'respondToEvent', {
+        this._thunder.call('org.rdk.Bluetooth', 'respondToEvent', {
           deviceID: deviceID,
           eventType: eventType,
           responseValue: responseValue
@@ -11840,7 +11855,7 @@ var APP_accelerator_home_ui = (function () {
 
     getName() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'getName').then(result => {
+        this._thunder.call('org.rdk.Bluetooth', 'getName').then(result => {
           resolve(result.name);
         });
       });
@@ -11848,7 +11863,7 @@ var APP_accelerator_home_ui = (function () {
 
     setAudioStream(deviceID) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Bluetooth.1', 'setAudioStream', {
+        this._thunder.call('org.rdk.Bluetooth', 'setAudioStream', {
           "deviceID": deviceID,
           "audioStreamName": "AUXILIARY"
         }).then(result => {
@@ -11989,7 +12004,7 @@ var APP_accelerator_home_ui = (function () {
 
   class BluetoothScreen$1 extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Bluetooth On/Off');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Bluetooth On/Off'));
     }
 
     static _template() {
@@ -12140,11 +12155,6 @@ var APP_accelerator_home_ui = (function () {
 
       this.switch(); //this._bluetooth = false
 
-      if (this._bluetooth) {
-        this.tag('Networks').visible = true;
-        this.tag('AddADevice').visible = true;
-      }
-
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
       this.renderDeviceList();
@@ -12168,6 +12178,15 @@ var APP_accelerator_home_ui = (function () {
       this._setState('Switch');
 
       this._enable();
+
+      if (this._bluetooth) {
+        this.tag('Networks').visible = true;
+        this.tag('AddADevice').visible = true;
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        this.renderDeviceList();
+
+        this._bt.startScan();
+      }
     }
 
     _handleBack() {
@@ -15345,7 +15364,7 @@ var APP_accelerator_home_ui = (function () {
         port: 9998
       };
       this._thunder = thunderJS(config);
-      this.callsign = 'org.rdk.Wifi.1';
+      this.callsign = 'org.rdk.Wifi';
     }
     /**
      * Function to activate the wifi plugin.
@@ -15574,7 +15593,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network.1', 'getDefaultInterface', {}).then(result => {
+        this._thunder.call('org.rdk.Network', 'getDefaultInterface', {}).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -15582,9 +15601,19 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
+    getInterfaces() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('org.rdk.Network', 'getInterfaces').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log('Failed to get Interfaces');
+        });
+      });
+    }
+
     setInterface(inter, bool) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network.1', 'setInterfaceEnabled', {
+        this._thunder.call('org.rdk.Network', 'setInterfaceEnabled', {
           interface: inter,
           persist: true,
           enabled: bool
@@ -15598,7 +15627,7 @@ var APP_accelerator_home_ui = (function () {
 
     setDefaultInterface(interfaceName, bool) {
       return new Promise((resolve, reject) => {
-        this._thunder.call('org.rdk.Network.1', 'setDefaultInterface', {
+        this._thunder.call('org.rdk.Network', 'setDefaultInterface', {
           interface: interfaceName,
           persist: bool
         }).then(result => {
@@ -16228,7 +16257,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Network Configuration');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration'));
     }
 
     static _states() {
@@ -16356,7 +16385,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$4 = new AppApi();
+  var appApi$6 = new AppApi();
   var defaultInterface = "";
   var currentInterface = [];
   class NetworkInfo extends lng.Component {
@@ -16369,7 +16398,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Info');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Info'));
     }
 
     static _template() {
@@ -16600,14 +16629,14 @@ var APP_accelerator_home_ui = (function () {
     }
 
     getIPSetting(interfaceName) {
-      appApi$4.getIPSetting(interfaceName).then(result => {
+      appApi$6.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
 
     _focus() {
       //Getting the default interface
-      appApi$4.getDefaultInterface().then(result => {
+      appApi$6.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
 
@@ -16628,12 +16657,12 @@ var APP_accelerator_home_ui = (function () {
         } //Filtering the current interface
 
 
-        appApi$4.getInterfaces().then(result => {
+        appApi$6.getInterfaces().then(result => {
           currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
 
           if (currentInterface[0].connected) {
             this.tag("Status.Value").text.text = `Connected`;
-            appApi$4.getConnectedSSID().then(result => {
+            appApi$6.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = `Excellent`;
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -16646,7 +16675,7 @@ var APP_accelerator_home_ui = (function () {
 
               this.tag("SSID.Value").text.text = `${result.ssid}`;
             }).catch(error => console.log(error));
-            appApi$4.getIPSetting(defaultInterface).then(result => {
+            appApi$6.getIPSetting(defaultInterface).then(result => {
               this.tag('IPAddress.Value').text.text = `${result.ipaddr}`;
               this.tag("Gateway.Value").text.text = `${result.gateway}`;
             }).catch(error => console.log(error));
@@ -16689,702 +16718,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  class WiFiItem extends lng.Component {
-    _construct() {
-      this.Lock = Utils.asset('/images/settings/Lock.png');
-      this.WiFi1 = Utils.asset('/images/settings/WiFi1.png');
-      this.WiFi2 = Utils.asset('/images/settings/WiFi2.png');
-      this.WiFi3 = Utils.asset('/images/settings/WiFi3.png');
-      this.WiFi4 = Utils.asset('/images/settings/WiFi4.png');
-      this.Tick = Utils.asset('/images/settings/Tick.png');
-    }
-
-    static _template() {
-      return {
-        TopLine: {
-          y: 0,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        },
-        Item: {
-          w: 1600,
-          h: 90
-        },
-        BottomLine: {
-          y: 90,
-          mountY: 0.5,
-          w: 1600,
-          h: 3,
-          rect: true,
-          color: 0xFFFFFFFF
-        }
-      };
-    }
-    /**
-     * Function to set contents of an item in the Bluetooth screen.
-     */
-
-
-    set item(item) {
-      this._item = item;
-      this.status = item.connected ? 'Connected' : 'Not Connected';
-      var wifiicon = "";
-
-      if (item.signalStrength >= -50) {
-        wifiicon = this.WiFi4;
-      } else if (item.signalStrength >= -60) {
-        wifiicon = this.WiFi3;
-      } else if (item.signalStrength >= -67) {
-        wifiicon = this.WiFi2;
-      } else {
-        wifiicon = this.WiFi1;
-      }
-
-      this.tag('Item').patch({
-        Tick: {
-          x: 10,
-          y: 45,
-          mountY: 0.5,
-          texture: lng.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
-          color: 0xffffffff,
-          visible: item.connected ? true : false
-        },
-        Left: {
-          x: 40,
-          y: 45,
-          mountY: 0.5,
-          text: {
-            text: item.ssid,
-            fontSize: 25,
-            textColor: COLORS.textColor,
-            fontFace: CONFIG.language.font
-          }
-        },
-        Right: {
-          x: 1560,
-          mountX: 1,
-          y: 45,
-          mountY: 0.5,
-          flex: {
-            direction: 'row'
-          },
-          Lock: {
-            color: 0xffffffff,
-            texture: lng.Tools.getSvgTexture(this.Lock, 32.5, 32.5),
-            alpha: 1
-          },
-          Icon: {
-            color: 0xffffffff,
-            flexItem: {
-              marginLeft: 15
-            },
-            texture: lng.Tools.getSvgTexture(wifiicon, 32.5, 32.5)
-          }
-        }
-      });
-
-      if (item.security == '0' || item.security == '15') {
-        this.tag('Item.Right.Lock').visible = false;
-      } else {
-        this.tag('Item.Right.Lock').visible = true;
-      }
-    }
-
-    _focus() {
-      this.tag("Item").color = COLORS.hightlightColor;
-      this.tag('TopLine').color = CONFIG.theme.hex;
-      this.tag('BottomLine').color = CONFIG.theme.hex;
-      this.patch({
-        zIndex: 2
-      });
-      this.tag('TopLine').h = 6;
-      this.tag('BottomLine').h = 6;
-    }
-
-    _unfocus() {
-      this.tag('TopLine').color = 0xFFFFFFFF;
-      this.tag('BottomLine').color = 0xFFFFFFFF;
-      this.patch({
-        zIndex: 1
-      });
-      this.tag('TopLine').h = 3;
-      this.tag('BottomLine').h = 3;
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
-  /**
-  * Class for WiFi screen.
-  */
-
-  class WiFiScreen extends lng.Component {
-    pageTransition() {
-      return 'left';
-    }
-
-    static _template() {
-      return {
-        rect: true,
-        color: 0xff000000,
-        w: 1920,
-        h: 1080,
-        WifiContents: {
-          x: 200,
-          y: 275,
-          Switch: {
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'WiFi On/Off',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Loader: {
-              visible: false,
-              h: 45,
-              w: 45,
-              x: 1500,
-              // x: 320,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif')
-            },
-            Button: {
-              h: 45,
-              w: 67,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils.asset('images/settings/ToggleOffWhite.png')
-            }
-          },
-          Networks: {
-            y: 180,
-            flex: {
-              direction: 'column'
-            },
-            PairedNetworks: {
-              flexItem: {
-                margin: 0
-              },
-              List: {
-                type: lng.components.ListComponent,
-                w: 1920 - 300,
-                itemSize: 90,
-                horizontal: false,
-                invertDirection: true,
-                roll: true,
-                rollMax: 900,
-                itemScrollOffset: -4
-              }
-            },
-            AvailableNetworks: {
-              flexItem: {
-                margin: 0
-              },
-              List: {
-                w: 1920 - 300,
-                type: lng.components.ListComponent,
-                itemSize: 90,
-                horizontal: false,
-                invertDirection: true,
-                roll: true,
-                rollMax: 900,
-                itemScrollOffset: -4
-              }
-            },
-            visible: false
-          },
-          JoinAnotherNetwork: {
-            y: 90,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: 'Join Another Network',
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            visible: false
-          }
-        }
-      };
-    }
-
-    _active() {
-      this._setState('Switch');
-    }
-
-    _focus() {
-      this._setState('Switch');
-    }
-
-    _init() {
-      this.wifiLoading = this.tag('Switch.Loader').animation({
-        duration: 3,
-        repeat: -1,
-        stopMethod: 'immediate',
-        stopDelay: 0.2,
-        actions: [{
-          p: 'rotation',
-          v: {
-            sm: 0,
-            0: 0,
-            1: Math.PI * 2
-          }
-        }]
-      });
-      this.onError = {
-        0: 'SSID_CHANGED - The SSID of the network changed',
-        1: 'CONNECTION_LOST - The connection to the network was lost',
-        2: 'CONNECTION_FAILED - The connection failed for an unknown reason',
-        3: 'CONNECTION_INTERRUPTED - The connection was interrupted',
-        4: 'INVALID_CREDENTIALS - The connection failed due to invalid credentials',
-        5: 'NO_SSID - The SSID does not exist',
-        6: 'UNKNOWN - Any other error.'
-      };
-      this._wifi = new Wifi();
-      this._network = new Network();
-      this.wifiStatus = false;
-      this._wifiIcon = true;
-
-      this._activateWiFi();
-
-      this._setState('Switch');
-
-      if (this.wiFiStatus) {
-        this.tag('Networks').visible = true;
-        this.tag('JoinAnotherNetwork').visible = true;
-      }
-
-      this._pairedNetworks = this.tag('Networks.PairedNetworks');
-      this._availableNetworks = this.tag('Networks.AvailableNetworks');
-
-      this._network.activate().then(result => {
-        if (result) {
-          this.wifiStatus = true;
-
-          this._network.registerEvent('onIPAddressStatusChanged', notification => {
-            console.log(JSON.stringify(notification));
-
-            if (notification.status == 'LOST') {
-              if (notification.interface === 'WIFI') {
-                this._wifi.setInterface('ETHERNET', true).then(res => {
-                  if (res.success) {
-                    this._wifi.setDefaultInterface('ETHERNET', true);
-                  }
-                });
-              }
-            }
-          });
-
-          this._network.registerEvent('onDefaultInterfaceChanged', notification => {
-            if (notification.newInterfaceName === 'ETHERNET') {
-              this._wifi.setInterface('ETHERNET', true).then(result => {
-                if (result.success) {
-                  this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-                    if (result.success) {
-                      this._wifi.disconnect();
-
-                      this.wifiStatus = false;
-                      this.tag('Networks').visible = false;
-                      this.tag('JoinAnotherNetwork').visible = false;
-                      this.tag('Switch.Loader').visible = false;
-                      this.wifiLoading.stop();
-                      this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-                    }
-                  });
-                }
-              });
-            } else if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
-              this._wifi.disconnect();
-
-              this.wifiStatus = false;
-              this.tag('Networks').visible = false;
-              this.tag('JoinAnotherNetwork').visible = false;
-              this.tag('Switch.Loader').visible = false;
-              this.wifiLoading.stop();
-              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-
-              this._setState('Switch');
-            }
-          });
-
-          this._network.registerEvent('onConnectionStatusChanged', notification => {
-            if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
-              this._wifi.setInterface('ETHERNET', true).then(res => {
-                if (res.success) {
-                  this._wifi.setDefaultInterface('ETHERNET', true);
-                }
-              });
-            }
-          });
-        }
-      });
-    }
-    /**
-     * Function to be executed when the Wi-Fi screen is enabled.
-     */
-
-
-    _enable() {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs();
-      }
-
-      this.scanTimer = setInterval(() => {
-        if (this.wifiStatus) {
-          this._wifi.discoverSSIDs();
-        }
-      }, 5000);
-    }
-    /**
-     * Function to be executed when the Wi-Fi screen is disabled.
-     */
-
-
-    _disable() {
-      clearInterval(this.scanTimer);
-    }
-    /**
-     * Function to render list of Wi-Fi networks.
-     */
-
-
-    renderDeviceList(ssids) {
-      this._wifi.getConnectedSSID().then(result => {
-        if (result.ssid != '') {
-          this._pairedList = [result];
-        } else {
-          this._pairedList = [];
-        }
-
-        this._pairedNetworks.h = this._pairedList.length * 90;
-        this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
-        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
-          item.connected = true;
-          return {
-            ref: 'Paired' + index,
-            w: 1920 - 300,
-            h: 90,
-            type: WiFiItem,
-            item: item
-          };
-        });
-        this._otherList = ssids.filter(device => {
-          result = this._pairedList.map(a => a.ssid);
-
-          if (result.includes(device.ssid)) {
-            return false;
-          } else return device;
-        });
-        this._availableNetworks.h = this._otherList.length * 90;
-        this._availableNetworks.tag('List').h = this._otherList.length * 90;
-        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
-          item.connected = false;
-          return {
-            ref: 'Other' + index,
-            w: 1620,
-            h: 90,
-            type: WiFiItem,
-            item: item
-          };
-        });
-      });
-    }
-
-    _handleBack() {
-      Router.navigate('settings/network/interface');
-    }
-
-    _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Interface / WiFi');
-    }
-
-    static _states() {
-      return [class Switch extends this {
-        $enter() {
-          if (this.wifiStatus === true) {
-            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-            this.tag('Switch.Button').scaleX = 1;
-          }
-
-          this.tag('Switch')._focus();
-        }
-
-        $exit() {
-          this.tag('Switch')._unfocus();
-        }
-
-        _handleDown() {
-          if (this.wifiStatus === true) {
-            this._setState('JoinAnotherNetwork');
-          }
-        }
-
-        _handleEnter() {
-          this.switch();
-        }
-
-      }, class PairedDevices extends this {
-        $enter() {
-          if (this.wifiStatus === true) {
-            this.tag('Switch.Loader').visible = false;
-            this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-            this.tag('Switch.Button').scaleX = -1;
-          }
-        }
-
-        _getFocused() {
-          return this._pairedNetworks.tag('List').element;
-        }
-
-        _handleDown() {
-          this._navigate('MyDevices', 'down');
-        }
-
-        _handleUp() {
-          this._navigate('MyDevices', 'up');
-        }
-
-        _handleEnter() {
-          Router.navigate('settings/network/interface/wifi/connect', {
-            wifiItem: this._pairedNetworks.tag('List').element._item
-          });
-        }
-
-      }, class AvailableDevices extends this {
-        $enter() {
-          if (this.wifiStatus === true) {
-            this.tag('Switch.Loader').visible = false;
-            this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-            this.tag('Switch.Button').scaleX = -1;
-          }
-        }
-
-        _getFocused() {
-          return this._availableNetworks.tag('List').element;
-        }
-
-        _handleDown() {
-          this._navigate('AvailableDevices', 'down');
-        }
-
-        _handleUp() {
-          this._navigate('AvailableDevices', 'up');
-        }
-
-        _handleEnter() {
-          Router.navigate('settings/network/interface/wifi/connect', {
-            wifiItem: this._availableNetworks.tag('List').element._item
-          });
-        }
-
-      }, class JoinAnotherNetwork extends this {
-        $enter() {
-          this.tag('JoinAnotherNetwork')._focus();
-        }
-
-        _handleUp() {
-          this._setState('Switch');
-        }
-
-        _handleEnter() {
-          if (this.wifiStatus) {
-            Router.navigate('settings/network/interface/wifi/another');
-          }
-        }
-
-        _handleDown() {
-          if (this.wifiStatus) {
-            if (this._pairedNetworks.tag('List').length > 0) {
-              this._setState('PairedDevices');
-            } else if (this._availableNetworks.tag('List').length > 0) {
-              this._setState('AvailableDevices');
-            }
-          }
-        }
-
-        $exit() {
-          this.tag('JoinAnotherNetwork')._unfocus();
-        }
-
-      }];
-    }
-    /**
-     * Function to navigate through the lists in the screen.
-     * @param {string} listname
-     * @param {string} dir
-     */
-
-
-    _navigate(listname, dir) {
-      let list;
-      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
-      if (dir === 'down') {
-        if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
-          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
-            this._setState('AvailableDevices');
-          }
-        }
-      } else if (dir === 'up') {
-        if (list.index > 0) list.setPrevious();else if (list.index == 0) {
-          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
-            this._setState('PairedDevices');
-          } else {
-            this._setState('JoinAnotherNetwork');
-          }
-        }
-      }
-    }
-    /**
-     * Function to turn on and off Wi-Fi.
-     */
-
-
-    switch() {
-      if (this.wifiStatus) {
-        this._wifi.disconnect();
-
-        console.log('turning off wifi');
-
-        this._wifi.setInterface('ETHERNET', true).then(result => {
-          if (result.success) {
-            this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-              if (result.success) {
-                this._wifi.disconnect();
-
-                this.wifiStatus = false;
-                this.tag('Networks').visible = false;
-                this.tag('JoinAnotherNetwork').visible = false;
-                this.tag('Switch.Loader').visible = false;
-                this.wifiLoading.stop();
-                this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-              }
-            });
-          }
-        });
-      } else {
-        console.log('turning on wifi');
-        this.wifiStatus = true;
-        this.tag('Networks').visible = true;
-        this.tag('JoinAnotherNetwork').visible = true;
-        this.wifiLoading.play();
-        this.tag('Switch.Loader').visible = true;
-        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-
-        this._wifi.discoverSSIDs();
-      }
-    }
-    /**
-     * Function to activate Wi-Fi plugin.
-     */
-
-
-    _activateWiFi() {
-      this._wifi.activate().then(() => {
-        this.switch();
-      });
-
-      this._wifi.registerEvent('onWIFIStateChanged', notification => {
-        console.log(JSON.stringify(notification));
-
-        if (notification.state === 2 || notification.state === 5) {
-          this._wifi.discoverSSIDs();
-        }
-
-        this._setState('Switch');
-      });
-
-      this._wifi.registerEvent('onError', notification => {
-        console.log('on errro');
-
-        this._wifi.discoverSSIDs();
-
-        this._wifi.setInterface('ETHERNET', true).then(res => {
-          if (res.success) {
-            this._wifi.setDefaultInterface('ETHERNET', true);
-          }
-        });
-
-        if (this.widgets) {
-          this.widgets.fail.notify({
-            title: 'WiFi Error',
-            msg: this.onError[notification.code]
-          });
-          Router.focusWidget('Fail');
-        }
-      });
-
-      this._wifi.registerEvent('onAvailableSSIDs', notification => {
-        this.renderDeviceList(notification.ssids);
-
-        if (!notification.moreData) {
-          setTimeout(() => {
-            this.tag('Switch.Loader').visible = false;
-            this.wifiLoading.stop();
-          }, 1000);
-        }
-      });
-    }
-
-  }
-
-  /**
-   * If not stated otherwise in this file or this component's LICENSE
-   * file the following copyright and licenses apply:
-   *
-   * Copyright 2020 RDK Management
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   **/
   const wifi$1 = new Wifi();
   class NetworkInterfaceScreen extends lng.Component {
+    _construct() {
+      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
+    }
+
     static _template() {
       return {
         rect: true,
@@ -17430,18 +16769,76 @@ var APP_accelerator_home_ui = (function () {
                 fontFace: CONFIG.language.font,
                 fontSize: 25
               }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              x: 175,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif'),
+              visible: false
             }
           }
-        },
-        WiFiScreen: {
-          type: WiFiScreen,
-          visible: false
         }
       };
     }
 
     _focus() {
       this._setState('WiFi');
+    }
+
+    _init() {
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      this._thunder = thunderJS(config);
+      const systemcCallsign = 'org.rdk.Network';
+      const eventName = 'onDefaultInterfaceChanged';
+
+      this._thunder.on(systemcCallsign, eventName, notification => {
+        console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification);
+
+        if (notification.newInterfaceName === "ETHERNET") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet: Connected';
+        } else if (notification.newInterfaceName === "" && notification.oldInterfaceName === "WIFI") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet: Error, Retry!';
+        } else if (notification.newInterfaceName === "WIFI") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet';
+        }
+      });
+
+      this.loadingAnimation = this.tag('Ethernet.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      this.tag('Ethernet.Loader').src = this.LoadingIcon;
+    }
+
+    _firstActive() {
+      this.tag('Ethernet.Loader').on('txError', () => {
+        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
+        this.tag('Ethernet.Loader').src = url;
+      });
     }
 
     hide() {
@@ -17453,10 +16850,19 @@ var APP_accelerator_home_ui = (function () {
     }
 
     setEthernetInterface() {
-      wifi$1.setInterface('ETHERNET', true).then(res => {
-        if (res.success) {
-          wifi$1.setDefaultInterface('ETHERNET', true);
-        }
+      wifi$1.getInterfaces().then(res => {
+        res.interfaces.forEach(element => {
+          if (element.interface === "ETHERNET" && element.connected) {
+            wifi$1.setInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                wifi$1.setDefaultInterface('ETHERNET', true);
+                this.tag('Ethernet.Title').text.text = 'Ethernet';
+                this.tag('Ethernet.Loader').visible = true;
+                this.loadingAnimation.start();
+              }
+            });
+          }
+        });
       });
     }
 
@@ -17469,7 +16875,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Network Configuration / Network Interface');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface'));
     }
 
     static _states() {
@@ -17487,7 +16893,6 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          //this._setState('WiFiScreen')
           if (!Router.isNavigating()) {
             Router.navigate('settings/network/interface/wifi');
           }
@@ -17503,7 +16908,13 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          this.setEthernetInterface();
+          wifi$1.getDefaultInterface().then(res => {
+            if (res.success) {
+              if (res.interface !== "ETHERNET") {
+                this.setEthernetInterface();
+              }
+            }
+          });
         }
 
         _handleDown() {
@@ -17512,23 +16923,6 @@ var APP_accelerator_home_ui = (function () {
 
         _handleUp() {
           this._setState('WiFi');
-        }
-
-      }, class WiFiScreen extends this {
-        $enter() {
-          this.hide();
-          this.tag('WiFiScreen').visible = true;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface / WiFi');
-        }
-
-        $exit() {
-          this.show();
-          this.tag('WiFiScreen').visible = false;
-          this.fireAncestors('$changeHomeText', 'Settings / Network Configuration / Network Interface');
-        }
-
-        _getFocused() {
-          return this.tag('WiFiScreen');
         }
 
       }];
@@ -18022,6 +17416,724 @@ var APP_accelerator_home_ui = (function () {
         }
 
       }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class WiFiItem extends lng.Component {
+    _construct() {
+      this.Lock = Utils.asset('/images/settings/Lock.png');
+      this.WiFi1 = Utils.asset('/images/settings/WiFi1.png');
+      this.WiFi2 = Utils.asset('/images/settings/WiFi2.png');
+      this.WiFi3 = Utils.asset('/images/settings/WiFi3.png');
+      this.WiFi4 = Utils.asset('/images/settings/WiFi4.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
+    }
+
+    _init() {
+      this.tag('Item.Tick').on('txError', () => {
+        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Tick.png';
+        this.tag('Item.Tick').src = url;
+      });
+    }
+
+    static _template() {
+      return {
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1600,
+          h: 90
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        }
+      };
+    }
+    /**
+     * Function to set contents of an item in the Bluetooth screen.
+     */
+
+
+    set item(item) {
+      this._item = item;
+      this.status = item.connected ? 'Connected' : 'Not Connected';
+      var wifiicon = "";
+
+      if (item.signalStrength >= -50) {
+        wifiicon = this.WiFi4;
+      } else if (item.signalStrength >= -60) {
+        wifiicon = this.WiFi3;
+      } else if (item.signalStrength >= -67) {
+        wifiicon = this.WiFi2;
+      } else {
+        wifiicon = this.WiFi1;
+      }
+
+      this.tag('Item').patch({
+        Tick: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          h: 32.5,
+          w: 32.5,
+          src: this.Tick,
+          //texture: Lightning.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: item.connected ? true : false
+        },
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item.ssid,
+            fontSize: 25,
+            textColor: COLORS.textColor,
+            fontFace: CONFIG.language.font
+          }
+        },
+        Right: {
+          x: 1560,
+          mountX: 1,
+          y: 45,
+          mountY: 0.5,
+          flex: {
+            direction: 'row'
+          },
+          Lock: {
+            color: 0xffffffff,
+            texture: lng.Tools.getSvgTexture(this.Lock, 32.5, 32.5),
+            alpha: 1
+          },
+          Icon: {
+            color: 0xffffffff,
+            flexItem: {
+              marginLeft: 15
+            },
+            texture: lng.Tools.getSvgTexture(wifiicon, 32.5, 32.5)
+          }
+        }
+      });
+
+      if (item.security == '0' || item.security == '15') {
+        this.tag('Item.Right.Lock').visible = false;
+      } else {
+        this.tag('Item.Right.Lock').visible = true;
+      }
+    }
+
+    _focus() {
+      this.tag("Item").color = COLORS.hightlightColor;
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+  * Class for WiFi screen.
+  */
+
+  class WiFiScreen extends lng.Component {
+    pageTransition() {
+      return 'left';
+    }
+
+    static _template() {
+      return {
+        rect: true,
+        color: 0xff000000,
+        w: 1920,
+        h: 1080,
+        WifiContents: {
+          x: 200,
+          y: 275,
+          Switch: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'WiFi On/Off',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              visible: false,
+              h: 45,
+              w: 45,
+              x: 1500,
+              // x: 320,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif')
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          Networks: {
+            y: 180,
+            flex: {
+              direction: 'column'
+            },
+            PairedNetworks: {
+              flexItem: {
+                margin: 0
+              },
+              List: {
+                type: lng.components.ListComponent,
+                w: 1920 - 300,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -4
+              }
+            },
+            AvailableNetworks: {
+              flexItem: {
+                margin: 0
+              },
+              List: {
+                w: 1920 - 300,
+                type: lng.components.ListComponent,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -4
+              }
+            },
+            visible: false
+          },
+          JoinAnotherNetwork: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: 'Join Another Network',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            visible: false
+          }
+        }
+      };
+    }
+
+    _active() {
+      this._setState('Switch');
+    }
+
+    _focus() {
+      this._setState('Switch');
+
+      this._enable();
+    }
+
+    _init() {
+      this.wifiLoading = this.tag('Switch.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: Math.PI * 2
+          }
+        }]
+      });
+      this.onError = {
+        0: 'SSID_CHANGED - The SSID of the network changed',
+        1: 'CONNECTION_LOST - The connection to the network was lost',
+        2: 'CONNECTION_FAILED - The connection failed for an unknown reason',
+        3: 'CONNECTION_INTERRUPTED - The connection was interrupted',
+        4: 'INVALID_CREDENTIALS - The connection failed due to invalid credentials',
+        5: 'NO_SSID - The SSID does not exist',
+        6: 'UNKNOWN - Any other error.'
+      };
+      this._wifi = new Wifi();
+      this._network = new Network();
+      this.wifiStatus = false;
+      this._wifiIcon = true;
+
+      this._activateWiFi();
+
+      this._setState('Switch');
+
+      if (this.wiFiStatus) {
+        this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
+      }
+
+      this._pairedNetworks = this.tag('Networks.PairedNetworks');
+      this._availableNetworks = this.tag('Networks.AvailableNetworks');
+
+      this._network.activate().then(result => {
+        if (result) {
+          this.wifiStatus = true;
+
+          this._network.registerEvent('onIPAddressStatusChanged', notification => {
+            console.log(JSON.stringify(notification));
+
+            if (notification.status == 'LOST') {
+              if (notification.interface === 'WIFI') {
+                this._wifi.setInterface('ETHERNET', true).then(res => {
+                  if (res.success) {
+                    this._wifi.setDefaultInterface('ETHERNET', true);
+                  }
+                });
+              }
+            }
+          });
+
+          this._network.registerEvent('onDefaultInterfaceChanged', notification => {
+            if (notification.newInterfaceName === 'ETHERNET') {
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true);
+                }
+              });
+            }
+
+            if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
+              this._wifi.disconnect();
+
+              this.wifiStatus = false;
+              this.tag('Networks').visible = false;
+              this.tag('JoinAnotherNetwork').visible = false;
+              this.tag('Switch.Loader').visible = false;
+              this.wifiLoading.stop();
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+
+              this._setState('Switch');
+
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                    if (result1.success) {
+                      console.log('set default success', result1);
+                    }
+                  });
+                }
+              });
+            }
+
+            if (notification.newInterfaceName == '' && notification.oldInterfaceName == 'WIFI') {
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                    if (result1.success) {
+                      console.log('set default success', result1);
+                    }
+                  });
+                }
+              });
+            }
+          });
+
+          this._network.registerEvent('onConnectionStatusChanged', notification => {
+            if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
+              this._wifi.setInterface('ETHERNET', true).then(res => {
+                if (res.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true);
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+    /**
+     * Function to be executed when the Wi-Fi screen is enabled.
+     */
+
+
+    _enable() {
+      if (this.wifiStatus) {
+        this._wifi.discoverSSIDs();
+      }
+
+      this.scanTimer = setInterval(() => {
+        if (this.wifiStatus) {
+          this._wifi.discoverSSIDs();
+        }
+      }, 5000);
+    }
+    /**
+     * Function to be executed when the Wi-Fi screen is disabled.
+     */
+
+
+    _disable() {
+      console.log('going out');
+      clearInterval(this.scanTimer);
+    }
+    /**
+     * Function to render list of Wi-Fi networks.
+     */
+
+
+    renderDeviceList(ssids) {
+      this._wifi.getConnectedSSID().then(result => {
+        if (result.ssid != '') {
+          this._pairedList = [result];
+        } else {
+          this._pairedList = [];
+        }
+
+        this._pairedNetworks.h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+          item.connected = true;
+          return {
+            ref: 'Paired' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: WiFiItem,
+            item: item
+          };
+        });
+        this._otherList = ssids.filter(device => {
+          result = this._pairedList.map(a => a.ssid);
+
+          if (result.includes(device.ssid)) {
+            return false;
+          } else return device;
+        });
+        this._availableNetworks.h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
+          item.connected = false;
+          return {
+            ref: 'Other' + index,
+            w: 1620,
+            h: 90,
+            type: WiFiItem,
+            item: item
+          };
+        });
+      });
+    }
+
+    _handleBack() {
+      Router.navigate('settings/network/interface');
+    }
+
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface  WiFi'));
+    }
+
+    static _states() {
+      return [class Switch extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').scaleX = 1;
+          }
+
+          this.tag('Switch')._focus();
+        }
+
+        $exit() {
+          this.tag('Switch')._unfocus();
+        }
+
+        _handleDown() {
+          if (this.wifiStatus === true) {
+            this._setState('JoinAnotherNetwork');
+          }
+        }
+
+        _handleEnter() {
+          this.switch();
+        }
+
+      }, class PairedDevices extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').scaleX = -1;
+          }
+        }
+
+        _getFocused() {
+          return this._pairedNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('MyDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('MyDevices', 'up');
+        }
+
+        _handleEnter() {
+          Router.navigate('settings/network/interface/wifi/connect', {
+            wifiItem: this._pairedNetworks.tag('List').element._item
+          });
+        }
+
+      }, class AvailableDevices extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').scaleX = -1;
+          }
+        }
+
+        _getFocused() {
+          return this._availableNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('AvailableDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('AvailableDevices', 'up');
+        }
+
+        _handleEnter() {
+          Router.navigate('settings/network/interface/wifi/connect', {
+            wifiItem: this._availableNetworks.tag('List').element._item
+          });
+        }
+
+      }, class JoinAnotherNetwork extends this {
+        $enter() {
+          this.tag('JoinAnotherNetwork')._focus();
+        }
+
+        _handleUp() {
+          this._setState('Switch');
+        }
+
+        _handleEnter() {
+          if (this.wifiStatus) {
+            Router.navigate('settings/network/interface/wifi/another');
+          }
+        }
+
+        _handleDown() {
+          if (this.wifiStatus) {
+            if (this._pairedNetworks.tag('List').length > 0) {
+              this._setState('PairedDevices');
+            } else if (this._availableNetworks.tag('List').length > 0) {
+              this._setState('AvailableDevices');
+            }
+          }
+        }
+
+        $exit() {
+          this.tag('JoinAnotherNetwork')._unfocus();
+        }
+
+      }];
+    }
+    /**
+     * Function to navigate through the lists in the screen.
+     * @param {string} listname
+     * @param {string} dir
+     */
+
+
+    _navigate(listname, dir) {
+      let list;
+      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
+
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
+          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
+            this._setState('AvailableDevices');
+          }
+        }
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();else if (list.index == 0) {
+          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
+            this._setState('PairedDevices');
+          } else {
+            this._setState('JoinAnotherNetwork');
+          }
+        }
+      }
+    }
+    /**
+     * Function to turn on and off Wi-Fi.
+     */
+
+
+    switch() {
+      if (this.wifiStatus) {
+        this._wifi.disconnect();
+
+        console.log('turning off wifi');
+
+        this._wifi.setInterface('ETHERNET', true).then(result => {
+          if (result.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.disconnect();
+
+                this.wifiStatus = false;
+                this.tag('Networks').visible = false;
+                this.tag('JoinAnotherNetwork').visible = false;
+                this.tag('Switch.Loader').visible = false;
+                this.wifiLoading.stop();
+                this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+              }
+            });
+          }
+        });
+      } else {
+        console.log('turning on wifi');
+        this.wifiStatus = true;
+        this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
+        this.wifiLoading.play();
+        this.tag('Switch.Loader').visible = true;
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+
+        this._wifi.discoverSSIDs();
+      }
+    }
+    /**
+     * Function to activate Wi-Fi plugin.
+     */
+
+
+    _activateWiFi() {
+      this._wifi.activate().then(() => {
+        this.switch();
+      });
+
+      this._wifi.registerEvent('onWIFIStateChanged', notification => {
+        console.log(JSON.stringify(notification));
+
+        if (notification.state === 2 || notification.state === 5) {
+          this._wifi.discoverSSIDs();
+        }
+      });
+
+      this._wifi.registerEvent('onError', notification => {
+        console.log('on errro');
+
+        this._wifi.discoverSSIDs();
+
+        this._wifi.setInterface('ETHERNET', true).then(res => {
+          if (res.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true);
+          }
+        });
+
+        if (this.widgets) {
+          this.widgets.fail.notify({
+            title: 'WiFi Error',
+            msg: this.onError[notification.code]
+          });
+          Router.focusWidget('Fail');
+        }
+      });
+
+      this._wifi.registerEvent('onAvailableSSIDs', notification => {
+        this.renderDeviceList(notification.ssids);
+
+        if (!notification.moreData) {
+          setTimeout(() => {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+          }, 1000);
+        }
+      });
     }
 
   }
@@ -18784,7 +18896,7 @@ var APP_accelerator_home_ui = (function () {
      */
 
 
-    _handleDown() {
+    _handleUp() {
       this.tag('PlayerControls').setSmooth('alpha', 1, {
         duration: 1
       });
@@ -18801,7 +18913,7 @@ var APP_accelerator_home_ui = (function () {
      */
 
 
-    _handleUp() {
+    _handleDown() {
       this.hidePlayerControls();
 
       this._setState('HideControls');
@@ -18867,7 +18979,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings'));
     }
 
     static _template() {
@@ -19269,7 +19381,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class SleepTimerScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Sleep Timer');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Sleep Timer'));
     }
 
     pageTransition() {
@@ -19532,7 +19644,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class EnergySavingsScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Energy Saver');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Energy Saver'));
     }
 
     pageTransition() {
@@ -19784,9 +19896,16 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const appApi$5 = new AppApi();
+  const thunder$4 = thunderJS({
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  });
+  const loader$1 = 'Loader';
   class LanguageScreen$1 extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Language');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Language'));
     }
 
     pageTransition() {
@@ -19834,6 +19953,20 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
+      appApi$5.deactivateResidentApp(loader$1);
+      appApi$5.setVisibility('ResidentApp', true);
+      thunder$4.call('org.rdk.RDKShell', 'moveToFront', {
+        client: 'ResidentApp'
+      }).then(result => {
+        console.log('ResidentApp moveToFront Success');
+      });
+      thunder$4.call('org.rdk.RDKShell', 'setFocus', {
+        client: 'ResidentApp'
+      }).then(result => {
+        console.log('ResidentApp moveToFront Success');
+      }).catch(err => {
+        console.log('Error', err);
+      });
     }
 
     _focus() {
@@ -19862,6 +19995,12 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
+          let path = location.pathname.split('index.html')[0];
+          let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
+          let notification_url = location.origin + path + url;
+          console.log(notification_url);
+          appApi$5.launchResident(notification_url, loader$1);
+          appApi$5.setVisibility('ResidentApp', false);
           location.reload();
         }
 
@@ -19905,7 +20044,7 @@ var APP_accelerator_home_ui = (function () {
   const xcastApi = new XcastApi();
   class PrivacyScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy'));
     }
 
     pageTransition() {
@@ -20335,7 +20474,7 @@ var APP_accelerator_home_ui = (function () {
  Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A`;
   class PrivacyPolicyScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Privacy / Policy');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy  Policy'));
     }
 
     pageTransition() {
@@ -20386,8 +20525,12 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
+    _handleBack() {
+      Router.navigate('settings/other/privacy');
+    }
+
     _handleUp() {
-      if (this.tag("PrivacyPolicy").y < 35) {
+      if (this.tag("PrivacyPolicy").y <= 235) {
         this.tag("PrivacyPolicy").y += 35;
       }
     }
@@ -20417,12 +20560,12 @@ var APP_accelerator_home_ui = (function () {
     port: 9998,
     default: 1
   };
-  const thunder$2 = thunderJS(config$3);
+  const thunder$3 = thunderJS(config$3);
   class CECApi {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdmiCec_2';
-        thunder$2.Controller.activate({
+        thunder$3.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -20435,7 +20578,7 @@ var APP_accelerator_home_ui = (function () {
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdmiCec_2';
-        thunder$2.Controller.deactivate({
+        thunder$3.Controller.deactivate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -20447,7 +20590,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.HdmiCec_2.1', 'getEnabled').then(result => {
+        thunder$3.call('org.rdk.HdmiCec_2', 'getEnabled').then(result => {
           resolve(result);
         }).catch(err => {
           resolve({
@@ -20459,7 +20602,7 @@ var APP_accelerator_home_ui = (function () {
 
     setEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.HdmiCec_2.1', 'setEnabled', {
+        thunder$3.call('org.rdk.HdmiCec_2', 'setEnabled', {
           enabled: true
         }).then(result => {
           resolve(result);
@@ -20474,7 +20617,7 @@ var APP_accelerator_home_ui = (function () {
 
     performOTP() {
       return new Promise((resolve, reject) => {
-        thunder$2.call('org.rdk.HdmiCec_2.1', 'performOTPAction').then(result => {
+        thunder$3.call('org.rdk.HdmiCec_2', 'performOTPAction').then(result => {
           resolve(result);
         }).catch(err => {
           console.error('CEC Otp Error', err);
@@ -20517,7 +20660,7 @@ var APP_accelerator_home_ui = (function () {
 
   class AdvanceSettingsScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings'));
     }
 
     pageTransition() {
@@ -20873,7 +21016,7 @@ var APP_accelerator_home_ui = (function () {
 
   class DeviceScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device'));
     }
 
     pageTransition() {
@@ -21105,7 +21248,7 @@ var APP_accelerator_home_ui = (function () {
 
   class DeviceInformationScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device / Info');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Info'));
     }
 
     pageTransition() {
@@ -21426,7 +21569,7 @@ var APP_accelerator_home_ui = (function () {
 
   class FirmwareScreen extends lng.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device / Firmware Update');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Firmware Update'));
     }
 
     pageTransition() {
@@ -21487,7 +21630,7 @@ var APP_accelerator_home_ui = (function () {
               y: 180,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Download Progress: `),
+                text: "",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 22
@@ -21519,7 +21662,47 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
+    _init() {
+      let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      const thunder = thunderJS(config);
+      const systemcCallsign = "org.rdk.System.1";
+      thunder.Controller.activate({
+        callsign: systemcCallsign
+      }).then(res => {
+        thunder.on(callsign, "onFirmwareUpdateStateChange", notification => {
+          console.log(`Tanjirou's notification : on Firmware update state changed notifcation = ${JSON.stringify(notification)}`);
+
+          if (state[notification.firmwareUpdateStateChange] == "Downloading") {
+            this.downloadInterval = setInterval(() => {
+              console.log(`Downloading...`);
+              this.getDownloadPercent();
+            }, 1000);
+          } else if (state[notification.firmwareUpdateStateChange] != "Downloading" && this.downloadInterval) {
+            clearInterval(this.downloadInterval);
+            this.downloadInterval = null;
+          }
+        }, err => {
+          console.error(`error while fetching notification ie. ${err}`);
+        });
+      }).catch(err => {
+        console.error(`error while activating the system plugin`);
+      });
+    }
+
+    _unfocus() {
+      if (this.downloadInterval) {
+        clearInterval(this.downloadInterval);
+        this.downloadInterval = null;
+      }
+    }
+
     _focus() {
+      this.downloadInterval = null;
       this._appApi = new AppApi();
       const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
 
@@ -21538,15 +21721,28 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadPercent() {
       this._appApi.getFirmwareDownloadPercent().then(res => {
-        this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%";
+        console.log(`getFirmwareDownloadPercent : ${JSON.stringify(res)}`);
+
+        if (res.downloadPercent < 0) {
+          this.tag('DownloadedPercent.Title').text.text = "";
+        } else {
+          this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%";
+        }
+      }).catch(err => {
+        console.error(err);
       });
     }
 
     getDownloadFirmwareInfo() {
       this._appApi.updateFirmware().then(res => {
         this._appApi.getDownloadFirmwareInfo().then(result => {
-          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ')`${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
+          console.log(`getDownloadFirmwareInfo : ${JSON.stringify(result.downloadFWVersion)}`);
+          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') + `${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
+        }).catch(err => {
+          console.error(err);
         });
+      }).catch(err => {
+        console.error(err);
       });
     }
 
@@ -21584,7 +21780,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$3 = new AppApi();
+  const appApi$4 = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -21725,7 +21921,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          appApi$3.reboot().then(result => {
+          appApi$4.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
 
             this._setState('Rebooting');
@@ -21936,7 +22132,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Audio');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio'));
     }
 
     static _template() {
@@ -21981,7 +22177,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: Language.translate('Output Mode: Auto'),
+                text: Language.translate('Output Mode: '),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -22107,17 +22303,12 @@ var APP_accelerator_home_ui = (function () {
       this._setState('OutputMode');
     }
 
-    $updateTheDefaultAudio(audio) {
-      //console.log(audio)
-      this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + audio;
-    }
-
-    $updateSoundMode(soundMode) {
-      this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + soundMode;
-    }
-
     _focus() {
       this._setState(this.state);
+
+      this.appApi.getSoundMode().then(result => {
+        this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode;
+      });
     }
 
     hide() {
@@ -22334,14 +22525,7 @@ var APP_accelerator_home_ui = (function () {
 
     _handleEnter() {
       if (this.videoElement === true) {
-        this.appApi.setResolution(this._item).then(res => {
-          this.fireAncestors('$updateResolution', this._item);
-
-          if (res === true) {
-            this.fireAncestors("$resetPrevTickObject", this);
-            this.tag("Item.Tick").visible = true;
-          }
-        }).catch(err => {
+        this.appApi.setResolution(this._item).catch(err => {
           console.log(`there was an error while setting the resolution.`);
         });
       } else {
@@ -22430,14 +22614,14 @@ var APP_accelerator_home_ui = (function () {
    * Class for HDMI Output Screen.
    */
 
-  var appApi$2 = new AppApi();
+  var appApi$3 = new AppApi();
   class HdmiOutputScreen extends lng.Component {
     pageTransition() {
       return 'left';
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Audio / Output Mode');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio  Output Mode'));
     }
 
     static _template() {
@@ -22506,9 +22690,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$2.getSoundMode().then(result => {
-        this.fireAncestors("$updateTheDefaultAudio", result.soundMode);
-        appApi$2.getSupportedAudioModes().then(res => {
+      appApi$3.getSoundMode().then(result => {
+        appApi$3.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -22576,6 +22759,11 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const thunder$2 = thunderJS({
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  });
   /**
    * Class for Resolution Screen.
    */
@@ -22586,7 +22774,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Video / Resolution');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video  Resolution'));
     }
 
     static _template() {
@@ -22638,6 +22826,16 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
+      thunder$2.on('org.rdk.DisplaySettings', 'resolutionChanged', notification => {
+        const items = this.tag('List').items;
+        items.forEach(element => {
+          element.tag('Item.Tick').visible = false;
+
+          if (element._item === notification.resolution) {
+            element.tag('Item.Tick').visible = true;
+          }
+        });
+      });
     }
 
     _unfocus() {
@@ -22647,7 +22845,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router.back();
+      Router.navigate('settings/video');
     }
 
     _focus() {
@@ -22679,23 +22877,13 @@ var APP_accelerator_home_ui = (function () {
           });
           this.loadingAnimation.stop();
           this.tag('Loader').visible = false;
+          this.tag('List').setIndex(sIndex);
 
           this._setState("Options");
         }).catch(err => {
           console.log(`error while fetching the supported resolution ${err}`);
-        }).then(() => {
-          this.tag('List').setIndex(sIndex);
         });
       });
-    }
-
-    $resetPrevTickObject(prevTicObject) {
-      if (!this.prevTicOb) {
-        this.prevTicOb = prevTicObject;
-      } else {
-        this.prevTicOb.tag("Item.Tick").visible = false;
-        this.prevTicOb = prevTicObject;
-      }
     }
 
     static _states() {
@@ -22712,8 +22900,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('List').setPrevious();
         }
 
-        _handleEnter() {
-          this.tag("List").element.tag("Tick").visible = true;
+        _handleEnter() {//this.tag("List").element.tag("Tick").visible = true;
         }
 
       }];
@@ -22749,7 +22936,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _onChanged() {
-      this.widgets.menu.updateTopPanelText('Settings / Video');
+      this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video'));
     }
 
     static _template() {
@@ -24182,22 +24369,25 @@ var APP_accelerator_home_ui = (function () {
       return 'right';
     }
 
-    _init() {}
-
-    _focus() {
-      setTimeout(() => {
-        Router.navigate('splash/bluetooth');
-      }, 5000);
-      console.log("logo");
+    _init() {
+      this.btApi = new BluetoothApi();
     }
 
-    static _states() {
-      return [class Logo extends this {
-        _handleEnter() {
-          Router.navigate('splash/bluetooth');
-        }
+    _focus() {
+      let path = 'splash/bluetooth';
+      this.btApi.getPairedDevices().then(devices => {
+        console.log(devices);
 
-      }];
+        if (devices.length > 0 || Storage$1.get('setup')) {
+          path = 'menu';
+        }
+      }).catch(() => {
+        console.log('Paired Device Error');
+        path = 'menu';
+      });
+      setTimeout(() => {
+        Router.navigate(path);
+      }, 5000);
     }
 
   }
@@ -24318,23 +24508,10 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    _init() {
-      this.btApi = new BluetoothApi();
-    }
+    _init() {}
 
     _focus() {
-      this.btApi.getPairedDevices().then(devices => {
-        console.log(devices);
-
-        if (devices.length > 0) {
-          Router.navigate('menu');
-        } else {
-          this.initTimer();
-        }
-      }).catch(() => {
-        console.error('Paired');
-        this.initTimer();
-      });
+      this.initTimer();
     }
 
     pageTransition() {
@@ -24449,6 +24626,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const appApi$2 = new AppApi();
   class LanguageScreen extends lng.Component {
     static _template() {
       return {
@@ -24585,6 +24763,12 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
+          let path = location.pathname.split('index.html')[0];
+          let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
+          let notification_url = location.origin + path + url;
+          console.log(notification_url);
+          appApi$2.launchResident(notification_url, loader);
+          appApi$2.setVisibility('ResidentApp', false);
           location.reload();
         }
 
@@ -24951,15 +25135,7 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       };
-    } //  $removeFailScreen() {
-    //   this._setState('Switch');
-    //   this.childList.remove(this.tag('FailScreen'))
-    // }
-    // _setfailState(msg) {
-    //   this.tag('FailScreen').item = msg
-    //   this._setState('FailScreen');
-    // }
-
+    }
 
     pageTransition() {
       return 'left';
@@ -24996,10 +25172,7 @@ var APP_accelerator_home_ui = (function () {
       this.wifiStatus = true;
       this._wifiIcon = true;
 
-      this._activateWiFi(); // if (this._availableNetworks.tag('List').length > 0) {
-      //   this._setState('AvailableDevices')
-      // }
-
+      this._activateWiFi();
 
       if (this.wiFiStatus) {
         this.tag('Networks').visible = true;
@@ -25014,7 +25187,6 @@ var APP_accelerator_home_ui = (function () {
             console.log(JSON.stringify(notification));
 
             if (notification.status == 'ACQUIRED') ; else if (notification.status == 'LOST') {
-              // this.fireAncestors('$changeIp', 'IP:' + 'NA')
               if (notification.interface === 'WIFI') {
                 this._wifi.setInterface('ETHERNET', true).then(res => {
                   if (res.success) {
@@ -25026,22 +25198,12 @@ var APP_accelerator_home_ui = (function () {
           });
 
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
-            console.log(JSON.stringify(notification)); // this.fireAncestors('$NetworkInterfaceText', notification.newInterfaceName)
+            console.log(JSON.stringify(notification));
 
             if (notification.newInterfaceName === 'ETHERNET') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
-                  this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
-                    if (result.success) {
-                      this._wifi.disconnect();
-
-                      this.wifiStatus = false;
-                      this.tag('Networks').visible = false;
-                      this.tag('JoinAnotherNetwork').visible = false;
-                      this.tag('Loader').visible = false;
-                      this.wifiLoading.stop();
-                    }
-                  });
+                  this._wifi.setDefaultInterface('ETHERNET', true);
                 }
               });
             } else if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
@@ -25050,8 +25212,25 @@ var APP_accelerator_home_ui = (function () {
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
               this.tag('JoinAnotherNetwork').visible = false;
-              this.tag('Loader').visible = false;
-              this.wifiLoading.stop(); // this._setState('Switch')
+              this.tag('Switch.Loader').visible = false;
+              this.wifiLoading.stop();
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+
+              this._setState('Switch');
+
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                    if (result1.success) {
+                      console.log('set default success', result1);
+                    }
+                  });
+                }
+              });
+            } else if (notification.newInterfaceName === "" && notification.oldInterfaceName === "WIFI") {
+              console.log('emplty new old wifi');
+
+              this._wifi.setDefaultInterface('ETHERNET', true);
             }
           });
 
@@ -25097,8 +25276,6 @@ var APP_accelerator_home_ui = (function () {
 
 
     renderDeviceList(ssids) {
-      console.log(ssids);
-
       this._wifi.getConnectedSSID().then(result => {
         if (result.ssid != '') {
           this._pairedList = [result];
@@ -25140,40 +25317,8 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _focus() {
-      /*
-      Calling the function to turn on the wifi. This method is also called inside activateWifi(previous implementation) from wifiScreen. In wifiScreen 
-      this method is called inside activateWifi as well as inside handleEnter inside switch class
-      */
-      // this.switch()
-    }
-
     static _states() {
-      return [// class PairedDevices extends this {
-      //   $enter() {
-      //     if (this.wifiStatus === true) {
-      //       this.tag('Loader').visible = false
-      //       this.wifiLoading.stop()
-      //       // this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-      //       // this.tag('Switch.Button').scaleX = -1;
-      //     }
-      //   }
-      //   _getFocused() {
-      //     return this._pairedNetworks.tag('List').element
-      //   }
-      //   _handleDown() {
-      //     this._navigate('MyDevices', 'down')
-      //   }
-      //   _handleUp() {
-      //     this._navigate('MyDevices', 'up')
-      //   }
-      //   _handleEnter() {
-      //     this.tag('PairingScreen').visible = true
-      //     this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
-      //     // this._setState('PairingScreen')
-      //   }
-      // },
-      class AvailableDevices extends this {
+      return [class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
             this.tag('Loader').visible = false;
@@ -25301,17 +25446,11 @@ var APP_accelerator_home_ui = (function () {
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
         console.log(JSON.stringify(notification));
 
-        if (notification.state === 2) {
-          this._wifi.discoverSSIDs();
-        }
-
         if (notification.state === 5 && Router.getActiveRoute().includes('splash')) {
           Registry.setTimeout(() => {
             Router.navigate('menu');
           }, 2000);
         }
-
-        this._setState('JoinAnotherNetwork');
       });
 
       this._wifi.registerEvent('onError', notification => {
@@ -25322,8 +25461,6 @@ var APP_accelerator_home_ui = (function () {
             this._wifi.setDefaultInterface('ETHERNET', true);
           }
         });
-
-        this._setfailState(this.onError[notification.code]);
       });
 
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
@@ -25335,10 +25472,7 @@ var APP_accelerator_home_ui = (function () {
             this.wifiLoading.stop();
           }, 1000);
         }
-      }); // if (this._availableNetworks.tag('List').length > 0) {
-      //   this._setState('AvailableDevices')
-      // }
-
+      });
     }
 
   }
@@ -25404,15 +25538,7 @@ var APP_accelerator_home_ui = (function () {
       homeApi.setPartnerAppsInfo(queryParam.data);
       return Promise.resolve();
     },
-    root: () => {
-      return new Promise(resolve => {
-        if (Storage$1.get('setup')) {
-          resolve('menu');
-        } else {
-          resolve('splash');
-        }
-      });
-    },
+    root: 'splash',
     routes: [{
       path: 'settings',
       component: SettingsScreen,
@@ -25441,8 +25567,8 @@ var APP_accelerator_home_ui = (function () {
       component: MainView,
       before: page => {
         const homeApi = new HomeApi(); //page.appItems = homeApi.getAppListInfo()
+        //page.metroApps = homeApi.getMetroInfo()
 
-        page.metroApps = homeApi.getMetroInfo();
         page.tvShowItems = homeApi.getTVShowsInfo();
         return Promise.resolve();
       },
@@ -26354,7 +26480,9 @@ var APP_accelerator_home_ui = (function () {
               text: Language.translate('home'),
               textColor: CONFIG.theme.hex,
               fontStyle: 'bolder',
-              fontFace: CONFIG.language.font
+              fontFace: CONFIG.language.font,
+              wordWrapWidth: 1720,
+              maxLines: 1
             }
           },
           Settings: {
@@ -26546,7 +26674,7 @@ var APP_accelerator_home_ui = (function () {
             Router.focusPage();
             this.tag('Settings').color = 0xffffffff;
           } else if (key.keyCode === keyMap.ArrowLeft) ; else if (key.keyCode === keyMap.Enter) {
-            this.tag('Page').text.text = Language.translate('settings');
+            //this.tag('Page').text.text = Language.translate('settings')
             Router.navigate('settings');
             Router.focusPage();
             this.tag('Settings').color = 0xffffffff;
@@ -27095,8 +27223,8 @@ var APP_accelerator_home_ui = (function () {
 
     _init() {
       appApi.enableDisplaySettings();
-      appApi.cobaltStateChangeEvent();
-      appApi.launchforeground();
+      appApi.cobaltStateChangeEvent(); //appApi.launchforeground()
+
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result => {
         if (result) {
@@ -27109,6 +27237,26 @@ var APP_accelerator_home_ui = (function () {
         localStorage.setItem('Language', 'English');
       }
 
+      thunder.on('Controller.1', 'all', noti => {
+        if (noti.data.url && noti.data.url.slice(-5) === "#boot") {
+          // to exit metro apps by pressing back key
+          this.deactivateChildApp(Storage$1.get('applicationType'));
+          Storage$1.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'ResidentApp'
+          }).then(result => {
+            console.log('ResidentApp moveToFront Success');
+          });
+          thunder.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          }).then(result => {
+            console.log('ResidentApp moveToFront Success');
+          }).catch(err => {
+            console.log('Error', err);
+          });
+        }
+      });
       thunder.on('Controller', 'statechange', notification => {
         console.log(JSON.stringify(notification));
 

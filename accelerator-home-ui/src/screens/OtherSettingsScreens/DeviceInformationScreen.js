@@ -28,7 +28,7 @@ import AppApi from '../../api/AppApi.js';
 export default class DeviceInformationScreen extends Lightning.Component {
 
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Other Settings / Advanced Settings / Device / Info');
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Info'));
     }
 
     pageTransition() {

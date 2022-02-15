@@ -181,7 +181,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
         Router.navigate('settings')
     }
     _onChanged() {
-        this.widgets.menu.updateTopPanelText('Settings / Network Configuration')
+        this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration'))
     }
 
     static _states() {
