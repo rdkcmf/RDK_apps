@@ -24,6 +24,7 @@ import { availableLanguages } from '../../Config/Config'
 import AppApi from '../../api/AppApi'
 
 const appApi = new AppApi()
+const loader = 'Loader'
 
 export default class LanguageScreen extends Lightning.Component {
   static _template() {
