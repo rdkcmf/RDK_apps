@@ -3,7 +3,7 @@
  SDK version: 4.8.1
  CLI version: 2.7.2
 
- gmtDate: Fri, 25 Feb 2022 09:54:42 GMT
+ gmtDate: Tue, 08 Mar 2022 10:14:16 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -7160,7 +7160,7 @@ SDK - v${this.sdkVersion}`;
     onApplicationStateChanged(params) {
       return new Promise((resolve, reject) => {
         console.log("Notifying back");
-        this._thunder.call("org.rdk.Xcast", "onApplicationStateChanged", params).then((result) => {
+        this._thunder.call("org.rdk.Xcast.1", "onApplicationStateChanged", params).then((result) => {
           resolve(result);
         });
       });
@@ -12985,12 +12985,11 @@ SDK - v${this.sdkVersion}`;
               });
             }
           });
-
-          this._network.registerEvent('onConnectionStatusChanged', notification => {
-            if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
-              this._wifi.setInterface('ETHERNET', true).then(res => {
+          this._network.registerEvent("onConnectionStatusChanged", (notification) => {
+            if (notification.interface === "ETHERNET" && notification.status === "CONNECTED") {
+              this._wifi.setInterface("ETHERNET", true).then((res) => {
                 if (res.success) {
-                  this._wifi.setDefaultInterface('ETHERNET', true);
+                  this._wifi.setDefaultInterface("ETHERNET", true);
                 }
               });
             }
@@ -16980,8 +16979,6 @@ Time Stamp - ${res.stbTimestamp} `;
         _handleUp() {
           this.tag("List").setPrevious();
         }
-        _handleEnter() {
-        }
       }];
     }
   };
@@ -19153,259 +19150,6 @@ Time Stamp - ${res.stbTimestamp} `;
       component: LogoScreen
     }]
   };
-  const thunder$1 = thunderJS(config$1);
-  const appApi$1 = new AppApi();
-  function keyIntercept() {
-    const rdkshellCallsign = 'org.rdk.RDKShell';
-    thunder$1.Controller.activate({
-      callsign: rdkshellCallsign
-    }).then(result => {
-      console.log('Successfully activated RDK Shell');
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call('org.rdk.RDKShell', 'setFocus', {
-        client: 'ResidentApp'
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.AudioVolumeMute,
-        modifiers: []
-      }).then(result => {
-        console.log('addKeyIntercept success');
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.on(rdkshellCallsign, 'onSuspended', notification => {
-        if (notification) {
-          console.log('onSuspended notification: ' + notification.client);
-
-          if (Storage.get('applicationType') == notification.client) {
-            Storage.set('applicationType', '');
-            appApi$1.setVisibility('ResidentApp', true);
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp setFocus Success');
-            });
-          }
-        }
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.Escape,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.F1,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.Power,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.F7,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.AudioVolumeUp,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.AudioVolumeDown,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'foreground',
-        keyCode: keyMap.AudioVolumeDown,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'foreground',
-        keyCode: keyMap.AudioVolumeUp,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'foreground',
-        keyCode: keyMap.AudioVolumeMute,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.MediaFastForward,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: 142,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.Home,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.MediaRewind,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'ResidentApp',
-        keyCode: keyMap.Pause,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Cobalt',
-        keyCode: keyMap.Escape,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Amazon',
-        keyCode: keyMap.Escape,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Cobalt',
-        keyCode: keyMap.Home,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Amazon',
-        keyCode: keyMap.Home,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Cobalt',
-        keyCode: keyMap.Backspace,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
-        client: 'Amazon',
-        keyCode: keyMap.Backspace,
-        modifiers: []
-      }).catch(err => {
-        console.log('Error', err);
-      });
-    }).catch(err => {
-      console.log('Error', err);
-    });
-  }
 
   // src/Config/Keymap.js
   var keyMap = {
