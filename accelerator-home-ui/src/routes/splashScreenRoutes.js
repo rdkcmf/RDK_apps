@@ -20,6 +20,7 @@ import LogoScreen from '../screens/SplashScreens/LogoScreen'
 import BluetoothScreen from '../screens/SplashScreens/BluetoothScreen'
 import LanguageScreen from '../screens/SplashScreens/LanguageScreen'
 import NetworkScreen from '../screens/SplashScreens/NetworkScreen'
+import NetworkPromptScreen from '../screens/SplashScreens/NetworkPromptScreen'
 import NetworkList from '../screens/SplashScreens/NetworkList'
 
 export default {
@@ -39,6 +40,10 @@ export default {
         {
             path: 'splash/network',
             component: NetworkScreen
+        },
+        { 
+            path: 'splash/networkPrompt',
+            component: NetworkPromptScreen
         },
         {
             path: 'splash/networkList',

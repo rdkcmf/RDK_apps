@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Router } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
 import { CONFIG } from '../../Config/Config'
 import LanguageItem from '../../items/LanguageItem'
 import { availableLanguages } from '../../Config/Config'
@@ -29,24 +29,19 @@ const loader = 'Loader'
 export default class LanguageScreen extends Lightning.Component {
   static _template() {
     return {
+      w: 1920,
+      h: 1080,
+      rect: true,
+      color: 0xff000000,
       Language: {
         x: 960,
         y: 270,
-        Background: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 2000,
-          mount: 0.5,
-          rect: true,
-          color: 0xff000000,
-        },
         Title: {
           x: 0,
           y: 0,
           mountX: 0.5,
           text: {
-            text: "Language",
+            text: Language.translate("Language"),
             fontFace: CONFIG.language.font,
             fontSize: 40,
             textColor: CONFIG.theme.hex,
@@ -60,7 +55,7 @@ export default class LanguageScreen extends Lightning.Component {
           y: 125,
           mountX: 0.5,
           text: {
-            text: "Select a language",
+            text: Language.translate("Select a language"),
             fontFace: CONFIG.language.font,
             fontSize: 25,
           },
@@ -89,7 +84,7 @@ export default class LanguageScreen extends Lightning.Component {
               y: 30,
               mount: 0.5,
               text: {
-                text: "Continue Setup",
+                text: Language.translate("Continue Setup"),
                 fontFace: CONFIG.language.font,
                 fontSize: 22,
                 textColor: 0xFF000000,
@@ -151,14 +146,16 @@ export default class LanguageScreen extends Lightning.Component {
           }
         }
         _handleEnter() {
-          localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
-          let path = location.pathname.split('index.html')[0]
-          let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"
-          let notification_url = location.origin + path + url
-          console.log(notification_url)
-          appApi.launchResident(notification_url, loader)
-          appApi.setVisibility('ResidentApp', false)
-          location.reload();
+          if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
+            localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
+            let path = location.pathname.split('index.html')[0]
+            let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"
+            let notification_url = location.origin + path + url
+            console.log(notification_url)
+            appApi.launchResident(notification_url, loader)
+            appApi.setVisibility('ResidentApp', false)
+            location.reload();
+          }
         }
       },
       class Continue extends this{

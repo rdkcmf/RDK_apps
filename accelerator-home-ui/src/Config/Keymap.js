@@ -36,8 +36,6 @@ const keyMap = {
     "F6": 117,
     "F7": 118,
     "F8": 119,
-    "F9": 120,
-    "F10": 121,
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -114,6 +112,7 @@ const keyMap = {
     "PageUp": 33,
     "PageDown": 34,
     "Home": 36,
+    "Settings_Shortcut": 121,
 }
 
 export default keyMap

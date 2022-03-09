@@ -21,6 +21,7 @@ import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi';
+import NetworkApi from '../../api/NetworkApi'
 
 
 /**
@@ -140,6 +141,7 @@ export default class DeviceScreen extends Lightning.Component {
 
     _init() {
         this._appApi = new AppApi();
+        this._network = new NetworkApi();
         this._setState('Info')
     }
 

@@ -50,7 +50,7 @@ export default class WiFiScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'WiFi On/Off',
+              text: Language.translate('WiFi On/Off'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -116,7 +116,7 @@ export default class WiFiScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Join Another Network',
+              text: Language.translate('Join Another Network'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -238,15 +238,6 @@ export default class WiFiScreen extends Lightning.Component {
             })
           }
         })
-        this._network.registerEvent('onConnectionStatusChanged', notification => {
-          if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
-            this._wifi.setInterface('ETHERNET', true).then(res => {
-              if (res.success) {
-                this._wifi.setDefaultInterface('ETHERNET', true)
-              }
-            })
-          }
-        })
       }
     })
   }
@@ -258,19 +249,13 @@ export default class WiFiScreen extends Lightning.Component {
     if (this.wifiStatus) {
       this._wifi.discoverSSIDs()
     }
-    this.scanTimer = setInterval(() => {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs()
-      }
-    }, 5000)
   }
 
   /**
    * Function to be executed when the Wi-Fi screen is disabled.
    */
   _disable() {
-    console.log('going out')
-    clearInterval(this.scanTimer)
+    this._wifi.stopScan()
   }
 
 
@@ -435,6 +420,8 @@ export default class WiFiScreen extends Lightning.Component {
     if (dir === 'down') {
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
+        this._wifi.discoverSSIDs()
+        this._setState('JoinAnotherNetwork')
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }

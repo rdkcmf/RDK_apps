@@ -53,32 +53,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
             AdvanceScreenContents: {
                 x: 200,
                 y: 275,
-                UIVoice: {
-                    alpha: 0.3, // disabled
-                    type: SettingsMainItem,
-                    Title: {
-                        x: 10,
-                        y: 45,
-                        mountY: 0.5,
-                        text: {
-                            text: 'UI Voice',
-                            textColor: COLORS.titleColor,
-                            fontFace: CONFIG.language.font,
-                            fontSize: 25,
-                        }
-                    },
-                    Button: {
-                        h: 45,
-                        w: 45,
-                        x: 1600,
-                        mountX: 1,
-                        y: 45,
-                        mountY: 0.5,
-                        src: Utils.asset('images/settings/Arrow.png'),
-                    },
-                },
                 TTSOptions: {
-                    y: 90,
                     alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
@@ -103,7 +78,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     },
                 },
                 CECControl: {
-                    y: 180,
+                    y: 90,
                     // alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
@@ -128,7 +103,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     },
                 },
                 Bug: {
-                    y: 270,
+                    y: 180,
                     alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
@@ -154,7 +129,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                 },
                 Contact: {
                     alpha: 0.3, // disabled
-                    y: 360,
+                    y: 270,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -178,7 +153,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     },
                 },
                 Device: {
-                    y: 450,
+                    y: 360,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,

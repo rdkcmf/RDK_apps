@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Storage, Registry } from '@lightningjs/sdk'
 import BluetoothApi from '../../api/BluetoothApi'
 
 export default class LogoScreen extends Lightning.Component {
@@ -26,13 +26,22 @@ export default class LogoScreen extends Lightning.Component {
             rect: true,
             color: 0xff000000,
             w: 1920,
-            h: 2000,
+            h: 1080,
             Logo: {
                 mount: 0.5,
                 x: 1920 / 2,
                 y: 1080 / 2,
                 src: Utils.asset('/images/splash/RDKLogo.png'),
             },
+            Sub: {
+                mountY: 1,
+                mountX: 0.5,
+                x: 1920 / 2,
+                y: 1000,
+                w: 320,
+                h: 110,
+                src: Utils.asset('/images/splash/gracenote.png')
+            }
         }
     }
 
@@ -44,18 +53,35 @@ export default class LogoScreen extends Lightning.Component {
         this.btApi = new BluetoothApi()
     }
 
+    checkPath(path) {
+        if (path === 'ui') {
+            return 'ui'
+        }
+        return 'menu'
+    }
+
     _focus() {
         let path = 'splash/bluetooth'
+        var map = { 37: false, 38: false, 39: false, 40: false };
+        const handler = (e) => {
+            if (e.keyCode in map) {
+                map[e.keyCode] = true;
+                if (map[37] && map[38] && map[39] && map[40]) {
+                    path = 'ui'
+                }
+            }
+        }
+        Registry.addEventListener(document, 'keydown', handler)
         this.btApi.getPairedDevices()
             .then(devices => {
                 console.log(devices)
                 if (devices.length > 0 || Storage.get('setup')) {
-                    path = 'menu'
+                    path = this.checkPath(path)
                 }
             })
             .catch(() => {
                 console.log('Paired Device Error')
-                path = 'menu'
+                path = this.checkPath(path)
             })
         setTimeout(() => {
             Router.navigate(path)

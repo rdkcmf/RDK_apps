@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage, Registry } from '@lightningjs/sdk';
+import { Utils, Router, Storage } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -75,7 +75,7 @@ export default class App extends Router.App {
   }
 
   _captureKey(key) {
-
+    console.log(key)
     if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));
@@ -101,15 +101,15 @@ export default class App extends Router.App {
           Router.navigate('menu');
         }
       }
+      return true
 
     }
 
-    if (key.keyCode == Keymap.F9) {
-      store.dispatch({
-        type: 'ACTION_LISTEN_START'
-      })
+    if (key.keyCode == Keymap.Settings_Shortcut) {
+      Router.navigate('settings')
       return true
     }
+
 
     if (key.keyCode == Keymap.Power) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
@@ -276,7 +276,7 @@ export default class App extends Router.App {
           });
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchCobalt(notification.parameters.url);
+          appApi.launchCobalt(notification.parameters.url + '&inApp=true');
           Storage.set('applicationType', 'Cobalt');
           appApi.setVisibility('ResidentApp', false);
           let params = {

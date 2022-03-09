@@ -70,6 +70,19 @@ export default class AppApi {
     })
   }
 
+  fetchApiKey() {
+    return new Promise((resolve) => {
+      thunder
+        .call('org.rdk.PersistentStore', 'getValue', { namespace: 'gracenote', key: 'apiKey' })
+        .then(result => {
+          resolve(result.value)
+        })
+        .catch(err => {
+          resolve('')
+        })
+    })
+  }
+
   /**
    * Function to launch Html app.
    * @param {String} url url of app.
@@ -337,31 +350,37 @@ export default class AppApi {
    * @param {String} url url of app.
    */
   launchWeb(url) {
-    const childCallsign = 'HtmlApp'
-    if (webUrl != url) {
-      thunder
-        .call('org.rdk.RDKShell', 'launch', {
-          callsign: childCallsign,
-          type: childCallsign,
-          uri: url,
-        })
-        .then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: childCallsign,
+    return new Promise(resolve => {
+      const childCallsign = 'HtmlApp'
+      if (webUrl != url) {
+        thunder
+          .call('org.rdk.RDKShell', 'launch', {
+            callsign: childCallsign,
+            type: childCallsign,
+            uri: url,
           })
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: childCallsign,
+          .then(() => {
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign,
+            })
+            thunder.call('org.rdk.RDKShell', 'setFocus', {
+              client: childCallsign,
+            })
+              .then(() => {
+                resolve(true)
+              })
           })
+          .catch(err => { })
+      } else {
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
         })
-        .catch(err => { })
-    } else {
-      thunder.call('org.rdk.RDKShell', 'moveToFront', {
-        client: childCallsign,
-      })
-      thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
-    }
-    webUrl = url
-    activatedWeb = true
+        thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
+      }
+      webUrl = url
+      activatedWeb = true
+    })
+
   }
 
   /**
@@ -459,6 +478,23 @@ export default class AppApi {
       .catch(err => {
         console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
       })
+  }
+
+  launchOverlay(url, client) {
+    return new Promise(resolve => {
+      const childCallsign = client
+      thunder
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: 'ResidentApp',
+          uri: url,
+        })
+        .then(res => {
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: childCallsign,
+          })
+        })
+    })
   }
 
   launchforeground() {
@@ -593,6 +629,15 @@ export default class AppApi {
           console.log('Set focus error', JSON.stringify(err))
           reject(false)
         })
+    })
+  }
+
+  visibile(client, visible) {
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.RDKShell', 'setVisibility', {
+        client: client,
+        visible: visible,
+      })
     })
   }
 

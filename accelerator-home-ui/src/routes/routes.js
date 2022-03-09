@@ -30,16 +30,31 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
+import UIList from '../views/UIList'
+import AppStore from '../views/AppStore'
+import detailsScreenRoutes from './detailsScreenRoutes'
 
+let api = null
 
 export default {
   boot: (queryParam) => {
     let homeApi = new HomeApi()
     homeApi.setPartnerAppsInfo(queryParam.data)
+    homeApi.getAPIKey()
+      .then((data) => {
+        if (data.data.length > 1) {
+          api = data
+        }
+      })
     return Promise.resolve()
   },
-  root: 'splash',
+  // root: 'splash',
   routes: [
+    ...splashScreenRoutes.splashScreenRoutes,
+    ...route.network,
+    ...otherSettingsRoutes.otherSettingsRoutes,
+    ...audioScreenRoutes.audioScreenRoutes,
+    ...detailsScreenRoutes.detailsScreenRoutes,
     {
       path: 'settings',
       component: SettingsScreen,
@@ -59,6 +74,11 @@ export default {
       widgets: ['Menu'],
     },
     {
+      path: 'apps',
+      component: AppStore,
+      widgets: ['Menu']
+    },
+    {
       path: 'usb/player',
       component: AAMPVideoPlayer
     },
@@ -70,15 +90,20 @@ export default {
       path: 'image',
       component: ImageViewer,
     },
-
+    {
+      path: 'ui',
+      component: UIList,
+    },
     {
       path: 'menu',
       component: MainView,
       before: (page) => {
         const homeApi = new HomeApi()
-        //page.appItems = homeApi.getAppListInfo()
-        //page.metroApps = homeApi.getMetroInfo()
         page.tvShowItems = homeApi.getTVShowsInfo()
+        // page.usbApps = homeApi.getTVShowsInfo()
+        if (api) {
+          page.setGracenoteData(api)
+        }
         return Promise.resolve()
       },
       widgets: ['Menu'],
@@ -87,10 +112,6 @@ export default {
       path: 'player',
       component: AAMPVideoPlayer
     },
-    ...route.network,
-    ...otherSettingsRoutes.otherSettingsRoutes,
-    ...audioScreenRoutes.audioScreenRoutes,
-    ...splashScreenRoutes.splashScreenRoutes,
     {
       path: '!',
       component: Error,

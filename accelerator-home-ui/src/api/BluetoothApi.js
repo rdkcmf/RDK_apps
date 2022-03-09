@@ -27,6 +27,7 @@ export default class BluetoothApi {
     this._devices = []
     this._pairedDevices = []
     this._connectedDevices = []
+    this.btStatus = false
     const config = {
       host: '127.0.0.1',
       port: 9998,
@@ -44,10 +45,11 @@ export default class BluetoothApi {
       this._thunder
         .call('Controller', 'activate', { callsign: this.callsign })
         .then(result => {
+          this.btStatus = true
           this._thunder.on(this.callsign, 'onDiscoveredDevice', notification => {
-            this.getDiscoveredDevices().then(() => {
+            // this.getDiscoveredDevices().then(() => {
               this._events.get('onDiscoveredDevice')(notification)
-            })
+            // })
           })
           this._thunder.on(this.callsign, 'onStatusChanged', notification => {
             if (notification.newStatus === 'PAIRING_CHANGE') {
@@ -109,11 +111,11 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'disable')
         .then(result => {
+          this.btStatus = false
           resolve(result)
         })
         .catch(err => {
           console.error(`Can't disable : ${JSON.stringify(err)}`)
-          reject()
         })
     })
   }
@@ -127,6 +129,7 @@ export default class BluetoothApi {
         .call('org.rdk.Bluetooth', 'enable')
         .then(result => {
           resolve(result)
+          this.btStatus = true
         })
         .catch(err => {
           console.error(`Can't enable : ${JSON.stringify(err)}`)
@@ -190,7 +193,6 @@ export default class BluetoothApi {
         })
         .catch(err => {
           console.error(`Can't get discovered devices : ${JSON.stringify(err)}`)
-          reject()
         })
     })
   }
@@ -211,7 +213,6 @@ export default class BluetoothApi {
         })
         .catch(err => {
           console.error(`Can't get paired devices : ${err}`)
-          reject()
         })
     })
   }
@@ -297,12 +298,12 @@ export default class BluetoothApi {
       this._thunder
         .call('org.rdk.Bluetooth', 'unpair', { deviceID: deviceId })
         .then(result => {
-          if (result.success) resolve(result)
-          else reject(result)
+          if (result.success) resolve(result.success)
+          else resolve(false)
         })
         .catch(err => {
           console.error('unpair failed', err)
-          reject()
+          resolve(false)
         })
     })
   }

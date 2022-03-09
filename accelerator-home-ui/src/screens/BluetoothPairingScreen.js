@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Lightning, Router, Language } from '@lightningjs/sdk'
 import { CONFIG } from "../Config/Config"
 let _item
 /**
@@ -89,7 +89,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
                             y: 25,
                             mount: 0.5,
                             text: {
-                                text: "Unpair",
+                                text: Language.translate("Unpair"),
                                 fontFace: CONFIG.language.font,
                                 fontSize: 22,
                                 textColor: 0xFF000000
@@ -103,7 +103,7 @@ export default class BluetoothPairingScreen extends Lightning.Component {
                             y: 25,
                             mount: 0.5,
                             text: {
-                                text: "Cancel",
+                                text: Language.translate("Cancel"),
                                 fontFace: CONFIG.language.font,
                                 fontSize: 22,
                                 textColor: 0xFF000000

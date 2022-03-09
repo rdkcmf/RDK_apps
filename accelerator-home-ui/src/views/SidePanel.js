@@ -29,7 +29,7 @@ export default class SidePanel extends Lightning.Component {
       rect: true,
       y: 270,
       w: 200,
-      h: 1080,
+      h: 810,
       SidePanel: {
         x: 0,
         y: 127,
@@ -151,24 +151,12 @@ export default class SidePanel extends Lightning.Component {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1
             }
-            if (this.indexVal === 2) {
-              this.fireAncestors('$scroll', -130)
-            }
-            if (this.indexVal === 1) {
-              this.fireAncestors('$scroll', 270)
-            }
             return this.tag('SidePanel').items[this.indexVal]
           } else if (key.keyCode == Keymap.ArrowUp) {
             if (0 === this.indexVal) {
               this.fireAncestors('$goToTopPanel', 0)
             } else {
               this.indexVal = this.indexVal - 1
-              if (this.indexVal === 2) {
-                this.fireAncestors('$scroll', -130)
-              }
-              if (this.indexVal === 1) {
-                this.fireAncestors('$scroll', 270)
-              }
               return this.tag('SidePanel').items[this.indexVal]
             }
 

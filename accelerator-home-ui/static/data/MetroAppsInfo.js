@@ -81,9 +81,9 @@ export var metroAppsInfo = [
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   },
   {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Bluetooth_app.jpg',
-  }
+    displayName: "FRacer",
+    applicationType: "Lightning",
+    uri: "https://lightningjs.io/fracer/#main",
+    url: "/images/metroApps/fracer-steerling.png"
+  },
 ];

@@ -38,11 +38,6 @@
 
   },
   {
-    title: 'EPAM',
-    url: '/images/splash/Epam.png',
-    uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',
-  },
-  {
     title: 'NEW',
     url: '/images/splash/NewUi.png',
     uri: 'https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html',

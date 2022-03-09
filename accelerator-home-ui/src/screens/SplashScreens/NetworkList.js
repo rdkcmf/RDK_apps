@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Router, Registry } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Registry, Language } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import SettingsMainItem from '../../items/SettingsMainItem'
@@ -30,31 +30,19 @@ const wifi = new Wifi()
 export default class NetworkList extends Lightning.Component {
   static _template() {
     return {
+      w: 1920,
+      h: 1080,
+      rect: true,
+      color: 0xff000000,
       NetworkList: {
         x: 950,
         y: 270,
-        Background: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 2000,
-          mount: 0.5,
-          rect: true,
-          color: 0xff000000,
-        },
-        // FailScreen: {
-        //   x: 780,
-        //   y: 100,
-        //   type: WifiFailScreen,
-        //   zIndex: 5,
-        //   visible: false
-        // },
         Title: {
           x: 0,
           y: 0,
           mountX: 0.5,
           text: {
-            text: "Network Configuration",
+            text: Language.translate("Network Configuration"),
             fontFace: CONFIG.language.font,
             fontSize: 40,
             textColor: CONFIG.theme.hex,
@@ -68,7 +56,7 @@ export default class NetworkList extends Lightning.Component {
           y: 125,
           mountX: 0.5,
           text: {
-            text: "Select a wifi network",
+            text: Language.translate("Select a wifi network"),
             fontFace: CONFIG.language.font,
             fontSize: 25,
           },
@@ -125,7 +113,7 @@ export default class NetworkList extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Join Another Network',
+              text: Language.translate('Join Another Network'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -245,18 +233,13 @@ export default class NetworkList extends Lightning.Component {
     if (this.wifiStatus) {
       this._wifi.discoverSSIDs()
     }
-    this.scanTimer = setInterval(() => {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs()
-      }
-    }, 5000)
   }
 
   /**
    * Function to be executed when the Wi-Fi screen is disabled.
    */
   _unfocus() {
-    clearInterval(this.scanTimer)
+    this._wifi.stopScan()
   }
 
 
@@ -367,6 +350,8 @@ export default class NetworkList extends Lightning.Component {
     if (dir === 'down') {
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
+        wifi.discoverSSIDs()
+        this._setState('JoinAnotherNetwork')
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }

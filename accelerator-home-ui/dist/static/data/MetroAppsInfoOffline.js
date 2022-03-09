@@ -81,9 +81,9 @@ export var metroAppsInfoOffline = [
     url: "/images/metroApps/Test-10.jpg"
   },
   {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Bluetooth_app.jpg',
+    displayName: "FRacer",
+    applicationType: "Lightning",
+    uri: "https://lightningjs.io/fracer/#main",
+    url: "/images/metroApps/fracer-steerling.png"
   }
 ];

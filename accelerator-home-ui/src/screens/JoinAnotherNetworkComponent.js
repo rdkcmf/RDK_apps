@@ -53,9 +53,26 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
     }
   }
 
+  // startConnectForAnotherNetwork(device, passphrase) {
+  //   wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
+  //   Router.back()
+  // }
   startConnectForAnotherNetwork(device, passphrase) {
-    wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
-    Router.back()
+    wifi.connect({ ssid: device.ssid, security: device.security }, passphrase).then(() => {
+      wifi.saveSSID(device.ssid, passphrase, device.security).then((response) => {
+        if(response.result===0){
+          // console.log(response);
+          // Router.back()
+        }
+        else if(response.result!==0){
+          wifi.clearSSID().then((response) => {
+            // console.log(response)
+            // Router.back()
+          })
+        }
+      })
+    })
+    Router.back();
   }
 
 

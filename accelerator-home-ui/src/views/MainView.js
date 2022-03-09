@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Storage, Language, Router } from '@lightningjs/sdk'
+import { Lightning, Storage, Language, Router, Registry } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
@@ -24,6 +24,8 @@ import UsbApi from '../api/UsbApi.js'
 import { CONFIG } from '../Config/Config.js'
 import XcastApi from '../api/XcastApi'
 import HomeApi from '../api/HomeApi.js'
+import GracenoteItem from '../items/GracenoteItem.js'
+import { List } from '@lightningjs/ui'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -36,19 +38,44 @@ export default class MainView extends Lightning.Component {
   static _template() {
     return {
       rect: true,
-      color: 0xff000000,
+      color: CONFIG.theme.background,
       w: 1920,
       h: 1080,
+      clipping: true,
       MainView: {
-        w: 1994,
-        h: 1920,
+        w: 1720,
+        h: 810,
         xIndex: 2,
         y: 270,
         x: 200,
-        clipping: true,
+        clipping: false,
+        Text0: {
+          alpha: 0,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Popular Movies'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
+          zIndex: 0
+        },
+        Gracenote: {
+          y: 50,
+          x: -20,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          type: Lightning.components.ListComponent,
+          w: 1745,
+          h: 400,
+          itemSize: 500,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -1,
+          clipping: false,
+        },
         Text1: {
-          // x: 10 + 25,
-          // y:  30,
           h: 30,
           text: {
             fontFace: CONFIG.language.font,
@@ -61,17 +88,13 @@ export default class MainView extends Lightning.Component {
         },
         AppList: {
           y: 37,
-          x: -20,
-          flex: { direction: 'row', paddingLeft: 20, wrap: false },
-          type: Lightning.components.ListComponent,
-          w: 1745,
+          x: 0,
+          type: List,
           h: 400,
-          itemSize: 474,
-          roll: true,
-          rollMax: 1745,
-          horizontal: true,
-          itemScrollOffset: -2,
-          clipping: false,
+          scroll: {
+            after: 2
+          },
+          spacing: 20,
         },
         Text2: {
           // x: 10 + 25,
@@ -132,6 +155,33 @@ export default class MainView extends Lightning.Component {
           text: {
             fontFace: CONFIG.language.font,
             fontSize: 25,
+            text: Language.translate('Lightning Showcase'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
+          },
+        },
+        ShowcaseApps: {
+          x: -20,
+          y: 978,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 400,
+          itemSize: 277,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text5: {
+          alpha: 0,
+          // x: 10 + 25,
+          y: 1203,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
             text: Language.translate('Partner Apps'),
             fontStyle: 'normal',
             textColor: 0xFFFFFFFF,
@@ -139,20 +189,19 @@ export default class MainView extends Lightning.Component {
         },
         UsbApps: {
           x: -20,
-          y: 978,
+          y: 1243,
           type: Lightning.components.ListComponent,
           flex: { direction: 'row', paddingLeft: 20, wrap: false },
           w: 1745,
           h: 400,
-          itemSize: 288,
+          itemSize: 277,
           roll: true,
           rollMax: 1745,
           horizontal: true,
           itemScrollOffset: -4,
           clipping: false,
         },
-
-      },
+      }
     }
   }
 
@@ -160,9 +209,37 @@ export default class MainView extends Lightning.Component {
     return 'up'
   }
 
+  moveDownContent() {
+    this.tag('Text0').alpha = 1
+    this.tag('Text1').y = 490-50
+    this.tag('AppList').y = 527-50
+    this.tag("Text2").y = 755-50
+    this.tag("MetroApps").y = 795-50
+    this.tag("Text3").y = 1030-50
+    this.tag("TVShows").y = 1070-50
+    this.tag("Text4").y = 1298-50
+    this.tag("ShowcaseApps").y = 1338-50
+    this.tag("Text5").y = 1566-50
+    this.tag("UsbApps").y = 1606-50
+  }
+
+
+  /**
+   * @param {any} data
+   */
+  setGracenoteData(data) {
+    if (!this.gracenote) {
+      this.gracenote = true
+      this.key = data.key
+      this.graceNoteItems = data.data
+      this.appItems = this.currentItems
+    }
+  }
+
   _handleBack() { }
 
   _init() {
+    this.gracenote = false
     this.settingsScreen = false
     this.indexVal = 0
     const config = {
@@ -180,6 +257,7 @@ export default class MainView extends Lightning.Component {
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
     this.metroApps = this.homeApi.getMetroInfo()
+    this.showcaseApps = this.homeApi.getShowCaseApps()
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -341,22 +419,61 @@ export default class MainView extends Lightning.Component {
     }
   }
 
+  /**
+   * Function to set details of items in gracenote list.
+   */
+  set graceNoteItems(items) {
+    this.moveDownContent()
+    this.tag('Gracenote').items = items.map((info, idx) => {
+      return {
+        w: 480,
+        h: 270,
+        type: GracenoteItem,
+        data: info,
+        key: this.key,
+        focus: 1.11,
+        unfocus: 1,
+        idx: idx,
+        bar: 10
+      }
+    })
+    this._setState('Gracenote')
+  }
+
+  set showcaseApps(items) {
+    this.tag('ShowcaseApps').items = items.map((info, idx) => {
+      return {
+        w: 268,
+        h: 151,
+        type: ListItem,
+        data: info,
+        focus: 1.11,
+        unfocus: 1,
+        idx: idx,
+        bar: 12
+      }
+    })
+  }
+
 
   /**
    * Function to set details of items in app list.
    */
   set appItems(items) {
-    this.tag('AppList').items = items.map((info, idx) => {
+    this.currentItems = items
+    this.tag('AppList').clear()
+    this.tag('AppList').add(items.map((info, idx) => {
       return {
-        w: 454,
-        h: 255,
+        w: this.gracenote ? 268 : 454,
+        h: this.gracenote ? 151 : 255,
         type: ListItem,
         data: info,
         focus: 1.11,
         unfocus: 1,
-        idx: idx
+        idx: idx,
+        bar: 12
       }
-    })
+    }))
   }
 
   set metroApps(items) {
@@ -368,7 +485,8 @@ export default class MainView extends Lightning.Component {
         data: info,
         focus: 1.15,
         unfocus: 1,
-        idx: index
+        idx: index,
+        bar: 12
       }
     })
   }
@@ -385,24 +503,26 @@ export default class MainView extends Lightning.Component {
         data: info,
         focus: 1.15,
         unfocus: 1,
-        idx: idx
+        idx: idx,
+        bar: 12
       }
     })
   }
 
   set usbApps(items) {
-    if (!items.length) {
-      this.tag('Text4').visible = false;
+    if (items.length > 0) {
+      this.tag('Text5').alpha = 1;
     }
     this.tag('UsbApps').items = items.map((info, index) => {
       return {
-        w: 268,
-        h: 151,
+        w: 257,
+        h: 145,
         type: ListItem,
         data: info,
         focus: 1.15,
         unfocus: 1,
-        idx: index
+        idx: index,
+        bar: 12
       }
     })
   }
@@ -424,33 +544,53 @@ export default class MainView extends Lightning.Component {
       }
     }
   }
-
-  /**
-   * Function to reset the main view rows to initial state.
-   */
-  reset() {
-    for (let i = this.tag('AppList').index; i > 0; i--) {
-      this.tag('AppList').setPrevious()
-    }
-    for (let i = this.tag('MetroApps').index; i > 0; i--) {
-      this.tag('MetroApps').setPrevious()
-    }
-    for (let i = this.tag('TVShows').index; i > 0; i--) {
-      this.tag('TVShows').setPrevious()
-    }
-    for (let i = this.tag("UsbApps").index; i > 0; i--) {
-      this.tag('UsbApps').setPrevious()
-    }
-  }
-
   /**
    * Function to define various states needed for main view.
    */
   static _states() {
     return [
+      class Gracenote extends this {
+        $enter() {
+          this.indexVal = 0
+        }
+        $exit() {
+          this.tag('Text0').text.fontStyle = 'normal'
+        }
+        _getFocused() {
+          this.tag('Text0').text.fontStyle = 'bold'
+          if (this.tag('Gracenote').length) {
+            return this.tag('Gracenote').element
+          }
+        }
+        _handleDown() {
+          this._setState('AppList')
+        }
+        _handleRight() {
+          if (this.tag('Gracenote').length - 1 != this.tag('Gracenote').index) {
+            this.tag('Gracenote').setNext()
+            return this.tag('Gracenote').element
+          }
+        }
+        _handleUp() {
+          this.widgets.menu.notify('TopPanel')
+        }
+        _handleLeft() {
+          this.tag('Text0').text.fontStyle = 'normal'
+          if (0 != this.tag('Gracenote').index) {
+            this.tag('Gracenote').setPrevious()
+            return this.tag('Gracenote').element
+          } else {
+            Router.focusWidget('Menu')
+          }
+        }
+        _handleEnter() {
+          Router.navigate('menu/details', { gracenoteItem: this.tag('Gracenote').element.data, key: this.key })
+        }
+      },
       class AppList extends this {
         $enter() {
           this.indexVal = 0
+          this.scroll(270)
         }
         $exit() {
           this.tag('Text1').text.fontStyle = 'normal'
@@ -458,32 +598,23 @@ export default class MainView extends Lightning.Component {
         _getFocused() {
           this.tag('Text1').text.fontStyle = 'bold'
           if (this.tag('AppList').length) {
-            return this.tag('AppList').element
+            return this.tag('AppList')
           }
         }
         _handleDown() {
           this._setState('MetroApps')
         }
-        _handleRight() {
-          if (this.tag('AppList').length - 1 != this.tag('AppList').index) {
-            this.tag('AppList').setNext()
-            return this.tag('AppList').element
-          }
-        }
         _handleUp() {
-          this.widgets.menu.notify('TopPanel')
+          if (this.gracenote) {
+            this._setState('Gracenote')
+          } else {
+            this.widgets.menu.notify('TopPanel')
+          }
+
         }
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal'
-          if (0 != this.tag('AppList').index) {
-            this.tag('AppList').setPrevious()
-            return this.tag('AppList').element
-          } else {
-            this.reset()
-            this.widgets.menu.setIndex(this.indexVal)
-            Router.focusWidget('Menu')
-            //this.fireAncestors('$goToSidePanel', 0)
-          }
+          Router.focusWidget('Menu')
         }
         _handleEnter() {
           let appApi = new AppApi();
@@ -496,8 +627,19 @@ export default class MainView extends Lightning.Component {
             appApi.launchCobalt(this.uri);
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            appApi.launchWeb(this.uri)
+              .then(() => {
+                appApi.setVisibility('ResidentApp', false);
+                let path = location.pathname.split('index.html')[0]
+                let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
+                let notification_url = location.origin + path + url
+                appApi.launchOverlay(notification_url, 'TextOverlay')
+                Registry.setTimeout(() => {
+                  appApi.deactivateResidentApp('TextOverlay')
+                  appApi.zorder('HtmlApp')
+                  appApi.setVisibility('HtmlApp', true)
+                }, 9000)
+              })
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
             appApi.launchLightning(this.uri);
             appApi.setVisibility('ResidentApp', false);
@@ -555,6 +697,7 @@ export default class MainView extends Lightning.Component {
       },
       class MetroApps extends this {
         $enter() {
+          this.scroll(-100)
           this.indexVal = 1
         }
         $exit() {
@@ -584,10 +727,7 @@ export default class MainView extends Lightning.Component {
             this.tag('MetroApps').setPrevious()
             return this.tag('MetroApps').element
           } else {
-            this.reset()
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
-            //this.fireAncestors('$goToSidePanel', 1)
           }
         }
         _handleEnter() {
@@ -616,7 +756,7 @@ export default class MainView extends Lightning.Component {
       class TVShows extends this {
         $enter() {
           this.indexVal = 2
-          this.scroll(-130)
+          this.scroll(-400)
         }
         _handleUp() {
           this.scroll(270)
@@ -640,16 +780,13 @@ export default class MainView extends Lightning.Component {
             this.tag('TVShows').setPrevious()
             return this.tag('TVShows').element
           } else {
-            this.reset()
-            //this.fireAncestors('$goToSidePanel', 2)
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
           }
         }
         _handleDown() {
-          if (this.tag('UsbApps').length) {
-            this._setState("UsbApps");
-          }
+          // if (this.tag('UsbApps').length) {
+          this._setState("ShowcaseApps");
+          //}
         }
         _handleEnter() {
           if (Storage.get('ipAddress')) {
@@ -662,24 +799,82 @@ export default class MainView extends Lightning.Component {
         }
       },
 
-
-
-      class UsbApps extends this {
+      class ShowcaseApps extends this {
         $enter() {
-          // this.scroll(-170)
-          this.indexVal = 3
+          this.scroll(-550)
         }
         $exit() {
           this.tag('Text4').text.fontStyle = 'normal'
         }
         _getFocused() {
           this.tag('Text4').text.fontStyle = 'bold'
+          if (this.tag('ShowcaseApps').length) {
+            return this.tag('ShowcaseApps').element
+          }
+        }
+        _handleUp() {
+          this._setState('TVShows')
+        }
+
+        _handleRight() {
+          if (this.tag('ShowcaseApps').length - 1 != this.tag('MetroApps').index) {
+            this.tag('ShowcaseApps').setNext()
+            return this.tag('ShowcaseApps').element
+          }
+        }
+        _handleDown() {
+          if (this.tag('UsbApps').length) {
+            this._setState("UsbApps");
+          }
+        }
+        _handleLeft() {
+          this.tag('Text4').text.fontStyle = 'normal'
+          if (0 != this.tag('ShowcaseApps').index) {
+            this.tag('ShowcaseApps').setPrevious()
+            return this.tag('ShowcaseApps').element
+          } else {
+            Router.focusWidget('Menu')
+          }
+        }
+        _handleEnter() {
+          let appApi = new AppApi();
+          let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
+          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
+
+          applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
+          Storage.set('applicationType', applicationType);
+          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
+          if (Storage.get('applicationType') == 'Cobalt') {
+            appApi.launchCobalt(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            appApi.launchWeb(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+            appApi.launchLightning(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+            appApi.launchNative(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          }
+        }
+      },
+
+      class UsbApps extends this {
+        $enter() {
+          this.scroll(-750)
+        }
+        $exit() {
+          this.tag('Text5').text.fontStyle = 'normal'
+        }
+        _getFocused() {
+          this.tag('Text5').text.fontStyle = 'bold'
           if (this.tag('UsbApps').length) {
             return this.tag('UsbApps').element
           }
         }
         _handleUp() {
-          this._setState('TVShows')
+          this._setState('ShowcaseApps')
         }
 
         _handleRight() {
@@ -689,14 +884,11 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleLeft() {
-          this.tag('Text4').text.fontStyle = 'normal'
+          this.tag('Text5').text.fontStyle = 'normal'
           if (0 != this.tag('UsbApps').index) {
             this.tag('UsbApps').setPrevious()
             return this.tag('UsbApps').element
           } else {
-            this.reset()
-            //this.fireAncestors('$goToSidePanel', 1)
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
           }
         }

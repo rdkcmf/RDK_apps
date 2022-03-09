@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router, Utils, Language } from '@lightningjs/sdk'
+import { Lightning, Router, Utils, Language, Registry } from '@lightningjs/sdk'
 import BluetoothItem from '../items/BluetoothItem'
 import SettingsMainItem from '../items/SettingsMainItem'
 import BluetoothApi from './../api/BluetoothApi'
@@ -62,7 +62,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Bluetooth On/Off',
+              text: Language.translate('Bluetooth On/Off'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -86,7 +86,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Searching for Devices',
+              text: Language.translate('Searching for Devices'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -141,7 +141,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Add A Device',
+              text: Language.translate('Add A Device'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -176,7 +176,7 @@ export default class BluetoothScreen extends Lightning.Component {
     this._bluetooth = false
     this._activateBluetooth()
     this._setState('Switch')
-    this.switch()
+    //this.switch()
     //this._bluetooth = false
     this._pairedNetworks = this.tag('Networks.PairedNetworks')
     this._availableNetworks = this.tag('Networks.AvailableNetworks')
@@ -191,14 +191,14 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   _focus() {
-    this._setState('Switch')
+    this._setState('AddADevice')
     this._enable()
     if (this._bluetooth) {
       this.tag('Networks').visible = true
       this.tag('AddADevice').visible = true
       this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
       this.renderDeviceList()
-      this._bt.startScan()
+      //this._bt.startScan()
     }
   }
 
@@ -212,18 +212,19 @@ export default class BluetoothScreen extends Lightning.Component {
     if (this._bluetooth) {
       this._bt.startScan()
     }
-    this.scanTimer = setInterval(() => {
+    this.scanTimer = Registry.setInterval(() => {
       if (this._bluetooth) {
         this._bt.startScan()
       }
-    }, 15000)
+    }, 5000)
   }
 
   /**
    * Function to be executed when the Bluetooth screen is disabled from the screen.
    */
   _disable() {
-    clearInterval(this.scanTimer)
+    Registry.clearInterval(this.scanTimer)
+    this._bt.stopScan()
   }
 
   /**
@@ -361,6 +362,7 @@ export default class BluetoothScreen extends Lightning.Component {
           this.widgets.fail.notify({ title: btName, msg: 'Pairing Failed' })
           Router.focusWidget('Fail')
         }
+        this.hideAvailableDevices()
       })
     } else if (option === 'Connect') {
       this._bt
@@ -398,7 +400,7 @@ export default class BluetoothScreen extends Lightning.Component {
     } else if (option === 'Unpair') {
       this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
         let btName = this._pairedNetworks.tag('List').element._item.name
-        if (result.success) {
+        if (result) {
           this.widgets.fail.notify({ title: btName, msg: 'Unpaired' })
           Router.focusWidget('Fail')
         } else {
@@ -563,6 +565,9 @@ export default class BluetoothScreen extends Lightning.Component {
           this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
         }
       })
+        .catch(() => {
+          console.log('Cannot turn off Bluetooth')
+        })
     } else {
       this._bt.enable().then(result => {
         if (result.success) {
@@ -574,6 +579,9 @@ export default class BluetoothScreen extends Lightning.Component {
           this._bt.startScan()
         }
       })
+        .catch(() => {
+          console.log('Cannot turn on Bluetooth')
+        })
     }
   }
 
@@ -581,7 +589,8 @@ export default class BluetoothScreen extends Lightning.Component {
    * Function to activate Bluetooth plugin.
    */
   _activateBluetooth() {
-    this._bt.activate().then(() => {
+    this._bt.activate().then((res) => {
+      console.log(res)
       this._bluetooth = true
       this._bt.registerEvent('onDiscoveredDevice', () => {
         this.renderDeviceList()
@@ -624,6 +633,9 @@ export default class BluetoothScreen extends Lightning.Component {
 
       })
     })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   /**

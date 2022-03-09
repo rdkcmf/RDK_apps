@@ -1,9 +1,9 @@
 /*
- App version: 3.5 25/02/22
- SDK version: 4.8.1
+ App version: 3.6 05/05/22
+ SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Tue, 08 Mar 2022 10:14:16 GMT
+ gmtDate: Thu, 05 May 2022 06:26:48 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -173,10 +173,144 @@ var APP_accelerator_home_ui = (() => {
     }
   });
 
+  // node_modules/@hendt/xml2json/lib/index.js
+  var require_lib = __commonJS({
+    "node_modules/@hendt/xml2json/lib/index.js"(exports) {
+      "use strict";
+      var __assign = exports && exports.__assign || function() {
+        __assign = Object.assign || function(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s)
+              if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+          }
+          return t;
+        };
+        return __assign.apply(this, arguments);
+      };
+      Object.defineProperty(exports, "__esModule", {
+        value: true
+      });
+      var defaultOptions2 = {
+        aloneValueName: "_@attribute"
+      };
+      function xml2json2(xmlStr, options) {
+        if (options === void 0) {
+          options = defaultOptions2;
+        }
+        var opt = __assign(__assign({}, defaultOptions2), options);
+        xmlStr = cleanXML(xmlStr, opt.aloneValueName);
+        return xml2jsonRecurse(xmlStr, opt);
+      }
+      exports.default = xml2json2;
+      function xml2jsonRecurse(xmlStr, options) {
+        var obj = {};
+        var startTagMatch;
+        while (startTagMatch = xmlStr.match(/<[^\/][^>]*>/)) {
+          var openingTag = startTagMatch[0];
+          var tagName = openingTag.substring(1, openingTag.length - 1);
+          var indexClosingTag = xmlStr.indexOf(openingTag.replace("<", "</"));
+          var closingTagMatch = void 0;
+          if (indexClosingTag == -1 && (closingTagMatch = openingTag.match(/[^<][\S+$]*/))) {
+            tagName = closingTagMatch[0];
+            indexClosingTag = xmlStr.indexOf("</" + tagName);
+            if (indexClosingTag == -1) {
+              indexClosingTag = xmlStr.indexOf("<\\/" + tagName);
+            }
+          }
+          var inner_substring = xmlStr.substring(openingTag.length, indexClosingTag);
+          var tempVal = inner_substring.match(/<[^\/][^>]*>/) ? xml2json2(inner_substring, options) : inner_substring;
+          if (obj[tagName] === void 0) {
+            obj[tagName] = tempVal;
+          } else if (Array.isArray(obj[tagName])) {
+            obj[tagName].push(tempVal);
+          } else {
+            obj[tagName] = [obj[tagName], tempVal];
+          }
+          xmlStr = xmlStr.substring(openingTag.length * 2 + 1 + inner_substring.length);
+        }
+        return obj;
+      }
+      function cleanXML(xmlStr, aloneValueName) {
+        xmlStr = xmlStr.replace(/<!--[\s\S]*?-->/g, "");
+        xmlStr = xmlStr.replace(/[\n\t\r]/g, "");
+        xmlStr = xmlStr.replace(/>[ \t]+</g, "><");
+        xmlStr = xmlStr.replace(/<\?[^>]*\?>/g, "");
+        xmlStr = replaceSelfClosingTags(xmlStr);
+        xmlStr = replaceAloneValues(xmlStr, aloneValueName);
+        xmlStr = replaceAttributes(xmlStr);
+        return xmlStr;
+      }
+      function replaceSelfClosingTags(xmlStr) {
+        var selfClosingTags = xmlStr.match(/<[^/][^>]*\/>/g);
+        if (!selfClosingTags) {
+          return xmlStr;
+        }
+        for (var i = 0; i < selfClosingTags.length; i++) {
+          var oldTag = selfClosingTags[i];
+          var match = oldTag.match(/[^<][\S+$]*/);
+          if (match) {
+            var tagName = match[0];
+            var closingTag = "</" + tagName + ">";
+            var newTag = extractAttributeValue(tagName, oldTag) + closingTag;
+            xmlStr = xmlStr.replace(oldTag, newTag);
+          }
+        }
+        return xmlStr;
+      }
+      function replaceAloneValues(xmlStr, aloneValueName) {
+        var tagsWithAttributesAndValue = xmlStr.match(/<[^\/][^>][^<]+\s+.[^<]+[=][^<]+>([^<]+)/g);
+        if (!tagsWithAttributesAndValue) {
+          return xmlStr;
+        }
+        for (var i = 0; i < tagsWithAttributesAndValue.length; i++) {
+          var oldTag = tagsWithAttributesAndValue[i];
+          var oldTagName = oldTag.substring(0, oldTag.indexOf(">") + 1);
+          var oldTagValue = oldTag.substring(oldTag.indexOf(">") + 1);
+          var newTag = oldTagName + "<" + aloneValueName + ">" + oldTagValue + "</" + aloneValueName + ">";
+          xmlStr = xmlStr.replace(oldTag, newTag);
+        }
+        return xmlStr;
+      }
+      function extractAttributeValue(tagName, oldTag) {
+        var newTag = "<" + tagName + ">";
+        var attrs = oldTag.match(/(\S+)\s?=\s?((?:"[^"]+")|(?:'[^']+'))/g);
+        if (!attrs) {
+          return newTag;
+        }
+        for (var j = 0; j < attrs.length; j++) {
+          var attr = attrs[j];
+          var attrName = attr.substring(0, attr.indexOf("=")).trim();
+          var quote = attr[attr.length - 1];
+          var attrValue = attr.substring(attr.indexOf(quote) + 1, attr.lastIndexOf(quote));
+          newTag += "<" + attrName + ">" + attrValue + "</" + attrName + ">";
+        }
+        return newTag;
+      }
+      function replaceAttributes(xmlStr) {
+        var tagsWithAttributes = xmlStr.match(/<[^\/><]\S+\s+[^<]+[=][^<]+>/g);
+        if (!tagsWithAttributes) {
+          return xmlStr;
+        }
+        for (var i = 0; i < tagsWithAttributes.length; i++) {
+          var oldTag = tagsWithAttributes[i];
+          var match = oldTag.match(/[^<]\S*/);
+          if (match) {
+            var tagName = match[0];
+            var newTag = extractAttributeValue(tagName, oldTag);
+            xmlStr = xmlStr.replace(oldTag, newTag);
+          }
+        }
+        return xmlStr;
+      }
+    }
+  });
+
   // node_modules/debounce/index.js
   var require_debounce = __commonJS({
     "node_modules/debounce/index.js"(exports, module) {
-      function debounce4(func, wait, immediate) {
+      function debounce5(func, wait, immediate) {
         var timeout3, args, context, timestamp, result;
         if (wait == null)
           wait = 100;
@@ -222,8 +356,8 @@ var APP_accelerator_home_ui = (() => {
         };
         return debounced;
       }
-      debounce4.debounce = debounce4;
-      module.exports = debounce4;
+      debounce5.debounce = debounce5;
+      module.exports = debounce5;
     }
   });
 
@@ -271,8 +405,8 @@ var APP_accelerator_home_ui = (() => {
     },
     unsubscribe(key, callback) {
       if (callback) {
-        const index = subscribers[key] && subscribers[key].findIndex((cb) => cb === callback);
-        index > -1 && subscribers[key].splice(index, 1);
+        const index2 = subscribers[key] && subscribers[key].findIndex((cb) => cb === callback);
+        index2 > -1 && subscribers[key].splice(index2, 1);
       } else {
         if (key in subscribers) {
           subscribers[key] = [];
@@ -727,8 +861,8 @@ var APP_accelerator_home_ui = (() => {
     }
     _deregisterListeners() {
       Log_default.info("Deregistering event listeners MediaPlayer");
-      events.forEach((event, index) => {
-        this.videoEl.removeEventListener(event, this.eventHandlers[index]);
+      events.forEach((event, index2) => {
+        this.videoEl.removeEventListener(event, this.eventHandlers[index2]);
       });
       this.eventHandlers = [];
     }
@@ -1172,11 +1306,11 @@ var APP_accelerator_home_ui = (() => {
   var isWildcard = /^[!*$]$/;
   var hasLookupId = /\/:\w+?@@([0-9]+?)@@/;
   var isNamedGroup = /^\/:/;
-  var stripRegex = (route2, char = "R") => {
-    if (hasRegex.test(route2)) {
-      route2 = route2.replace(hasRegex, char);
+  var stripRegex = (route3, char = "R") => {
+    if (hasRegex.test(route3)) {
+      route3 = route3.replace(hasRegex, char);
     }
-    return route2;
+    return route3;
   };
 
   // node_modules/@lightningjs/sdk/src/Router/utils/register.js
@@ -1309,14 +1443,14 @@ var APP_accelerator_home_ui = (() => {
   };
 
   // node_modules/@lightningjs/sdk/src/Router/utils/route.js
-  var getFloor = (route2) => {
-    return stripRegex(route2).split("/").length;
+  var getFloor = (route3) => {
+    return stripRegex(route3).split("/").length;
   };
   var getRoutesByFloor = (floor) => {
     const matches = [];
-    for (let [route2] of routes.entries()) {
-      if (getFloor(route2) === floor) {
-        matches.push(route2);
+    for (let [route3] of routes.entries()) {
+      if (getFloor(route3) === floor) {
+        matches.push(route3);
       }
     }
     return matches;
@@ -1327,20 +1461,20 @@ var APP_accelerator_home_ui = (() => {
     const candidates = getRoutesByFloor(getFloor(hash));
     const hashParts = hash.match(getUrlParts) || [];
     let regexStore = [];
-    let matches = candidates.filter((route2) => {
+    let matches = candidates.filter((route3) => {
       let isMatching = true;
-      if (hasRegex.test(route2)) {
-        const regMatches = route2.match(hasRegex);
+      if (hasRegex.test(route3)) {
+        const regMatches = route3.match(hasRegex);
         if (regMatches && regMatches.length) {
-          route2 = regMatches.reduce((fullRoute, regex) => {
+          route3 = regMatches.reduce((fullRoute, regex) => {
             const lookupId = regexStore.length;
             fullRoute = fullRoute.replace(regex, `@@${lookupId}@@`);
             regexStore.push(regex.substring(1, regex.length - 1));
             return fullRoute;
-          }, route2);
+          }, route3);
         }
       }
-      const routeParts = route2.match(getUrlParts) || [];
+      const routeParts = route3.match(getUrlParts) || [];
       for (let i = 0, j = routeParts.length; i < j; i++) {
         const routePart = routeParts[i];
         const hashPart = hashParts[i];
@@ -1386,10 +1520,10 @@ var APP_accelerator_home_ui = (() => {
     const hashParts = hash.match(getUrlParts) || [];
     const routeParts = path.match(getUrlParts) || [];
     const getNamedGroup = /^\/:([\w-]+)\/?/;
-    return routeParts.reduce((storage, value, index) => {
+    return routeParts.reduce((storage, value, index2) => {
       const match = getNamedGroup.exec(value);
       if (match && match.length) {
-        storage.set(match[1], decodeURIComponent(hashParts[index].replace(/^\//, "")));
+        storage.set(match[1], decodeURIComponent(hashParts[index2].replace(/^\//, "")));
       }
       return storage;
     }, new Map());
@@ -1414,22 +1548,22 @@ var APP_accelerator_home_ui = (() => {
     }
     return new Route(config7);
   };
-  var createRequest = (url, args, store3) => {
-    return new Request(url, args, store3);
+  var createRequest = (url, args, store2) => {
+    return new Request(url, args, store2);
   };
   var getHashByName = (obj) => {
     if (!obj.to && !obj.name) {
       return false;
     }
-    const route2 = getRouteByName(obj.to || obj.name);
+    const route3 = getRouteByName(obj.to || obj.name);
     const hasDynamicGroup = /\/:([\w-]+)\/?/;
-    let hash = route2;
-    if (hasDynamicGroup.test(route2)) {
+    let hash = route3;
+    if (hasDynamicGroup.test(route3)) {
       if (obj.params) {
         const keys = Object.keys(obj.params);
         hash = keys.reduce((acc, key) => {
           return acc.replace(`:${key}`, obj.params[key]);
-        }, route2);
+        }, route3);
       }
       if (obj.query) {
         return `${hash}${objectToQueryString(obj.query)}`;
@@ -1438,24 +1572,24 @@ var APP_accelerator_home_ui = (() => {
     return hash;
   };
   var getRouteByName = (name) => {
-    for (let [path, route2] of routes.entries()) {
-      if (route2.name === name) {
+    for (let [path, route3] of routes.entries()) {
+      if (route3.name === name) {
         return path;
       }
     }
     return false;
   };
-  var keepActivePageAlive = (route2, request) => {
-    if (isString(route2)) {
+  var keepActivePageAlive = (route3, request) => {
+    if (isString(route3)) {
       const routes2 = getRoutes();
-      if (routes2.has(route2)) {
-        route2 = routes2.get(route2);
+      if (routes2.has(route3)) {
+        route3 = routes2.get(route3);
       } else {
         return false;
       }
     }
     const register = request.register;
-    const routeOptions = route2.options;
+    const routeOptions = route3.options;
     if (register.has("keepAlive")) {
       return register.get("keepAlive");
     } else if (routeOptions && routeOptions.keepAlive) {
@@ -1547,8 +1681,8 @@ var APP_accelerator_home_ui = (() => {
     const forceNavigateStore = register.get(symbols.store);
     const activeRoute2 = getRouteByHash(hash);
     const preventStorage = getOption(activeRoute2.options, "preventStorage");
-    let store3 = isBoolean(forceNavigateStore) ? forceNavigateStore : !preventStorage;
-    if (store3) {
+    let store2 = isBoolean(forceNavigateStore) ? forceNavigateStore : !preventStorage;
+    if (store2) {
       const toStore = hash.replace(/^\//, "");
       const location2 = locationInHistory(toStore);
       const stateObject = getStateObject(getActivePage(), request);
@@ -1676,7 +1810,7 @@ var APP_accelerator_home_ui = (() => {
   };
   var LocalizedString = class extends String {
     format(...args) {
-      const sub = args.reduce((string, arg, index) => string.split(`{${index}}`).join(arg), this);
+      const sub = args.reduce((string, arg, index2) => string.split(`{${index2}}`).join(arg), this);
       return new LocalizedString(sub);
     }
   };
@@ -1819,15 +1953,15 @@ SDK - v${this.sdkVersion}`;
   var getLanguage2 = () => {
     return language;
   };
-  var setLanguage = (lng) => {
+  var setLanguage = (lng2) => {
     language = null;
     dictionary = null;
     return new Promise((resolve, reject) => {
-      if (lng in translations) {
-        language = lng;
+      if (lng2 in translations) {
+        language = lng2;
       } else {
-        if ("map" in meta && lng in meta.map && meta.map[lng] in translations) {
-          language = meta.map[lng];
+        if ("map" in meta && lng2 in meta.map && meta.map[lng2] in translations) {
+          language = meta.map[lng2];
         } else if ("default" in meta && meta.default in translations) {
           const error = "Translations for Language " + language + " not found. Using default language " + meta.default;
           Log_default.warn(error);
@@ -2035,15 +2169,15 @@ SDK - v${this.sdkVersion}`;
     return new Promise((resolve, reject) => {
       if (typeof file === "object") {
         addColors(file);
-        resolve();
+        return resolve();
       }
       fetch(file).then((response) => response.json()).then((json) => {
         addColors(json);
-        resolve();
+        return resolve();
       }).catch(() => {
         const error = "Colors file " + file + " not found";
         Log_default.error(error);
-        reject(error);
+        return reject(error);
       });
     });
   };
@@ -2051,7 +2185,7 @@ SDK - v${this.sdkVersion}`;
   // node_modules/@lightningjs/sdk/src/Application/index.js
   var packageInfo = {
     name: "@lightningjs/sdk",
-    version: "4.8.1",
+    version: "4.8.3",
     license: "Apache-2.0",
     scripts: {
       postinstall: "node ./scripts/postinstall.js",
@@ -2073,7 +2207,7 @@ SDK - v${this.sdkVersion}`;
       "@michieljs/execute-as-promise": "^1.0.0",
       deepmerge: "^4.2.2",
       localCookie: "github:WebPlatformForEmbedded/localCookie",
-      shelljs: "^0.8.4",
+      shelljs: "^0.8.5",
       "url-polyfill": "^1.1.10",
       "whatwg-fetch": "^3.0.0"
     },
@@ -2128,7 +2262,7 @@ SDK - v${this.sdkVersion}`;
     }
   };
   var customFontFaces = [];
-  var fontLoader = (fonts, store3) => new Promise((resolve, reject) => {
+  var fontLoader = (fonts, store2) => new Promise((resolve, reject) => {
     fonts.map(({
       family,
       url,
@@ -2139,7 +2273,7 @@ SDK - v${this.sdkVersion}`;
         return "url(" + url2 + ")";
       }) : "url(" + url + ")";
       const fontFace = new FontFace(family, src, descriptors || {});
-      store3.push(fontFace);
+      store2.push(fontFace);
       Log_default.info("Loading font", family);
       document.fonts.add(fontFace);
       return fontFace.load();
@@ -2343,10 +2477,10 @@ SDK - v${this.sdkVersion}`;
     config7.routes.forEach((r) => {
       const path = cleanHash(r.path);
       if (!routeExists(path)) {
-        const route2 = createRoute(r);
-        routes.set(path, route2);
-        if (route2.component) {
-          let type = route2.component;
+        const route3 = createRoute(r);
+        routes.set(path, route3);
+        if (route3.component) {
+          let type = route3.component;
           if (isComponentConstructor(type)) {
             if (!routerConfig.get("lazyCreate")) {
               type = createComponent(stage, type);
@@ -2392,14 +2526,14 @@ SDK - v${this.sdkVersion}`;
     }
     initialised = true;
   };
-  var storeComponent = (route2, type) => {
-    if (components.has(route2)) {
-      components.set(route2, type);
+  var storeComponent = (route3, type) => {
+    if (components.has(route3)) {
+      components.set(route3, type);
     }
   };
-  var getComponent = (route2) => {
-    if (components.has(route2)) {
-      return components.get(route2);
+  var getComponent = (route3) => {
+    if (components.has(route3)) {
+      return components.get(route3);
     }
     return null;
   };
@@ -2412,22 +2546,22 @@ SDK - v${this.sdkVersion}`;
   };
   var onRequestResolved = (request) => {
     const hash = request.hash;
-    const route2 = request.route;
+    const route3 = request.route;
     const register = request.register;
     const page = request.page;
-    if (getOption(route2.options, "clearHistory")) {
+    if (getOption(route3.options, "clearHistory")) {
       setHistory([]);
-    } else if (hash && !isWildcard.test(route2.path)) {
+    } else if (hash && !isWildcard.test(route3.path)) {
       updateHistory(request);
     }
-    storeComponent(route2.path, page);
+    storeComponent(route3.path, page);
     if (request.isSharedInstance || !request.isCreated) {
       emit_default(page, "changed");
     } else if (request.isCreated) {
       emit_default(page, "mounted");
     }
     if (widgetsHost) {
-      updateWidgets(route2.widgets, page);
+      updateWidgets(route3.widgets, page);
     }
     if (getActivePage() && !request.isSharedInstance) {
       cleanUp(activePage, request);
@@ -2437,18 +2571,18 @@ SDK - v${this.sdkVersion}`;
     }
     setActivePage(page);
     activeHash = request.hash;
-    activeRoute = route2.path;
+    activeRoute = route3.path;
     for (let request2 of navigateQueue.values()) {
       if (request2.isCancelled && request2.hash) {
         navigateQueue.delete(request2.hash);
       }
     }
     afterEachRoute(request);
-    Log_default.info("[route]:", route2.path);
+    Log_default.info("[route]:", route3.path);
     Log_default.info("[hash]:", hash);
   };
   var cleanUp = (page, request) => {
-    const route2 = activeRoute;
+    const route3 = activeRoute;
     const register = request.register;
     const lazyDestroy = routerConfig.get("lazyDestroy");
     const destroyOnBack = routerConfig.get("destroyOnHistoryBack");
@@ -2465,7 +2599,7 @@ SDK - v${this.sdkVersion}`;
       doCleanup = true;
     }
     if (doCleanup) {
-      storeComponent(route2, page._routedType || page.constructor);
+      storeComponent(route3, page._routedType || page.constructor);
       pagesHost.remove(page);
       if (routerConfig.get("gcOnUnload")) {
         stage.gc();
@@ -2642,24 +2776,27 @@ SDK - v${this.sdkVersion}`;
     }
   };
   var execProvider = (request, emitProvided) => {
-    const route2 = request.route;
-    const provider = route2.provider;
-    const expires = route2.cache ? route2.cache * 1e3 : 0;
+    const route3 = request.route;
+    const provider = route3.provider;
+    const expires = route3.cache ? route3.cache * 1e3 : 0;
     const params = addPersistData(request);
     return provider.request(request.page, __spreadValues({}, params)).then(() => {
       request.page[symbols.expires] = Date.now() + expires;
       if (emitProvided) {
         emit_default(request.page, "dataProvided");
       }
+    }).catch((e) => {
+      request.page[symbols.expires] = Date.now();
+      throw e;
     });
   };
   var addPersistData = ({
     page,
-    route: route2,
+    route: route3,
     hash,
     register = new Map()
   }) => {
-    const urlValues = getValuesFromHash(hash, route2.path);
+    const urlValues = getValuesFromHash(hash, route3.path);
     const queryParams = getQueryStringParams(hash);
     const pageData = new Map([...urlValues, ...register]);
     const params = {};
@@ -2695,11 +2832,11 @@ SDK - v${this.sdkVersion}`;
     }
     return false;
   };
-  var getProvider = (route2) => {
-    if (routeExists(route2.path)) {
+  var getProvider = (route3) => {
+    if (routeExists(route3.path)) {
       const {
         provider
-      } = routes.get(route2.path);
+      } = routes.get(route3.path);
       return {
         type: provider.type,
         provider: provider.request
@@ -2888,11 +3025,11 @@ SDK - v${this.sdkVersion}`;
         console.error(request2);
       } else if (!expired) {
         const {
-          route: route2
+          route: route3
         } = request2;
-        if (getOption(route2.options, "clearHistory")) {
+        if (getOption(route3.options, "clearHistory")) {
           setHistory([]);
-        } else if (!isWildcard.test(route2.path)) {
+        } else if (!isWildcard.test(route3.path)) {
           updateHistory(request2);
         }
         if (request2.isCreated && !request2.isSharedInstance) {
@@ -2903,27 +3040,27 @@ SDK - v${this.sdkVersion}`;
     }
   });
   var loader = (request) => __async(void 0, null, function* () {
-    const route2 = request.route;
+    const route3 = request.route;
     const hash = request.hash;
     const register = request.register;
-    let type = getComponent(route2.path);
+    let type = getComponent(route3.path);
     let isConstruct = isComponentConstructor(type);
     let provide = false;
     if (!isConstruct && !register.get(symbols.backtrack)) {
-      if (!mustReuse(route2)) {
+      if (!mustReuse(route3)) {
         type = type.constructor;
         isConstruct = true;
       }
     }
     if (!isConstruct) {
       request.page = type;
-      if (hasProvider(route2.path)) {
+      if (hasProvider(route3.path)) {
         if (isPageExpired(type) || type[symbols.hash] !== hash) {
           provide = true;
         }
       }
       let currentRoute = getActivePage() && getActivePage()[symbols.route];
-      if (route2.path === currentRoute) {
+      if (route3.path === currentRoute) {
         request.isSharedInstance = true;
         if (isFunction(request.page.historyState)) {
           request.copiedHistoryState = request.page.historyState();
@@ -2932,19 +3069,19 @@ SDK - v${this.sdkVersion}`;
     } else {
       request.page = createComponent(stage, type);
       pagesHost.a(request.page);
-      if (hasProvider(route2.path)) {
+      if (hasProvider(route3.path)) {
         provide = true;
       }
       request.isCreated = true;
     }
     request.page[symbols.hash] = hash;
-    request.page[symbols.route] = route2.path;
+    request.page[symbols.route] = route3.path;
     try {
       if (provide) {
         const {
           type: loadType,
           provider
-        } = getProvider(route2);
+        } = getProvider(route3);
         request.provider = provider;
         request.providerType = loadType;
         yield dataHooks[loadType](request);
@@ -2977,8 +3114,8 @@ SDK - v${this.sdkVersion}`;
       }, false);
     }
   };
-  var mustReuse = (route2) => {
-    const opt = getOption(route2.options, "reuseInstance");
+  var mustReuse = (route3) => {
+    const opt = getOption(route3.options, "reuseInstance");
     const config7 = routerConfig.get("reuseInstance");
     if (isBoolean(opt)) {
       return opt;
@@ -3128,7 +3265,7 @@ SDK - v${this.sdkVersion}`;
       console.error(e);
     }
   };
-  var navigate = (url, args = {}, store3) => {
+  var navigate = (url, args = {}, store2) => {
     if (isObject(url)) {
       url = getHashByName(url);
       if (!url) {
@@ -3140,7 +3277,7 @@ SDK - v${this.sdkVersion}`;
       hash = forcedHash;
     }
     if (hash.replace(/^#/, "") !== url) {
-      queue(url, args, store3);
+      queue(url, args, store2);
       setHash(url);
       if (!mustUpdateLocationHash()) {
         forcedHash = url;
@@ -3151,7 +3288,7 @@ SDK - v${this.sdkVersion}`;
         });
       }
     } else if (args.reload) {
-      queue(url, args, store3);
+      queue(url, args, store2);
       handleHashChange(url).then(() => {
         app._refocus();
       }).catch((e) => {
@@ -3159,13 +3296,13 @@ SDK - v${this.sdkVersion}`;
       });
     }
   };
-  var queue = (hash, args = {}, store3) => {
+  var queue = (hash, args = {}, store2) => {
     hash = cleanHash(hash);
     if (!navigateQueue.has(hash)) {
       for (let request2 of navigateQueue.values()) {
         request2.cancel();
       }
-      const request = createRequest(hash, args, store3);
+      const request = createRequest(hash, args, store2);
       navigateQueue.set(decodeURIComponent(hash), request);
       return request;
     }
@@ -3178,8 +3315,8 @@ SDK - v${this.sdkVersion}`;
     if (!request && !navigateQueue.size) {
       request = queue(hash);
     }
-    const route2 = getRouteByHash(hash);
-    if (!route2) {
+    const route3 = getRouteByHash(hash);
+    if (!route3) {
       if (routeExists("*")) {
         navigate("*", {
           failedHash: hash
@@ -3190,10 +3327,10 @@ SDK - v${this.sdkVersion}`;
       return;
     }
     request.hash = hash;
-    request.route = route2;
+    request.route = route3;
     let result = yield beforeEachRoute(getActiveHash(), request);
-    if (route2.beforeNavigate) {
-      result = yield route2.beforeNavigate(getActiveHash(), request);
+    if (result && route3.beforeNavigate) {
+      result = yield route3.beforeNavigate(getActiveHash(), request);
     }
     if (isBoolean(result)) {
       if (result) {
@@ -3205,34 +3342,34 @@ SDK - v${this.sdkVersion}`;
       if (isString(result)) {
         navigate(result);
       } else if (isObject(result)) {
-        let store3 = true;
+        let store2 = true;
         if (isBoolean(result.store)) {
-          store3 = result.store;
+          store2 = result.store;
         }
-        navigate(result.path, result.params, store3);
+        navigate(result.path, result.params, store2);
       }
     }
   });
   var resolveHashChange = (request) => {
     const hash = request.hash;
-    const route2 = request.route;
+    const route3 = request.route;
     const queueId = decodeURIComponent(hash);
     setLastHash(hash);
-    if (route2.path) {
-      const component = getComponent(route2.path);
-      if (isFunction(route2.hook)) {
-        const urlParams = getValuesFromHash(hash, route2.path);
+    if (route3.path) {
+      const component = getComponent(route3.path);
+      if (isFunction(route3.hook)) {
+        const urlParams = getValuesFromHash(hash, route3.path);
         const params = {};
         for (const key of urlParams.keys()) {
           params[key] = urlParams.get(key);
         }
-        route2.hook(app, __spreadValues({}, params));
+        route3.hook(app, __spreadValues({}, params));
       }
       if (component) {
         const activePage2 = getActivePage();
         if (activePage2) {
           const keepAlive = keepActivePageAlive(getActiveRoute(), request);
-          if (activePage2 && route2.path === getActiveRoute() && !keepAlive) {
+          if (activePage2 && route3.path === getActiveRoute() && !keepAlive) {
             activePage2._setState("");
           }
         }
@@ -3245,7 +3382,7 @@ SDK - v${this.sdkVersion}`;
           component().then((contents) => {
             return contents.default;
           }).then((module) => {
-            storeComponent(route2.path, module);
+            storeComponent(route3.path, module);
             return load(request);
           }).then(() => {
             app._refocus();
@@ -3267,13 +3404,13 @@ SDK - v${this.sdkVersion}`;
       if (isFunction(app._handleAppClose)) {
         return app._handleAppClose();
       }
-      return false;
+      return app.application.closeApp();
     } else if (history2.length) {
-      const route2 = history2.splice(history2.length - level, level)[0];
+      const route3 = history2.splice(history2.length - level, level)[0];
       setHistory(history2);
-      return navigate(route2.hash, {
+      return navigate(route3.hash, {
         [symbols.backtrack]: true,
-        [symbols.historyState]: route2.state
+        [symbols.historyState]: route3.state
       }, false);
     } else if (routerConfig.get("backtrack")) {
       const hashLastPart = /(\/:?[\w%\s-]+)$/;
@@ -5038,6 +5175,18 @@ SDK - v${this.sdkVersion}`;
         poll();
       });
     }
+    fetchApiKey() {
+      return new Promise((resolve) => {
+        thunder.call("org.rdk.PersistentStore", "getValue", {
+          namespace: "gracenote",
+          key: "apiKey"
+        }).then((result) => {
+          resolve(result.value);
+        }).catch((err) => {
+          resolve("");
+        });
+      });
+    }
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.System";
@@ -5230,31 +5379,35 @@ SDK - v${this.sdkVersion}`;
       });
     }
     launchWeb(url) {
-      const childCallsign = "HtmlApp";
-      if (webUrl != url) {
-        thunder.call("org.rdk.RDKShell", "launch", {
-          callsign: childCallsign,
-          type: childCallsign,
-          uri: url
-        }).then(() => {
+      return new Promise((resolve) => {
+        const childCallsign = "HtmlApp";
+        if (webUrl != url) {
+          thunder.call("org.rdk.RDKShell", "launch", {
+            callsign: childCallsign,
+            type: childCallsign,
+            uri: url
+          }).then(() => {
+            thunder.call("org.rdk.RDKShell", "moveToFront", {
+              client: childCallsign
+            });
+            thunder.call("org.rdk.RDKShell", "setFocus", {
+              client: childCallsign
+            }).then(() => {
+              resolve(true);
+            });
+          }).catch((err) => {
+          });
+        } else {
           thunder.call("org.rdk.RDKShell", "moveToFront", {
             client: childCallsign
           });
           thunder.call("org.rdk.RDKShell", "setFocus", {
             client: childCallsign
           });
-        }).catch((err) => {
-        });
-      } else {
-        thunder.call("org.rdk.RDKShell", "moveToFront", {
-          client: childCallsign
-        });
-        thunder.call("org.rdk.RDKShell", "setFocus", {
-          client: childCallsign
-        });
-      }
-      webUrl = url;
-      activatedWeb = true;
+        }
+        webUrl = url;
+        activatedWeb = true;
+      });
     }
     launchLightning(url) {
       const childCallsign = "LightningApp";
@@ -5330,6 +5483,20 @@ SDK - v${this.sdkVersion}`;
         });
       }).catch((err) => {
         console.log("org.rdk.RDKShell launch " + JSON.stringify(err));
+      });
+    }
+    launchOverlay(url, client) {
+      return new Promise((resolve) => {
+        const childCallsign = client;
+        thunder.call("org.rdk.RDKShell", "launch", {
+          callsign: childCallsign,
+          type: "ResidentApp",
+          uri: url
+        }).then((res) => {
+          thunder.call("org.rdk.RDKShell", "moveToFront", {
+            client: childCallsign
+          });
+        });
       });
     }
     launchforeground() {
@@ -5436,6 +5603,14 @@ SDK - v${this.sdkVersion}`;
         }).catch((err) => {
           console.log("Set focus error", JSON.stringify(err));
           reject(false);
+        });
+      });
+    }
+    visibile(client, visible) {
+      return new Promise((resolve, reject) => {
+        thunder.call("org.rdk.RDKShell", "setVisibility", {
+          client,
+          visible
         });
       });
     }
@@ -6193,10 +6368,6 @@ SDK - v${this.sdkVersion}`;
     url: "/images/splash/TataElxsi.png",
     uri: "http://35.155.171.121:8088/index.html"
   }, {
-    title: "EPAM",
-    url: "/images/splash/Epam.png",
-    uri: "https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html"
-  }, {
     title: "NEW",
     url: "/images/splash/NewUi.png",
     uri: "https://px-apps.sys.comcast.net/lightning_apps/diagnostics/dist/index.html"
@@ -6258,10 +6429,10 @@ SDK - v${this.sdkVersion}`;
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   }, {
-    displayName: "Bluetooth Audio",
+    displayName: "FRacer",
     applicationType: "Lightning",
-    uri: "https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html",
-    url: "/images/metroApps/Bluetooth_app.jpg"
+    uri: "https://lightningjs.io/fracer/#main",
+    url: "/images/metroApps/fracer-steerling.png"
   }];
 
   // static/data/MetroAppsInfoOffline.js
@@ -6316,13 +6487,27 @@ SDK - v${this.sdkVersion}`;
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "/images/metroApps/Test-10.jpg"
   }, {
-    displayName: "Bluetooth Audio",
+    displayName: "FRacer",
     applicationType: "Lightning",
-    uri: "https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html",
-    url: "/images/metroApps/Bluetooth_app.jpg"
+    uri: "https://lightningjs.io/fracer/#main",
+    url: "/images/metroApps/fracer-steerling.png"
+  }];
+
+  // static/data/LightningShowcase.js
+  var showCaseApps = [{
+    displayName: "Strike Benchmark",
+    applicationType: "Lightning",
+    uri: "https://strike.lightningjs.io/es6/#home",
+    url: "/images/lightningApps/strike_app.png"
+  }, {
+    displayName: "TMBD App",
+    applicationType: "Lightning",
+    uri: "https://lightningjs.io/tmdb/#splash",
+    url: "/images/lightningApps/tmbd.png"
   }];
 
   // src/api/HomeApi.js
+  var import_xml2json = __toModule(require_lib());
   var partnerApps = [];
   var IpAddress1 = "";
   var IpAddress2 = "";
@@ -6352,6 +6537,12 @@ SDK - v${this.sdkVersion}`;
     }
     getSettingsInfo() {
       return settingsInfo;
+    }
+    getShowCaseApps() {
+      return showCaseApps;
+    }
+    getAllApps() {
+      return [...this.getAppListInfo(), ...this.getMetroInfo(), ...this.getShowCaseApps()];
     }
     getSidePanelInfo() {
       return sidePanelInfo;
@@ -6385,6 +6576,53 @@ SDK - v${this.sdkVersion}`;
     }
     getLeftArrowInfo() {
       return leftArrowInfo;
+    }
+    getMovieSubscriptions(id) {
+      return new Promise((resolve, reject) => {
+        appApi.fetchApiKey().then((res) => {
+          try {
+            fetch("http://feeds.tmsapi.com/v2/movies/" + id + ".xml?api_key=" + res).then((response) => response.text()).then((res2) => {
+              resolve((0, import_xml2json.default)(res2));
+            });
+          } catch (err) {
+            console.log("API key not defined");
+          }
+        });
+      });
+    }
+    getAPIKey() {
+      return new Promise((resolve, reject) => {
+        appApi.fetchApiKey().then((res) => {
+          let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
+          month += 1;
+          day = day.toString();
+          month = month.toString();
+          try {
+            fetch("http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=" + year + "-" + month + "-" + day + "T08%3A00Z&includeAdult=false&imageSize=Lg&imageAspectTV=16x9&imageText=true&api_key=" + res).then((response) => response.json()).then((response) => {
+              const ids = response.map((id) => id.program.rootId);
+              const filtered = response.filter(({
+                program
+              }, index2) => !ids.includes(program.rootId, index2 + 1));
+              resolve({
+                key: res,
+                data: filtered.slice(0, 20)
+              });
+            }).catch((err) => {
+              console.log("Incorrect API key or no data available");
+              resolve({
+                key: res,
+                data: []
+              });
+            });
+          } catch (err) {
+            console.log("API key not defined");
+            resolve({
+              key: res,
+              data: []
+            });
+          }
+        });
+      });
     }
   };
 
@@ -6520,7 +6758,43 @@ SDK - v${this.sdkVersion}`;
     }
   };
 
+  // src/api/VoiceApi.js
+  var thunder2 = thunderJS_default({
+    host: "127.0.0.1",
+    port: 9998,
+    default: 1
+  });
+  var VoiceApi = class {
+    activate() {
+      const callsign2 = "AVS";
+      return new Promise((resolve, reject) => {
+        thunder2.call("Controller", "activate", {
+          callsign: callsign2
+        }).then((res) => {
+          resolve(true);
+        }).catch((err) => {
+          console.log("Error occured activating Voice Api", err);
+          reject(true);
+        });
+      });
+    }
+    deactivate() {
+      const callsign2 = "AVS";
+      return new Promise((resolve, reject) => {
+        thunder2.call("Controller", "deactivate", {
+          callsign: callsign2
+        }).then((res) => {
+          resolve(true);
+        }).catch((err) => {
+          console.log("Failed to deactivate AVS");
+          reject(true);
+        });
+      });
+    }
+  };
+
   // src/screens/SettingsScreen.js
+  var voiceApi = new VoiceApi();
   var SettingsScreen = class extends Lightning_default.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language_default.translate("Settings"));
@@ -6655,11 +6929,36 @@ SDK - v${this.sdkVersion}`;
               mountY: 0.5,
               src: Utils_default.asset("images/settings/Arrow.png")
             }
+          },
+          UIVoice: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("UI Voice"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/ToggleOffWhite.png")
+            }
           }
         }
       };
     }
     _init() {
+      this.avs = false;
       this._setState("NetworkConfiguration");
     }
     _focus() {
@@ -6667,6 +6966,23 @@ SDK - v${this.sdkVersion}`;
     }
     _handleBack() {
       Router_default.navigate("menu");
+    }
+    toggleAVSPlugin() {
+      if (this.avs) {
+        voiceApi.deactivate().then(() => {
+          this.avs = false;
+          this.tag("UIVoice.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+        }).catch(() => {
+          console.log("failed");
+        });
+      } else {
+        voiceApi.activate().then(() => {
+          this.avs = true;
+          this.tag("UIVoice.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
+        }).catch(() => {
+          console.log("failed");
+        });
+      }
     }
     static _states() {
       return [class NetworkConfiguration extends this {
@@ -6742,8 +7058,24 @@ SDK - v${this.sdkVersion}`;
         _handleUp() {
           this._setState("Audio");
         }
+        _handleDown() {
+          this._setState("UIVoice");
+        }
         _handleEnter() {
           Router_default.navigate("settings/other");
+        }
+      }, class UIVoice extends this {
+        $enter() {
+          this.tag("UIVoice")._focus();
+        }
+        $exit() {
+          this.tag("UIVoice")._unfocus();
+        }
+        _handleUp() {
+          this._setState("OtherSettings");
+        }
+        _handleEnter() {
+          this.toggleAVSPlugin();
         }
       }];
     }
@@ -6767,10 +7099,10 @@ SDK - v${this.sdkVersion}`;
       this.tag("Shadow").patch({
         color: CONFIG.theme.hex,
         rect: true,
-        h: this.h + 24,
+        h: this.h + this.bar * 2,
         w: this.w,
         x: this.x,
-        y: this.y - 12
+        y: this.y - this.bar
       });
       if (this.data.url.startsWith("/images")) {
         this.tag("Image").patch({
@@ -6806,7 +7138,7 @@ SDK - v${this.sdkVersion}`;
               fontFace: CONFIG.language.font,
               text: this.data.displayName,
               fontSize: 35,
-              maxLines: 2,
+              maxLines: 1,
               wordWrapWidth: this.w
             }
           }
@@ -6880,12 +7212,12 @@ SDK - v${this.sdkVersion}`;
       UsbAccess: 2
     }
   };
-  var thunder2 = thunderJS_default(config2);
+  var thunder3 = thunderJS_default(config2);
   var UsbApi = class {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder2.Controller.activate({
+        thunder3.Controller.activate({
           callsign: systemcCallsign
         }).then((res) => {
           resolve(res);
@@ -6898,7 +7230,7 @@ SDK - v${this.sdkVersion}`;
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder2.Controller.deactivate({
+        thunder3.Controller.deactivate({
           callsign: systemcCallsign
         }).then((res) => {
           resolve(res);
@@ -6911,7 +7243,7 @@ SDK - v${this.sdkVersion}`;
     clearLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder2.call(systemcCallsign, "clearLink").then((result) => {
+        thunder3.call(systemcCallsign, "clearLink").then((result) => {
           resolve(result);
         }).catch((err) => {
           resolve(false);
@@ -6921,7 +7253,7 @@ SDK - v${this.sdkVersion}`;
     createLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder2.call(systemcCallsign, "createLink").then((result) => {
+        thunder3.call(systemcCallsign, "createLink").then((result) => {
           resolve(result);
         }).catch((err) => {
           resolve(false);
@@ -6932,7 +7264,7 @@ SDK - v${this.sdkVersion}`;
       if (arguments.length === 0) {
         return new Promise((resolve, reject) => {
           const systemcCallsign = "org.rdk.UsbAccess";
-          thunder2.call(systemcCallsign, "getFileList").then((result) => {
+          thunder3.call(systemcCallsign, "getFileList").then((result) => {
             resolve(result.contents);
           }).catch((err) => {
             resolve(false);
@@ -6941,7 +7273,7 @@ SDK - v${this.sdkVersion}`;
       } else {
         return new Promise((resolve, reject) => {
           const systemcCallsign = "org.rdk.UsbAccess";
-          thunder2.call(systemcCallsign, "getFileList", {
+          thunder3.call(systemcCallsign, "getFileList", {
             "path": arguments[0]
           }).then((result) => {
             resolve(result.contents);
@@ -6993,7 +7325,7 @@ SDK - v${this.sdkVersion}`;
     getMountedDevices() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder2.call(systemcCallsign, "getMounted").then((result) => {
+        thunder3.call(systemcCallsign, "getMounted").then((result) => {
           resolve(result);
         }).catch((err) => {
           reject(err);
@@ -7175,6 +7507,2060 @@ SDK - v${this.sdkVersion}`;
     }
   };
 
+  // src/items/GracenoteItem.js
+  var GracenoteItem = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Item: {
+          Shadow: {
+            alpha: 0
+          },
+          y: 20,
+          Image: {},
+          Info: {}
+        }
+      };
+    }
+    _init() {
+      let imgUrl = this.data.program.preferredImage.uri.replace("w=1280&", "w=480&").replace("&h=720", "&h=270");
+      this.tag("Shadow").patch({
+        color: CONFIG.theme.hex,
+        rect: true,
+        h: this.h + this.bar * 2,
+        w: this.w,
+        x: this.x,
+        y: this.y - this.bar
+      });
+      this.tag("Image").patch({
+        rtt: true,
+        x: this.x,
+        y: this.y,
+        w: this.w,
+        h: this.h,
+        src: Utils_default.proxyUrl("http://developer.tmsimg.com/" + imgUrl + "&api_key=" + this.key),
+        scale: this.unfocus
+      });
+      this.tag("Info").patch({
+        x: this.x - 20,
+        y: this.y + this.h + 20,
+        w: this.w,
+        h: 140,
+        alpha: 0,
+        PlayIcon: {
+          Label: {
+            x: this.idx === 0 ? this.x + 20 : this.x,
+            y: this.y + 10,
+            text: {
+              fontFace: CONFIG.language.font,
+              text: this.data.program.title,
+              fontSize: 35,
+              maxLines: 1,
+              wordWrapWidth: this.w
+            }
+          }
+        }
+      });
+    }
+    _focus() {
+      this.tag("Image").patch({
+        x: this.x,
+        y: this.y,
+        w: this.w,
+        h: this.h,
+        zIndex: 1,
+        scale: this.focus
+      });
+      this.tag("Info").alpha = 1;
+      this.tag("Item").patch({
+        zIndex: 2
+      });
+      this.tag("Shadow").patch({
+        smooth: {
+          scale: [this.focus, {
+            timingFunction: "ease",
+            duration: 0.7
+          }],
+          alpha: 1
+        }
+      });
+    }
+    _unfocus() {
+      this.tag("Image").patch({
+        w: this.w,
+        h: this.h,
+        scale: this.unfocus
+      });
+      this.tag("Item").patch({
+        zIndex: 0
+      });
+      this.tag("Info").alpha = 0;
+      this.tag("Shadow").patch({
+        smooth: {
+          alpha: 0,
+          scale: [this.unfocus, {
+            timingFunction: "ease",
+            duration: 0.7
+          }]
+        }
+      });
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/helpers/CollectionWrapper.js
+  var CollectionWrapper = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        Wrapper: {}
+      };
+    }
+    _construct() {
+      this._direction = CollectionWrapper.DIRECTION.row;
+      this._scrollTransitionSettings = this.stage.transitions.createSettings({});
+      this._spacing = 0;
+      this._autoResize = false;
+      this._requestingItems = false;
+      this._requestThreshold = 1;
+      this._requestsEnabled = false;
+      this._gcThreshold = 5;
+      this._gcIncrement = 0;
+      this._forceLoad = false;
+      this.clear();
+    }
+    _setup() {
+      this._updateScrollTransition();
+    }
+    _updateScrollTransition() {
+      const axis = this._direction === 1 ? "y" : "x";
+      this.wrapper.transition(axis, this._scrollTransitionSettings);
+      this._scrollTransition = this.wrapper.transition(axis);
+    }
+    _indexChanged(obj) {
+      let {
+        previousIndex: previous,
+        index: target,
+        dataLength: max,
+        mainIndex,
+        previousMainIndex,
+        lines
+      } = obj;
+      if (!isNaN(previousMainIndex) && !isNaN(mainIndex) && !isNaN(lines)) {
+        previous = previousMainIndex;
+        target = mainIndex;
+        max = lines;
+      }
+      if (this._requestsEnabled && !this._requestingItems) {
+        if (previous < target && target + this._requestThreshold >= max) {
+          this._requestingItems = true;
+          this.signal("onRequestItems", obj).then((response) => {
+            const type = typeof response;
+            if (Array.isArray(response) || type === "object" || type === "string" || type === "number") {
+              this.add(response);
+            }
+            if (response === false) {
+              this.enableRequests = false;
+            }
+            this._requestingItems = false;
+          });
+        }
+      }
+      this._refocus();
+      this.scrollCollectionWrapper(obj);
+      this.signal("onIndexChanged", obj);
+    }
+    setIndex(index2) {
+      const targetIndex = limitWithinRange(index2, 0, this._items.length - 1);
+      const previousIndex = this._index;
+      this._index = targetIndex;
+      this._indexChanged({
+        previousIndex,
+        index: targetIndex,
+        dataLength: this._items.length
+      });
+      return previousIndex !== targetIndex;
+    }
+    clear() {
+      this._uids = [];
+      this._items = [];
+      this._index = 0;
+      if (this.wrapper) {
+        const hadChildren = this.wrapper.children > 0;
+        this.wrapper.patch({
+          x: 0,
+          y: 0,
+          children: []
+        });
+        if (hadChildren) {
+          this._collectGarbage(true);
+        }
+      }
+    }
+    add(item) {
+      this.addAt(item);
+    }
+    addAt(item, index2 = this._items.length) {
+      if (index2 >= 0 && index2 <= this._items.length) {
+        if (!Array.isArray(item)) {
+          item = [item];
+        }
+        const items = this._normalizeDataItems(item);
+        this._items.splice(index2, 0, ...items);
+        this.plotItems();
+        this.setIndex(this._index);
+      } else {
+        throw new Error("addAt: The index " + index2 + " is out of bounds " + this._items.length);
+      }
+    }
+    remove(item) {
+      if (this.hasItems && item.assignedID) {
+        for (let i = 0; i < this.wrapper.children.length; i++) {
+          if (this.wrapper.children[i].assignedID === item.assignedID) {
+            return this.removeAt(i);
+          }
+        }
+      } else {
+        throw new Error("remove: item not found");
+      }
+    }
+    removeAt(index2, amount = 1) {
+      if (index2 < 0 && index2 >= this._items.length) {
+        throw new Error("removeAt: The index " + index2 + " is out of bounds " + this._items.length);
+      }
+      const item = this._items[index2];
+      this._items.splice(index2, amount);
+      this.plotItems();
+      return item;
+    }
+    reload(item) {
+      this.clear();
+      this.add(item);
+    }
+    plotItems(items, options) {
+    }
+    reposition(time = 70) {
+      if (this._repositionDebounce) {
+        clearTimeout(this._repositionDebounce);
+      }
+      this._repositionDebounce = setTimeout(() => {
+        this.repositionItems();
+      }, time);
+    }
+    repositionItems() {
+      this.signal("onItemsRepositioned");
+    }
+    up() {
+      return this._attemptNavigation(-1, 1);
+    }
+    down() {
+      return this._attemptNavigation(1, 1);
+    }
+    left() {
+      return this._attemptNavigation(-1, 0);
+    }
+    right() {
+      return this._attemptNavigation(1, 0);
+    }
+    first() {
+      return this.setIndex(0);
+    }
+    last() {
+      return this.setIndex(this._items.length - 1);
+    }
+    next() {
+      return this.setIndex(this._index + 1);
+    }
+    previous() {
+      return this.setIndex(this._index - 1);
+    }
+    _attemptNavigation(shift, direction) {
+      if (this.hasItems) {
+        return this.navigate(shift, direction);
+      }
+      return false;
+    }
+    navigate(shift, direction = this._direction) {
+      if (direction !== this._direction) {
+        return false;
+      }
+      return this.setIndex(this._index + shift);
+    }
+    scrollCollectionWrapper(obj) {
+      let {
+        previousIndex: previous,
+        index: target,
+        dataLength: max,
+        mainIndex,
+        previousMainIndex,
+        lines
+      } = obj;
+      if (!isNaN(previousMainIndex) && !isNaN(mainIndex) && !isNaN(lines)) {
+        previous = previousMainIndex;
+        target = mainIndex;
+        max = lines;
+      }
+      const {
+        directionIsRow,
+        main,
+        mainDim,
+        mainMarginFrom,
+        mainMarginTo
+      } = this._getPlotProperties(this._direction);
+      const cw = this.currentItemWrapper;
+      let bound = this[mainDim];
+      if (bound === 0) {
+        bound = directionIsRow ? 1920 : 1080;
+      }
+      const offset = Math.min(this.wrapper[main], this._scrollTransition && this._scrollTransition.targetValue || 0);
+      const sizes = this._getItemSizes(cw);
+      const marginFrom = sizes[mainMarginFrom] || sizes.margin || 0;
+      const marginTo = sizes[mainMarginTo] || sizes.margin || 0;
+      let scroll = this._scroll;
+      if (!isNaN(scroll)) {
+        if (scroll >= 0 && scroll <= 1) {
+          scroll = bound * scroll - (cw[main] + cw[mainDim] * scroll);
+        } else {
+          scroll = scroll - cw[main];
+        }
+      } else if (typeof scroll === "function") {
+        scroll = scroll.apply(this, [cw, obj]);
+      } else if (typeof scroll === "object") {
+        const {
+          jump = false,
+          after = false,
+          backward = 0,
+          forward = 1
+        } = scroll;
+        if (jump) {
+          let mod = target % jump;
+          if (mod === 0) {
+            scroll = marginFrom - cw[main];
+          }
+          if (mod === jump - 1) {
+            const actualSize = marginFrom + cw[mainDim] + marginTo;
+            scroll = mod * actualSize + marginFrom - cw[main];
+          }
+        } else if (after) {
+          scroll = 0;
+          if (target >= after - 1) {
+            const actualSize = marginFrom + cw[mainDim] + marginTo;
+            scroll = (after - 1) * actualSize + marginFrom - cw[main];
+          }
+        } else {
+          const backwardBound = bound * this._normalizePixelToPercentage(backward, bound);
+          const forwardBound = bound * this._normalizePixelToPercentage(forward, bound);
+          if (target < max - 1 && previous < target && offset + cw[main] + cw[mainDim] > forwardBound) {
+            scroll = forwardBound - (cw[main] + cw[mainDim]);
+          } else if (target > 0 && target < previous && offset + cw[main] < backwardBound) {
+            scroll = backwardBound - cw[main];
+          } else if (target === max - 1) {
+            scroll = bound - (cw[main] + cw[mainDim]);
+          } else if (target === 0) {
+            scroll = marginFrom - cw[main];
+          }
+        }
+      } else if (isNaN(scroll)) {
+        if (previous < target && offset + cw[main] + cw[mainDim] > bound) {
+          scroll = bound - (cw[main] + cw[mainDim]);
+        } else if (target < previous && offset + cw[main] < 0) {
+          scroll = marginFrom - cw[main];
+        }
+      }
+      if (this.active && !isNaN(scroll) && this._scrollTransition) {
+        if (this._scrollTransition.isRunning()) {
+          this._scrollTransition.reset(scroll, 0.05);
+        } else {
+          this._scrollTransition.start(scroll);
+        }
+      } else if (!isNaN(scroll)) {
+        this.wrapper[main] = scroll;
+      }
+    }
+    $childInactive({
+      child
+    }) {
+      if (typeof child === "object") {
+        const index2 = child.componentIndex;
+        for (let key in this._items[index2]) {
+          if (child.component[key] !== void 0) {
+            this._items[index2][key] = child.component[key];
+          }
+        }
+      }
+      this._collectGarbage();
+    }
+    $getChildComponent({
+      index: index2
+    }) {
+      return this._items[index2];
+    }
+    _resizeWrapper(crossSize) {
+      let obj = crossSize;
+      if (!isNaN(crossSize)) {
+        const {
+          main,
+          mainDim,
+          crossDim
+        } = this._getPlotProperties(this._direction);
+        const lastItem = this.wrapper.childList.last;
+        obj = {
+          [mainDim]: lastItem[main] + lastItem[mainDim],
+          [crossDim]: crossSize
+        };
+      }
+      this.wrapper.patch(obj);
+      if (this._autoResize) {
+        this.patch(obj);
+      }
+    }
+    _generateUniqueID() {
+      let id = "";
+      while (this._uids[id] || id === "") {
+        id = Math.random().toString(36).substr(2, 9);
+      }
+      this._uids[id] = true;
+      return id;
+    }
+    _getPlotProperties(direction) {
+      const directionIsRow = direction === 0;
+      return {
+        directionIsRow: directionIsRow ? true : false,
+        mainDirection: directionIsRow ? "rows" : "columns",
+        main: directionIsRow ? "x" : "y",
+        mainDim: directionIsRow ? "w" : "h",
+        mainMarginTo: directionIsRow ? "marginRight" : "marginBottom",
+        mainMarginFrom: directionIsRow ? "marginLeft" : "marginUp",
+        crossDirection: !directionIsRow ? "columns" : "rows",
+        cross: directionIsRow ? "y" : "x",
+        crossDim: directionIsRow ? "h" : "w",
+        crossMarginTo: directionIsRow ? "marginBottom" : "marginRight",
+        crossMarginFrom: directionIsRow ? "marginUp" : "marginLeft"
+      };
+    }
+    _getItemSizes(item) {
+      const itemType = item.type;
+      if (item.component && item.component.__attached) {
+        item = item.component;
+      }
+      return {
+        w: item.w || itemType && itemType["width"],
+        h: item.h || itemType && itemType["height"],
+        margin: item.margin || itemType && itemType["margin"] || 0,
+        marginLeft: item.marginLeft || itemType && itemType["marginLeft"],
+        marginRight: item.marginRight || itemType && itemType["marginRight"],
+        marginTop: item.marginTop || itemType && itemType["marginTop"],
+        marginBottom: item.marginBottom || itemType && itemType["marginBottom"]
+      };
+    }
+    _collectGarbage(immediate) {
+      this._gcIncrement++;
+      if (immediate || this.active && this._gcThreshold !== 0 && this._gcIncrement >= this._gcThreshold) {
+        this._gcIncrement = 0;
+        this.stage.gc();
+      }
+    }
+    _normalizeDataItems(array) {
+      return array.map((item, index2) => {
+        return this._normalizeDataItem(item) || index2;
+      }).filter((item) => {
+        if (!isNaN(item)) {
+          console.warn(`Item at index: ${item}, is not a valid item. Removing it from dataset`);
+          return false;
+        }
+        return true;
+      });
+    }
+    _normalizeDataItem(item, index2) {
+      if (typeof item === "string" || typeof item === "number") {
+        item = {
+          label: item.toString()
+        };
+      }
+      if (typeof item === "object") {
+        let id = this._generateUniqueID();
+        return __spreadValues({
+          assignedID: id,
+          type: this.itemType,
+          collectionWrapper: this,
+          isAlive: false
+        }, item);
+      }
+      return index2;
+    }
+    _normalizePixelToPercentage(value, max) {
+      if (value && value > 1) {
+        return value / max;
+      }
+      return value || 0;
+    }
+    _getFocused() {
+      if (this.hasItems) {
+        return this.currentItemWrapper;
+      }
+      return this;
+    }
+    _handleRight() {
+      return this.right();
+    }
+    _handleLeft() {
+      return this.left();
+    }
+    _handleUp() {
+      return this.up();
+    }
+    _handleDown() {
+      return this.down();
+    }
+    _inactive() {
+      if (this._repositionDebounce) {
+        clearTimeout(this._repositionDebounce);
+      }
+      this._collectGarbage(true);
+    }
+    static get itemType() {
+      return void 0;
+    }
+    set forceLoad(bool) {
+      this._forceLoad = bool;
+    }
+    get forceLoad() {
+      return this._forceLoad;
+    }
+    get requestingItems() {
+      return this._requestingItems;
+    }
+    set requestThreshold(num) {
+      this._requestThreshold = num;
+    }
+    get requestThreshold() {
+      return this._requestThreshold;
+    }
+    set enableRequests(bool) {
+      this._requestsEnabled = bool;
+    }
+    get enableRequests() {
+      return this._requestsEnabled;
+    }
+    set gcThreshold(num) {
+      this._gcThreshold = num;
+    }
+    get gcThreshold() {
+      return this._gcThreshold;
+    }
+    get wrapper() {
+      return this.tag("Wrapper");
+    }
+    get hasItems() {
+      return this.wrapper && this.wrapper.children && this.wrapper.children.length > 0;
+    }
+    get currentItemWrapper() {
+      return this.wrapper.children[this._index];
+    }
+    get currentItem() {
+      return this.currentItemWrapper.component;
+    }
+    set direction(string) {
+      this._direction = CollectionWrapper.DIRECTION[string] || CollectionWrapper.DIRECTION.row;
+    }
+    get direction() {
+      return Object.keys(CollectionWrapper.DIRECTION)[this._direction];
+    }
+    set items(array) {
+      this.clear();
+      this.add(array);
+    }
+    get items() {
+      const itemWrappers = this.itemWrappers;
+      return this._items.map((item, index2) => {
+        if (itemWrappers[index2] && itemWrappers[index2].component.isAlive) {
+          return itemWrappers[index2].component;
+        }
+        return item;
+      });
+    }
+    get length() {
+      return this._items.length;
+    }
+    set index(index2) {
+      this.setIndex(index2);
+    }
+    get itemWrappers() {
+      return this.wrapper.children;
+    }
+    get index() {
+      return this._index;
+    }
+    set scrollTransition(obj) {
+      this._scrollTransitionSettings.patch(obj);
+      if (this.active) {
+        this._updateScrollTransition();
+      }
+    }
+    get scrollTransition() {
+      return this._scrollTransition;
+    }
+    set scroll(value) {
+      this._scroll = value;
+    }
+    get scrollTo() {
+      return this._scroll;
+    }
+    set autoResize(bool) {
+      this._autoResize = bool;
+    }
+    get autoResize() {
+      return this._autoResize;
+    }
+    set spacing(num) {
+      this._spacing = num;
+    }
+    get spacing() {
+      return this._spacing;
+    }
+  };
+  CollectionWrapper.DIRECTION = {
+    row: 0,
+    column: 1
+  };
+
+  // node_modules/@lightningjs/ui/src/helpers/Cursor.js
+  var Cursor = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        alpha: 0
+      };
+    }
+    _construct() {
+      this._blink = true;
+    }
+    _init() {
+      this._blinkAnimation = this.animation({
+        duration: 1,
+        repeat: -1,
+        actions: [{
+          p: "alpha",
+          v: {
+            0: 0,
+            0.5: 1,
+            1: 0
+          }
+        }]
+      });
+    }
+    show() {
+      if (this._blink) {
+        this._blinkAnimation.start();
+      } else {
+        this.alpha = 1;
+      }
+    }
+    hide() {
+      if (this._blink) {
+        this._blinkAnimation.stop();
+      } else {
+        this.alpha = 0;
+      }
+    }
+    set blink(bool) {
+      this._blink = bool;
+      if (this.active) {
+        if (bool) {
+          this.show();
+        } else {
+          this.hide();
+        }
+      }
+    }
+    get blink() {
+      return this._blink;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/helpers/ItemWrapper.js
+  var ItemWrapper = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        clipbox: true
+      };
+    }
+    create() {
+      if (this.children.length > 0) {
+        return;
+      }
+      const component = this.fireAncestors("$getChildComponent", {
+        index: this.componentIndex
+      });
+      component.isAlive = true;
+      const {
+        w,
+        h,
+        margin,
+        marginUp,
+        marginBottom,
+        marginRight,
+        marginLeft
+      } = this;
+      this.children = [__spreadProps(__spreadValues({}, component), {
+        w,
+        h,
+        margin,
+        marginUp,
+        marginRight,
+        marginLeft,
+        marginBottom
+      })];
+      if (this.hasFocus()) {
+        this._refocus();
+      }
+    }
+    get component() {
+      return this.children[0] || this.fireAncestors("$getChildComponent", {
+        index: this.componentIndex
+      });
+    }
+    _setup() {
+      if (this.forceLoad) {
+        this.create();
+      }
+    }
+    _active() {
+      this.create();
+    }
+    _inactive() {
+      if (!this.forceLoad) {
+        this.children[0].isAlive = false;
+        this.fireAncestors("$childInactive", {
+          child: this
+        });
+        this.childList.clear();
+      }
+    }
+    _getFocused() {
+      return this.children && this.children[0] || this;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/helpers/KeyWrapper.js
+  var KeyWrapper = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        clipbox: true
+      };
+    }
+    _update() {
+      let currentKey = this.children && this.children[0];
+      if (currentKey && currentKey.action === this._key.data.action) {
+        currentKey.patch(__spreadValues({}, this._key));
+      } else {
+        this.children = [__spreadValues({
+          type: this._key.keyType
+        }, this._key)];
+      }
+      if (this.hasFocus()) {
+        this._refocus();
+      }
+    }
+    set key(obj) {
+      this._key = obj;
+      if (this.active) {
+        this._update();
+      }
+    }
+    get key() {
+      return this._key;
+    }
+    _active() {
+      this._update();
+    }
+    _inactive() {
+      this.childList.clear();
+    }
+    _getFocused() {
+      return this.children && this.children[0] || this;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/helpers/index.js
+  var limitWithinRange = (num, min, max) => {
+    return Math.min(Math.max(num, min), max);
+  };
+
+  // node_modules/@lightningjs/ui/src/Grid.js
+  var Grid = class extends CollectionWrapper {
+    _construct() {
+      this._crossSpacing = 5;
+      this._mainSpacing = 5;
+      this._rows = 0;
+      this._columns = 0;
+      super._construct();
+    }
+    clear() {
+      super.clear();
+      this._mainIndex = 0;
+      this._crossIndex = 0;
+      this._previous = void 0;
+    }
+    setIndex(index2) {
+      const targetIndex = limitWithinRange(index2, 0, this._items.length - 1);
+      const previousIndex = this._index;
+      const {
+        mainIndex: previousMainIndex,
+        crossIndex: previousCrossIndex
+      } = this._findLocationOfIndex(this._index);
+      const {
+        mainIndex,
+        crossIndex
+      } = this._findLocationOfIndex(targetIndex);
+      this._mainIndex = mainIndex;
+      this._crossIndex = crossIndex;
+      this._index = targetIndex;
+      this._indexChanged({
+        previousIndex,
+        index: targetIndex,
+        mainIndex,
+        previousMainIndex,
+        crossIndex,
+        previousCrossIndex,
+        lines: this._lines.length,
+        dataLength: this._items.length
+      });
+    }
+    _findLocationOfIndex(index2) {
+      for (let i = 0; i < this._lines.length; i++) {
+        if (this._lines[i].includes(index2)) {
+          return {
+            mainIndex: i,
+            crossIndex: this._lines[i].indexOf(index2)
+          };
+        }
+      }
+      return {
+        mainIndex: -1,
+        crossIndex: -1
+      };
+    }
+    plotItems() {
+      const items = this._items;
+      const wrapper = this.wrapper;
+      const {
+        directionIsRow,
+        mainDirection: mainDirection2,
+        main,
+        mainDim,
+        mainMarginTo,
+        mainMarginFrom,
+        cross,
+        crossDim,
+        crossMarginTo,
+        crossMarginFrom
+      } = this._getPlotProperties(this._direction);
+      const crossSize = this[crossDim];
+      let mainPos = 0, crossPos = 0, lineIndex = 0;
+      const animateItems = [];
+      const viewboundMain = directionIsRow ? 1920 : 1080;
+      const viewboundCross = directionIsRow ? 1080 : 1920;
+      const renderContext = this.core.renderContext;
+      this._lines = [[]];
+      let cl = [];
+      const newChildren = items.map((item, index2) => {
+        const sizes = this._getItemSizes(item);
+        const targetCrossFromMargin = sizes[crossMarginFrom] || sizes.margin || 0;
+        if (index2 === 0) {
+          mainPos += sizes[mainMarginFrom] || sizes.margin || 0;
+        }
+        if (cl.length > 0 && (this[mainDirection2] > 0 && this[mainDirection2] === cl.length || this[mainDirection2] === 0 && crossPos + targetCrossFromMargin + sizes[crossDim] > crossSize)) {
+          const bil = this._getBiggestInLine(cl);
+          mainPos = bil[main] + bil[mainDim] + (bil[mainMarginTo] || bil.margin || this._mainSpacing);
+          crossPos = targetCrossFromMargin;
+          this._lines.push([]);
+          cl = [];
+          lineIndex++;
+        } else {
+          crossPos += targetCrossFromMargin;
+        }
+        const ref = `IW-${item.assignedID}`;
+        let tmp = mainPos;
+        let tcp = crossPos;
+        const existingItemWrapper = wrapper.tag(ref);
+        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext[`p${main}`] + wrapper[main] + mainPos <= viewboundMain || renderContext[`p${cross}`] + wrapper[cross] + crossPos <= viewboundCross))) {
+          tmp = existingItemWrapper[main];
+          tcp = existingItemWrapper[cross];
+          animateItems.push(index2);
+        }
+        const newItem2 = __spreadProps(__spreadValues({
+          ref,
+          type: ItemWrapper,
+          componentIndex: index2,
+          forceLoad: this._forceLoad
+        }, sizes), {
+          [`assigned${main.toUpperCase()}`]: mainPos,
+          [`assigned${cross.toUpperCase()}`]: crossPos,
+          [main]: tmp,
+          [cross]: tcp
+        });
+        crossPos += sizes[crossDim] + (sizes[crossMarginTo] || sizes.margin || this._crossSpacing);
+        this._lines[lineIndex].push(index2);
+        cl.push(newItem2);
+        return newItem2;
+      });
+      wrapper.children = newChildren;
+      animateItems.forEach((index2) => {
+        const item = wrapper.children[index2];
+        item.patch({
+          smooth: {
+            x: item.assignedX,
+            y: item.assignedY
+          }
+        });
+      });
+      const biggestInLastLine = this._getBiggestInLine(cl);
+      this._resizeWrapper({
+        [mainDim]: biggestInLastLine[main] + biggestInLastLine[mainDim],
+        [crossDim]: crossSize
+      });
+    }
+    repositionItems() {
+      const wrapper = this.wrapper;
+      if (!wrapper && wrapper.children.length) {
+        return true;
+      }
+      const {
+        main,
+        mainDim,
+        mainMarginTo,
+        mainMarginFrom,
+        cross,
+        crossDim,
+        crossMarginTo,
+        crossMarginFrom
+      } = this._getPlotProperties(this._direction);
+      const crossSize = this[crossDim];
+      let mainPos = 0, crossPos = 0, lineIndex = 0;
+      let cl = [];
+      this.lines = [[]];
+      wrapper.children.forEach((item, index2) => {
+        const sizes = this._getItemSizes(item);
+        const targetCrossFromMargin = sizes[crossMarginFrom] || sizes.margin || 0;
+        if (index2 === 0) {
+          mainPos += sizes[mainMarginFrom] || sizes.margin || 0;
+        }
+        if (cl.length > 0 && (this[mainDirection] > 0 && this[mainDirection] === cl.length || this[mainDirection] === 0 && crossPos + targetCrossFromMargin + sizes[crossDim] > crossSize)) {
+          const bil = this._getBiggestInLine(cl);
+          mainPos = bil[main] + bil[mainDim] + (bil[mainMarginTo] || bil.margin || this._mainSpacing);
+          crossPos = targetCrossFromMargin;
+          this._lines.push([]);
+          cl = [];
+          lineIndex++;
+        } else {
+          crossPos += targetCrossFromMargin;
+        }
+        item.patch({
+          [`assigned${main.toUpperCase()}`]: mainPos,
+          [`assigned${cross.toUpperCase()}`]: crossPos,
+          [main]: mainPos,
+          [cross]: crossPos
+        });
+        crossPos += sizes[crossDim] + (sizes[crossMarginTo] || sizes.margin || this._crossSpacing);
+        this._lines[lineIndex].push(index2);
+        cl.push(newItem);
+      });
+      const biggestInLastLine = this._getBiggestInLine(cl);
+      this._resizeWrapper({
+        [mainDim]: biggestInLastLine[main] + biggestInLastLine[mainDim],
+        [crossDim]: crossSize
+      });
+      super.repositionItems();
+    }
+    _getBiggestInLine(line) {
+      const {
+        mainDim
+      } = this._getPlotProperties(this._direction);
+      return line.reduce((biggestItem, newItem2) => {
+        if (newItem2[mainDim] > biggestItem[mainDim]) {
+          return newItem2;
+        }
+        return biggestItem;
+      });
+    }
+    navigate(shift, direction) {
+      const {
+        directionIsRow,
+        cross,
+        crossDim
+      } = this._getPlotProperties(this._direction);
+      const overCross = directionIsRow && direction === CollectionWrapper.DIRECTION.column || !directionIsRow && direction === CollectionWrapper.DIRECTION.row;
+      let targetMainIndex = this._mainIndex + !!!overCross * shift;
+      let targetCrossIndex = this._crossIndex + !!overCross * shift;
+      let targetIndex = this._index;
+      if (overCross && targetCrossIndex > -1 && targetCrossIndex <= this._lines[targetMainIndex].length) {
+        if (this._lines[targetMainIndex][targetCrossIndex] !== void 0) {
+          targetIndex = this._lines[targetMainIndex][targetCrossIndex];
+          this._previous = void 0;
+        }
+      } else if (!overCross && targetMainIndex < this._lines.length && targetMainIndex > -1) {
+        const targetLine = this._lines[targetMainIndex];
+        if (this._previous && this._previous.mainIndex === targetMainIndex) {
+          targetIndex = this._previous.realIndex;
+          targetCrossIndex = this._previous.crossIndex;
+        } else if (targetLine) {
+          const currentItem = this.currentItemWrapper;
+          const m = targetLine.map((item) => {
+            const targetItem = this.wrapper.children[item];
+            if (targetItem[cross] <= currentItem[cross] && currentItem[cross] <= targetItem[cross] + targetItem[crossDim]) {
+              return targetItem[cross] + targetItem[crossDim] - currentItem[cross];
+            }
+            if (targetItem[cross] >= currentItem[cross] && targetItem[cross] <= currentItem[cross] + currentItem[crossDim]) {
+              return currentItem[cross] + currentItem[crossDim] - targetItem[cross];
+            }
+            return -1;
+          });
+          let acc = -1;
+          let t = -1;
+          for (let i = 0; i < m.length; i++) {
+            if (m[i] === -1 && acc > -1) {
+              break;
+            }
+            if (m[i] > acc) {
+              acc = m[i];
+              t = i;
+            }
+          }
+          if (t > -1) {
+            targetCrossIndex = t;
+            targetIndex = targetLine[t];
+          }
+        }
+        this._previous = {
+          mainIndex: this._mainIndex,
+          crossIndex: this._crossIndex,
+          realIndex: this._index
+        };
+      }
+      if (this._index !== targetIndex) {
+        this.setIndex(targetIndex);
+        return true;
+      }
+      return false;
+    }
+    set rows(num) {
+      this._rows = num;
+      this.direction = "row";
+    }
+    get rows() {
+      return this._rows;
+    }
+    set columns(num) {
+      this._columns = num;
+      this.direction = "column";
+    }
+    get columns() {
+      return this._columns;
+    }
+    set crossSpacing(num) {
+      this._crossSpacing = num;
+    }
+    get crossSpacing() {
+      return this._crossSpacing;
+    }
+    set mainSpacing(num) {
+      this._mainSpacing = num;
+    }
+    get mainSpacing() {
+      return this._mainSpacing;
+    }
+    set spacing(num) {
+      this._spacing = num;
+      this._mainSpacing = num;
+      this._crossSpacing = num;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/InputField.js
+  var InputField = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        PreLabel: {
+          renderOffscreen: true
+        },
+        PostLabel: {
+          renderOffscreen: true
+        },
+        Cursor: {
+          type: Cursor,
+          rect: true,
+          w: 4,
+          h: 54,
+          x: 0,
+          y: 0
+        }
+      };
+    }
+    _construct() {
+      this._input = "";
+      this._previousInput = "";
+      this._description = "";
+      this._cursorX = 0;
+      this._cursorIndex = 0;
+      this._passwordMask = "*";
+      this._passwordMode = false;
+      this._autoHideCursor = true;
+      this._labelPositionStatic = true;
+      this._maxLabelWidth = 0;
+    }
+    _init() {
+      this.tag("PreLabel").on("txLoaded", () => {
+        this._labelTxLoaded();
+      });
+      this.tag("PostLabel").on("txLoaded", () => {
+        this._labelTxLoaded;
+      });
+    }
+    onInputChanged({
+      input = ""
+    }) {
+      let targetIndex = Math.max(input.length - this._input.length + this._cursorIndex, 0);
+      this._input = input;
+      this._update(targetIndex);
+    }
+    toggleCursor(bool = !this._cursorVisible) {
+      this._cursorVisible = bool;
+      this.cursor[bool ? "show" : "hide"]();
+    }
+    _labelTxLoaded() {
+      const preLabel = this.tag("PreLabel");
+      const cursor = this.tag("Cursor");
+      const postLabel = this.tag("PostLabel");
+      this.h = preLabel.renderHeight || postLabel.renderHeight;
+      cursor.x = preLabel.renderWidth + this._cursorX;
+      postLabel.x = cursor.x + cursor.w * (1 - cursor.mountX);
+      this.setSmooth("x", this._labelOffset);
+      if (!this.autoHideCursor) {
+        this.toggleCursor(true);
+      }
+    }
+    _update(index2 = 0) {
+      const hasInput = this._input.length > 0;
+      let pre = this._description + "";
+      let post = "";
+      if (hasInput) {
+        pre = this._input.substring(0, index2);
+        post = this._input.substring(index2, this._input.length);
+        if (this._passwordMode) {
+          pre = this._passwordMask.repeat(pre.length);
+          post = this._passwordMask.repeat(post.length);
+        }
+        this.toggleCursor(true);
+      } else if (this._autoHideCursor) {
+        this.toggleCursor(false);
+      }
+      this.patch({
+        PreLabel: {
+          text: {
+            text: pre
+          }
+        },
+        PostLabel: {
+          text: {
+            text: post
+          }
+        }
+      });
+      if (this.h === 0) {
+        this.tag("PreLabel").loadTexture();
+        this.h = this.tag("PreLabel").renderHeight;
+      }
+      this._cursorIndex = index2;
+    }
+    _handleRight() {
+      this._update(Math.min(this._input.length, this._cursorIndex + 1));
+    }
+    _handleLeft() {
+      this._update(Math.max(0, this._cursorIndex - 1));
+    }
+    _firstActive() {
+      this._labelTxLoaded();
+      this._update();
+    }
+    get input() {
+      return this._input;
+    }
+    get hasInput() {
+      return this._input.length > 0;
+    }
+    get cursorIndex() {
+      return this._cursorIndex;
+    }
+    set inputText(obj) {
+      this._inputText = obj;
+      this.tag("PreLabel").patch({
+        text: obj
+      });
+      this.tag("PostLabel").patch({
+        text: obj
+      });
+    }
+    get inputText() {
+      return this._inputText;
+    }
+    set description(str) {
+      this._description = str;
+    }
+    get description() {
+      return this._description;
+    }
+    set cursor(obj) {
+      if (obj.x) {
+        this._cursorX = obj.x;
+        delete obj.x;
+      }
+      this.tag("Cursor").patch(obj);
+    }
+    get cursor() {
+      return this.tag("Cursor");
+    }
+    get cursorVisible() {
+      return this._cursorVisible;
+    }
+    set autoHideCursor(bool) {
+      this._autoHideCursor = bool;
+    }
+    get autoHideCursor() {
+      return this._autoHideCursor;
+    }
+    set passwordMode(val) {
+      this._passwordMode = val;
+    }
+    get passwordMode() {
+      return this._passwordMode;
+    }
+    set passwordMask(str) {
+      this._passwordMask = str;
+    }
+    get passwordmask() {
+      return this._passwordMask;
+    }
+    set maxLabelWidth(val) {
+      this._maxLabelWidth = val;
+    }
+    get maxLabelWidth() {
+      return this._maxLabelWidth;
+    }
+    set labelPositionStatic(val) {
+      this._labelPositionStatic = val;
+    }
+    get labelPositionStatic() {
+      return this._labelPositionStatic;
+    }
+    get _labelOffset() {
+      if (this._labelPositionStatic)
+        return 0;
+      let offset = this.maxLabelWidth - this.tag("Cursor").x;
+      return offset < 0 ? offset : 0;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/Key.js
+  var Key = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        Background: {
+          w: (w) => w,
+          h: (h) => h,
+          rect: true
+        },
+        Label: {
+          mount: 0.5,
+          x: (w) => w / 2,
+          y: (h) => h / 2
+        }
+      };
+    }
+    _construct() {
+      this._backgroundColors = {};
+      this._labelColors = {};
+    }
+    set data(obj) {
+      this._data = obj;
+      this._update();
+    }
+    get data() {
+      return this._data;
+    }
+    set labelText(obj) {
+      this._labelText = obj;
+      this.tag("Label").patch({
+        text: obj
+      });
+    }
+    get labelText() {
+      return this._labelText;
+    }
+    set label(obj) {
+      this.tag("Label").patch(obj);
+    }
+    get label() {
+      return this.tag("Label");
+    }
+    set labelColors(obj) {
+      this._labelColors = obj;
+      this._update();
+    }
+    get labelColors() {
+      return this._labelColors;
+    }
+    set backgroundColors(obj) {
+      this._backgroundColors = obj;
+      this._update();
+    }
+    get backgroundColors() {
+      return this._backgroundColors;
+    }
+    set background(obj) {
+      this.tag("Background").patch(obj);
+    }
+    get background() {
+      return this.tag("Background");
+    }
+    _update() {
+      if (!this.active) {
+        return;
+      }
+      const {
+        label = ""
+      } = this._data;
+      const hasFocus = this.hasFocus();
+      let {
+        focused,
+        unfocused = 4278190080
+      } = this._backgroundColors;
+      let {
+        focused: labelFocused,
+        unfocused: labelUnfocused = 4294967295
+      } = this._labelColors;
+      this.patch({
+        Background: {
+          color: hasFocus && focused ? focused : unfocused
+        },
+        Label: {
+          text: {
+            text: label
+          },
+          color: hasFocus && labelFocused ? labelFocused : labelUnfocused
+        }
+      });
+    }
+    _firstActive() {
+      this._update();
+    }
+    _focus() {
+      let {
+        focused,
+        unfocused = 4278190080
+      } = this._backgroundColors;
+      let {
+        focused: labelFocused,
+        unfocused: labelUnfocused = 4294967295
+      } = this._labelColors;
+      this.patch({
+        Background: {
+          smooth: {
+            color: focused || unfocused
+          }
+        },
+        Label: {
+          smooth: {
+            color: labelFocused || labelUnfocused
+          }
+        }
+      });
+    }
+    _unfocus() {
+      let {
+        unfocused = 4278190080
+      } = this._backgroundColors;
+      let {
+        unfocused: labelUnfocused = 4294967295
+      } = this._labelColors;
+      this.patch({
+        Background: {
+          smooth: {
+            color: unfocused
+          }
+        },
+        Label: {
+          smooth: {
+            color: labelUnfocused
+          }
+        }
+      });
+    }
+    static get width() {
+      return 80;
+    }
+    static get height() {
+      return 80;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/Keyboard.js
+  var Keyboard = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        Keys: {
+          w: (w) => w
+        }
+      };
+    }
+    _construct() {
+      this._input = "";
+      this._inputField = void 0;
+      this._maxCharacters = 56;
+      this.navigationWrapAround = false;
+      this.resetFocus();
+    }
+    resetFocus() {
+      this._columnIndex = 0;
+      this._rowIndex = 0;
+      this._previousKey = null;
+    }
+    _setup() {
+      this._keys = this.tag("Keys");
+      this._update();
+    }
+    _update() {
+      const {
+        layouts,
+        buttonTypes = {},
+        styling = {}
+      } = this._config;
+      if (!this._layout || this._layout && layouts[this._layout] === void 0) {
+        console.error(`Configured layout "${this._layout}" does not exist. Picking first available: "${Object.keys(layouts)[0]}"`);
+        this._layout = Object.keys(layouts)[0];
+      }
+      const {
+        horizontalSpacing = 0,
+        verticalSpacing = 0,
+        align = "left"
+      } = styling;
+      let rowPosition = 0;
+      const isEvent = /^[A-Z][A-Za-z0-9]{1}/;
+      const hasLabel = /\:/;
+      if (buttonTypes.default === void 0) {
+        buttonTypes.default = Key;
+      }
+      this._keys.children = layouts[this._layout].map((row, rowIndex) => {
+        const {
+          x = 0,
+          margin = 0,
+          marginRight,
+          marginLeft,
+          marginTop,
+          marginBottom,
+          spacing: rowHorizontalSpacing = horizontalSpacing || 0,
+          align: rowAlign = align
+        } = styling[`Row${rowIndex + 1}`] || {};
+        let keyPosition = 0;
+        let rowHeight = 0;
+        const rowKeys = row.map((key, keyIndex) => {
+          const origin = key;
+          let keyType = buttonTypes.default;
+          let action = "Input";
+          let label = key;
+          if (isEvent.test(key)) {
+            if (hasLabel.test(key)) {
+              key = key.split(":");
+              label = key[1].toString();
+              key = key[0];
+            }
+            if (buttonTypes[key]) {
+              keyType = buttonTypes[key];
+              action = key.action || key;
+            }
+          }
+          const keySpacing = keyType.margin || keyType.type.margin;
+          const {
+            w = keyType.type.width || 0,
+            h = keyType.type.height || 0,
+            marginLeft: marginLeft2 = keyType.type.marginLeft || keySpacing || 0,
+            marginRight: marginRight2 = keyType.type.marginRight || keySpacing || rowHorizontalSpacing
+          } = keyType;
+          rowHeight = h > rowHeight ? h : rowHeight;
+          const currentPosition2 = keyPosition + marginLeft2;
+          keyPosition += marginLeft2 + w + marginRight2;
+          return {
+            ref: `Key-{${keyIndex + 1}}`,
+            type: KeyWrapper,
+            keyboard: this,
+            x: currentPosition2,
+            w,
+            h,
+            key: __spreadValues({
+              data: {
+                origin,
+                key,
+                label,
+                action
+              },
+              w,
+              h
+            }, keyType)
+          };
+        });
+        let rowOffset = x + (marginLeft || margin);
+        let rowMount = 0;
+        if (this.w && rowAlign === "center") {
+          rowOffset = this.w / 2;
+          rowMount = 0.5;
+        }
+        if (this.w && rowAlign === "right") {
+          rowOffset = this.w - (marginRight || margin);
+          rowMount = 1;
+        }
+        const currentPosition = rowPosition + (marginTop || margin);
+        rowPosition = currentPosition + rowHeight + (marginBottom || margin || verticalSpacing);
+        return {
+          ref: `Row-${rowIndex + 1}`,
+          x: rowOffset,
+          mountX: rowMount,
+          w: keyPosition,
+          y: currentPosition,
+          children: rowKeys
+        };
+      });
+      this._refocus();
+    }
+    _getFocused() {
+      return this.currentKeyWrapper || this;
+    }
+    _handleRight() {
+      return this.navigate("row", 1);
+    }
+    _handleLeft() {
+      return this.navigate("row", -1);
+    }
+    _handleUp() {
+      return this.navigate("column", -1);
+    }
+    _handleDown() {
+      return this.navigate("column", 1);
+    }
+    _handleKey({
+      key,
+      code = "CustomKey"
+    }) {
+      if (code === "Backspace" && this._input.length === 0) {
+        return false;
+      }
+      if (key === " ") {
+        key = "Space";
+      }
+      const targetFound = this._findKey(key);
+      if (targetFound) {
+        this._handleEnter();
+      }
+      return targetFound;
+    }
+    _findKey(str) {
+      const rows = this._config.layouts[this._layout];
+      let i = 0, j = 0;
+      for (; i < rows.length; i++) {
+        for (j = 0; j < rows[i].length; j++) {
+          let key = rows[i][j];
+          if (str.length > 1 && key.indexOf(str) > -1 || key.toUpperCase() === str.toUpperCase()) {
+            this._rowIndex = i;
+            this._columnIndex = j;
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    _handleEnter() {
+      const {
+        origin,
+        action
+      } = this.currentKey.data;
+      const event = {
+        index: this._input.length,
+        key: origin
+      };
+      if (this._inputField && this._inputField.cursorIndex) {
+        event.index = this._inputField.cursorIndex;
+      }
+      if (action !== "Input") {
+        const split = event.key.split(":");
+        const call = `on${split[0]}`;
+        const eventFunction = this[call];
+        event.key = split[1];
+        if (eventFunction && eventFunction.apply && eventFunction.call) {
+          eventFunction.call(this, event);
+        }
+        this.signal(call, event);
+      } else {
+        this.addAt(event.key, event.index);
+      }
+    }
+    _changeInput(input) {
+      if (input.length > this._maxCharacters) {
+        return;
+      }
+      const eventData = {
+        previousInput: this._input,
+        input: this._input = input
+      };
+      if (this._inputField && this._inputField.onInputChanged) {
+        this._inputField.onInputChanged(eventData);
+      }
+      this.signal("onInputChanged", eventData);
+    }
+    focus(str) {
+      this._findKey(str);
+    }
+    add(str) {
+      this._changeInput(this._input + str);
+    }
+    addAt(str, index2) {
+      if (index2 > this._input.length - 1) {
+        this.add(str);
+      } else if (index2 > -1) {
+        this._changeInput(this._input.substring(0, index2) + str + this._input.substring(index2, this._input.length));
+      }
+    }
+    remove() {
+      this._changeInput(this._input.substring(0, this._input.length - 1));
+    }
+    removeAt(index2) {
+      if (index2 > this._input.length - 1) {
+        this.remove();
+      } else if (index2 > -1) {
+        this._changeInput(this._input.substring(0, index2 - 1) + this._input.substring(index2, this._input.length));
+      }
+    }
+    clear() {
+      this._changeInput("");
+    }
+    layout(key) {
+      if (key === this._layout) {
+        return;
+      }
+      this._layout = key;
+      if (this.attached) {
+        this.resetFocus();
+        this._update();
+      }
+    }
+    inputField(component) {
+      if (component && component.isComponent) {
+        this._rowIndex = 0;
+        this._columnIndex = 0;
+        this._input = component.input !== void 0 ? component.input : "";
+        this._inputField = component;
+      } else {
+        this._rowIndex = 0;
+        this._columnIndex = 0;
+        this._input = "";
+        this._inputField = void 0;
+      }
+    }
+    navigate(direction, shift) {
+      const targetIndex = (direction === "row" ? this._columnIndex : this._rowIndex) + shift;
+      const currentRow = this.rows[this._rowIndex];
+      if (direction === "row" && targetIndex > -1 && targetIndex < currentRow.children.length) {
+        this._previous = null;
+        return this._columnIndex = targetIndex;
+      } else if (direction === "row" && this.navigationWrapAround) {
+        this._previous = null;
+        let rowLen = currentRow.children.length;
+        return this._columnIndex = (targetIndex % rowLen + rowLen) % rowLen;
+      }
+      if (direction === "column" && targetIndex > -1 && targetIndex < this.rows.length) {
+        const currentRowIndex = this._rowIndex;
+        const currentColumnIndex = this._columnIndex;
+        if (this._previous && this._previous.row === targetIndex) {
+          const tmp = this._previous.column;
+          this._previous.column = this._columnIndex;
+          this._columnIndex = tmp;
+          this._rowIndex = this._previous.row;
+        } else {
+          const targetRow = this.rows[targetIndex];
+          const currentKey = this.currentKeyWrapper;
+          const currentRow2 = this.rows[this._rowIndex];
+          const currentX = currentRow2.x - currentRow2.w * currentRow2.mountX + currentKey.x;
+          const m = targetRow.children.map((key) => {
+            const keyX = targetRow.x - targetRow.w * targetRow.mountX + key.x;
+            if (keyX <= currentX && currentX < keyX + key.w) {
+              return keyX + key.w - currentX;
+            }
+            if (keyX >= currentX && keyX <= currentX + currentKey.w) {
+              return currentX + currentKey.w - keyX;
+            }
+            return -1;
+          });
+          let acc = -1;
+          let t = -1;
+          for (let i = 0; i < m.length; i++) {
+            if (m[i] === -1 && acc > -1) {
+              break;
+            }
+            if (m[i] > acc) {
+              acc = m[i];
+              t = i;
+            }
+          }
+          if (t > -1) {
+            this._rowIndex = targetIndex;
+            this._columnIndex = t;
+          } else if (this.navigationWrapAround) {
+            this._columnIndex = Math.min(this.rows[0].children.length - 1, this._columnIndex);
+            return this._rowIndex = 0;
+          }
+        }
+        if (this._rowIndex !== currentRowIndex) {
+          this._previous = {
+            column: currentColumnIndex,
+            row: currentRowIndex
+          };
+          return this._rowIndex = targetIndex;
+        }
+      } else if (direction === "column" && this.navigationWrapAround) {
+        this._previous = {
+          column: this._columnIndex,
+          row: this._rowIndex
+        };
+        let nrRows = this.rows.length;
+        this._rowIndex = (targetIndex % nrRows + nrRows) % nrRows;
+        this._columnIndex = Math.min(this.rows[this._rowIndex].children.length - 1, this._columnIndex);
+      }
+      return false;
+    }
+    onSpace({
+      index: index2
+    }) {
+      this.addAt(" ", index2);
+    }
+    onBackspace({
+      index: index2
+    }) {
+      this.removeAt(index2);
+    }
+    onClear() {
+      this.clear();
+    }
+    onLayout({
+      key
+    }) {
+      this.layout(key);
+    }
+    set config(obj) {
+      this._config = obj;
+      if (this.active) {
+        this._update();
+      }
+    }
+    get config() {
+      return this._config;
+    }
+    set currentInputField(component) {
+      this.inputField(component);
+    }
+    get currentInputField() {
+      return this._inputField;
+    }
+    set currentLayout(str) {
+      this.layout(str);
+    }
+    get currentLayout() {
+      return this._layout;
+    }
+    set maxCharacters(num) {
+      this._maxCharacters = num;
+    }
+    get maxCharacters() {
+      return this._maxCharacters;
+    }
+    get rows() {
+      return this._keys && this._keys.children;
+    }
+    get currentKeyWrapper() {
+      return this.rows && this.rows[this._rowIndex].children[this._columnIndex];
+    }
+    get currentKey() {
+      return this.currentKeyWrapper && this.currentKeyWrapper.key;
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/List.js
+  var List = class extends CollectionWrapper {
+    plotItems() {
+      const items = this._items;
+      const wrapper = this.wrapper;
+      const {
+        directionIsRow,
+        main,
+        mainDim,
+        mainMarginTo,
+        mainMarginFrom,
+        cross,
+        crossDim
+      } = this._getPlotProperties(this._direction);
+      let crossPos = 0, crossSize = 0, position = 0;
+      const animateItems = [];
+      const viewboundMain = directionIsRow ? 1920 : 1080;
+      const viewboundCross = directionIsRow ? 1080 : 1920;
+      const renderContext = this.core.renderContext;
+      const newChildren = items.map((item, index2) => {
+        const sizes = this._getItemSizes(item);
+        position += sizes[mainMarginFrom] || sizes.margin || 0;
+        if (crossSize < sizes[crossDim]) {
+          crossSize = sizes[crossDim];
+        }
+        const ref = `IW-${item.assignedID}`;
+        let mainPos = position;
+        crossPos = item[cross] || crossPos;
+        let tmp = mainPos;
+        let tcp = crossPos;
+        const existingItemWrapper = wrapper.tag(ref);
+        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext[`p${main}`] + wrapper[main] + mainPos <= viewboundMain || renderContext[`p${cross}`] + wrapper[cross] + crossPos <= viewboundCross))) {
+          tmp = existingItemWrapper[main];
+          tcp = existingItemWrapper[cross];
+          animateItems.push(index2);
+        }
+        position += sizes[mainDim] + (sizes[mainMarginTo] || sizes.margin || this._spacing);
+        return __spreadProps(__spreadValues({
+          ref,
+          type: ItemWrapper,
+          componentIndex: index2,
+          forceLoad: this._forceLoad
+        }, sizes), {
+          [`assigned${main.toUpperCase()}`]: mainPos,
+          [`assigned${cross.toUpperCase()}`]: crossPos,
+          [main]: tmp,
+          [cross]: tcp
+        });
+      });
+      wrapper.children = newChildren;
+      animateItems.forEach((index2) => {
+        const item = wrapper.children[index2];
+        item.patch({
+          smooth: {
+            x: item.assignedX,
+            y: item.assignedY
+          }
+        });
+      });
+      this._resizeWrapper(crossSize);
+    }
+    repositionItems() {
+      const wrapper = this.wrapper;
+      if (!wrapper && wrapper.children.length) {
+        return true;
+      }
+      const {
+        main,
+        mainDim,
+        mainMarginTo,
+        mainMarginFrom,
+        cross,
+        crossDim
+      } = this._getPlotProperties(this._direction);
+      let crossPos = 0, crossSize = 0, position = 0;
+      wrapper.children.forEach((item) => {
+        const sizes = this._getItemSizes(item.component);
+        position += sizes[mainMarginFrom] || sizes.margin || 0;
+        crossPos = item[cross] || crossPos;
+        if (crossSize < sizes[crossDim]) {
+          crossSize = sizes[crossDim];
+        }
+        const mainPos = position;
+        position += sizes[mainDim] + (sizes[mainMarginTo] || sizes.margin || this.spacing);
+        item.patch(__spreadValues({
+          [`assigned${main.toUpperCase()}`]: mainPos,
+          [`assigned${cross.toUpperCase()}`]: 0,
+          [main]: mainPos,
+          [cross]: crossPos
+        }, sizes));
+      });
+      this._resizeWrapper(crossSize);
+      super.repositionItems();
+    }
+  };
+
+  // node_modules/@lightningjs/ui/src/ScrollingLabel.js
+  var ScrollingLabel = class extends lightningjs_core_default.Component {
+    static _template() {
+      return {
+        LabelClipper: {
+          w: (w) => w,
+          rtt: true,
+          shader: {
+            type: lightningjs_core_default.shaders.FadeOut
+          },
+          LabelWrapper: {
+            Label: {
+              renderOffscreen: true
+            },
+            LabelCopy: {
+              renderOffscreen: true
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._autoStart = true;
+      this._scrollAnimation = false;
+      this._fade = 30;
+      this._spacing = 30;
+      this._label = {};
+      this._align = "left";
+      this._animationSettings = {
+        delay: 0.7,
+        repeat: -1,
+        stopMethod: "immediate"
+      };
+    }
+    _init() {
+      const label = this.tag("Label");
+      label.on("txLoaded", () => {
+        this._update(label);
+        this._updateAnimation(label);
+        if (this._autoStart) {
+          this.start();
+        }
+      });
+    }
+    _update(label = this.tag("Label")) {
+      const renderWidth = label.renderWidth;
+      const noScroll = renderWidth <= this.w;
+      let labelPos = 0;
+      if (noScroll && this._align !== "left") {
+        labelPos = (this.w - renderWidth) * ScrollingLabel.ALIGN[this._align];
+      }
+      this.tag("LabelClipper").patch({
+        h: label.renderHeight,
+        shader: {
+          right: noScroll ? 0 : this._fade
+        },
+        LabelWrapper: {
+          x: 0,
+          Label: {
+            x: labelPos
+          },
+          LabelCopy: {
+            x: renderWidth + this._spacing
+          }
+        }
+      });
+    }
+    _updateAnimation(label = this.tag("Label")) {
+      if (this._scrollAnimation) {
+        this._scrollAnimation.stopNow();
+      }
+      if (label.renderWidth > this.w) {
+        if (!this._animationSettings.duration) {
+          this._animationSettings.duration = label.renderWidth / 50;
+        }
+        this._scrollAnimation = this.animation(__spreadProps(__spreadValues({}, this._animationSettings), {
+          actions: [{
+            t: "LabelWrapper",
+            p: "x",
+            v: {
+              sm: 0,
+              0: 0,
+              1: -(label.renderWidth + this._spacing)
+            }
+          }, {
+            t: "LabelClipper",
+            p: "shader.left",
+            v: {
+              0: 0,
+              0.2: this._fade,
+              0.8: this._fade,
+              1: 0
+            }
+          }]
+        }));
+      }
+    }
+    start() {
+      if (this._scrollAnimation) {
+        this._scrollAnimation.stopNow();
+        this.tag("LabelCopy").patch({
+          text: this._label
+        });
+        this._scrollAnimation.start();
+      }
+    }
+    stop() {
+      if (this._scrollAnimation) {
+        this._scrollAnimation.stopNow();
+        this.tag("LabelCopy").text = "";
+      }
+    }
+    set label(obj) {
+      if (typeof obj === "string") {
+        obj = {
+          text: obj
+        };
+      }
+      this._label = __spreadValues(__spreadValues({}, this._label), obj);
+      this.tag("Label").patch({
+        text: obj
+      });
+    }
+    get label() {
+      return this.tag("Label");
+    }
+    set align(pos) {
+      this._align = pos;
+    }
+    get align() {
+      return this._align;
+    }
+    set autoStart(bool) {
+      this._autoStart = bool;
+    }
+    get autoStart() {
+      return this._autoStart;
+    }
+    set repeat(num) {
+      this.animationSettings = {
+        repeat: num
+      };
+    }
+    get repeat() {
+      return this._animationSettings.repeat;
+    }
+    set delay(num) {
+      this.animationSettings = {
+        delay: num
+      };
+    }
+    get delay() {
+      return this._animationSettings.delay;
+    }
+    set duration(num) {
+      this.animationSettings = {
+        duration: num
+      };
+    }
+    get duration() {
+      return this._animationSettings.duration;
+    }
+    set animationSettings(obj) {
+      this._animationSettings = __spreadValues(__spreadValues({}, this._animationSettings), obj);
+      if (this._scrollAnimation) {
+        this._updateAnimation();
+      }
+    }
+    get animationSettings() {
+      return this._animationSettings;
+    }
+  };
+  ScrollingLabel.ALIGN = {
+    left: 0,
+    center: 0.5,
+    right: 1
+  };
+
   // src/views/MainView.js
   var MainView = class extends Lightning_default.Component {
     _onChanged() {
@@ -7183,16 +9569,47 @@ SDK - v${this.sdkVersion}`;
     static _template() {
       return {
         rect: true,
-        color: 4278190080,
+        color: CONFIG.theme.background,
         w: 1920,
         h: 1080,
+        clipping: true,
         MainView: {
-          w: 1994,
-          h: 1920,
+          w: 1720,
+          h: 810,
           xIndex: 2,
           y: 270,
           x: 200,
-          clipping: true,
+          clipping: false,
+          Text0: {
+            alpha: 0,
+            h: 30,
+            text: {
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+              text: Language_default.translate("Popular Movies"),
+              fontStyle: "normal",
+              textColor: 4294967295
+            },
+            zIndex: 0
+          },
+          Gracenote: {
+            y: 50,
+            x: -20,
+            flex: {
+              direction: "row",
+              paddingLeft: 20,
+              wrap: false
+            },
+            type: Lightning_default.components.ListComponent,
+            w: 1745,
+            h: 400,
+            itemSize: 500,
+            roll: true,
+            rollMax: 1745,
+            horizontal: true,
+            itemScrollOffset: -1,
+            clipping: false
+          },
           Text1: {
             h: 30,
             text: {
@@ -7206,21 +9623,13 @@ SDK - v${this.sdkVersion}`;
           },
           AppList: {
             y: 37,
-            x: -20,
-            flex: {
-              direction: "row",
-              paddingLeft: 20,
-              wrap: false
-            },
-            type: Lightning_default.components.ListComponent,
-            w: 1745,
+            x: 0,
+            type: List,
             h: 400,
-            itemSize: 474,
-            roll: true,
-            rollMax: 1745,
-            horizontal: true,
-            itemScrollOffset: -2,
-            clipping: false
+            scroll: {
+              after: 2
+            },
+            spacing: 20
           },
           Text2: {
             y: 395,
@@ -7286,12 +9695,12 @@ SDK - v${this.sdkVersion}`;
             text: {
               fontFace: CONFIG.language.font,
               fontSize: 25,
-              text: Language_default.translate("Partner Apps"),
+              text: Language_default.translate("Lightning Showcase"),
               fontStyle: "normal",
               textColor: 4294967295
             }
           },
-          UsbApps: {
+          ShowcaseApps: {
             x: -20,
             y: 978,
             type: Lightning_default.components.ListComponent,
@@ -7302,7 +9711,37 @@ SDK - v${this.sdkVersion}`;
             },
             w: 1745,
             h: 400,
-            itemSize: 288,
+            itemSize: 277,
+            roll: true,
+            rollMax: 1745,
+            horizontal: true,
+            itemScrollOffset: -4,
+            clipping: false
+          },
+          Text5: {
+            alpha: 0,
+            y: 1203,
+            h: 30,
+            text: {
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+              text: Language_default.translate("Partner Apps"),
+              fontStyle: "normal",
+              textColor: 4294967295
+            }
+          },
+          UsbApps: {
+            x: -20,
+            y: 1243,
+            type: Lightning_default.components.ListComponent,
+            flex: {
+              direction: "row",
+              paddingLeft: 20,
+              wrap: false
+            },
+            w: 1745,
+            h: 400,
+            itemSize: 277,
             roll: true,
             rollMax: 1745,
             horizontal: true,
@@ -7315,9 +9754,31 @@ SDK - v${this.sdkVersion}`;
     pageTransition() {
       return "up";
     }
+    moveDownContent() {
+      this.tag("Text0").alpha = 1;
+      this.tag("Text1").y = 490 - 50;
+      this.tag("AppList").y = 527 - 50;
+      this.tag("Text2").y = 755 - 50;
+      this.tag("MetroApps").y = 795 - 50;
+      this.tag("Text3").y = 1030 - 50;
+      this.tag("TVShows").y = 1070 - 50;
+      this.tag("Text4").y = 1298 - 50;
+      this.tag("ShowcaseApps").y = 1338 - 50;
+      this.tag("Text5").y = 1566 - 50;
+      this.tag("UsbApps").y = 1606 - 50;
+    }
+    setGracenoteData(data) {
+      if (!this.gracenote) {
+        this.gracenote = true;
+        this.key = data.key;
+        this.graceNoteItems = data.data;
+        this.appItems = this.currentItems;
+      }
+    }
     _handleBack() {
     }
     _init() {
+      this.gracenote = false;
       this.settingsScreen = false;
       this.indexVal = 0;
       const config7 = {
@@ -7328,10 +9789,11 @@ SDK - v${this.sdkVersion}`;
       this.usbApi = new UsbApi();
       this.homeApi = new HomeApi();
       this.xcastApi = new XcastApi();
-      let thunder9 = thunderJS_default(config7);
+      let thunder10 = thunderJS_default(config7);
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
       this.metroApps = this.homeApi.getMetroInfo();
+      this.showcaseApps = this.homeApi.getShowCaseApps();
       var prop_apps = "applications";
       var prop_displayname = "displayName";
       var prop_uri = "uri";
@@ -7369,7 +9831,7 @@ SDK - v${this.sdkVersion}`;
       this.usbApps = usbAppsArr;
       const registerListener2 = () => {
         let listener;
-        listener = thunder9.on("org.rdk.UsbAccess", "onUSBMountChanged", (notification) => {
+        listener = thunder10.on("org.rdk.UsbAccess", "onUSBMountChanged", (notification) => {
           console.log("onUsbMountChanged notification: ", JSON.stringify(notification));
           Storage_default.set("UsbMountedStatus", notification.mounted ? "mounted" : "unmounted");
           const currentPage = window.location.href.split("#").slice(-1)[0];
@@ -7395,7 +9857,7 @@ SDK - v${this.sdkVersion}`;
         });
         return listener;
       };
-      thunder9.on("org.rdk.Network.1", "onIPAddressStatusChanged", (notification) => {
+      thunder10.on("org.rdk.Network.1", "onIPAddressStatusChanged", (notification) => {
         console.log("IP ADDRESS changed", JSON.stringify(notification));
         if (notification.status === "ACQUIRED") {
           Storage_default.set("ipAddress", notification.ip4Address);
@@ -7465,21 +9927,55 @@ SDK - v${this.sdkVersion}`;
         });
       }
     }
-    set appItems(items) {
-      this.tag("AppList").items = items.map((info, idx) => {
+    set graceNoteItems(items) {
+      this.moveDownContent();
+      this.tag("Gracenote").items = items.map((info, idx) => {
         return {
-          w: 454,
-          h: 255,
+          w: 480,
+          h: 270,
+          type: GracenoteItem,
+          data: info,
+          key: this.key,
+          focus: 1.11,
+          unfocus: 1,
+          idx,
+          bar: 10
+        };
+      });
+      this._setState("Gracenote");
+    }
+    set showcaseApps(items) {
+      this.tag("ShowcaseApps").items = items.map((info, idx) => {
+        return {
+          w: 268,
+          h: 151,
           type: ListItem,
           data: info,
           focus: 1.11,
           unfocus: 1,
-          idx
+          idx,
+          bar: 12
         };
       });
     }
+    set appItems(items) {
+      this.currentItems = items;
+      this.tag("AppList").clear();
+      this.tag("AppList").add(items.map((info, idx) => {
+        return {
+          w: this.gracenote ? 268 : 454,
+          h: this.gracenote ? 151 : 255,
+          type: ListItem,
+          data: info,
+          focus: 1.11,
+          unfocus: 1,
+          idx,
+          bar: 12
+        };
+      }));
+    }
     set metroApps(items) {
-      this.tag("MetroApps").items = items.map((info, index) => {
+      this.tag("MetroApps").items = items.map((info, index2) => {
         return {
           w: 268,
           h: 151,
@@ -7487,7 +9983,8 @@ SDK - v${this.sdkVersion}`;
           data: info,
           focus: 1.15,
           unfocus: 1,
-          idx: index
+          idx: index2,
+          bar: 12
         };
       });
     }
@@ -7500,34 +9997,36 @@ SDK - v${this.sdkVersion}`;
           data: info,
           focus: 1.15,
           unfocus: 1,
-          idx
+          idx,
+          bar: 12
         };
       });
     }
     set usbApps(items) {
-      if (!items.length) {
-        this.tag("Text4").visible = false;
+      if (items.length > 0) {
+        this.tag("Text5").alpha = 1;
       }
-      this.tag("UsbApps").items = items.map((info, index) => {
+      this.tag("UsbApps").items = items.map((info, index2) => {
         return {
-          w: 268,
-          h: 151,
+          w: 257,
+          h: 145,
           type: ListItem,
           data: info,
           focus: 1.15,
           unfocus: 1,
-          idx: index
+          idx: index2,
+          bar: 12
         };
       });
     }
-    index(index) {
-      if (index == 0) {
+    index(index2) {
+      if (index2 == 0) {
         this._setState("AppList");
-      } else if (index == 1) {
+      } else if (index2 == 1) {
         this._setState("MetroApps");
-      } else if (index == 2) {
+      } else if (index2 == 2) {
         this._setState("TVShows");
-      } else if (index == 3) {
+      } else if (index2 == 3) {
         if (this.tag("UsbApps").length) {
           this._setState("UsbApps");
         } else {
@@ -7535,24 +10034,51 @@ SDK - v${this.sdkVersion}`;
         }
       }
     }
-    reset() {
-      for (let i = this.tag("AppList").index; i > 0; i--) {
-        this.tag("AppList").setPrevious();
-      }
-      for (let i = this.tag("MetroApps").index; i > 0; i--) {
-        this.tag("MetroApps").setPrevious();
-      }
-      for (let i = this.tag("TVShows").index; i > 0; i--) {
-        this.tag("TVShows").setPrevious();
-      }
-      for (let i = this.tag("UsbApps").index; i > 0; i--) {
-        this.tag("UsbApps").setPrevious();
-      }
-    }
     static _states() {
-      return [class AppList extends this {
+      return [class Gracenote extends this {
         $enter() {
           this.indexVal = 0;
+        }
+        $exit() {
+          this.tag("Text0").text.fontStyle = "normal";
+        }
+        _getFocused() {
+          this.tag("Text0").text.fontStyle = "bold";
+          if (this.tag("Gracenote").length) {
+            return this.tag("Gracenote").element;
+          }
+        }
+        _handleDown() {
+          this._setState("AppList");
+        }
+        _handleRight() {
+          if (this.tag("Gracenote").length - 1 != this.tag("Gracenote").index) {
+            this.tag("Gracenote").setNext();
+            return this.tag("Gracenote").element;
+          }
+        }
+        _handleUp() {
+          this.widgets.menu.notify("TopPanel");
+        }
+        _handleLeft() {
+          this.tag("Text0").text.fontStyle = "normal";
+          if (this.tag("Gracenote").index != 0) {
+            this.tag("Gracenote").setPrevious();
+            return this.tag("Gracenote").element;
+          } else {
+            Router_default.focusWidget("Menu");
+          }
+        }
+        _handleEnter() {
+          Router_default.navigate("menu/details", {
+            gracenoteItem: this.tag("Gracenote").element.data,
+            key: this.key
+          });
+        }
+      }, class AppList extends this {
+        $enter() {
+          this.indexVal = 0;
+          this.scroll(270);
         }
         $exit() {
           this.tag("Text1").text.fontStyle = "normal";
@@ -7560,51 +10086,52 @@ SDK - v${this.sdkVersion}`;
         _getFocused() {
           this.tag("Text1").text.fontStyle = "bold";
           if (this.tag("AppList").length) {
-            return this.tag("AppList").element;
+            return this.tag("AppList");
           }
         }
         _handleDown() {
           this._setState("MetroApps");
         }
-        _handleRight() {
-          if (this.tag("AppList").length - 1 != this.tag("AppList").index) {
-            this.tag("AppList").setNext();
-            return this.tag("AppList").element;
-          }
-        }
         _handleUp() {
-          this.widgets.menu.notify("TopPanel");
+          if (this.gracenote) {
+            this._setState("Gracenote");
+          } else {
+            this.widgets.menu.notify("TopPanel");
+          }
         }
         _handleLeft() {
           this.tag("Text1").text.fontStyle = "normal";
-          if (this.tag("AppList").index != 0) {
-            this.tag("AppList").setPrevious();
-            return this.tag("AppList").element;
-          } else {
-            this.reset();
-            this.widgets.menu.setIndex(this.indexVal);
-            Router_default.focusWidget("Menu");
-          }
+          Router_default.focusWidget("Menu");
         }
         _handleEnter() {
-          let appApi9 = new AppApi();
+          let appApi10 = new AppApi();
           let applicationType = this.tag("AppList").items[this.tag("AppList").index].data.applicationType;
           this.uri = this.tag("AppList").items[this.tag("AppList").index].data.uri;
           applicationType = this.tag("AppList").items[this.tag("AppList").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("AppList").items[this.tag("AppList").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi9.launchCobalt(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchCobalt(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi9.launchWeb(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchWeb(this.uri).then(() => {
+              appApi10.setVisibility("ResidentApp", false);
+              let path = location.pathname.split("index.html")[0];
+              let url = path.slice(-1) === "/" ? "static/overlayText/index.html" : "/static/overlayText/index.html";
+              let notification_url = location.origin + path + url;
+              appApi10.launchOverlay(notification_url, "TextOverlay");
+              Registry_default.setTimeout(() => {
+                appApi10.deactivateResidentApp("TextOverlay");
+                appApi10.zorder("HtmlApp");
+                appApi10.setVisibility("HtmlApp", true);
+              }, 9e3);
+            });
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi9.launchLightning(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchLightning(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi9.launchNative(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchNative(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Amazon") {
             console.log("Launching app");
             fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
@@ -7612,8 +10139,8 @@ SDK - v${this.sdkVersion}`;
               data.plugins.forEach((element) => {
                 if (element.callsign === "Amazon") {
                   console.log("Opening Amazon");
-                  appApi9.launchPremiumApp("Amazon");
-                  appApi9.setVisibility("ResidentApp", false);
+                  appApi10.launchPremiumApp("Amazon");
+                  appApi10.setVisibility("ResidentApp", false);
                 }
               });
             }).catch((err) => {
@@ -7626,8 +10153,8 @@ SDK - v${this.sdkVersion}`;
               data.plugins.forEach((element) => {
                 if (element.callsign === "Netflix") {
                   console.log("Opening Netflix");
-                  appApi9.launchPremiumApp("Netflix");
-                  appApi9.setVisibility("ResidentApp", false);
+                  appApi10.launchPremiumApp("Netflix");
+                  appApi10.setVisibility("ResidentApp", false);
                 }
               });
             }).catch((err) => {
@@ -7645,6 +10172,7 @@ SDK - v${this.sdkVersion}`;
         }
       }, class MetroApps extends this {
         $enter() {
+          this.scroll(-100);
           this.indexVal = 1;
         }
         $exit() {
@@ -7674,36 +10202,34 @@ SDK - v${this.sdkVersion}`;
             this.tag("MetroApps").setPrevious();
             return this.tag("MetroApps").element;
           } else {
-            this.reset();
-            this.widgets.menu.setIndex(this.indexVal);
             Router_default.focusWidget("Menu");
           }
         }
         _handleEnter() {
-          let appApi9 = new AppApi();
+          let appApi10 = new AppApi();
           let applicationType = this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType;
           this.uri = this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri;
           applicationType = this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi9.launchCobalt(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchCobalt(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi9.launchWeb(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchWeb(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi9.launchLightning(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchLightning(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi9.launchNative(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchNative(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           }
         }
       }, class TVShows extends this {
         $enter() {
           this.indexVal = 2;
-          this.scroll(-130);
+          this.scroll(-400);
         }
         _handleUp() {
           this.scroll(270);
@@ -7727,15 +10253,11 @@ SDK - v${this.sdkVersion}`;
             this.tag("TVShows").setPrevious();
             return this.tag("TVShows").element;
           } else {
-            this.reset();
-            this.widgets.menu.setIndex(this.indexVal);
             Router_default.focusWidget("Menu");
           }
         }
         _handleDown() {
-          if (this.tag("UsbApps").length) {
-            this._setState("UsbApps");
-          }
+          this._setState("ShowcaseApps");
         }
         _handleEnter() {
           if (Storage_default.get("ipAddress")) {
@@ -7745,21 +10267,78 @@ SDK - v${this.sdkVersion}`;
         $exit() {
           this.tag("Text3").text.fontStyle = "normal";
         }
-      }, class UsbApps extends this {
+      }, class ShowcaseApps extends this {
         $enter() {
-          this.indexVal = 3;
+          this.scroll(-550);
         }
         $exit() {
           this.tag("Text4").text.fontStyle = "normal";
         }
         _getFocused() {
           this.tag("Text4").text.fontStyle = "bold";
+          if (this.tag("ShowcaseApps").length) {
+            return this.tag("ShowcaseApps").element;
+          }
+        }
+        _handleUp() {
+          this._setState("TVShows");
+        }
+        _handleRight() {
+          if (this.tag("ShowcaseApps").length - 1 != this.tag("MetroApps").index) {
+            this.tag("ShowcaseApps").setNext();
+            return this.tag("ShowcaseApps").element;
+          }
+        }
+        _handleDown() {
+          if (this.tag("UsbApps").length) {
+            this._setState("UsbApps");
+          }
+        }
+        _handleLeft() {
+          this.tag("Text4").text.fontStyle = "normal";
+          if (this.tag("ShowcaseApps").index != 0) {
+            this.tag("ShowcaseApps").setPrevious();
+            return this.tag("ShowcaseApps").element;
+          } else {
+            Router_default.focusWidget("Menu");
+          }
+        }
+        _handleEnter() {
+          let appApi10 = new AppApi();
+          let applicationType = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.applicationType;
+          this.uri = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.uri;
+          applicationType = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.applicationType;
+          Storage_default.set("applicationType", applicationType);
+          this.uri = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.uri;
+          if (Storage_default.get("applicationType") == "Cobalt") {
+            appApi10.launchCobalt(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
+            appApi10.launchWeb(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
+            appApi10.launchLightning(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
+            appApi10.launchNative(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          }
+        }
+      }, class UsbApps extends this {
+        $enter() {
+          this.scroll(-750);
+        }
+        $exit() {
+          this.tag("Text5").text.fontStyle = "normal";
+        }
+        _getFocused() {
+          this.tag("Text5").text.fontStyle = "bold";
           if (this.tag("UsbApps").length) {
             return this.tag("UsbApps").element;
           }
         }
         _handleUp() {
-          this._setState("TVShows");
+          this._setState("ShowcaseApps");
         }
         _handleRight() {
           if (this.tag("UsbApps").length - 1 != this.tag("MetroApps").index) {
@@ -7768,35 +10347,33 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleLeft() {
-          this.tag("Text4").text.fontStyle = "normal";
+          this.tag("Text5").text.fontStyle = "normal";
           if (this.tag("UsbApps").index != 0) {
             this.tag("UsbApps").setPrevious();
             return this.tag("UsbApps").element;
           } else {
-            this.reset();
-            this.widgets.menu.setIndex(this.indexVal);
             Router_default.focusWidget("Menu");
           }
         }
         _handleEnter() {
-          let appApi9 = new AppApi();
+          let appApi10 = new AppApi();
           let applicationType = this.tag("UsbApps").items[this.tag("UsbApps").index].data.applicationType;
           this.uri = this.tag("UsbApps").items[this.tag("UsbApps").index].data.uri;
           applicationType = this.tag("UsbApps").items[this.tag("UsbApps").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("UsbApps").items[this.tag("UsbApps").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi9.launchCobalt(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchCobalt(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi9.launchWeb(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchWeb(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi9.launchLightning(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchLightning(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi9.launchNative(this.uri);
-            appApi9.setVisibility("ResidentApp", false);
+            appApi10.launchNative(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
           }
         }
       }, class RightArrow extends this {
@@ -7888,7 +10465,7 @@ SDK - v${this.sdkVersion}`;
                 y: 25,
                 mount: 0.5,
                 text: {
-                  text: "Unpair",
+                  text: Language_default.translate("Unpair"),
                   fontFace: CONFIG.language.font,
                   fontSize: 22,
                   textColor: 4278190080
@@ -7907,7 +10484,7 @@ SDK - v${this.sdkVersion}`;
                 y: 25,
                 mount: 0.5,
                 text: {
-                  text: "Cancel",
+                  text: Language_default.translate("Cancel"),
                   fontFace: CONFIG.language.font,
                   fontSize: 22,
                   textColor: 4278190080
@@ -8143,6 +10720,7 @@ SDK - v${this.sdkVersion}`;
       this._devices = [];
       this._pairedDevices = [];
       this._connectedDevices = [];
+      this.btStatus = false;
       const config7 = {
         host: "127.0.0.1",
         port: 9998,
@@ -8156,10 +10734,9 @@ SDK - v${this.sdkVersion}`;
         this._thunder.call("Controller", "activate", {
           callsign: this.callsign
         }).then((result) => {
+          this.btStatus = true;
           this._thunder.on(this.callsign, "onDiscoveredDevice", (notification) => {
-            this.getDiscoveredDevices().then(() => {
-              this._events.get("onDiscoveredDevice")(notification);
-            });
+            this._events.get("onDiscoveredDevice")(notification);
           });
           this._thunder.on(this.callsign, "onStatusChanged", (notification) => {
             if (notification.newStatus === "PAIRING_CHANGE") {
@@ -8203,10 +10780,10 @@ SDK - v${this.sdkVersion}`;
     disable() {
       return new Promise((resolve, reject) => {
         this._thunder.call("org.rdk.Bluetooth", "disable").then((result) => {
+          this.btStatus = false;
           resolve(result);
         }).catch((err) => {
           console.error(`Can't disable : ${JSON.stringify(err)}`);
-          reject();
         });
       });
     }
@@ -8214,6 +10791,7 @@ SDK - v${this.sdkVersion}`;
       return new Promise((resolve, reject) => {
         this._thunder.call("org.rdk.Bluetooth", "enable").then((result) => {
           resolve(result);
+          this.btStatus = true;
         }).catch((err) => {
           console.error(`Can't enable : ${JSON.stringify(err)}`);
           reject();
@@ -8259,7 +10837,6 @@ SDK - v${this.sdkVersion}`;
           resolve(result.discoveredDevices);
         }).catch((err) => {
           console.error(`Can't get discovered devices : ${JSON.stringify(err)}`);
-          reject();
         });
       });
     }
@@ -8273,7 +10850,6 @@ SDK - v${this.sdkVersion}`;
           resolve(result.pairedDevices);
         }).catch((err) => {
           console.error(`Can't get paired devices : ${err}`);
-          reject();
         });
       });
     }
@@ -8330,12 +10906,12 @@ SDK - v${this.sdkVersion}`;
           deviceID: deviceId
         }).then((result) => {
           if (result.success)
-            resolve(result);
+            resolve(result.success);
           else
-            reject(result);
+            resolve(false);
         }).catch((err) => {
           console.error("unpair failed", err);
-          reject();
+          resolve(false);
         });
       });
     }
@@ -8503,7 +11079,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Bluetooth On/Off",
+                text: Language_default.translate("Bluetooth On/Off"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -8527,7 +11103,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Searching for Devices",
+                text: Language_default.translate("Searching for Devices"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -8581,7 +11157,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Add A Device",
+                text: Language_default.translate("Add A Device"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -8608,7 +11184,6 @@ SDK - v${this.sdkVersion}`;
       this._bluetooth = false;
       this._activateBluetooth();
       this._setState("Switch");
-      this.switch();
       this._pairedNetworks = this.tag("Networks.PairedNetworks");
       this._availableNetworks = this.tag("Networks.AvailableNetworks");
       this.renderDeviceList();
@@ -8628,14 +11203,13 @@ SDK - v${this.sdkVersion}`;
       });
     }
     _focus() {
-      this._setState("Switch");
+      this._setState("AddADevice");
       this._enable();
       if (this._bluetooth) {
         this.tag("Networks").visible = true;
         this.tag("AddADevice").visible = true;
         this.tag("Switch.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
         this.renderDeviceList();
-        this._bt.startScan();
       }
     }
     _handleBack() {
@@ -8645,14 +11219,15 @@ SDK - v${this.sdkVersion}`;
       if (this._bluetooth) {
         this._bt.startScan();
       }
-      this.scanTimer = setInterval(() => {
+      this.scanTimer = Registry_default.setInterval(() => {
         if (this._bluetooth) {
           this._bt.startScan();
         }
-      }, 15e3);
+      }, 5e3);
     }
     _disable() {
-      clearInterval(this.scanTimer);
+      Registry_default.clearInterval(this.scanTimer);
+      this._bt.stopScan();
     }
     showAvailableDevices() {
       this.tag("Switch").patch({
@@ -8792,10 +11367,10 @@ SDK - v${this.sdkVersion}`;
         this._pairedList = result;
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag("List").h = this._pairedList.length * 90;
-        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index) => {
+        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index2) => {
           item.paired = true;
           return {
-            ref: "Paired" + index,
+            ref: "Paired" + index2,
             w: 1920 - 300,
             h: 90,
             type: BluetoothItem,
@@ -8816,9 +11391,9 @@ SDK - v${this.sdkVersion}`;
         });
         this._availableNetworks.h = this._otherList.length * 90;
         this._availableNetworks.tag("List").h = this._otherList.length * 90;
-        this._availableNetworks.tag("List").items = this._otherList.map((item, index) => {
+        this._availableNetworks.tag("List").items = this._otherList.map((item, index2) => {
           return {
-            ref: "Other" + index,
+            ref: "Other" + index2,
             w: 1920 - 300,
             h: 90,
             type: BluetoothItem,
@@ -8846,6 +11421,7 @@ SDK - v${this.sdkVersion}`;
             });
             Router_default.focusWidget("Fail");
           }
+          this.hideAvailableDevices();
         });
       } else if (option === "Connect") {
         this._bt.connect(this._pairedNetworks.tag("List").element._item.deviceID, this._pairedNetworks.tag("List").element._item.deviceType).then((result) => {
@@ -8885,7 +11461,7 @@ SDK - v${this.sdkVersion}`;
       } else if (option === "Unpair") {
         this._bt.unpair(this._pairedNetworks.tag("List").element._item.deviceID).then((result) => {
           let btName = this._pairedNetworks.tag("List").element._item.name;
-          if (result.success) {
+          if (result) {
             this.widgets.fail.notify({
               title: btName,
               msg: "Unpaired"
@@ -9037,6 +11613,8 @@ SDK - v${this.sdkVersion}`;
             this.tag("AddADevice").visible = false;
             this.tag("Switch.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
           }
+        }).catch(() => {
+          console.log("Cannot turn off Bluetooth");
         });
       } else {
         this._bt.enable().then((result) => {
@@ -9048,11 +11626,14 @@ SDK - v${this.sdkVersion}`;
             this.renderDeviceList();
             this._bt.startScan();
           }
+        }).catch(() => {
+          console.log("Cannot turn on Bluetooth");
         });
       }
     }
     _activateBluetooth() {
-      this._bt.activate().then(() => {
+      this._bt.activate().then((res) => {
+        console.log(res);
         this._bluetooth = true;
         this._bt.registerEvent("onDiscoveredDevice", () => {
           this.renderDeviceList();
@@ -9102,6 +11683,8 @@ SDK - v${this.sdkVersion}`;
             Router_default.focusWidget("Fail");
           }
         });
+      }).catch((err) => {
+        console.log(err);
       });
     }
     respondToPairingRequest(deviceID, responseValue) {
@@ -9277,12 +11860,12 @@ SDK - v${this.sdkVersion}`;
   var fiveMinutes = 300 * 1e3;
 
   // src/ui-components/mixins/withStyles.js
-  function withStyles(Base, styles2, theme) {
-    const _theme = theme || Base.theme;
-    const _styles = Base.styles ? clone(Base.styles, createStyles_default(styles2, _theme)) : createStyles_default(styles2, _theme);
-    return class extends Base {
+  function withStyles(Base2, styles2, theme) {
+    const _theme = theme || Base2.theme;
+    const _styles = Base2.styles ? clone(Base2.styles, createStyles_default(styles2, _theme)) : createStyles_default(styles2, _theme);
+    return class extends Base2 {
       static get name() {
-        return Base.name;
+        return Base2.name;
       }
       static get styles() {
         return _styles;
@@ -9677,10 +12260,10 @@ SDK - v${this.sdkVersion}`;
     get selectedIndex() {
       return this._selectedIndex;
     }
-    set selectedIndex(index) {
+    set selectedIndex(index2) {
       const prevSelected = this.selected;
-      if (index !== this._selectedIndex) {
-        this._selectedIndex = index;
+      if (index2 !== this._selectedIndex) {
+        this._selectedIndex = index2;
       }
       this._refocus();
       if (this.selected) {
@@ -9992,12 +12575,12 @@ SDK - v${this.sdkVersion}`;
       this._update.clear();
       this._refocus();
     }
-    scrollTo(index, duration = this._itemTransition.duration * 100) {
+    scrollTo(index2, duration = this._itemTransition.duration * 100) {
       if (duration === 0)
-        this.selectedIndex = index;
-      for (let i = 0; i !== Math.abs(this.selectedIndex - index); i++) {
+        this.selectedIndex = index2;
+      for (let i = 0; i !== Math.abs(this.selectedIndex - index2); i++) {
         setTimeout(() => {
-          this.selectedIndex > index ? this.selectPrevious() : this.selectNext();
+          this.selectedIndex > index2 ? this.selectPrevious() : this.selectNext();
         }, duration * i);
       }
       this.Items.transition("y").on("finish", () => this._smooth = false);
@@ -10468,7 +13051,7 @@ SDK - v${this.sdkVersion}`;
     fixed: true
   };
   var isUpperCase = (string) => /^[A-Z]$/.test(string);
-  var Key = class extends Button_default {
+  var Key2 = class extends Button_default {
     static _template() {
       return __spreadValues(__spreadValues({}, super._template()), KEY_DIMENSIONS);
     }
@@ -10527,7 +13110,7 @@ SDK - v${this.sdkVersion}`;
   };
 
   // src/ui-components/components/Keyboard/index.js
-  var Keyboard = class extends lightningjs_core_default.Component {
+  var Keyboard2 = class extends lightningjs_core_default.Component {
     _construct() {
       this._whenEnabled = new Promise((resolve) => this._firstEnable = resolve);
     }
@@ -10584,7 +13167,7 @@ SDK - v${this.sdkVersion}`;
     _createKeys(keys = []) {
       return keys.map((keyProps) => {
         const key = {
-          type: this.keyComponent || Key,
+          type: this.keyComponent || Key2,
           config: this.keysConfig
         };
         if (!keyProps) {
@@ -11052,7 +13635,7 @@ SDK - v${this.sdkVersion}`;
     discoverSSIDs() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, "startScan", {
-          incremental: true,
+          incremental: false,
           ssid: "",
           frequency: ""
         }).then((result) => {
@@ -11187,6 +13770,30 @@ SDK - v${this.sdkVersion}`;
         });
       });
     }
+    saveSSID(ssid, password, securityMode) {
+      console.log("SAVESSID");
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, "saveSSID", {
+          ssid,
+          passphrase: password,
+          securityMode
+        }).then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.error("SaveSSID Error", JSON.stringify(err));
+        });
+      });
+    }
+    clearSSID() {
+      console.log("CLEARSSID");
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, "clearSSID").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error in clear ssid");
+        });
+      });
+    }
   };
 
   // src/screens/JoinAnotherNetworkComponent.js
@@ -11219,7 +13826,15 @@ SDK - v${this.sdkVersion}`;
       wifi.connect({
         ssid: device.ssid,
         security: device.security
-      }, passphrase);
+      }, passphrase).then(() => {
+        wifi.saveSSID(device.ssid, passphrase, device.security).then((response) => {
+          if (response.result === 0) {
+          } else if (response.result !== 0) {
+            wifi.clearSSID().then((response2) => {
+            });
+          }
+        });
+      });
       Router_default.back();
     }
     static _template() {
@@ -11357,7 +13972,7 @@ SDK - v${this.sdkVersion}`;
         Keyboard: {
           y: 437,
           x: 400,
-          type: Keyboard,
+          type: Keyboard2,
           visible: true,
           zIndex: 2,
           formats: KEYBOARD_FORMATS.qwerty
@@ -11770,9 +14385,9 @@ SDK - v${this.sdkVersion}`;
           this._network.isConnectedToInternet().then((result) => {
             var connectionStatus = Language_default.translate("Internet Access: ");
             if (result) {
-              connectionStatus += "Connected";
+              connectionStatus += Language_default.translate("Connected");
             } else {
-              connectionStatus += "Not Connected";
+              connectionStatus += Language_default.translate("Not Connected");
             }
             setTimeout(() => {
               this.tag("TestInternetAccess.Loader").visible = false;
@@ -12118,7 +14733,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "WiFi",
+                text: Language_default.translate("WiFi"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -12142,7 +14757,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Ethernet",
+                text: Language_default.translate("Ethernet"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -12479,7 +15094,7 @@ SDK - v${this.sdkVersion}`;
           KeyBoard: {
             y: 501,
             x: 420,
-            type: Keyboard,
+            type: Keyboard2,
             visible: true,
             zIndex: 2,
             formats: KEYBOARD_FORMATS.qwerty
@@ -12512,10 +15127,10 @@ SDK - v${this.sdkVersion}`;
       } else {
         options = ["Connect", "Cancel"];
       }
-      this.tag("List").items = options.map((item2, index) => {
+      this.tag("List").items = options.map((item2, index2) => {
         return {
           ref: item2,
-          x: index === 0 ? 0 : 325 * index,
+          x: index2 === 0 ? 0 : 325 * index2,
           w: 325,
           h: 85,
           type: ConfirmAndCancel,
@@ -12556,6 +15171,13 @@ SDK - v${this.sdkVersion}`;
     }
     startConnect(password) {
       this._wifi.connect(this._item, password).then(() => {
+        this._wifi.saveSSID(this._item.ssid, password, this._item.security).then((response) => {
+          if (response.result === 0) {
+          } else if (response.result !== 0) {
+            this._wifi.clearSSID().then((response2) => {
+            });
+          }
+        });
         Router_default.back();
       });
     }
@@ -12797,7 +15419,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "WiFi On/Off",
+                text: Language_default.translate("WiFi On/Off"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -12868,7 +15490,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Join Another Network",
+                text: Language_default.translate("Join Another Network"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -12985,15 +15607,6 @@ SDK - v${this.sdkVersion}`;
               });
             }
           });
-          this._network.registerEvent("onConnectionStatusChanged", (notification) => {
-            if (notification.interface === "ETHERNET" && notification.status === "CONNECTED") {
-              this._wifi.setInterface("ETHERNET", true).then((res) => {
-                if (res.success) {
-                  this._wifi.setDefaultInterface("ETHERNET", true);
-                }
-              });
-            }
-          });
         }
       });
     }
@@ -13001,15 +15614,9 @@ SDK - v${this.sdkVersion}`;
       if (this.wifiStatus) {
         this._wifi.discoverSSIDs();
       }
-      this.scanTimer = setInterval(() => {
-        if (this.wifiStatus) {
-          this._wifi.discoverSSIDs();
-        }
-      }, 5e3);
     }
     _disable() {
-      console.log("going out");
-      clearInterval(this.scanTimer);
+      this._wifi.stopScan();
     }
     renderDeviceList(ssids) {
       this._wifi.getConnectedSSID().then((result) => {
@@ -13020,10 +15627,10 @@ SDK - v${this.sdkVersion}`;
         }
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag("List").h = this._pairedList.length * 90;
-        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index) => {
+        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index2) => {
           item.connected = true;
           return {
-            ref: "Paired" + index,
+            ref: "Paired" + index2,
             w: 1920 - 300,
             h: 90,
             type: WiFiItem,
@@ -13039,10 +15646,10 @@ SDK - v${this.sdkVersion}`;
         });
         this._availableNetworks.h = this._otherList.length * 90;
         this._availableNetworks.tag("List").h = this._otherList.length * 90;
-        this._availableNetworks.tag("List").items = this._otherList.map((item, index) => {
+        this._availableNetworks.tag("List").items = this._otherList.map((item, index2) => {
           item.connected = false;
           return {
-            ref: "Other" + index,
+            ref: "Other" + index2,
             w: 1620,
             h: 90,
             type: WiFiItem,
@@ -13159,6 +15766,8 @@ SDK - v${this.sdkVersion}`;
         if (list.index < list.length - 1)
           list.setNext();
         else if (list.index == list.length - 1) {
+          this._wifi.discoverSSIDs();
+          this._setState("JoinAnotherNetwork");
           if (listname === "MyDevices" && this._availableNetworks.tag("List").length > 0) {
             this._setState("AvailableDevices");
           }
@@ -13286,7 +15895,7 @@ SDK - v${this.sdkVersion}`;
         TimeBar: {
           x: 90,
           y: 93.5,
-          texture: Lightning_default.Tools.getRoundRect(1740, 30, 15, 0, 0, true, 4294967295)
+          texture: Lightning_default.Tools.getRoundRect(1740, 20, 10, 0, 0, true, 4294967295)
         },
         ProgressWrapper: {
           x: 90,
@@ -13295,16 +15904,33 @@ SDK - v${this.sdkVersion}`;
           h: 35,
           clipping: true,
           ProgressBar: {
-            texture: Lightning_default.Tools.getRoundRect(1740, 30, 15, 0, 0, true, CONFIG.theme.hex)
+            texture: Lightning_default.Tools.getRoundRect(1740, 20, 10, 0, 0, true, CONFIG.theme.hex)
+          }
+        },
+        Duration: {
+          x: 1690,
+          y: 125,
+          text: {
+            text: "00:00:00",
+            fontFace: CONFIG.language.font,
+            fontSize: 35,
+            textColor: 4294967295
           }
         },
         CurrentTime: {
-          x: 90,
-          y: 184.5
+          x: 140,
+          y: 60,
+          mountX: 0.5,
+          text: {
+            text: "00:00:00",
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            textColor: 4294967295
+          }
         },
         Buttons: {
           x: 820,
-          y: 200,
+          y: 125,
           children: [{
             src: Utils_default.asset("images/Media Player/Icon_Back_White_16k.png"),
             x: 17,
@@ -13318,11 +15944,11 @@ SDK - v${this.sdkVersion}`;
             x: 17,
             y: 17
           }].map((item, idx) => ({
-            x: idx * 100,
+            x: idx * 75,
             ControlIcon: {
               x: item.x,
               y: item.y,
-              texture: Lightning_default.Tools.getSvgTexture(item.src, 70, 70)
+              texture: Lightning_default.Tools.getSvgTexture(item.src, 50, 50)
             }
           }))
         }
@@ -13349,11 +15975,19 @@ SDK - v${this.sdkVersion}`;
     set duration(duration) {
       console.log(`duration was set = ${duration}`);
       this.videoDuration = duration;
+      this.tag("Duration").text.text = this.SecondsTohhmmss(duration);
     }
     set currentTime(currentTime) {
+      let value = 1740 * currentTime / this.videoDuration;
       this.tag("ProgressWrapper").patch({
-        w: 1740 * currentTime / this.videoDuration
+        w: value
       });
+      this.tag("CurrentTime").text.text = this.SecondsTohhmmss(currentTime);
+      if (value >= 50 && value <= 1690) {
+        this.tag("CurrentTime").x = 90 + value;
+      } else if (currentTime === 0) {
+        this.tag("CurrentTime").x = 140;
+      }
     }
     SecondsTohhmmss(totalSeconds) {
       this.hours = Math.floor(totalSeconds / 3600);
@@ -13368,6 +16002,16 @@ SDK - v${this.sdkVersion}`;
     hideLightningPlayerControls() {
       this.signal("hide");
     }
+    hideNextPrevious() {
+      this.isChannel = true;
+      this.tag("Buttons").children[0].visible = false;
+      this.tag("Buttons").children[2].visible = false;
+    }
+    showNextPrevious() {
+      this.isChannel = false;
+      this.tag("Buttons").children[0].visible = true;
+      this.tag("Buttons").children[2].visible = true;
+    }
     timer() {
       clearTimeout(timeout2);
       timeout2 = setTimeout(this.hideLightningPlayerControls.bind(this), 5e3);
@@ -13378,13 +16022,13 @@ SDK - v${this.sdkVersion}`;
           this.focus = this.toggle ? Utils_default.asset("images/Media Player/Icon_Play_Orange_16k.png") : Utils_default.asset("images/Media Player/Icon_Pause_Orange_16k.png");
           this.timer();
           this.tag("Buttons").children[1].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(this.focus, 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(this.focus, 50, 50)
           });
         }
         $exit() {
           this.unfocus = this.toggle ? Utils_default.asset("images/Media Player/Icon_Play_White_16k.png") : Utils_default.asset("images/Media Player/Icon_Pause_White_16k.png");
           this.tag("Buttons").children[1].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(this.unfocus, 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(this.unfocus, 50, 50)
           });
         }
         _handleEnter() {
@@ -13397,14 +16041,18 @@ SDK - v${this.sdkVersion}`;
           this.focus = this.toggle ? Utils_default.asset("images/Media Player/Icon_Play_Orange_16k.png") : Utils_default.asset("images/Media Player/Icon_Pause_Orange_16k.png");
           this.timer();
           this.tag("Buttons").children[1].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(this.focus, 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(this.focus, 50, 50)
           });
         }
         _handleRight() {
-          this._setState("Forward");
+          if (!this.isChannel) {
+            this._setState("Forward");
+          }
         }
         _handleLeft() {
-          this._setState("Rewind");
+          if (!this.isChannel) {
+            this._setState("Rewind");
+          }
         }
         _getFocused() {
           this.timer();
@@ -13413,12 +16061,12 @@ SDK - v${this.sdkVersion}`;
         $enter() {
           this.timer();
           this.tag("Buttons").children[2].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Next_Orange_16k.png"), 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Next_Orange_16k.png"), 50, 50)
           });
         }
         $exit() {
           this.tag("Buttons").children[2].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Next_White_16k.png"), 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Next_White_16k.png"), 50, 50)
           });
         }
         _handleRight() {
@@ -13437,12 +16085,12 @@ SDK - v${this.sdkVersion}`;
         $enter() {
           this.timer();
           this.tag("Buttons").children[0].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Back_Orange_16k.png"), 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Back_Orange_16k.png"), 50, 50)
           });
         }
         $exit() {
           this.tag("Buttons").children[0].tag("ControlIcon").patch({
-            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Back_White_16k.png"), 70, 70)
+            texture: Lightning_default.Tools.getSvgTexture(Utils_default.asset("images/Media Player/Icon_Back_White_16k.png"), 50, 50)
           });
         }
         _handleLeft() {
@@ -13464,11 +16112,148 @@ SDK - v${this.sdkVersion}`;
     }
   };
 
+  // src/MediaPlayer/ChannelItem.js
+  var ChannelItem = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 232,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        },
+        Item: {
+          w: 232,
+          h: 81
+        },
+        BottomLine: {
+          y: 81,
+          mountY: 0.5,
+          w: 232,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        }
+      };
+    }
+    set item(item) {
+      this.shows = item.shows;
+      this._item = item;
+      this.tag("Item").patch({
+        Title: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: this.index + 1 + "				" + item.channelName,
+            fontFace: CONFIG.language.font,
+            fontSize: 21,
+            textColor: 4294967295,
+            wordWrap: false,
+            wordWrapWidth: 232 - 20,
+            maxLines: 1,
+            textOverflow: "..."
+          }
+        }
+      });
+    }
+    _handleEnter() {
+      this.fireAncestors("$changeChannel", this._item.channelUrl, "showName", this._item.channelName);
+      this.fireAncestors("$focusChannel", this.index);
+    }
+    _focus() {
+      this.tag("TopLine").color = CONFIG.theme.hex;
+      this.tag("BottomLine").color = CONFIG.theme.hex;
+      this.tag("TopLine").h = 5;
+      this.tag("BottomLine").h = 5;
+      this.tag("Item.Title").text.fontStyle = "bold";
+      this.patch({
+        zIndex: 2
+      });
+    }
+    _unfocus() {
+      this.tag("TopLine").color = 4294967295;
+      this.tag("BottomLine").color = 4294967295;
+      this.tag("TopLine").h = 3;
+      this.tag("BottomLine").h = 3;
+      this.tag("Item.Title").text.fontStyle = "normal";
+      this.patch({
+        zIndex: 1
+      });
+    }
+  };
+
+  // src/MediaPlayer/ChannelOverlay.js
+  var channelIndex = 0;
+  var customChannels;
+  var customChannelUrl = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json";
+  fetch(customChannelUrl).then((res) => res.json()).then((out) => {
+    customChannels = out.data;
+  }).catch((err) => {
+    throw err;
+  });
+  var ChannelOverlay = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Wrapper: {
+          clipping: true,
+          w: 232,
+          h: 900,
+          Channels: {
+            y: 5,
+            w: 232,
+            h: 891,
+            type: Lightning_default.components.ListComponent,
+            itemSize: 81,
+            roll: true,
+            horizontal: false,
+            invertDirection: true,
+            itemScrollOffset: -10
+          }
+        }
+      };
+    }
+    _init() {
+    }
+    _focus() {
+      var options = [];
+      if (typeof customChannels == "object") {
+        options = [...customChannels, ...options];
+      }
+      this.$focusChannel(channelIndex);
+    }
+    $focusChannel(index2) {
+      channelIndex = index2;
+      this.tag("Channels").setIndex(index2);
+    }
+    _getFocused() {
+      return this.tag("Channels").element;
+    }
+    _handleDown() {
+      this.tag("Channels").setNext();
+    }
+    _handleUp() {
+      this.tag("Channels").setPrevious();
+    }
+  };
+
   // src/MediaPlayer/AAMPVideoPlayer.js
   var AAMPVideoPlayer = class extends Lightning_default.Component {
     set params(args) {
       this.currentIndex = args.currentIndex;
       this.data = args.list;
+      if (args.isUSB) {
+        this.isUSB = args.isUSB;
+      } else if (args.isChannel) {
+        this.isChannel = args.isChannel;
+        this.channelName = args.channelName;
+        this.showName = args.showName;
+        this.showDescription = args.description;
+        this.channelIndex = args.channelIndex;
+      }
       let url = args.url ? args.url : "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8";
       if (args.isAudio) {
         this.tag("Image").alpha = 1;
@@ -13501,19 +16286,70 @@ SDK - v${this.sdkVersion}`;
             }
           }
         },
-        PlayerControls: {
-          type: LightningPlayerControls,
-          x: 0,
-          y: 810,
+        InfoOverlay: {
+          x: 90,
+          y: 820,
           alpha: 0,
-          signals: {
-            pause: "pause",
-            play: "play",
-            hide: "hidePlayerControls",
-            fastfwd: "fastfwd",
-            fastrwd: "fastrwd",
-            nextTrack: "nextTrack",
-            prevTrack: "prevTrack"
+          zIndex: 3,
+          ShowName: {
+            text: {
+              text: "Show Name",
+              fontFace: CONFIG.language.font,
+              fontSize: 48,
+              fontStyle: "bold",
+              textColor: 4294967295,
+              wordWrap: true,
+              wordWrapWidth: 1350,
+              maxLines: 1
+            }
+          },
+          ChannelName: {
+            y: 50,
+            visible: false,
+            text: {
+              text: "Channel Name",
+              fontFace: CONFIG.language.font,
+              fontSize: 35,
+              textColor: 4294967295,
+              wordWrap: true,
+              wordWrapWidth: 1350,
+              maxLines: 1
+            }
+          }
+        },
+        PlayerControlsWrapper: {
+          alpha: 0,
+          h: 330,
+          w: 1920,
+          y: 750,
+          rect: true,
+          colorBottom: 4278190080,
+          colorTop: 0,
+          PlayerControls: {
+            y: 70,
+            type: LightningPlayerControls,
+            signals: {
+              pause: "pause",
+              play: "play",
+              hide: "hidePlayerControls",
+              fastfwd: "fastfwd",
+              fastrwd: "fastrwd",
+              nextTrack: "nextTrack",
+              prevTrack: "prevTrack"
+            }
+          }
+        },
+        ChannelWrapper: {
+          h: 1080,
+          w: 350,
+          x: -360,
+          rect: true,
+          colorLeft: 4278190080,
+          colorRight: 0,
+          ChannelOverlay: {
+            type: ChannelOverlay,
+            x: 50,
+            y: 92
           }
         }
       };
@@ -13594,10 +16430,13 @@ SDK - v${this.sdkVersion}`;
     }
     _mediaPlaybackStarted() {
       this.tag("PlayerControls").reset();
-      this.tag("PlayerControls").setSmooth("alpha", 1);
-      this.tag("PlayerControls").setSmooth("y", 675, {
+      this.tag("PlayerControlsWrapper").setSmooth("alpha", 1);
+      this.tag("PlayerControlsWrapper").setSmooth("y", 750, {
         duration: 1
       });
+      if (this.isUSB) {
+        this.tag("InfoOverlay").setSmooth("alpha", 1);
+      }
       this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5e3);
     }
     _mediaDurationChanged() {
@@ -13646,6 +16485,22 @@ SDK - v${this.sdkVersion}`;
       this.player.stop();
       this.hidePlayerControls();
     }
+    $changeChannel(url, showName, channelName) {
+      this.stop();
+      this.destroy();
+      try {
+        this.load({
+          title: showName,
+          url,
+          drmConfig: null
+        });
+        this.tag("ShowName").text.text = showName;
+        this.tag("ChannelName").text.text = channelName;
+        this.setVideoRect(0, 0, 1920, 1080);
+      } catch (error) {
+        console.error("Playback Failed " + error);
+      }
+    }
     nextTrack() {
       if (this.data[this.currentIndex + 1]) {
         this.currentIndex += 1;
@@ -13657,6 +16512,7 @@ SDK - v${this.sdkVersion}`;
             url: this.data[this.currentIndex].data.uri,
             drmConfig: null
           });
+          this.updateInfo();
           this.setVideoRect(0, 0, 1920, 1080);
         } catch (error) {
           console.error("Playback Failed " + error);
@@ -13674,6 +16530,7 @@ SDK - v${this.sdkVersion}`;
             url: this.data[this.currentIndex].data.uri,
             drmConfig: null
           });
+          this.updateInfo();
           this.setVideoRect(0, 0, 1920, 1080);
         } catch (error) {
           console.error("Playback Failed " + error);
@@ -13714,54 +16571,120 @@ SDK - v${this.sdkVersion}`;
       this.hidePlayerControls();
     }
     hidePlayerControls() {
-      this.tag("PlayerControls").setSmooth("y", 1080, {
+      this.tag("PlayerControlsWrapper").setSmooth("y", 1080, {
         duration: 0.7
       });
-      this.tag("PlayerControls").setSmooth("alpha", 0, {
+      this.tag("PlayerControlsWrapper").setSmooth("alpha", 0, {
         duration: 0.7
       });
       this._setState("HideControls");
+      this.hideInfo();
     }
     showPlayerControls() {
-      this.tag("PlayerControls").reset();
-      this.tag("PlayerControls").setSmooth("alpha", 1);
-      this.tag("PlayerControls").setSmooth("y", 675, {
+      this.tag("PlayerControlsWrapper").setSmooth("alpha", 1);
+      this.tag("PlayerControlsWrapper").setSmooth("y", 750, {
         duration: 0.7
       });
       this._setState("ShowControls");
       this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5e3);
     }
-    _handleUp() {
-      this.tag("PlayerControls").setSmooth("alpha", 1, {
-        duration: 1
-      });
-      this.tag("PlayerControls").setSmooth("y", 675, {
-        duration: 1
-      });
-      this._setState("ShowControls");
-      clearTimeout(this.timeout);
+    showInfo() {
+      if (this.isUSB || this.isChannel) {
+        this.tag("InfoOverlay").setSmooth("alpha", 1, {
+          duration: 0.3,
+          delay: 0.7
+        });
+      }
     }
-    _handleDown() {
-      this.hidePlayerControls();
-      this._setState("HideControls");
+    hideInfo() {
+      if (this.isUSB || this.isChannel) {
+        this.tag("InfoOverlay").setSmooth("alpha", 0, {
+          duration: 0.3
+        });
+      }
+    }
+    updateInfo() {
+      if (this.isUSB) {
+        this.tag("ShowName").text.text = this.data[this.currentIndex].data.displayName;
+      } else if (this.isChannel) {
+        this.tag("ShowName").text.text = this.showName;
+        this.tag("ChannelName").text.text = this.channelName;
+      }
     }
     _handleBack() {
       Router_default.back();
     }
     _unfocus() {
+      this.tag("Image").alpha = 0;
+      this.tag("InfoOverlay").alpha = 0;
+      this.isUSB = false;
+      this.isChannel = false;
       this.stop();
       this.destroy();
-      this.tag("Image").alpha = 0;
     }
     _focus() {
-      this._setState("ShowControls");
+      this._setState("HideControls");
+      this.updateInfo();
+      if (this.isChannel) {
+        this.tag("ChannelOverlay").$focusChannel(this.channelIndex);
+        this.tag("InfoOverlay").y = 790;
+        this.tag("ChannelName").visible = true;
+        this.tag("PlayerControls").hideNextPrevious();
+      } else {
+        this.tag("InfoOverlay").y = 820;
+        this.tag("ChannelName").visible = false;
+        this.tag("PlayerControls").showNextPrevious();
+      }
     }
     static _states() {
       return [class ShowControls extends this {
         _getFocused() {
           return this.tag("PlayerControls");
         }
+        _handleDown() {
+          this.hidePlayerControls();
+          this._setState("HideControls");
+        }
+        _handleUp() {
+          if (this.isChannel) {
+            this.hidePlayerControls();
+            this._setState("ChannelOverlay");
+          }
+        }
       }, class HideControls extends this {
+        _handleUp() {
+          this.showPlayerControls();
+          this._setState("ShowControls");
+          this.showInfo();
+          clearTimeout(this.timeout);
+        }
+        _handleLeft() {
+          if (this.isChannel) {
+            this._setState("ChannelOverlay");
+          }
+        }
+      }, class ChannelOverlay extends this {
+        $enter() {
+          this.tag("ChannelWrapper").setSmooth("x", 0, {
+            duration: 1
+          });
+        }
+        $exit() {
+          this.tag("ChannelWrapper").setSmooth("x", -360, {
+            duration: 1
+          });
+        }
+        _handleLeft() {
+          this.hidePlayerControls();
+          this._setState("HideControls");
+        }
+        _handleRight() {
+          this.hidePlayerControls();
+          this._setState("HideControls");
+        }
+        _getFocused() {
+          return this.tag("ChannelOverlay");
+        }
       }];
     }
   };
@@ -14157,10 +17080,10 @@ SDK - v${this.sdkVersion}`;
       if (!timeoutInterval) {
         timeoutInterval = "Off";
       }
-      let index = 0;
+      let index2 = 0;
       this.tag("List").items = this.options.map((item, id) => {
         if (timeoutInterval === item.value) {
-          index = id;
+          index2 = id;
         }
         return {
           w: 1920 - 300,
@@ -14169,7 +17092,7 @@ SDK - v${this.sdkVersion}`;
           item: item.value
         };
       });
-      this.tag("List").getElement(index).tag("Tick").visible = true;
+      this.tag("List").getElement(index2).tag("Tick").visible = true;
       this.fireAncestors("$registerInactivityMonitoringEvents").then((res) => {
         this.fireAncestors("$resetSleepTimer", timeoutInterval);
       }).catch((err) => {
@@ -14370,7 +17293,7 @@ SDK - v${this.sdkVersion}`;
     }
     _init() {
       this._appApi = new AppApi();
-      this.options = ["Deep Sleep", "Light Sleep"];
+      this.options = [Language_default.translate("Deep Sleep"), Language_default.translate("Light Sleep")];
       this.tag("EnerygySavingContents").h = this.options.length * 90;
       this.tag("EnerygySavingContents.List").h = this.options.length * 90;
       this.loadingAnimation = this.tag("Loader").animation({
@@ -14398,13 +17321,13 @@ SDK - v${this.sdkVersion}`;
       var standbyMode = "";
       this._appApi.getPreferredStandbyMode().then((result) => {
         if (result.preferredStandbyMode == "LIGHT_SLEEP") {
-          standbyMode = "Light Sleep";
+          standbyMode = Language_default.translate("Light Sleep");
         } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
-          standbyMode = "Deep Sleep";
+          standbyMode = Language_default.translate("Deep Sleep");
         }
-        this.tag("List").items = this.options.map((item, index) => {
+        this.tag("List").items = this.options.map((item, index2) => {
           return {
-            ref: "Option" + index,
+            ref: "Option" + index2,
             w: 1920 - 300,
             h: 90,
             type: EnergySavingsItem,
@@ -14465,7 +17388,7 @@ SDK - v${this.sdkVersion}`;
           y: 45,
           mountY: 0.5,
           text: {
-            text: item,
+            text: Language_default.translate(item),
             fontSize: 25,
             textColor: COLORS.textColor,
             fontFace: CONFIG.language.font
@@ -14496,7 +17419,7 @@ SDK - v${this.sdkVersion}`;
 
   // src/screens/OtherSettingsScreens/LanguageScreen.js
   var appApi3 = new AppApi();
-  var thunder3 = thunderJS_default({
+  var thunder4 = thunderJS_default({
     host: "127.0.0.1",
     port: 9998,
     default: 1
@@ -14540,9 +17463,9 @@ SDK - v${this.sdkVersion}`;
       this._Languages = this.tag("LanguageScreenContents.Languages");
       this._Languages.h = availableLanguages.length * 90;
       this._Languages.tag("List").h = availableLanguages.length * 90;
-      this._Languages.tag("List").items = availableLanguages.map((item, index) => {
+      this._Languages.tag("List").items = availableLanguages.map((item, index2) => {
         return {
-          ref: "Lng" + index,
+          ref: "Lng" + index2,
           w: 1620,
           h: 90,
           type: LanguageItem,
@@ -14551,12 +17474,12 @@ SDK - v${this.sdkVersion}`;
       });
       appApi3.deactivateResidentApp(loader3);
       appApi3.setVisibility("ResidentApp", true);
-      thunder3.call("org.rdk.RDKShell", "moveToFront", {
+      thunder4.call("org.rdk.RDKShell", "moveToFront", {
         client: "ResidentApp"
       }).then((result) => {
         console.log("ResidentApp moveToFront Success");
       });
-      thunder3.call("org.rdk.RDKShell", "setFocus", {
+      thunder4.call("org.rdk.RDKShell", "setFocus", {
         client: "ResidentApp"
       }).then((result) => {
         console.log("ResidentApp moveToFront Success");
@@ -14584,14 +17507,16 @@ SDK - v${this.sdkVersion}`;
           this._navigate("up");
         }
         _handleEnter() {
-          localStorage.setItem("Language", availableLanguages[this._Languages.tag("List").index]);
-          let path = location.pathname.split("index.html")[0];
-          let url = path.slice(-1) === "/" ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
-          let notification_url = location.origin + path + url;
-          console.log(notification_url);
-          appApi3.launchResident(notification_url, loader3);
-          appApi3.setVisibility("ResidentApp", false);
-          location.reload();
+          if (localStorage.getItem("Language") !== availableLanguages[this._Languages.tag("List").index]) {
+            localStorage.setItem("Language", availableLanguages[this._Languages.tag("List").index]);
+            let path = location.pathname.split("index.html")[0];
+            let url = path.slice(-1) === "/" ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
+            let notification_url = location.origin + path + url;
+            console.log(notification_url);
+            appApi3.launchResident(notification_url, loader3);
+            appApi3.setVisibility("ResidentApp", false);
+            location.reload();
+          }
         }
       }];
     }
@@ -15049,12 +17974,12 @@ SDK - v${this.sdkVersion}`;
     port: 9998,
     default: 1
   };
-  var thunder4 = thunderJS_default(config3);
+  var thunder5 = thunderJS_default(config3);
   var CECApi = class {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.HdmiCec_2";
-        thunder4.Controller.activate({
+        thunder5.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -15066,7 +17991,7 @@ SDK - v${this.sdkVersion}`;
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.HdmiCec_2";
-        thunder4.Controller.deactivate({
+        thunder5.Controller.deactivate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -15077,7 +18002,7 @@ SDK - v${this.sdkVersion}`;
     }
     getEnabled() {
       return new Promise((resolve, reject) => {
-        thunder4.call("org.rdk.HdmiCec_2", "getEnabled").then((result) => {
+        thunder5.call("org.rdk.HdmiCec_2", "getEnabled").then((result) => {
           resolve(result);
         }).catch((err) => {
           resolve({
@@ -15088,7 +18013,7 @@ SDK - v${this.sdkVersion}`;
     }
     setEnabled() {
       return new Promise((resolve, reject) => {
-        thunder4.call("org.rdk.HdmiCec_2", "setEnabled", {
+        thunder5.call("org.rdk.HdmiCec_2", "setEnabled", {
           enabled: true
         }).then((result) => {
           resolve(result);
@@ -15102,7 +18027,7 @@ SDK - v${this.sdkVersion}`;
     }
     performOTP() {
       return new Promise((resolve, reject) => {
-        thunder4.call("org.rdk.HdmiCec_2", "performOTPAction").then((result) => {
+        thunder5.call("org.rdk.HdmiCec_2", "performOTPAction").then((result) => {
           resolve(result);
         }).catch((err) => {
           console.error("CEC Otp Error", err);
@@ -15120,7 +18045,7 @@ SDK - v${this.sdkVersion}`;
     port: 9998,
     default: 1
   };
-  var thunder5 = thunderJS_default(config4);
+  var thunder6 = thunderJS_default(config4);
   var AdvanceSettingsScreen = class extends Lightning_default.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language_default.translate("Settings  Other Settings  Advanced Settings"));
@@ -15137,32 +18062,7 @@ SDK - v${this.sdkVersion}`;
         AdvanceScreenContents: {
           x: 200,
           y: 275,
-          UIVoice: {
-            alpha: 0.3,
-            type: SettingsMainItem,
-            Title: {
-              x: 10,
-              y: 45,
-              mountY: 0.5,
-              text: {
-                text: "UI Voice",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            },
-            Button: {
-              h: 45,
-              w: 45,
-              x: 1600,
-              mountX: 1,
-              y: 45,
-              mountY: 0.5,
-              src: Utils_default.asset("images/settings/Arrow.png")
-            }
-          },
           TTSOptions: {
-            y: 90,
             alpha: 0.3,
             type: SettingsMainItem,
             Title: {
@@ -15187,7 +18087,7 @@ SDK - v${this.sdkVersion}`;
             }
           },
           CECControl: {
-            y: 180,
+            y: 90,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -15211,7 +18111,7 @@ SDK - v${this.sdkVersion}`;
             }
           },
           Bug: {
-            y: 270,
+            y: 180,
             alpha: 0.3,
             type: SettingsMainItem,
             Title: {
@@ -15237,7 +18137,7 @@ SDK - v${this.sdkVersion}`;
           },
           Contact: {
             alpha: 0.3,
-            y: 360,
+            y: 270,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -15261,7 +18161,7 @@ SDK - v${this.sdkVersion}`;
             }
           },
           Device: {
-            y: 450,
+            y: 360,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -15522,6 +18422,7 @@ SDK - v${this.sdkVersion}`;
     }
     _init() {
       this._appApi = new AppApi();
+      this._network = new Network();
       this._setState("Info");
     }
     _focus() {
@@ -15770,7 +18671,7 @@ SDK - v${this.sdkVersion}`;
               y: 540,
               mountY: 0.5,
               text: {
-                text: `UI Version: 3.5, Build Version: , Timestamp: `,
+                text: `UI Version: 3.6, Build Version: , Timestamp: `,
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -15820,6 +18721,9 @@ SDK - v${this.sdkVersion}`;
         }
       };
     }
+    _init() {
+      this._network = new Network();
+    }
     _focus() {
       this._setState("DeviceInformationScreen");
       this.appApi = new AppApi();
@@ -15827,7 +18731,7 @@ SDK - v${this.sdkVersion}`;
         this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
       });
       this.appApi.getSystemVersions().then((res) => {
-        this.tag("FirmwareVersions.Value").text.text = `UI Version - 3.5 
+        this.tag("FirmwareVersions.Value").text.text = `UI Version - 3.6 
 Build Version - ${res.stbVersion} 
 Time Stamp - ${res.stbTimestamp} `;
       }).catch((err) => {
@@ -15850,20 +18754,26 @@ Time Stamp - ${res.stbTimestamp} `;
         });
         this.tag("SupportedDRM.Value").text.text = `${drms.substring(0, drms.length - 1)}`;
       });
-      this.appApi.getLocation().then((result) => {
-        console.log("getLocation from device info " + JSON.stringify(result));
-        var locationInfo = "";
-        if (result.city.length !== 0) {
-          locationInfo = "City: " + result.city;
+      this._network.isConnectedToInternet().then((result) => {
+        if (result.connectedToInternet === true) {
+          this.appApi.getLocation().then((result2) => {
+            console.log("getLocation from device info " + JSON.stringify(result2));
+            var locationInfo = "";
+            if (result2.city.length !== 0) {
+              locationInfo = "City: " + result2.city;
+            } else {
+              locationInfo = "City: N/A ";
+            }
+            if (result2.country.length !== 0) {
+              locationInfo += ", Country: " + result2.country;
+            } else {
+              locationInfo += ", Country: N/A ";
+            }
+            this.tag("Location.Value").text.text = `${locationInfo}`;
+          });
         } else {
-          locationInfo = "City: N/A ";
+          this.tag("Location.Value").text.text = `City: N/A, Country: N/A`;
         }
-        if (result.country.length !== 0) {
-          locationInfo += ", Country: " + result.country;
-        } else {
-          locationInfo += ", Country: N/A ";
-        }
-        this.tag("Location.Value").text.text = `${locationInfo}`;
       });
       this.appApi.getDeviceIdentification().then((result) => {
         console.log("from device Information screen getDeviceIdentification: " + JSON.stringify(result));
@@ -15959,17 +18869,17 @@ Time Stamp - ${res.stbTimestamp} `;
             RectangleDefault: {
               x: 110,
               y: 200,
-              w: 200,
+              w: 300,
               mountX: 0.5,
               h: 50,
               rect: true,
               color: CONFIG.theme.hex,
               Update: {
-                x: 100,
+                x: 170,
                 y: 25,
                 mount: 0.5,
                 text: {
-                  text: "Check for Update",
+                  text: Language_default.translate("Check for Update"),
                   fontFace: CONFIG.language.font,
                   fontSize: 24
                 }
@@ -15986,12 +18896,12 @@ Time Stamp - ${res.stbTimestamp} `;
         port: 9998,
         default: 1
       };
-      const thunder9 = thunderJS_default(config7);
+      const thunder10 = thunderJS_default(config7);
       const systemcCallsign = "org.rdk.System.1";
-      thunder9.Controller.activate({
+      thunder10.Controller.activate({
         callsign: systemcCallsign
       }).then((res) => {
-        thunder9.on(callsign, "onFirmwareUpdateStateChange", (notification) => {
+        thunder10.on(callsign, "onFirmwareUpdateStateChange", (notification) => {
           console.log(`Tanjirou's notification : on Firmware update state changed notifcation = ${JSON.stringify(notification)}`);
           if (state3[notification.firmwareUpdateStateChange] == "Downloading") {
             this.downloadInterval = setInterval(() => {
@@ -16069,6 +18979,9 @@ Time Stamp - ${res.stbTimestamp} `;
   // src/screens/OtherSettingsScreens/RebootConfirmationScreen.js
   var appApi4 = new AppApi();
   var RebootConfirmationScreen = class extends Lightning_default.Component {
+    pageTransition() {
+      return "left";
+    }
     static _template() {
       return {
         w: 1920,
@@ -16083,7 +18996,7 @@ Time Stamp - ${res.stbTimestamp} `;
             y: 0,
             mountX: 0.5,
             text: {
-              text: "Reboot",
+              text: Language_default.translate("Reboot"),
               fontFace: CONFIG.language.font,
               fontSize: 40,
               textColor: CONFIG.theme.hex
@@ -16102,7 +19015,7 @@ Time Stamp - ${res.stbTimestamp} `;
             y: 125,
             mountX: 0.5,
             text: {
-              text: "Click Confirm to reboot!",
+              text: Language_default.translate("Click Confirm to reboot!"),
               fontFace: CONFIG.language.font,
               fontSize: 25
             }
@@ -16125,7 +19038,7 @@ Time Stamp - ${res.stbTimestamp} `;
                 y: 25,
                 mount: 0.5,
                 text: {
-                  text: "Confirm",
+                  text: Language_default.translate("Confirm"),
                   fontFace: CONFIG.language.font,
                   fontSize: 22,
                   textColor: 4278190080
@@ -16144,7 +19057,7 @@ Time Stamp - ${res.stbTimestamp} `;
                 y: 25,
                 mount: 0.5,
                 text: {
-                  text: "Cancel",
+                  text: Language_default.translate("Cancel"),
                   fontFace: CONFIG.language.font,
                   fontSize: 22,
                   textColor: 4278190080
@@ -16282,14 +19195,6 @@ Time Stamp - ${res.stbTimestamp} `;
         _handleUp() {
         }
         _handleDown() {
-        }
-        _handleKey(key) {
-          console.log("key press after reboot ", key);
-        }
-        _captureKey(key) {
-          if (key) {
-            console.log("capture key press after reboot ", key);
-          }
         }
       }];
     }
@@ -16816,9 +19721,9 @@ Time Stamp - ${res.stbTimestamp} `;
           options = [...res.supportedAudioModes];
           this.tag("HdmiOutputScreenContents").h = options.length * 90;
           this.tag("HdmiOutputScreenContents.List").h = options.length * 90;
-          this.tag("HdmiOutputScreenContents.List").items = options.map((item, index) => {
+          this.tag("HdmiOutputScreenContents.List").items = options.map((item, index2) => {
             return {
-              ref: "Option" + index,
+              ref: "Option" + index2,
               w: 1920 - 300,
               h: 90,
               type: VideoAndAudioItem,
@@ -16856,7 +19761,7 @@ Time Stamp - ${res.stbTimestamp} `;
   };
 
   // src/screens/VideoAndAudioScreens/ResolutionScreen.js
-  var thunder6 = thunderJS_default({
+  var thunder7 = thunderJS_default({
     host: "127.0.0.1",
     port: 9998,
     default: 1
@@ -16916,7 +19821,7 @@ Time Stamp - ${res.stbTimestamp} `;
           }
         }]
       });
-      thunder6.on("org.rdk.DisplaySettings", "resolutionChanged", (notification) => {
+      thunder7.on("org.rdk.DisplaySettings", "resolutionChanged", (notification) => {
         const items = this.tag("List").items;
         items.forEach((element) => {
           element.tag("Item.Tick").visible = false;
@@ -16943,14 +19848,14 @@ Time Stamp - ${res.stbTimestamp} `;
           options = [...res];
           this.tag("ResolutionScreenContents").h = options.length * 90;
           this.tag("ResolutionScreenContents.List").h = options.length * 90;
-          this.tag("List").items = options.map((item, index) => {
+          this.tag("List").items = options.map((item, index2) => {
             var bool = false;
             if (resolution === item) {
               bool = true;
-              sIndex = index;
+              sIndex = index2;
             }
             return {
-              ref: "Option" + index,
+              ref: "Option" + index2,
               w: 1920 - 300,
               h: 90,
               type: VideoAndAudioItem,
@@ -17675,9 +20580,9 @@ Time Stamp - ${res.stbTimestamp} `;
     }
     _handleBack() {
       if (!(this.cwd.length === 0)) {
-        let clone2 = [...this.cwd];
-        clone2.pop();
-        let cwdname = clone2.join("/");
+        let clone3 = [...this.cwd];
+        clone3.pop();
+        let cwdname = clone3.join("/");
         usbApi.cd(cwdname).then((res) => {
           this.cwd.pop();
           this.loadData();
@@ -17745,7 +20650,8 @@ Time Stamp - ${res.stbTimestamp} `;
           Router_default.navigate("usb/player", {
             url: this.tag("Row1").element.data.uri,
             currentIndex: this.tag("Row1").element.idx,
-            list: this.tag("Row1").items
+            list: this.tag("Row1").items,
+            isUSB: true
           });
         }
         _handleLeft() {
@@ -17778,7 +20684,8 @@ Time Stamp - ${res.stbTimestamp} `;
             url: this.tag("Row2").element.data.uri,
             isAudio: true,
             list: this.tag("Row2").items,
-            currentIndex: this.tag("Row2").element.idx
+            currentIndex: this.tag("Row2").element.idx,
+            isUSB: true
           });
         }
         _handleRight() {
@@ -17813,7 +20720,6 @@ Time Stamp - ${res.stbTimestamp} `;
           this.traverseMinus();
         }
         _handleEnter() {
-          console.log(this.tag("Row3").items);
           Router_default.navigate("usb/image", {
             src: this.tag("Row3").element.data.uri,
             currentIndex: this.tag("Row3").element.idx,
@@ -17858,17 +20764,6 @@ Time Stamp - ${res.stbTimestamp} `;
           let dname = this.cwd.join("/") + "/" + this.tag("Row4").element.data.displayName;
           usbApi.cd(dname).then((res) => {
             this.cwd.push(this.tag("Row4").element.data.displayName);
-            console.log(`loading the data from the directory ${this.cwd}
-
-            and its data = music:${JSON.stringify(musicListInfo)}
-
-            Pictures : ${JSON.stringify(imageListInfo)}
-
-            videos : ${JSON.stringify(videoListInfo)}
-
-            folders : ${JSON.stringify(UsbInnerFolderListInfo)}
-
-            `);
             this.loadData();
           }).catch((err) => {
             console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
@@ -17957,7 +20852,6 @@ Time Stamp - ${res.stbTimestamp} `;
       });
     }
     loadData() {
-      console.log(`loading data from the directory ${this.cwd}`);
       let sumY = 0;
       this.index = 0;
       this.traversableRows = [];
@@ -18118,26 +21012,30 @@ Time Stamp - ${res.stbTimestamp} `;
             }
           }
         },
-        Next: {
-          x: 1060,
-          y: 1080 - 150,
+        Controls: {
+          x: 960,
+          y: 930,
+          h: 75,
           w: 100,
-          h: 100,
-          mount: 0.5,
-          texture: {
-            type: Lightning_default.textures.ImageTexture,
-            src: "static/images/Media Player/Icon_Next_White_16k.png"
-          }
-        },
-        Previous: {
-          x: 860,
-          y: 1080 - 150,
-          w: 100,
-          h: 100,
-          mount: 0.5,
-          texture: {
-            type: Lightning_default.textures.ImageTexture,
-            src: "static/images/Media Player/Icon_Back_White_16k.png"
+          Previous: {
+            x: -50,
+            w: 75,
+            h: 75,
+            mount: 0.5,
+            texture: {
+              type: Lightning_default.textures.ImageTexture,
+              src: "static/images/Media Player/Icon_Back_White_16k.png"
+            }
+          },
+          Next: {
+            x: 50,
+            w: 75,
+            h: 75,
+            mount: 0.5,
+            texture: {
+              type: Lightning_default.textures.ImageTexture,
+              src: "static/images/Media Player/Icon_Next_White_16k.png"
+            }
           }
         }
       };
@@ -18151,12 +21049,21 @@ Time Stamp - ${res.stbTimestamp} `;
         rect: true,
         color: 4278190080,
         w: 1920,
-        h: 2e3,
+        h: 1080,
         Logo: {
           mount: 0.5,
           x: 1920 / 2,
           y: 1080 / 2,
           src: Utils_default.asset("/images/splash/RDKLogo.png")
+        },
+        Sub: {
+          mountY: 1,
+          mountX: 0.5,
+          x: 1920 / 2,
+          y: 1e3,
+          w: 320,
+          h: 110,
+          src: Utils_default.asset("/images/splash/gracenote.png")
         }
       };
     }
@@ -18166,16 +21073,37 @@ Time Stamp - ${res.stbTimestamp} `;
     _init() {
       this.btApi = new BluetoothApi();
     }
+    checkPath(path) {
+      if (path === "ui") {
+        return "ui";
+      }
+      return "menu";
+    }
     _focus() {
       let path = "splash/bluetooth";
+      var map = {
+        37: false,
+        38: false,
+        39: false,
+        40: false
+      };
+      const handler = (e) => {
+        if (e.keyCode in map) {
+          map[e.keyCode] = true;
+          if (map[37] && map[38] && map[39] && map[40]) {
+            path = "ui";
+          }
+        }
+      };
+      Registry_default.addEventListener(document, "keydown", handler);
       this.btApi.getPairedDevices().then((devices) => {
         console.log(devices);
         if (devices.length > 0 || Storage_default.get("setup")) {
-          path = "menu";
+          path = this.checkPath(path);
         }
       }).catch(() => {
         console.log("Paired Device Error");
-        path = "menu";
+        path = this.checkPath(path);
       });
       setTimeout(() => {
         Router_default.navigate(path);
@@ -18188,7 +21116,7 @@ Time Stamp - ${res.stbTimestamp} `;
     static _template() {
       return {
         w: 1920,
-        h: 2e3,
+        h: 1080,
         rect: true,
         color: 4278190080,
         Bluetooth: {
@@ -18368,24 +21296,19 @@ Time Stamp - ${res.stbTimestamp} `;
   var LanguageScreen2 = class extends Lightning_default.Component {
     static _template() {
       return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 4278190080,
         Language: {
           x: 960,
           y: 270,
-          Background: {
-            x: 0,
-            y: 0,
-            w: 1920,
-            h: 2e3,
-            mount: 0.5,
-            rect: true,
-            color: 4278190080
-          },
           Title: {
             x: 0,
             y: 0,
             mountX: 0.5,
             text: {
-              text: "Language",
+              text: Language_default.translate("Language"),
               fontFace: CONFIG.language.font,
               fontSize: 40,
               textColor: CONFIG.theme.hex
@@ -18404,7 +21327,7 @@ Time Stamp - ${res.stbTimestamp} `;
             y: 125,
             mountX: 0.5,
             text: {
-              text: "Select a language",
+              text: Language_default.translate("Select a language"),
               fontFace: CONFIG.language.font,
               fontSize: 25
             }
@@ -18440,7 +21363,7 @@ Time Stamp - ${res.stbTimestamp} `;
                 y: 30,
                 mount: 0.5,
                 text: {
-                  text: "Continue Setup",
+                  text: Language_default.translate("Continue Setup"),
                   fontFace: CONFIG.language.font,
                   fontSize: 22,
                   textColor: 4278190080,
@@ -18457,9 +21380,9 @@ Time Stamp - ${res.stbTimestamp} `;
       this._Languages = this.tag("LanguageScreenContents.Languages");
       this._Languages.h = availableLanguages.length * 90;
       this._Languages.tag("List").h = availableLanguages.length * 90;
-      this._Languages.tag("List").items = availableLanguages.map((item, index) => {
+      this._Languages.tag("List").items = availableLanguages.map((item, index2) => {
         return {
-          ref: "Lng" + index,
+          ref: "Lng" + index2,
           w: 1620,
           h: 90,
           type: LanguageItem,
@@ -18493,14 +21416,16 @@ Time Stamp - ${res.stbTimestamp} `;
           }
         }
         _handleEnter() {
-          localStorage.setItem("Language", availableLanguages[this._Languages.tag("List").index]);
-          let path = location.pathname.split("index.html")[0];
-          let url = path.slice(-1) === "/" ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
-          let notification_url = location.origin + path + url;
-          console.log(notification_url);
-          appApi6.launchResident(notification_url, loader4);
-          appApi6.setVisibility("ResidentApp", false);
-          location.reload();
+          if (localStorage.getItem("Language") !== availableLanguages[this._Languages.tag("List").index]) {
+            localStorage.setItem("Language", availableLanguages[this._Languages.tag("List").index]);
+            let path = location.pathname.split("index.html")[0];
+            let url = path.slice(-1) === "/" ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
+            let notification_url = location.origin + path + url;
+            console.log(notification_url);
+            appApi6.launchResident(notification_url, loader4);
+            appApi6.setVisibility("ResidentApp", false);
+            location.reload();
+          }
         }
       }, class Continue extends this {
         $enter() {
@@ -18551,27 +21476,23 @@ Time Stamp - ${res.stbTimestamp} `;
 
   // src/screens/SplashScreens/NetworkScreen.js
   var wifi3 = new Wifi();
+  var network = new Network();
   var NetworkScreen = class extends Lightning_default.Component {
     static _template() {
       return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 4278190080,
         Network: {
           x: 960,
           y: 270,
-          Background: {
-            x: 0,
-            y: 0,
-            w: 1920,
-            h: 2e3,
-            mount: 0.5,
-            rect: true,
-            color: 4278190080
-          },
           Title: {
             x: 0,
             y: 0,
             mountX: 0.5,
             text: {
-              text: "Network Configuration",
+              text: Language_default.translate("Network Configuration"),
               fontFace: CONFIG.language.font,
               fontSize: 40,
               textColor: CONFIG.theme.hex
@@ -18590,7 +21511,7 @@ Time Stamp - ${res.stbTimestamp} `;
             y: 125,
             mountX: 0.5,
             text: {
-              text: "Select a network interface",
+              text: Language_default.translate("Select a network interface"),
               fontFace: CONFIG.language.font,
               fontSize: 25
             }
@@ -18606,7 +21527,7 @@ Time Stamp - ${res.stbTimestamp} `;
                 y: 45,
                 mountY: 0.5,
                 text: {
-                  text: "WiFi",
+                  text: Language_default.translate("WiFi"),
                   textColor: COLORS.titleColor,
                   fontFace: CONFIG.language.font,
                   fontSize: 25
@@ -18621,12 +21542,34 @@ Time Stamp - ${res.stbTimestamp} `;
                 y: 45,
                 mountY: 0.5,
                 text: {
-                  text: "Ethernet",
+                  text: Language_default.translate("Ethernet"),
                   textColor: COLORS.titleColor,
                   fontFace: CONFIG.language.font,
                   fontSize: 25
                 }
               }
+            },
+            Skip: {
+              x: 820,
+              y: 250,
+              w: 300,
+              mountX: 0.5,
+              h: 60,
+              rect: true,
+              color: 4294967295,
+              Title: {
+                x: 150,
+                y: 30,
+                mount: 0.5,
+                text: {
+                  text: Language_default.translate("Skip"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 4278190080,
+                  fontStyle: "bold"
+                }
+              },
+              visible: true
             }
           }
         }
@@ -18673,16 +21616,189 @@ Time Stamp - ${res.stbTimestamp} `;
           wifi3.setInterface("ETHERNET", true).then((res) => {
             if (res.success) {
               wifi3.setDefaultInterface("ETHERNET", true).then(() => {
-                Router_default.navigate("menu");
+                network.getInterfaces().then((res2) => {
+                  let eth = res2.filter((item) => item.interface == "ETHERNET");
+                  if (eth[0].interface == "ETHERNET" && eth[0].enabled == true && eth[0].connected == true) {
+                    Router_default.navigate("menu");
+                  } else if (eth[0].interface == "ETHERNET" && eth[0].connected == false) {
+                    Router_default.navigate("splash/networkPrompt");
+                  }
+                });
               });
             }
           });
         }
         _handleDown() {
-          this._setState("WiFi");
+          this._setState("Skip");
         }
         _handleUp() {
           this._setState("WiFi");
+        }
+      }, class Skip extends this {
+        $enter() {
+          this._focus();
+        }
+        _focus() {
+          this.tag("Skip").patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag("Skip.Title").patch({
+            text: {
+              textColor: 4294967295
+            }
+          });
+        }
+        _unfocus() {
+          this.tag("Skip").patch({
+            color: 4294967295
+          });
+          this.tag("Skip.Title").patch({
+            text: {
+              textColor: 4278190080
+            }
+          });
+        }
+        _handleEnter() {
+          Router_default.navigate("menu");
+        }
+        _handleUp() {
+          this._setState("Ethernet");
+        }
+        $exit() {
+          this._unfocus();
+        }
+      }];
+    }
+  };
+
+  // src/screens/SplashScreens/NetworkPromptScreen.js
+  var appApi7 = new AppApi();
+  var NetworkPromptScreen = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 4278190080,
+        PromptScreen: {
+          x: 950,
+          y: 270,
+          Title: {
+            x: 0,
+            y: 0,
+            mountX: 0.5,
+            text: {
+              text: Language_default.translate("Note"),
+              fontFace: CONFIG.language.font,
+              fontSize: 40,
+              textColor: CONFIG.theme.hex
+            }
+          },
+          BorderTop: {
+            x: 0,
+            y: 75,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Info: {
+            x: 0,
+            y: 120,
+            InfoTitle: {
+              x: 0,
+              y: 0,
+              mountX: 0.5,
+              text: {
+                text: Language_default.translate("Ethernet cable is not connected"),
+                fontFace: CONFIG.language.font,
+                fontSize: 30
+              }
+            }
+          },
+          Buttons: {
+            x: 200,
+            y: 200,
+            w: 440,
+            mountX: 0.5,
+            h: 50,
+            TryAgain: {
+              x: 0,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 4294967295,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language_default.translate("Try Again"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 4278190080
+                }
+              }
+            }
+          },
+          BorderBottom: {
+            x: 0,
+            y: 300,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Loader: {
+            x: 0,
+            y: 150,
+            mountX: 0.5,
+            w: 90,
+            h: 90,
+            zIndex: 2,
+            src: Utils_default.asset("images/settings/Loading.gif"),
+            visible: false
+          }
+        }
+      };
+    }
+    _focus() {
+      this._setState("TryAgain");
+    }
+    _handleBack() {
+      Router_default.navigate("splash/networkPrompt");
+    }
+    static _states() {
+      return [class TryAgain extends this {
+        $enter() {
+          this._focus();
+        }
+        _handleEnter() {
+          Router_default.navigate("splash/network");
+        }
+        _focus() {
+          this.tag("TryAgain").patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag("TryAgain.Title").patch({
+            text: {
+              textColor: 4294967295
+            }
+          });
+        }
+        _unfocus() {
+          this.tag("TryAgain").patch({
+            color: 4294967295
+          });
+          this.tag("TryAgain.Title").patch({
+            text: {
+              textColor: 4278190080
+            }
+          });
+        }
+        $exit() {
+          this._unfocus();
         }
       }];
     }
@@ -18693,24 +21809,19 @@ Time Stamp - ${res.stbTimestamp} `;
   var NetworkList = class extends Lightning_default.Component {
     static _template() {
       return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 4278190080,
         NetworkList: {
           x: 950,
           y: 270,
-          Background: {
-            x: 0,
-            y: 0,
-            w: 1920,
-            h: 2e3,
-            mount: 0.5,
-            rect: true,
-            color: 4278190080
-          },
           Title: {
             x: 0,
             y: 0,
             mountX: 0.5,
             text: {
-              text: "Network Configuration",
+              text: Language_default.translate("Network Configuration"),
               fontFace: CONFIG.language.font,
               fontSize: 40,
               textColor: CONFIG.theme.hex
@@ -18729,7 +21840,7 @@ Time Stamp - ${res.stbTimestamp} `;
             y: 125,
             mountX: 0.5,
             text: {
-              text: "Select a wifi network",
+              text: Language_default.translate("Select a wifi network"),
               fontFace: CONFIG.language.font,
               fontSize: 25
             }
@@ -18791,7 +21902,7 @@ Time Stamp - ${res.stbTimestamp} `;
               y: 45,
               mountY: 0.5,
               text: {
-                text: "Join Another Network",
+                text: Language_default.translate("Join Another Network"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -18903,14 +22014,9 @@ Time Stamp - ${res.stbTimestamp} `;
       if (this.wifiStatus) {
         this._wifi.discoverSSIDs();
       }
-      this.scanTimer = setInterval(() => {
-        if (this.wifiStatus) {
-          this._wifi.discoverSSIDs();
-        }
-      }, 5e3);
     }
     _unfocus() {
-      clearInterval(this.scanTimer);
+      this._wifi.stopScan();
     }
     renderDeviceList(ssids) {
       this._wifi.getConnectedSSID().then((result) => {
@@ -18921,10 +22027,10 @@ Time Stamp - ${res.stbTimestamp} `;
         }
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag("List").h = this._pairedList.length * 90;
-        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index) => {
+        this._pairedNetworks.tag("List").items = this._pairedList.map((item, index2) => {
           item.connected = true;
           return {
-            ref: "Paired" + index,
+            ref: "Paired" + index2,
             w: 1920 - 300,
             h: 90,
             type: WiFiItem,
@@ -18940,10 +22046,10 @@ Time Stamp - ${res.stbTimestamp} `;
         });
         this._availableNetworks.h = this._otherList.length * 90;
         this._availableNetworks.tag("List").h = this._otherList.length * 90;
-        this._availableNetworks.tag("List").items = this._otherList.map((item, index) => {
+        this._availableNetworks.tag("List").items = this._otherList.map((item, index2) => {
           item.connected = false;
           return {
-            ref: "Other" + index,
+            ref: "Other" + index2,
             w: 1620,
             h: 90,
             type: WiFiItem,
@@ -19004,6 +22110,8 @@ Time Stamp - ${res.stbTimestamp} `;
         if (list.index < list.length - 1)
           list.setNext();
         else if (list.index == list.length - 1) {
+          wifi4.discoverSSIDs();
+          this._setState("JoinAnotherNetwork");
           if (listname === "MyDevices" && this._availableNetworks.tag("List").length > 0) {
             this._setState("AvailableDevices");
           }
@@ -19094,20 +22202,1235 @@ Time Stamp - ${res.stbTimestamp} `;
       path: "splash/network",
       component: NetworkScreen
     }, {
+      path: "splash/networkPrompt",
+      component: NetworkPromptScreen
+    }, {
       path: "splash/networkList",
       component: NetworkList
     }]
   };
 
+  // src/items/item.js
+  var Item = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Item: {
+          w: 300,
+          h: 150,
+          rect: true,
+          color: 4292602879,
+          shader: {
+            type: Lightning_default.shaders.RoundedRectangle,
+            radius: 10
+          }
+        },
+        OperatorLogo: {},
+        Shadow: {
+          alpha: 0,
+          zIndex: 2,
+          x: -25,
+          y: -25,
+          color: 1711276032,
+          texture: lng.Tools.getShadowRect(350, 180, 10, 10, 20)
+        }
+      };
+    }
+    set item(item) {
+      this._item = item;
+      this.tag("OperatorLogo").patch({
+        Logo: {
+          w: 300,
+          h: 150,
+          zIndex: 3,
+          src: Utils_default.asset(this._item.url)
+        }
+      });
+    }
+    _focus() {
+      this.tag("Item").zIndex = 3;
+      this.tag("Item").scale = 1.2;
+      this.tag("Item").color = 4294967295;
+      this.tag("Shadow").patch({
+        smooth: {
+          alpha: 1
+        }
+      });
+    }
+    _unfocus() {
+      this.tag("Item").zIndex = 1;
+      this.tag("Item").scale = 1;
+      this.tag("Item").color = 4292602879;
+      this.tag("Shadow").patch({
+        smooth: {
+          alpha: 0
+        }
+      });
+    }
+  };
+
+  // src/views/UIList.js
+  var homeApi = new HomeApi();
+  var UIList = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        w: 1920,
+        h: 1080,
+        src: Utils_default.asset("images/splash/Splash-Background.jpg"),
+        UI: {
+          x: 200,
+          y: 465,
+          type: List,
+          spacing: 20,
+          direction: "row",
+          scroll: {
+            after: 4
+          }
+        }
+      };
+    }
+    pageTransition() {
+      return "right";
+    }
+    _init() {
+      this.tag("UI").add(homeApi.getUIInfo().map((element, idx) => {
+        return {
+          ref: "UI" + idx,
+          w: 300,
+          h: 150,
+          type: Item,
+          item: element,
+          focus: 1.11,
+          unfocus: 1,
+          idx,
+          bar: 12
+        };
+      }));
+    }
+    _getFocused() {
+      return this.tag("UI");
+    }
+    _handleEnter() {
+      if (this.tag("UI").currentItem._item.title != "DEFAULT") {
+        console.log("Redirect to url");
+        return;
+      }
+      Router_default.navigate("menu");
+    }
+  };
+
+  // node_modules/@lightningjs/ui-components/Styles/Layout.js
+  var GRID = {
+    gutters: {
+      horizontal: 80,
+      vertical: 40
+    },
+    margin: {
+      x: 80,
+      y: 112
+    },
+    spacingIncrement: 8,
+    columnWidth: 110
+  };
+  var SCREEN2 = {
+    w: 1920,
+    h: 1080
+  };
+  function getDimensions(obj = {}, fallback = {}) {
+    let {
+      w,
+      h,
+      ratioX,
+      ratioY,
+      upCount
+    } = obj;
+    let fallbackW = fallback.w || 0;
+    let fallbackH = fallback.h || 0;
+    let dimensions = {};
+    if (w && h) {
+      dimensions = {
+        w,
+        h
+      };
+    } else if (h && ratioX && ratioY) {
+      dimensions = {
+        w: Math.round(h * ratioX / ratioY),
+        h
+      };
+    } else if (ratioX && ratioY && upCount) {
+      dimensions = getItemRatioDimensions(ratioX, ratioY, upCount);
+    } else if (h && upCount) {
+      dimensions = {
+        w: Math.round(calculateColumnWidth(upCount)),
+        h
+      };
+    } else if (h) {
+      dimensions = {
+        w: fallbackW,
+        h
+      };
+    } else if (w) {
+      dimensions = {
+        w,
+        h: fallbackH
+      };
+    } else {
+      dimensions = {
+        w: fallbackW,
+        h: fallbackH
+      };
+    }
+    dimensions = __spreadProps(__spreadValues({}, dimensions), {
+      ratioX,
+      ratioY,
+      upCount
+    });
+    return dimensions;
+  }
+  function getItemRatioDimensions(ratioX, ratioY, upCount) {
+    let w, h;
+    if (ratioX && ratioY && upCount) {
+      w = Math.round(calculateColumnWidth(upCount));
+      h = Math.round(w / ratioX * ratioY);
+    } else {
+      w = 0;
+      h = 0;
+    }
+    return {
+      w,
+      h
+    };
+  }
+  function calculateColumnWidth(upCount) {
+    let rowWidth = SCREEN2.w - GRID.margin.x * 2;
+    if (upCount) {
+      let columnGapTotal = (upCount - 1) * GRID.gutters.vertical;
+      let totalColumnsWidth = rowWidth - columnGapTotal;
+      let itemWidth = totalColumnsWidth / upCount;
+      return itemWidth;
+    }
+    return rowWidth;
+  }
+
+  // node_modules/@lightningjs/ui-components/Styles/Colors.js
+  function getHexColor2(hex, alpha = 100) {
+    if (!hex) {
+      return 0;
+    }
+    let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
+    let str = `0x${hexAlpha}${hex}`;
+    return parseInt(Number(str), 10);
+  }
+  function getValidColor(color) {
+    if (/^0x[0-9a-fA-F]{8}/g.test(color)) {
+      return Number(color);
+    } else if (/^#[0-9a-fA-F]{6}/g.test(color)) {
+      return getHexColor2(color.substr(1, 6));
+    } else if (typeof color === "string" && /^[0-9]{8,10}/g.test(color)) {
+      return parseInt(color);
+    } else if (typeof color === "number" && /^[0-9]{8,10}/g.test(color.toString())) {
+      return color;
+    } else if (typeof color === "string" && color.indexOf("rgba") > -1) {
+      return rgba2argb(color);
+    } else if (typeof color === "string" && color.indexOf("rgb") > -1) {
+      let rgba = [...color.replace(/rgb\(|\)/g, "").split(","), "255"];
+      return lng.StageUtils.getArgbNumber(rgba);
+    }
+    return null;
+  }
+
+  // node_modules/@lightningjs/ui-components/Styles/createStyles.js
+  var createStyles_default2 = (styles2, theme) => {
+    return typeof styles2 === "function" ? styles2(theme) : styles2;
+  };
+
+  // node_modules/@lightningjs/ui-components/utils/index.js
+  function clone2(target, object) {
+    const _clone = __spreadValues({}, target);
+    if (!object || target === object)
+      return _clone;
+    for (const key in object) {
+      const value = object[key];
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        _clone[key] = getMergeValue2(key, target, object);
+      } else {
+        _clone[key] = value;
+      }
+    }
+    return _clone;
+  }
+  function getMergeValue2(key, target, object) {
+    const targetVal = target[key];
+    const objectVal = object[key];
+    const targetValType = typeof targetVal;
+    const objectValType = typeof objectVal;
+    if (targetValType !== objectValType || objectValType === "function" || Array.isArray(objectVal)) {
+      return objectVal;
+    }
+    if (objectVal && objectValType === "object") {
+      return clone2(targetVal, objectVal);
+    }
+    return objectVal;
+  }
+  function getDimension2(prop, component) {
+    if (!component)
+      return 0;
+    const transition = component.transition(prop);
+    if (transition.isRunning())
+      return transition.targetValue;
+    return component[prop];
+  }
+  var getX2 = getDimension2.bind(null, "x");
+  var getY2 = getDimension2.bind(null, "y");
+  function stringifyCompare(valA, valB) {
+    return JSON.stringify(valA) === JSON.stringify(valB);
+  }
+
+  // node_modules/@lightningjs/ui-components/Styles/Styles.js
+  var FOCUS_SCALE2 = {
+    tile: 48,
+    launchpad: 360,
+    background: 284
+  };
+  var BACKGROUND_DIMENSIONS2 = {
+    h: SCREEN2.h * ((SCREEN2.w + FOCUS_SCALE2.background) / SCREEN2.w),
+    w: SCREEN2.w * ((SCREEN2.w + FOCUS_SCALE2.background) / SCREEN2.w)
+  };
+
+  // node_modules/@lightningjs/ui-components/mixins/withStyles/index.js
+  function withStyles2(Base2, styles2, theme) {
+    const _theme = theme || Base2.theme;
+    const _styles = Base2.styles ? clone2(Base2.styles, createStyles_default2(styles2, _theme)) : createStyles_default2(styles2, _theme);
+    return class extends Base2 {
+      static get name() {
+        return Base2.name;
+      }
+      static get styles() {
+        return _styles;
+      }
+      get styles() {
+        return _styles;
+      }
+    };
+  }
+
+  // node_modules/@lightningjs/ui-components/mixins/withTags/index.js
+  function getPropertyDescriptor(path) {
+    return {
+      get() {
+        return this.tag(path);
+      },
+      configurable: true,
+      enumerable: true
+    };
+  }
+  function withTags(Base2) {
+    return class extends Base2 {
+      static get name() {
+        return Base2.name;
+      }
+      _construct() {
+        const tags = this.constructor.tags || [];
+        let name, path;
+        tags.forEach((tag) => {
+          if (typeof tag === "object") {
+            ({
+              name,
+              path
+            } = tag);
+          } else {
+            name = tag;
+            path = tag;
+          }
+          const key = "_" + name;
+          const descriptor = getPropertyDescriptor(path);
+          Object.defineProperty(Object.getPrototypeOf(this), key, descriptor);
+        });
+        super._construct && super._construct();
+      }
+    };
+  }
+
+  // node_modules/@lightningjs/ui-components/mixins/withUpdates/index.js
+  var import_debounce4 = __toModule(require_debounce());
+  function capital(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  function getPropertyDescriptor2(name, key) {
+    return {
+      get() {
+        const customGetter = this[`_get${capital(name)}`];
+        if (customGetter && typeof customGetter === "function") {
+          const value = customGetter.call(this, this[key]);
+          this[key] = value;
+        }
+        return this[key];
+      },
+      set(value) {
+        const oldValue = this[key];
+        if (value !== oldValue) {
+          const changeHandler = this[`_set${capital(name)}`];
+          if (changeHandler && typeof changeHandler === "function") {
+            value = changeHandler.call(this, value);
+          }
+          this[key] = value;
+          this._requestUpdateDebounce();
+        }
+      },
+      configurable: true,
+      enumerable: true
+    };
+  }
+  function withUpdates(Base2) {
+    return class extends Base2 {
+      static get name() {
+        return Base2.name;
+      }
+      _construct() {
+        let props = this.constructor.properties || [];
+        props.forEach((name) => {
+          const key = "_" + name;
+          const descriptor = getPropertyDescriptor2(name, key);
+          if (descriptor !== void 0) {
+            Object.defineProperty(Object.getPrototypeOf(this), name, descriptor);
+          }
+        });
+        this._whenEnabled = new Promise((resolve) => {
+          this._whenEnabledResolver = resolve;
+        });
+        this._requestUpdateDebounce = (0, import_debounce4.debounce)(this._requestUpdate.bind(this), 0);
+        super._construct && super._construct();
+      }
+      _firstEnable() {
+        this._readyForUpdates = true;
+        this._whenEnabledResolver();
+        this._update();
+        super._firstEnable && super._firstEnable();
+      }
+      _detach() {
+        super._detach();
+        this._requestUpdateDebounce.clear();
+      }
+      _requestUpdate() {
+        if (this._readyForUpdates) {
+          this._update();
+        }
+      }
+    };
+  }
+
+  // node_modules/@lightningjs/ui-components/mixins/withHandleKey/index.js
+  function withHandleKey(Base2) {
+    return class extends Base2 {
+      static get name() {
+        return Base2.name;
+      }
+      _handleKey(keyEvent) {
+        return this._processEvent(keyEvent);
+      }
+      _handleKeyRelease(keyEvent) {
+        return this._processEvent(keyEvent, "Release");
+      }
+      _processEvent(keyEvent, suffix = "") {
+        let {
+          key
+        } = keyEvent;
+        if (!key) {
+          const keyMap2 = this.stage.application.__keymap || {};
+          key = keyMap2[keyEvent.keyCode];
+        }
+        if (key && typeof this[`on${key}${suffix}`] === "function") {
+          return this[`on${key}${suffix}`].call(this, this, keyEvent) || false;
+        }
+        this.fireAncestors(`$on${key}${suffix}`, this, keyEvent);
+        return false;
+      }
+    };
+  }
+
+  // node_modules/@lightningjs/ui-components/mixins/withLayout/index.js
+  function withLayout(Base2) {
+    return class extends Base2 {
+      get itemLayout() {
+        return this._itemLayout;
+      }
+      set itemLayout(itemLayout) {
+        if (!stringifyCompare(this._itemLayout, itemLayout)) {
+          this._itemLayout = itemLayout;
+          const {
+            w,
+            h
+          } = getDimensions(itemLayout);
+          if (h || w) {
+            const {
+              w: width,
+              h: height
+            } = SCREEN2;
+            this.h = h || w * (height / width);
+            this.w = w || h * (width / height);
+            super._update && super._update();
+          }
+        }
+      }
+    };
+  }
+
+  // node_modules/@lightningjs/ui-components/elements/Base/index.js
+  var baseStyles = () => ({
+    getUnfocusScale: () => 1
+  });
+  var Base = class extends lightningjs_core_default.Component {
+    _construct() {
+      this._whenEnabled = new Promise((resolve) => this._whenEnabledResolver = resolve);
+      this._getFocusScale = this.styles.getFocusScale || function() {
+      };
+      this._getUnfocusScale = this.styles.getUnfocusScale || function() {
+      };
+    }
+    _firstEnable() {
+      this._whenEnabledResolver();
+    }
+    _init() {
+      this._update();
+    }
+    _update() {
+    }
+    _focus() {
+      if (this._smooth === void 0)
+        this._smooth = true;
+      this._update();
+    }
+    _unfocus() {
+      this._update();
+    }
+  };
+  function withMixins(baseComponent) {
+    return withLayout(withUpdates(withTags(withHandleKey(baseComponent))));
+  }
+  var Base_default = withMixins(withStyles2(Base, baseStyles));
+
+  // node_modules/@lightningjs/ui-components/elements/ProgressBar/ProgressBar.styles.js
+  var ProgressBar_styles_default = {
+    h: 8,
+    w: 410,
+    radius: 4,
+    barColor: 4291743450,
+    progressColor: 4127195135
+  };
+
+  // node_modules/@lightningjs/ui-components/elements/ProgressBar/index.js
+  var ProgressBar = class extends withStyles2(Base_default, ProgressBar_styles_default) {
+    static _template() {
+      return {
+        Bar: {
+          zIndex: 1
+        },
+        Progress: {
+          alpha: 0,
+          zIndex: 2
+        }
+      };
+    }
+    static get properties() {
+      return ["animationDuration", "barColor", "progress", "progressColor", "radius"];
+    }
+    static get tags() {
+      return ["Bar", "Progress"];
+    }
+    _construct() {
+      super._construct();
+      this._w = this.styles.w;
+      this.h = this.styles.h;
+      this._progress = 0;
+      this._radius = this.styles.radius;
+      this._progressColor = this.styles.progressColor;
+      this._barColor = this.styles.barColor;
+      this._animationDuration = 0;
+    }
+    _init() {
+      this._update();
+    }
+    set w(w) {
+      if (this._w !== w) {
+        this._w = w;
+        this._update();
+      }
+    }
+    get w() {
+      return this._w;
+    }
+    _update() {
+      const p = this.w * this.progress;
+      const w = p <= 0 ? 0 : Math.min(p, this._w);
+      this._Bar.texture = lightningjs_core_default.Tools.getRoundRect(this.w - 2, this.h, this.radius, 0, 0, true, this.barColor);
+      this._Progress.texture = lightningjs_core_default.Tools.getRoundRect(w + 1, this.h, this.radius, 0, 0, true, this.progressColor);
+      this._Progress.smooth = {
+        w: [w, {
+          duration: this._animationDuration
+        }],
+        alpha: Number(w > 0)
+      };
+    }
+    _setBarColor(barColor) {
+      return getValidColor(barColor);
+    }
+    _setProgressColor(progressColor) {
+      return getValidColor(progressColor);
+    }
+  };
+
+  // src/items/AppStoreItem.js
+  var AppStoreItem = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Shadow: {
+          y: -10,
+          alpha: 0,
+          rect: true,
+          color: CONFIG.theme.hex,
+          h: this.height + 20,
+          w: this.width
+        },
+        Image: {
+          h: this.height,
+          w: this.width
+        },
+        Overlay: {
+          alpha: 0,
+          rect: true,
+          color: 2852126720,
+          h: this.height,
+          w: this.width,
+          OverlayText: {
+            alpha: 0,
+            mount: 0.5,
+            x: this.width / 2,
+            y: this.height / 2,
+            text: {
+              text: "Installing",
+              fontFace: CONFIG.language.font,
+              fontSize: 20
+            },
+            ProgressBar: {
+              y: 30,
+              x: -50,
+              type: ProgressBar,
+              w: 200,
+              progress: 1,
+              barColor: 4284637804,
+              progressColor: 4127195135,
+              animationDuration: 5
+            }
+          }
+        },
+        Text: {
+          alpha: 0,
+          y: this.height + 10,
+          text: {
+            text: "",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        }
+      };
+    }
+    set info(data) {
+      this.data = data;
+      if (data.url.startsWith("/images")) {
+        this.tag("Image").patch({
+          src: Utils_default.asset(data.url)
+        });
+      } else {
+        this.tag("Image").patch({
+          src: data.url
+        });
+      }
+      this.tag("Text").text.text = data.displayName;
+    }
+    static get width() {
+      return 300;
+    }
+    static get height() {
+      return 168;
+    }
+    _focus() {
+      this.scale = 1.15;
+      this.zIndex = 2;
+      this.tag("Shadow").alpha = 1;
+      this.tag("Text").alpha = 1;
+    }
+    _unfocus() {
+      this.scale = 1;
+      this.zIndex = 1;
+      this.tag("Shadow").alpha = 0;
+      this.tag("Text").alpha = 0;
+    }
+  };
+
+  // src/items/OptionsItems.js
+  var OptionsItem = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Wrapper: {
+          Text: {
+            text: {
+              text: "",
+              fontFace: CONFIG.language.font,
+              fontSize: 35
+            }
+          },
+          Bar: {
+            y: 50,
+            texture: Lightning_default.Tools.getRoundRect(0, 5, 0, 0, CONFIG.theme.hex, true, CONFIG.theme.hex)
+          }
+        }
+      };
+    }
+    _focus() {
+      this.tag("Bar").texture = Lightning_default.Tools.getRoundRect(this.tag("Text").finalW, 5, 0, 0, CONFIG.theme.hex, true, CONFIG.theme.hex);
+      this.tag("Text").text.fontStyle = "bold";
+    }
+    _unfocus() {
+      this.tag("Bar").texture = Lightning_default.Tools.getRoundRect(0, 5, 0, 0, CONFIG.theme.hex, true, CONFIG.theme.hex);
+      this.tag("Text").text.fontStyle = "";
+    }
+    static get width() {
+      return 200;
+    }
+    _handleEnter() {
+      this.fireAncestors("$selectOption", this.idx, this);
+      this._focus();
+    }
+    _handleDown() {
+      this._handleEnter();
+    }
+    set element(item) {
+      this.tag("Text").text.text = item;
+    }
+  };
+
+  // src/views/AppStore.js
+  var homeApi2 = new HomeApi();
+  var AppStore = class extends Lightning_default.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Apps"));
+    }
+    static _template() {
+      return {
+        rect: true,
+        h: 1080,
+        w: 1920,
+        color: CONFIG.theme.background,
+        Container: {
+          x: 200,
+          y: 270,
+          Options: {
+            type: List,
+            direction: "row",
+            spacing: 30
+          },
+          Apps: {
+            x: 20,
+            y: 120,
+            type: Grid,
+            columns: 5,
+            itemType: AppStoreItem,
+            w: 1920,
+            h: (AppStore.height + 90) * 2 + 2 * 20 - 10,
+            scroll: {
+              after: 2
+            },
+            spacing: 20
+          }
+        }
+      };
+    }
+    _init() {
+      let apps = homeApi2.getAllApps();
+      apps.shift();
+      const options = ["My Apps", "App Catalog", "ManageApps"];
+      this.tag("Apps").add(apps.map((element) => {
+        return {
+          h: AppStoreItem.height + 90,
+          w: AppStoreItem.width,
+          info: element
+        };
+      }));
+      this.tag("Options").add(options.map((element, idx) => {
+        return {
+          type: OptionsItem,
+          element,
+          w: OptionsItem.width,
+          idx
+        };
+      }));
+      this.options = {
+        0: () => {
+          this.tag("Apps").add(apps.map((element) => {
+            return {
+              h: AppStoreItem.height + 90,
+              w: AppStoreItem.width,
+              info: element
+            };
+          }));
+        },
+        1: () => {
+          this.tag("Apps").clear();
+        },
+        2: () => {
+          this.tag("Apps").clear();
+        }
+      };
+    }
+    $selectOption(option, obj) {
+      this.tag("Apps").clear();
+      obj._focus();
+      this.options[option]();
+      if (this.tag("Apps").length) {
+        this._setState("Apps");
+      }
+    }
+    _handleLeft() {
+      Router_default.focusWidget("Menu");
+    }
+    pageTransition() {
+      return "up";
+    }
+    _handleUp() {
+      this.widgets.menu.notify("TopPanel");
+    }
+    _focus() {
+      this._setState("Options");
+    }
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag("Options");
+        }
+        _handleDown() {
+          this._setState("Apps");
+        }
+      }, class Apps extends this {
+        _getFocused() {
+          return this.tag("Apps");
+        }
+        _handleUp() {
+          this._setState("Options");
+        }
+        _handleEnter() {
+          let appApi10 = new AppApi();
+          let applicationType = this.tag("Apps").currentItem.data.applicationType;
+          this.uri = this.tag("Apps").currentItem.data.uri;
+          applicationType = this.tag("Apps").currentItem.data.applicationType;
+          Storage_default.set("applicationType", applicationType);
+          console.log(this.uri, applicationType);
+          if (Storage_default.get("applicationType") == "Cobalt") {
+            appApi10.launchCobalt(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
+            appApi10.launchWeb(this.uri).then(() => {
+              appApi10.setVisibility("ResidentApp", false);
+              let path = location.pathname.split("index.html")[0];
+              let url = path.slice(-1) === "/" ? "static/overlayText/index.html" : "/static/overlayText/index.html";
+              let notification_url = location.origin + path + url;
+              appApi10.launchOverlay(notification_url, "TextOverlay");
+              Registry_default.setTimeout(() => {
+                appApi10.deactivateResidentApp("TextOverlay");
+                appApi10.zorder("HtmlApp");
+                appApi10.setVisibility("HtmlApp", true);
+              }, 9e3);
+            });
+          } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
+            appApi10.launchLightning(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
+            appApi10.launchNative(this.uri);
+            appApi10.setVisibility("ResidentApp", false);
+          } else if (Storage_default.get("applicationType") == "Amazon") {
+            console.log("Launching app");
+            fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
+              console.log(data);
+              data.plugins.forEach((element) => {
+                if (element.callsign === "Amazon") {
+                  console.log("Opening Amazon");
+                  appApi10.launchPremiumApp("Amazon");
+                  appApi10.setVisibility("ResidentApp", false);
+                }
+              });
+            }).catch((err) => {
+              console.log("Amazon not working");
+            });
+          } else if (Storage_default.get("applicationType") == "Netflix") {
+            console.log("Launching app");
+            fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
+              console.log(data);
+              data.plugins.forEach((element) => {
+                if (element.callsign === "Netflix") {
+                  console.log("Opening Netflix");
+                  appApi10.launchPremiumApp("Netflix");
+                  appApi10.setVisibility("ResidentApp", false);
+                }
+              });
+            }).catch((err) => {
+              console.log("Netflix not working");
+            });
+          }
+        }
+      }];
+    }
+  };
+
+  // src/items/SubscriptionItem.js
+  var index = 0;
+  var SubscriptionItem = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        SubscriptionItem: {
+          Title: {
+            y: 40,
+            mountY: 0.5,
+            text: {
+              text: "YouTube",
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+              wordWrap: false,
+              wordWrapWidth: 175,
+              fontStyle: "normal",
+              textOverflow: "ellipsis"
+            }
+          },
+          SubscriptionBox: {
+            x: 183,
+            y: 0,
+            Lines: {
+              TopLine: {
+                y: 0,
+                mountY: 0.5,
+                w: 484,
+                h: 3,
+                rect: true,
+                color: 4294967295
+              },
+              BottomLine: {
+                y: 77,
+                mountY: 0.5,
+                w: 484,
+                h: 3,
+                rect: true,
+                color: 4294967295
+              }
+            },
+            Arrows: {
+              ArrowBackward: {
+                h: 30,
+                w: 45,
+                x: 0,
+                scaleX: -1,
+                y: 38,
+                mountY: 0.5,
+                src: Utils_default.asset("images/settings/Arrow.png")
+              },
+              ArrowForward: {
+                h: 30,
+                w: 45,
+                y: 38,
+                x: 484,
+                mountY: 0.5,
+                mountX: 1,
+                src: Utils_default.asset("images/settings/Arrow.png")
+              }
+            }
+          },
+          SubscriptionValues: {
+            x: 433,
+            y: 40,
+            mount: 0.5,
+            zIndex: 2,
+            text: {
+              text: "Youtube",
+              fontSize: 25,
+              fontFace: CONFIG.language.font,
+              textColor: 4294967295,
+              wordWrapWidth: 400,
+              maxLines: 1,
+              textOverflow: "ellipsis",
+              textAlign: "center"
+            }
+          }
+        }
+      };
+    }
+    set item(item) {
+      this._item = item;
+      this.tag("Title").text.text = this._item.host["_@attribute"];
+      if (Array.isArray(this._item.viewingOptions.viewingOption)) {
+        this.tag("SubscriptionValues").text.text = this.convertPricing(this._item.viewingOptions.viewingOption[0]);
+        this.tag("Arrows").visible = true;
+      } else if (this._item.viewingOptions.viewingOption !== null && typeof this._item.viewingOptions.viewingOption === "object") {
+        this.tag("SubscriptionValues").text.text = this.convertPricing(this._item.viewingOptions.viewingOption);
+        this._item.viewingOptions.viewingOption = [this._item.viewingOptions.viewingOption];
+        this.tag("Arrows").visible = false;
+      }
+    }
+    convertPricing(option) {
+      let res = "";
+      if (option.license !== void 0) {
+        let license = option.license.toLowerCase();
+        res = res + license.substr(0, 1).toUpperCase() + license.substr(1) + " ";
+      }
+      if (option.price !== void 0) {
+        res = res + "$" + option.price["_@attribute"] + " ";
+      }
+      if (option.quality !== void 0) {
+        res = res + option.quality;
+      }
+      return res;
+    }
+    _focus() {
+      this.tag("TopLine").color = CONFIG.theme.hex;
+      this.tag("TopLine").h = 5;
+      this.tag("BottomLine").color = CONFIG.theme.hex;
+      this.tag("BottomLine").h = 5;
+      this.tag("TopLine").zIndex = 10;
+      this.tag("BottomLine").zIndex = 10;
+      this.tag("Title").text.fontStyle = "bold";
+      this.tag("SubscriptionValues").text.fontStyle = "bold";
+    }
+    _handleLeft() {
+      index = index - 1;
+      if (index < 0) {
+        index = this._item.viewingOptions.viewingOption.length - 1;
+      }
+      this.tag("SubscriptionValues").text.text = this.convertPricing(this._item.viewingOptions.viewingOption[index]);
+    }
+    _handleEnter() {
+      if (this._item.host["_@attribute"].toLowerCase() === "youtube") {
+        Storage_default.set("applicationType", "Cobalt");
+        let appApi10 = new AppApi();
+        console.log(this._item.url);
+        appApi10.launchCobalt(this._item.url);
+        appApi10.setVisibility("ResidentApp", false);
+      }
+    }
+    _handleRight() {
+      index = index + 1;
+      if (index > this._item.viewingOptions.viewingOption.length - 1) {
+        index = 0;
+      }
+      this.tag("SubscriptionValues").text.text = this.convertPricing(this._item.viewingOptions.viewingOption[index]);
+    }
+    _unfocus() {
+      this.tag("TopLine").color = 4294967295;
+      this.tag("TopLine").h = 3;
+      this.tag("BottomLine").color = 4294967295;
+      this.tag("BottomLine").h = 3;
+      this.tag("TopLine").zIndex = 0;
+      this.tag("BottomLine").zIndex = 0;
+      this.tag("Title").text.fontStyle = "normal";
+      this.tag("SubscriptionValues").text.fontStyle = "normal";
+    }
+  };
+
+  // src/screens/DetailsScreen.js
+  var homeApi3 = new HomeApi();
+  var DetailsScreen = class extends Lightning_default.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(this.name);
+    }
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 4278190080,
+        Details: {
+          x: 200,
+          y: 270,
+          Image: {
+            x: 0,
+            y: 0,
+            h: 493,
+            w: 878
+          },
+          Cast: {
+            Title: {
+              x: 10,
+              y: 520,
+              text: {
+                text: "",
+                fontStyle: "bold",
+                fontSize: 22
+              }
+            }
+          },
+          Description: {
+            Title: {
+              x: 10,
+              y: 550,
+              text: {
+                text: "",
+                fontFace: CONFIG.language.font,
+                fontSize: 22,
+                wordWrapWidth: 900,
+                wordWrap: true
+              }
+            }
+          },
+          Subscriptions: {
+            x: 950,
+            y: 50,
+            w: 670,
+            h: 395,
+            visible: false,
+            clipping: true,
+            List: {
+              type: Lightning_default.components.ListComponent,
+              w: 670,
+              h: 390,
+              y: 5,
+              itemSize: 77,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+              rollMax: 900,
+              itemScrollOffset: -4
+            }
+          },
+          Time: {
+            y: 520,
+            x: 1e3,
+            Title: {
+              text: {
+                text: "",
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Rating: {
+            y: 550,
+            x: 1e3,
+            Title: {
+              text: {
+                text: "",
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                wordWrap: true,
+                wordWrapWidth: 500
+              }
+            }
+          },
+          GracenoteLogo: {
+            x: 1e3,
+            y: 650,
+            w: 180,
+            h: 62,
+            src: Utils_default.asset("images/splash/gracenote.png")
+          }
+        }
+      };
+    }
+    set params(args) {
+      this.rootId = args.gracenoteItem.program.tmsid;
+      this.name = args.gracenoteItem.program.title;
+      let imgUrl = "http://developer.tmsimg.com/" + args.gracenoteItem.program.preferredImage.uri.replace("w=1280&", "w=878&").replace("&h=720", "&h=493") + "&api_key=" + args.key;
+      this.tag("Image").src = Utils_default.proxyUrl(imgUrl);
+      this.tag("Cast.Title").text.text = `${args.gracenoteItem.program.topCast[0]} 	 ${args.gracenoteItem.program.topCast[1]} 	 ${args.gracenoteItem.program.topCast[2]}`;
+      this.tag("Description.Title").text.text = args.gracenoteItem.program.longDescription;
+      this.tag("Time.Title").text.text = `${args.gracenoteItem.duration} Minutes`;
+      if (args.gracenoteItem.ratings) {
+        this.tag("Rating.Title").text.text = `${args.gracenoteItem.ratings[0].body} 
+${args.gracenoteItem.ratings[0].subRating}`;
+      } else {
+        this.tag("Rating.Title").text.text = "";
+      }
+      homeApi3.getMovieSubscriptions(args.gracenoteItem.program.tmsId).then((response) => {
+        let options = response.ovd.movie.videos.video;
+        if (options) {
+          this.tag("Subscriptions.List").items = options.map((item, index2) => {
+            return {
+              w: 670,
+              h: 77,
+              type: SubscriptionItem,
+              item
+            };
+          });
+          this.tag("Subscriptions").visible = true;
+        } else {
+          this.tag("Subscriptions").visible = false;
+        }
+        this._setState("Subscriptions");
+        this.tag("Subscriptions.List").setIndex(0);
+      }).catch((error) => console.log(error));
+    }
+    _init() {
+    }
+    _focus() {
+      this._setState("DetailsScreen");
+      this.tag("Subscriptions.List").setIndex(0);
+    }
+    _unfocus() {
+      this.tag("Subscriptions").visible = false;
+    }
+    _handleBack() {
+      Router_default.navigate("menu");
+    }
+    static _states() {
+      return [class DetailsScreen extends this {
+        _handleDown() {
+          this._setState("Subscriptions");
+        }
+        _handleUp() {
+          this._setState("Subscriptions");
+        }
+        _handleLeft() {
+          this._setState("Subscriptions");
+        }
+        _handleRight() {
+          this._setState("Subscriptions");
+        }
+        _handleEnter() {
+          this._setState("Subscriptions");
+        }
+      }, class Subscriptions extends this {
+        _getFocused() {
+          return this.tag("Subscriptions.List").element;
+        }
+        _handleDown() {
+          this.tag("Subscriptions.List").setNext();
+        }
+        _handleUp() {
+          this.tag("Subscriptions.List").setPrevious();
+        }
+      }];
+    }
+  };
+
+  // src/routes/detailsScreenRoutes.js
+  var detailsScreenRoutes_default = {
+    detailsScreenRoutes: [{
+      path: "menu/details",
+      component: DetailsScreen,
+      widgets: ["Menu"]
+    }]
+  };
+
   // src/routes/routes.js
+  var api = null;
   var routes_default = {
     boot: (queryParam) => {
-      let homeApi = new HomeApi();
-      homeApi.setPartnerAppsInfo(queryParam.data);
+      let homeApi4 = new HomeApi();
+      homeApi4.setPartnerAppsInfo(queryParam.data);
+      homeApi4.getAPIKey().then((data) => {
+        if (data.data.length > 1) {
+          api = data;
+        }
+      });
       return Promise.resolve();
     },
-    root: "splash",
-    routes: [{
+    routes: [...splashScreenRoutes_default.splashScreenRoutes, ...route.network, ...otherSettingsRoutes_default.otherSettingsRoutes, ...audioScreenRoutes_default.audioScreenRoutes, ...detailsScreenRoutes_default.detailsScreenRoutes, {
       path: "settings",
       component: SettingsScreen,
       widgets: ["Menu"]
@@ -19122,6 +23445,10 @@ Time Stamp - ${res.stbTimestamp} `;
       component: UsbAppsScreen,
       widgets: ["Menu"]
     }, {
+      path: "apps",
+      component: AppStore,
+      widgets: ["Menu"]
+    }, {
       path: "usb/player",
       component: AAMPVideoPlayer
     }, {
@@ -19131,18 +23458,24 @@ Time Stamp - ${res.stbTimestamp} `;
       path: "image",
       component: ImageViewer
     }, {
+      path: "ui",
+      component: UIList
+    }, {
       path: "menu",
       component: MainView,
       before: (page) => {
-        const homeApi = new HomeApi();
-        page.tvShowItems = homeApi.getTVShowsInfo();
+        const homeApi4 = new HomeApi();
+        page.tvShowItems = homeApi4.getTVShowsInfo();
+        if (api) {
+          page.setGracenoteData(api);
+        }
         return Promise.resolve();
       },
       widgets: ["Menu"]
     }, {
       path: "player",
       component: AAMPVideoPlayer
-    }, ...route.network, ...otherSettingsRoutes_default.otherSettingsRoutes, ...audioScreenRoutes_default.audioScreenRoutes, ...splashScreenRoutes_default.splashScreenRoutes, {
+    }, {
       path: "!",
       component: Error2
     }, {
@@ -19171,8 +23504,6 @@ Time Stamp - ${res.stbTimestamp} `;
     "F6": 117,
     "F7": 118,
     "F8": 119,
-    "F9": 120,
-    "F10": 121,
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -19248,7 +23579,8 @@ Time Stamp - ${res.stbTimestamp} `;
     "Power": 116,
     "PageUp": 33,
     "PageDown": 34,
-    "Home": 36
+    "Home": 36,
+    "Settings_Shortcut": 121
   };
   var Keymap_default = keyMap;
 
@@ -19322,7 +23654,7 @@ Time Stamp - ${res.stbTimestamp} `;
         rect: true,
         y: 270,
         w: 200,
-        h: 1080,
+        h: 810,
         SidePanel: {
           x: 0,
           y: 127,
@@ -19347,12 +23679,12 @@ Time Stamp - ${res.stbTimestamp} `;
       this.tag("SidePanel").patch({
         x: 105
       });
-      this.tag("SidePanel").items = items.map((info, index) => {
+      this.tag("SidePanel").items = items.map((info, index2) => {
         this.data = info;
         return {
           w: 50,
           h: 50,
-          y: index == 0 ? 20 : (index + 1) * 20,
+          y: index2 == 0 ? 20 : (index2 + 1) * 20,
           type: SidePanelItem,
           data: info,
           focus: 1.1,
@@ -19369,11 +23701,11 @@ Time Stamp - ${res.stbTimestamp} `;
       this.tag("SidePanel").patch({
         x: 0
       });
-      this.tag("SidePanel").items = items.map((info, index) => {
+      this.tag("SidePanel").items = items.map((info, index2) => {
         return {
           w: 204,
           h: 184,
-          y: index == 0 ? 25 : index == 1 ? 105 : index == 2 ? 260 : 470,
+          y: index2 == 0 ? 25 : index2 == 1 ? 105 : index2 == 2 ? 260 : 470,
           type: SidePanelItem,
           data: info,
           focus: 0.7,
@@ -19396,9 +23728,9 @@ Time Stamp - ${res.stbTimestamp} `;
         x
       });
     }
-    set index(index) {
+    set index(index2) {
       this.tag("SidePanel").items[this.prevIndex].clearColor();
-      this.indexVal = index;
+      this.indexVal = index2;
     }
     set deFocus(val) {
       if (val) {
@@ -19428,24 +23760,12 @@ Time Stamp - ${res.stbTimestamp} `;
             if (this.tag("SidePanel").length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1;
             }
-            if (this.indexVal === 2) {
-              this.fireAncestors("$scroll", -130);
-            }
-            if (this.indexVal === 1) {
-              this.fireAncestors("$scroll", 270);
-            }
             return this.tag("SidePanel").items[this.indexVal];
           } else if (key.keyCode == Keymap_default.ArrowUp) {
             if (this.indexVal === 0) {
               this.fireAncestors("$goToTopPanel", 0);
             } else {
               this.indexVal = this.indexVal - 1;
-              if (this.indexVal === 2) {
-                this.fireAncestors("$scroll", -130);
-              }
-              if (this.indexVal === 1) {
-                this.fireAncestors("$scroll", 270);
-              }
               return this.tag("SidePanel").items[this.indexVal];
             }
           }
@@ -19581,8 +23901,8 @@ Time Stamp - ${res.stbTimestamp} `;
         }
         isSubscribed = false;
         ensureCanMutateNextListeners();
-        var index = nextListeners.indexOf(listener);
-        nextListeners.splice(index, 1);
+        var index2 = nextListeners.indexOf(listener);
+        nextListeners.splice(index2, 1);
         currentListeners = null;
       };
     }
@@ -19680,8 +24000,8 @@ Time Stamp - ${res.stbTimestamp} `;
         return state3;
     }
   }
-  var store2 = createStore(counter);
-  var redux_default = store2;
+  var store = createStore(counter);
+  var redux_default = store;
 
   // src/views/TopPanel.js
   var TopPanel = class extends Lightning_default.Component {
@@ -19781,8 +24101,8 @@ Time Stamp - ${res.stbTimestamp} `;
       this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       this._setState("Setting");
     }
-    set index(index) {
-      this.indexVal = index;
+    set index(index2) {
+      this.indexVal = index2;
     }
     _focus() {
       this._setState(this.state);
@@ -19889,6 +24209,18 @@ Time Stamp - ${res.stbTimestamp} `;
   };
 
   // src/views/Menu.js
+  var route2 = {
+    1: () => {
+    },
+    3: () => {
+      Router_default.navigate("apps");
+      Router_default.focusPage();
+    },
+    "default": () => {
+      Router_default.navigate("menu");
+      Router_default.focusPage();
+    }
+  };
   var Menu = class extends Lightning_default.Component {
     static _template() {
       return {
@@ -19923,18 +24255,22 @@ Time Stamp - ${res.stbTimestamp} `;
     $goToSidePanel() {
       this._setState("SidePanel");
     }
-    $goToMainView(sidePanelInstance, index) {
-      this.mainView.index(index);
-      Router_default.focusPage();
+    $goToMainView(sidePanelInstance, index2) {
+      if (route2[index2]) {
+        route2[index2]();
+      } else {
+        route2["default"]();
+      }
       sidePanelInstance.setColor();
+      return;
     }
     refreshMainView() {
       if (this.mainView) {
         this.mainView.refreshFirstRow();
       }
     }
-    setIndex(index) {
-      this.tag("SidePanel").index = index;
+    setIndex(index2) {
+      this.tag("SidePanel").index = index2;
     }
     notify(val) {
       if (val === "TopPanel") {
@@ -19969,24 +24305,24 @@ Time Stamp - ${res.stbTimestamp} `;
     port: 9998,
     default: 1
   };
-  var thunder7 = thunderJS_default(config5);
-  var appApi7 = new AppApi();
+  var thunder8 = thunderJS_default(config5);
+  var appApi8 = new AppApi();
   function keyIntercept() {
     const rdkshellCallsign = "org.rdk.RDKShell";
-    thunder7.Controller.activate({
+    thunder8.Controller.activate({
       callsign: rdkshellCallsign
     }).then((result) => {
       console.log("Successfully activated RDK Shell");
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call("org.rdk.RDKShell", "setFocus", {
+      thunder8.call("org.rdk.RDKShell", "setFocus", {
         client: "ResidentApp"
       });
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.AudioVolumeMute,
         modifiers: []
@@ -19998,18 +24334,18 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.on(rdkshellCallsign, "onSuspended", (notification) => {
+      thunder8.on(rdkshellCallsign, "onSuspended", (notification) => {
         if (notification) {
           console.log("onSuspended notification: " + notification.client);
           if (Storage.get("applicationType") == notification.client) {
             Storage.set("applicationType", "");
-            appApi7.setVisibility("ResidentApp", true);
-            thunder7.call("org.rdk.RDKShell", "moveToFront", {
+            appApi8.setVisibility("ResidentApp", true);
+            thunder8.call("org.rdk.RDKShell", "moveToFront", {
               client: "ResidentApp"
             }).then((result2) => {
               console.log("ResidentApp moveToFront Success");
             });
-            thunder7.call("org.rdk.RDKShell", "setFocus", {
+            thunder8.call("org.rdk.RDKShell", "setFocus", {
               client: "ResidentApp"
             }).then((result2) => {
               console.log("ResidentApp setFocus Success");
@@ -20020,7 +24356,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.Escape,
         modifiers: []
@@ -20030,7 +24366,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.F1,
         modifiers: []
@@ -20040,7 +24376,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.Power,
         modifiers: []
@@ -20050,7 +24386,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.F7,
         modifiers: []
@@ -20060,7 +24396,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.AudioVolumeUp,
         modifiers: []
@@ -20070,7 +24406,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.AudioVolumeDown,
         modifiers: []
@@ -20080,7 +24416,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "foreground",
         keyCode: Keymap_default.AudioVolumeDown,
         modifiers: []
@@ -20090,7 +24426,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "foreground",
         keyCode: Keymap_default.AudioVolumeUp,
         modifiers: []
@@ -20100,7 +24436,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "foreground",
         keyCode: Keymap_default.AudioVolumeMute,
         modifiers: []
@@ -20110,7 +24446,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.MediaFastForward,
         modifiers: []
@@ -20120,7 +24456,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: 142,
         modifiers: []
@@ -20130,7 +24466,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.Home,
         modifiers: []
@@ -20140,7 +24476,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.MediaRewind,
         modifiers: []
@@ -20150,7 +24486,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "ResidentApp",
         keyCode: Keymap_default.Pause,
         modifiers: []
@@ -20160,7 +24496,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Cobalt",
         keyCode: Keymap_default.Escape,
         modifiers: []
@@ -20170,7 +24506,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Amazon",
         keyCode: Keymap_default.Escape,
         modifiers: []
@@ -20180,7 +24516,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Cobalt",
         keyCode: Keymap_default.Home,
         modifiers: []
@@ -20190,7 +24526,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Amazon",
         keyCode: Keymap_default.Home,
         modifiers: []
@@ -20200,7 +24536,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Cobalt",
         keyCode: Keymap_default.Backspace,
         modifiers: []
@@ -20210,7 +24546,7 @@ Time Stamp - ${res.stbTimestamp} `;
     }).catch((err) => {
       console.log("Error", err);
     }).then((result) => {
-      thunder7.call(rdkshellCallsign, "addKeyIntercept", {
+      thunder8.call(rdkshellCallsign, "addKeyIntercept", {
         client: "Amazon",
         keyCode: Keymap_default.Backspace,
         modifiers: []
@@ -20229,8 +24565,8 @@ Time Stamp - ${res.stbTimestamp} `;
     default: 1
   };
   var powerState = "ON";
-  var thunder8 = thunderJS_default(config6);
-  var appApi8 = new AppApi();
+  var thunder9 = thunderJS_default(config6);
+  var appApi9 = new AppApi();
   var App = class extends Router_default.App {
     static getFonts() {
       return [{
@@ -20268,17 +24604,18 @@ Time Stamp - ${res.stbTimestamp} `;
       };
     }
     _captureKey(key) {
+      console.log(key);
       if (key.keyCode == Keymap_default.Escape || key.keyCode == Keymap_default.Home || key.keyCode === Keymap_default.m) {
         if (Storage_default.get("applicationType") != "") {
           this.deactivateChildApp(Storage_default.get("applicationType"));
           Storage_default.set("applicationType", "");
-          appApi8.setVisibility("ResidentApp", true);
-          thunder8.call("org.rdk.RDKShell", "moveToFront", {
+          appApi9.setVisibility("ResidentApp", true);
+          thunder9.call("org.rdk.RDKShell", "moveToFront", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success");
           });
-          thunder8.call("org.rdk.RDKShell", "setFocus", {
+          thunder9.call("org.rdk.RDKShell", "setFocus", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success");
@@ -20290,11 +24627,10 @@ Time Stamp - ${res.stbTimestamp} `;
             Router_default.navigate("menu");
           }
         }
+        return true;
       }
-      if (key.keyCode == Keymap_default.F9) {
-        store.dispatch({
-          type: "ACTION_LISTEN_START"
-        });
+      if (key.keyCode == Keymap_default.Settings_Shortcut) {
+        Router_default.navigate("settings");
         return true;
       }
       if (key.keyCode == Keymap_default.Power) {
@@ -20302,41 +24638,41 @@ Time Stamp - ${res.stbTimestamp} `;
           this.standby("STANDBY");
           return true;
         } else if (powerState == "STANDBY") {
-          appApi8.standby("ON").then((res) => {
+          appApi9.standby("ON").then((res) => {
             powerState = "ON";
           });
           return true;
         }
       } else if (key.keyCode == 228) {
         console.log("___________DEEP_SLEEP_______________________F12");
-        appApi8.standby("DEEP_SLEEP").then((res) => {
+        appApi9.standby("DEEP_SLEEP").then((res) => {
           powerState = "DEEP_SLEEP";
         });
         return true;
       } else if (key.keyCode == Keymap_default.AudioVolumeMute) {
-        if (appApi8.activatedForeground) {
-          appApi8.setVisibility("foreground", true);
-          appApi8.zorder("foreground");
+        if (appApi9.activatedForeground) {
+          appApi9.setVisibility("foreground", true);
+          appApi9.zorder("foreground");
         }
         return true;
       } else if (key.keyCode == Keymap_default.AudioVolumeUp) {
-        if (appApi8.activatedForeground) {
-          appApi8.setVisibility("foreground", true);
-          appApi8.zorder("foreground");
+        if (appApi9.activatedForeground) {
+          appApi9.setVisibility("foreground", true);
+          appApi9.zorder("foreground");
         }
         return true;
       } else if (key.keyCode == Keymap_default.AudioVolumeDown) {
-        if (appApi8.activatedForeground) {
-          appApi8.setVisibility("foreground", true);
-          appApi8.zorder("foreground");
+        if (appApi9.activatedForeground) {
+          appApi9.setVisibility("foreground", true);
+          appApi9.zorder("foreground");
         }
         return true;
       }
       return false;
     }
     _init() {
-      appApi8.enableDisplaySettings();
-      appApi8.cobaltStateChangeEvent();
+      appApi9.enableDisplaySettings();
+      appApi9.cobaltStateChangeEvent();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then((result) => {
         if (result) {
@@ -20347,17 +24683,17 @@ Time Stamp - ${res.stbTimestamp} `;
       if (!availableLanguages.includes(localStorage.getItem("Language"))) {
         localStorage.setItem("Language", "English");
       }
-      thunder8.on("Controller.1", "all", (noti) => {
+      thunder9.on("Controller.1", "all", (noti) => {
         if (noti.data.url && noti.data.url.slice(-5) === "#boot") {
           this.deactivateChildApp(Storage_default.get("applicationType"));
           Storage_default.set("applicationType", "");
-          appApi8.setVisibility("ResidentApp", true);
-          thunder8.call("org.rdk.RDKShell", "moveToFront", {
+          appApi9.setVisibility("ResidentApp", true);
+          thunder9.call("org.rdk.RDKShell", "moveToFront", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success");
           });
-          thunder8.call("org.rdk.RDKShell", "setFocus", {
+          thunder9.call("org.rdk.RDKShell", "setFocus", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success");
@@ -20366,17 +24702,17 @@ Time Stamp - ${res.stbTimestamp} `;
           });
         }
       });
-      thunder8.on("Controller", "statechange", (notification) => {
+      thunder9.on("Controller", "statechange", (notification) => {
         console.log(JSON.stringify(notification));
         if (notification && (notification.callsign === "Cobalt" || notification.callsign === "Amazon" || notification.callsign === "LightningApp") && notification.state == "Deactivation") {
           Storage_default.set("applicationType", "");
-          appApi8.setVisibility("ResidentApp", true);
-          thunder8.call("org.rdk.RDKShell", "moveToFront", {
+          appApi9.setVisibility("ResidentApp", true);
+          thunder9.call("org.rdk.RDKShell", "moveToFront", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success" + JSON.stringify(result));
           });
-          thunder8.call("org.rdk.RDKShell", "setFocus", {
+          thunder9.call("org.rdk.RDKShell", "setFocus", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp setFocus Success" + JSON.stringify(result));
@@ -20394,24 +24730,24 @@ Time Stamp - ${res.stbTimestamp} `;
       });
     }
     deactivateChildApp(plugin) {
-      var appApi9 = new AppApi();
+      var appApi10 = new AppApi();
       switch (plugin) {
         case "WebApp":
-          appApi9.deactivateWeb();
+          appApi10.deactivateWeb();
           break;
         case "Cobalt":
-          appApi9.deactivateCobalt();
+          appApi10.deactivateCobalt();
           break;
         case "Lightning":
-          appApi9.deactivateLightning();
+          appApi10.deactivateLightning();
           break;
         case "Native":
-          appApi9.killNative();
+          appApi10.killNative();
           break;
         case "Amazon":
-          appApi9.deactivateNativeApp("Amazon");
+          appApi10.deactivateNativeApp("Amazon");
         case "Netflix":
-          appApi9.deactivateNativeApp("Netflix");
+          appApi10.deactivateNativeApp("Netflix");
         default:
           break;
       }
@@ -20423,20 +24759,20 @@ Time Stamp - ${res.stbTimestamp} `;
           let applicationName = this.xcastApps(notification.applicationName);
           if (applicationName == "Amazon" && Storage_default.get("applicationType") != "Amazon") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi8.launchPremiumApp("Amazon");
+            appApi9.launchPremiumApp("Amazon");
             Storage_default.set("applicationType", "Amazon");
-            appApi8.setVisibility("ResidentApp", false);
+            appApi9.setVisibility("ResidentApp", false);
             let params = {
               applicationName: notification.applicationName,
               state: "running"
             };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName == "Netflix" && Storage_default.get("applicationType") != "Netflix") {
-            appApi8.configureApplication("Netflix", notification.parameters).then((res) => {
+            appApi9.configureApplication("Netflix", notification.parameters).then((res) => {
               this.deactivateChildApp(Storage_default.get("applicationType"));
-              appApi8.launchPremiumApp("Netflix");
+              appApi9.launchPremiumApp("Netflix");
               Storage_default.set("applicationType", "Netflix");
-              appApi8.setVisibility("ResidentApp", false);
+              appApi9.setVisibility("ResidentApp", false);
               if (AppApi.pluginStatus("Netflix")) {
                 let params = {
                   applicationName: notification.applicationName,
@@ -20449,9 +24785,9 @@ Time Stamp - ${res.stbTimestamp} `;
             });
           } else if (applicationName == "Cobalt" && Storage_default.get("applicationType") != "Cobalt") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi8.launchCobalt(notification.parameters.url);
+            appApi9.launchCobalt(notification.parameters.url + "&inApp=true");
             Storage_default.set("applicationType", "Cobalt");
-            appApi8.setVisibility("ResidentApp", false);
+            appApi9.setVisibility("ResidentApp", false);
             let params = {
               applicationName: notification.applicationName,
               state: "running"
@@ -20466,21 +24802,21 @@ Time Stamp - ${res.stbTimestamp} `;
           let applicationName = this.xcastApps(notification.applicationName);
           console.log("Hide " + this.xcastApps(notification.applicationName));
           if (applicationName === "Amazon" && Storage_default.get("applicationType") === "Amazon") {
-            appApi8.suspendPremiumApp("Amazon");
+            appApi9.suspendPremiumApp("Amazon");
             let params = {
               applicationName: notification.applicationName,
               state: "stopped"
             };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === "Netflix" && Storage_default.get("applicationType") === "Netflix") {
-            appApi8.suspendPremiumApp("Netflix");
+            appApi9.suspendPremiumApp("Netflix");
             let params = {
               applicationName: notification.applicationName,
               state: "stopped"
             };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === "Cobalt" && Storage_default.get("applicationType") === "Cobalt") {
-            appApi8.suspendCobalt();
+            appApi9.suspendCobalt();
             let params = {
               applicationName: notification.applicationName,
               state: "stopped"
@@ -20488,8 +24824,8 @@ Time Stamp - ${res.stbTimestamp} `;
             this.xcastApi.onApplicationStateChanged(params);
           }
           Storage_default.set("applicationType", "");
-          appApi8.setVisibility("ResidentApp", true);
-          thunder8.call("org.rdk.RDKShell", "moveToFront", {
+          appApi9.setVisibility("ResidentApp", true);
+          thunder9.call("org.rdk.RDKShell", "moveToFront", {
             client: "ResidentApp"
           }).then((result) => {
             console.log("ResidentApp moveToFront Success");
@@ -20503,9 +24839,9 @@ Time Stamp - ${res.stbTimestamp} `;
           console.log("Resume " + this.xcastApps(notification.applicationName));
           if (applicationName == "Amazon" && Storage_default.get("applicationType") != "Amazon") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi8.launchPremiumApp("Amazon");
+            appApi9.launchPremiumApp("Amazon");
             Storage_default.set("applicationType", "Amazon");
-            appApi8.setVisibility("ResidentApp", false);
+            appApi9.setVisibility("ResidentApp", false);
             let params = {
               applicationName: notification.applicationName,
               state: "running"
@@ -20513,9 +24849,9 @@ Time Stamp - ${res.stbTimestamp} `;
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName == "Netflix" && Storage_default.get("applicationType") != "Netflix") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi8.launchPremiumApp("Netflix");
+            appApi9.launchPremiumApp("Netflix");
             Storage_default.set("applicationType", "Amazon");
-            appApi8.setVisibility("ResidentApp", false);
+            appApi9.setVisibility("ResidentApp", false);
             let params = {
               applicationName: notification.applicationName,
               state: "running"
@@ -20523,9 +24859,9 @@ Time Stamp - ${res.stbTimestamp} `;
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName == "Cobalt" && Storage_default.get("applicationType") != "Cobalt") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi8.launchCobalt();
+            appApi9.launchCobalt();
             Storage_default.set("applicationType", "Cobalt");
-            appApi8.setVisibility("ResidentApp", false);
+            appApi9.setVisibility("ResidentApp", false);
             let params = {
               applicationName: notification.applicationName,
               state: "running"
@@ -20540,10 +24876,10 @@ Time Stamp - ${res.stbTimestamp} `;
           console.log("Stop " + this.xcastApps(notification.applicationName));
           let applicationName = this.xcastApps(notification.applicationName);
           if (applicationName === "Amazon" && Storage_default.get("applicationType") === "Amazon") {
-            appApi8.deactivateNativeApp("Amazon");
+            appApi9.deactivateNativeApp("Amazon");
             Storage_default.set("applicationType", "");
-            appApi8.setVisibility("ResidentApp", true);
-            thunder8.call("org.rdk.RDKShell", "moveToFront", {
+            appApi9.setVisibility("ResidentApp", true);
+            thunder9.call("org.rdk.RDKShell", "moveToFront", {
               client: "ResidentApp"
             }).then((result) => {
               console.log("ResidentApp moveToFront Success");
@@ -20554,10 +24890,10 @@ Time Stamp - ${res.stbTimestamp} `;
             };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === "Netflix" && Storage_default.get("applicationType") === "Netflix") {
-            appApi8.deactivateNativeApp("Netflix");
+            appApi9.deactivateNativeApp("Netflix");
             Storage_default.set("applicationType", "");
-            appApi8.setVisibility("ResidentApp", true);
-            thunder8.call("org.rdk.RDKShell", "moveToFront", {
+            appApi9.setVisibility("ResidentApp", true);
+            thunder9.call("org.rdk.RDKShell", "moveToFront", {
               client: "ResidentApp"
             }).then((result) => {
               console.log("ResidentApp moveToFront Success");
@@ -20568,10 +24904,10 @@ Time Stamp - ${res.stbTimestamp} `;
             };
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === "Cobalt" && Storage_default.get("applicationType") === "Cobalt") {
-            appApi8.deactivateCobalt();
+            appApi9.deactivateCobalt();
             Storage_default.set("applicationType", "");
-            appApi8.setVisibility("ResidentApp", true);
-            thunder8.call("org.rdk.RDKShell", "moveToFront", {
+            appApi9.setVisibility("ResidentApp", true);
+            thunder9.call("org.rdk.RDKShell", "moveToFront", {
               client: "ResidentApp"
             }).then((result) => {
               console.log("ResidentApp moveToFront Success");
@@ -20591,7 +24927,7 @@ Time Stamp - ${res.stbTimestamp} `;
             applicationName: notification.applicationName,
             state: "stopped"
           };
-          appApi8.registerEvent("statechange", (results) => {
+          appApi9.registerEvent("statechange", (results) => {
             if (results.callsign === applicationName && results.state === "Activated") {
               params.state = "running";
             }
@@ -20626,47 +24962,47 @@ Time Stamp - ${res.stbTimestamp} `;
       } else {
         if (powerState == "ON") {
           console.log(`Power state was on trying to set it to standby`);
-          appApi8.standby(value).then((res) => {
+          appApi9.standby(value).then((res) => {
             if (res.success) {
               console.log(`successfully set to standby`);
               powerState = "STANDBY";
               if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
                 Storage_default.set("applicationType", "");
-                appApi8.suspendWeb();
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.suspendWeb();
+                appApi9.setVisibility("ResidentApp", true);
               } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
                 Storage_default.set("applicationType", "");
-                appApi8.suspendLightning();
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.suspendLightning();
+                appApi9.setVisibility("ResidentApp", true);
               } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
                 Storage_default.set("applicationType", "");
-                appApi8.killNative();
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.killNative();
+                appApi9.setVisibility("ResidentApp", true);
               } else if (Storage_default.get("applicationType") == "Amazon") {
                 Storage_default.set("applicationType", "");
-                appApi8.suspendPremiumApp("Amazon");
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.suspendPremiumApp("Amazon");
+                appApi9.setVisibility("ResidentApp", true);
               } else if (Storage_default.get("applicationType") == "Netflix") {
                 Storage_default.set("applicationType", "");
-                appApi8.suspendPremiumApp("Netflix");
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.suspendPremiumApp("Netflix");
+                appApi9.setVisibility("ResidentApp", true);
               } else if (Storage_default.get("applicationType") == "Cobalt") {
                 Storage_default.set("applicationType", "");
-                appApi8.suspendCobalt();
-                appApi8.setVisibility("ResidentApp", true);
+                appApi9.suspendCobalt();
+                appApi9.setVisibility("ResidentApp", true);
               } else {
                 if (!Router_default.isNavigating() && Router_default.getActiveHash() === "player") {
                   Router_default.navigate("menu");
                 }
               }
-              thunder8.call("org.rdk.RDKShell", "moveToFront", {
+              thunder9.call("org.rdk.RDKShell", "moveToFront", {
                 client: "ResidentApp"
               }).then((result) => {
                 console.log("ResidentApp moveToFront Success" + JSON.stringify(result));
               }).catch((err) => {
                 console.log(`error while moving the resident app to front = ${err}`);
               });
-              thunder8.call("org.rdk.RDKShell", "setFocus", {
+              thunder9.call("org.rdk.RDKShell", "setFocus", {
                 client: "ResidentApp"
               }).then((result) => {
                 console.log("ResidentApp setFocus Success" + JSON.stringify(result));
@@ -20682,17 +25018,17 @@ Time Stamp - ${res.stbTimestamp} `;
     $registerInactivityMonitoringEvents() {
       return new Promise((resolve, reject) => {
         console.log(`registered inactivity listener`);
-        appApi8.standby("ON").then((res) => {
+        appApi9.standby("ON").then((res) => {
           if (res.success) {
             powerState = "ON";
           }
         });
         const systemcCallsign = "org.rdk.RDKShell.1";
-        thunder8.Controller.activate({
+        thunder9.Controller.activate({
           callsign: systemcCallsign
         }).then((res) => {
           console.log(`activated the rdk shell plugin trying to set the inactivity listener; res = ${JSON.stringify(res)}`);
-          thunder8.on("org.rdk.RDKShell.1", "onUserInactivity", (notification) => {
+          thunder9.on("org.rdk.RDKShell.1", "onUserInactivity", (notification) => {
             console.log(`user was inactive`);
             if (powerState === "ON" && Storage_default.get("applicationType") == "") {
               this.standby("STANDBY");
@@ -20715,7 +25051,7 @@ Time Stamp - ${res.stbTimestamp} `;
         var temp = arr[1].substring(0, 1);
         if (temp === "H") {
           let temp1 = parseFloat(arr[0]) * 60;
-          appApi8.setInactivityInterval(temp1).then((res) => {
+          appApi9.setInactivityInterval(temp1).then((res) => {
             Storage_default.set("TimeoutInterval", t);
             console.log(`successfully set the timer to ${t} hours`);
           }).catch((err) => {
@@ -20724,7 +25060,7 @@ Time Stamp - ${res.stbTimestamp} `;
         } else if (temp === "M") {
           console.log(`minutes`);
           let temp1 = parseFloat(arr[0]);
-          appApi8.setInactivityInterval(temp1).then((res) => {
+          appApi9.setInactivityInterval(temp1).then((res) => {
             Storage_default.set("TimeoutInterval", t);
             console.log(`successfully set the timer to ${t} minutes`);
           }).catch((err) => {
@@ -20733,7 +25069,7 @@ Time Stamp - ${res.stbTimestamp} `;
         }
       }
       if (arr.length < 2) {
-        appApi8.enabledisableinactivityReporting(false).then((res) => {
+        appApi9.enabledisableinactivityReporting(false).then((res) => {
           if (res.success === true) {
             Storage_default.set("TimeoutInterval", false);
             console.log(`Disabled inactivity reporting`);
@@ -20742,7 +25078,7 @@ Time Stamp - ${res.stbTimestamp} `;
           console.error(`error : unable to set the reset; error = ${err}`);
         });
       } else {
-        appApi8.enabledisableinactivityReporting(true).then((res) => {
+        appApi9.enabledisableinactivityReporting(true).then((res) => {
           if (res.success === true) {
             console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`);
             setTimer();

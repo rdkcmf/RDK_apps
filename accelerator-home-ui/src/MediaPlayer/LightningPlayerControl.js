@@ -36,7 +36,7 @@ export default class LightningPlayerControls extends Lightning.Component {
       TimeBar: {
         x: 90,
         y: 93.5,
-        texture: Lightning.Tools.getRoundRect(1740, 30, 15, 0, 0, true, 0xffffffff),
+        texture: Lightning.Tools.getRoundRect(1740, 20, 10, 0, 0, true, 0xffffffff),
       },
       ProgressWrapper: {
         x: 90,
@@ -47,8 +47,8 @@ export default class LightningPlayerControls extends Lightning.Component {
         ProgressBar: {
           texture: Lightning.Tools.getRoundRect(
             1740,
-            30,
-            15,
+            20,
+            10,
             0,
             0,
             true,
@@ -58,24 +58,41 @@ export default class LightningPlayerControls extends Lightning.Component {
           // y: 93.5,
         },
       },
+      Duration: {
+        x: 1690,
+        y: 125,
+        text: { 
+          text: "00:00:00", 
+          fontFace: CONFIG.language.font, 
+          fontSize: 35,
+          textColor: 0xffFFFFFF 
+        }
+      },
       CurrentTime: {
-        x: 90,
-        y: 184.5,
+        x: 140, // 140 = 90 + 50 | 50 is approzimately 1/2 of length(in px) of the text "00:00:00" and 90 is padding from left
+        y: 60,
+        mountX:0.5,
+        text: { 
+          text: "00:00:00", 
+          fontFace: CONFIG.language.font, 
+          fontSize: 25,
+          textColor: 0xffFFFFFF 
+        }
       },
       Buttons: {
         x: 820,
-        y: 200,
+        y: 125,
         children: [
           { src: Utils.asset('images/Media Player/Icon_Back_White_16k.png'), x: 17, y: 17 },
           { src: Utils.asset('images/Media Player/Icon_Pause_White_16k.png'), x: 17, y: 17 },
           { src: Utils.asset('images/Media Player/Icon_Next_White_16k.png'), x: 17, y: 17 },
         ].map((item, idx) => ({
-          x: idx * 100,
+          x: idx * 75,
           // texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
           ControlIcon: {
             x: item.x,
             y: item.y,
-            texture: Lightning.Tools.getSvgTexture(item.src, 70, 70),
+            texture: Lightning.Tools.getSvgTexture(item.src, 50, 50),
           },
         })),
       },
@@ -115,17 +132,25 @@ export default class LightningPlayerControls extends Lightning.Component {
    * Function to set the duration of the video.
    * @param {String} duration video duration to be set.
    */
-  set duration(duration) {
+   set duration(duration) {
     console.log(`duration was set = ${duration}`);
     this.videoDuration = duration
+    this.tag('Duration').text.text = this.SecondsTohhmmss(duration)
   }
 
   /**
    * Function to set the current video time.
    * @param {String} currentTime current time to be set.
    */
-  set currentTime(currentTime) {
-    this.tag('ProgressWrapper').patch({ w: (1740 * currentTime) / this.videoDuration });
+   set currentTime(currentTime) {
+    let value = (1740 * currentTime) / this.videoDuration
+    this.tag('ProgressWrapper').patch({ w: value });
+    this.tag('CurrentTime').text.text = this.SecondsTohhmmss(currentTime)
+    if (value >= 50 && value <= 1690) { // 1740 - 50 = 1690
+      this.tag('CurrentTime').x = 90 + value //90 is padding from left
+    } else if (currentTime === 0){
+      this.tag('CurrentTime').x =140 //initial position 140 = 90 + 50
+    }
   }
 
   /**
@@ -150,6 +175,18 @@ export default class LightningPlayerControls extends Lightning.Component {
     this.signal('hide')
   }
 
+
+  hideNextPrevious(){
+    this.isChannel = true
+    this.tag('Buttons').children[0].visible=false
+    this.tag('Buttons').children[2].visible=false
+  }
+
+  showNextPrevious(){
+    this.isChannel = false
+    this.tag('Buttons').children[0].visible=true
+    this.tag('Buttons').children[2].visible=true
+  }
   /**
    * Timer function to track the inactivity of the player controls.
    */
@@ -172,7 +209,7 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.focus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
             })
         }
         $exit() {
@@ -182,7 +219,7 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.unfocus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.unfocus, 50, 50)
             })
         }
         _handleEnter() {
@@ -201,14 +238,18 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.focus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
             })
         }
         _handleRight() {
-          this._setState('Forward')
+          if(!this.isChannel){
+            this._setState('Forward')
+          }
         }
         _handleLeft() {
-          this._setState('Rewind')
+          if(!this.isChannel){
+            this._setState('Rewind')
+          }
         }
         _getFocused() {
           this.timer()
@@ -223,8 +264,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Next_Orange_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -234,8 +275,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Next_White_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -262,8 +303,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Back_Orange_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -273,8 +314,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Back_White_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }

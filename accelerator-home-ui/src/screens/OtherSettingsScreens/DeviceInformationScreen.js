@@ -20,6 +20,7 @@ import { Lightning, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
+import NetworkApi from '../../api/NetworkApi'
 
 /**
  * Class for Video and Audio screen.
@@ -202,7 +203,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `UI Version: 3.5, Build Version: , Timestamp: `,
+                            text: `UI Version: 3.6, Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -253,6 +254,10 @@ export default class DeviceInformationScreen extends Lightning.Component {
         }
     }
 
+    _init(){
+        this._network = new NetworkApi();
+    }
+
     _focus() {
         this._setState('DeviceInformationScreen')
         this.appApi = new AppApi();
@@ -261,7 +266,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
         })
 
         this.appApi.getSystemVersions().then(res => {
-            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.5 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
+            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.6 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
         })
             .catch(err => { console.error(`error while getting the system versions`) })
 
@@ -282,23 +287,30 @@ export default class DeviceInformationScreen extends Lightning.Component {
             });
             this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`
         })
-        this.appApi.getLocation().then(result => {
-            console.log("getLocation from device info " + JSON.stringify(result))
-            var locationInfo = ""
-            if (result.city.length !== 0) {
-                locationInfo = "City: " + result.city
-            }
-            else {
-                locationInfo = "City: N/A "
-            }
-            if (result.country.length !== 0) {
-                locationInfo += ", Country: " + result.country;
-            }
-            else {
-                locationInfo += ", Country: N/A "
-            }
-            this.tag('Location.Value').text.text = `${locationInfo}`
-        })
+        this._network.isConnectedToInternet().then((result) => {
+            if(result.connectedToInternet===true){
+            this.appApi.getLocation().then(result => {
+                console.log("getLocation from device info " + JSON.stringify(result))
+                var locationInfo = ""
+                if (result.city.length !== 0) {
+                    locationInfo = "City: " + result.city
+                }
+                else {
+                    locationInfo = "City: N/A "
+                }
+                if (result.country.length !== 0) {
+                    locationInfo += ", Country: " + result.country;
+                }
+                else {
+                    locationInfo += ", Country: N/A "
+                }
+                this.tag('Location.Value').text.text = `${locationInfo}`
+            })                    
+        }
+        else{
+            this.tag('Location.Value').text.text = `City: N/A, Country: N/A`
+        }
+    })
 
         this.appApi.getDeviceIdentification().then(result => {
             console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result))

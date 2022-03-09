@@ -44,10 +44,10 @@ export default class ListItem extends Lightning.Component {
     this.tag('Shadow').patch({
       color: CONFIG.theme.hex,
       rect: true,
-      h: this.h + 24,
+      h: this.h + this.bar * 2,
       w: this.w,
       x: this.x,
-      y: this.y - 12
+      y: this.y - this.bar
     })
     if (this.data.url.startsWith('/images')) {
       this.tag('Image').patch({
@@ -86,7 +86,7 @@ export default class ListItem extends Lightning.Component {
             fontFace: CONFIG.language.font,
             text: this.data.displayName,
             fontSize: 35,
-            maxLines: 2,
+            maxLines: 1,
             wordWrapWidth: this.w
           },
         }

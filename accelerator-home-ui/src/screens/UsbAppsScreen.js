@@ -308,7 +308,8 @@ export default class UsbAppsScreen extends Lightning.Component {
           Router.navigate('usb/player', {
             url: this.tag('Row1').element.data.uri,
             currentIndex: this.tag('Row1').element.idx,
-            list: this.tag('Row1').items
+            list: this.tag('Row1').items,
+            isUSB:true
           })
         }
         _handleLeft() {
@@ -342,7 +343,8 @@ export default class UsbAppsScreen extends Lightning.Component {
             url: this.tag('Row2').element.data.uri,
             isAudio: true,
             list: this.tag('Row2').items,
-            currentIndex: this.tag('Row2').element.idx
+            currentIndex: this.tag('Row2').element.idx,
+            isUSB:true
           })
         }
         _handleRight() {
@@ -378,7 +380,7 @@ export default class UsbAppsScreen extends Lightning.Component {
           this.traverseMinus()
         }
         _handleEnter() {
-          console.log(this.tag('Row3').items)
+          // console.log(this.tag('Row3').items)
           Router.navigate('usb/image', {
             src: this.tag('Row3').element.data.uri,
             currentIndex: this.tag('Row3').element.idx,
@@ -429,17 +431,17 @@ export default class UsbAppsScreen extends Lightning.Component {
           usbApi.cd(dname).then(res => {
 
             this.cwd.push(this.tag('Row4').element.data.displayName);
-            console.log(`loading the data from the directory ${this.cwd}
+            // console.log(`loading the data from the directory ${this.cwd}
 
-            and its data = music:${JSON.stringify(musicListInfo)}
+            // and its data = music:${JSON.stringify(musicListInfo)}
 
-            Pictures : ${JSON.stringify(imageListInfo)}
+            // Pictures : ${JSON.stringify(imageListInfo)}
 
-            videos : ${JSON.stringify(videoListInfo)}
+            // videos : ${JSON.stringify(videoListInfo)}
 
-            folders : ${JSON.stringify(UsbInnerFolderListInfo)}
+            // folders : ${JSON.stringify(UsbInnerFolderListInfo)}
 
-            `);
+            // `);
             this.loadData();
           }).catch(err => {
             console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
@@ -537,7 +539,7 @@ export default class UsbAppsScreen extends Lightning.Component {
 
 
   loadData() {
-    console.log(`loading data from the directory ${this.cwd}`);
+    // console.log(`loading data from the directory ${this.cwd}`);
     let sumY = 0;
     this.index = 0;
     this.traversableRows = [];
