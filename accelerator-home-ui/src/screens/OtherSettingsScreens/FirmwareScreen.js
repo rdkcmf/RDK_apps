@@ -99,13 +99,13 @@ export default class FirmwareScreen extends Lightning.Component {
                 },
                 FirmwareUpdate: {
                     RectangleDefault: {
-                        x: 110, y: 200, w: 200, mountX: 0.5, h: 50, rect: true, color: CONFIG.theme.hex,
+                        x: 110, y: 200, w: 300, mountX: 0.5, h: 50, rect: true, color: CONFIG.theme.hex,
                         Update: {
-                            x: 100,
+                            x: 170,
                             y: 25,
                             mount: 0.5,
                             text: {
-                                text: "Check for Update",
+                                text: Language.translate("Check for Update"),
                                 fontFace: CONFIG.language.font,
                                 fontSize: 24,
                             },

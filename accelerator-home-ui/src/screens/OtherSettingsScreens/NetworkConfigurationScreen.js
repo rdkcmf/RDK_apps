@@ -240,9 +240,9 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._network.isConnectedToInternet().then(result => {
                         var connectionStatus = Language.translate("Internet Access: ")
                         if (result) {
-                            connectionStatus += "Connected"
+                            connectionStatus += Language.translate("Connected")
                         } else {
-                            connectionStatus += "Not Connected"
+                            connectionStatus += Language.translate("Not Connected")
                         }
 
                         setTimeout(() => {

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils } from '@lightningjs/sdk'
+import { Lightning, Utils, Language } from '@lightningjs/sdk'
 import SettingsItem from './SettingsItem'
 import { COLORS } from '../colors/Colors'
 import { CONFIG } from '../Config/Config'
@@ -75,7 +75,7 @@ export default class LanguageItem extends SettingsItem {
         x: 60,
         y: 45,
         mountY: 0.5,
-        text: { text: item, fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
+        text: { text: Language.translate(item), fontSize: 25, textColor: COLORS.textColor, fontFace: CONFIG.language.font, },
       },
 
     })

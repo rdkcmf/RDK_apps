@@ -22,6 +22,17 @@ import HomeApi from "../api/HomeApi"
 import SidePanel from "./SidePanel"
 import TopPanel from "./TopPanel"
 
+var route = {
+    1: () => {
+        Router.navigate('epg')
+        Router.focusPage()
+    },
+    'default': () => {
+        Router.navigate('menu')
+        Router.focusPage()
+    }
+}
+
 export default class Menu extends Lightning.Component {
     static _template() {
         return {
@@ -58,9 +69,13 @@ export default class Menu extends Lightning.Component {
         this._setState('SidePanel')
     }
     $goToMainView(sidePanelInstance, index) {
-        this.mainView.index(index)
-        Router.focusPage()
+        if (route[index]) {
+            route[index]()
+        } else {
+            route['default']()
+        }
         sidePanelInstance.setColor()
+        return
     }
     refreshMainView() {
         if (this.mainView) {

@@ -30,7 +30,8 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
-
+import EpgScreen from '../screens/EpgScreens/EpgScreen'
+import { Settings } from '@lightningjs/sdk'
 
 export default {
   boot: (queryParam) => {
@@ -59,6 +60,11 @@ export default {
       widgets: ['Menu'],
     },
     {
+      path: 'epg',
+      component: EpgScreen,
+      widgets: ['Menu'],
+    },
+    {
       path: 'usb/player',
       component: AAMPVideoPlayer
     },
@@ -79,6 +85,17 @@ export default {
         //page.appItems = homeApi.getAppListInfo()
         //page.metroApps = homeApi.getMetroInfo()
         page.tvShowItems = homeApi.getTVShowsInfo()
+
+        const movies = [
+          { id: '26666', url: 'http://developer.tmsimg.com/assets/p26666_v_h8_ai.jpg?w=480&h=270&api_key=b7xdtjw9enrhbw6uzjspjsxj', uri: 'https://www.youtube.com/watch?v=SQK-QxxtE8Y', displayName: 'Proof of Life', h: 360, w: 240, applicationType: 'Cobalt' },
+          { id: '9287010', url: 'http://developer.tmsimg.com/assets/p9287010_v_h8_bb.jpg?w=480&h=270&api_key=b7xdtjw9enrhbw6uzjspjsxj', uri: 'https://www.youtube.com/movie?v=-URDChMSrm8', displayName: 'Django Unchained', h: 360, w: 240, applicationType: 'Cobalt' },
+          { id: '9358208', url: 'http://developer.tmsimg.com/assets/p9358208_v_h10_au.jpg?w=480&h=270&api_key=b7xdtjw9enrhbw6uzjspjsxj', uri: 'https://www.youtube.com/movie?v=u7HaO0_rs1Q', displayName: 'Hellbenders', h: 360, w: 240, applicationType: 'Cobalt' },
+          { id: '9471703', url: 'http://developer.tmsimg.com/assets/p9471703_v_h10_af.jpg?w=480&h=270&api_key=b7xdtjw9enrhbw6uzjspjsxj', uri: 'https://www.youtube.com/movie?v=z4l7OZLIh9w', displayName: 'White House Down', h: 360, w: 240, applicationType: 'Cobalt' }
+        ]
+        if (Settings.get('platform', 'gracenote')) {
+          page.graceNoteItems = movies
+        }
+
         return Promise.resolve()
       },
       widgets: ['Menu'],

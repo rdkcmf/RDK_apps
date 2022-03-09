@@ -62,7 +62,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Bluetooth On/Off',
+              text: Language.translate('Bluetooth On/Off'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -86,7 +86,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Searching for Devices',
+              text: Language.translate('Searching for Devices'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -141,7 +141,7 @@ export default class BluetoothScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Add A Device',
+              text: Language.translate('Add A Device'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,

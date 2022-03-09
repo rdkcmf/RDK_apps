@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Router, Storage, Language } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import SettingsMainItem from '../../items/SettingsMainItem'
@@ -45,7 +45,7 @@ export default class NetworkScreen extends Lightning.Component {
                     y: 0,
                     mountX: 0.5,
                     text: {
-                        text: "Network Configuration",
+                        text: Language.translate("Network Configuration"),
                         fontFace: CONFIG.language.font,
                         fontSize: 40,
                         textColor: CONFIG.theme.hex,
@@ -59,7 +59,7 @@ export default class NetworkScreen extends Lightning.Component {
                     y: 125,
                     mountX: 0.5,
                     text: {
-                        text: "Select a network interface",
+                        text: Language.translate("Select a network interface"),
                         fontFace: CONFIG.language.font,
                         fontSize: 25,
                     },
@@ -75,7 +75,7 @@ export default class NetworkScreen extends Lightning.Component {
                             y: 45,
                             mountY: 0.5,
                             text: {
-                                text: 'WiFi',
+                                text: Language.translate('WiFi'),
                                 textColor: COLORS.titleColor,
                                 fontFace: CONFIG.language.font,
                                 fontSize: 25,
@@ -90,7 +90,7 @@ export default class NetworkScreen extends Lightning.Component {
                             y: 45,
                             mountY: 0.5,
                             text: {
-                                text: 'Ethernet',
+                                text: Language.translate('Ethernet'),
                                 textColor: COLORS.titleColor,
                                 fontFace: CONFIG.language.font,
                                 fontSize: 25,

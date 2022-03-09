@@ -271,8 +271,6 @@ export default class UsbApi {
                     UsbInnerFolderListInfo.push(obj4);
                     return device
                 }
-
-
             }
         })
     }

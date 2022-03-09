@@ -50,7 +50,7 @@ export default class WiFiScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'WiFi On/Off',
+              text: Language.translate('WiFi On/Off'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -116,7 +116,7 @@ export default class WiFiScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Join Another Network',
+              text: Language.translate('Join Another Network'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -225,15 +225,6 @@ export default class WiFiScreen extends Lightning.Component {
                     console.log('set default success', result1)
                   }
                 })
-              }
-            })
-          }
-        })
-        this._network.registerEvent('onConnectionStatusChanged', notification => {
-          if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
-            this._wifi.setInterface('ETHERNET', true).then(res => {
-              if (res.success) {
-                this._wifi.setDefaultInterface('ETHERNET', true)
               }
             })
           }

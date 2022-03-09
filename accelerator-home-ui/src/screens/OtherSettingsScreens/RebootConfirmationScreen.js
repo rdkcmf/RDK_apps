@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Router } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
 import AppApi from '../../api/AppApi'
 import { CONFIG } from '../../Config/Config'
 
@@ -39,7 +39,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                     y: 0,
                     mountX: 0.5,
                     text: {
-                        text: "Reboot",
+                        text: Language.translate("Reboot"),
                         fontFace: CONFIG.language.font,
                         fontSize: 40,
                         textColor: CONFIG.theme.hex,
@@ -53,7 +53,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                     y: 125,
                     mountX: 0.5,
                     text: {
-                        text: "Click Confirm to reboot!",
+                        text: Language.translate("Click Confirm to reboot!"),
                         fontFace: CONFIG.language.font,
                         fontSize: 25,
                     },
@@ -67,7 +67,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                             y: 25,
                             mount: 0.5,
                             text: {
-                                text: "Confirm",
+                                text: Language.translate("Confirm"),
                                 fontFace: CONFIG.language.font,
                                 fontSize: 22,
                                 textColor: 0xFF000000
@@ -81,7 +81,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                             y: 25,
                             mount: 0.5,
                             text: {
-                                text: "Cancel",
+                                text: Language.translate("Cancel"),
                                 fontFace: CONFIG.language.font,
                                 fontSize: 22,
                                 textColor: 0xFF000000

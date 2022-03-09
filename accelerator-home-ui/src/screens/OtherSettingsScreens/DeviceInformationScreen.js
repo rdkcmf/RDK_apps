@@ -202,7 +202,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 540,
                         mountY: 0.5,
                         text: {
-                            text: `UI Version: 3.5, Build Version: , Timestamp: `,
+                            text: `UI Version: 3.6, Build Version: , Timestamp: `,
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -261,7 +261,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
         })
 
         this.appApi.getSystemVersions().then(res => {
-            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.5 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
+            this.tag('FirmwareVersions.Value').text.text = `UI Version - 3.6 \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `
         })
             .catch(err => { console.error(`error while getting the system versions`) })
 

@@ -33,6 +33,15 @@ export default class LogoScreen extends Lightning.Component {
                 y: 1080 / 2,
                 src: Utils.asset('/images/splash/RDKLogo.png'),
             },
+            Sub: {
+                mountY: 1,
+                mountX: 0.5,
+                x: 1920 / 2,
+                y: 1000,
+                w: 320,
+                h: 110,
+                src: Utils.asset('/images/splash/gracenote.png')
+            }
         }
     }
 

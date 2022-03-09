@@ -106,7 +106,7 @@ export default class EnergySavingsScreen extends Lightning.Component {
     }
     _init() {
         this._appApi = new AppApi();
-        this.options = ["Deep Sleep", "Light Sleep"]
+        this.options = [Language.translate("Deep Sleep"), Language.translate("Light Sleep")]
         this.tag('EnerygySavingContents').h = this.options.length * 90
         this.tag('EnerygySavingContents.List').h = this.options.length * 90
         this.loadingAnimation = this.tag('Loader').animation({
@@ -124,9 +124,9 @@ export default class EnergySavingsScreen extends Lightning.Component {
         var standbyMode = ""
         this._appApi.getPreferredStandbyMode().then(result => {
             if (result.preferredStandbyMode == "LIGHT_SLEEP") {
-                standbyMode = "Light Sleep"
+                standbyMode = Language.translate("Light Sleep")
             } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
-                standbyMode = "Deep Sleep"
+                standbyMode = Language.translate("Deep Sleep")
             }
 
             this.tag('List').items = this.options.map((item, index) => {

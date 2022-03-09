@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Router, Registry } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Registry, Language } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import SettingsMainItem from '../../items/SettingsMainItem'
@@ -54,7 +54,7 @@ export default class NetworkList extends Lightning.Component {
           y: 0,
           mountX: 0.5,
           text: {
-            text: "Network Configuration",
+            text: Language.translate("Network Configuration"),
             fontFace: CONFIG.language.font,
             fontSize: 40,
             textColor: CONFIG.theme.hex,
@@ -68,7 +68,7 @@ export default class NetworkList extends Lightning.Component {
           y: 125,
           mountX: 0.5,
           text: {
-            text: "Select a wifi network",
+            text: Language.translate("Select a wifi network"),
             fontFace: CONFIG.language.font,
             fontSize: 25,
           },
@@ -125,7 +125,7 @@ export default class NetworkList extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Join Another Network',
+              text: Language.translate('Join Another Network'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,

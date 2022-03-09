@@ -46,7 +46,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'WiFi',
+                            text: Language.translate('WiFi'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -70,7 +70,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Ethernet',
+                            text: Language.translate('Ethernet'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
