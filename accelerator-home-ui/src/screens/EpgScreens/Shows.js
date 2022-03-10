@@ -31,7 +31,7 @@ export default class Shows extends Lightning.Component {
         let sum = 0;
         item.shows.map((show, i) => {
             let tmp = ((show.duration)/(1000*60*60)) * 2 * 235;
-            options.push({ type: DynamicItem,index:i, x: sum, width:tmp  , show: show, startTime: show.startTime, endTime: show.endTime }) // width should be set before show.
+            options.push({ type: DynamicItem,index:i, x: sum, width:tmp  , show: show, channelName: item.channelName, startTime: show.startTime, endTime: show.endTime }) // width should be set before show.
             sum += tmp;
         })
         this.children = options;
@@ -57,26 +57,29 @@ export default class Shows extends Lightning.Component {
             this.children[this._columnIndex]._unfocus();
             this._columnIndex--;
             if(this.fireAncestors( '$isFocusable' , this.children[this._columnIndex].getX()+this.children[this._columnIndex].getW() )){
-            console.log(`element is focusable`);
-            this.children[this._columnIndex]._focus();
-            this.updateCurrentCellX();
+                // console.log(`element is focusable`);
+                this.children[this._columnIndex]._focus();
+                this.updateCurrentCellX();
 
-            let w = this.children[this._columnIndex].getW();
-            let x = this.children[this._columnIndex].getX();
-            let leftPointer = this.fireAncestors("$getLeftPointer");
-            if (x < leftPointer) {
-                this.fireAncestors("$scrollToLeft", leftPointer - x)
-                this.fireAncestors("$updateTheLeftElements");
-            }
+                let w = this.children[this._columnIndex].getW();
+                let x = this.children[this._columnIndex].getX();
+                let leftPointer = this.fireAncestors("$getLeftPointer");
+                if (x < leftPointer) {
+                    this.fireAncestors("$scrollToLeft", leftPointer - x)
+                    this.fireAncestors("$updateTheLeftElements");
+                }
             }
             else{
                 this._columnIndex++;
                 this.children[this._columnIndex]._focus();
-                console.log(`this element is not focusable`);
+                // console.log(`this element is not focusable`);
+                this.fireAncestors('$focusSidePanel')
             }
 
             
             
+        }else {
+            this.fireAncestors('$focusSidePanel') //when focus is on first item, left arrow press should focus on side panel
         }
     }
     _handleRight() {

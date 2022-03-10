@@ -18,6 +18,7 @@
  **/
 import { Lightning, Router } from '@lightningjs/sdk'
 import LightningPlayerControls from './LightningPlayerControl';
+import { CONFIG } from '../Config/Config';
 
 /**
  * Class to render AAMP video player.
@@ -31,6 +32,15 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   set params(args) {
     this.currentIndex = args.currentIndex
     this.data = args.list
+    if(args.isUSB){
+      this.isUSB = args.isUSB
+      this.fileName = this.data[this.currentIndex].data.displayName
+    }else if(args.isChannel){
+      this.isChannel = args.isChannel
+      this.channelName = args.channelName
+      this.showName = args.showName
+      this.showDescription = args.description
+    }
     let url = args.url ? args.url : 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8'
     if (args.isAudio) {
       this.tag('Image').alpha = 1
@@ -60,10 +70,36 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           resizeMode: { type: 'contain', w: 1920, h: 1080 },
         }
       },
+      InfoOverlay:{
+        x:90,
+        y:840,
+        alpha:0,
+        ShowName:{
+          text: { 
+            text: "Show Name", 
+            fontFace: CONFIG.language.font, 
+            fontSize: 48,
+            fontStyle: 'bold',
+            textColor: 0xffFFFFFF,
+            wordWrap: true, wordWrapWidth: 1350, maxLines: 1, 
+          }
+        },
+        // ChannelName:{
+        //   x:1400,
+        //   text: { 
+        //     text: "Channel Name", 
+        //     fontFace: CONFIG.language.font, 
+        //     fontSize: 48,
+        //     fontStyle: 'bold',
+        //     textColor: 0xffFFFFFF ,
+        //     wordWrap: true, wordWrapWidth: 300, maxLines: 1, 
+        //   }
+        // }
+      },
       PlayerControls: {
         type: LightningPlayerControls,
         x: 0,
-        y: 810,
+        y: 820,
         alpha: 0,
         signals: {
           pause: 'pause',
@@ -185,7 +221,10 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   _mediaPlaybackStarted() {
     this.tag('PlayerControls').reset()
     this.tag('PlayerControls').setSmooth('alpha', 1)
-    this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
+    this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
+    if(this.isUSB){
+      this.tag("InfoOverlay").setSmooth('alpha', 1)
+    }
     this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
   }
 
@@ -272,6 +311,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           url: this.data[this.currentIndex].data.uri,
           drmConfig: null,
         })
+        this.updateInfo()
         this.setVideoRect(0, 0, 1920, 1080)
       } catch (error) {
         console.error('Playback Failed ' + error)
@@ -290,6 +330,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           url: this.data[this.currentIndex].data.uri,
           drmConfig: null,
         })
+        this.updateInfo()
         this.setVideoRect(0, 0, 1920, 1080)
       } catch (error) {
         console.error('Playback Failed ' + error)
@@ -354,6 +395,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.tag('PlayerControls').setSmooth('y', 1080, { duration: 0.7 })
     this.tag('PlayerControls').setSmooth('alpha', 0, { duration: 0.7 })
     this._setState('HideControls')
+    this.hideInfo()
   }
 
   /**
@@ -362,17 +404,41 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   showPlayerControls() {
     this.tag('PlayerControls').reset()
     this.tag('PlayerControls').setSmooth('alpha', 1)
-    this.tag('PlayerControls').setSmooth('y', 675, { duration: 0.7 })
+    this.tag('PlayerControls').setSmooth('y', 820, { duration: 0.7 })
     this._setState('ShowControls')
     this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
+  }
+
+
+  showInfo(){
+    if(this.isUSB || this.isChannel){
+      this.tag("InfoOverlay").setSmooth('alpha', 1, { duration: 0.3, delay:0.7 })
+    }
+  }
+
+
+  hideInfo(){
+    if(this.isUSB || this.isChannel){
+      this.tag("InfoOverlay").setSmooth('alpha', 0, {duration: 0.3})
+    }
+  }
+
+  updateInfo() {
+    if(this.isUSB){
+      this.tag('ShowName').text.text = this.data[this.currentIndex].data.displayName
+      // this.tag('ChannelName').text.text = this.channelName
+    }else if(this.isChannel){
+      this.tag('ShowName').text.text = this.showName
+    }
   }
   /**
    * Function to display player controls on down key press.
    */
   _handleUp() {
     this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
-    this.tag('PlayerControls').setSmooth('y', 675, { duration: 1 })
+    this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
     this._setState('ShowControls')
+    this.showInfo()
     clearTimeout(this.timeout)
   }
 
@@ -389,12 +455,16 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   }
 
   _unfocus() {
+    this.tag('Image').alpha = 0
+    this.tag('InfoOverlay').alpha = 0
+    this.isUSB = false
+    this.isChannel = false
     this.stop()
     this.destroy()
-    this.tag('Image').alpha = 0
   }
   _focus() {
     this._setState('ShowControls')
+    this.updateInfo()
   }
   /**
    * Function to define the different states of the video player.

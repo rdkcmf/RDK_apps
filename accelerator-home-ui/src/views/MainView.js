@@ -320,6 +320,10 @@ export default class MainView extends Lightning.Component {
 
     this.refreshFirstRow()
     this._setState('AppList.0')
+    if (Settings.get('platform', 'gracenote')) {
+      this._setState('Gracenote')
+    }
+
   }
 
   _firstActive() {
@@ -387,7 +391,6 @@ export default class MainView extends Lightning.Component {
    * Function to set details of items in gracenote list.
    */
   set graceNoteItems(items) {
-    this._setState('Gracenote')
     this.moveDownContent()
     this.tag('Gracenote').items = items.map((info, idx) => {
       return {
@@ -549,9 +552,7 @@ export default class MainView extends Lightning.Component {
             return this.tag('Gracenote').element
           } else {
             this.reset()
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
-            //this.fireAncestors('$goToSidePanel', 0)
           }
         }
         _handleEnter() {
@@ -607,9 +608,7 @@ export default class MainView extends Lightning.Component {
             return this.tag('AppList').element
           } else {
             this.reset()
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
-            //this.fireAncestors('$goToSidePanel', 0)
           }
         }
         _handleEnter() {
@@ -724,9 +723,7 @@ export default class MainView extends Lightning.Component {
             return this.tag('MetroApps').element
           } else {
             this.reset()
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
-            //this.fireAncestors('$goToSidePanel', 1)
           }
         }
         _handleEnter() {
@@ -780,8 +777,6 @@ export default class MainView extends Lightning.Component {
             return this.tag('TVShows').element
           } else {
             this.reset()
-            //this.fireAncestors('$goToSidePanel', 2)
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
           }
         }
@@ -834,8 +829,6 @@ export default class MainView extends Lightning.Component {
             return this.tag('UsbApps').element
           } else {
             this.reset()
-            //this.fireAncestors('$goToSidePanel', 1)
-            this.widgets.menu.setIndex(this.indexVal)
             Router.focusWidget('Menu')
           }
         }

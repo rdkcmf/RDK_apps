@@ -324,4 +324,34 @@ export default class Wifi {
         })
     })
   }
+
+  // saveSSID(ssid, password, securityMode) {
+  //   return new Promise((resolve, reject) => {
+  //     this._thunder
+  //     .call(this.callsign, 'saveSSID', { 
+  //       ssid: ssid,
+  //       password: password,
+  //       securityMode: securityMode
+  //     })
+  //     .then(result => {
+  //       resolve(result)
+  //     })
+  //     .catch(err => {
+  //       console.error('SaveSSID Error', JSON.stringify(err))
+  //     })
+  //   })
+  // }
+
+  // clearSSID(){
+  //   return new Promise((resolve, reject) => {
+  //     this._thunder
+  //     .call(this.callsign, 'clearSSID')
+  //     .then(result => {
+  //       resolve(result)
+  //     })
+  //     .catch(err => {
+  //       console.log('Error in clear ssid')
+  //     })
+  //   })
+  // }
 }

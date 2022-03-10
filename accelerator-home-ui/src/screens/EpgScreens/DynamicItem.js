@@ -33,7 +33,7 @@ export default class DynamicItem extends Lightning.Component {
         mountY: 0,
         h: 3,
         zIndex: 1,
-        w: 235,
+        w: 232,
         rect: true,
         color: 0x00FFFFFF
       },
@@ -41,7 +41,7 @@ export default class DynamicItem extends Lightning.Component {
         y: 79,
         zIndex: 1,
         mountY: 1,
-        w: 235,
+        w: 232,
         h: 3,
         rect: true,
         color: 0x00FFFFFF
@@ -51,6 +51,23 @@ export default class DynamicItem extends Lightning.Component {
         w: 235,
         h: 81,
         texture: lng.Tools.getRoundRect(235, 81, 0, 1.5, 0xffffffff, true, 0xff272727),
+
+      },
+      AiringOverlay: {
+        clipping: true,
+        w: 232,
+        h: 79,
+        x:1.5,y:1.5,
+        rect:true,
+        zIndex:4,
+        alpha:0,
+        color:CONFIG.theme.hex,
+        Title: {
+          x:10,y:45, mountY:0.5,
+          text:{
+            text:"Show airing at", fontFace: CONFIG.language.font,fontStyle:'bold', fontSize: 21, textColor: 0xffFFFFFF
+          }
+        }
 
       },
     }
@@ -103,11 +120,13 @@ export default class DynamicItem extends Lightning.Component {
   setXforTextLabel(x) {
     // console.log(`set x co-ord call to ${x}`);
     this.tag("Item.Name").x = x + 9;
+    this.tag('AiringOverlay.Title').x = x + 9;
   }
 
   setDefaultForTextLabel() {
     this.tag('Item.Name').text.wordWrapWidth = this.defaultWordWrapWidth;
     this.tag('Item.Name').x = 9;
+    this.tag('AiringOverlay.Title').x = 9;
   }
 
   _init() {
@@ -130,7 +149,6 @@ export default class DynamicItem extends Lightning.Component {
     //   });
     //   this.scrollOnFocus=true;
     // }
-
   }
 
   getW() {
@@ -141,10 +159,44 @@ export default class DynamicItem extends Lightning.Component {
     return this.x;
   }
 
+  cnv24to12(time){
+    let sTime = time.split(":")
+    let minutes = ""
+    let convertedTime = ""
+    if(parseInt(sTime[1]) === 0){
+      minutes = "00"
+    }else {
+      minutes = String(sTime[1])
+    }
+    if(parseInt(sTime[0]) === 0){
+      convertedTime = "12" + ":" + minutes + "a"
+    } else if(parseInt(sTime[0]) > 0 && parseInt(sTime[0]) < 12){
+      convertedTime = sTime[0] + ":" + minutes + "a"
+    } else if(parseInt(sTime[0]) === 12){
+      convertedTime = sTime[0] + ":" + minutes + "p"
+    } else if(parseInt(sTime[0]) > 12 && parseInt(sTime[0]) < 24){
+      convertedTime = String(parseInt(sTime[0])-12) + ":" + minutes + "p"
+    }
+    return convertedTime
+  }
+
+  showAiringTime(time){
+    //  calls convert 24 to 12, changes the overlay text content, show the overlay for 3 seconds and hides, set smooth
+    let airingTime = this.cnv24to12(time)
+    this.tag('AiringOverlay.Title').text.text = "Show airing at " + airingTime
+    this.tag('AiringOverlay').w = this.getW() - 3
+    this.airingAnimation.start()
+  }
+
   _handleEnter() {
     var date = new Date();
     if (Storage.get('ipAddress') && this.index === 0) {
-      Router.navigate('player')
+      Router.navigate('player',{
+        isChannel: true,
+        channelName: this.channelName,
+        showName: this.showDetails.showName,
+        description: this.showDetails.description
+      })
     } else if (this.x < 11280) {
       let hrs = parseInt(date.toLocaleString('en-US', { hour: 'numeric', hour12: false }))
       let mins = parseInt(date.toLocaleString('en-US', { minute: 'numeric', hour12: false }))
@@ -152,16 +204,24 @@ export default class DynamicItem extends Lightning.Component {
       let startMins = parseInt(this.startTime.split(":")[1])
       if ((startHrs < hrs) || (startHrs === hrs && startMins <= mins)) {
         if (Storage.get('ipAddress')) {
-          Router.navigate('player')
+          Router.navigate('player',{
+            isChannel: true,
+            channelName: this.channelName,
+            showName: this.showDetails.showName,
+            description: this.showDetails.description
+          })
         } else {
           console.log(`ip address not available to play the video`);
         }
+      } else {
+        this.showAiringTime(this.startTime)
       }
+    }else {
+      this.showAiringTime(this.startTime)
     }
   }
 
   _focus() {
-    console.log(`focused on cell with x = ${this.getX()}`);
     this.fireAncestors("$updateShowDetails", this.showDetails.showName, this.showDetails.description)
     this.fireAncestors("$updateStartAndEndTimes", this.startTime, this.endTime);
     this.fireAncestors("$updateDayLabel", this.x);
@@ -169,6 +229,14 @@ export default class DynamicItem extends Lightning.Component {
     this.tag('TopLine').color = CONFIG.theme.hex
     this.tag('BottomLine').color = CONFIG.theme.hex
     this.tag('Item.Name').text.textColor = CONFIG.theme.hex
+    this.airingAnimation = this.tag('AiringOverlay').animation({
+      duration:4,
+      repeat:0,
+      stopMethod: 'immediate',
+      actions: [
+        {p: 'alpha', v: {0: 0,0.125:1, 0.875: 1, 1:0}}
+      ]
+    })
     // if(this.scrollOnFocus){
     //   this.tag("Name").visible = false;
     //   this.tag("Scrollable").visible = true;
@@ -208,6 +276,11 @@ export default class DynamicItem extends Lightning.Component {
     this.tag('TopLine').color = 0x00FFFFFF
     this.tag('BottomLine').color = 0x00FFFFFF
     this.tag('Item.Name').text.textColor = 0xFFFFFFFF
+    try{
+      this.airingAnimation.stop()
+    } catch{
+      console.log('error in stopping animation')
+    }
     // if(this.scrollOnFocus){
     //   this.tag("Name").visible = true;
     //   this.tag("Scrollable").visible = false;

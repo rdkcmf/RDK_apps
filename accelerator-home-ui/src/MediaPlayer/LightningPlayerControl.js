@@ -36,7 +36,7 @@ export default class LightningPlayerControls extends Lightning.Component {
       TimeBar: {
         x: 90,
         y: 93.5,
-        texture: Lightning.Tools.getRoundRect(1740, 30, 15, 0, 0, true, 0xffffffff),
+        texture: Lightning.Tools.getRoundRect(1740, 20, 10, 0, 0, true, 0xffffffff),
       },
       ProgressWrapper: {
         x: 90,
@@ -47,8 +47,8 @@ export default class LightningPlayerControls extends Lightning.Component {
         ProgressBar: {
           texture: Lightning.Tools.getRoundRect(
             1740,
-            30,
-            15,
+            20,
+            10,
             0,
             0,
             true,
@@ -64,18 +64,18 @@ export default class LightningPlayerControls extends Lightning.Component {
       },
       Buttons: {
         x: 820,
-        y: 200,
+        y: 125,
         children: [
           { src: Utils.asset('images/Media Player/Icon_Back_White_16k.png'), x: 17, y: 17 },
           { src: Utils.asset('images/Media Player/Icon_Pause_White_16k.png'), x: 17, y: 17 },
           { src: Utils.asset('images/Media Player/Icon_Next_White_16k.png'), x: 17, y: 17 },
         ].map((item, idx) => ({
-          x: idx * 100,
+          x: idx * 75,
           // texture: Lightning.Tools.getRoundRect(80, 80, 40, 0, 0, true, 0xff8e8e8e),
           ControlIcon: {
             x: item.x,
             y: item.y,
-            texture: Lightning.Tools.getSvgTexture(item.src, 70, 70),
+            texture: Lightning.Tools.getSvgTexture(item.src, 50, 50),
           },
         })),
       },
@@ -172,7 +172,7 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.focus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
             })
         }
         $exit() {
@@ -182,7 +182,7 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.unfocus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.unfocus, 50, 50)
             })
         }
         _handleEnter() {
@@ -201,7 +201,7 @@ export default class LightningPlayerControls extends Lightning.Component {
           this.tag('Buttons')
             .children[1].tag('ControlIcon')
             .patch({
-              texture: Lightning.Tools.getSvgTexture(this.focus, 70, 70)
+              texture: Lightning.Tools.getSvgTexture(this.focus, 50, 50)
             })
         }
         _handleRight() {
@@ -223,8 +223,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Next_Orange_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -234,8 +234,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Next_White_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -262,8 +262,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Back_Orange_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }
@@ -273,8 +273,8 @@ export default class LightningPlayerControls extends Lightning.Component {
             .patch({
               texture: Lightning.Tools.getSvgTexture(
                 Utils.asset('images/Media Player/Icon_Back_White_16k.png'),
-                70,
-                70
+                50,
+                50
               ),
             })
         }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage, Registry } from '@lightningjs/sdk';
+import { Utils, Router, Storage } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -26,6 +26,7 @@ import Keymap from './Config/Keymap';
 import Menu from './views/Menu'
 import Failscreen from './screens/FailScreen';
 import { keyIntercept } from './keyIntercept/keyIntercept';
+import store from './redux';
 
 const config = {
   host: '127.0.0.1',
@@ -75,7 +76,6 @@ export default class App extends Router.App {
   }
 
   _captureKey(key) {
-
     if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));
@@ -101,13 +101,17 @@ export default class App extends Router.App {
           Router.navigate('menu');
         }
       }
+      return true
 
     }
 
-    if (key.keyCode == Keymap.F9) {
-      store.dispatch({
-        type: 'ACTION_LISTEN_START'
-      })
+    if (key.keyCode == Keymap.Settings_Shortcut) {
+      Router.navigate('settings')
+      return true
+    }
+
+    if (key.keyCode == Keymap.Guide_Shortcut) {
+      Router.navigate('epg')
       return true
     }
 

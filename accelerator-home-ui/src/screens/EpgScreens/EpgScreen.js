@@ -244,6 +244,9 @@ export default class EpgScreen extends Lightning.Component {
   _handleBack() {
     Router.navigate('menu')
   }
+  $focusSidePanel() {
+    Router.focusWidget('Menu')
+  }
   $updateDayLabel(x) {
     let quotient = Math.floor((x / 235) / 48);
     if (quotient === 0) {
@@ -284,27 +287,27 @@ export default class EpgScreen extends Lightning.Component {
     //move the page to right
     // console.log(`scrolling to left ${v}`);
     let temp = this.tag('Scroller').x;
-    if( -1 * (temp+v) >= this.leftFloor ){
+    if (-1 * (temp + v) >= this.leftFloor) {
       // console.log(`scrollable to left since ${(temp+v)*-1} >= ${this.leftFloor}`);
       this.tag("Scroller").x = temp + v;
       this.leftPointer = this.leftPointer - v;
       this.rightPointer = this.rightPointer - v;
-    }else{
+    } else {
       v = this.leftPointer - this.leftFloor;
       this.tag("Scroller").x = temp + v;
       this.leftPointer = this.leftPointer - v;
       this.rightPointer = this.rightPointer - v;
-      console.log(`can't scroll any further`);
+      // console.log(`can't scroll any further`);
       // console.log(`scroller ${(temp+v)*-1} >= ${this.leftFloor} can't scroll left beyond this point`);
     }
 
-    
+
     // console.log(`updating rightpointer to ${this.rightPointer}`);
   }
 
-  $isFocusable(rightEdgeofCell){
+  $isFocusable(rightEdgeofCell) {
     // console.log(`right Edge = ${rightEdgeofCell} , left Floor = ${this.leftFloor}`);
-    if(rightEdgeofCell <= this.leftFloor){
+    if (rightEdgeofCell <= this.leftFloor) {
       // console.log(`this element is not focusable as its right edge = ${rightEdgeofCell} and the left border = ${this.leftFloor}`)
       return false;
     }
@@ -368,7 +371,7 @@ export default class EpgScreen extends Lightning.Component {
   findTheNextProbableCell(list, showIndex, arrIndex) {
     list.children[showIndex].setDefaultForTextLabel();
     for (let i = showIndex; i < list.children.length; i++) {
-      console.log(`next probable cell`);
+      // console.log(`next probable cell`);
       let cellX = list.children[i].getX();
       let cellW = list.children[i].getW();
       if (this.leftPointer >= cellX && this.leftPointer < (cellW + cellX)) {
@@ -383,7 +386,7 @@ export default class EpgScreen extends Lightning.Component {
   findThePreviousProbableCell(list, showIndex, arrIndex) {
     list.children[showIndex].setDefaultForTextLabel();
     for (let i = showIndex; i >= 0; i--) {
-      console.log(`prev probable cell`);
+      // console.log(`prev probable cell`);
       let cellX = list.children[i].getX();
       let cellW = list.children[i].getW();
       if (this.leftPointer >= cellX && this.leftPointer < (cellW + cellX)) {
@@ -422,7 +425,7 @@ export default class EpgScreen extends Lightning.Component {
     })
   }
 
-  $updateLeftMostElementsOnFocus(){
+  $updateLeftMostElementsOnFocus() {
     let showsListIndex = this.verticalScrollCount;
     var self = this;
     this.leftPointer;
@@ -431,11 +434,9 @@ export default class EpgScreen extends Lightning.Component {
       let currentCellX = list.children[showIndex].getX();
       let currentCellW = list.children[showIndex].getW();
       list.children[showIndex].setDefaultForTextLabel();
-      let i =  list.binarySearch(this.leftFloor);
-      console.log(`i = ${i}`);
-
+      let i = list.binarySearch(this.leftFloor);
       let cellX = list.children[i].getX();
-      let cellW = list.children[i].getW();                       
+      let cellW = list.children[i].getW();
       this.leftMost8[arrIndex] = i;
       list.children[i]._unfocus();
       list.children[i].setXforTextLabel(this.leftPointer - cellX);
@@ -472,7 +473,7 @@ export default class EpgScreen extends Lightning.Component {
           }
           this.tag('List').setNext()
           this.tag('ShowList').setNext()
-          let focusedElementIndex = this.tag('ShowList').element.binarySearch(Math.max(this.currentCellX,this.leftFloor));
+          let focusedElementIndex = this.tag('ShowList').element.binarySearch(Math.max(this.currentCellX, this.leftFloor));
           this.tag('ChannelName').text = this.tag('List').element.channelName;
 
           this.resetHighLight();
@@ -501,7 +502,7 @@ export default class EpgScreen extends Lightning.Component {
 
           this.tag('List').setPrevious()
           this.tag('ShowList').setPrevious()
-          let focusedElementIndex = this.tag('ShowList').element.binarySearch(Math.max(this.currentCellX,this.leftFloor));
+          let focusedElementIndex = this.tag('ShowList').element.binarySearch(Math.max(this.currentCellX, this.leftFloor));
           this.tag("ChannelName").text = this.tag("List").element.channelName;
 
           this.resetHighLight();
@@ -522,40 +523,40 @@ export default class EpgScreen extends Lightning.Component {
         }
 
 
-  _focus() {
-    this.leftPointer = 0;
-    this.rightPointer = 235 * 6;
+        _focus() {
+          this.leftPointer = 0;
+          this.rightPointer = 235 * 6;
 
-    this.interval = setInterval(() => {
-      const d = new Date();
-      var width = 0;
-      width = 235 * 2 * d.getHours();
-      width += (d.getMinutes() / 30) * 235;
-      this.tag("TimeBar").w = width;
-      this.tag('DownTriangle').x = width;
-    }, 1000);
+          this.interval = setInterval(() => {
+            const d = new Date();
+            var width = 0;
+            width = 235 * 2 * d.getHours();
+            width += (d.getMinutes() / 30) * 235;
+            this.tag("TimeBar").w = width;
+            this.tag('DownTriangle').x = width;
+          }, 1000);
 
 
-    let date = new Date();
-    let h = date.getHours();
-    let m = date.getMinutes();
-    let v = h * 2 * 235;
-    m = Math.floor(m/30);
-    v+= m * 235;
-    this.tag('Scroller').x = -3;
-    this.$scrollToRight(v);
-    this.tag('ShowList').element.binarySearch(v);
-    this.leftFloor = v;
-    this.$updateLeftMostElementsOnFocus();   
-    this.$updateCurrentCellX(this.leftFloor);
-    console.log( `Left Floor = ${this.leftFloor} , left Pointer = ${this.leftPointer} `);
-  }
+          let date = new Date();
+          let h = date.getHours();
+          let m = date.getMinutes();
+          let v = h * 2 * 235;
+          m = Math.floor(m / 30);
+          v += m * 235;
+          this.tag('Scroller').x = -3;
+          this.$scrollToRight(v);
+          this.tag('ShowList').element.binarySearch(v);
+          this.leftFloor = v;
+          this.$updateLeftMostElementsOnFocus();
+          this.$updateCurrentCellX(this.leftFloor);
+          // console.log(`Left Floor = ${this.leftFloor} , left Pointer = ${this.leftPointer} `);
+        }
 
-  _unfocus() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
-  }
+        _unfocus() {
+          if (this.interval) {
+            clearInterval(this.interval);
+          }
+        }
 
       }
     ]

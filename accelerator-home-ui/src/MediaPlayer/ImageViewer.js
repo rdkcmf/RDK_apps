@@ -78,27 +78,31 @@ export default class ImageViewer extends Lightning.Component {
                     resizeMode: { type: 'contain', w: 1920, h: 1080 },
                 },
             },
-            Next: {
-                x: 1060,
-                y: 1080 - 150,
-                w: 100,
-                h: 100,
-                mount: 0.5,
-                texture: {
-                    type: Lightning.textures.ImageTexture,
-                    src: 'static/images/Media Player/Icon_Next_White_16k.png'
-                }
-            },
-            Previous: {
-                x: 860,
-                y: 1080 - 150,
-                w: 100,
-                h: 100,
-                mount: 0.5,
-                texture: {
-                    type: Lightning.textures.ImageTexture,
-                    src: 'static/images/Media Player/Icon_Back_White_16k.png'
-                }
+            Controls: {
+                x: 960,
+                y: 930,
+                h:75,
+                w:100,
+                Previous: {
+                    x:-50,
+                    w: 75,
+                    h: 75,
+                    mount:0.5,
+                    texture: {
+                        type: Lightning.textures.ImageTexture,
+                        src: 'static/images/Media Player/Icon_Back_White_16k.png'
+                    }
+                },
+                Next: {
+                    x: 50,
+                    w: 75,
+                    h: 75,
+                    mount:0.5,
+                    texture: {
+                        type: Lightning.textures.ImageTexture,
+                        src: 'static/images/Media Player/Icon_Next_White_16k.png'
+                    }
+                },
             }
         }
     }

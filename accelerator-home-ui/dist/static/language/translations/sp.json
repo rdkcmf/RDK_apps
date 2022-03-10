@@ -96,5 +96,9 @@
   "Deep Sleep":"Sueño profundo",
   "Light Sleep":"Sueño ligero",
   "Connected":"Conectado",
-  "Not Connected":"No conectado"
+  "Not Connected":"No conectado",
+  "Note":"Nota",
+  "Ethernet cable is not connected":"El cable Ethernet no está conectado",
+  "Try Again":"Intentar otra vez",
+  "Skip":"Saltar"
 }

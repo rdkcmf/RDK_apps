@@ -224,14 +224,6 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                 _handleDown() {
                     // do nothing
                 }
-                _handleKey(key) {
-                    console.log("key press after reboot ", key)
-                }
-                _captureKey(key) {
-                    if (key) {
-                        console.log("capture key press after reboot ", key)
-                    }
-                }
             }
         ]
     }
