@@ -86,7 +86,7 @@ export default class ListItem extends Lightning.Component {
             fontFace: CONFIG.language.font,
             text: this.data.displayName,
             fontSize: 35,
-            maxLines: 2,
+            maxLines: 1,
             wordWrapWidth: this.w
           },
         }

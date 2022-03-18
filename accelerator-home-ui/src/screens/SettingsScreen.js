@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
@@ -162,6 +162,30 @@ export default class SettingsScreen extends Lightning.Component {
             src: Utils.asset('images/settings/Arrow.png'),
           },
         },
+        UIVoice: {
+          y: 450,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: Language.translate('UI Voice'),
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 67,
+            x: 1600,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/ToggleOffWhite.png'),
+          },
+        },
       },
     }
   }
@@ -260,8 +284,25 @@ export default class SettingsScreen extends Lightning.Component {
         _handleUp() {
           this._setState('Audio')
         }
+        _handleDown() {
+          this._setState('UIVoice')
+        }
         _handleEnter() {
           Router.navigate('settings/other')
+        }
+      },
+      class UIVoice extends this{
+        $enter() {
+          this.tag('UIVoice')._focus()
+        }
+        $exit() {
+          this.tag('UIVoice')._unfocus()
+        }
+        _handleUp() {
+          this._setState('OtherSettings')
+        }
+        _handleEnter() {
+          //implementation pending
         }
       },
     ]

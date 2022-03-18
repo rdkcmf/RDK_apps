@@ -30,18 +30,13 @@
  export default class NetworkScreen extends Lightning.Component {
      static _template() {
          return {
+            w: 1920,
+            h: 1080,
+            rect: true,
+            color: 0xff000000,
              Network: {
                  x: 960,
                  y: 270,
-                 Background: {
-                     x: 0,
-                     y: 0,
-                     w: 1920,
-                     h: 2000,
-                     mount: 0.5,
-                     rect: true,
-                     color: 0xff000000,
-                 },
                  Title: {
                      x: 0,
                      y: 0,

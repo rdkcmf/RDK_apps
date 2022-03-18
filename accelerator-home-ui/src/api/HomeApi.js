@@ -147,4 +147,32 @@ export default class HomeApi {
   getLeftArrowInfo() {
     return leftArrowInfo
   }
+
+  getAPIKey() {
+    return new Promise((resolve, reject) => {
+      appApi.fetchApiKey()
+        .then(res => {
+          let [day, month] = [new Date().getUTCDate(), new Date().getUTCMonth()]
+          month += 1
+          day = day.toString()
+          month = month.toString()
+          try {
+            fetch('http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=2022-' + month + '-' + day + 'T08%3A00Z&imageText=true&api_key=' + res)
+              .then(response => response.json())
+              .then(response => {
+                const ids = response.map(id => id.program.rootId)
+                const filtered = response.filter(({ program }, index) => !ids.includes(program.rootId, index + 1))
+                resolve({ key: res, data: filtered.slice(0, 20) })
+              })
+              .catch(err => {
+                console.log("Incorrect API key or no data available")
+                resolve({ key: res, data: [] })
+              })
+          } catch (err) {
+            console.log('API key not defined')
+            resolve({ key: res, data: [] })
+          }
+        })
+    })
+  }
 }

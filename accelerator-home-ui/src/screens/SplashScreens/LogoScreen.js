@@ -26,7 +26,7 @@ export default class LogoScreen extends Lightning.Component {
             rect: true,
             color: 0xff000000,
             w: 1920,
-            h: 2000,
+            h: 1080,
             Logo: {
                 mount: 0.5,
                 x: 1920 / 2,

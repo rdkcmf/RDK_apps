@@ -70,6 +70,19 @@ export default class AppApi {
     })
   }
 
+  fetchApiKey() {
+    return new Promise((resolve) => {
+      thunder
+        .call('org.rdk.PersistentStore', 'getValue', { namespace: 'gracenote', key: 'apiKey' })
+        .then(result => {
+          resolve(result.value)
+        })
+        .catch(err => {
+          resolve('')
+        })
+    })
+  }
+
   /**
    * Function to launch Html app.
    * @param {String} url url of app.

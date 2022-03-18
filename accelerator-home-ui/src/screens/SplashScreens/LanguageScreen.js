@@ -29,18 +29,13 @@ const loader = 'Loader'
 export default class LanguageScreen extends Lightning.Component {
   static _template() {
     return {
+      w: 1920,
+      h: 1080,
+      rect: true,
+      color: 0xff000000,
       Language: {
         x: 960,
         y: 270,
-        Background: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 2000,
-          mount: 0.5,
-          rect: true,
-          color: 0xff000000,
-        },
         Title: {
           x: 0,
           y: 0,
@@ -151,7 +146,7 @@ export default class LanguageScreen extends Lightning.Component {
           }
         }
         _handleEnter() {
-          if(localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]){
+          if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
             localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
             let path = location.pathname.split('index.html')[0]
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"

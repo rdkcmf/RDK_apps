@@ -26,7 +26,6 @@ import Keymap from './Config/Keymap';
 import Menu from './views/Menu'
 import Failscreen from './screens/FailScreen';
 import { keyIntercept } from './keyIntercept/keyIntercept';
-import store from './redux';
 
 const config = {
   host: '127.0.0.1',

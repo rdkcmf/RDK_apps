@@ -24,7 +24,7 @@ export default class BluetoothScreen extends Lightning.Component {
     static _template() {
         return {
             w: 1920,
-            h: 2000,
+            h: 1080,
             rect: true,
             color: 0xff000000,
             Bluetooth: {

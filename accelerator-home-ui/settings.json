@@ -7,7 +7,6 @@
     "debug": false
   },
   "platformSettings": {
-    "gracenote": true,
     "id": "UIv3",
     "inspector": false,
     "path": "./static",

@@ -30,25 +30,13 @@ const wifi = new Wifi()
 export default class NetworkList extends Lightning.Component {
   static _template() {
     return {
+      w: 1920,
+      h: 1080,
+      rect: true,
+      color: 0xff000000,
       NetworkList: {
         x: 950,
         y: 270,
-        Background: {
-          x: 0,
-          y: 0,
-          w: 1920,
-          h: 2000,
-          mount: 0.5,
-          rect: true,
-          color: 0xff000000,
-        },
-        // FailScreen: {
-        //   x: 780,
-        //   y: 100,
-        //   type: WifiFailScreen,
-        //   zIndex: 5,
-        //   visible: false
-        // },
         Title: {
           x: 0,
           y: 0,

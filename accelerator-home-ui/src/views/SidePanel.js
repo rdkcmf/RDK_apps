@@ -29,7 +29,7 @@ export default class SidePanel extends Lightning.Component {
       rect: true,
       y: 270,
       w: 200,
-      h: 1080,
+      h: 810,
       SidePanel: {
         x: 0,
         y: 127,
