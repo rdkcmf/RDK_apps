@@ -65,7 +65,7 @@ export default class DynamicItem extends Lightning.Component {
         Title: {
           x:10,y:45, mountY:0.5,
           text:{
-            text:"Show airing at", fontFace: CONFIG.language.font,fontStyle:'bold', fontSize: 21, textColor: 0xffFFFFFF
+            text:"Airs at", fontFace: CONFIG.language.font,fontStyle:'bold', fontSize: 21, textColor: 0xffFFFFFF
           }
         }
 
@@ -181,14 +181,13 @@ export default class DynamicItem extends Lightning.Component {
   }
 
   showAiringTime(time){
-    //  calls convert 24 to 12, changes the overlay text content, show the overlay for 3 seconds and hides, set smooth
     let airingTime = this.cnv24to12(time)
-    this.tag('AiringOverlay.Title').text.text = "Show airing at " + airingTime
+    this.tag('AiringOverlay.Title').text.text = "Airs at " + airingTime
     this.tag('AiringOverlay').w = this.getW() - 3
     this.airingAnimation.start()
   }
 
-  _handleEnter() {
+  goToChannel() {
     var date = new Date();
     if (Storage.get('ipAddress') && this.index === 0) {
       Router.navigate('player',{

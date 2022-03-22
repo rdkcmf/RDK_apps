@@ -52,6 +52,11 @@ export default class Shows extends Lightning.Component {
         })
         this.children[this._columnIndex]._focus();
     }
+
+    _handleEnter(){
+        this.children[this._columnIndex].goToChannel()
+    }
+
     _handleLeft() {
         if (this._columnIndex > 0) { 
             this.children[this._columnIndex]._unfocus();
@@ -155,7 +160,7 @@ export default class Shows extends Lightning.Component {
     }
 
     _getFocused() {
-        return this.children[this._columnIndex]
+        return this.children.element
     }
 
 }

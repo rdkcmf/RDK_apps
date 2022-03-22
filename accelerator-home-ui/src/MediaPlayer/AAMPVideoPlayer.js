@@ -19,6 +19,7 @@
 import { Lightning, Router } from '@lightningjs/sdk'
 import LightningPlayerControls from './LightningPlayerControl';
 import { CONFIG } from '../Config/Config';
+import ChannelOverlay from './ChannelOverlay';
 
 /**
  * Class to render AAMP video player.
@@ -34,7 +35,6 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.data = args.list
     if(args.isUSB){
       this.isUSB = args.isUSB
-      this.fileName = this.data[this.currentIndex].data.displayName
     }else if(args.isChannel){
       this.isChannel = args.isChannel
       this.channelName = args.channelName
@@ -72,7 +72,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
       },
       InfoOverlay:{
         x:90,
-        y:840,
+        y:820,
         alpha:0,
         ShowName:{
           text: { 
@@ -84,17 +84,17 @@ export default class AAMPVideoPlayer extends Lightning.Component {
             wordWrap: true, wordWrapWidth: 1350, maxLines: 1, 
           }
         },
-        // ChannelName:{
-        //   x:1400,
-        //   text: { 
-        //     text: "Channel Name", 
-        //     fontFace: CONFIG.language.font, 
-        //     fontSize: 48,
-        //     fontStyle: 'bold',
-        //     textColor: 0xffFFFFFF ,
-        //     wordWrap: true, wordWrapWidth: 300, maxLines: 1, 
-        //   }
-        // }
+        ChannelName:{
+          y:50,
+          visible:false,
+          text: { 
+            text: "Channel Name", 
+            fontFace: CONFIG.language.font, 
+            fontSize: 35,
+            textColor: 0xffFFFFFF ,
+            wordWrap: true, wordWrapWidth: 1350, maxLines: 1, 
+          }
+        }
       },
       PlayerControls: {
         type: LightningPlayerControls,
@@ -111,6 +111,19 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           prevTrack: 'prevTrack'
         },
       },
+      ChannelWrapper:{
+        h:1080,
+        w:350,
+        x:-360,
+        rect:true,
+        colorLeft: 0x80000000, 
+        colorRight: 0x00000000,
+        ChannelOverlay:{
+          type:ChannelOverlay,
+          x:50,
+          y:92,
+        }
+      }
     }
   }
 
@@ -402,7 +415,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
    * Function to show the player controls.
    */
   showPlayerControls() {
-    this.tag('PlayerControls').reset()
+    // this.tag('PlayerControls').reset()
     this.tag('PlayerControls').setSmooth('alpha', 1)
     this.tag('PlayerControls').setSmooth('y', 820, { duration: 0.7 })
     this._setState('ShowControls')
@@ -426,29 +439,18 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   updateInfo() {
     if(this.isUSB){
       this.tag('ShowName').text.text = this.data[this.currentIndex].data.displayName
-      // this.tag('ChannelName').text.text = this.channelName
     }else if(this.isChannel){
       this.tag('ShowName').text.text = this.showName
+      this.tag('ChannelName').text.text = this.channelName
     }
   }
   /**
    * Function to display player controls on down key press.
    */
-  _handleUp() {
-    this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
-    this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
-    this._setState('ShowControls')
-    this.showInfo()
-    clearTimeout(this.timeout)
-  }
 
   /**
    *Function to hide player control on up key press.
    */
-  _handleDown() {
-    this.hidePlayerControls()
-    this._setState('HideControls')
-  }
 
   _handleBack() {
     Router.back()
@@ -463,8 +465,17 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.destroy()
   }
   _focus() {
-    this._setState('ShowControls')
+    this._setState('HideControls')
     this.updateInfo()
+    if(this.isChannel){
+      this.tag('InfoOverlay').y = 790
+      this.tag('ChannelName').visible = true
+      this.tag('PlayerControls').hideNextPrevious()
+    } else{ 
+      this.tag('InfoOverlay').y = 820
+      this.tag('ChannelName').visible = false
+      this.tag('PlayerControls').showNextPrevious()
+    }
   }
   /**
    * Function to define the different states of the video player.
@@ -475,11 +486,54 @@ export default class AAMPVideoPlayer extends Lightning.Component {
         _getFocused() {
           return this.tag('PlayerControls')
         }
+        _handleDown() {
+          this.hidePlayerControls()
+          this._setState('HideControls')
+        }
+        _handleUp() {
+          if(this.isChannel){
+            this.hidePlayerControls()
+            this._setState('ChannelOverlay')
+          }
+        }
       },
       class HideControls extends this {
         // _handleBack(){
         //   console.log('go back from hidecontrol')
         // }
+        _handleUp() {
+          // this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
+          // this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
+          this.showPlayerControls()
+          this._setState('ShowControls')
+          this.showInfo()
+          clearTimeout(this.timeout)
+        }
+
+        _handleLeft(){
+          if(this.isChannel){
+            this._setState('ChannelOverlay')
+          }
+        }
+      },
+      class ChannelOverlay extends this {
+        $enter(){
+            this.tag('ChannelWrapper').setSmooth('x', 0, { duration: 1 })
+        }
+        $exit(){
+            this.tag('ChannelWrapper').setSmooth('x', -360, { duration: 1 })
+        }
+        _handleLeft(){
+          this.hidePlayerControls()
+          this._setState('HideControls')
+        }
+        _handleRight(){
+          this.hidePlayerControls()
+          this._setState('HideControls')
+        }
+        _getFocused() {
+          return this.tag('ChannelOverlay')
+        }
       },
     ]
   }
