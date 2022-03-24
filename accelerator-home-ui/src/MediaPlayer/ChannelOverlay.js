@@ -51,15 +51,15 @@ import info from '../../static/data/EpgInfo.json'
 
     }
     _focus(){
-      console.log('_focus from channelOverlay')
-        var options = info.data
-        this.tag('Channels').items = options.map((item,index) => {
-            return{
-                type:ChannelItem,
-                index:index,
-                item:item,
-            }
-          })
+      var options = info.data
+      this.tag('Channels').items = options.map((item,index) => {
+        return{
+            type:ChannelItem,
+            index:index,
+            item:item,
+        }
+      })
+      this.tag('Channels').setIndex(0)
     }
 
     _getFocused(){

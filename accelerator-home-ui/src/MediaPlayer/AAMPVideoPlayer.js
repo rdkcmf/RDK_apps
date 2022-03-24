@@ -74,6 +74,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
         x:90,
         y:820,
         alpha:0,
+        zIndex:3,
         ShowName:{
           text: { 
             text: "Show Name", 
@@ -96,19 +97,26 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           }
         }
       },
-      PlayerControls: {
-        type: LightningPlayerControls,
-        x: 0,
-        y: 820,
-        alpha: 0,
-        signals: {
-          pause: 'pause',
-          play: 'play',
-          hide: 'hidePlayerControls',
-          fastfwd: 'fastfwd',
-          fastrwd: 'fastrwd',
-          nextTrack: 'nextTrack',
-          prevTrack: 'prevTrack'
+      PlayerControlsWrapper:{
+        alpha:0,
+        h:330,
+        w:1920,
+        y: 750,
+        rect:true,
+        colorBottom: 0xFF000000, 
+        colorTop: 0x00000000,
+        PlayerControls: {
+          y:70,
+          type: LightningPlayerControls,
+          signals: {
+            pause: 'pause',
+            play: 'play',
+            hide: 'hidePlayerControls',
+            fastfwd: 'fastfwd',
+            fastrwd: 'fastrwd',
+            nextTrack: 'nextTrack',
+            prevTrack: 'prevTrack'
+          },
         },
       },
       ChannelWrapper:{
@@ -116,7 +124,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
         w:350,
         x:-360,
         rect:true,
-        colorLeft: 0x80000000, 
+        colorLeft: 0xFF000000, 
         colorRight: 0x00000000,
         ChannelOverlay:{
           type:ChannelOverlay,
@@ -233,8 +241,8 @@ export default class AAMPVideoPlayer extends Lightning.Component {
    */
   _mediaPlaybackStarted() {
     this.tag('PlayerControls').reset()
-    this.tag('PlayerControls').setSmooth('alpha', 1)
-    this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
+    this.tag('PlayerControlsWrapper').setSmooth('alpha', 1)
+    this.tag('PlayerControlsWrapper').setSmooth('y', 750, { duration: 1 })
     if(this.isUSB){
       this.tag("InfoOverlay").setSmooth('alpha', 1)
     }
@@ -313,6 +321,23 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.hidePlayerControls()
   }
 
+  $changeChannel(url, showName, channelName){
+      this.stop()
+      this.destroy()
+      try {
+        this.load({
+          title: showName,
+          url: url,
+          drmConfig: null,
+        })
+        this.tag('ShowName').text.text = showName
+        this.tag('ChannelName').text.text = channelName
+        this.setVideoRect(0, 0, 1920, 1080)
+      } catch (error) {
+        console.error('Playback Failed ' + error)
+      }
+  }
+  
   nextTrack() {
     if (this.data[this.currentIndex + 1]) {
       this.currentIndex += 1
@@ -405,8 +430,8 @@ export default class AAMPVideoPlayer extends Lightning.Component {
    * Function to hide the player controls.
    */
   hidePlayerControls() {
-    this.tag('PlayerControls').setSmooth('y', 1080, { duration: 0.7 })
-    this.tag('PlayerControls').setSmooth('alpha', 0, { duration: 0.7 })
+    this.tag('PlayerControlsWrapper').setSmooth('y', 1080, { duration: 0.7 })
+    this.tag('PlayerControlsWrapper').setSmooth('alpha', 0, { duration: 0.7 })
     this._setState('HideControls')
     this.hideInfo()
   }
@@ -416,8 +441,8 @@ export default class AAMPVideoPlayer extends Lightning.Component {
    */
   showPlayerControls() {
     // this.tag('PlayerControls').reset()
-    this.tag('PlayerControls').setSmooth('alpha', 1)
-    this.tag('PlayerControls').setSmooth('y', 820, { duration: 0.7 })
+    this.tag('PlayerControlsWrapper').setSmooth('alpha', 1)
+    this.tag('PlayerControlsWrapper').setSmooth('y', 750, { duration: 0.7 })
     this._setState('ShowControls')
     this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
   }
@@ -502,8 +527,8 @@ export default class AAMPVideoPlayer extends Lightning.Component {
         //   console.log('go back from hidecontrol')
         // }
         _handleUp() {
-          // this.tag('PlayerControls').setSmooth('alpha', 1, { duration: 1 })
-          // this.tag('PlayerControls').setSmooth('y', 820, { duration: 1 })
+          // this.tag('PlayerControlsWrapper').setSmooth('alpha', 1, { duration: 1 })
+          // this.tag('PlayerControlsWrapper').setSmooth('y', 820, { duration: 1 })
           this.showPlayerControls()
           this._setState('ShowControls')
           this.showInfo()

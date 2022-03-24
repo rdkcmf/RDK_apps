@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils, Router, Storage } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Storage, Registry } from '@lightningjs/sdk'
 import BluetoothApi from '../../api/BluetoothApi'
 
 export default class LogoScreen extends Lightning.Component {
@@ -53,18 +53,35 @@ export default class LogoScreen extends Lightning.Component {
         this.btApi = new BluetoothApi()
     }
 
+    checkPath(path) {
+        if (path === 'ui') {
+            return 'ui'
+        }
+        return 'menu'
+    }
+
     _focus() {
         let path = 'splash/bluetooth'
+        var map = { 37: false, 38: false, 39: false, 40: false };
+        const handler = (e) => {
+            if (e.keyCode in map) {
+                map[e.keyCode] = true;
+                if (map[37] && map[38] && map[39] && map[40]) {
+                    path = 'ui'
+                }
+            }
+        }
+        Registry.addEventListener(document, 'keydown', handler)
         this.btApi.getPairedDevices()
             .then(devices => {
                 console.log(devices)
                 if (devices.length > 0 || Storage.get('setup')) {
-                    path = 'menu'
+                    path = this.checkPath(path)
                 }
             })
             .catch(() => {
                 console.log('Paired Device Error')
-                path = 'menu'
+                path = this.checkPath(path)
             })
         setTimeout(() => {
             Router.navigate(path)

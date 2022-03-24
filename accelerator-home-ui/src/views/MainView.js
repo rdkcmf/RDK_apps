@@ -26,6 +26,7 @@ import XcastApi from '../api/XcastApi'
 import HomeApi from '../api/HomeApi.js'
 import GracenoteItem from '../items/GracenoteItem.js'
 import { List } from '@lightningjs/ui'
+import Item from '../items/item.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -49,135 +50,159 @@ export default class MainView extends Lightning.Component {
         y: 270,
         x: 200,
         clipping: false,
-        // Wrapper: {
-          Text0: {
-            alpha: 0,
-            h: 30,
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 25,
-              text: Language.translate('Popular Movies'),
-              fontStyle: 'normal',
-              textColor: 0xFFFFFFFF,
-            },
-            zIndex: 0
+        Text0: {
+          alpha: 0,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Popular Movies'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          Gracenote: {
-            y: 50,
-            x: -20,
-            flex: { direction: 'row', paddingLeft: 20, wrap: false },
-            type: Lightning.components.ListComponent,
-            w: 1745,
-            h: 400,
-            itemSize: 260,
-            roll: true,
-            rollMax: 1745,
-            horizontal: true,
-            itemScrollOffset: -4,
-            clipping: false,
+          zIndex: 0
+        },
+        Gracenote: {
+          y: 50,
+          x: -20,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          type: Lightning.components.ListComponent,
+          w: 1745,
+          h: 400,
+          itemSize: 260,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text1: {
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Featured Content'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          Text1: {
-            h: 30,
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 25,
-              text: Language.translate('Featured Content'),
-              fontStyle: 'normal',
-              textColor: 0xFFFFFFFF,
-            },
-            zIndex: 0
+          zIndex: 0
+        },
+        AppList: {
+          y: 37,
+          x: 0,
+          type: List,
+          h: 400,
+          scroll: {
+            after: 2
           },
-          AppList: {
-            y: 37,
-            x: 0,
-            type: List,
-            h: 400,
-            scroll: {
-              after: 2
-            },
-            spacing: 20,
+          spacing: 20,
+        },
+        Text2: {
+          // x: 10 + 25,
+          y: 395,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Lightning Apps'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          Text2: {
-            // x: 10 + 25,
-            y: 395,
-            h: 30,
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 25,
-              text: Language.translate('Lightning Apps'),
-              fontStyle: 'normal',
-              textColor: 0xFFFFFFFF,
-            },
+        },
+        MetroApps: {
+          x: -20,
+          y: 435,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 300,
+          itemSize: 288,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text3: {
+          // x: 10 + 25,
+          y: 673,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Featured Video on Demand'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          MetroApps: {
-            x: -20,
-            y: 435,
-            type: Lightning.components.ListComponent,
-            flex: { direction: 'row', paddingLeft: 20, wrap: false },
-            w: 1745,
-            h: 300,
-            itemSize: 288,
-            roll: true,
-            rollMax: 1745,
-            horizontal: true,
-            itemScrollOffset: -4,
-            clipping: false,
+        },
+        TVShows: {
+          x: -20,
+          y: 710,
+          w: 1745,
+          h: 400,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          roll: true,
+          itemSize: 277,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text4: {
+          // x: 10 + 25,
+          y: 938,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Lightning Showcase'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          Text3: {
-            // x: 10 + 25,
-            y: 673,
-            h: 30,
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 25,
-              text: Language.translate('Featured Video on Demand'),
-              fontStyle: 'normal',
-              textColor: 0xFFFFFFFF,
-            },
+        },
+        ShowcaseApps: {
+          x: -20,
+          y: 978,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 400,
+          itemSize: 277,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+        Text5: {
+          alpha: 0,
+          // x: 10 + 25,
+          y: 1203,
+          h: 30,
+          text: {
+            fontFace: CONFIG.language.font,
+            fontSize: 25,
+            text: Language.translate('Partner Apps'),
+            fontStyle: 'normal',
+            textColor: 0xFFFFFFFF,
           },
-          TVShows: {
-            x: -20,
-            y: 710,
-            w: 1745,
-            h: 400,
-            type: Lightning.components.ListComponent,
-            flex: { direction: 'row', paddingLeft: 20, wrap: false },
-            roll: true,
-            itemSize: 277,
-            rollMax: 1745,
-            horizontal: true,
-            itemScrollOffset: -4,
-            clipping: false,
-          },
-          Text4: {
-            alpha: 0,
-            // x: 10 + 25,
-            y: 938,
-            h: 30,
-            text: {
-              fontFace: CONFIG.language.font,
-              fontSize: 25,
-              text: Language.translate('Partner Apps'),
-              fontStyle: 'normal',
-              textColor: 0xFFFFFFFF,
-            },
-          },
-          UsbApps: {
-            x: -20,
-            y: 978,
-            type: Lightning.components.ListComponent,
-            flex: { direction: 'row', paddingLeft: 20, wrap: false },
-            w: 1745,
-            h: 400,
-            itemSize: 277,
-            roll: true,
-            rollMax: 1745,
-            horizontal: true,
-            itemScrollOffset: -4,
-            clipping: false,
-          },
-        // }
-      },
+        },
+        UsbApps: {
+          x: -20,
+          y: 1243,
+          type: Lightning.components.ListComponent,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
+          w: 1745,
+          h: 400,
+          itemSize: 277,
+          roll: true,
+          rollMax: 1745,
+          horizontal: true,
+          itemScrollOffset: -4,
+          clipping: false,
+        },
+      }
     }
   }
 
@@ -194,7 +219,9 @@ export default class MainView extends Lightning.Component {
     this.tag("Text3").y = 1030
     this.tag("TVShows").y = 1070
     this.tag("Text4").y = 1298
-    this.tag("UsbApps").y = 1338
+    this.tag("ShowcaseApps").y = 1338
+    this.tag("Text5").y = 1566
+    this.tag("UsbApps").y = 1606
   }
 
 
@@ -231,6 +258,7 @@ export default class MainView extends Lightning.Component {
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
     this.metroApps = this.homeApi.getMetroInfo()
+    this.showcaseApps = this.homeApi.getShowCaseApps()
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -413,6 +441,21 @@ export default class MainView extends Lightning.Component {
     this._setState('Gracenote')
   }
 
+  set showcaseApps(items) {
+    this.tag('ShowcaseApps').items = items.map((info, idx) => {
+      return {
+        w: 268,
+        h: 151,
+        type: ListItem,
+        data: info,
+        focus: 1.11,
+        unfocus: 1,
+        idx: idx,
+        bar: 12
+      }
+    })
+  }
+
 
   /**
    * Function to set details of items in app list.
@@ -469,7 +512,7 @@ export default class MainView extends Lightning.Component {
 
   set usbApps(items) {
     if (items.length > 0) {
-      this.tag('Text4').alpha = 1;
+      this.tag('Text5').alpha = 1;
     }
     this.tag('UsbApps').items = items.map((info, index) => {
       return {
@@ -742,9 +785,9 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleDown() {
-          if (this.tag('UsbApps').length) {
-            this._setState("UsbApps");
-          }
+          // if (this.tag('UsbApps').length) {
+          this._setState("ShowcaseApps");
+          //}
         }
         _handleEnter() {
           if (Storage.get('ipAddress')) {
@@ -757,24 +800,82 @@ export default class MainView extends Lightning.Component {
         }
       },
 
-
-
-      class UsbApps extends this {
+      class ShowcaseApps extends this {
         $enter() {
           this.scroll(-550)
-          this.indexVal = 3
         }
         $exit() {
           this.tag('Text4').text.fontStyle = 'normal'
         }
         _getFocused() {
           this.tag('Text4').text.fontStyle = 'bold'
+          if (this.tag('ShowcaseApps').length) {
+            return this.tag('ShowcaseApps').element
+          }
+        }
+        _handleUp() {
+          this._setState('TVShows')
+        }
+
+        _handleRight() {
+          if (this.tag('ShowcaseApps').length - 1 != this.tag('MetroApps').index) {
+            this.tag('ShowcaseApps').setNext()
+            return this.tag('ShowcaseApps').element
+          }
+        }
+        _handleDown() {
+          if (this.tag('UsbApps').length) {
+            this._setState("UsbApps");
+          }
+        }
+        _handleLeft() {
+          this.tag('Text4').text.fontStyle = 'normal'
+          if (0 != this.tag('ShowcaseApps').index) {
+            this.tag('ShowcaseApps').setPrevious()
+            return this.tag('ShowcaseApps').element
+          } else {
+            Router.focusWidget('Menu')
+          }
+        }
+        _handleEnter() {
+          let appApi = new AppApi();
+          let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
+          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
+
+          applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
+          Storage.set('applicationType', applicationType);
+          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
+          if (Storage.get('applicationType') == 'Cobalt') {
+            appApi.launchCobalt(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            appApi.launchWeb(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
+            appApi.launchLightning(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
+            appApi.launchNative(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          }
+        }
+      },
+
+      class UsbApps extends this {
+        $enter() {
+          this.scroll(-750)
+        }
+        $exit() {
+          this.tag('Text5').text.fontStyle = 'normal'
+        }
+        _getFocused() {
+          this.tag('Text5').text.fontStyle = 'bold'
           if (this.tag('UsbApps').length) {
             return this.tag('UsbApps').element
           }
         }
         _handleUp() {
-          this._setState('TVShows')
+          this._setState('ShowcaseApps')
         }
 
         _handleRight() {
@@ -784,7 +885,7 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleLeft() {
-          this.tag('Text4').text.fontStyle = 'normal'
+          this.tag('Text5').text.fontStyle = 'normal'
           if (0 != this.tag('UsbApps').index) {
             this.tag('UsbApps').setPrevious()
             return this.tag('UsbApps').element

@@ -29,6 +29,7 @@ import { leftArrowInfo } from './../../static/data/LeftArrowInfo.js'
 import { uiInfo } from './../../static/data/UIInfo'
 import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js"
 import { metroAppsInfoOffline } from "./../../static/data/MetroAppsInfoOffline.js"
+import { showCaseApps } from '../../static/data/LightningShowcase'
 
 var partnerApps = []
 
@@ -82,6 +83,20 @@ export default class HomeApi {
    */
   getSettingsInfo() {
     return settingsInfo
+  }
+
+  /**
+   * Function to get details for lightning showcase apps.
+   */
+   getShowCaseApps() {
+    return showCaseApps
+  }
+
+  /**
+   * Function to get details for all apps.
+   */
+   getAllApps() {
+    return [...this.getAppListInfo(), ...this.getMetroInfo(), ...this.getShowCaseApps()]
   }
 
   /**

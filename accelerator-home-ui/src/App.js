@@ -75,6 +75,7 @@ export default class App extends Router.App {
   }
 
   _captureKey(key) {
+    console.log(key)
     if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));

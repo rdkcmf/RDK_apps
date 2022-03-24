@@ -27,6 +27,10 @@ var route = {
         Router.navigate('epg')
         Router.focusPage()
     },
+    3: () => {
+        Router.navigate('apps')
+        Router.focusPage()
+    },
     'default': () => {
         Router.navigate('menu')
         Router.focusPage()

@@ -31,6 +31,8 @@ import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
 import EpgScreen from '../screens/EpgScreens/EpgScreen'
+import UIList from '../views/UIList'
+import AppStore from '../views/AppStore'
 
 let api = null
 
@@ -72,6 +74,11 @@ export default {
       widgets: ['Menu'],
     },
     {
+      path: 'apps',
+      component: AppStore,
+      widgets: ['Menu']
+    },
+    {
       path: 'usb/player',
       component: AAMPVideoPlayer
     },
@@ -83,13 +90,17 @@ export default {
       path: 'image',
       component: ImageViewer,
     },
-
+    {
+      path: 'ui',
+      component: UIList,
+    },
     {
       path: 'menu',
       component: MainView,
       before: (page) => {
         const homeApi = new HomeApi()
         page.tvShowItems = homeApi.getTVShowsInfo()
+        // page.usbApps = homeApi.getTVShowsInfo()
         if (api) {
           page.setGracenoteData(api)
         }

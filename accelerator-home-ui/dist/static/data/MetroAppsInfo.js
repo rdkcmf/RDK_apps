@@ -86,10 +86,4 @@ export var metroAppsInfo = [
     uri: "https://lightningjs.io/fracer/#gameover",
     url: "/images/metroApps/fracer-steerling.png"
   },
-  {
-    displayName: 'Bluetooth Audio',
-    applicationType: 'Lightning',
-    uri: 'https://apps.rdkcentral.com/rdk-apps/BluetoothAudio/index.html',
-    url: '/images/metroApps/Bluetooth_app.jpg',
-  }
 ];

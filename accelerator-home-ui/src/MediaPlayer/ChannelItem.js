@@ -60,6 +60,10 @@
          },
      })
    }
+
+   _handleEnter(){
+      this.fireAncestors("$changeChannel", this._item.channelUrl,"showName",this._item.channelName)
+   }
  
  
   _focus(){

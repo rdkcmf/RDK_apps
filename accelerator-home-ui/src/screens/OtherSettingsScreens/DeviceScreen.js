@@ -21,6 +21,7 @@ import SettingsMainItem from '../../items/SettingsMainItem'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi';
+import NetworkApi from '../../api/NetworkApi'
 
 
 /**
@@ -140,6 +141,7 @@ export default class DeviceScreen extends Lightning.Component {
 
     _init() {
         this._appApi = new AppApi();
+        this._network = new NetworkApi();
         this._setState('Info')
     }
 
@@ -167,7 +169,11 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware')
                 }
                 _handleEnter() {
-                    Router.navigate('settings/advanced/device/info')
+                    this._network.isConnectedToInternet().then((result) => {
+                        if(result.connectedToInternet===true){
+                            Router.navigate('settings/advanced/device/info')
+                        }
+                    })
                 }
             },
             class Firmware extends this{

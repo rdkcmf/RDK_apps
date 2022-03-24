@@ -20,7 +20,10 @@ import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
+import VoiceApi from '../api/VoiceApi';
 
+
+const voiceApi = new VoiceApi()
 /**
  * Class for settings screen.
  */
@@ -191,6 +194,7 @@ export default class SettingsScreen extends Lightning.Component {
   }
 
   _init() {
+    this.avs = false
     this._setState('NetworkConfiguration')
   }
   _focus() {
@@ -199,6 +203,27 @@ export default class SettingsScreen extends Lightning.Component {
 
   _handleBack() {
     Router.navigate('menu')
+  }
+
+  toggleAVSPlugin() {
+    if (this.avs) {
+      voiceApi.deactivate()
+        .then(() => {
+          this.avs = false
+          this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
+        })
+        .catch(() => {
+          console.log('failed')
+        })
+    }
+    voiceApi.activate()
+      .then(() => {
+        this.avs = true
+        this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOnWhite.png')
+      })
+      .catch(() => {
+        console.log('failed')
+      })
   }
 
   static _states() {
@@ -302,7 +327,7 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('OtherSettings')
         }
         _handleEnter() {
-          //implementation pending
+          this.toggleAVSPlugin()
         }
       },
     ]

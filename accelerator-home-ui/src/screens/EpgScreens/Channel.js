@@ -52,7 +52,7 @@ export default class Channel extends Lightning.Component {
         x: 10,// this sets the x coords for the index of the channel 
         y: 45,
         mountY: 0.5,
-        text: { text: index, fontSize: 21, fontFace: CONFIG.language.font, textColor: 0xffFFFFFF,wordWrap:false,wordWrapWidth:50,maxLines:1,textOverflow:'...' }, // update the text
+        text: { text: index+1, fontSize: 21, fontFace: CONFIG.language.font, textColor: 0xffFFFFFF,wordWrap:false,wordWrapWidth:50,maxLines:1,textOverflow:'...' }, // update the text
       },
     })
   }
