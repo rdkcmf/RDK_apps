@@ -194,7 +194,8 @@ export default class DynamicItem extends Lightning.Component {
         isChannel: true,
         channelName: this.channelName,
         showName: this.showDetails.showName,
-        description: this.showDetails.description
+        description: this.showDetails.description,
+        channelIndex:this.fireAncestors("$getChannelIndex")
       })
     } else if (this.x < 11280) {
       let hrs = parseInt(date.toLocaleString('en-US', { hour: 'numeric', hour12: false }))
@@ -207,7 +208,8 @@ export default class DynamicItem extends Lightning.Component {
             isChannel: true,
             channelName: this.channelName,
             showName: this.showDetails.showName,
-            description: this.showDetails.description
+            description: this.showDetails.description,
+            channelIndex:this.fireAncestors("$getChannelIndex")
           })
         } else {
           console.log(`ip address not available to play the video`);

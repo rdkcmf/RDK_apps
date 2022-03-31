@@ -40,6 +40,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
       this.channelName = args.channelName
       this.showName = args.showName
       this.showDescription = args.description
+      this.channelIndex = args.channelIndex
     }
     let url = args.url ? args.url : 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8'
     if (args.isAudio) {
@@ -493,6 +494,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this._setState('HideControls')
     this.updateInfo()
     if(this.isChannel){
+      this.tag('ChannelOverlay').$focusChannel(this.channelIndex)
       this.tag('InfoOverlay').y = 790
       this.tag('ChannelName').visible = true
       this.tag('PlayerControls').hideNextPrevious()

@@ -3,7 +3,7 @@
  * SDK version: 4.8.2
  * CLI version: 2.7.2
  * 
- * Generated: Tue, 29 Mar 2022 14:12:55 GMT
+ * Generated: Thu, 31 Mar 2022 11:29:49 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -11601,6 +11601,7 @@ var APP_accelerator_home_ui = (function () {
       super.clear();
       this._mainIndex = 0;
       this._crossIndex = 0;
+      this._previous = undefined;
     }
 
     setIndex(index) {
@@ -21861,6 +21862,7 @@ var APP_accelerator_home_ui = (function () {
 
     _handleEnter() {
       this.fireAncestors("$changeChannel", this._item.channelUrl, "showName", this._item.channelName);
+      this.fireAncestors("$focusChannel", this.index);
     }
 
     _focus() {
@@ -32074,6 +32076,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  var channelIndex = 0;
   class ChannelOverlay extends lng$1.Component {
     /**
      * Function to create components for the player controls.
@@ -32111,7 +32114,12 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      this.tag('Channels').setIndex(0);
+      this.$focusChannel(channelIndex);
+    }
+
+    $focusChannel(index) {
+      channelIndex = index;
+      this.tag('Channels').setIndex(index);
     }
 
     _getFocused() {
@@ -32165,6 +32173,7 @@ var APP_accelerator_home_ui = (function () {
         this.channelName = args.channelName;
         this.showName = args.showName;
         this.showDescription = args.description;
+        this.channelIndex = args.channelIndex;
       }
 
       let url = args.url ? args.url : 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
@@ -32683,6 +32692,7 @@ var APP_accelerator_home_ui = (function () {
       this.updateInfo();
 
       if (this.isChannel) {
+        this.tag('ChannelOverlay').$focusChannel(this.channelIndex);
         this.tag('InfoOverlay').y = 790;
         this.tag('ChannelName').visible = true;
         this.tag('PlayerControls').hideNextPrevious();
@@ -39856,7 +39866,8 @@ var APP_accelerator_home_ui = (function () {
           isChannel: true,
           channelName: this.channelName,
           showName: this.showDetails.showName,
-          description: this.showDetails.description
+          description: this.showDetails.description,
+          channelIndex: this.fireAncestors("$getChannelIndex")
         });
       } else if (this.x < 11280) {
         let hrs = parseInt(date.toLocaleString('en-US', {
@@ -39876,7 +39887,8 @@ var APP_accelerator_home_ui = (function () {
               isChannel: true,
               channelName: this.channelName,
               showName: this.showDetails.showName,
-              description: this.showDetails.description
+              description: this.showDetails.description,
+              channelIndex: this.fireAncestors("$getChannelIndex")
             });
           } else {
             console.log(`ip address not available to play the video`);
@@ -40005,6 +40017,10 @@ var APP_accelerator_home_ui = (function () {
     set index(index) {
       this._rowIndex = index;
       this._columnIndex = 0;
+    }
+
+    $getChannelIndex() {
+      return this._rowIndex;
     }
 
     _focus() {

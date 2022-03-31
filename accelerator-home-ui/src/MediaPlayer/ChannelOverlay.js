@@ -20,7 +20,7 @@
  import { CONFIG } from '../Config/Config'
 import ChannelItem from './ChannelItem'
 import info from '../../static/data/EpgInfo.json'
-
+var channelIndex = 0
  export default class ChannelOverlay extends Lightning.Component {
     /**
      * Function to create components for the player controls.
@@ -59,9 +59,13 @@ import info from '../../static/data/EpgInfo.json'
             item:item,
         }
       })
-      this.tag('Channels').setIndex(0)
+      this.$focusChannel(channelIndex)
     }
 
+    $focusChannel(index){
+      channelIndex=index
+      this.tag('Channels').setIndex(index)
+    }
     _getFocused(){
       return this.tag('Channels').element // add logic to focus on current channel
       

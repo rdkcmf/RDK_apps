@@ -44,6 +44,10 @@ export default class Shows extends Lightning.Component {
         this._columnIndex = 0;
     }
 
+    $getChannelIndex(){
+        return this._rowIndex
+    }
+
     _focus() {
         
         // console.log(`show on focus`);

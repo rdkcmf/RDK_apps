@@ -63,6 +63,7 @@
 
    _handleEnter(){
       this.fireAncestors("$changeChannel", this._item.channelUrl,"showName",this._item.channelName)
+      this.fireAncestors("$focusChannel", this.index)
    }
  
  
