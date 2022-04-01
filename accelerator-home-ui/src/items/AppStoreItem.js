@@ -1,4 +1,4 @@
-import { Lightning, Registry, Utils } from "@lightningjs/sdk";
+import { Lightning, Utils } from "@lightningjs/sdk";
 import { CONFIG } from "../Config/Config";
 import { ProgressBar } from '@lightningjs/ui-components'
 
@@ -57,20 +57,8 @@ export default class AppStoreItem extends Lightning.Component {
         }
     }
 
-    _init() {
-        this.flag = true
-    }
-
-    _clearOverlay() {
-        Registry.setInterval(() => {
-            this.tag('Overlay').alpha = 0
-            this.tag('OverlayText').alpha = 0
-            this.tag("ProgressBar").progress = 1
-            this.flag = true
-        }, 5000)
-    }
-
     set info(data) {
+        this.data = data
         if (data.url.startsWith('/images')) {
             this.tag('Image').patch({
                 src: Utils.asset(data.url),
@@ -90,15 +78,6 @@ export default class AppStoreItem extends Lightning.Component {
 
     static get height() {
         return 168
-    }
-
-    _handleEnter() {
-        if (this.flag) {
-            this.tag('Overlay').alpha = 1
-            this.tag('OverlayText').alpha = 1
-            this._clearOverlay()
-            this.flag = false
-        }
     }
 
     _focus() {

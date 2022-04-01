@@ -1,9 +1,9 @@
 /**
- * App version: 3.6 25/03/22
+ * App version: 3.6 01/04/22
  * SDK version: 4.8.2
  * CLI version: 2.7.2
  * 
- * Generated: Thu, 31 Mar 2022 11:29:49 GMT
+ * Generated: Mon, 04 Apr 2022 12:04:49 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -8917,7 +8917,7 @@ var APP_accelerator_home_ui = (function () {
   }, {
     displayName: "FRacer",
     applicationType: "Lightning",
-    uri: "https://lightningjs.io/fracer/#gameover",
+    uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   }];
 
@@ -8996,7 +8996,7 @@ var APP_accelerator_home_ui = (function () {
   }, {
     displayName: "FRacer",
     applicationType: "Lightning",
-    uri: "https://lightningjs.io/fracer/#gameover",
+    uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   }];
 
@@ -9460,13 +9460,9 @@ var APP_accelerator_home_ui = (function () {
         thunder$6.call('Controller', 'activate', {
           callsign: callsign
         }).then(res => {
-          if (res.result === null) {
-            resolve(true);
-          }
-
-          reject(true);
+          resolve(true);
         }).catch(err => {
-          console.log('Error occured activating Voice Api');
+          console.log('Error occured activating Voice Api', err);
           reject(true);
         });
       });
@@ -9475,14 +9471,10 @@ var APP_accelerator_home_ui = (function () {
     deactivate() {
       const callsign = 'AVS';
       return new Promise((resolve, reject) => {
-        thunder$6.Controller.deactivate({
+        thunder$6.call('Controller', 'deactivate', {
           callsign: callsign
         }).then(res => {
-          if (res.result === null) {
-            resolve(true);
-          }
-
-          reject(true);
+          resolve(true);
         }).catch(err => {
           console.log('Failed to deactivate AVS');
           reject(true);
@@ -9702,14 +9694,14 @@ var APP_accelerator_home_ui = (function () {
         }).catch(() => {
           console.log('failed');
         });
+      } else {
+        voiceApi.activate().then(() => {
+          this.avs = true;
+          this.tag('UIVoice.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        }).catch(() => {
+          console.log('failed');
+        });
       }
-
-      voiceApi.activate().then(() => {
-        this.avs = true;
-        this.tag('UIVoice.Button').src = Utils$1.asset('images/settings/ToggleOnWhite.png');
-      }).catch(() => {
-        console.log('failed');
-      });
     }
 
     static _states() {
@@ -32076,7 +32068,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  var channelIndex = 0;
+  let channelIndex = 0;
+  let customChannels$1;
+  let customChannelUrl$1 = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json";
+  fetch(customChannelUrl$1).then(res => res.json()).then(out => {
+    customChannels$1 = out.data;
+  }).catch(err => {
+    throw err;
+  });
   class ChannelOverlay extends lng$1.Component {
     /**
      * Function to create components for the player controls.
@@ -32103,10 +32102,15 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    init() {}
+    _init() {}
 
     _focus() {
       var options = info.data;
+
+      if (typeof customChannels$1 == "object") {
+        options = [...customChannels$1, ...options];
+      }
+
       this.tag('Channels').items = options.map((item, index) => {
         return {
           type: ChannelItem,
@@ -40364,6 +40368,13 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  let customChannels;
+  let customChannelUrl = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json";
+  fetch(customChannelUrl).then(res => res.json()).then(out => {
+    customChannels = out.data;
+  }).catch(err => {
+    throw err;
+  });
   class EpgScreen extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('EPG'));
@@ -40587,6 +40598,11 @@ var APP_accelerator_home_ui = (function () {
       //shows is an array of js objects again and its properties include showName,description,duration,startTime.   
 
       var options = info.data;
+
+      if (typeof customChannels == "object") {
+        options = [...customChannels, ...options];
+      }
+
       options = options.slice(0, this.verticalBuffer);
 
       this._setState("Options");
@@ -41903,20 +41919,9 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    _init() {
-      this.flag = true;
-    }
-
-    _clearOverlay() {
-      Registry.setInterval(() => {
-        this.tag('Overlay').alpha = 0;
-        this.tag('OverlayText').alpha = 0;
-        this.tag("ProgressBar").progress = 1;
-        this.flag = true;
-      }, 5000);
-    }
-
     set info(data) {
+      this.data = data;
+
       if (data.url.startsWith('/images')) {
         this.tag('Image').patch({
           src: Utils$1.asset(data.url)
@@ -41936,17 +41941,6 @@ var APP_accelerator_home_ui = (function () {
 
     static get height() {
       return 168;
-    }
-
-    _handleEnter() {
-      if (this.flag) {
-        this.tag('Overlay').alpha = 1;
-        this.tag('OverlayText').alpha = 1;
-
-        this._clearOverlay();
-
-        this.flag = false;
-      }
     }
 
     _focus() {
@@ -41999,7 +41993,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleEnter() {
-      this.fireAncestors('$selectOption', 0, this);
+      this.fireAncestors('$selectOption', this.idx, this);
 
       this._focus();
     }
@@ -42016,6 +42010,10 @@ var APP_accelerator_home_ui = (function () {
 
   const homeApi = new HomeApi();
   class AppStore extends lng$1.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language.translate('Apps'));
+    }
+
     static _template() {
       return {
         rect: true,
@@ -42076,6 +42074,12 @@ var APP_accelerator_home_ui = (function () {
               info: element
             };
           }));
+        },
+        1: () => {
+          this.tag('Apps').clear();
+        },
+        2: () => {
+          this.tag('Apps').clear();
         }
       };
     }
@@ -42087,7 +42091,9 @@ var APP_accelerator_home_ui = (function () {
 
       this.options[option]();
 
-      this._setState('Apps');
+      if (this.tag('Apps').length) {
+        this._setState('Apps');
+      }
     }
 
     _handleLeft() {
@@ -42123,6 +42129,67 @@ var APP_accelerator_home_ui = (function () {
 
         _handleUp() {
           this._setState('Options');
+        }
+
+        _handleEnter() {
+          let appApi = new AppApi();
+          let applicationType = this.tag('Apps').currentItem.data.applicationType;
+          this.uri = this.tag('Apps').currentItem.data.uri;
+          applicationType = this.tag('Apps').currentItem.data.applicationType;
+          Storage$1.set('applicationType', applicationType);
+          console.log(this.uri, applicationType);
+
+          if (Storage$1.get('applicationType') == 'Cobalt') {
+            appApi.launchCobalt(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage$1.get('applicationType') == 'WebApp' && Storage$1.get('ipAddress')) {
+            appApi.launchWeb(this.uri).then(() => {
+              appApi.setVisibility('ResidentApp', false);
+              let path = location.pathname.split('index.html')[0];
+              let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
+              let notification_url = location.origin + path + url;
+              appApi.launchOverlay(notification_url, 'TextOverlay');
+              Registry.setTimeout(() => {
+                appApi.deactivateResidentApp('TextOverlay');
+                appApi.zorder('HtmlApp');
+                appApi.setVisibility('HtmlApp', true);
+              }, 9000);
+            });
+          } else if (Storage$1.get('applicationType') == 'Lightning' && Storage$1.get('ipAddress')) {
+            appApi.launchLightning(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage$1.get('applicationType') == 'Native' && Storage$1.get('ipAddress')) {
+            appApi.launchNative(this.uri);
+            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage$1.get('applicationType') == 'Amazon') {
+            console.log('Launching app');
+            fetch('http://127.0.0.1:9998/Service/Controller/').then(res => res.json()).then(data => {
+              console.log(data);
+              data.plugins.forEach(element => {
+                if (element.callsign === 'Amazon') {
+                  console.log('Opening Amazon');
+                  appApi.launchPremiumApp('Amazon');
+                  appApi.setVisibility('ResidentApp', false);
+                }
+              });
+            }).catch(err => {
+              console.log('Amazon not working');
+            });
+          } else if (Storage$1.get('applicationType') == 'Netflix') {
+            console.log('Launching app');
+            fetch('http://127.0.0.1:9998/Service/Controller/').then(res => res.json()).then(data => {
+              console.log(data);
+              data.plugins.forEach(element => {
+                if (element.callsign === 'Netflix') {
+                  console.log('Opening Netflix');
+                  appApi.launchPremiumApp('Netflix');
+                  appApi.setVisibility('ResidentApp', false);
+                }
+              });
+            }).catch(err => {
+              console.log('Netflix not working');
+            });
+          }
         }
 
       }];

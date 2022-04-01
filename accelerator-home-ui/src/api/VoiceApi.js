@@ -32,13 +32,10 @@ export default class VoiceApi {
         return new Promise((resolve, reject) => {
             thunder.call('Controller', 'activate', { callsign: callsign })
                 .then(res => {
-                    if (res.result === null) {
-                        resolve(true)
-                    }
-                    reject(true)
+                    resolve(true)
                 })
                 .catch(err => {
-                    console.log('Error occured activating Voice Api')
+                    console.log('Error occured activating Voice Api', err)
                     reject(true)
                 })
         })
@@ -47,12 +44,9 @@ export default class VoiceApi {
     deactivate() {
         const callsign = 'AVS'
         return new Promise((resolve, reject) => {
-            thunder.Controller.deactivate({ callsign: callsign })
+            thunder.call('Controller', 'deactivate', { callsign: callsign })
                 .then((res) => {
-                    if (res.result === null) {
-                        resolve(true)
-                    }
-                    reject(true)
+                    resolve(true)
                 })
                 .catch(err => {
                     console.log('Failed to deactivate AVS')

@@ -215,15 +215,16 @@ export default class SettingsScreen extends Lightning.Component {
         .catch(() => {
           console.log('failed')
         })
+    } else {
+      voiceApi.activate()
+        .then(() => {
+          this.avs = true
+          this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+        })
+        .catch(() => {
+          console.log('failed')
+        })
     }
-    voiceApi.activate()
-      .then(() => {
-        this.avs = true
-        this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOnWhite.png')
-      })
-      .catch(() => {
-        console.log('failed')
-      })
   }
 
   static _states() {

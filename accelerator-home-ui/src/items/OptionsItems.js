@@ -35,7 +35,7 @@ export default class OptionsItem extends Lightning.Component {
     }
 
     _handleEnter() {
-        this.fireAncestors('$selectOption', 0, this)
+        this.fireAncestors('$selectOption', this.idx, this)
         this._focus()
     }
 

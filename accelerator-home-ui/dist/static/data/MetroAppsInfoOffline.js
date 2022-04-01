@@ -83,7 +83,7 @@ export var metroAppsInfoOffline = [
   {
     displayName: "FRacer",
     applicationType: "Lightning",
-    uri: "https://lightningjs.io/fracer/#gameover",
+    uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   }
 ];

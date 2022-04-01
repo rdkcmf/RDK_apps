@@ -20,7 +20,16 @@
  import { CONFIG } from '../Config/Config'
 import ChannelItem from './ChannelItem'
 import info from '../../static/data/EpgInfo.json'
-var channelIndex = 0
+let channelIndex = 0
+let customChannels
+let customChannelUrl = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json"
+fetch(customChannelUrl)
+        .then(res => res.json())
+        .then((out) => {
+          customChannels=out.data
+        })
+        .catch(err => { throw err });
+
  export default class ChannelOverlay extends Lightning.Component {
     /**
      * Function to create components for the player controls.
@@ -47,11 +56,14 @@ var channelIndex = 0
       }
     }
 
-    init(){
+    _init(){
 
     }
     _focus(){
       var options = info.data
+      if(typeof customChannels == "object"){
+        options=[...customChannels,...options]
+      }
       this.tag('Channels').items = options.map((item,index) => {
         return{
             type:ChannelItem,

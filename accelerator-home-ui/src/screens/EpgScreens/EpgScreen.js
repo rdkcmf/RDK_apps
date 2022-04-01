@@ -24,6 +24,14 @@ import Shows from './Shows'
 import { CONFIG } from '../../Config/Config'
 import ChannelsList from './ChannelsList'
 import ShowsList from './ShowsList'
+let customChannels
+let customChannelUrl = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json"
+fetch(customChannelUrl)
+        .then(res => res.json())
+        .then((out) => {
+          customChannels=out.data
+        })
+        .catch(err => { throw err });
 
 export default class EpgScreen extends Lightning.Component {
 
@@ -210,6 +218,9 @@ export default class EpgScreen extends Lightning.Component {
     //info.data contains js objects with ChannelName and Shows as inner properties.
     //shows is an array of js objects again and its properties include showName,description,duration,startTime.   
     var options = info.data
+    if(typeof customChannels == "object"){
+      options=[...customChannels,...options]
+    }
     options = options.slice(0, this.verticalBuffer);
     this._setState("Options")
     this.tag('GPEContents.List').h = 8 * 81
