@@ -1,0 +1,6 @@
+{
+  "name": "Tiny_RDK",
+  "identifier": "com.metrological.app.TinyRDK",
+  "version": "1.0.0",
+  "icon": "./static/icon.png"
+}
