@@ -233,18 +233,13 @@ export default class NetworkList extends Lightning.Component {
     if (this.wifiStatus) {
       this._wifi.discoverSSIDs()
     }
-    this.scanTimer = setInterval(() => {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs()
-      }
-    }, 5000)
   }
 
   /**
    * Function to be executed when the Wi-Fi screen is disabled.
    */
   _unfocus() {
-    clearInterval(this.scanTimer)
+    this._wifi.stopScan()
   }
 
 

@@ -26,7 +26,6 @@ import XcastApi from '../api/XcastApi'
 import HomeApi from '../api/HomeApi.js'
 import GracenoteItem from '../items/GracenoteItem.js'
 import { List } from '@lightningjs/ui'
-import Item from '../items/item.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -585,7 +584,10 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          //implement details screen
+          Storage.set('applicationType', 'Cobalt');
+          let appApi = new AppApi()
+          appApi.launchCobalt('https://www.youtube.com/watch?v=NLTYw1s4e-8');
+          appApi.setVisibility('ResidentApp', false);
         }
       },
       class AppList extends this {

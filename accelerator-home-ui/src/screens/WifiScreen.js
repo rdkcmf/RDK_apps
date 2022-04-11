@@ -249,11 +249,6 @@ export default class WiFiScreen extends Lightning.Component {
     if (this.wifiStatus) {
       this._wifi.discoverSSIDs()
     }
-    this.scanTimer = setInterval(() => {
-      if (this.wifiStatus) {
-        this._wifi.discoverSSIDs()
-      }
-    }, 5000)
   }
 
   /**
@@ -261,7 +256,7 @@ export default class WiFiScreen extends Lightning.Component {
    */
   _disable() {
     console.log('going out')
-    clearInterval(this.scanTimer)
+    this._wifi.stopScan()
   }
 
 
