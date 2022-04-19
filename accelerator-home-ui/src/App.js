@@ -280,7 +280,7 @@ export default class App extends Router.App {
           });
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchCobalt(notification.parameters.url);
+          appApi.launchCobalt(notification.parameters.url + '&inApp=true');
           Storage.set('applicationType', 'Cobalt');
           appApi.setVisibility('ResidentApp', false);
           let params = {

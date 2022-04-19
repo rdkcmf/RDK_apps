@@ -255,7 +255,6 @@ export default class WiFiScreen extends Lightning.Component {
    * Function to be executed when the Wi-Fi screen is disabled.
    */
   _disable() {
-    console.log('going out')
     this._wifi.stopScan()
   }
 
@@ -421,6 +420,8 @@ export default class WiFiScreen extends Lightning.Component {
     if (dir === 'down') {
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
+        this._wifi.discoverSSIDs()
+        this._setState('JoinAnotherNetwork')
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }

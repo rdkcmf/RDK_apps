@@ -20,6 +20,7 @@ import { Lightning, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
+import NetworkApi from '../../api/NetworkApi'
 
 /**
  * Class for Video and Audio screen.
@@ -253,6 +254,10 @@ export default class DeviceInformationScreen extends Lightning.Component {
         }
     }
 
+    _init(){
+        this._network = new NetworkApi();
+    }
+
     _focus() {
         this._setState('DeviceInformationScreen')
         this.appApi = new AppApi();
@@ -282,23 +287,30 @@ export default class DeviceInformationScreen extends Lightning.Component {
             });
             this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`
         })
-        this.appApi.getLocation().then(result => {
-            console.log("getLocation from device info " + JSON.stringify(result))
-            var locationInfo = ""
-            if (result.city.length !== 0) {
-                locationInfo = "City: " + result.city
-            }
-            else {
-                locationInfo = "City: N/A "
-            }
-            if (result.country.length !== 0) {
-                locationInfo += ", Country: " + result.country;
-            }
-            else {
-                locationInfo += ", Country: N/A "
-            }
-            this.tag('Location.Value').text.text = `${locationInfo}`
-        })
+        this._network.isConnectedToInternet().then((result) => {
+            if(result.connectedToInternet===true){
+            this.appApi.getLocation().then(result => {
+                console.log("getLocation from device info " + JSON.stringify(result))
+                var locationInfo = ""
+                if (result.city.length !== 0) {
+                    locationInfo = "City: " + result.city
+                }
+                else {
+                    locationInfo = "City: N/A "
+                }
+                if (result.country.length !== 0) {
+                    locationInfo += ", Country: " + result.country;
+                }
+                else {
+                    locationInfo += ", Country: N/A "
+                }
+                this.tag('Location.Value').text.text = `${locationInfo}`
+            })                    
+        }
+        else{
+            this.tag('Location.Value').text.text = `City: N/A, Country: N/A`
+        }
+    })
 
         this.appApi.getDeviceIdentification().then(result => {
             console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result))

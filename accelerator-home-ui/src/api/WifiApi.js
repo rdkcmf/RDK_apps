@@ -134,7 +134,7 @@ export default class Wifi {
   discoverSSIDs() {
     return new Promise((resolve, reject) => {
       this._thunder
-        .call(this.callsign, 'startScan', { incremental: true, ssid: '', frequency: '' })
+        .call(this.callsign, 'startScan', { incremental: false, ssid: '', frequency: '' })
         .then(result => {
           //console.log('startScan success')
           resolve(result)

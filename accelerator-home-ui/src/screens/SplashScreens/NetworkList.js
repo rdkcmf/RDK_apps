@@ -350,6 +350,8 @@ export default class NetworkList extends Lightning.Component {
     if (dir === 'down') {
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
+        wifi.discoverSSIDs()
+        this._setState('JoinAnotherNetwork')
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }
