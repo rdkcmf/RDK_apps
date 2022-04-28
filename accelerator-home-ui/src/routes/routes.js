@@ -30,9 +30,9 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
-import EpgScreen from '../screens/EpgScreens/EpgScreen'
 import UIList from '../views/UIList'
 import AppStore from '../views/AppStore'
+import detailsScreenRoutes from './detailsScreenRoutes'
 
 let api = null
 
@@ -48,8 +48,13 @@ export default {
       })
     return Promise.resolve()
   },
-  root: 'splash',
+  // root: 'splash',
   routes: [
+    ...splashScreenRoutes.splashScreenRoutes,
+    ...route.network,
+    ...otherSettingsRoutes.otherSettingsRoutes,
+    ...audioScreenRoutes.audioScreenRoutes,
+    ...detailsScreenRoutes.detailsScreenRoutes,
     {
       path: 'settings',
       component: SettingsScreen,
@@ -66,11 +71,6 @@ export default {
     {
       path: 'usb',
       component: UsbAppsScreen,
-      widgets: ['Menu'],
-    },
-    {
-      path: 'epg',
-      component: EpgScreen,
       widgets: ['Menu'],
     },
     {
@@ -112,10 +112,6 @@ export default {
       path: 'player',
       component: AAMPVideoPlayer
     },
-    ...route.network,
-    ...otherSettingsRoutes.otherSettingsRoutes,
-    ...audioScreenRoutes.audioScreenRoutes,
-    ...splashScreenRoutes.splashScreenRoutes,
     {
       path: '!',
       component: Error,

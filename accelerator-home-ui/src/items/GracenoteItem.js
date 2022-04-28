@@ -41,6 +41,7 @@ export default class GracenoteItem extends Lightning.Component {
     }
 
     _init() {
+        let imgUrl = ((this.data.program.preferredImage.uri).replace("w=1280&","w=480&")).replace("&h=720","&h=270")
         this.tag('Shadow').patch({
             color: CONFIG.theme.hex,
             rect: true,
@@ -55,7 +56,7 @@ export default class GracenoteItem extends Lightning.Component {
             y: this.y,
             w: this.w,
             h: this.h,
-            src: Utils.proxyUrl('http://developer.tmsimg.com/' + this.data.program.preferredImage.uri + '&api_key=' + this.key),
+            src: Utils.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
             scale: this.unfocus,
         });
 
@@ -63,7 +64,7 @@ export default class GracenoteItem extends Lightning.Component {
         it wil replaced with Dynamic data once implimetation is completed.*/
         this.tag('Info').patch({
             x: this.x - 20,
-            y: this.y + this.h + 10,
+            y: this.y + this.h + 20,
             w: this.w,
             h: 140,
             alpha: 0,

@@ -19,7 +19,6 @@
  import { Lightning, Utils } from '@lightningjs/sdk'
  import { CONFIG } from '../Config/Config'
 import ChannelItem from './ChannelItem'
-import info from '../../static/data/EpgInfo.json'
 let channelIndex = 0
 let customChannels
 let customChannelUrl = "http://127.0.0.1:50050/lxresui/static/moreChannels/ChannelData.json"
@@ -60,17 +59,17 @@ fetch(customChannelUrl)
 
     }
     _focus(){
-      var options = info.data
+      var options = []
       if(typeof customChannels == "object"){
         options=[...customChannels,...options]
       }
-      this.tag('Channels').items = options.map((item,index) => {
-        return{
-            type:ChannelItem,
-            index:index,
-            item:item,
-        }
-      })
+      // this.tag('Channels').items = options.map((item,index) => {
+      //   return{
+      //       type:ChannelItem,
+      //       index:index,
+      //       item:item,
+      //   }
+      // })
       this.$focusChannel(channelIndex)
     }
 

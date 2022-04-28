@@ -169,11 +169,6 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware')
                 }
                 _handleEnter() {
-                    // this._network.isConnectedToInternet().then((result) => {
-                    //     if(result.connectedToInternet===true){
-                    //         Router.navigate('settings/advanced/device/info')
-                    //     }
-                    // })
                     Router.navigate('settings/advanced/device/info')
                 }
             },

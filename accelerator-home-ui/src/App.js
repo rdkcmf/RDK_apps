@@ -110,10 +110,6 @@ export default class App extends Router.App {
       return true
     }
 
-    if (key.keyCode == Keymap.Guide_Shortcut) {
-      Router.navigate('epg')
-      return true
-    }
 
     if (key.keyCode == Keymap.Power) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON

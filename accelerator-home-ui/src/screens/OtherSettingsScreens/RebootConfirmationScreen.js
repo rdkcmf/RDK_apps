@@ -25,6 +25,11 @@ const appApi = new AppApi()
  * Class for Reboot Confirmation Screen.
  */
 export default class RebootConfirmationScreen extends Lightning.Component {
+
+    pageTransition() {
+        return 'left'
+    }
+
     static _template() {
         return {
             w: 1920,
