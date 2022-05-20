@@ -118,11 +118,11 @@
            },
          },
          GracenoteLogo: {
-           x: 1000,
-           y: 650,
-           w: 180,
-           h: 62,
-           src: Utils.asset("images/splash/gracenote.png"),
+           x: 925,
+           y: 510,
+           w: 300,
+           h: 168,
+           src: Utils.asset("images/powered_by_gracenote.png"),
          },
        },
      };
