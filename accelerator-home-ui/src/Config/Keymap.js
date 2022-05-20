@@ -113,6 +113,7 @@ const keyMap = {
     "PageDown": 34,
     "Home": 36,
     "Settings_Shortcut": 121,
+    "Guide_Shortcut": 120,
 }
 
 export default keyMap

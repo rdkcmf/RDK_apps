@@ -24,7 +24,8 @@ import TopPanel from "./TopPanel"
 
 var route = {
     1: () => {
-        
+        Router.navigate('epg')
+        Router.focusPage()
     },
     3: () => {
         Router.navigate('apps')

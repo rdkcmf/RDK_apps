@@ -29,17 +29,17 @@ export default class LogoScreen extends Lightning.Component {
             h: 1080,
             Logo: {
                 mount: 0.5,
-                x: 1920 / 2,
-                y: 1080 / 2,
+                x: 960,
+                y: 540,
                 src: Utils.asset('/images/splash/RDKLogo.png'),
             },
             Sub: {
                 mountY: 1,
                 mountX: 0.5,
-                x: 1920 / 2,
+                x: 960,
                 y: 1000,
-                w: 320,
-                h: 110,
+                w: 216,
+                h: 121,
                 src: Utils.asset('/images/splash/gracenote.png')
             }
         }
@@ -63,7 +63,7 @@ export default class LogoScreen extends Lightning.Component {
     _focus() {
         let path = 'splash/bluetooth'
         var map = { 37: false, 38: false, 39: false, 40: false };
-        const handler = (e) => {
+        this.handler = (e) => {
             if (e.keyCode in map) {
                 map[e.keyCode] = true;
                 if (map[37] && map[38] && map[39] && map[40]) {
@@ -71,7 +71,7 @@ export default class LogoScreen extends Lightning.Component {
                 }
             }
         }
-        Registry.addEventListener(document, 'keydown', handler)
+        Registry.addEventListener(document, 'keydown', this.handler)
         this.btApi.getPairedDevices()
             .then(devices => {
                 console.log(devices)
@@ -86,5 +86,8 @@ export default class LogoScreen extends Lightning.Component {
         setTimeout(() => {
             Router.navigate(path)
         }, 5000)
+    }
+    _unfocus(){
+        Registry.removeEventListener(document, 'keydown', this.handler)
     }
 }
