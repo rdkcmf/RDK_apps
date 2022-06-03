@@ -47,7 +47,7 @@ export default class AppStore extends Lightning.Component {
         }
     }
 
-    _init() {
+    _firstEnable() {
         let apps = homeApi.getAllApps()
         apps.shift()
         const options = ['My Apps', 'App Catalog', 'ManageApps']

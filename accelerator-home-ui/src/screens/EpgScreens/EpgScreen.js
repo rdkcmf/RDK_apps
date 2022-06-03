@@ -41,7 +41,7 @@ fetch(customChannelUrl)
 export default class EpgScreen extends Lightning.Component {
 
   _onChanged() {
-    this.widgets.menu.updateTopPanelText(Language.translate('EPG'));
+    this.widgets.menu.updateTopPanelText(Language.translate('Guide'));
   }
   static _template() {
     return {
@@ -209,7 +209,7 @@ export default class EpgScreen extends Lightning.Component {
   }
 
 
-  _init() {
+  _firstEnable() {
     this.leftFloor = 0;
     this.leftMost8 = [];
     this.verticalScrollCount = 0;

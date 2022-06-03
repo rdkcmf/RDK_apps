@@ -104,7 +104,7 @@ export default class EnergySavingsScreen extends Lightning.Component {
             }
         ]
     }
-    _init() {
+    _firstEnable() {
         this._appApi = new AppApi();
         this.options = [Language.translate("Deep Sleep"), Language.translate("Light Sleep")]
         this.tag('EnerygySavingContents').h = this.options.length * 90

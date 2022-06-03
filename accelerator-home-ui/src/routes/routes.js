@@ -34,6 +34,7 @@ import EpgScreen from '../screens/EpgScreens/EpgScreen'
 import UIList from '../views/UIList'
 import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
+import liveTvRoutes from './liveTvRoutes'
 
 let api = null
 
@@ -56,6 +57,7 @@ export default {
     ...otherSettingsRoutes.otherSettingsRoutes,
     ...audioScreenRoutes.audioScreenRoutes,
     ...detailsScreenRoutes.detailsScreenRoutes,
+    ...liveTvRoutes,
     {
       path: 'settings',
       component: SettingsScreen,

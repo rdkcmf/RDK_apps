@@ -20,7 +20,9 @@ import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
 import AppApi from '../api/AppApi'
 import { CONFIG } from '../Config/Config'
 import Keymap from '../Config/Keymap'
-import store from '../redux.js'
+
+let zone = null // declaring this variable to keep track of zone changes
+
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
   static _template() {
@@ -79,39 +81,26 @@ export default class TopPanel extends Lightning.Component {
     }
   }
 
+  changeTimeZone(time) {
+    zone = time
+  }
+
+  updateZone() {
+    zone = this.zone
+  }
+
   _init() {
     this.indexVal = 1;
-    this.timeZone = null;
     this.audiointerval = null;
-    new AppApi().getZone().then(function (res) {
-      this.timeZone = res;
-    }.bind(this)).catch(err => { console.log('Timezone api request error', err) });
+    this.zone = null
+    this.appApi = new AppApi()
 
-    function render() {
-      if (store.getState() == 'ACTION_LISTEN_STOP') {
-        this.tag('AudioListenSymbol').visible = false;
-        clearInterval(this.audiointerval);
-        this.audiointerval = null;
-      } else if (store.getState() == 'ACTION_LISTEN_START') {
-        if (!this.audiointerval) {
-          this.tag('AudioListenSymbol').visible = true;
-          let mode = 1;
-          this.audiointerval = setInterval(function () {
-            if (mode % 2 == 0) {
-              this.tag('AudioListenSymbol').w = 80;
-              this.tag('AudioListenSymbol').h = 80;
-            } else {
-              this.tag('AudioListenSymbol').w = 70;
-              this.tag('AudioListenSymbol').h = 70
-            }
-            mode++;
-            if (mode > 20) { mode = 0; };
-          }.bind(this), 250);
-        }
-      }
-    }
-    store.subscribe(render.bind(this));
-    this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this.appApi.getZone().then((res) => {
+      this.zone = res
+      this.updateZone()
+    })
+    zone = this.zone ? this.zone : Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(zone)
     this._setState('Setting')
   }
 
@@ -151,7 +140,7 @@ export default class TopPanel extends Lightning.Component {
   _build() {
     setInterval(() => {
       let _date = this.updateTime()
-      if (this.zone) {
+      if (zone) {
         this.tag('Time').patch({ text: { text: _date.strTime } })
       }
     }, 1000)
@@ -167,10 +156,9 @@ export default class TopPanel extends Lightning.Component {
    * Function to update time in home UI.
    */
   updateTime() {
-    if (this.zone) {
+    if (zone != null) {
       let date = new Date()
-      date = new Date(date.toLocaleString('en-US', { timeZone: this.zone }))
-
+      date = new Date(date.toLocaleString('en-US', { timeZone: zone }))
       // get day
       let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       let strDay = days[date.getDay()];

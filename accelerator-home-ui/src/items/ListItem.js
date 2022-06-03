@@ -127,6 +127,7 @@ export default class ListItem extends Lightning.Component {
       w: this.w,
       h: this.h,
       scale: this.unfocus,
+      zIndex: 0
     })
     this.tag('Item').patch({
       zIndex: 0,

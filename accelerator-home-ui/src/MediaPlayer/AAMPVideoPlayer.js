@@ -33,9 +33,9 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   set params(args) {
     this.currentIndex = args.currentIndex
     this.data = args.list
-    if(args.isUSB){
+    if (args.isUSB) {
       this.isUSB = args.isUSB
-    }else if(args.isChannel){
+    } else if (args.isChannel) {
       this.isChannel = args.isChannel
       this.channelName = args.channelName
       this.showName = args.showName
@@ -71,43 +71,43 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           resizeMode: { type: 'contain', w: 1920, h: 1080 },
         }
       },
-      InfoOverlay:{
-        x:90,
-        y:820,
-        alpha:0,
-        zIndex:3,
-        ShowName:{
-          text: { 
-            text: "Show Name", 
-            fontFace: CONFIG.language.font, 
+      InfoOverlay: {
+        x: 90,
+        y: 820,
+        alpha: 0,
+        zIndex: 3,
+        ShowName: {
+          text: {
+            text: "Show Name",
+            fontFace: CONFIG.language.font,
             fontSize: 48,
             fontStyle: 'bold',
             textColor: 0xffFFFFFF,
-            wordWrap: true, wordWrapWidth: 1350, maxLines: 1, 
+            wordWrap: true, wordWrapWidth: 1350, maxLines: 1,
           }
         },
-        ChannelName:{
-          y:50,
-          visible:false,
-          text: { 
-            text: "Channel Name", 
-            fontFace: CONFIG.language.font, 
+        ChannelName: {
+          y: 50,
+          visible: false,
+          text: {
+            text: "Channel Name",
+            fontFace: CONFIG.language.font,
             fontSize: 35,
-            textColor: 0xffFFFFFF ,
-            wordWrap: true, wordWrapWidth: 1350, maxLines: 1, 
+            textColor: 0xffFFFFFF,
+            wordWrap: true, wordWrapWidth: 1350, maxLines: 1,
           }
         }
       },
-      PlayerControlsWrapper:{
-        alpha:0,
-        h:330,
-        w:1920,
+      PlayerControlsWrapper: {
+        alpha: 0,
+        h: 330,
+        w: 1920,
         y: 750,
-        rect:true,
-        colorBottom: 0xFF000000, 
+        rect: true,
+        colorBottom: 0xFF000000,
         colorTop: 0x00000000,
         PlayerControls: {
-          y:70,
+          y: 70,
           type: LightningPlayerControls,
           signals: {
             pause: 'pause',
@@ -120,17 +120,17 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           },
         },
       },
-      ChannelWrapper:{
-        h:1080,
-        w:350,
-        x:-360,
-        rect:true,
-        colorLeft: 0xFF000000, 
+      ChannelWrapper: {
+        h: 1080,
+        w: 350,
+        x: -360,
+        rect: true,
+        colorLeft: 0xFF000000,
         colorRight: 0x00000000,
-        ChannelOverlay:{
-          type:ChannelOverlay,
-          x:50,
-          y:92,
+        ChannelOverlay: {
+          type: ChannelOverlay,
+          x: 50,
+          y: 92,
         }
       }
     }
@@ -244,7 +244,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.tag('PlayerControls').reset()
     this.tag('PlayerControlsWrapper').setSmooth('alpha', 1)
     this.tag('PlayerControlsWrapper').setSmooth('y', 750, { duration: 1 })
-    if(this.isUSB){
+    if (this.isUSB) {
       this.tag("InfoOverlay").setSmooth('alpha', 1)
     }
     this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000)
@@ -322,23 +322,23 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.hidePlayerControls()
   }
 
-  $changeChannel(url, showName, channelName){
-      this.stop()
-      this.destroy()
-      try {
-        this.load({
-          title: showName,
-          url: url,
-          drmConfig: null,
-        })
-        this.tag('ShowName').text.text = showName
-        this.tag('ChannelName').text.text = channelName
-        this.setVideoRect(0, 0, 1920, 1080)
-      } catch (error) {
-        console.error('Playback Failed ' + error)
-      }
+  $changeChannel(url, showName, channelName) {
+    this.stop()
+    this.destroy()
+    try {
+      this.load({
+        title: showName,
+        url: url,
+        drmConfig: null,
+      })
+      this.tag('ShowName').text.text = showName
+      this.tag('ChannelName').text.text = channelName
+      this.setVideoRect(0, 0, 1920, 1080)
+    } catch (error) {
+      console.error('Playback Failed ' + error)
+    }
   }
-  
+
   nextTrack() {
     if (this.data[this.currentIndex + 1]) {
       this.currentIndex += 1
@@ -449,23 +449,23 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   }
 
 
-  showInfo(){
-    if(this.isUSB || this.isChannel){
-      this.tag("InfoOverlay").setSmooth('alpha', 1, { duration: 0.3, delay:0.7 })
+  showInfo() {
+    if (this.isUSB || this.isChannel) {
+      this.tag("InfoOverlay").setSmooth('alpha', 1, { duration: 0.3, delay: 0.7 })
     }
   }
 
 
-  hideInfo(){
-    if(this.isUSB || this.isChannel){
-      this.tag("InfoOverlay").setSmooth('alpha', 0, {duration: 0.3})
+  hideInfo() {
+    if (this.isUSB || this.isChannel) {
+      this.tag("InfoOverlay").setSmooth('alpha', 0, { duration: 0.3 })
     }
   }
 
   updateInfo() {
-    if(this.isUSB){
+    if (this.isUSB) {
       this.tag('ShowName').text.text = this.data[this.currentIndex].data.displayName
-    }else if(this.isChannel){
+    } else if (this.isChannel) {
       this.tag('ShowName').text.text = this.showName
       this.tag('ChannelName').text.text = this.channelName
     }
@@ -493,12 +493,12 @@ export default class AAMPVideoPlayer extends Lightning.Component {
   _focus() {
     this._setState('HideControls')
     this.updateInfo()
-    if(this.isChannel){
+    if (this.isChannel) {
       this.tag('ChannelOverlay').$focusChannel(this.channelIndex)
       this.tag('InfoOverlay').y = 790
       this.tag('ChannelName').visible = true
       this.tag('PlayerControls').hideNextPrevious()
-    } else{ 
+    } else {
       this.tag('InfoOverlay').y = 820
       this.tag('ChannelName').visible = false
       this.tag('PlayerControls').showNextPrevious()
@@ -518,7 +518,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           this._setState('HideControls')
         }
         _handleUp() {
-          if(this.isChannel){
+          if (this.isChannel) {
             this.hidePlayerControls()
             this._setState('ChannelOverlay')
           }
@@ -537,24 +537,24 @@ export default class AAMPVideoPlayer extends Lightning.Component {
           clearTimeout(this.timeout)
         }
 
-        _handleLeft(){
-          if(this.isChannel){
+        _handleLeft() {
+          if (this.isChannel) {
             this._setState('ChannelOverlay')
           }
         }
       },
       class ChannelOverlay extends this {
-        $enter(){
-            this.tag('ChannelWrapper').setSmooth('x', 0, { duration: 1 })
+        $enter() {
+          this.tag('ChannelWrapper').setSmooth('x', 0, { duration: 1 })
         }
-        $exit(){
-            this.tag('ChannelWrapper').setSmooth('x', -360, { duration: 1 })
+        $exit() {
+          this.tag('ChannelWrapper').setSmooth('x', -360, { duration: 1 })
         }
-        _handleLeft(){
+        _handleLeft() {
           this.hidePlayerControls()
           this._setState('HideControls')
         }
-        _handleRight(){
+        _handleRight() {
           this.hidePlayerControls()
           this._setState('HideControls')
         }

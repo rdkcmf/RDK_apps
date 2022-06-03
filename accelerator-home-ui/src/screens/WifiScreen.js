@@ -139,7 +139,7 @@ export default class WiFiScreen extends Lightning.Component {
   }
 
 
-  _init() {
+  _firstEnable() {
 
     this.wifiLoading = this.tag('Switch.Loader').animation({
       duration: 3,

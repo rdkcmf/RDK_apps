@@ -161,7 +161,7 @@ export default class App extends Router.App {
   _init() {
     appApi.enableDisplaySettings()
     appApi.cobaltStateChangeEvent()
-    //appApi.launchforeground()
+    appApi.launchforeground()
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {

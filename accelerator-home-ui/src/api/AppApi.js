@@ -32,6 +32,9 @@ const config = {
   host: '127.0.0.1',
   port: 9998,
   default: 1,
+  versions: {
+    'org.rdk.System': 2
+  }
 }
 const thunder = ThunderJS(config)
 /**
@@ -52,6 +55,19 @@ export default class AppApi {
    */
   registerEvent(eventId, callback) {
     this._events.set(eventId, callback)
+  }
+
+  fetchTimeZone() {
+    return new Promise((resolve) => {
+      thunder.call('org.rdk.System', 'getTimeZones')
+        .then(result => {
+          resolve(result.zoneinfo)
+        })
+        .catch(err => {
+          console.log('Cannot fetch time zone', err)
+          resolve({})
+        })
+    })
   }
 
   checkForInternet() {
@@ -110,15 +126,26 @@ export default class AppApi {
   getZone() {
     return new Promise((resolve, reject) => {
       const systemcCallsign = 'org.rdk.System'
-      thunder.Controller.activate({ callsign: systemcCallsign })
-        .then(() => {
-          thunder
-            .call(systemcCallsign, 'getTimeZoneDST')
-            .then(result => {
-              resolve(result.timeZone)
-            }).catch(err => { resolve(false) })
-        }).catch(err => { })
+      thunder.call(systemcCallsign, 'getTimeZoneDST')
+        .then(result => {
+          resolve(result.timeZone)
+        })
+        .catch(err => {
+          console.log('Failed to fetch Time Zone')
+          resolve(null)
+        })
     })
+  }
+
+  setZone(zone) {
+    console.log(zone)
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.System', 'setTimeZoneDST', { timeZone: zone })
+        .then(result => {
+          resolve(result.success)
+        }).catch(err => { resolve(false) })
+    }).catch(err => { })
   }
   /**
    * Function to get resolution of the display screen.

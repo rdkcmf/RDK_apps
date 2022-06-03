@@ -76,7 +76,7 @@ export default class ResolutionScreen extends Lightning.Component {
 
 
 
-    _init() {
+    _firstEnable() {
         this.appApi = new AppApi();
         this.appApi.activateDisplaySettings();
         this.loadingAnimation = this.tag('Loader').animation({

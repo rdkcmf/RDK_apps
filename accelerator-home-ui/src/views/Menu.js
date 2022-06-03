@@ -101,7 +101,9 @@ export default class Menu extends Lightning.Component {
             this.mainView.scroll(val)
         }
     }
-
+    updateTimeZone(timezone) {
+        this.tag('TopPanel').changeTimeZone(timezone)
+    }
     updateTopPanelText(text) {
         this.tag('TopPanel').changeText = text
     }

@@ -211,16 +211,16 @@ export default class MainView extends Lightning.Component {
 
   moveDownContent() {
     this.tag('Text0').alpha = 1
-    this.tag('Text1').y = 490-50
-    this.tag('AppList').y = 527-50
-    this.tag("Text2").y = 755-50
-    this.tag("MetroApps").y = 795-50
-    this.tag("Text3").y = 1030-50
-    this.tag("TVShows").y = 1070-50
-    this.tag("Text4").y = 1298-50
-    this.tag("ShowcaseApps").y = 1338-50
-    this.tag("Text5").y = 1566-50
-    this.tag("UsbApps").y = 1606-50
+    this.tag('Text1').y = 490 - 50
+    this.tag('AppList').y = 527 - 50
+    this.tag("Text2").y = 755 - 50
+    this.tag("MetroApps").y = 795 - 50
+    this.tag("Text3").y = 1030 - 50
+    this.tag("TVShows").y = 1070 - 50
+    this.tag("Text4").y = 1298 - 50
+    this.tag("ShowcaseApps").y = 1338 - 50
+    this.tag("Text5").y = 1566 - 50
+    this.tag("UsbApps").y = 1606 - 50
   }
 
 
@@ -383,6 +383,12 @@ export default class MainView extends Lightning.Component {
   _focus() {
     this._setState(this.state)
   }
+
+  _firstEnable() {
+    console.timeEnd('PerformanceTest')
+    console.log('Mainview Screen timer end - ', new Date().toUTCString())
+  }
+
 
   scroll(val) {
     this.tag('MainView').patch({

@@ -11,6 +11,7 @@
     "inspector": false,
     "path": "./static",
     "log": true,
-    "showVersion": false
+    "showVersion": false,
+    "version": "3.7"
   }
 }

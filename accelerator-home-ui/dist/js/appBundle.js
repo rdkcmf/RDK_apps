@@ -1,9 +1,9 @@
 /*
- App version: 3.6 24/05/22
+ App version: 3.7 03/06/22
  SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Tue, 24 May 2022 13:08:22 GMT
+ gmtDate: Fri, 03 Jun 2022 10:10:40 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -475,8 +475,8 @@ var APP_accelerator_home_ui = (() => {
   var sendMetric = (type, event, params) => {
     Log_default.info("Sending metric", type, event, params);
   };
-  var initMetrics = (config7) => {
-    sendMetric = config7.sendMetric;
+  var initMetrics = (config8) => {
+    sendMetric = config8.sendMetric;
   };
   var metrics = {
     app: ["launch", "loaded", "ready", "close"],
@@ -608,10 +608,10 @@ var APP_accelerator_home_ui = (() => {
   // node_modules/@lightningjs/sdk/src/Utils/index.js
   var basePath;
   var proxyUrl;
-  var initUtils = (config7) => {
-    basePath = ensureUrlWithProtocol(makeFullStaticPath(window.location.pathname, config7.path || "/"));
-    if (config7.proxyUrl) {
-      proxyUrl = ensureUrlWithProtocol(config7.proxyUrl);
+  var initUtils = (config8) => {
+    basePath = ensureUrlWithProtocol(makeFullStaticPath(window.location.pathname, config8.path || "/"));
+    if (config8.proxyUrl) {
+      proxyUrl = ensureUrlWithProtocol(config8.proxyUrl);
     }
   };
   var Utils_default = {
@@ -770,12 +770,12 @@ var APP_accelerator_home_ui = (() => {
     if (key in defaultProfile)
       defaultProfile[key] = params;
   };
-  var initProfile = (config7) => {
-    getInfo = config7.getInfo;
-    setInfo = config7.setInfo;
+  var initProfile = (config8) => {
+    getInfo = config8.getInfo;
+    setInfo = config8.setInfo;
   };
 
-  // ../../../../../../AppData/Roaming/npm/node_modules/@lightningjs/cli/src/alias/lightningjs-core.js
+  // ../../../../../AppData/Roaming/npm/node_modules/@lightningjs/cli/src/alias/lightningjs-core.js
   var lightningjs_core_default = window.lng;
 
   // node_modules/@lightningjs/sdk/src/Lightning/index.js
@@ -784,9 +784,9 @@ var APP_accelerator_home_ui = (() => {
   // node_modules/@lightningjs/sdk/src/MediaPlayer/index.js
   var events = ["timeupdate", "error", "ended", "loadeddata", "canplay", "play", "playing", "pause", "loadstart", "seeking", "seeked", "encrypted"];
   var mediaUrl = (url3) => url3;
-  var initMediaPlayer = (config7) => {
-    if (config7.mediaUrl) {
-      mediaUrl = config7.mediaUrl;
+  var initMediaPlayer = (config8) => {
+    if (config8.mediaUrl) {
+      mediaUrl = config8.mediaUrl;
     }
   };
   var Mediaplayer = class extends Lightning_default.Component {
@@ -1412,15 +1412,15 @@ var APP_accelerator_home_ui = (() => {
 
   // node_modules/@lightningjs/sdk/src/Router/model/Route.js
   var Route = class {
-    constructor(config7 = {}) {
+    constructor(config8 = {}) {
       let type = ["on", "before", "after"].reduce((acc, type2) => {
-        return isFunction(config7[type2]) ? type2 : acc;
+        return isFunction(config8[type2]) ? type2 : acc;
       }, void 0);
-      this._cfg = config7;
+      this._cfg = config8;
       if (type) {
         this._provider = {
           type,
-          request: config7[type]
+          request: config8[type]
         };
       }
     }
@@ -1541,23 +1541,23 @@ var APP_accelerator_home_ui = (() => {
       return stack[prop];
     }
   };
-  var createRoute = (config7) => {
-    if (config7.path === "$") {
+  var createRoute = (config8) => {
+    if (config8.path === "$") {
       let options = {
         preventStorage: true
       };
-      if (isObject(config7.options)) {
-        options = __spreadValues(__spreadValues({}, config7.options), options);
+      if (isObject(config8.options)) {
+        options = __spreadValues(__spreadValues({}, config8.options), options);
       }
-      config7.options = options;
+      config8.options = options;
       if (bootRequest) {
-        config7.after = bootRequest;
+        config8.after = bootRequest;
       }
     }
-    return new Route(config7);
+    return new Route(config8);
   };
-  var createRequest = (url3, args, store2) => {
-    return new Request(url3, args, store2);
+  var createRequest = (url3, args, store) => {
+    return new Request(url3, args, store);
   };
   var getHashByName = (obj) => {
     if (!obj.to && !obj.name) {
@@ -1689,8 +1689,8 @@ var APP_accelerator_home_ui = (() => {
     const forceNavigateStore = register.get(symbols.store);
     const activeRoute2 = getRouteByHash(hash);
     const preventStorage = getOption(activeRoute2.options, "preventStorage");
-    let store2 = isBoolean(forceNavigateStore) ? forceNavigateStore : !preventStorage;
-    if (store2) {
+    let store = isBoolean(forceNavigateStore) ? forceNavigateStore : !preventStorage;
+    if (store) {
       const toStore = hash.replace(/^\//, "");
       const location2 = locationInHistory(toStore);
       const stateObject = getStateObject(getActivePage(), request);
@@ -2270,7 +2270,7 @@ SDK - v${this.sdkVersion}`;
     }
   };
   var customFontFaces = [];
-  var fontLoader = (fonts, store2) => new Promise((resolve, reject) => {
+  var fontLoader = (fonts, store) => new Promise((resolve, reject) => {
     fonts.map(({
       family,
       url: url3,
@@ -2281,7 +2281,7 @@ SDK - v${this.sdkVersion}`;
         return "url(" + url4 + ")";
       }) : "url(" + url3 + ")";
       const fontFace = new FontFace(family, src, descriptors || {});
-      store2.push(fontFace);
+      store.push(fontFace);
       Log_default.info("Loading font", family);
       document.fonts.add(fontFace);
       return fontFace.load();
@@ -2306,12 +2306,12 @@ SDK - v${this.sdkVersion}`;
     }
     return class Application extends Lightning_default.Application {
       constructor(options) {
-        const config7 = (0, import_deepmerge.default)(defaultOptions, options);
+        const config8 = (0, import_deepmerge.default)(defaultOptions, options);
         if (options.stage.canvas) {
-          config7.stage.canvas = options.stage.canvas;
+          config8.stage.canvas = options.stage.canvas;
         }
-        super(config7);
-        this.config = config7;
+        super(config8);
+        this.config = config8;
       }
       static _template() {
         return {
@@ -2393,19 +2393,19 @@ SDK - v${this.sdkVersion}`;
           Log_default.info("No support for removing manually-added fonts");
         }
       }
-      loadLanguage(config7) {
+      loadLanguage(config8) {
         let file = Utils_default.asset("translations.json");
-        let language3 = config7;
+        let language3 = config8;
         if (typeof language3 === "object") {
-          language3 = config7.language || null;
-          file = config7.file || file;
+          language3 = config8.language || null;
+          file = config8.file || file;
         }
         return initLanguage(file, language3);
       }
-      loadColors(config7) {
+      loadColors(config8) {
         let file = Utils_default.asset("colors.json");
-        if (config7 && (typeof config7 === "string" || typeof config7 === "object")) {
-          file = config7;
+        if (config8 && (typeof config8 === "string" || typeof config8 === "object")) {
+          file = config8;
         }
         return initColors(file);
       }
@@ -2455,11 +2455,11 @@ SDK - v${this.sdkVersion}`;
       e.preventDefault();
     };
   };
-  var bootRouter = (config7, instance) => {
+  var bootRouter = (config8, instance) => {
     let {
       appInstance,
       routes: routes2
-    } = config7;
+    } = config8;
     if (instance && isPage(instance)) {
       app = instance;
     }
@@ -2472,17 +2472,17 @@ SDK - v${this.sdkVersion}`;
     routerConfig = getConfigMap();
     mixin(app);
     if (isArray(routes2)) {
-      setup(config7);
+      setup(config8);
     } else if (isFunction(routes2)) {
       console.warn("[Router]: Calling Router.route() directly is deprecated.");
       console.warn("Use object config: https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration");
     }
   };
-  var setup = (config7) => {
+  var setup = (config8) => {
     if (!initialised) {
-      init(config7);
+      init(config8);
     }
-    config7.routes.forEach((r) => {
+    config8.routes.forEach((r) => {
       const path = cleanHash(r.path);
       if (!routeExists(path)) {
         const route3 = createRoute(r);
@@ -2502,34 +2502,34 @@ SDK - v${this.sdkVersion}`;
       }
     });
   };
-  var init = (config7) => {
-    rootHash = config7.root;
-    if (isFunction(config7.boot)) {
-      bootRequest = config7.boot;
+  var init = (config8) => {
+    rootHash = config8.root;
+    if (isFunction(config8.boot)) {
+      bootRequest = config8.boot;
     }
-    if (isBoolean(config7.updateHash)) {
-      updateHash = config7.updateHash;
+    if (isBoolean(config8.updateHash)) {
+      updateHash = config8.updateHash;
     }
-    if (isFunction(config7.beforeEachRoute)) {
-      beforeEachRoute = config7.beforeEachRoute;
+    if (isFunction(config8.beforeEachRoute)) {
+      beforeEachRoute = config8.beforeEachRoute;
     }
-    if (isFunction(config7.afterEachRoute)) {
-      afterEachRoute = config7.afterEachRoute;
+    if (isFunction(config8.afterEachRoute)) {
+      afterEachRoute = config8.afterEachRoute;
     }
-    if (config7.bootComponent) {
+    if (config8.bootComponent) {
       console.warn("[Router]: Boot Component is now available as a special router: https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration?id=special-routes");
       console.warn("[Router]: setting { bootComponent } property will be deprecated in a future release");
-      if (isPage(config7.bootComponent)) {
-        config7.routes.push({
+      if (isPage(config8.bootComponent)) {
+        config8.routes.push({
           path: "$",
-          component: config7.bootComponent,
+          component: config8.bootComponent,
           after: bootRequest || null,
           options: {
             preventStorage: true
           }
         });
       } else {
-        console.error(`[Router]: ${config7.bootComponent} is not a valid boot component`);
+        console.error(`[Router]: ${config8.bootComponent} is not a valid boot component`);
       }
     }
     initialised = true;
@@ -2706,9 +2706,9 @@ SDK - v${this.sdkVersion}`;
   var getConfigMap = () => {
     const routerSettings = Settings_default.get("platform", "router");
     const isObj = isObject(routerSettings);
-    return ["backtrack", "gcOnUnload", "destroyOnHistoryBack", "lazyCreate", "lazyDestroy", "reuseInstance", "autoRestoreRemote", "numberNavigation", "updateHash", "storeSameHash"].reduce((config7, key) => {
-      config7.set(key, isObj ? routerSettings[key] : Settings_default.get("platform", key));
-      return config7;
+    return ["backtrack", "gcOnUnload", "destroyOnHistoryBack", "lazyCreate", "lazyDestroy", "reuseInstance", "autoRestoreRemote", "numberNavigation", "updateHash", "storeSameHash"].reduce((config8, key) => {
+      config8.set(key, isObj ? routerSettings[key] : Settings_default.get("platform", key));
+      return config8;
     }, new Map());
   };
   var getQueryStringParams = (hash = getActiveHash()) => {
@@ -3124,11 +3124,11 @@ SDK - v${this.sdkVersion}`;
   };
   var mustReuse = (route3) => {
     const opt = getOption(route3.options, "reuseInstance");
-    const config7 = routerConfig.get("reuseInstance");
+    const config8 = routerConfig.get("reuseInstance");
     if (isBoolean(opt)) {
       return opt;
     }
-    return !(isBoolean(config7) && config7 === false);
+    return !(isBoolean(config8) && config8 === false);
   };
 
   // node_modules/@lightningjs/sdk/src/Router/base.js
@@ -3201,8 +3201,8 @@ SDK - v${this.sdkVersion}`;
   var navigateQueue = new Map();
   var forcedHash = "";
   var resumeHash = "";
-  var startRouter = (config7, instance) => {
-    bootRouter(config7, instance);
+  var startRouter = (config8, instance) => {
+    bootRouter(config8, instance);
     registerListener();
     start();
   };
@@ -3273,7 +3273,7 @@ SDK - v${this.sdkVersion}`;
       console.error(e);
     }
   };
-  var navigate = (url3, args = {}, store2) => {
+  var navigate = (url3, args = {}, store) => {
     if (isObject(url3)) {
       url3 = getHashByName(url3);
       if (!url3) {
@@ -3285,7 +3285,7 @@ SDK - v${this.sdkVersion}`;
       hash = forcedHash;
     }
     if (hash.replace(/^#/, "") !== url3) {
-      queue(url3, args, store2);
+      queue(url3, args, store);
       setHash(url3);
       if (!mustUpdateLocationHash()) {
         forcedHash = url3;
@@ -3296,7 +3296,7 @@ SDK - v${this.sdkVersion}`;
         });
       }
     } else if (args.reload) {
-      queue(url3, args, store2);
+      queue(url3, args, store);
       handleHashChange(url3).then(() => {
         app._refocus();
       }).catch((e) => {
@@ -3304,13 +3304,13 @@ SDK - v${this.sdkVersion}`;
       });
     }
   };
-  var queue = (hash, args = {}, store2) => {
+  var queue = (hash, args = {}, store) => {
     hash = cleanHash(hash);
     if (!navigateQueue.has(hash)) {
       for (let request2 of navigateQueue.values()) {
         request2.cancel();
       }
-      const request = createRequest(hash, args, store2);
+      const request = createRequest(hash, args, store);
       navigateQueue.set(decodeURIComponent(hash), request);
       return request;
     }
@@ -3350,11 +3350,11 @@ SDK - v${this.sdkVersion}`;
       if (isString(result)) {
         navigate(result);
       } else if (isObject(result)) {
-        let store2 = true;
+        let store = true;
         if (isBoolean(result.store)) {
-          store2 = result.store;
+          store = result.store;
         }
-        navigate(result.path, result.params, store2);
+        navigate(result.path, result.params, store);
       }
     }
   });
@@ -3483,12 +3483,12 @@ SDK - v${this.sdkVersion}`;
   var setHash = (url3) => {
     document.location.hash = url3;
   };
-  var initRouter = (config7) => {
-    if (config7.getHash) {
-      getHash = config7.getHash;
+  var initRouter = (config8) => {
+    if (config8.getHash) {
+      getHash = config8.getHash;
     }
-    if (config7.setHash) {
-      setHash = config7.setHash;
+    if (config8.setHash) {
+      setHash = config8.setHash;
     }
   };
   var registerListener = () => {
@@ -3650,27 +3650,27 @@ SDK - v${this.sdkVersion}`;
       });
     }
   };
-  var initTV = (config7) => {
+  var initTV = (config8) => {
     methods = {};
-    if (config7.getChannel && typeof config7.getChannel === "function") {
-      methods.getChannel = config7.getChannel;
+    if (config8.getChannel && typeof config8.getChannel === "function") {
+      methods.getChannel = config8.getChannel;
     }
-    if (config7.getProgram && typeof config7.getProgram === "function") {
-      methods.getProgram = config7.getProgram;
+    if (config8.getProgram && typeof config8.getProgram === "function") {
+      methods.getProgram = config8.getProgram;
     }
-    if (config7.setChannel && typeof config7.setChannel === "function") {
-      methods.setChannel = config7.setChannel;
+    if (config8.setChannel && typeof config8.setChannel === "function") {
+      methods.setChannel = config8.setChannel;
     }
-    if (config7.emit && typeof config7.emit === "function") {
-      config7.emit(emit);
+    if (config8.emit && typeof config8.emit === "function") {
+      config8.emit(emit);
     }
   };
 
   // node_modules/@lightningjs/sdk/src/Purchase/index.js
   var billingUrl = "https://payment-sdk.metrological.com/";
-  var initPurchase = (config7) => {
-    if (config7.billingUrl)
-      billingUrl = config7.billingUrl;
+  var initPurchase = (config8) => {
+    if (config8.billingUrl)
+      billingUrl = config8.billingUrl;
   };
 
   // node_modules/@lightningjs/sdk/src/Pin/dialog.js
@@ -3874,12 +3874,12 @@ SDK - v${this.sdkVersion}`;
       resolve(unlocked);
     });
   };
-  var initPin = (config7) => {
-    if (config7.submit && typeof config7.submit === "function") {
-      submit = config7.submit;
+  var initPin = (config8) => {
+    if (config8.submit && typeof config8.submit === "function") {
+      submit = config8.submit;
     }
-    if (config7.check && typeof config7.check === "function") {
-      check = config7.check;
+    if (config8.check && typeof config8.check === "function") {
+      check = config8.check;
     }
   };
   var pinDialog = null;
@@ -4123,9 +4123,9 @@ SDK - v${this.sdkVersion}`;
   var consumer;
   var precision = 1;
   var textureMode = false;
-  var initVideoPlayer = (config7) => {
-    if (config7.mediaUrl) {
-      mediaUrl2 = config7.mediaUrl;
+  var initVideoPlayer = (config8) => {
+    if (config8.mediaUrl) {
+      mediaUrl2 = config8.mediaUrl;
     }
   };
   var eventHandlers = {};
@@ -4172,8 +4172,8 @@ SDK - v${this.sdkVersion}`;
   };
   var customLoader = null;
   var customUnloader = null;
-  var loader2 = (url3, videoEl2, config7) => {
-    return customLoader && typeof customLoader === "function" ? customLoader(url3, videoEl2, config7) : new Promise((resolve) => {
+  var loader2 = (url3, videoEl2, config8) => {
+    return customLoader && typeof customLoader === "function" ? customLoader(url3, videoEl2, config8) : new Promise((resolve) => {
       url3 = mediaUrl2(url3);
       videoEl2.setAttribute("src", url3);
       videoEl2.load();
@@ -4281,27 +4281,27 @@ SDK - v${this.sdkVersion}`;
       this.position(top, left2);
       this.size(right2 - left2, bottom - top);
     },
-    open(url3, config7 = {}) {
+    open(url3, config8 = {}) {
       if (!this.canInteract)
         return;
       metrics2 = Metrics_default.media(url3);
       this.hide();
       deregisterEventListeners();
       if (this.src == url3) {
-        this.clear().then(this.open(url3, config7));
+        this.clear().then(this.open(url3, config8));
       } else {
         const adConfig = {
           enabled: state.adsEnabled,
           duration: 300
         };
-        if (config7.videoId) {
-          adConfig.caid = config7.videoId;
+        if (config8.videoId) {
+          adConfig.caid = config8.videoId;
         }
         Ads_default.get(adConfig, consumer).then((ads) => {
           state.playingAds = true;
           ads.prerolls().then(() => {
             state.playingAds = false;
-            loader2(url3, videoEl, config7).then(() => {
+            loader2(url3, videoEl, config8).then(() => {
               registerEventListeners();
               this.show();
               this.play();
@@ -4502,9 +4502,9 @@ SDK - v${this.sdkVersion}`;
       postrolls: []
     });
   };
-  var initAds = (config7) => {
-    if (config7.getAds) {
-      getAds = config7.getAds;
+  var initAds = (config8) => {
+    if (config8.getAds) {
+      getAds = config8.getAds;
     }
   };
   var state2 = {
@@ -4619,8 +4619,8 @@ SDK - v${this.sdkVersion}`;
     }
   };
   var Ads_default = {
-    get(config7, videoPlayerConsumer) {
-      if (config7.enabled === false) {
+    get(config8, videoPlayerConsumer) {
+      if (config8.enabled === false) {
         return Promise.resolve({
           prerolls() {
             return Promise.resolve();
@@ -4630,7 +4630,7 @@ SDK - v${this.sdkVersion}`;
       consumer2 = videoPlayerConsumer;
       return new Promise((resolve) => {
         Log_default.info("Ad", "Starting session");
-        getAds(config7).then((ads) => {
+        getAds(config8).then((ads) => {
           Log_default.info("Ad", "API result", ads);
           resolve({
             prerolls() {
@@ -5014,12 +5014,12 @@ SDK - v${this.sdkVersion}`;
   var Network = class {
     constructor() {
       this._events = new Map();
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
       };
-      this._thunder = thunderJS_default(config7);
+      this._thunder = thunderJS_default(config8);
       this.callsign = "org.rdk.Network";
     }
     activate() {
@@ -5155,7 +5155,10 @@ SDK - v${this.sdkVersion}`;
   var config = {
     host: "127.0.0.1",
     port: 9998,
-    default: 1
+    default: 1,
+    versions: {
+      "org.rdk.System": 2
+    }
   };
   var thunder = thunderJS_default(config);
   var AppApi = class {
@@ -5165,6 +5168,16 @@ SDK - v${this.sdkVersion}`;
     }
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
+    }
+    fetchTimeZone() {
+      return new Promise((resolve) => {
+        thunder.call("org.rdk.System", "getTimeZones").then((result) => {
+          resolve(result.zoneinfo);
+        }).catch((err) => {
+          console.log("Cannot fetch time zone", err);
+          resolve({});
+        });
+      });
     }
     checkForInternet() {
       return new Promise((resolve, reject) => {
@@ -5197,11 +5210,11 @@ SDK - v${this.sdkVersion}`;
     }
     getIP() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.System";
+        const systemcCallsign2 = "org.rdk.System";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "getDeviceInfo", {
+          thunder.call(systemcCallsign2, "getDeviceInfo", {
             params: "estb_ip"
           }).then((result) => {
             resolve(result.success);
@@ -5214,17 +5227,26 @@ SDK - v${this.sdkVersion}`;
     }
     getZone() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.System";
-        thunder.Controller.activate({
-          callsign: systemcCallsign
-        }).then(() => {
-          thunder.call(systemcCallsign, "getTimeZoneDST").then((result) => {
-            resolve(result.timeZone);
-          }).catch((err) => {
-            resolve(false);
-          });
+        const systemcCallsign2 = "org.rdk.System";
+        thunder.call(systemcCallsign2, "getTimeZoneDST").then((result) => {
+          resolve(result.timeZone);
         }).catch((err) => {
+          console.log("Failed to fetch Time Zone");
+          resolve(null);
         });
+      });
+    }
+    setZone(zone2) {
+      console.log(zone2);
+      return new Promise((resolve, reject) => {
+        thunder.call("org.rdk.System", "setTimeZoneDST", {
+          timeZone: zone2
+        }).then((result) => {
+          resolve(result.success);
+        }).catch((err) => {
+          resolve(false);
+        });
+      }).catch((err) => {
       });
     }
     getResolution() {
@@ -5240,9 +5262,9 @@ SDK - v${this.sdkVersion}`;
     }
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings";
+        const systemcCallsign2 = "org.rdk.DisplaySettings";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then((res) => {
         }).catch((err) => {
           console.error(`error while activating the displaysettings plugin`);
@@ -5251,11 +5273,11 @@ SDK - v${this.sdkVersion}`;
     }
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings";
+        const systemcCallsign2 = "org.rdk.DisplaySettings";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "getSupportedResolutions", {
+          thunder.call(systemcCallsign2, "getSupportedResolutions", {
             params: "HDMI0"
           }).then((result) => {
             resolve(result.supportedResolutions);
@@ -5269,11 +5291,11 @@ SDK - v${this.sdkVersion}`;
     }
     setResolution(res) {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings";
+        const systemcCallsign2 = "org.rdk.DisplaySettings";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "setCurrentResolution", {
+          thunder.call(systemcCallsign2, "setCurrentResolution", {
             videoDisplay: "HDMI0",
             resolution: res,
             persist: true
@@ -5290,11 +5312,11 @@ SDK - v${this.sdkVersion}`;
     getHDCPStatus() {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.HdcpProfile";
+        const systemcCallsign2 = "org.rdk.HdcpProfile";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "getHDCPStatus").then((result) => {
+          thunder.call(systemcCallsign2, "getHDCPStatus").then((result) => {
             resolve(result.HDCPStatus);
             console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus));
           }).catch((err) => {
@@ -5307,11 +5329,11 @@ SDK - v${this.sdkVersion}`;
     }
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings";
+        const systemcCallsign2 = "org.rdk.DisplaySettings";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "getTvHDRSupport").then((result) => {
+          thunder.call(systemcCallsign2, "getTvHDRSupport").then((result) => {
             resolve(result);
             console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result));
           }).catch((err) => {
@@ -5324,11 +5346,11 @@ SDK - v${this.sdkVersion}`;
     }
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.DisplaySettings";
+        const systemcCallsign2 = "org.rdk.DisplaySettings";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "getSettopHDRSupport").then((result) => {
+          thunder.call(systemcCallsign2, "getSettopHDRSupport").then((result) => {
             resolve(result);
             console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result));
           }).catch((err) => {
@@ -5341,11 +5363,11 @@ SDK - v${this.sdkVersion}`;
     }
     getHDRSetting() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "DisplayInfo";
+        const systemcCallsign2 = "DisplayInfo";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "hdrsetting").then((result) => {
+          thunder.call(systemcCallsign2, "hdrsetting").then((result) => {
             resolve(result);
             console.log("HDR format in use from AppApi.js : " + JSON.stringify(result));
           }).catch((err) => {
@@ -5359,11 +5381,11 @@ SDK - v${this.sdkVersion}`;
     getDRMS() {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "OCDM";
+        const systemcCallsign2 = "OCDM";
         thunder.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
-          thunder.call(systemcCallsign, "drms").then((result) => {
+          thunder.call(systemcCallsign2, "drms").then((result) => {
             resolve(result);
             console.log("supported drms from AppApi.js : " + JSON.stringify(result));
           }).catch((err) => {
@@ -5376,8 +5398,8 @@ SDK - v${this.sdkVersion}`;
     }
     clearCache() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "ResidentApp";
-        thunder.call(systemcCallsign, "delete", {
+        const systemcCallsign2 = "ResidentApp";
+        thunder.call(systemcCallsign2, "delete", {
           path: ".cache"
         }).then((result) => {
           resolve(result);
@@ -6766,43 +6788,144 @@ SDK - v${this.sdkVersion}`;
     }
   };
 
-  // src/api/VoiceApi.js
-  var thunder2 = thunderJS_default({
+  // src/api/DTVApi.js
+  var config2 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
-  });
-  var VoiceApi = class {
+  };
+  var thunder2 = thunderJS_default(config2);
+  var systemcCallsign = "DTV";
+  var DTVApi = class {
     activate() {
-      const callsign2 = "AVS";
       return new Promise((resolve, reject) => {
-        thunder2.call("Controller", "activate", {
-          callsign: callsign2
-        }).then((res) => {
+        thunder2.Controller.activate({
+          callsign: systemcCallsign
+        }).then(() => {
           resolve(true);
         }).catch((err) => {
-          console.log("Error occured activating Voice Api", err);
-          reject(true);
+          console.log("DTV Error Activation", err);
+          reject(err);
         });
       });
     }
     deactivate() {
-      const callsign2 = "AVS";
       return new Promise((resolve, reject) => {
-        thunder2.call("Controller", "deactivate", {
-          callsign: callsign2
-        }).then((res) => {
+        thunder2.Controller.deactivate({
+          callsign: systemcCallsign
+        }).then(() => {
           resolve(true);
         }).catch((err) => {
-          console.log("Failed to deactivate AVS");
-          reject(true);
+          console.log("DTV Error Deactivation", err);
+          reject(err);
+        });
+      });
+    }
+    noOfCountries() {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "numberOfCountries").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: noOfCountries: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    countryList() {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "countryList").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: countryList: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    serviceList() {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "serviceList@dvbs").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: serviceList: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    satelliteList() {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "satelliteList").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: satelliteList: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    polarityList() {
+      return new Promise((resolve, reject) => {
+        resolve(["horizontal", "vertical", "left", "right"]);
+      });
+    }
+    fecList() {
+      return new Promise((resolve, reject) => {
+        resolve(["fecauto", "fec1_2", "fec2_3", "fec3_4", "fec5_6", "fec7_8", "fec1_4", "fec1_3", "fec2_5", "fec8_9", "fec9_10", "fec3_5", "fec4_5"]);
+      });
+    }
+    modulationList() {
+      return new Promise((resolve, reject) => {
+        resolve(["auto", "qpsk", "8psk", "16qam"]);
+      });
+    }
+    searchtypeList() {
+      return new Promise((resolve, reject) => {
+        resolve(["frequency", "network"]);
+      });
+    }
+    startServiceSearch(params) {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "startServiceSearch", params).then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("serviceSearchError: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    noOfServices() {
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, "numberOfServices").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: numberOfServices: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    scheduleEvents(dvburi) {
+      let method = "scheduleEvents@" + dvburi;
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, method).then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: scheduleEvents: ", JSON.stringify(err));
+          reject(err);
+        });
+      });
+    }
+    nowNextEvents(dvburi) {
+      let method = "nowNextEvents@" + dvburi;
+      return new Promise((resolve, reject) => {
+        thunder2.call(systemcCallsign, method).then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          console.log("Error: nowNextEvents: ", JSON.stringify(err));
+          reject(err);
         });
       });
     }
   };
 
   // src/screens/SettingsScreen.js
-  var voiceApi = new VoiceApi();
   var SettingsScreen = class extends Lightning_default.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language_default.translate("Settings"));
@@ -6938,7 +7061,8 @@ SDK - v${this.sdkVersion}`;
               src: Utils_default.asset("images/settings/Arrow.png")
             }
           },
-          UIVoice: {
+          DTVSettings: {
+            alpha: 0.3,
             y: 450,
             type: SettingsMainItem,
             Title: {
@@ -6946,7 +7070,7 @@ SDK - v${this.sdkVersion}`;
               y: 45,
               mountY: 0.5,
               text: {
-                text: Language_default.translate("UI Voice"),
+                text: Language_default.translate("Live TV"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -6954,43 +7078,33 @@ SDK - v${this.sdkVersion}`;
             },
             Button: {
               h: 45,
-              w: 67,
+              w: 45,
               x: 1600,
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils_default.asset("images/settings/ToggleOffWhite.png")
+              src: Utils_default.asset("images/settings/Arrow.png")
             }
           }
         }
       };
     }
     _init() {
-      this.avs = false;
       this._setState("NetworkConfiguration");
     }
     _focus() {
       this._setState(this.state);
     }
+    _firstActive() {
+      this.dtvApi = new DTVApi();
+      this.dtvPlugin = false;
+      this.dtvApi.activate().then((res) => {
+        this.dtvPlugin = true;
+        this.tag("DTVSettings").alpha = 1;
+      });
+    }
     _handleBack() {
       Router_default.navigate("menu");
-    }
-    toggleAVSPlugin() {
-      if (this.avs) {
-        voiceApi.deactivate().then(() => {
-          this.avs = false;
-          this.tag("UIVoice.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
-        }).catch(() => {
-          console.log("failed");
-        });
-      } else {
-        voiceApi.activate().then(() => {
-          this.avs = true;
-          this.tag("UIVoice.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
-        }).catch(() => {
-          console.log("failed");
-        });
-      }
     }
     static _states() {
       return [class NetworkConfiguration extends this {
@@ -7066,24 +7180,28 @@ SDK - v${this.sdkVersion}`;
         _handleUp() {
           this._setState("Audio");
         }
-        _handleDown() {
-          this._setState("UIVoice");
-        }
         _handleEnter() {
           Router_default.navigate("settings/other");
         }
-      }, class UIVoice extends this {
+        _handleDown() {
+          if (this.dtvPlugin) {
+            this._setState("DTVSettings");
+          }
+        }
+      }, class DTVSettings extends this {
         $enter() {
-          this.tag("UIVoice")._focus();
+          this.tag("DTVSettings")._focus();
         }
         $exit() {
-          this.tag("UIVoice")._unfocus();
+          this.tag("DTVSettings")._unfocus();
         }
         _handleUp() {
           this._setState("OtherSettings");
         }
         _handleEnter() {
-          this.toggleAVSPlugin();
+          if (this.dtvPlugin) {
+            Router_default.navigate("settings/livetv");
+          }
         }
       }];
     }
@@ -7180,7 +7298,8 @@ SDK - v${this.sdkVersion}`;
       this.tag("Image").patch({
         w: this.w,
         h: this.h,
-        scale: this.unfocus
+        scale: this.unfocus,
+        zIndex: 0
       });
       this.tag("Item").patch({
         zIndex: 0
@@ -7211,7 +7330,7 @@ SDK - v${this.sdkVersion}`;
   var UsbInnerFolderListInfo = [];
 
   // src/api/UsbApi.js
-  var config2 = {
+  var config3 = {
     host: "127.0.0.1",
     port: 9998,
     versions: {
@@ -7220,13 +7339,13 @@ SDK - v${this.sdkVersion}`;
       UsbAccess: 2
     }
   };
-  var thunder3 = thunderJS_default(config2);
+  var thunder3 = thunderJS_default(config3);
   var UsbApi = class {
     activate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.UsbAccess";
+        const systemcCallsign2 = "org.rdk.UsbAccess";
         thunder3.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then((res) => {
           resolve(res);
         }).catch((err) => {
@@ -7237,9 +7356,9 @@ SDK - v${this.sdkVersion}`;
     }
     deactivate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.UsbAccess";
+        const systemcCallsign2 = "org.rdk.UsbAccess";
         thunder3.Controller.deactivate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then((res) => {
           resolve(res);
         }).catch((err) => {
@@ -7250,8 +7369,8 @@ SDK - v${this.sdkVersion}`;
     }
     clearLink() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.UsbAccess";
-        thunder3.call(systemcCallsign, "clearLink").then((result) => {
+        const systemcCallsign2 = "org.rdk.UsbAccess";
+        thunder3.call(systemcCallsign2, "clearLink").then((result) => {
           resolve(result);
         }).catch((err) => {
           resolve(false);
@@ -7260,8 +7379,8 @@ SDK - v${this.sdkVersion}`;
     }
     createLink() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.UsbAccess";
-        thunder3.call(systemcCallsign, "createLink").then((result) => {
+        const systemcCallsign2 = "org.rdk.UsbAccess";
+        thunder3.call(systemcCallsign2, "createLink").then((result) => {
           resolve(result);
         }).catch((err) => {
           resolve(false);
@@ -7271,8 +7390,8 @@ SDK - v${this.sdkVersion}`;
     getUsbFileList() {
       if (arguments.length === 0) {
         return new Promise((resolve, reject) => {
-          const systemcCallsign = "org.rdk.UsbAccess";
-          thunder3.call(systemcCallsign, "getFileList").then((result) => {
+          const systemcCallsign2 = "org.rdk.UsbAccess";
+          thunder3.call(systemcCallsign2, "getFileList").then((result) => {
             resolve(result.contents);
           }).catch((err) => {
             resolve(false);
@@ -7280,8 +7399,8 @@ SDK - v${this.sdkVersion}`;
         });
       } else {
         return new Promise((resolve, reject) => {
-          const systemcCallsign = "org.rdk.UsbAccess";
-          thunder3.call(systemcCallsign, "getFileList", {
+          const systemcCallsign2 = "org.rdk.UsbAccess";
+          thunder3.call(systemcCallsign2, "getFileList", {
             "path": arguments[0]
           }).then((result) => {
             resolve(result.contents);
@@ -7332,8 +7451,8 @@ SDK - v${this.sdkVersion}`;
     }
     getMountedDevices() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.UsbAccess";
-        thunder3.call(systemcCallsign, "getMounted").then((result) => {
+        const systemcCallsign2 = "org.rdk.UsbAccess";
+        thunder3.call(systemcCallsign2, "getMounted").then((result) => {
           resolve(result);
         }).catch((err) => {
           reject(err);
@@ -7409,12 +7528,12 @@ SDK - v${this.sdkVersion}`;
   // src/api/XcastApi.js
   var XcastApi = class {
     constructor() {
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
       };
-      this._thunder = thunderJS_default(config7);
+      this._thunder = thunderJS_default(config8);
       console.log("Xcast constructor");
       this._events = new Map();
     }
@@ -9792,7 +9911,7 @@ SDK - v${this.sdkVersion}`;
       this.gracenote = false;
       this.settingsScreen = false;
       this.indexVal = 0;
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
@@ -9800,7 +9919,7 @@ SDK - v${this.sdkVersion}`;
       this.usbApi = new UsbApi();
       this.homeApi = new HomeApi();
       this.xcastApi = new XcastApi();
-      let thunder10 = thunderJS_default(config7);
+      let thunder10 = thunderJS_default(config8);
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
       this.metroApps = this.homeApi.getMetroInfo();
@@ -9901,6 +10020,10 @@ SDK - v${this.sdkVersion}`;
     }
     _focus() {
       this._setState(this.state);
+    }
+    _firstEnable() {
+      console.timeEnd("PerformanceTest");
+      console.log("Mainview Screen timer end - ", new Date().toUTCString());
     }
     scroll(val) {
       this.tag("MainView").patch({
@@ -10732,12 +10855,12 @@ SDK - v${this.sdkVersion}`;
       this._pairedDevices = [];
       this._connectedDevices = [];
       this.btStatus = false;
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
       };
-      this._thunder = thunderJS_default(config7);
+      this._thunder = thunderJS_default(config8);
     }
     activate() {
       return new Promise((resolve, reject) => {
@@ -11190,7 +11313,7 @@ SDK - v${this.sdkVersion}`;
     pageTransition() {
       return "left";
     }
-    _init() {
+    _firstEnable() {
       this._bt = new BluetoothApi();
       this._bluetooth = false;
       this._activateBluetooth();
@@ -13066,9 +13189,9 @@ SDK - v${this.sdkVersion}`;
     static _template() {
       return __spreadValues(__spreadValues({}, super._template()), KEY_DIMENSIONS);
     }
-    set config(config7) {
-      if (config7) {
-        this.sizes = config7.sizes;
+    set config(config8) {
+      if (config8) {
+        this.sizes = config8.sizes;
       }
     }
     set icon(src) {
@@ -13196,13 +13319,13 @@ SDK - v${this.sdkVersion}`;
     _formatKeyboardData(data = []) {
       if (Array.isArray(data) && data.length) {
         if (!Array.isArray(data[0]) && !this.inline) {
-          let keyRows = [], idx, counter2;
-          for (idx = 0, counter2 = -1; idx < data.length; idx++) {
+          let keyRows = [], idx, counter;
+          for (idx = 0, counter = -1; idx < data.length; idx++) {
             if (idx % this.columnCount === 0) {
-              counter2++;
-              keyRows[counter2] = [];
+              counter++;
+              keyRows[counter] = [];
             }
-            keyRows[counter2].push(data[idx]);
+            keyRows[counter].push(data[idx]);
           }
           return keyRows;
         } else if (this.inline) {
@@ -13555,10 +13678,8 @@ SDK - v${this.sdkVersion}`;
       }]]
     },
     numbers: {
-      numbers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
-      dialpad: [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", ""]],
-      dialpadExtended: [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", ""], [{
-        label: "Delete",
+      dialpadExtended: [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["Delete", "0", "Clear"], [{
+        label: "Done",
         size: "large"
       }]]
     }
@@ -13577,11 +13698,11 @@ SDK - v${this.sdkVersion}`;
   var Wifi = class {
     constructor() {
       this._events = new Map();
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998
       };
-      this._thunder = thunderJS_default(config7);
+      this._thunder = thunderJS_default(config8);
       this.callsign = "org.rdk.Wifi";
     }
     activate() {
@@ -14301,7 +14422,7 @@ SDK - v${this.sdkVersion}`;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       this._setState("NetworkInfo");
       let _currentInterface = "";
       let _currentIPSettings = {};
@@ -14792,15 +14913,15 @@ SDK - v${this.sdkVersion}`;
       this._setState("WiFi");
     }
     _init() {
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
       };
-      this._thunder = thunderJS_default(config7);
-      const systemcCallsign = "org.rdk.Network";
+      this._thunder = thunderJS_default(config8);
+      const systemcCallsign2 = "org.rdk.Network";
       const eventName = "onDefaultInterfaceChanged";
-      const listener = this._thunder.on(systemcCallsign, eventName, (notification) => {
+      const listener = this._thunder.on(systemcCallsign2, eventName, (notification) => {
         console.log("onDefaultInterfaceChanged notification from networkInterfaceScreen: ", notification);
         if (notification.newInterfaceName === "ETHERNET") {
           this.loadingAnimation.stop();
@@ -15519,7 +15640,7 @@ SDK - v${this.sdkVersion}`;
       this._setState("Switch");
       this._enable();
     }
-    _init() {
+    _firstEnable() {
       this.wifiLoading = this.tag("Switch.Loader").animation({
         duration: 3,
         repeat: -1,
@@ -25774,7 +25895,7 @@ SDK - v${this.sdkVersion}`;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       this.lastElement = false;
       this.options = [{
         value: "Off",
@@ -26011,7 +26132,7 @@ SDK - v${this.sdkVersion}`;
         }
       }];
     }
-    _init() {
+    _firstEnable() {
       this._appApi = new AppApi();
       this.options = [Language_default.translate("Deep Sleep"), Language_default.translate("Light Sleep")];
       this.tag("EnerygySavingContents").h = this.options.length * 90;
@@ -26384,7 +26505,7 @@ SDK - v${this.sdkVersion}`;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       this._setState("LocalDeviceDiscovery");
       this.checkLocalDeviceStatus();
       this.USBApi = new UsbApi();
@@ -26689,18 +26810,18 @@ SDK - v${this.sdkVersion}`;
   };
 
   // src/api/CECApi.js
-  var config3 = {
+  var config4 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  var thunder5 = thunderJS_default(config3);
+  var thunder5 = thunderJS_default(config4);
   var CECApi = class {
     activate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.HdmiCec_2";
+        const systemcCallsign2 = "org.rdk.HdmiCec_2";
         thunder5.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
           resolve(true);
         }).catch((err) => {
@@ -26710,9 +26831,9 @@ SDK - v${this.sdkVersion}`;
     }
     deactivate() {
       return new Promise((resolve, reject) => {
-        const systemcCallsign = "org.rdk.HdmiCec_2";
+        const systemcCallsign2 = "org.rdk.HdmiCec_2";
         thunder5.Controller.deactivate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then(() => {
           resolve(true);
         }).catch((err) => {
@@ -26760,12 +26881,12 @@ SDK - v${this.sdkVersion}`;
   };
 
   // src/screens/OtherSettingsScreens/AdvancedSettingsScreen.js
-  var config4 = {
+  var config5 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  var thunder6 = thunderJS_default(config4);
+  var thunder6 = thunderJS_default(config5);
   var AdvanceSettingsScreen = class extends Lightning_default.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language_default.translate("Settings  Other Settings  Advanced Settings"));
@@ -27073,8 +27194,32 @@ SDK - v${this.sdkVersion}`;
               src: Utils_default.asset("images/settings/Arrow.png")
             }
           },
-          Firmware: {
+          TimeZone: {
             y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("Time Zone"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          },
+          Firmware: {
+            y: 180,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -27098,7 +27243,7 @@ SDK - v${this.sdkVersion}`;
             }
           },
           Reboot: {
-            y: 180,
+            y: 270,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -27113,7 +27258,7 @@ SDK - v${this.sdkVersion}`;
             }
           },
           Reset: {
-            y: 270,
+            y: 360,
             alpha: 0.3,
             type: SettingsMainItem,
             Title: {
@@ -27163,10 +27308,26 @@ SDK - v${this.sdkVersion}`;
           this._setState("Reboot");
         }
         _handleDown() {
-          this._setState("Firmware");
+          this._setState("TimeZone");
         }
         _handleEnter() {
           Router_default.navigate("settings/advanced/device/info");
+        }
+      }, class TimeZone extends this {
+        $enter() {
+          this.tag("TimeZone")._focus();
+        }
+        $exit() {
+          this.tag("TimeZone")._unfocus();
+        }
+        _handleUp() {
+          this._setState("Info");
+        }
+        _handleDown() {
+          this._setState("Firmware");
+        }
+        _handleEnter() {
+          Router_default.navigate("settings/advanced/device/timezone");
         }
       }, class Firmware extends this {
         $enter() {
@@ -27391,7 +27552,7 @@ SDK - v${this.sdkVersion}`;
               y: 540,
               mountY: 0.5,
               text: {
-                text: `UI Version: 3.6, Build Version: , Timestamp: `,
+                text: `UI Version: ${Settings_default.get("platform", "version")}, Build Version: , Timestamp: `,
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27451,7 +27612,7 @@ SDK - v${this.sdkVersion}`;
         this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
       });
       this.appApi.getSystemVersions().then((res) => {
-        this.tag("FirmwareVersions.Value").text.text = `UI Version - 3.6 
+        this.tag("FirmwareVersions.Value").text.text = `UI Version - ${Settings_default.get("platform", "version")} 
 Build Version - ${res.stbVersion} 
 Time Stamp - ${res.stbTimestamp} `;
       }).catch((err) => {
@@ -27609,17 +27770,17 @@ Time Stamp - ${res.stbTimestamp} `;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       let state3 = ["Uninitialized", "Requesting", "Downloading", "Failed", "DownLoad Complete", "Validation Complete", "Preparing to Reboot"];
-      const config7 = {
+      const config8 = {
         host: "127.0.0.1",
         port: 9998,
         default: 1
       };
-      const thunder10 = thunderJS_default(config7);
-      const systemcCallsign = "org.rdk.System.1";
+      const thunder10 = thunderJS_default(config8);
+      const systemcCallsign2 = "org.rdk.System.1";
       thunder10.Controller.activate({
-        callsign: systemcCallsign
+        callsign: systemcCallsign2
       }).then((res) => {
         thunder10.on(callsign, "onFirmwareUpdateStateChange", (notification) => {
           console.log(`Tanjirou's notification : on Firmware update state changed notifcation = ${JSON.stringify(notification)}`);
@@ -27920,6 +28081,328 @@ Time Stamp - ${res.stbTimestamp} `;
     }
   };
 
+  // src/items/TimeZoneItem.js
+  var TimeZoneItem = class extends Lightning_default.Component {
+    _construct() {
+      this.Arrow = Utils_default.asset("/images/settings/Arrow.png");
+      this.Tick = Utils_default.asset("/images/settings/Tick.png");
+    }
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        },
+        Item: {
+          w: 1600,
+          h: 90
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        }
+      };
+    }
+    set item(item) {
+      this._item = item;
+      this.tag("Item").patch({
+        Right: {
+          y: 45,
+          x: 1600,
+          mountX: 1,
+          mountY: 0.5,
+          texture: Lightning_default.Tools.getSvgTexture(this.Arrow, 45, 45),
+          color: 4294967295
+        },
+        Tick: {
+          y: 45,
+          mountY: 0.5,
+          texture: Lightning_default.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+          color: 4294967295,
+          visible: item[2]
+        },
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item[0],
+            fontSize: 25,
+            textColor: COLORS.textColor,
+            fontFace: CONFIG.language.font
+          }
+        }
+      });
+    }
+    _handleEnter() {
+      console.log("enter", this._item[1]);
+      Router_default.navigate("settings/advanced/device/timezone/item", {
+        time_region: this._item[1],
+        zone: this._item[0],
+        isActive: this.zone
+      });
+    }
+    _focus() {
+      this.tag("TopLine").color = CONFIG.theme.hex;
+      this.tag("BottomLine").color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag("TopLine").h = 6;
+      this.tag("BottomLine").h = 6;
+    }
+    _unfocus() {
+      this.tag("TopLine").color = 4294967295;
+      this.tag("BottomLine").color = 4294967295;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag("TopLine").h = 3;
+      this.tag("BottomLine").h = 3;
+    }
+  };
+
+  // src/screens/OtherSettingsScreens/TimeZone.js
+  var TimeZone = class extends Lightning_default.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Settings  Other Settings  Advanced Settings  Device  Time"));
+    }
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        rect: true,
+        h: 1080,
+        w: 1920,
+        color: CONFIG.theme.background,
+        TimeZone: {
+          x: 200,
+          y: 275,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            itemScrollOffset: -4
+          },
+          Error: {
+            alpha: 0,
+            x: 560,
+            y: 340,
+            mountX: 0.5,
+            MSG: {
+              text: {
+                text: "TimeZone API not present",
+                fontFace: CONFIG.language.font,
+                fontSize: 40,
+                textColor: 4294967295
+              }
+            }
+          }
+        }
+      };
+    }
+    _firstEnable() {
+      return __async(this, null, function* () {
+        this.appApi = new AppApi();
+        this.resp = yield this.appApi.fetchTimeZone();
+      });
+    }
+    _focus() {
+      return __async(this, null, function* () {
+        let data = [];
+        this.zone = yield this.appApi.getZone();
+        try {
+          console.log(this.resp);
+          delete this.resp.Etc;
+          for (const i in this.resp) {
+            if (typeof this.resp[i] === "object") {
+              data.push([i, this.resp[i], this.zone.split("/")[0] === i]);
+            }
+          }
+        } catch (error) {
+          console.log("no api present");
+        }
+        console.log(data);
+        if (data.length > 1) {
+          this.tag("List").h = data.length * 90;
+          this.tag("List").items = data.map((item, idx) => {
+            return {
+              ref: "Time" + idx,
+              w: 1620,
+              h: 90,
+              type: TimeZoneItem,
+              item,
+              zone: this.zone.split("/")[1]
+            };
+          });
+        } else {
+          this.tag("Error").alpha = 1;
+        }
+      });
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    _handleBack() {
+      Router_default.navigate("settings/advanced/device");
+    }
+    static _states() {
+      return [];
+    }
+  };
+
+  // src/items/TimeItem.js
+  var TimeItem = class extends Lightning_default.Component {
+    _construct() {
+      this.Tick = Utils_default.asset("/images/settings/Tick.png");
+    }
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        },
+        Item: {
+          w: 1600,
+          h: 90
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        }
+      };
+    }
+    set item(item) {
+      this._item = item;
+      this.tag("Item").patch({
+        Tick: {
+          y: 45,
+          mountY: 0.5,
+          texture: Lightning_default.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+          color: 4294967295,
+          visible: item[1]
+        },
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item[0],
+            fontSize: 25,
+            textColor: COLORS.textColor,
+            fontFace: CONFIG.language.font
+          }
+        }
+      });
+    }
+    _focus() {
+      this.tag("TopLine").color = CONFIG.theme.hex;
+      this.tag("BottomLine").color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag("TopLine").h = 6;
+      this.tag("BottomLine").h = 6;
+    }
+    _unfocus() {
+      this.tag("TopLine").color = 4294967295;
+      this.tag("BottomLine").color = 4294967295;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag("TopLine").h = 3;
+      this.tag("BottomLine").h = 3;
+    }
+  };
+
+  // src/items/TimeItems.js
+  var TimeItems = class extends Lightning_default.Component {
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        rect: true,
+        h: 1080,
+        w: 1920,
+        color: CONFIG.theme.background,
+        Time: {
+          x: 200,
+          y: 275,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            itemScrollOffset: -4
+          }
+        }
+      };
+    }
+    set params(item) {
+      console.log(item);
+      this._item = item;
+      this.tag("List").h = Object.keys(item.time_region).length * 90;
+      this.tag("List").items = Object.keys(item.time_region).map((ele, idx) => {
+        return {
+          ref: "Time" + idx,
+          w: 1620,
+          h: 90,
+          type: TimeItem,
+          item: [ele, ele === item.isActive]
+        };
+      });
+    }
+    _init() {
+      this.appApi = new AppApi();
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    _handleEnter() {
+      console.log(`${this._item.zone}/${this.tag("List").element._item[0]}`);
+      this.widgets.menu.updateTimeZone(`${this._item.zone}/${this.tag("List").element._item[0]}`);
+      this.appApi.setZone(`${this._item.zone}/${this.tag("List").element._item[0]}`);
+      Router_default.navigate("settings/advanced/device/timezone");
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+  };
+
   // src/routes/otherSettingsRoutes.js
   var otherSettingsRoutes_default = {
     otherSettingsRoutes: [{
@@ -27957,6 +28440,14 @@ Time Stamp - ${res.stbTimestamp} `;
     }, {
       path: "settings/advanced/device/info",
       component: DeviceInformationScreen,
+      widgets: ["Menu"]
+    }, {
+      path: "settings/advanced/device/timezone",
+      component: TimeZone,
+      widgets: ["Menu"]
+    }, {
+      path: "settings/advanced/device/timezone/item",
+      component: TimeItems,
       widgets: ["Menu"]
     }, {
       path: "settings/advanced/device/firmware",
@@ -28524,7 +29015,7 @@ Time Stamp - ${res.stbTimestamp} `;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       this.appApi = new AppApi();
       this.appApi.activateDisplaySettings();
       this.loadingAnimation = this.tag("Loader").animation({
@@ -29799,6 +30290,10 @@ Time Stamp - ${res.stbTimestamp} `;
       }
       return "menu";
     }
+    _firstEnable() {
+      console.timeEnd("PerformanceTest");
+      console.log("Splash Screen timer end - ", new Date().toUTCString());
+    }
     _focus() {
       let path = "splash/bluetooth";
       var map = {
@@ -30639,7 +31134,7 @@ Time Stamp - ${res.stbTimestamp} `;
     pageTransition() {
       return "left";
     }
-    _init() {
+    _firstEnable() {
       this.wifiLoading = this.tag("Loader").animation({
         duration: 3,
         repeat: -1,
@@ -40163,7 +40658,7 @@ Time Stamp - ${res.stbTimestamp} `;
   });
   var EpgScreen = class extends Lightning_default.Component {
     _onChanged() {
-      this.widgets.menu.updateTopPanelText(Language_default.translate("EPG"));
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Guide"));
     }
     static _template() {
       return {
@@ -40350,7 +40845,7 @@ Time Stamp - ${res.stbTimestamp} `;
     $setLeftEdgeElements(rows) {
       this.leftMost8 = rows;
     }
-    _init() {
+    _firstEnable() {
       this.leftFloor = 0;
       this.leftMost8 = [];
       this.verticalScrollCount = 0;
@@ -40742,7 +41237,7 @@ Time Stamp - ${res.stbTimestamp} `;
     pageTransition() {
       return "right";
     }
-    _init() {
+    _firstEnable() {
       this.tag("UI").add(homeApi.getUIInfo().map((element, idx) => {
         return {
           ref: "UI" + idx,
@@ -41395,7 +41890,7 @@ Time Stamp - ${res.stbTimestamp} `;
         }
       };
     }
-    _init() {
+    _firstEnable() {
       let apps = homeApi2.getAllApps();
       apps.shift();
       const options = ["My Apps", "App Catalog", "ManageApps"];
@@ -41868,6 +42363,1557 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     }]
   };
 
+  // src/items/TickMarkItem.js
+  var TickMarkItem = class extends Lightning_default.Component {
+    _construct() {
+      this.Tick = Utils_default.asset("/images/settings/Tick.png");
+    }
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        },
+        Item: {
+          w: 1600,
+          h: 90
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 4294967295
+        }
+      };
+    }
+    set isTicked(isTicked) {
+      this.tag("Item").patch({
+        Tick: {
+          x: 10,
+          y: 45,
+          mountY: 0.5,
+          h: 32.5,
+          w: 32.5,
+          src: this.Tick,
+          color: 4294967295,
+          visible: isTicked
+        }
+      });
+    }
+    _init() {
+      this.tag("Item").patch({
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: this.itemName,
+            fontSize: 25,
+            textColor: COLORS.textColor,
+            fontFace: CONFIG.language.font
+          }
+        }
+      });
+      this.tag("Item.Tick").on("txError", () => {
+        const url3 = "http://127.0.0.1:50050/lxresui/static/images/settings/Tick.png";
+        this.tag("Item.Tick").src = url3;
+      });
+    }
+    _handleEnter() {
+      this.onHandleEnter(this.uniqID);
+    }
+    _focus() {
+      this.tag("Item").color = COLORS.hightlightColor;
+      this.tag("TopLine").color = CONFIG.theme.hex;
+      this.tag("BottomLine").color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag("TopLine").h = 6;
+      this.tag("BottomLine").h = 6;
+    }
+    _unfocus() {
+      this.tag("TopLine").color = 4294967295;
+      this.tag("BottomLine").color = 4294967295;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag("TopLine").h = 3;
+      this.tag("BottomLine").h = 3;
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/Satellite.js
+  var Satellite = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Contents: {
+          x: 200,
+          y: 270,
+          w: 1620,
+          h: 730,
+          clipping: true,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1620,
+            h: 730,
+            y: 5,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -7
+          }
+        }
+      };
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    refreshItems(selected) {
+      this.fireAncestors("$setSatellite", selected);
+      this.tag("List").items = this.fireAncestors("$getSatelliteList").map((item, index2) => {
+        return {
+          ref: "Satellite" + index2,
+          w: 1620,
+          h: 90,
+          type: TickMarkItem,
+          isTicked: selected.name === item.name,
+          itemName: item.name,
+          uniqID: item,
+          onHandleEnter: this.refreshItems.bind(this)
+        };
+      });
+    }
+    _focus() {
+      this.refreshItems(this.fireAncestors("$getSelectedSatellite"));
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/Polarity.js
+  var Polarity = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Contents: {
+          x: 200,
+          y: 270,
+          w: 1620,
+          h: 730,
+          clipping: true,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1620,
+            h: 730,
+            y: 5,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -7
+          }
+        }
+      };
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    refreshItems(selected) {
+      this.fireAncestors("$setPolarity", selected);
+      this.tag("List").items = this.fireAncestors("$getPolarityList").map((item, index2) => {
+        return {
+          ref: "Polarity" + index2,
+          w: 1620,
+          h: 90,
+          type: TickMarkItem,
+          isTicked: selected === item,
+          itemName: item.charAt(0).toUpperCase() + item.slice(1),
+          uniqID: item,
+          onHandleEnter: this.refreshItems.bind(this)
+        };
+      });
+    }
+    _focus() {
+      this.refreshItems(this.fireAncestors("$getSelectedPolarity"));
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/FEC.js
+  var FEC = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Contents: {
+          x: 200,
+          y: 270,
+          w: 1620,
+          h: 730,
+          clipping: true,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1620,
+            h: 730,
+            y: 5,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -7
+          }
+        }
+      };
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    refreshItems(selected) {
+      this.fireAncestors("$setFEC", selected);
+      this.tag("List").items = this.fireAncestors("$getFECList").map((item, index2) => {
+        return {
+          ref: "FEC" + index2,
+          w: 1620,
+          h: 90,
+          type: TickMarkItem,
+          isTicked: selected === item,
+          itemName: item.replace("fec", "").replace("_", "/").toUpperCase(),
+          uniqID: item,
+          onHandleEnter: this.refreshItems.bind(this)
+        };
+      });
+    }
+    _focus() {
+      this.refreshItems(this.fireAncestors("$getSelectedFEC"));
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/Modulation.js
+  var Modulation = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Contents: {
+          x: 200,
+          y: 270,
+          w: 1620,
+          h: 730,
+          clipping: true,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1620,
+            h: 730,
+            y: 5,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -7
+          }
+        }
+      };
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    refreshItems(selected) {
+      this.fireAncestors("$setModulation", selected);
+      this.tag("List").items = this.fireAncestors("$getModulationList").map((item, index2) => {
+        return {
+          ref: "Modulation" + index2,
+          w: 1620,
+          h: 90,
+          type: TickMarkItem,
+          isTicked: selected === item,
+          itemName: item.toUpperCase(),
+          uniqID: item,
+          onHandleEnter: this.refreshItems.bind(this)
+        };
+      });
+    }
+    _focus() {
+      this.refreshItems(this.fireAncestors("$getSelectedModulation"));
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/Searchtype.js
+  var SearchType = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        Contents: {
+          x: 200,
+          y: 270,
+          w: 1620,
+          h: 730,
+          clipping: true,
+          List: {
+            type: Lightning_default.components.ListComponent,
+            w: 1620,
+            h: 730,
+            y: 5,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -7
+          }
+        }
+      };
+    }
+    _getFocused() {
+      return this.tag("List").element;
+    }
+    _handleDown() {
+      this.tag("List").setNext();
+    }
+    _handleUp() {
+      this.tag("List").setPrevious();
+    }
+    refreshItems(selected) {
+      this.fireAncestors("$setSearchType", selected);
+      this.tag("List").items = this.fireAncestors("$getSearchTypeList").map((item, index2) => {
+        return {
+          ref: "SearchType" + index2,
+          w: 1620,
+          h: 90,
+          type: TickMarkItem,
+          isTicked: selected === item,
+          itemName: item.charAt(0).toUpperCase() + item.slice(1),
+          uniqID: item,
+          onHandleEnter: this.refreshItems.bind(this)
+        };
+      });
+    }
+    _focus() {
+      this.refreshItems(this.fireAncestors("$getSelectedSearchType"));
+    }
+  };
+
+  // src/screens/DTVScreens/InputScreens/IntegerInput.js
+  var IntegerInput = class extends Lightning_default.Component {
+    static _template() {
+      return {
+        x: 200,
+        y: 275,
+        InputBox: {
+          Border: {
+            texture: Lightning_default.Tools.getRoundRect(1600, 90, 0, 3, 4294967295, false)
+          },
+          Content: {
+            x: 50,
+            y: 50,
+            mountY: 0.5,
+            text: {
+              text: "Enter the value and click Done",
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25
+            }
+          }
+        },
+        Keyboard: {
+          x: 660,
+          y: 200,
+          type: Keyboard2,
+          visible: true,
+          zIndex: 2,
+          formats: KEYBOARD_FORMATS.numbers
+        }
+      };
+    }
+    _focus() {
+      this._setState("InputBox");
+      this.tag("Content").text.text = this.prevVal === "" ? "Enter the value and click Done" : this.prevVal;
+      this.inputValue = this.prevVal;
+    }
+    handleDone() {
+      this.onHandleDone(this.inputValue);
+      this._handleBack();
+    }
+    static _states() {
+      return [class InputBox extends this {
+        $enter() {
+          this.tag("InputBox.Border").texture = Lightning_default.Tools.getRoundRect(1600, 90, 0, 5, CONFIG.theme.hex, false);
+        }
+        $exit() {
+          this.tag("InputBox.Border").texture = Lightning_default.Tools.getRoundRect(1600, 90, 0, 3, 4294967295, false);
+        }
+        _handleDown() {
+          this._setState("Keyboard");
+        }
+        _handleEnter() {
+          this._setState("Keyboard");
+        }
+        _handleUp() {
+        }
+      }, class Keyboard extends this {
+        _handleDown() {
+        }
+        _handleUp() {
+          this._setState("InputBox");
+        }
+        _getFocused() {
+          return this.tag("Keyboard");
+        }
+        _handleBack() {
+          this._setState("InputBox");
+        }
+        $onSoftKey({
+          key
+        }) {
+          if (key === "Done") {
+            this.handleDone();
+          } else if (key === "Clear") {
+            this.inputValue = this.inputValue.substring(0, this.inputValue.length - 1);
+          } else if (key === "Delete") {
+            this.inputValue = "";
+          } else {
+            this.inputValue += key;
+          }
+          this.tag("Content").text.text = this.inputValue;
+        }
+      }];
+    }
+  };
+
+  // src/screens/DTVScreens/DvbSScan.js
+  var dtvApi = new DTVApi();
+  var DvbSScan = class extends Lightning_default.Component {
+    _onChanged() {
+      this.tag("Scroller").y = 2;
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+    }
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        rect: true,
+        color: 4278190080,
+        w: 1920,
+        h: 1080,
+        DvbSScanScreenContents: {
+          x: 200,
+          y: 275,
+          Wrapper: {
+            y: -3,
+            h: 635,
+            w: 1700,
+            clipping: true,
+            Scroller: {
+              y: 2,
+              Satellite: {
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Satellite"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              Frequency: {
+                y: 90,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Frequency"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              Polarity: {
+                y: 180,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Polarity"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              SymbolRate: {
+                y: 270,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Symbol Rate"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              FEC: {
+                y: 360,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("FEC"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              DVBS2: {
+                y: 450,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("DVB-S2"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 67,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/ToggleOffWhite.png")
+                }
+              },
+              Modulation: {
+                y: 540,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Modulation"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              SearchType: {
+                y: 630,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Search Mode"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/Arrow.png")
+                }
+              },
+              Retune: {
+                y: 720,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language_default.translate("Clear existing service list"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 67,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils_default.asset("images/settings/ToggleOffWhite.png")
+                }
+              }
+            }
+          },
+          StartScan: {
+            zIndex: 3,
+            x: 10,
+            y: 670,
+            h: 50,
+            w: 200,
+            rect: true,
+            color: 4294967295,
+            Title: {
+              x: 100,
+              y: 27,
+              mount: 0.5,
+              text: {
+                text: Language_default.translate("Start Scan"),
+                textColor: 4278190080,
+                fontFace: CONFIG.language.font,
+                fontSize: 24
+              }
+            }
+          },
+          ErrorNotification: {
+            x: 250,
+            y: 670,
+            h: 50,
+            visible: false,
+            Content: {
+              x: 10,
+              y: 25,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("Error!"),
+                textColor: CONFIG.theme.hex,
+                fontFace: CONFIG.language.font,
+                fontSize: 21
+              }
+            }
+          }
+        },
+        SelectSatellite: {
+          type: Satellite,
+          visible: false
+        },
+        SelectFrequency: {
+          type: IntegerInput,
+          visible: false
+        },
+        SelectPolarity: {
+          type: Polarity,
+          visible: false
+        },
+        SelectSymbolRate: {
+          type: IntegerInput,
+          visible: false
+        },
+        SelectFEC: {
+          type: FEC,
+          visible: false
+        },
+        SelectModulation: {
+          type: Modulation,
+          visible: false
+        },
+        SelectSearchType: {
+          type: SearchType,
+          visible: false
+        }
+      };
+    }
+    _init() {
+      this._setState("Satellite");
+      this.selectedSatellite = {};
+      this.selectedFrequency = "";
+      this.selectedPolarity = "";
+      this.selectedSymbolRate = "";
+      this.selectedFEC = "";
+      this.selectedDVBS2 = false;
+      this.selectedModulation = "";
+      this.selectedSearchType = "";
+      this.selectedRetune = false;
+    }
+    consoleLog() {
+      console.log("selectedSatellite: ", JSON.stringify(this.selectedSatellite), " selectedFrequency: ", this.selectedFrequency, " selectedPolarity: ", this.selectedPolarity, " selectedSymbolRate: ", this.selectedSymbolRate, " selectedFEC: ", this.selectedFEC, " selectedDVBS2: ", this.selectedDVBS2, " selectedModulation: ", this.selectedModulation, " selectedSearchType: ", this.selectedSearchType, " selectedRetune: ", this.selectedRetune);
+    }
+    _focus() {
+      this._setState("Satellite");
+      this.consoleLog();
+    }
+    _firstActive() {
+      this.satelliteList = [];
+      dtvApi.satelliteList().then((res) => {
+        this.satelliteList = res;
+      });
+      this.polarityList = [];
+      dtvApi.polarityList().then((res) => {
+        this.polarityList = res;
+      });
+      this.fecList = [];
+      dtvApi.fecList().then((res) => {
+        this.fecList = res;
+      });
+      this.modulationList = [];
+      dtvApi.modulationList().then((res) => {
+        this.modulationList = res;
+      });
+      this.searchtypeList = [];
+      dtvApi.searchtypeList().then((res) => {
+        this.searchtypeList = res;
+      });
+    }
+    _handleBack() {
+      this.resetForm();
+      Router_default.navigate("settings/livetv/scan");
+    }
+    $getSatelliteList() {
+      return this.satelliteList;
+    }
+    $setSatellite(satellite) {
+      this.selectedSatellite = satellite;
+    }
+    $getSelectedSatellite() {
+      return this.selectedSatellite;
+    }
+    $getPolarityList() {
+      return this.polarityList;
+    }
+    $setPolarity(polarity) {
+      this.selectedPolarity = polarity;
+    }
+    $getSelectedPolarity() {
+      return this.selectedPolarity;
+    }
+    $getFECList() {
+      return this.fecList;
+    }
+    $setFEC(fec) {
+      this.selectedFEC = fec;
+    }
+    $getSelectedFEC() {
+      return this.selectedFEC;
+    }
+    $getModulationList() {
+      return this.modulationList;
+    }
+    $setModulation(modulation) {
+      this.selectedModulation = modulation;
+    }
+    $getSelectedModulation() {
+      return this.selectedModulation;
+    }
+    $getSearchTypeList() {
+      return this.searchtypeList;
+    }
+    $setSearchType(searchtype) {
+      this.selectedSearchType = searchtype;
+    }
+    $getSelectedSearchType() {
+      return this.selectedSearchType;
+    }
+    setFrequency(frequency) {
+      this._setState("Frequency");
+      this.selectedFrequency = frequency;
+      this.tag("Frequency.Title").text.text = "Frequency: " + (this.selectedFrequency !== "" ? this.selectedFrequency : "Select a Frequency");
+    }
+    setSymbolRate(symbolrate) {
+      this._setState("SymbolRate");
+      this.selectedSymbolRate = symbolrate;
+      this.tag("SymbolRate.Title").text.text = "Symbol Rate: " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : "Select a Symbol Rate");
+    }
+    resetForm() {
+      this.selectedSatellite = {};
+      this.tag("Satellite.Title").text.text = "Satellite";
+      this.selectedFrequency = "";
+      this.tag("Frequency.Title").text.text = "Frequency";
+      this.selectedPolarity = "";
+      this.tag("Polarity.Title").text.text = "Polarity";
+      this.selectedSymbolRate = "";
+      this.tag("SymbolRate.Title").text.text = "SymbolRate";
+      this.selectedFEC = "";
+      this.tag("FEC.Title").text.text = "FEC";
+      this.selectedDVBS2 = false;
+      this.tag("DVBS2.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+      this.selectedModulation = "";
+      this.tag("Modulation.Title").text.text = "Modulation";
+      this.selectedSearchType = "";
+      this.tag("SearchType.Title").text.text = "Search Mode";
+      this.selectedRetune = false;
+      this.tag("Retune.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+      this.tag("ErrorNotification").visible = false;
+    }
+    verifyInputs() {
+      let errorString = "";
+      if (Object.keys(this.selectedSatellite).length === 0) {
+        errorString += "| Satellite ";
+      }
+      if (this.selectedFrequency === "") {
+        errorString += "| Frequency ";
+      }
+      if (this.selectedPolarity === "") {
+        errorString += "| Polarity ";
+      }
+      if (this.selectedSymbolRate === "") {
+        errorString += "| Symbol Rate ";
+      }
+      if (this.selectedFEC === "") {
+        errorString += "| FEC ";
+      }
+      if (this.selectedModulation === "") {
+        errorString += "| Modulation ";
+      }
+      if (this.selectedSearchType === "") {
+        errorString += "| Search Mode ";
+      }
+      return errorString;
+    }
+    static _states() {
+      return [class Satellite2 extends this {
+        $enter() {
+          this.tag("Satellite")._focus();
+        }
+        $exit() {
+          this.tag("Satellite")._unfocus();
+        }
+        _handleDown() {
+          this._setState("Frequency");
+        }
+        _handleEnter() {
+          if (this.satelliteList.length > 0) {
+            this._setState("Satellite.SelectSatellite");
+          } else {
+            dtvApi.satelliteList().then((res) => {
+              this.satelliteList = res;
+            });
+          }
+        }
+        static _states() {
+          return [class SelectSatellite extends Satellite2 {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSatellite").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Satellite"));
+            }
+            $exit() {
+              this.tag("SelectSatellite").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Satellite.Title").text.text = "Satellite: " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : "Select a Satellite");
+            }
+            _getFocused() {
+              return this.tag("SelectSatellite");
+            }
+            _handleBack() {
+              this._setState("Satellite");
+            }
+          }];
+        }
+      }, class Frequency extends this {
+        $enter() {
+          this.tag("Frequency")._focus();
+        }
+        $exit() {
+          this.tag("Frequency")._unfocus();
+        }
+        _handleUp() {
+          this._setState("Satellite");
+        }
+        _handleDown() {
+          this._setState("Polarity");
+        }
+        _handleEnter() {
+          this.tag("SelectFrequency").patch({
+            prevVal: this.selectedFrequency,
+            onHandleDone: this.setFrequency.bind(this)
+          });
+          this._setState("Frequency.SelectFrequency");
+        }
+        static _states() {
+          return [class SelectFrequency extends Frequency {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectFrequency").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Frequency"));
+            }
+            $exit() {
+              this.tag("SelectFrequency").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+            }
+            _getFocused() {
+              return this.tag("SelectFrequency");
+            }
+            _handleBack() {
+              this.setFrequency(this.selectedFrequency);
+            }
+          }];
+        }
+      }, class Polarity2 extends this {
+        $enter() {
+          this.tag("Polarity")._focus();
+        }
+        $exit() {
+          this.tag("Polarity")._unfocus();
+        }
+        _handleUp() {
+          this._setState("Frequency");
+        }
+        _handleDown() {
+          this._setState("SymbolRate");
+        }
+        _handleEnter() {
+          this._setState("Polarity.SelectPolarity");
+        }
+        static _states() {
+          return [class SelectPolarity extends Polarity2 {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectPolarity").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Polarity"));
+            }
+            $exit() {
+              this.tag("SelectPolarity").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Polarity.Title").text.text = "Polarity: " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : "Select a Polarity");
+            }
+            _getFocused() {
+              return this.tag("SelectPolarity");
+            }
+            _handleBack() {
+              this._setState("Polarity");
+            }
+          }];
+        }
+      }, class SymbolRate extends this {
+        $enter() {
+          this.tag("SymbolRate")._focus();
+        }
+        $exit() {
+          this.tag("SymbolRate")._unfocus();
+        }
+        _handleUp() {
+          this._setState("Polarity");
+        }
+        _handleDown() {
+          this._setState("FEC");
+        }
+        _handleEnter() {
+          this.tag("SelectSymbolRate").patch({
+            prevVal: this.selectedSymbolRate,
+            onHandleDone: this.setSymbolRate.bind(this)
+          });
+          this._setState("SymbolRate.SelectSymbolRate");
+        }
+        static _states() {
+          return [class SelectSymbolRate extends SymbolRate {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSymbolRate").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Symbol Rate"));
+            }
+            $exit() {
+              this.tag("SelectSymbolRate").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+            }
+            _getFocused() {
+              return this.tag("SelectSymbolRate");
+            }
+            _handleBack() {
+              this.setSymbolRate(this.selectedSymbolRate);
+            }
+          }];
+        }
+      }, class FEC2 extends this {
+        $enter() {
+          this.tag("FEC")._focus();
+        }
+        $exit() {
+          this.tag("FEC")._unfocus();
+        }
+        _handleUp() {
+          this._setState("SymbolRate");
+        }
+        _handleDown() {
+          this._setState("DVBS2");
+        }
+        _handleEnter() {
+          this._setState("FEC.SelectFEC");
+        }
+        static _states() {
+          return [class SelectFEC extends FEC2 {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectFEC").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / FEC"));
+            }
+            $exit() {
+              this.tag("SelectFEC").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("FEC.Title").text.text = "FEC: " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : "Select a FEC");
+            }
+            _getFocused() {
+              return this.tag("SelectFEC");
+            }
+            _handleBack() {
+              this._setState("FEC");
+            }
+          }];
+        }
+      }, class DVBS2 extends this {
+        $enter() {
+          this.tag("DVBS2")._focus();
+        }
+        $exit() {
+          this.tag("DVBS2")._unfocus();
+        }
+        _handleUp() {
+          this._setState("FEC");
+        }
+        _handleDown() {
+          this._setState("Modulation");
+        }
+        _handleEnter() {
+          if (!this.selectedDVBS2) {
+            this.selectedDVBS2 = true;
+            this.tag("DVBS2.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
+          } else {
+            this.selectedDVBS2 = false;
+            this.tag("DVBS2.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+          }
+        }
+      }, class Modulation2 extends this {
+        $enter() {
+          this.tag("Modulation")._focus();
+        }
+        $exit() {
+          this.tag("Modulation")._unfocus();
+        }
+        _handleUp() {
+          this._setState("DVBS2");
+        }
+        _handleDown() {
+          this.tag("Scroller").y = -88;
+          this._setState("SearchType");
+        }
+        _handleEnter() {
+          this._setState("Modulation.SelectModulation");
+        }
+        static _states() {
+          return [class SelectModulation extends Modulation2 {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectModulation").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Modulation"));
+            }
+            $exit() {
+              this.tag("SelectModulation").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Modulation.Title").text.text = "Modulation: " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : "Select a Modulation");
+            }
+            _getFocused() {
+              return this.tag("SelectModulation");
+            }
+            _handleBack() {
+              this._setState("Modulation");
+            }
+          }];
+        }
+      }, class SearchType2 extends this {
+        $enter() {
+          this.tag("SearchType")._focus();
+        }
+        $exit() {
+          this.tag("SearchType")._unfocus();
+        }
+        _handleUp() {
+          this.tag("Scroller").y = 2;
+          this._setState("Modulation");
+        }
+        _handleDown() {
+          this.tag("Scroller").y = -178;
+          this._setState("Retune");
+        }
+        _handleEnter() {
+          this._setState("SearchType.SelectSearchType");
+        }
+        static _states() {
+          return [class SelectSearchType extends SearchType2 {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSearchType").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan / Search Mode"));
+            }
+            $exit() {
+              this.tag("SelectSearchType").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("SearchType.Title").text.text = "Search Mode: " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : "Select a Search Mode");
+            }
+            _getFocused() {
+              return this.tag("SelectSearchType");
+            }
+            _handleBack() {
+              this._setState("SearchType");
+            }
+          }];
+        }
+      }, class Retune extends this {
+        $enter() {
+          this.tag("Retune")._focus();
+        }
+        $exit() {
+          this.tag("Retune")._unfocus();
+        }
+        _handleUp() {
+          this.tag("Scroller").y = -88;
+          this._setState("SearchType");
+        }
+        _handleDown() {
+          this._setState("StartScan");
+        }
+        _handleEnter() {
+          if (!this.selectedRetune) {
+            this.selectedRetune = true;
+            this.tag("Retune.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
+          } else {
+            this.selectedRetune = false;
+            this.tag("Retune.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+          }
+        }
+      }, class StartScan extends this {
+        $enter() {
+          this.tag("StartScan").color = CONFIG.theme.hex;
+          this.tag("StartScan.Title").text.textColor = 4294967295;
+        }
+        $exit() {
+          this.tag("StartScan").color = 4294967295;
+          this.tag("StartScan.Title").text.textColor = 4278190080;
+        }
+        _handleUp() {
+          this._setState("Retune");
+        }
+        _handleEnter() {
+          let errorString = this.verifyInputs();
+          if (errorString === "") {
+            this.tag("ErrorNotification").visible = false;
+            let serviceSearchParams = {
+              tunertype: "dvbs",
+              searchtype: this.selectedSearchType,
+              retune: this.selectedRetune,
+              usetuningparams: true,
+              dvbstuningparams: {
+                satellite: this.selectedSatellite.name,
+                frequency: parseInt(this.selectedFrequency),
+                polarity: this.selectedPolarity,
+                symbolrate: parseInt(this.selectedSymbolRate),
+                fec: this.selectedFEC,
+                modulation: this.selectedModulation,
+                dvbs2: this.selectedDVBS2
+              }
+            };
+            console.log(JSON.stringify(serviceSearchParams));
+            dtvApi.startServiceSearch(serviceSearchParams).then((res) => {
+              console.log(res);
+            });
+          } else {
+            this.tag("ErrorNotification.Content").text.text = Language_default.translate("Please enter the values for the following " + errorString);
+            this.tag("ErrorNotification").visible = true;
+          }
+        }
+      }];
+    }
+  };
+
+  // src/screens/DTVScreens/LiveTVScan.js
+  var LiveTVScan = class extends Lightning_default.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV / Scan"));
+    }
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        rect: true,
+        color: 4278190080,
+        w: 1920,
+        h: 1080,
+        LiveTVScanScreenContents: {
+          x: 200,
+          y: 275,
+          TScan: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("DVB-T Scan"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          },
+          CScan: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("DVB-C Scan"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          },
+          SScan: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("DVB-S Scan"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          }
+        }
+      };
+    }
+    _init() {
+      this._setState("TScan");
+    }
+    _focus() {
+      this._setState(this.state);
+    }
+    _handleBack() {
+      Router_default.navigate("settings/livetv");
+    }
+    static _states() {
+      return [class TScan extends this {
+        $enter() {
+          this.tag("TScan")._focus();
+        }
+        $exit() {
+          this.tag("TScan")._unfocus();
+        }
+        _handleDown() {
+          this._setState("CScan");
+        }
+        _handleEnter() {
+        }
+      }, class CScan extends this {
+        $enter() {
+          this.tag("CScan")._focus();
+        }
+        $exit() {
+          this.tag("CScan")._unfocus();
+        }
+        _handleUp() {
+          this._setState("TScan");
+        }
+        _handleDown() {
+          this._setState("SScan");
+        }
+        _handleEnter() {
+        }
+      }, class SScan extends this {
+        $enter() {
+          this.tag("SScan")._focus();
+        }
+        $exit() {
+          this.tag("SScan")._unfocus();
+        }
+        _handleUp() {
+          this._setState("CScan");
+        }
+        _handleEnter() {
+          Router_default.navigate("settings/livetv/scan/dvb-s-scan");
+        }
+      }];
+    }
+  };
+
+  // src/screens/DTVScreens/LiveTVSettings.js
+  var active = true;
+  var LiveTVSettings = class extends Lightning_default.Component {
+    _onChanged() {
+      this.widgets.menu.updateTopPanelText(Language_default.translate("Settings / Live TV"));
+    }
+    pageTransition() {
+      return "left";
+    }
+    static _template() {
+      return {
+        rect: true,
+        color: 4278190080,
+        w: 1920,
+        h: 1080,
+        LiveTVSettingsScreenContents: {
+          x: 200,
+          y: 275,
+          Activate: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("Activate / Deactivate"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/ToggleOnOrange.png")
+            }
+          },
+          Scan: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language_default.translate("Scan"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          }
+        }
+      };
+    }
+    _init() {
+      this._setState("Activate");
+    }
+    _firstActive() {
+      this.dtvApi = new DTVApi();
+    }
+    _focus() {
+      this._setState(this.state);
+      if (active) {
+        this.tag("Activate.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
+      } else {
+        this.tag("Activate.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+      }
+    }
+    _handleBack() {
+      Router_default.navigate("settings");
+    }
+    static _states() {
+      return [class Activate extends this {
+        $enter() {
+          this.tag("Activate")._focus();
+        }
+        $exit() {
+          this.tag("Activate")._unfocus();
+        }
+        _handleDown() {
+          this._setState("Scan");
+        }
+        _handleEnter() {
+          if (active) {
+            this.dtvApi.deactivate().then((res) => {
+              console.log(res);
+              active = false;
+              this.tag("Activate.Button").src = Utils_default.asset("images/settings/ToggleOffWhite.png");
+            });
+          } else {
+            this.dtvApi.activate().then((res) => {
+              console.log(res);
+              active = true;
+              this.tag("Activate.Button").src = Utils_default.asset("images/settings/ToggleOnOrange.png");
+            });
+          }
+        }
+      }, class Scan extends this {
+        $enter() {
+          this.tag("Scan")._focus();
+        }
+        $exit() {
+          this.tag("Scan")._unfocus();
+        }
+        _handleUp() {
+          this._setState("Activate");
+        }
+        _handleEnter() {
+          Router_default.navigate("settings/livetv/scan");
+        }
+      }];
+    }
+  };
+
+  // src/routes/liveTvRoutes.js
+  var liveTvRoutes = [{
+    path: "settings/livetv",
+    component: LiveTVSettings,
+    widgets: ["Menu"]
+  }, {
+    path: "settings/livetv/scan",
+    component: LiveTVScan,
+    widgets: ["Menu"]
+  }, {
+    path: "settings/livetv/scan/dvb-s-scan",
+    component: DvbSScan,
+    widgets: ["Menu"]
+  }];
+  var liveTvRoutes_default = liveTvRoutes;
+
   // src/routes/routes.js
   var api = null;
   var routes_default = {
@@ -41881,7 +43927,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       });
       return Promise.resolve();
     },
-    routes: [...splashScreenRoutes_default.splashScreenRoutes, ...route.network, ...otherSettingsRoutes_default.otherSettingsRoutes, ...audioScreenRoutes_default.audioScreenRoutes, ...detailsScreenRoutes_default.detailsScreenRoutes, {
+    routes: [...splashScreenRoutes_default.splashScreenRoutes, ...route.network, ...otherSettingsRoutes_default.otherSettingsRoutes, ...audioScreenRoutes_default.audioScreenRoutes, ...detailsScreenRoutes_default.detailsScreenRoutes, ...liveTvRoutes_default, {
       path: "settings",
       component: SettingsScreen,
       widgets: ["Menu"]
@@ -42230,236 +44276,8 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     }
   };
 
-  // node_modules/redux/es/redux.js
-  var $$observable = function() {
-    return typeof Symbol === "function" && Symbol.observable || "@@observable";
-  }();
-  var randomString = function randomString2() {
-    return Math.random().toString(36).substring(7).split("").join(".");
-  };
-  var ActionTypes = {
-    INIT: "@@redux/INIT" + randomString(),
-    REPLACE: "@@redux/REPLACE" + randomString(),
-    PROBE_UNKNOWN_ACTION: function PROBE_UNKNOWN_ACTION() {
-      return "@@redux/PROBE_UNKNOWN_ACTION" + randomString();
-    }
-  };
-  function isPlainObject(obj) {
-    if (typeof obj !== "object" || obj === null)
-      return false;
-    var proto = obj;
-    while (Object.getPrototypeOf(proto) !== null) {
-      proto = Object.getPrototypeOf(proto);
-    }
-    return Object.getPrototypeOf(obj) === proto;
-  }
-  function miniKindOf(val) {
-    if (val === void 0)
-      return "undefined";
-    if (val === null)
-      return "null";
-    var type = typeof val;
-    switch (type) {
-      case "boolean":
-      case "string":
-      case "number":
-      case "symbol":
-      case "function": {
-        return type;
-      }
-    }
-    if (Array.isArray(val))
-      return "array";
-    if (isDate(val))
-      return "date";
-    if (isError(val))
-      return "error";
-    var constructorName = ctorName(val);
-    switch (constructorName) {
-      case "Symbol":
-      case "Promise":
-      case "WeakMap":
-      case "WeakSet":
-      case "Map":
-      case "Set":
-        return constructorName;
-    }
-    return type.slice(8, -1).toLowerCase().replace(/\s/g, "");
-  }
-  function ctorName(val) {
-    return typeof val.constructor === "function" ? val.constructor.name : null;
-  }
-  function isError(val) {
-    return val instanceof Error || typeof val.message === "string" && val.constructor && typeof val.constructor.stackTraceLimit === "number";
-  }
-  function isDate(val) {
-    if (val instanceof Date)
-      return true;
-    return typeof val.toDateString === "function" && typeof val.getDate === "function" && typeof val.setDate === "function";
-  }
-  function kindOf(val) {
-    var typeOfVal = typeof val;
-    if (true) {
-      typeOfVal = miniKindOf(val);
-    }
-    return typeOfVal;
-  }
-  function createStore(reducer, preloadedState, enhancer) {
-    var _ref2;
-    if (typeof preloadedState === "function" && typeof enhancer === "function" || typeof enhancer === "function" && typeof arguments[3] === "function") {
-      throw new Error(false ? formatProdErrorMessage(0) : "It looks like you are passing several store enhancers to createStore(). This is not supported. Instead, compose them together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.");
-    }
-    if (typeof preloadedState === "function" && typeof enhancer === "undefined") {
-      enhancer = preloadedState;
-      preloadedState = void 0;
-    }
-    if (typeof enhancer !== "undefined") {
-      if (typeof enhancer !== "function") {
-        throw new Error(false ? formatProdErrorMessage(1) : "Expected the enhancer to be a function. Instead, received: '" + kindOf(enhancer) + "'");
-      }
-      return enhancer(createStore)(reducer, preloadedState);
-    }
-    if (typeof reducer !== "function") {
-      throw new Error(false ? formatProdErrorMessage(2) : "Expected the root reducer to be a function. Instead, received: '" + kindOf(reducer) + "'");
-    }
-    var currentReducer = reducer;
-    var currentState = preloadedState;
-    var currentListeners = [];
-    var nextListeners = currentListeners;
-    var isDispatching = false;
-    function ensureCanMutateNextListeners() {
-      if (nextListeners === currentListeners) {
-        nextListeners = currentListeners.slice();
-      }
-    }
-    function getState() {
-      if (isDispatching) {
-        throw new Error(false ? formatProdErrorMessage(3) : "You may not call store.getState() while the reducer is executing. The reducer has already received the state as an argument. Pass it down from the top reducer instead of reading it from the store.");
-      }
-      return currentState;
-    }
-    function subscribe(listener) {
-      if (typeof listener !== "function") {
-        throw new Error(false ? formatProdErrorMessage(4) : "Expected the listener to be a function. Instead, received: '" + kindOf(listener) + "'");
-      }
-      if (isDispatching) {
-        throw new Error(false ? formatProdErrorMessage(5) : "You may not call store.subscribe() while the reducer is executing. If you would like to be notified after the store has been updated, subscribe from a component and invoke store.getState() in the callback to access the latest state. See https://redux.js.org/api/store#subscribelistener for more details.");
-      }
-      var isSubscribed = true;
-      ensureCanMutateNextListeners();
-      nextListeners.push(listener);
-      return function unsubscribe() {
-        if (!isSubscribed) {
-          return;
-        }
-        if (isDispatching) {
-          throw new Error(false ? formatProdErrorMessage(6) : "You may not unsubscribe from a store listener while the reducer is executing. See https://redux.js.org/api/store#subscribelistener for more details.");
-        }
-        isSubscribed = false;
-        ensureCanMutateNextListeners();
-        var index2 = nextListeners.indexOf(listener);
-        nextListeners.splice(index2, 1);
-        currentListeners = null;
-      };
-    }
-    function dispatch(action) {
-      if (!isPlainObject(action)) {
-        throw new Error(false ? formatProdErrorMessage(7) : "Actions must be plain objects. Instead, the actual type was: '" + kindOf(action) + "'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.");
-      }
-      if (typeof action.type === "undefined") {
-        throw new Error(false ? formatProdErrorMessage(8) : 'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
-      }
-      if (isDispatching) {
-        throw new Error(false ? formatProdErrorMessage(9) : "Reducers may not dispatch actions.");
-      }
-      try {
-        isDispatching = true;
-        currentState = currentReducer(currentState, action);
-      } finally {
-        isDispatching = false;
-      }
-      var listeners = currentListeners = nextListeners;
-      for (var i = 0; i < listeners.length; i++) {
-        var listener = listeners[i];
-        listener();
-      }
-      return action;
-    }
-    function replaceReducer(nextReducer) {
-      if (typeof nextReducer !== "function") {
-        throw new Error(false ? formatProdErrorMessage(10) : "Expected the nextReducer to be a function. Instead, received: '" + kindOf(nextReducer));
-      }
-      currentReducer = nextReducer;
-      dispatch({
-        type: ActionTypes.REPLACE
-      });
-    }
-    function observable() {
-      var _ref;
-      var outerSubscribe = subscribe;
-      return _ref = {
-        subscribe: function subscribe2(observer) {
-          if (typeof observer !== "object" || observer === null) {
-            throw new Error(false ? formatProdErrorMessage(11) : "Expected the observer to be an object. Instead, received: '" + kindOf(observer) + "'");
-          }
-          function observeState() {
-            if (observer.next) {
-              observer.next(getState());
-            }
-          }
-          observeState();
-          var unsubscribe = outerSubscribe(observeState);
-          return {
-            unsubscribe
-          };
-        }
-      }, _ref[$$observable] = function() {
-        return this;
-      }, _ref;
-    }
-    dispatch({
-      type: ActionTypes.INIT
-    });
-    return _ref2 = {
-      dispatch,
-      subscribe,
-      getState,
-      replaceReducer
-    }, _ref2[$$observable] = observable, _ref2;
-  }
-  function warning(message) {
-    if (typeof console !== "undefined" && typeof console.error === "function") {
-      console.error(message);
-    }
-    try {
-      throw new Error(message);
-    } catch (e) {
-    }
-  }
-  function isCrushed() {
-  }
-  if (typeof isCrushed.name === "string" && isCrushed.name !== "isCrushed") {
-    warning('You are currently using minified code outside of NODE_ENV === "production". This means that you are running a slower development build of Redux. You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) to ensure you have the correct code for your production build.');
-  }
-
-  // src/redux.js
-  function counter(state3, action) {
-    if (typeof state3 === "undefined") {
-      return 0;
-    }
-    switch (action.type) {
-      case "ACTION_LISTEN_START":
-        return "ACTION_LISTEN_START";
-      case "ACTION_LISTEN_STOP":
-        return "ACTION_LISTEN_STOP";
-      default:
-        return state3;
-    }
-  }
-  var store = createStore(counter);
-  var redux_default = store;
-
   // src/views/TopPanel.js
+  var zone = null;
   var TopPanel = class extends Lightning_default.Component {
     static _template() {
       return {
@@ -42518,43 +44336,23 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         }
       };
     }
+    changeTimeZone(time) {
+      zone = time;
+    }
+    updateZone() {
+      zone = this.zone;
+    }
     _init() {
       this.indexVal = 1;
-      this.timeZone = null;
       this.audiointerval = null;
-      new AppApi().getZone().then(function(res) {
-        this.timeZone = res;
-      }.bind(this)).catch((err) => {
-        console.log("Timezone api request error", err);
+      this.zone = null;
+      this.appApi = new AppApi();
+      this.appApi.getZone().then((res) => {
+        this.zone = res;
+        this.updateZone();
       });
-      function render() {
-        if (redux_default.getState() == "ACTION_LISTEN_STOP") {
-          this.tag("AudioListenSymbol").visible = false;
-          clearInterval(this.audiointerval);
-          this.audiointerval = null;
-        } else if (redux_default.getState() == "ACTION_LISTEN_START") {
-          if (!this.audiointerval) {
-            this.tag("AudioListenSymbol").visible = true;
-            let mode = 1;
-            this.audiointerval = setInterval(function() {
-              if (mode % 2 == 0) {
-                this.tag("AudioListenSymbol").w = 80;
-                this.tag("AudioListenSymbol").h = 80;
-              } else {
-                this.tag("AudioListenSymbol").w = 70;
-                this.tag("AudioListenSymbol").h = 70;
-              }
-              mode++;
-              if (mode > 20) {
-                mode = 0;
-              }
-              ;
-            }.bind(this), 250);
-          }
-        }
-      }
-      redux_default.subscribe(render.bind(this));
-      this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      zone = this.zone ? this.zone : Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log(zone);
       this._setState("Setting");
     }
     set index(index2) {
@@ -42580,7 +44378,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     _build() {
       setInterval(() => {
         let _date = this.updateTime();
-        if (this.zone) {
+        if (zone) {
           this.tag("Time").patch({
             text: {
               text: _date.strTime
@@ -42595,10 +44393,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       });
     }
     updateTime() {
-      if (this.zone) {
+      if (zone != null) {
         let date = new Date();
         date = new Date(date.toLocaleString("en-US", {
-          timeZone: this.zone
+          timeZone: zone
         }));
         let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         let strDay = days[date.getDay()];
@@ -42741,6 +44539,9 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         this.mainView.scroll(val);
       }
     }
+    updateTimeZone(timezone) {
+      this.tag("TopPanel").changeTimeZone(timezone);
+    }
     updateTopPanelText(text) {
       this.tag("TopPanel").changeText = text;
     }
@@ -42758,12 +44559,12 @@ ${args.gracenoteItem.ratings[0].subRating}`;
   };
 
   // src/keyIntercept/keyIntercept.js
-  var config5 = {
+  var config6 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  var thunder8 = thunderJS_default(config5);
+  var thunder8 = thunderJS_default(config6);
   var appApi8 = new AppApi();
   function keyIntercept() {
     const rdkshellCallsign = "org.rdk.RDKShell";
@@ -43017,13 +44818,13 @@ ${args.gracenoteItem.ratings[0].subRating}`;
   }
 
   // src/App.js
-  var config6 = {
+  var config7 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
   var powerState = "ON";
-  var thunder9 = thunderJS_default(config6);
+  var thunder9 = thunderJS_default(config7);
   var appApi9 = new AppApi();
   var App = class extends Router_default.App {
     static getFonts() {
@@ -43135,6 +44936,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     _init() {
       appApi9.enableDisplaySettings();
       appApi9.cobaltStateChangeEvent();
+      appApi9.launchforeground();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then((result) => {
         if (result) {
@@ -43485,9 +45287,9 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             powerState = "ON";
           }
         });
-        const systemcCallsign = "org.rdk.RDKShell.1";
+        const systemcCallsign2 = "org.rdk.RDKShell.1";
         thunder9.Controller.activate({
-          callsign: systemcCallsign
+          callsign: systemcCallsign2
         }).then((res) => {
           console.log(`activated the rdk shell plugin trying to set the inactivity listener; res = ${JSON.stringify(res)}`);
           thunder9.on("org.rdk.RDKShell.1", "onUserInactivity", (notification) => {
@@ -43554,6 +45356,8 @@ ${args.gracenoteItem.ratings[0].subRating}`;
 
   // src/index.js
   function src_default() {
+    console.time("PerformanceTest");
+    console.log("Timer Start - ", new Date().toUTCString());
     return Launch_default(App, ...arguments);
   }
   return src_exports;

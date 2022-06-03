@@ -27,6 +27,8 @@ import DeviceScreen from '../screens/OtherSettingsScreens/DeviceScreen'
 import DeviceInformationScreen from '../screens/OtherSettingsScreens/DeviceInformationScreen'
 import FirmwareScreen from '../screens/OtherSettingsScreens/FirmwareScreen'
 import RebootConfirmationScreen from '../screens/OtherSettingsScreens/RebootConfirmationScreen'
+import TimeZone from '../screens/OtherSettingsScreens/TimeZone'
+import TimeItems from '../items/TimeItems'
 
 
 export default {
@@ -75,6 +77,16 @@ export default {
     {
       path: 'settings/advanced/device/info',
       component: DeviceInformationScreen,
+      widgets: ['Menu'],
+    },
+    {
+      path: 'settings/advanced/device/timezone',
+      component: TimeZone,
+      widgets: ['Menu'],
+    },
+    {
+      path: 'settings/advanced/device/timezone/item',
+      component: TimeItems,
       widgets: ['Menu'],
     },
     {

@@ -20,10 +20,8 @@ import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
-import VoiceApi from '../api/VoiceApi';
+import DTVApi from '../api/DTVApi';
 
-
-const voiceApi = new VoiceApi()
 /**
  * Class for settings screen.
  */
@@ -165,7 +163,8 @@ export default class SettingsScreen extends Lightning.Component {
             src: Utils.asset('images/settings/Arrow.png'),
           },
         },
-        UIVoice: {
+        DTVSettings: {
+          alpha:0.3,
           y: 450,
           type: SettingsMainItem,
           Title: {
@@ -173,7 +172,7 @@ export default class SettingsScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: Language.translate('UI Voice'),
+              text: Language.translate('Live TV'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -181,12 +180,12 @@ export default class SettingsScreen extends Lightning.Component {
           },
           Button: {
             h: 45,
-            w: 67,
+            w: 45,
             x: 1600,
             mountX: 1,
             y: 45,
             mountY: 0.5,
-            src: Utils.asset('images/settings/ToggleOffWhite.png'),
+            src: Utils.asset('images/settings/Arrow.png'),
           },
         },
       },
@@ -194,37 +193,24 @@ export default class SettingsScreen extends Lightning.Component {
   }
 
   _init() {
-    this.avs = false
     this._setState('NetworkConfiguration')
   }
   _focus() {
     this._setState(this.state)
   }
+  _firstActive() {
+    this.dtvApi = new DTVApi();
+    this.dtvPlugin = false; //plugin availability
+    this.dtvApi.activate().then((res) => {
+      // if (res){
+        this.dtvPlugin=true;
+        this.tag("DTVSettings").alpha = 1;
+      // }
+    })
+  }
 
   _handleBack() {
     Router.navigate('menu')
-  }
-
-  toggleAVSPlugin() {
-    if (this.avs) {
-      voiceApi.deactivate()
-        .then(() => {
-          this.avs = false
-          this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
-        })
-        .catch(() => {
-          console.log('failed')
-        })
-    } else {
-      voiceApi.activate()
-        .then(() => {
-          this.avs = true
-          this.tag('UIVoice.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-        })
-        .catch(() => {
-          console.log('failed')
-        })
-    }
   }
 
   static _states() {
@@ -310,25 +296,32 @@ export default class SettingsScreen extends Lightning.Component {
         _handleUp() {
           this._setState('Audio')
         }
-        _handleDown() {
-          this._setState('UIVoice')
-        }
         _handleEnter() {
           Router.navigate('settings/other')
         }
+        _handleDown() {
+          if(this.dtvPlugin){
+            this._setState('DTVSettings')
+          }
+        }
       },
-      class UIVoice extends this{
+      class DTVSettings extends this{
         $enter() {
-          this.tag('UIVoice')._focus()
+          this.tag('DTVSettings')._focus()
         }
         $exit() {
-          this.tag('UIVoice')._unfocus()
+          this.tag('DTVSettings')._unfocus()
         }
         _handleUp() {
           this._setState('OtherSettings')
         }
         _handleEnter() {
-          this.toggleAVSPlugin()
+          if(this.dtvPlugin){
+            Router.navigate('settings/livetv')
+          }
+          // dtvApi.activate().then(res =>{
+          //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
+          // })
         }
       },
     ]
