@@ -171,7 +171,7 @@ export default class BluetoothScreen extends Lightning.Component {
     return 'left'
   }
 
-  _init() {
+  _firstEnable() {
     this._bt = new BluetoothApi()
     this._bluetooth = false
     this._activateBluetooth()

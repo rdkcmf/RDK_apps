@@ -60,6 +60,11 @@ export default class LogoScreen extends Lightning.Component {
         return 'menu'
     }
 
+    _firstEnable() {
+        console.timeEnd('PerformanceTest')
+        console.log('Splash Screen timer end - ', new Date().toUTCString())
+    }
+
     _focus() {
         let path = 'splash/bluetooth'
         var map = { 37: false, 38: false, 39: false, 40: false };
@@ -87,7 +92,7 @@ export default class LogoScreen extends Lightning.Component {
             Router.navigate(path)
         }, 5000)
     }
-    _unfocus(){
+    _unfocus() {
         Registry.removeEventListener(document, 'keydown', this.handler)
     }
 }

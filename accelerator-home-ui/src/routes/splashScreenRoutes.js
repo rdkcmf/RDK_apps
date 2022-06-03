@@ -28,26 +28,32 @@ export default {
         {
             path: 'splash',
             component: LogoScreen,
+            widgets: ['Volume'],
         },
         {
             path: 'splash/bluetooth',
             component: BluetoothScreen,
+            widgets: ['Volume'],
         },
         {
             path: 'splash/language',
             component: LanguageScreen,
+            widgets: ['Volume'],
         },
         {
             path: 'splash/network',
-            component: NetworkScreen
+            component: NetworkScreen,
+            widgets: ['Volume'],
         },
-        { 
+        {
             path: 'splash/networkPrompt',
-            component: NetworkPromptScreen
+            component: NetworkPromptScreen,
+            widgets: ['Volume'],
         },
         {
             path: 'splash/networkList',
-            component: NetworkList
+            component: NetworkList,
+            widgets: ['Volume'],
         }
     ]
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router } from "@lightningjs/sdk";
+import { Language, Lightning, Router } from "@lightningjs/sdk";
 import { CONFIG } from '../Config/Config'
 
 const errorTitle = 'Error Title'
@@ -27,8 +27,12 @@ export default class Failscreen extends Lightning.Component {
         console.log(args)
         if (args.title && args.msg) {
             this.tag('FailScreen.Title').text.text = args.title
-            this.tag('FailScreen.Message').text.text = args.msg
+            this.tag('FailScreen.Message').text.text = Language.translate(args.msg)
         }
+    }
+
+    pageTransition() {
+        return 'left'
     }
 
     _focus() {
@@ -80,7 +84,7 @@ export default class Failscreen extends Lightning.Component {
                         y: 25,
                         mount: 0.5,
                         text: {
-                            text: "OK",
+                            text: Language.translate("OK"),
                             fontFace: CONFIG.language.font,
                             fontSize: 22,
                         },

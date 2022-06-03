@@ -141,7 +141,7 @@ export default class XcastApi {
       console.log('Notifying back');
       this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
         resolve(result);
-      });
+      }).catch(err => { console.error(err); resolve(false); });
     });
   }
 

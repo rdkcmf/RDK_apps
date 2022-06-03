@@ -92,7 +92,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Match Content: Match Dynamic Range',
+              text: Language.translate('Match Content: '),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -117,7 +117,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Output Format: YCbCr',
+              text: Language.translate('Output Format:'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -142,7 +142,7 @@ export default class VideoScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Chroma: 4:4:4',
+              text: Language.translate('Chroma:'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,

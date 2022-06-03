@@ -30,10 +30,14 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
-import EpgScreen from '../screens/EpgScreens/EpgScreen'
 import UIList from '../views/UIList'
 import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
+import liveTvRoutes from './liveTvRoutes'
+import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
+import Volume from '../tvOverlay/components/Volume'
+import EPGScreen from "../screens/EpgScreens/Epg"
+import DTVPlayer from '../MediaPlayer/DTVPlayer'
 
 let api = null
 
@@ -56,10 +60,11 @@ export default {
     ...otherSettingsRoutes.otherSettingsRoutes,
     ...audioScreenRoutes.audioScreenRoutes,
     ...detailsScreenRoutes.detailsScreenRoutes,
+    ...liveTvRoutes,
     {
       path: 'settings',
       component: SettingsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'failscreen',
@@ -68,37 +73,42 @@ export default {
     {
       path: 'videoplayer',
       component: LightningPlayerControls,
+      widgets: ['Volume']
     },
     {
       path: 'usb',
       component: UsbAppsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'epg',
-      component: EpgScreen,
-      widgets: ['Menu'],
+      component: EPGScreen,
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'apps',
       component: AppStore,
-      widgets: ['Menu']
+      widgets: ['Menu', 'Volume']
     },
     {
       path: 'usb/player',
-      component: AAMPVideoPlayer
+      component: AAMPVideoPlayer,
+      widgets: ['Volume']
     },
     {
       path: 'usb/image',
       component: ImageViewer,
+      widgets: ['Volume']
     },
     {
       path: 'image',
       component: ImageViewer,
+      widgets: ['Volume']
     },
     {
       path: 'ui',
       component: UIList,
+      widgets: ['Volume']
     },
     {
       path: 'menu',
@@ -112,11 +122,28 @@ export default {
         }
         return Promise.resolve()
       },
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Fail', 'Volume'],
+    },
+    {
+      path: 'tv-overlay/:type',
+      component: TvOverlayScreen,
+      options: {
+        preventStorage: true,
+      }
+    },
+    {
+      path: 'overlay/volume',
+      component: Volume
     },
     {
       path: 'player',
-      component: AAMPVideoPlayer
+      component: AAMPVideoPlayer,
+      widgets: ['Volume']
+    },
+    {
+      path:'dtvplayer',
+      component: DTVPlayer,
+      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay']
     },
     {
       path: '!',

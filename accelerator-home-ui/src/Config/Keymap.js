@@ -33,9 +33,9 @@ const keyMap = {
     "F3": 114,
     "F4": 115,
     "F5": 116,
-    "F6": 117,
-    "F7": 118,
-    "F8": 119,
+    "Amazon": 117, //F6
+    "Netflix": 118, //F7
+    "Youtube": 119, //F8
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -114,6 +114,8 @@ const keyMap = {
     "Home": 36,
     "Settings_Shortcut": 121,
     "Guide_Shortcut": 120,
+    "Inputs_Shortcut": 113, //F2
+    "Picture_Setting_Shortcut": 114, //F3
 }
 
 export default keyMap

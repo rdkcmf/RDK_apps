@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 
+import { Router, Storage } from "@lightningjs/sdk";
 import ThunderJS from "ThunderJS";
 import AppApi from "../api/AppApi";
 import Keymap from "../Config/Keymap";
@@ -63,21 +64,18 @@ export function keyIntercept() {
             console.log('Error', err);
         })
 
-
-
         .then(result => {
             thunder.on(rdkshellCallsign, 'onSuspended', notification => {
                 if (notification) {
                     console.log('onSuspended notification: ' + notification.client);
                     if (Storage.get('applicationType') == notification.client) {
                         Storage.set('applicationType', '');
-                        appApi.setVisibility('ResidentApp', true);
+                        appApi.setVisibility("ResidentApp", true)
                         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-                            console.log('ResidentApp moveToFront Success');
+                            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
                         });
-                        thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' }).then(result => {
-                            console.log('ResidentApp setFocus Success');
-                        });
+
+                        // getclients and storage.set to the second client
                     }
                 }
             });
@@ -104,6 +102,34 @@ export function keyIntercept() {
                 .call(rdkshellCallsign, 'addKeyIntercept', {
                     client: 'ResidentApp',
                     keyCode: Keymap.F1,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Inputs_Shortcut,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Picture_Setting_Shortcut,
                     modifiers: [],
                 })
                 .catch(err => {

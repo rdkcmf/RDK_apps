@@ -55,7 +55,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Audio Output: HDMI',
+              text: Language.translate('Audio Output: ') + " HDMI",
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -104,7 +104,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Full Dynamic Range',
+              text: Language.translate('Full Dynamic Range'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -130,7 +130,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Audio Language: Auto',
+              text: Language.translate('Audio Language: ') + "Auto",
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -156,7 +156,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Navigation Feedback',
+              text: Language.translate('Navigation Feedback'),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -182,7 +182,7 @@ export default class AudioScreen extends Lightning.Component {
             y: 45,
             mountY: 0.5,
             text: {
-              text: 'Bluetooth: None',
+              text: Language.translate('Bluetooth: ') + "None",
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,

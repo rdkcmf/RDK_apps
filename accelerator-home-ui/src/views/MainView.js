@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Storage, Language, Router, Registry } from '@lightningjs/sdk'
+import { Lightning, Storage, Language, Router, Registry, Utils } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
@@ -26,6 +26,8 @@ import XcastApi from '../api/XcastApi'
 import HomeApi from '../api/HomeApi.js'
 import GracenoteItem from '../items/GracenoteItem.js'
 import { List } from '@lightningjs/ui'
+import HDMIApi from '../api/HDMIApi.js'
+import Network from '../api/NetworkApi.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -44,7 +46,7 @@ export default class MainView extends Lightning.Component {
       clipping: true,
       MainView: {
         w: 1720,
-        h: 810,
+        h: 1200,
         xIndex: 2,
         y: 270,
         x: 200,
@@ -74,6 +76,36 @@ export default class MainView extends Lightning.Component {
           horizontal: true,
           itemScrollOffset: -1,
           clipping: false,
+        },
+        Inputs: {
+          y: 0,
+          visible: false,//false by default
+          Title: {
+            y: 0,
+            h: 30,
+            text: {
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+              text: Language.translate('Input Select'),
+              fontStyle: 'normal',
+              textColor: 0xFFFFFFFF,
+            },
+            zIndex: 0
+          },
+          Slider: {
+            x: -20,
+            y: 37,
+            type: Lightning.components.ListComponent,
+            flex: { direction: 'row', paddingLeft: 20, wrap: false },
+            w: 1745,
+            h: 300,
+            itemSize: 288,
+            roll: true,
+            rollMax: 1745,
+            horizontal: true,
+            itemScrollOffset: -4,
+            clipping: false,
+          }
         },
         Text1: {
           h: 30,
@@ -210,17 +242,41 @@ export default class MainView extends Lightning.Component {
   }
 
   moveDownContent() {
+    let inputSelectOffset = 0
+    if (this.inputSelect) {
+      inputSelectOffset = 275
+    }
     this.tag('Text0').alpha = 1
-    this.tag('Text1').y = 490-50
-    this.tag('AppList').y = 527-50
-    this.tag("Text2").y = 755-50
-    this.tag("MetroApps").y = 795-50
-    this.tag("Text3").y = 1030-50
-    this.tag("TVShows").y = 1070-50
-    this.tag("Text4").y = 1298-50
-    this.tag("ShowcaseApps").y = 1338-50
-    this.tag("Text5").y = 1566-50
-    this.tag("UsbApps").y = 1606-50
+    this.tag("Inputs").y = 440
+    this.tag('Text1').y = 440 + inputSelectOffset
+    this.tag('AppList').y = 477 + inputSelectOffset
+    this.tag("Text2").y = 705 + inputSelectOffset
+    this.tag("MetroApps").y = 745 + inputSelectOffset
+    this.tag("Text3").y = 980 + inputSelectOffset
+    this.tag("TVShows").y = 1020 + inputSelectOffset
+    this.tag("Text4").y = 1248 + inputSelectOffset
+    this.tag("ShowcaseApps").y = 1288 + inputSelectOffset
+    this.tag("Text5").y = 1516 + inputSelectOffset
+    this.tag("UsbApps").y = 1556 + inputSelectOffset
+  }
+
+  showInputSelect() {
+    this.tag("Inputs").visible = true
+    let gracenoteOffset = 0
+    if (!this.gracenote) {
+      gracenoteOffset = 440
+    }
+    this.tag("Inputs").y = this.gracenote ? 440 : 0
+    this.tag('Text1').y = 440 + 275 - gracenoteOffset
+    this.tag('AppList').y = 477 + 275 - gracenoteOffset
+    this.tag("Text2").y = 705 + 275 - gracenoteOffset
+    this.tag("MetroApps").y = 745 + 275 - gracenoteOffset
+    this.tag("Text3").y = 980 + 275 - gracenoteOffset
+    this.tag("TVShows").y = 1020 + 275 - gracenoteOffset
+    this.tag("Text4").y = 1248 + 275 - gracenoteOffset
+    this.tag("ShowcaseApps").y = 1288 + 275 - gracenoteOffset
+    this.tag("Text5").y = 1516 + 275 - gracenoteOffset
+    this.tag("UsbApps").y = 1556 + 275 - gracenoteOffset
   }
 
 
@@ -240,6 +296,7 @@ export default class MainView extends Lightning.Component {
 
   _init() {
     this.gracenote = false
+    this.inputSelect = false //false by default
     this.settingsScreen = false
     this.indexVal = 0
     const config = {
@@ -250,14 +307,27 @@ export default class MainView extends Lightning.Component {
     this.usbApi = new UsbApi();
     this.homeApi = new HomeApi();
     this.xcastApi = new XcastApi();
+    this.hdmiApi = new HDMIApi()
+    this.appApi = new AppApi()
     let thunder = ThunderJS(config);
 
     // for initially showing/hiding usb icon
 
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
-    this.metroApps = this.homeApi.getMetroInfo()
+    this.metroApps = this.homeApi.getOfflineMetroApps()
     this.showcaseApps = this.homeApi.getShowCaseApps()
+
+    this.appApi.isConnectedToInternet()
+      .then(result => {
+        if (result) {
+          this.metroApps = this.homeApi.getOnlineMetroApps()
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
     var prop_uri = 'uri'
@@ -300,6 +370,39 @@ export default class MainView extends Lightning.Component {
     this.appItems = this.tempRow
     this.usbApps = usbAppsArr
 
+    this.hdmiApi.activate()
+      .then(() => {
+        this.hdmiApi.registerEvent('onDevicesChanged', notification => {
+          console.log('onDevicesChanged ', JSON.stringify(notification))
+        })
+        this.hdmiApi.registerEvent('onInputStatusChanged', notification => {
+          console.log('onInputStatusChanged ', JSON.stringify(notification))
+        })
+        this.hdmiApi.registerEvent('onSignalChanged', notification => {
+          console.log('onSignalChanged ', JSON.stringify(notification))
+          if (notification.signalStatus !== 'stableSignal') {
+            this.appApi.setVisibility('ResidentApp', true)
+            this.widgets.fail.notify({ title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName, msg: 'Input disconnected' })
+            Router.focusWidget('Fail')
+          }
+        })
+        this.hdmiApi.registerEvent('videoStreamInfoUpdate', notification => {
+          console.log('videoStreamInfoUpdate ', JSON.stringify(notification))
+        })
+        this.inputSelect = true //set the inputSelect to true if the device is tv, here considering hdmiApi is only available on tv
+        this.appItems = this.tempRow
+        this.hdmiApi.getHDMIDevices()
+          .then(res => {
+            if (res.length > 0)
+              this.inputItems = res
+          })
+      })
+      .catch(err => {
+        console.log('HDMIInput Plugin not activated', err)
+      })
+    //get the available input methods from the api
+
+
     // for USB event
     const registerListener = () => {
 
@@ -322,8 +425,7 @@ export default class MainView extends Lightning.Component {
 
           if (currentPage === 'menu') { //refresh page to hide or show usb icon
             console.log('page refreshed on unplug/plug')
-            // Router.navigate('menu');
-            // document.location.reload()
+
           }
 
           if (!notification.mounted) { //if mounted is false
@@ -355,10 +457,12 @@ export default class MainView extends Lightning.Component {
     this.fireAncestors("$mountEventConstructor", registerListener.bind(this))
 
     this.refreshFirstRow()
-    this._setState('AppList.0')
+    // this._setState('AppList.0')
   }
 
   _firstActive() {
+
+
     if (!Storage.get('UsbMedia')) {
       this.usbApi.activate().then(res => {
         Storage.set('UsbMedia', 'ON')
@@ -377,12 +481,27 @@ export default class MainView extends Lightning.Component {
         console.error(`error while disabling the usb plugin = ${err}`)
       })
     }
+
+    if (this.gracenote) {
+      this._setState("Gracenote")
+    } else if (this.inputSelect) {
+      this._setState("Inputs")
+    } else {
+      this._setState("AppList.0")
+    }
+
   }
 
 
-  _focus() {
-    this._setState(this.state)
+  _focus() { this._setState(this.state) }
+
+  _firstEnable() {
+    console.timeEnd('PerformanceTest')
+    console.log('Mainview Screen timer end - ', new Date().toUTCString())
+    this.networkApi = new Network();
+    this.internetConnectivity = false;
   }
+
 
   scroll(val) {
     this.tag('MainView').patch({
@@ -440,6 +559,23 @@ export default class MainView extends Lightning.Component {
     this._setState('Gracenote')
   }
 
+  set inputItems(items) {
+    this.showInputSelect();
+    this.tag("Inputs.Slider").items = items.map((info, idx) => {
+      return {
+        w: 268,
+        h: 151,
+        type: ListItem,
+        data: { ...info, displayName: `Port ${info.id}`, url: "/images/inputs/HDMI.jpg" },
+        focus: 1.11,
+        unfocus: 1,
+        idx: idx,
+        bar: 12
+      }
+    })
+    this._setState("Inputs.0")
+  }
+
   set showcaseApps(items) {
     this.tag('ShowcaseApps').items = items.map((info, idx) => {
       return {
@@ -464,8 +600,8 @@ export default class MainView extends Lightning.Component {
     this.tag('AppList').clear()
     this.tag('AppList').add(items.map((info, idx) => {
       return {
-        w: this.gracenote ? 268 : 454,
-        h: this.gracenote ? 151 : 255,
+        w: this.gracenote || this.inputSelect ? 268 : 454,
+        h: this.gracenote || this.inputSelect ? 151 : 255,
         type: ListItem,
         data: info,
         focus: 1.11,
@@ -552,6 +688,7 @@ export default class MainView extends Lightning.Component {
       class Gracenote extends this {
         $enter() {
           this.indexVal = 0
+          this.scroll(270)
         }
         $exit() {
           this.tag('Text0').text.fontStyle = 'normal'
@@ -563,7 +700,11 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleDown() {
-          this._setState('AppList')
+          if (this.inputSelect) {
+            this._setState('Inputs')
+          } else {
+            this._setState('AppList')
+          }
         }
         _handleRight() {
           if (this.tag('Gracenote').length - 1 != this.tag('Gracenote').index) {
@@ -587,10 +728,73 @@ export default class MainView extends Lightning.Component {
           Router.navigate('menu/details', { gracenoteItem: this.tag('Gracenote').element.data, key: this.key })
         }
       },
+      class Inputs extends this {
+        $enter() {
+          this.tag('Inputs.Title').text.fontStyle = 'bold'
+          this.indexVal = 0
+          this.scroll(270)
+        }
+        $exit() {
+          this.tag('Inputs.Title').text.fontStyle = 'normal'
+        }
+        _getFocused() {
+          this.tag('Inputs.Title').text.fontStyle = 'bold'
+          if (this.tag("Inputs.Slider").length) {
+            return this.tag("Inputs.Slider").element
+          }
+        }
+        _handleDown() {
+          this._setState('AppList')
+        }
+        _handleUp() {
+          if (this.gracenote) {
+            this._setState('Gracenote')
+          } else {
+            this.widgets.menu.notify('TopPanel')
+          }
+        }
+        _handleLeft() {
+          if (0 != this.tag('Inputs.Slider').index) {
+            this.tag('Inputs.Slider').setPrevious()
+            return this.tag('Inputs.Slider').element
+          } else {
+            this.tag('Inputs.Title').text.fontStyle = 'normal'
+            Router.focusWidget('Menu')
+          }
+        }
+        _handleRight() {
+          if (this.tag('Inputs.Slider').length - 1 != this.tag('Inputs.Slider').index) {
+            this.tag('Inputs.Slider').setNext()
+            return this.tag('Inputs.Slider').element
+          }
+        }
+
+        _handleEnter() {
+          console.log(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data)
+          this.hdmiApi.setHDMIInput(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data)
+            .then(res => {
+              console.log('completed')
+              Storage.set('applicationType', 'HDMI');
+              const currentInput = this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data
+              Storage.set("_currentInputMode", { id: currentInput.id, locator: currentInput.locator });
+              this.appApi.setVisibility('ResidentApp', false);
+            })
+            .catch(err => {
+              console.log('failed', err)
+              this.widgets.fail.notify({ title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName, msg: 'Select a different input.' })
+              Router.focusWidget('Fail')
+            })
+        }
+
+      },
       class AppList extends this {
         $enter() {
           this.indexVal = 0
-          this.scroll(270)
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-100)
+          } else {
+            this.scroll(270)
+          }
         }
         $exit() {
           this.tag('Text1').text.fontStyle = 'normal'
@@ -605,7 +809,10 @@ export default class MainView extends Lightning.Component {
           this._setState('MetroApps')
         }
         _handleUp() {
-          if (this.gracenote) {
+          if (this.inputSelect) {
+            this._setState('Inputs')
+          }
+          else if (this.gracenote) {
             this._setState('Gracenote')
           } else {
             this.widgets.menu.notify('TopPanel')
@@ -616,72 +823,63 @@ export default class MainView extends Lightning.Component {
           this.tag('Text1').text.fontStyle = 'normal'
           Router.focusWidget('Menu')
         }
-        _handleEnter() {
-          let appApi = new AppApi();
+        async _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
-          this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri)
+            this.appApi.launchCobalt(this.uri).catch(err => { });
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri)
               .then(() => {
-                appApi.setVisibility('ResidentApp', false);
+                this.appApi.setVisibility('ResidentApp', false);
                 let path = location.pathname.split('index.html')[0]
                 let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
                 let notification_url = location.origin + path + url
-                appApi.launchOverlay(notification_url, 'TextOverlay')
+                this.appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => { })
                 Registry.setTimeout(() => {
-                  appApi.deactivateResidentApp('TextOverlay')
-                  appApi.zorder('HtmlApp')
-                  appApi.setVisibility('HtmlApp', true)
+                  this.appApi.deactivateResidentApp('TextOverlay')
+                  this.appApi.zorder('HtmlApp')
+                  this.appApi.setVisibility('HtmlApp', true)
                 }, 9000)
+              }).catch(err => {
+                console.error("WebApp : error while launching a webapp :", JSON.stringify(err))
+                Storage.set("applicationType", "")
               })
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => {
+              console.error("error while launching lightning app")
+              Storage.set('applicationType', "");
+            });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {
+              console.error("error while launching a native app")
+              Storage.set('applicationType', "");
+            });
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
+
             console.log('Launching app')
-            fetch('http://127.0.0.1:9998/Service/Controller/')
-              .then(res => res.json())
-              .then(data => {
-                console.log(data)
-                data.plugins.forEach(element => {
-                  if (element.callsign === 'Amazon') {
-                    console.log('Opening Amazon')
-                    appApi.launchPremiumApp('Amazon');
-                    appApi.setVisibility('ResidentApp', false);
-                  }
+            this.appApi.getPluginStatus('Amazon')
+              .then(result => {
+                this.appApi.launchPremiumApp('Amazon').catch(err => {
+                  console.error("Amazon : error while launching amazon : ", JSON.stringify(err))
                 });
               })
               .catch(err => {
-                console.log('Amazon not working')
+                console.log('Amazon plugin error', err)
+                Storage.set('applicationType', '')
               })
 
           } else if (Storage.get('applicationType') == 'Netflix') {
             console.log('Launching app')
-            fetch('http://127.0.0.1:9998/Service/Controller/')
-              .then(res => res.json())
-              .then(data => {
-                console.log(data)
-                data.plugins.forEach(element => {
-                  if (element.callsign === 'Netflix') {
-                    console.log('Opening Netflix')
-                    appApi.launchPremiumApp('Netflix');
-                    appApi.setVisibility('ResidentApp', false);
-                  }
-                });
-              })
-              .catch(err => {
-                console.log('Netflix not working')
-              })
-
+            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { })
           } else {
             if (this.uri === 'USB') {
               this.usbApi.getMountedDevices().then(result => {
@@ -697,7 +895,11 @@ export default class MainView extends Lightning.Component {
       },
       class MetroApps extends this {
         $enter() {
-          this.scroll(-100)
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-200)
+          } else {
+            this.scroll(-100)
+          }
           this.indexVal = 1
         }
         $exit() {
@@ -730,8 +932,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
-          let appApi = new AppApi();
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
 
@@ -739,24 +945,28 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },
       class TVShows extends this {
         $enter() {
           this.indexVal = 2
-          this.scroll(-400)
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-600)
+          } else {
+            this.scroll(-400)
+          }
         }
         _handleUp() {
           this.scroll(270)
@@ -788,8 +998,13 @@ export default class MainView extends Lightning.Component {
           this._setState("ShowcaseApps");
           //}
         }
-        _handleEnter() {
-          if (Storage.get('ipAddress')) {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
+          if (this.internetConnectivity) {
             //this.fireAncestors('$goToPlayer')
             Router.navigate('player')
           }
@@ -801,7 +1016,11 @@ export default class MainView extends Lightning.Component {
 
       class ShowcaseApps extends this {
         $enter() {
-          this.scroll(-550)
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-750)
+          } else {
+            this.scroll(-550)
+          }
         }
         $exit() {
           this.tag('Text4').text.fontStyle = 'normal'
@@ -836,8 +1055,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
-          let appApi = new AppApi();
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
 
@@ -845,24 +1068,28 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },
 
       class UsbApps extends this {
         $enter() {
-          this.scroll(-750)
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-1000)
+          } else {
+            this.scroll(-750)
+          }
         }
         $exit() {
           this.tag('Text5').text.fontStyle = 'normal'
@@ -892,8 +1119,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
-          let appApi = new AppApi();
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
 
@@ -901,17 +1132,17 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => { });
+            this.appApi.setVisibility('ResidentApp', false);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },

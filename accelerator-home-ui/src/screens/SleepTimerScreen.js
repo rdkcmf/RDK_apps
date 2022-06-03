@@ -52,7 +52,7 @@ export default class SleepTimerScreen extends Lightning.Component {
             }
         }
     }
-    _init() {
+    _firstEnable() {
         this.lastElement = false
         this.options = [
             { value: 'Off', tick: true },

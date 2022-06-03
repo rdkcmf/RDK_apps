@@ -20,5 +20,7 @@ import { Launch } from '@lightningjs/sdk'
 import App from './App.js'
 
 export default function () {
+  console.time('PerformanceTest')
+  console.log('Timer Start - ', new Date().toUTCString())
   return Launch(App, ...arguments)
 }

@@ -142,7 +142,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
         }
     }
 
-    _init() {
+    _firstEnable() {
         this._setState('NetworkInfo')
         let _currentInterface = "" //getDefaultInterface
         let _currentIPSettings = {}

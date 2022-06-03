@@ -85,5 +85,59 @@ export var metroAppsInfoOffline = [
     applicationType: "Lightning",
     uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
-  }
+  },
+  {
+    displayName: "Aquarium",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aquarium",
+    url: "/images/metroApps/Aquarium.png"
+  },
+  {
+    displayName: "Fireplace",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Fireplace",
+    url: "/images/metroApps/Fireplace.png"
+  },
+  {
+    displayName: "Deutsche Welle",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.DW",
+    url: "/images/metroApps/DWelle.png"
+  },
+  {
+    displayName: "MyTuner Radio",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.appgeneration.mytuner",
+    url: "/images/metroApps/Radio.png"
+  },
+  {
+    displayName: "Sudoku",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sudoku",
+    url: "/images/metroApps/Sudoku.png"
+  },
+  {
+    displayName: "Tastemade",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Tastemade",
+    url: "/images/metroApps/Tastemade.png"
+  },
+  {
+    displayName: "Bloomberg",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.bloomberg.metrological.x1",
+    url: "/images/metroApps/Bloomberg.png"
+  },
+  {
+    displayName: "Playworks",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids",
+    url: "/images/metroApps/Playworks.png"
+  },
+  {
+    displayName: "Sunrise",
+    applicationType: "Lightning",
+    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sunrise",
+    url: "/images/metroApps/Sunrise.png"
+  },
 ];

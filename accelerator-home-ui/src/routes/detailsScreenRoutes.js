@@ -19,12 +19,12 @@
 
 import DetailsScreen from '../screens/DetailsScreen'
 
-export default{
+export default {
     detailsScreenRoutes: [
         {
             path: 'menu/details',
             component: DetailsScreen,
-            widgets: ['Menu'],
+            widgets: ['Menu', 'Volume'],
         },
     ]
 }

@@ -167,7 +167,7 @@ export default class PrivacyScreen extends Lightning.Component {
         }
     }
 
-    _init() {
+    _firstEnable() {
         this._setState('LocalDeviceDiscovery')
         this.checkLocalDeviceStatus()
         this.USBApi = new UsbApi()

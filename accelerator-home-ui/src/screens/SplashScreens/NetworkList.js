@@ -129,7 +129,7 @@ export default class NetworkList extends Lightning.Component {
     return 'left'
   }
 
-  _init() {
+  _firstEnable() {
 
     this.wifiLoading = this.tag('Loader').animation({
       duration: 3,

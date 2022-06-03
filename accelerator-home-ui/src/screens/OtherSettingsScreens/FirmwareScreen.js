@@ -116,7 +116,7 @@ export default class FirmwareScreen extends Lightning.Component {
         }
     }
 
-    _init(){      
+    _firstEnable(){      
         
         
         let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot']

@@ -122,13 +122,13 @@ export default class LanguageScreen extends Lightning.Component {
           this._navigate('up')
         }
         _handleEnter() {
-          if(localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]){
+          if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
             localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index])
             let path = location.pathname.split('index.html')[0]
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html"
             let notification_url = location.origin + path + url
             console.log(notification_url)
-            appApi.launchResident(notification_url, loader)
+            appApi.launchResident(notification_url, loader).catch(err => { })
             appApi.setVisibility('ResidentApp', false)
             location.reload();
           }

@@ -26,6 +26,11 @@ export default class ImageViewer extends Lightning.Component {
         this.currentIndex = args.currentIndex
         this.data = args.list
         this.cwd = args.cwd
+        if (this.data != undefined && this.data.length > 1) {
+            this.tag('Controls').alpha = 1
+        } else {
+            this.tag('Controls').alpha = 0
+        }
         if (args.src) {
             this.tag('Image').texture.src = args.src
         }
@@ -46,12 +51,12 @@ export default class ImageViewer extends Lightning.Component {
     }
 
     _handleBack() {
-        if(this.cwd){
+        if (this.cwd) {
             Router.navigate('usb', {
                 currentIndex: this.currentIndex,
                 cwd: this.cwd
             })
-        }else{
+        } else {
             Router.back()
         }
     }
@@ -81,13 +86,13 @@ export default class ImageViewer extends Lightning.Component {
             Controls: {
                 x: 960,
                 y: 930,
-                h:75,
-                w:100,
+                h: 75,
+                w: 100,
                 Previous: {
-                    x:-50,
+                    x: -50,
                     w: 75,
                     h: 75,
-                    mount:0.5,
+                    mount: 0.5,
                     texture: {
                         type: Lightning.textures.ImageTexture,
                         src: 'static/images/Media Player/Icon_Back_White_16k.png'
@@ -97,7 +102,7 @@ export default class ImageViewer extends Lightning.Component {
                     x: 50,
                     w: 75,
                     h: 75,
-                    mount:0.5,
+                    mount: 0.5,
                     texture: {
                         type: Lightning.textures.ImageTexture,
                         src: 'static/images/Media Player/Icon_Next_White_16k.png'

@@ -16,23 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning } from '@lightningjs/sdk'
+import { Lightning, Registry, Router } from '@lightningjs/sdk'
+import DTVApi from '../api/DTVApi'
 import ChannelItem from './ChannelItem'
-import info from '../../static/data/EpgInfo.json'
-let channelIndex = 0
-let customChannels
-let url = location.href.split(location.hash)[0].split('index.html')[0]
-let notification_url = url + "static/moreChannels/ChannelData.json";
-if (location.host.includes('127.0.0.1')) {
-  notification_url = url + "lxresui/static/moreChannels/ChannelData.json";
-}
-let customChannelUrl = notification_url
-fetch(customChannelUrl)
-  .then(res => res.json())
-  .then((out) => {
-    customChannels = out.data
-  })
-  .catch(err => { throw err });
 
 export default class ChannelOverlay extends Lightning.Component {
   /**
@@ -41,6 +27,8 @@ export default class ChannelOverlay extends Lightning.Component {
   static _template() {
     return {
       Wrapper: {
+        x:-235,
+        y:90,
         clipping: true,
         w: 232,
         h: 900,
@@ -61,26 +49,57 @@ export default class ChannelOverlay extends Lightning.Component {
   }
 
   _init() {
-
+    this.activeChannelIdx = 0; //this must be initialised in init
+  }
+  _firstEnable(){
+    this.dtvApi = new DTVApi();
+    this.options = [];
+    this.overlayTimeout = null;
+    this.timeoutDuration = 10000;
+    this.dtvApi.serviceList().then(channels => {
+      const [amazon,netflix,youtube, ...others] = channels;//to remove apps from the channel overlay
+      this.options = others;
+      this.tag('Channels').items = this.options.map((item, index) => {
+        return {
+          type: ChannelItem,
+          index: index,
+          item: item,
+          ref: "Channel"+index,
+        }
+      })
+    }).catch(err => {
+      console.log("Failed to fetch channels: ",JSON.stringify(err))
+    })
+    this._overlayAnimation = this.tag("Wrapper").animation({
+      delay: 0.3,
+      duration: 0.3,
+      stopMethod: "reverse", //so that .stop will play the transition towards left
+      actions: [{ p: "x", v: { 0: -235, 1: 0 } }],
+    });
   }
   _focus() {
-    var options = info.data
-    if (typeof customChannels == "object") {
-      options = [...customChannels, ...options]
-    }
-    this.tag('Channels').items = options.map((item, index) => {
-      return {
-        type: ChannelItem,
-        index: index,
-        item: item,
-      }
-    })
-    this.$focusChannel(channelIndex)
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
+    this.$focusChannel(this.activeChannelIdx)
+    this._overlayAnimation.start();
+  }
+
+  _unfocus() {
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+    this._overlayAnimation.stop();
+  }
+
+  resetTimeout() {
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
   }
 
   $focusChannel(index) {
-    channelIndex = index
-    this.tag('Channels').setIndex(index)
+    this.activeChannelIdx = index
+    this.tag('Channels').setIndex(this.activeChannelIdx)
   }
   _getFocused() {
     return this.tag('Channels').element // add logic to focus on current channel
@@ -88,10 +107,46 @@ export default class ChannelOverlay extends Lightning.Component {
   }
 
   _handleDown() {
+    this.resetTimeout()
     this.tag('Channels').setNext()
   }
 
   _handleUp() {
+    this.resetTimeout()
     this.tag('Channels').setPrevious()
+  }
+
+  _handleBack() {
+    Router.focusPage();
+  }
+
+  _handleLeft() {
+    this._handleBack();
+  }
+
+  _handleRight() {
+    this._handleBack();
+  }
+
+  _handleEnter() {
+    this.resetTimeout()
+    let focusedChannelIdx = this.tag("Channels").index;
+    if (focusedChannelIdx !== this.activeChannelIdx) {
+      this.dtvApi.exitChannel().then( res => {
+        console.log("Current channel exit successful, launching new channel: ", JSON.stringify(res));
+        this.dtvApi
+        .launchChannel(this.options[focusedChannelIdx].dvburi)
+        .then((res) => {
+          console.log("Change Channel successfull: ", JSON.stringify(res));
+          this.activeChannelIdx = focusedChannelIdx;
+        })
+        .catch((err) => {
+          console.log("Failed to launch new channel",JSON.stringify(err));
+        });
+      }).catch(err => {
+        console.log("Failed to exit current playing channel: ", JSON.stringify(err));
+      })
+      
+    }
   }
 }

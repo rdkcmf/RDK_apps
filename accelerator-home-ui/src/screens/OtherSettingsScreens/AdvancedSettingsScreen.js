@@ -61,7 +61,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'TTS Options',
+                            text: Language.translate('TTS Options'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -111,7 +111,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Bug Report',
+                            text: Language.translate('Bug Report'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -136,7 +136,7 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Contact Support',
+                            text: Language.translate('Contact Support'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,

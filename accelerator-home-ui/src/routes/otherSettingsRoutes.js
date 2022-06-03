@@ -27,6 +27,8 @@ import DeviceScreen from '../screens/OtherSettingsScreens/DeviceScreen'
 import DeviceInformationScreen from '../screens/OtherSettingsScreens/DeviceInformationScreen'
 import FirmwareScreen from '../screens/OtherSettingsScreens/FirmwareScreen'
 import RebootConfirmationScreen from '../screens/OtherSettingsScreens/RebootConfirmationScreen'
+import TimeZone from '../screens/OtherSettingsScreens/TimeZone'
+import TimeItems from '../items/TimeItems'
 
 
 export default {
@@ -34,53 +36,63 @@ export default {
     {
       path: 'settings/other',
       component: OtherSettingsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/other/timer',
       component: SleepTimerScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/other/energy',
       component: EnergySaverScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/other/language',
       component: LanguageScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/other/privacy',
       component: PrivacyScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/other/privacyPolicy',
       component: PrivacyPolicyScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
 
     {
       path: 'settings/advanced',
       component: AdvancedSettingsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/advanced/device',
       component: DeviceScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/advanced/device/info',
       component: DeviceInformationScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
+    },
+    {
+      path: 'settings/advanced/device/timezone',
+      component: TimeZone,
+      widgets: ['Menu', 'Volume'],
+    },
+    {
+      path: 'settings/advanced/device/timezone/item',
+      component: TimeItems,
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/advanced/device/firmware',
       component: FirmwareScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/advanced/device/reboot',

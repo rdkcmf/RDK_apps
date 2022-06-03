@@ -70,8 +70,32 @@ export default class DeviceScreen extends Lightning.Component {
                         src: Utils.asset('images/settings/Arrow.png'),
                     },
                 },
-                Firmware: {
+                TimeZone: {
                     y: 90,
+                    type: SettingsMainItem,
+                    Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: Language.translate('Time Zone'),
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 25,
+                        }
+                    },
+                    Button: {
+                        h: 45,
+                        w: 45,
+                        x: 1600,
+                        mountX: 1,
+                        y: 45,
+                        mountY: 0.5,
+                        src: Utils.asset('images/settings/Arrow.png'),
+                    },
+                },
+                Firmware: {
+                    y: 180,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -95,7 +119,7 @@ export default class DeviceScreen extends Lightning.Component {
                     },
                 },
                 Reboot: {
-                    y: 180,
+                    y: 270,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -110,7 +134,7 @@ export default class DeviceScreen extends Lightning.Component {
                     },
                 },
                 Reset: {
-                    y: 270,
+                    y: 360,
                     alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
@@ -118,7 +142,7 @@ export default class DeviceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Factory Reset',
+                            text: Language.translate('Factory Reset'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -166,10 +190,27 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Reboot');
                 }
                 _handleDown() {
-                    this._setState('Firmware')
+                    this._setState('TimeZone')
                 }
                 _handleEnter() {
                     Router.navigate('settings/advanced/device/info')
+                }
+            },
+            class TimeZone extends this{
+                $enter() {
+                    this.tag('TimeZone')._focus()
+                }
+                $exit() {
+                    this.tag('TimeZone')._unfocus()
+                }
+                _handleUp() {
+                    this._setState('Info');
+                }
+                _handleDown() {
+                    this._setState('Firmware')
+                }
+                _handleEnter() {
+                    Router.navigate('settings/advanced/device/timezone')
                 }
             },
             class Firmware extends this{

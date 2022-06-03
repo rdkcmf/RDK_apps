@@ -47,10 +47,10 @@ export default class AppStore extends Lightning.Component {
         }
     }
 
-    _init() {
+    _firstEnable() {
         let apps = homeApi.getAllApps()
         apps.shift()
-        const options = ['My Apps', 'App Catalog', 'ManageApps']
+        const options = ['My Apps', 'App Catalog', 'Manage Apps']
         this.tag('Apps').add(apps.map((element) => {
             return { h: AppStoreItem.height + 90, w: AppStoreItem.width, info: element }
         }));
@@ -127,8 +127,15 @@ export default class AppStore extends Lightning.Component {
                     Storage.set('applicationType', applicationType);
                     console.log(this.uri, applicationType)
                     if (Storage.get('applicationType') == 'Cobalt') {
-                        appApi.launchCobalt(this.uri);
-                        appApi.setVisibility('ResidentApp', false);
+                        appApi.getPluginStatus('Cobalt')
+                            .then(() => {
+                                appApi.launchCobalt(this.uri).catch(err => { });
+                                appApi.setVisibility('ResidentApp', false);
+                            })
+                            .catch(err => {
+                                console.log('Cobalt plugin error', err)
+                                Storage.set('applicationType', '')
+                            })
                     } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
                         appApi.launchWeb(this.uri)
                             .then(() => {
@@ -136,55 +143,34 @@ export default class AppStore extends Lightning.Component {
                                 let path = location.pathname.split('index.html')[0]
                                 let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
                                 let notification_url = location.origin + path + url
-                                appApi.launchOverlay(notification_url, 'TextOverlay')
+                                appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => { })
                                 Registry.setTimeout(() => {
                                     appApi.deactivateResidentApp('TextOverlay')
                                     appApi.zorder('HtmlApp')
                                     appApi.setVisibility('HtmlApp', true)
                                 }, 9000)
-                            })
+                            }).catch(() => { })
                     } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-                        appApi.launchLightning(this.uri);
+                        appApi.launchLightning(this.uri).catch(() => { });
                         appApi.setVisibility('ResidentApp', false);
                     } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-                        appApi.launchNative(this.uri);
+                        appApi.launchNative(this.uri).catch(() => { });
                         appApi.setVisibility('ResidentApp', false);
                     } else if (Storage.get('applicationType') == 'Amazon') {
                         console.log('Launching app')
-                        fetch('http://127.0.0.1:9998/Service/Controller/')
-                            .then(res => res.json())
-                            .then(data => {
-                                console.log(data)
-                                data.plugins.forEach(element => {
-                                    if (element.callsign === 'Amazon') {
-                                        console.log('Opening Amazon')
-                                        appApi.launchPremiumApp('Amazon');
-                                        appApi.setVisibility('ResidentApp', false);
-                                    }
-                                });
+                        appApi.getPluginStatus('Amazon')
+                            .then(result => {
+                                appApi.launchPremiumApp('Amazon').catch(() => { });
+                                appApi.setVisibility('ResidentApp', false);
                             })
                             .catch(err => {
-                                console.log('Amazon not working')
+                                console.log('Amazon plugin error', err)
+                                Storage.set('applicationType', '')
                             })
 
                     } else if (Storage.get('applicationType') == 'Netflix') {
                         console.log('Launching app')
-                        fetch('http://127.0.0.1:9998/Service/Controller/')
-                            .then(res => res.json())
-                            .then(data => {
-                                console.log(data)
-                                data.plugins.forEach(element => {
-                                    if (element.callsign === 'Netflix') {
-                                        console.log('Opening Netflix')
-                                        appApi.launchPremiumApp('Netflix');
-                                        appApi.setVisibility('ResidentApp', false);
-                                    }
-                                });
-                            })
-                            .catch(err => {
-                                console.log('Netflix not working')
-                            })
-
+                        this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { })
                     }
                 }
             }
