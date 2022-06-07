@@ -114,7 +114,7 @@ export default {
         }
         return Promise.resolve()
       },
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Fail'],
     },
     {
       path: 'player',

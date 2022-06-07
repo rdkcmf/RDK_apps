@@ -26,6 +26,7 @@ import Keymap from './Config/Keymap';
 import Menu from './views/Menu'
 import Failscreen from './screens/FailScreen';
 import { keyIntercept } from './keyIntercept/keyIntercept';
+import HDMIApi from './api/HDMIApi';
 
 const config = {
   host: '127.0.0.1',
@@ -197,7 +198,7 @@ export default class App extends Router.App {
 
     thunder.on('Controller', 'statechange', notification => {
       console.log(JSON.stringify(notification))
-      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp') && notification.state == 'Deactivation') {
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
 
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
@@ -242,8 +243,13 @@ export default class App extends Router.App {
         break;
       case 'Amazon':
         appApi.deactivateNativeApp('Amazon');
+        break;
       case 'Netflix':
         appApi.deactivateNativeApp('Netflix')
+        break;
+      case 'HDMI':
+        new HDMIApi().stopHDMIInput()
+        break;
       default:
         break;
     }

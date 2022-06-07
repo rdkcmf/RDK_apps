@@ -31,6 +31,10 @@ export default class Failscreen extends Lightning.Component {
         }
     }
 
+    pageTransition() {
+        return 'left'
+      }
+
     _focus() {
         this.alpha = 1
     }

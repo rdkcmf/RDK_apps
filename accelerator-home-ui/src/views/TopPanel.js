@@ -16,12 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Router, Language } from '@lightningjs/sdk'
+import { Lightning, Utils, Router, Language, Registry } from '@lightningjs/sdk'
 import AppApi from '../api/AppApi'
 import { CONFIG } from '../Config/Config'
 import Keymap from '../Config/Keymap'
 
-let zone = null // declaring this variable to keep track of zone changes
 
 /** Class for top panel in home UI */
 export default class TopPanel extends Lightning.Component {
@@ -82,25 +81,27 @@ export default class TopPanel extends Lightning.Component {
   }
 
   changeTimeZone(time) {
-    zone = time
+    this.zone = time
   }
 
-  updateZone() {
-    zone = this.zone
+  updateZone(res) {
+    this.zone = res
   }
 
-  _init() {
+  _construct() {
     this.indexVal = 1;
     this.audiointerval = null;
-    this.zone = null
+    this.zone = null // declaring this variable to keep track of zone changes
     this.appApi = new AppApi()
 
     this.appApi.getZone().then((res) => {
-      this.zone = res
-      this.updateZone()
+      this.updateZone(res)
     })
-    zone = this.zone ? this.zone : Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log(zone)
+
+    this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  _init() {
     this._setState('Setting')
   }
 
@@ -138,12 +139,12 @@ export default class TopPanel extends Lightning.Component {
 
 
   _build() {
-    setInterval(() => {
-      let _date = this.updateTime()
+    Registry.setInterval((zone) => {
+      let _date = this._updateTime(zone)
       if (zone) {
         this.tag('Time').patch({ text: { text: _date.strTime } })
       }
-    }, 1000)
+    }, 1000, this.zone)
   }
 
   updateIcon(tagname, url) {
@@ -155,7 +156,7 @@ export default class TopPanel extends Lightning.Component {
   /**
    * Function to update time in home UI.
    */
-  updateTime() {
+  _updateTime(zone) {
     if (zone != null) {
       let date = new Date()
       date = new Date(date.toLocaleString('en-US', { timeZone: zone }))

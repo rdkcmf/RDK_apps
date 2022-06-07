@@ -213,6 +213,7 @@ export default class BluetoothApi {
         })
         .catch(err => {
           console.error(`Can't get paired devices : ${err}`)
+          reject(false)
         })
     })
   }

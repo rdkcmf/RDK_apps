@@ -1,9 +1,9 @@
 /*
- App version: 3.7 03/06/22
+ App version: 3.7 07/06/22
  SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Fri, 03 Jun 2022 10:10:40 GMT
+ gmtDate: Mon, 13 Jun 2022 10:02:45 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -5236,11 +5236,11 @@ SDK - v${this.sdkVersion}`;
         });
       });
     }
-    setZone(zone2) {
-      console.log(zone2);
+    setZone(zone) {
+      console.log(zone);
       return new Promise((resolve, reject) => {
         thunder.call("org.rdk.System", "setTimeZoneDST", {
-          timeZone: zone2
+          timeZone: zone
         }).then((result) => {
           resolve(result.success);
         }).catch((err) => {
@@ -9691,6 +9691,99 @@ SDK - v${this.sdkVersion}`;
     right: 1
   };
 
+  // src/api/HDMIApi.js
+  var HDMIApi = class {
+    constructor() {
+      const config8 = {
+        host: "127.0.0.1",
+        port: 9998,
+        default: 1
+      };
+      this._thunder = thunderJS_default(config8);
+      this._events = new Map();
+      this.callsign = "org.rdk.HdmiInput";
+    }
+    activate() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call("Controller", "activate", {
+          callsign: this.callsign
+        }).then((result) => {
+          console.log("Activated HdmiInput plugin");
+          this._thunder.on(this.callsign, "onInputStatusChanged", (notification) => {
+            if (this._events.has("onInputStatusChanged")) {
+              this._events.get("onInputStatusChanged")(notification);
+            }
+          });
+          this._thunder.on(this.callsign, "onDevicesChanged", (notification) => {
+            if (this._events.has("onDevicesChanged")) {
+              this._events.get("onDevicesChanged")(notification);
+            }
+          });
+          this._thunder.on(this.callsign, "onSignalChanged", (notification) => {
+            if (this._events.has("onSignalChanged")) {
+              this._events.get("onSignalChanged")(notification);
+            }
+          });
+          this._thunder.on(this.callsign, "videoStreamInfoUpdate", (notification) => {
+            if (this._events.has("videoStreamInfoUpdate")) {
+              this._events.get("videoStreamInfoUpdate")(notification);
+            }
+          });
+          if (result === null)
+            resolve(true);
+          else
+            resolve(false);
+        }).catch((err) => {
+          console.log("Failed to activate HdmiInput plugin", err);
+          reject(false);
+        });
+      });
+    }
+    getHDMIDevices() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, "getHDMIInputDevices").then((result) => {
+          resolve(result.devices);
+        }).catch((err) => {
+          resolve([]);
+        });
+      });
+    }
+    checkStatus(plugin) {
+      return new Promise((resolve, reject) => {
+        this._thunder.call("Controller.1", "status@" + plugin).then((res) => {
+          console.log(res);
+        });
+      });
+    }
+    setHDMIInput(portId) {
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, "startHdmiInput", {
+          portId
+        }).then((result) => {
+          this._thunder.call(this.callsign, "setVideoRectangle", {
+            x: 0,
+            y: 0,
+            w: 1920,
+            h: 1080
+          });
+          resolve(result);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    }
+    stopHDMIInput() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call(this.callsign, "stopHdmiInput").then((result) => {
+          resolve(result);
+        });
+      });
+    }
+    registerEvent(eventId, callback) {
+      this._events.set(eventId, callback);
+    }
+  };
+
   // src/views/MainView.js
   var MainView = class extends Lightning_default.Component {
     _onChanged() {
@@ -9705,7 +9798,7 @@ SDK - v${this.sdkVersion}`;
         clipping: true,
         MainView: {
           w: 1720,
-          h: 810,
+          h: 1200,
           xIndex: 2,
           y: 270,
           x: 200,
@@ -9739,6 +9832,40 @@ SDK - v${this.sdkVersion}`;
             horizontal: true,
             itemScrollOffset: -1,
             clipping: false
+          },
+          Inputs: {
+            y: 0,
+            visible: false,
+            Title: {
+              y: 0,
+              h: 30,
+              text: {
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+                text: Language_default.translate("Input Select"),
+                fontStyle: "normal",
+                textColor: 4294967295
+              },
+              zIndex: 0
+            },
+            Slider: {
+              x: -20,
+              y: 37,
+              type: Lightning_default.components.ListComponent,
+              flex: {
+                direction: "row",
+                paddingLeft: 20,
+                wrap: false
+              },
+              w: 1745,
+              h: 300,
+              itemSize: 288,
+              roll: true,
+              rollMax: 1745,
+              horizontal: true,
+              itemScrollOffset: -4,
+              clipping: false
+            }
           },
           Text1: {
             h: 30,
@@ -9885,17 +10012,40 @@ SDK - v${this.sdkVersion}`;
       return "up";
     }
     moveDownContent() {
+      let inputSelectOffset = 0;
+      if (this.inputSelect) {
+        inputSelectOffset = 275;
+      }
       this.tag("Text0").alpha = 1;
-      this.tag("Text1").y = 490 - 50;
-      this.tag("AppList").y = 527 - 50;
-      this.tag("Text2").y = 755 - 50;
-      this.tag("MetroApps").y = 795 - 50;
-      this.tag("Text3").y = 1030 - 50;
-      this.tag("TVShows").y = 1070 - 50;
-      this.tag("Text4").y = 1298 - 50;
-      this.tag("ShowcaseApps").y = 1338 - 50;
-      this.tag("Text5").y = 1566 - 50;
-      this.tag("UsbApps").y = 1606 - 50;
+      this.tag("Inputs").y = 440;
+      this.tag("Text1").y = 440 + inputSelectOffset;
+      this.tag("AppList").y = 477 + inputSelectOffset;
+      this.tag("Text2").y = 705 + inputSelectOffset;
+      this.tag("MetroApps").y = 745 + inputSelectOffset;
+      this.tag("Text3").y = 980 + inputSelectOffset;
+      this.tag("TVShows").y = 1020 + inputSelectOffset;
+      this.tag("Text4").y = 1248 + inputSelectOffset;
+      this.tag("ShowcaseApps").y = 1288 + inputSelectOffset;
+      this.tag("Text5").y = 1516 + inputSelectOffset;
+      this.tag("UsbApps").y = 1556 + inputSelectOffset;
+    }
+    showInputSelect() {
+      this.tag("Inputs").visible = true;
+      let gracenoteOffset = 0;
+      if (!this.gracenote) {
+        gracenoteOffset = 440;
+      }
+      this.tag("Inputs").y = this.gracenote ? 440 : 0;
+      this.tag("Text1").y = 440 + 275 - gracenoteOffset;
+      this.tag("AppList").y = 477 + 275 - gracenoteOffset;
+      this.tag("Text2").y = 705 + 275 - gracenoteOffset;
+      this.tag("MetroApps").y = 745 + 275 - gracenoteOffset;
+      this.tag("Text3").y = 980 + 275 - gracenoteOffset;
+      this.tag("TVShows").y = 1020 + 275 - gracenoteOffset;
+      this.tag("Text4").y = 1248 + 275 - gracenoteOffset;
+      this.tag("ShowcaseApps").y = 1288 + 275 - gracenoteOffset;
+      this.tag("Text5").y = 1516 + 275 - gracenoteOffset;
+      this.tag("UsbApps").y = 1556 + 275 - gracenoteOffset;
     }
     setGracenoteData(data) {
       if (!this.gracenote) {
@@ -9909,6 +10059,7 @@ SDK - v${this.sdkVersion}`;
     }
     _init() {
       this.gracenote = false;
+      this.inputSelect = false;
       this.settingsScreen = false;
       this.indexVal = 0;
       const config8 = {
@@ -9919,6 +10070,7 @@ SDK - v${this.sdkVersion}`;
       this.usbApi = new UsbApi();
       this.homeApi = new HomeApi();
       this.xcastApi = new XcastApi();
+      this.hdmiApi = new HDMIApi();
       let thunder10 = thunderJS_default(config8);
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
@@ -9959,6 +10111,28 @@ SDK - v${this.sdkVersion}`;
       }
       this.appItems = this.tempRow;
       this.usbApps = usbAppsArr;
+      this.hdmiApi.activate().then(() => {
+        this.hdmiApi.registerEvent("onDevicesChanged", (notification) => {
+          console.log("onDevicesChanged ", JSON.stringify(notification));
+        });
+        this.hdmiApi.registerEvent("onInputStatusChanged", (notification) => {
+          console.log("onInputStatusChanged ", JSON.stringify(notification));
+        });
+        this.hdmiApi.registerEvent("onSignalChanged", (notification) => {
+          console.log("onSignalChanged ", JSON.stringify(notification));
+        });
+        this.hdmiApi.registerEvent("videoStreamInfoUpdate", (notification) => {
+          console.log("videoStreamInfoUpdate ", JSON.stringify(notification));
+        });
+        this.inputSelect = true;
+        this.appItems = this.tempRow;
+        this.hdmiApi.getHDMIDevices().then((res) => {
+          if (res.length > 0)
+            this.inputItems = res;
+        });
+      }).catch((err) => {
+        console.log("HDMIInput Plugin not activated", err);
+      });
       const registerListener2 = () => {
         let listener;
         listener = thunder10.on("org.rdk.UsbAccess", "onUSBMountChanged", (notification) => {
@@ -9998,7 +10172,6 @@ SDK - v${this.sdkVersion}`;
       });
       this.fireAncestors("$mountEventConstructor", registerListener2.bind(this));
       this.refreshFirstRow();
-      this._setState("AppList.0");
     }
     _firstActive() {
       if (!Storage_default.get("UsbMedia")) {
@@ -10019,7 +10192,13 @@ SDK - v${this.sdkVersion}`;
       }
     }
     _focus() {
-      this._setState(this.state);
+      if (this.gracenote) {
+        this._setState("Gracenote");
+      } else if (this.inputSelect) {
+        this._setState("Inputs");
+      } else {
+        this._setState("AppList.0");
+      }
     }
     _firstEnable() {
       console.timeEnd("PerformanceTest");
@@ -10078,6 +10257,25 @@ SDK - v${this.sdkVersion}`;
       });
       this._setState("Gracenote");
     }
+    set inputItems(items) {
+      this.showInputSelect();
+      this.tag("Inputs.Slider").items = items.map((info3, idx) => {
+        return {
+          w: 268,
+          h: 151,
+          type: ListItem,
+          data: __spreadProps(__spreadValues({}, info3), {
+            displayName: `Port ${info3.id}`,
+            url: "/images/metroApps/Test-01.jpg"
+          }),
+          focus: 1.11,
+          unfocus: 1,
+          idx,
+          bar: 12
+        };
+      });
+      this._setState("Inputs.0");
+    }
     set showcaseApps(items) {
       this.tag("ShowcaseApps").items = items.map((info3, idx) => {
         return {
@@ -10097,8 +10295,8 @@ SDK - v${this.sdkVersion}`;
       this.tag("AppList").clear();
       this.tag("AppList").add(items.map((info3, idx) => {
         return {
-          w: this.gracenote ? 268 : 454,
-          h: this.gracenote ? 151 : 255,
+          w: this.gracenote || this.inputSelect ? 268 : 454,
+          h: this.gracenote || this.inputSelect ? 151 : 255,
           type: ListItem,
           data: info3,
           focus: 1.11,
@@ -10172,6 +10370,7 @@ SDK - v${this.sdkVersion}`;
       return [class Gracenote extends this {
         $enter() {
           this.indexVal = 0;
+          this.scroll(270);
         }
         $exit() {
           this.tag("Text0").text.fontStyle = "normal";
@@ -10183,7 +10382,11 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleDown() {
-          this._setState("AppList");
+          if (this.inputSelect) {
+            this._setState("Inputs");
+          } else {
+            this._setState("AppList");
+          }
         }
         _handleRight() {
           if (this.tag("Gracenote").length - 1 != this.tag("Gracenote").index) {
@@ -10209,10 +10412,70 @@ SDK - v${this.sdkVersion}`;
             key: this.key
           });
         }
+      }, class Inputs extends this {
+        $enter() {
+          this.tag("Inputs.Title").text.fontStyle = "bold";
+          this.indexVal = 0;
+          this.scroll(270);
+        }
+        $exit() {
+          this.tag("Inputs.Title").text.fontStyle = "normal";
+        }
+        _getFocused() {
+          this.tag("Inputs.Title").text.fontStyle = "bold";
+          if (this.tag("Inputs.Slider").length) {
+            return this.tag("Inputs.Slider").element;
+          }
+        }
+        _handleDown() {
+          this._setState("AppList");
+        }
+        _handleUp() {
+          if (this.gracenote) {
+            this._setState("Gracenote");
+          } else {
+            this.widgets.menu.notify("TopPanel");
+          }
+        }
+        _handleLeft() {
+          if (this.tag("Inputs.Slider").index != 0) {
+            this.tag("Inputs.Slider").setPrevious();
+            return this.tag("Inputs.Slider").element;
+          } else {
+            this.tag("Inputs.Title").text.fontStyle = "normal";
+            Router_default.focusWidget("Menu");
+          }
+        }
+        _handleRight() {
+          if (this.tag("Inputs.Slider").length - 1 != this.tag("Inputs.Slider").index) {
+            this.tag("Inputs.Slider").setNext();
+            return this.tag("Inputs.Slider").element;
+          }
+        }
+        _handleEnter() {
+          let appApi10 = new AppApi();
+          console.log(this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.id);
+          this.hdmiApi.setHDMIInput(this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.id).then((res) => {
+            console.log("completed");
+            Storage_default.set("applicationType", "HDMI");
+            appApi10.setVisibility("ResidentApp", false);
+          }).catch((err) => {
+            console.log("failed");
+            this.widgets.fail.notify({
+              title: this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.displayName,
+              msg: "Select a different input."
+            });
+            Router_default.focusWidget("Fail");
+          });
+        }
       }, class AppList extends this {
         $enter() {
           this.indexVal = 0;
-          this.scroll(270);
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-100);
+          } else {
+            this.scroll(270);
+          }
         }
         $exit() {
           this.tag("Text1").text.fontStyle = "normal";
@@ -10227,7 +10490,9 @@ SDK - v${this.sdkVersion}`;
           this._setState("MetroApps");
         }
         _handleUp() {
-          if (this.gracenote) {
+          if (this.inputSelect) {
+            this._setState("Inputs");
+          } else if (this.gracenote) {
             this._setState("Gracenote");
           } else {
             this.widgets.menu.notify("TopPanel");
@@ -10283,7 +10548,6 @@ SDK - v${this.sdkVersion}`;
           } else if (Storage_default.get("applicationType") == "Netflix") {
             console.log("Launching app");
             fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
-              console.log(data);
               data.plugins.forEach((element) => {
                 if (element.callsign === "Netflix") {
                   console.log("Opening Netflix");
@@ -10306,7 +10570,11 @@ SDK - v${this.sdkVersion}`;
         }
       }, class MetroApps extends this {
         $enter() {
-          this.scroll(-100);
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-200);
+          } else {
+            this.scroll(-100);
+          }
           this.indexVal = 1;
         }
         $exit() {
@@ -10363,7 +10631,11 @@ SDK - v${this.sdkVersion}`;
       }, class TVShows extends this {
         $enter() {
           this.indexVal = 2;
-          this.scroll(-400);
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-600);
+          } else {
+            this.scroll(-400);
+          }
         }
         _handleUp() {
           this.scroll(270);
@@ -10403,7 +10675,11 @@ SDK - v${this.sdkVersion}`;
         }
       }, class ShowcaseApps extends this {
         $enter() {
-          this.scroll(-550);
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-750);
+          } else {
+            this.scroll(-550);
+          }
         }
         $exit() {
           this.tag("Text4").text.fontStyle = "normal";
@@ -10460,7 +10736,11 @@ SDK - v${this.sdkVersion}`;
         }
       }, class UsbApps extends this {
         $enter() {
-          this.scroll(-750);
+          if (this.inputSelect && this.gracenote) {
+            this.scroll(-1e3);
+          } else {
+            this.scroll(-750);
+          }
         }
         $exit() {
           this.tag("Text5").text.fontStyle = "normal";
@@ -10984,6 +11264,7 @@ SDK - v${this.sdkVersion}`;
           resolve(result.pairedDevices);
         }).catch((err) => {
           console.error(`Can't get paired devices : ${err}`);
+          reject(false);
         });
       });
     }
@@ -29400,6 +29681,9 @@ Time Stamp - ${res.stbTimestamp} `;
         this.tag("FailScreen.Message").text.text = args.msg;
       }
     }
+    pageTransition() {
+      return "left";
+    }
     _focus() {
       this.alpha = 1;
     }
@@ -43972,7 +44256,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         }
         return Promise.resolve();
       },
-      widgets: ["Menu"]
+      widgets: ["Menu", "Fail"]
     }, {
       path: "player",
       component: AAMPVideoPlayer
@@ -44277,7 +44561,6 @@ ${args.gracenoteItem.ratings[0].subRating}`;
   };
 
   // src/views/TopPanel.js
-  var zone = null;
   var TopPanel = class extends Lightning_default.Component {
     static _template() {
       return {
@@ -44337,22 +44620,22 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       };
     }
     changeTimeZone(time) {
-      zone = time;
+      this.zone = time;
     }
-    updateZone() {
-      zone = this.zone;
+    updateZone(res) {
+      this.zone = res;
     }
-    _init() {
+    _construct() {
       this.indexVal = 1;
       this.audiointerval = null;
       this.zone = null;
       this.appApi = new AppApi();
       this.appApi.getZone().then((res) => {
-        this.zone = res;
-        this.updateZone();
+        this.updateZone(res);
       });
-      zone = this.zone ? this.zone : Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log(zone);
+      this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+    _init() {
       this._setState("Setting");
     }
     set index(index2) {
@@ -44376,8 +44659,8 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       }
     }
     _build() {
-      setInterval(() => {
-        let _date = this.updateTime();
+      Registry_default.setInterval((zone) => {
+        let _date = this._updateTime(zone);
         if (zone) {
           this.tag("Time").patch({
             text: {
@@ -44385,14 +44668,14 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             }
           });
         }
-      }, 1e3);
+      }, 1e3, this.zone);
     }
     updateIcon(tagname, url3) {
       this.tag(tagname).patch({
         src: Utils_default.asset(url3)
       });
     }
-    updateTime() {
+    _updateTime(zone) {
       if (zone != null) {
         let date = new Date();
         date = new Date(date.toLocaleString("en-US", {
@@ -44968,7 +45251,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       });
       thunder9.on("Controller", "statechange", (notification) => {
         console.log(JSON.stringify(notification));
-        if (notification && (notification.callsign === "Cobalt" || notification.callsign === "Amazon" || notification.callsign === "LightningApp") && notification.state == "Deactivation") {
+        if (notification && (notification.callsign === "Cobalt" || notification.callsign === "Amazon" || notification.callsign === "LightningApp" || notification.callsign === "Netflix") && notification.state == "Deactivation") {
           Storage_default.set("applicationType", "");
           appApi9.setVisibility("ResidentApp", true);
           thunder9.call("org.rdk.RDKShell", "moveToFront", {
@@ -45010,8 +45293,13 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           break;
         case "Amazon":
           appApi10.deactivateNativeApp("Amazon");
+          break;
         case "Netflix":
           appApi10.deactivateNativeApp("Netflix");
+          break;
+        case "HDMI":
+          new HDMIApi().stopHDMIInput();
+          break;
         default:
           break;
       }
