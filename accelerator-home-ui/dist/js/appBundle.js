@@ -1,9 +1,9 @@
 /*
- App version: 3.7 07/06/22
+ App version: 3.7 14/06/22
  SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Mon, 13 Jun 2022 10:02:45 GMT
+ gmtDate: Tue, 14 Jun 2022 13:02:52 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -9755,22 +9755,46 @@ SDK - v${this.sdkVersion}`;
         });
       });
     }
-    setHDMIInput(portId) {
+    getWidth() {
       return new Promise((resolve, reject) => {
-        this._thunder.call(this.callsign, "startHdmiInput", {
-          portId
-        }).then((result) => {
-          this._thunder.call(this.callsign, "setVideoRectangle", {
-            x: 0,
-            y: 0,
-            w: 1920,
-            h: 1080
-          });
+        this._thunder.call("DisplayInfo", "width").then((result) => {
           resolve(result);
         }).catch((err) => {
-          reject(err);
+          resolve("1920");
         });
       });
+    }
+    getHeight() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call("DisplayInfo", "height").then((result) => {
+          resolve(result);
+        }).catch((err) => {
+          resolve("1080");
+        });
+      });
+    }
+    setHDMIInput(portDetails) {
+      console.log(portDetails);
+      return new Promise((resolve, reject) => __async(this, null, function* () {
+        if (portDetails.connected) {
+          this._thunder.call(this.callsign, "startHdmiInput", {
+            portId: portDetails.id
+          }).then((result) => __async(this, null, function* () {
+            const dimension = yield Promise.all([this.getWidth(), this.getHeight()]);
+            this._thunder.call(this.callsign, "setVideoRectangle", {
+              x: 0,
+              y: 0,
+              w: dimension[0],
+              h: dimension[1]
+            });
+            resolve(result);
+          })).catch((err) => {
+            reject(err);
+          });
+        } else {
+          reject(false);
+        }
+      }));
     }
     stopHDMIInput() {
       return new Promise((resolve, reject) => {
@@ -10071,6 +10095,7 @@ SDK - v${this.sdkVersion}`;
       this.homeApi = new HomeApi();
       this.xcastApi = new XcastApi();
       this.hdmiApi = new HDMIApi();
+      this.appApi = new AppApi();
       let thunder10 = thunderJS_default(config8);
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
@@ -10266,7 +10291,7 @@ SDK - v${this.sdkVersion}`;
           type: ListItem,
           data: __spreadProps(__spreadValues({}, info3), {
             displayName: `Port ${info3.id}`,
-            url: "/images/metroApps/Test-01.jpg"
+            url: "/images/inputs/HDMI.jpg"
           }),
           focus: 1.11,
           unfocus: 1,
@@ -10453,14 +10478,13 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleEnter() {
-          let appApi10 = new AppApi();
           console.log(this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.id);
-          this.hdmiApi.setHDMIInput(this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.id).then((res) => {
+          this.hdmiApi.setHDMIInput(this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data).then((res) => {
             console.log("completed");
             Storage_default.set("applicationType", "HDMI");
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.setVisibility("ResidentApp", false);
           }).catch((err) => {
-            console.log("failed");
+            console.log("failed", err);
             this.widgets.fail.notify({
               title: this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.displayName,
               msg: "Select a different input."
@@ -10503,34 +10527,33 @@ SDK - v${this.sdkVersion}`;
           Router_default.focusWidget("Menu");
         }
         _handleEnter() {
-          let appApi10 = new AppApi();
           let applicationType = this.tag("AppList").items[this.tag("AppList").index].data.applicationType;
           this.uri = this.tag("AppList").items[this.tag("AppList").index].data.uri;
           applicationType = this.tag("AppList").items[this.tag("AppList").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("AppList").items[this.tag("AppList").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi10.launchCobalt(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi10.launchWeb(this.uri).then(() => {
-              appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchWeb(this.uri).then(() => {
+              this.appApi.setVisibility("ResidentApp", false);
               let path = location.pathname.split("index.html")[0];
               let url3 = path.slice(-1) === "/" ? "static/overlayText/index.html" : "/static/overlayText/index.html";
               let notification_url3 = location.origin + path + url3;
-              appApi10.launchOverlay(notification_url3, "TextOverlay");
+              this.appApi.launchOverlay(notification_url3, "TextOverlay");
               Registry_default.setTimeout(() => {
-                appApi10.deactivateResidentApp("TextOverlay");
-                appApi10.zorder("HtmlApp");
-                appApi10.setVisibility("HtmlApp", true);
+                this.appApi.deactivateResidentApp("TextOverlay");
+                this.appApi.zorder("HtmlApp");
+                this.appApi.setVisibility("HtmlApp", true);
               }, 9e3);
             });
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi10.launchLightning(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi10.launchNative(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Amazon") {
             console.log("Launching app");
             fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
@@ -10538,8 +10561,8 @@ SDK - v${this.sdkVersion}`;
               data.plugins.forEach((element) => {
                 if (element.callsign === "Amazon") {
                   console.log("Opening Amazon");
-                  appApi10.launchPremiumApp("Amazon");
-                  appApi10.setVisibility("ResidentApp", false);
+                  this.appApi.launchPremiumApp("Amazon");
+                  this.appApi.setVisibility("ResidentApp", false);
                 }
               });
             }).catch((err) => {
@@ -10551,8 +10574,8 @@ SDK - v${this.sdkVersion}`;
               data.plugins.forEach((element) => {
                 if (element.callsign === "Netflix") {
                   console.log("Opening Netflix");
-                  appApi10.launchPremiumApp("Netflix");
-                  appApi10.setVisibility("ResidentApp", false);
+                  this.appApi.launchPremiumApp("Netflix");
+                  this.appApi.setVisibility("ResidentApp", false);
                 }
               });
             }).catch((err) => {
@@ -10608,24 +10631,23 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleEnter() {
-          let appApi10 = new AppApi();
           let applicationType = this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType;
           this.uri = this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri;
           applicationType = this.tag("MetroApps").items[this.tag("MetroApps").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("MetroApps").items[this.tag("MetroApps").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi10.launchCobalt(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi10.launchWeb(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi10.launchLightning(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi10.launchNative(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           }
         }
       }, class TVShows extends this {
@@ -10714,24 +10736,23 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleEnter() {
-          let appApi10 = new AppApi();
           let applicationType = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.applicationType;
           this.uri = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.uri;
           applicationType = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("ShowcaseApps").items[this.tag("ShowcaseApps").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi10.launchCobalt(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi10.launchWeb(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi10.launchLightning(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi10.launchNative(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           }
         }
       }, class UsbApps extends this {
@@ -10770,24 +10791,23 @@ SDK - v${this.sdkVersion}`;
           }
         }
         _handleEnter() {
-          let appApi10 = new AppApi();
           let applicationType = this.tag("UsbApps").items[this.tag("UsbApps").index].data.applicationType;
           this.uri = this.tag("UsbApps").items[this.tag("UsbApps").index].data.uri;
           applicationType = this.tag("UsbApps").items[this.tag("UsbApps").index].data.applicationType;
           Storage_default.set("applicationType", applicationType);
           this.uri = this.tag("UsbApps").items[this.tag("UsbApps").index].data.uri;
           if (Storage_default.get("applicationType") == "Cobalt") {
-            appApi10.launchCobalt(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "WebApp" && Storage_default.get("ipAddress")) {
-            appApi10.launchWeb(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Lightning" && Storage_default.get("ipAddress")) {
-            appApi10.launchLightning(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           } else if (Storage_default.get("applicationType") == "Native" && Storage_default.get("ipAddress")) {
-            appApi10.launchNative(this.uri);
-            appApi10.setVisibility("ResidentApp", false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility("ResidentApp", false);
           }
         }
       }, class RightArrow extends this {
@@ -44879,8 +44899,8 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       thunder8.on(rdkshellCallsign, "onSuspended", (notification) => {
         if (notification) {
           console.log("onSuspended notification: " + notification.client);
-          if (Storage.get("applicationType") == notification.client) {
-            Storage.set("applicationType", "");
+          if (Storage_default.get("applicationType") == notification.client) {
+            Storage_default.set("applicationType", "");
             appApi8.setVisibility("ResidentApp", true);
             thunder8.call("org.rdk.RDKShell", "moveToFront", {
               client: "ResidentApp"
@@ -45277,25 +45297,24 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       });
     }
     deactivateChildApp(plugin) {
-      var appApi10 = new AppApi();
       switch (plugin) {
         case "WebApp":
-          appApi10.deactivateWeb();
+          appApi9.deactivateWeb();
           break;
         case "Cobalt":
-          appApi10.deactivateCobalt();
+          appApi9.deactivateCobalt();
           break;
         case "Lightning":
-          appApi10.deactivateLightning();
+          appApi9.deactivateLightning();
           break;
         case "Native":
-          appApi10.killNative();
+          appApi9.killNative();
           break;
         case "Amazon":
-          appApi10.deactivateNativeApp("Amazon");
+          appApi9.deactivateNativeApp("Amazon");
           break;
         case "Netflix":
-          appApi10.deactivateNativeApp("Netflix");
+          appApi9.deactivateNativeApp("Netflix");
           break;
         case "HDMI":
           new HDMIApi().stopHDMIInput();

@@ -307,6 +307,7 @@ export default class MainView extends Lightning.Component {
     this.homeApi = new HomeApi();
     this.xcastApi = new XcastApi();
     this.hdmiApi = new HDMIApi()
+    this.appApi = new AppApi()
     let thunder = ThunderJS(config);
 
     // for initially showing/hiding usb icon
@@ -315,13 +316,6 @@ export default class MainView extends Lightning.Component {
     var data = this.homeApi.getPartnerAppsInfo()
     this.metroApps = this.homeApi.getMetroInfo()
     this.showcaseApps = this.homeApi.getShowCaseApps()
-
-    //for testing purpose uncomment to see input sample modes on any device
-    // this.inputSelect=true
-    // if (this.inputSelect) {
-    //   this.inputItems = [{id:"HDMI1"},{id:"HDMI2"},{id:"HDMI3"},{id:"HDMI4"}]
-    // }
-    //----------------
 
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'
@@ -364,6 +358,13 @@ export default class MainView extends Lightning.Component {
     }
     this.appItems = this.tempRow
     this.usbApps = usbAppsArr
+
+    //for testing purpose uncomment to see input sample modes on any device
+    // this.inputSelect=true
+    // if (this.inputSelect) {
+    //   this.inputItems = [{id:"HDMI1"},{id:"HDMI2"},{id:"HDMI3"},{id:"HDMI4"}]
+    // }
+    //----------------
 
     // if (this.inputSelect) {
     this.hdmiApi.activate()
@@ -553,7 +554,7 @@ export default class MainView extends Lightning.Component {
         w: 268,
         h: 151,
         type: ListItem,
-        data: { ...info, displayName: `Port ${info.id}`, url: "/images/metroApps/Test-01.jpg" },
+        data: { ...info, displayName: `Port ${info.id}`, url: "/images/inputs/HDMI.jpg" },
         focus: 1.11,
         unfocus: 1,
         idx: idx,
@@ -757,16 +758,15 @@ export default class MainView extends Lightning.Component {
         }
 
         _handleEnter() {
-          let appApi = new AppApi()
           console.log(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.id)
-          this.hdmiApi.setHDMIInput(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.id)
+          this.hdmiApi.setHDMIInput(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data)
             .then(res => {
               console.log('completed')
               Storage.set('applicationType', 'HDMI');
-              appApi.setVisibility('ResidentApp', false);
+              this.appApi.setVisibility('ResidentApp', false);
             })
             .catch(err => {
-              console.log('failed')
+              console.log('failed', err)
               this.widgets.fail.notify({ title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName, msg: 'Select a different input.' })
               Router.focusWidget('Fail')
             })
@@ -810,35 +810,34 @@ export default class MainView extends Lightning.Component {
           Router.focusWidget('Menu')
         }
         _handleEnter() {
-          let appApi = new AppApi();
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
           applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri)
+            this.appApi.launchWeb(this.uri)
               .then(() => {
-                appApi.setVisibility('ResidentApp', false);
+                this.appApi.setVisibility('ResidentApp', false);
                 let path = location.pathname.split('index.html')[0]
                 let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
                 let notification_url = location.origin + path + url
-                appApi.launchOverlay(notification_url, 'TextOverlay')
+                this.appApi.launchOverlay(notification_url, 'TextOverlay')
                 Registry.setTimeout(() => {
-                  appApi.deactivateResidentApp('TextOverlay')
-                  appApi.zorder('HtmlApp')
-                  appApi.setVisibility('HtmlApp', true)
+                  this.appApi.deactivateResidentApp('TextOverlay')
+                  this.appApi.zorder('HtmlApp')
+                  this.appApi.setVisibility('HtmlApp', true)
                 }, 9000)
               })
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
             console.log('Launching app')
             fetch('http://127.0.0.1:9998/Service/Controller/')
@@ -848,8 +847,8 @@ export default class MainView extends Lightning.Component {
                 data.plugins.forEach(element => {
                   if (element.callsign === 'Amazon') {
                     console.log('Opening Amazon')
-                    appApi.launchPremiumApp('Amazon');
-                    appApi.setVisibility('ResidentApp', false);
+                    this.appApi.launchPremiumApp('Amazon');
+                    this.appApi.setVisibility('ResidentApp', false);
                   }
                 });
               })
@@ -865,8 +864,8 @@ export default class MainView extends Lightning.Component {
                 data.plugins.forEach(element => {
                   if (element.callsign === 'Netflix') {
                     console.log('Opening Netflix')
-                    appApi.launchPremiumApp('Netflix');
-                    appApi.setVisibility('ResidentApp', false);
+                    this.appApi.launchPremiumApp('Netflix');
+                    this.appApi.setVisibility('ResidentApp', false);
                   }
                 });
               })
@@ -927,7 +926,6 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          let appApi = new AppApi();
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
 
@@ -935,17 +933,17 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },
@@ -1041,7 +1039,6 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          let appApi = new AppApi();
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
 
@@ -1049,17 +1046,17 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },
@@ -1101,7 +1098,6 @@ export default class MainView extends Lightning.Component {
           }
         }
         _handleEnter() {
-          let appApi = new AppApi();
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
 
@@ -1109,17 +1105,17 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.launchCobalt(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchCobalt(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchWeb(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchLightning(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
-            appApi.setVisibility('ResidentApp', false);
+            this.appApi.launchNative(this.uri);
+            this.appApi.setVisibility('ResidentApp', false);
           }
         }
       },

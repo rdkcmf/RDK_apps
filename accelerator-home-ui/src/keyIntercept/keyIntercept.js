@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 
+import { Storage } from "@lightningjs/sdk";
 import ThunderJS from "ThunderJS";
 import AppApi from "../api/AppApi";
 import Keymap from "../Config/Keymap";

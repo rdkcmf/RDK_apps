@@ -227,7 +227,6 @@ export default class App extends Router.App {
   }
 
   deactivateChildApp(plugin) {
-    var appApi = new AppApi();
     switch (plugin) {
       case 'WebApp':
         appApi.deactivateWeb();

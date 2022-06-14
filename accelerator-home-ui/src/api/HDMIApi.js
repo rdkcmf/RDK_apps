@@ -110,18 +110,50 @@ export default class HDMIApi {
         })
     }
 
-    setHDMIInput(portId) {
+    getWidth() {
         return new Promise((resolve, reject) => {
             this._thunder
-                .call(this.callsign, 'startHdmiInput', { portId })
+                .call('DisplayInfo', 'width')
                 .then(result => {
-                    this._thunder
-                        .call(this.callsign, 'setVideoRectangle', { x: 0, y: 0, w: 1920, h: 1080 })
                     resolve(result)
                 })
                 .catch(err => {
-                    reject(err)
+                    resolve('1920')
                 })
+        })
+    }
+
+    getHeight() {
+        return new Promise((resolve, reject) => {
+            this._thunder
+                .call('DisplayInfo', 'height')
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(err => {
+                    resolve('1080')
+                })
+        })
+    }
+
+    setHDMIInput(portDetails) {
+        console.log(portDetails)
+        return new Promise(async (resolve, reject) => {
+            if (portDetails.connected) {
+                this._thunder
+                    .call(this.callsign, 'startHdmiInput', { portId: portDetails.id })
+                    .then(async (result) => {
+                        const dimension = await Promise.all([this.getWidth(), this.getHeight()])
+                        this._thunder
+                            .call(this.callsign, 'setVideoRectangle', { x: 0, y: 0, w: dimension[0], h: dimension[1] })
+                        resolve(result)
+                    })
+                    .catch(err => {
+                        reject(err)
+                    })
+            } else {
+                reject(false)
+            }
         })
     }
 
