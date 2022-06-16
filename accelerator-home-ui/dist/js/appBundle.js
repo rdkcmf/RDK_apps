@@ -1,9 +1,9 @@
 /*
- App version: 3.7 14/06/22
+ App version: 3.7 20/06/22
  SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Tue, 14 Jun 2022 13:02:52 GMT
+ gmtDate: Mon, 20 Jun 2022 12:00:16 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -10142,9 +10142,25 @@ SDK - v${this.sdkVersion}`;
         });
         this.hdmiApi.registerEvent("onInputStatusChanged", (notification) => {
           console.log("onInputStatusChanged ", JSON.stringify(notification));
+          if (notification.status === "stopped") {
+            this.appApi.setVisibility("ResidentApp", true);
+            this.widgets.fail.notify({
+              title: this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.displayName,
+              msg: "Input disconnected"
+            });
+            Router_default.focusWidget("Fail");
+          }
         });
         this.hdmiApi.registerEvent("onSignalChanged", (notification) => {
           console.log("onSignalChanged ", JSON.stringify(notification));
+          if (notification.signalStatus !== "stableSignal") {
+            this.appApi.setVisibility("ResidentApp", true);
+            this.widgets.fail.notify({
+              title: this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.displayName,
+              msg: "Input disconnected"
+            });
+            Router_default.focusWidget("Fail");
+          }
         });
         this.hdmiApi.registerEvent("videoStreamInfoUpdate", (notification) => {
           console.log("videoStreamInfoUpdate ", JSON.stringify(notification));
@@ -10575,7 +10591,9 @@ SDK - v${this.sdkVersion}`;
                 if (element.callsign === "Netflix") {
                   console.log("Opening Netflix");
                   this.appApi.launchPremiumApp("Netflix");
-                  this.appApi.setVisibility("ResidentApp", false);
+                  Router_default.navigate("image", {
+                    src: Utils_default.asset("images/apps/Apps_Netflix_Splash.png")
+                  });
                 }
               });
             }).catch((err) => {
@@ -44306,9 +44324,9 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     "F3": 114,
     "F4": 115,
     "F5": 116,
-    "F6": 117,
-    "F7": 118,
-    "F8": 119,
+    "Amazon": 117,
+    "Netflix": 118,
+    "Youtube": 119,
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -45199,6 +45217,20 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         Router_default.navigate("epg");
         return true;
       }
+      if (key.keyCode == Keymap_default.Amazon) {
+        this.activateChildApp("Amazon");
+        return true;
+      }
+      if (key.keyCode == Keymap_default.Youtube) {
+        Storage_default.set("applicationType", "Cobalt");
+        appApi9.launchCobalt("");
+        appApi9.setVisibility("ResidentApp", false);
+        return true;
+      }
+      if (key.keyCode == Keymap_default.Netflix) {
+        this.activateChildApp("Netflix");
+        return true;
+      }
       if (key.keyCode == Keymap_default.Power) {
         if (powerState == "ON") {
           this.standby("STANDBY");
@@ -45294,6 +45326,25 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             this.advanceScreen.performOTPAction();
           }
         }
+        if (notification.callsign === "Amazon" && notification.state === "Activated") {
+          Registry_default.setTimeout(() => {
+            Router_default.navigate("menu");
+          }, 2e3);
+        }
+      });
+    }
+    activateChildApp(plugin) {
+      fetch("http://127.0.0.1:9998/Service/Controller/").then((res) => res.json()).then((data) => {
+        data.plugins.forEach((element) => {
+          if (element.callsign === plugin) {
+            Storage_default.set("applicationType", plugin);
+            appApi9.launchPremiumApp(plugin);
+            appApi9.setVisibility("ResidentApp", false);
+          }
+        });
+        console.log("launching app");
+      }).catch((err) => {
+        console.log(`${plugin} not available`, err);
       });
     }
     deactivateChildApp(plugin) {
@@ -45302,7 +45353,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           appApi9.deactivateWeb();
           break;
         case "Cobalt":
-          appApi9.deactivateCobalt();
+          appApi9.suspendCobalt();
           break;
         case "Lightning":
           appApi9.deactivateLightning();
@@ -45311,10 +45362,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           appApi9.killNative();
           break;
         case "Amazon":
-          appApi9.deactivateNativeApp("Amazon");
+          appApi9.suspendPremiumApp("Amazon");
           break;
         case "Netflix":
-          appApi9.deactivateNativeApp("Netflix");
+          appApi9.suspendPremiumApp("Netflix");
           break;
         case "HDMI":
           new HDMIApi().stopHDMIInput();

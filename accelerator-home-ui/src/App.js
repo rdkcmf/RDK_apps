@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage } from '@lightningjs/sdk';
+import { Utils, Router, Storage, Registry } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -112,6 +112,20 @@ export default class App extends Router.App {
     }
     if (key.keyCode == Keymap.Guide_Shortcut) {
       Router.navigate('epg')
+      return true
+    }
+    if (key.keyCode == Keymap.Amazon) {
+      this.activateChildApp('Amazon')
+      return true
+    }
+    if (key.keyCode == Keymap.Youtube) {
+      Storage.set('applicationType', 'Cobalt');
+      appApi.launchCobalt('')
+      appApi.setVisibility('ResidentApp', false);
+      return true
+    }
+    if (key.keyCode == Keymap.Netflix) {
+      this.activateChildApp('Netflix')
       return true
     }
 
@@ -221,9 +235,33 @@ export default class App extends Router.App {
           this.advanceScreen.performOTPAction()
         }
       }
+
+      if (notification.callsign === 'Amazon' && notification.state === 'Activated') {
+        Registry.setTimeout(() => {
+          Router.navigate('menu')
+        }, 2000)
+      }
     });
 
 
+  }
+
+  activateChildApp(plugin) {
+    fetch('http://127.0.0.1:9998/Service/Controller/')
+      .then(res => res.json())
+      .then(data => {
+        data.plugins.forEach(element => {
+          if (element.callsign === plugin) {
+            Storage.set('applicationType', plugin);
+            appApi.launchPremiumApp(plugin);
+            appApi.setVisibility('ResidentApp', false);
+          }
+        });
+        console.log('launching app')
+      })
+      .catch(err => {
+        console.log(`${plugin} not available`, err)
+      })
   }
 
   deactivateChildApp(plugin) {
@@ -232,7 +270,7 @@ export default class App extends Router.App {
         appApi.deactivateWeb();
         break;
       case 'Cobalt':
-        appApi.deactivateCobalt();
+        appApi.suspendCobalt();
         break;
       case 'Lightning':
         appApi.deactivateLightning();
@@ -241,10 +279,10 @@ export default class App extends Router.App {
         appApi.killNative();
         break;
       case 'Amazon':
-        appApi.deactivateNativeApp('Amazon');
+        appApi.suspendPremiumApp('Amazon');
         break;
       case 'Netflix':
-        appApi.deactivateNativeApp('Netflix')
+        appApi.suspendPremiumApp('Netflix')
         break;
       case 'HDMI':
         new HDMIApi().stopHDMIInput()

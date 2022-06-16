@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Storage, Language, Router, Registry } from '@lightningjs/sdk'
+import { Lightning, Storage, Language, Router, Registry, Utils } from '@lightningjs/sdk'
 import ListItem from '../items/ListItem.js'
 import ThunderJS from 'ThunderJS'
 import AppApi from '../api/AppApi.js'
@@ -374,9 +374,19 @@ export default class MainView extends Lightning.Component {
         })
         this.hdmiApi.registerEvent('onInputStatusChanged', notification => {
           console.log('onInputStatusChanged ', JSON.stringify(notification))
+          if (notification.status === 'stopped') {
+            this.appApi.setVisibility('ResidentApp', true)
+            this.widgets.fail.notify({ title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName, msg: 'Input disconnected' })
+            Router.focusWidget('Fail')
+          }
         })
         this.hdmiApi.registerEvent('onSignalChanged', notification => {
           console.log('onSignalChanged ', JSON.stringify(notification))
+          if (notification.signalStatus !== 'stableSignal') {
+            this.appApi.setVisibility('ResidentApp', true)
+            this.widgets.fail.notify({ title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName, msg: 'Input disconnected' })
+            Router.focusWidget('Fail')
+          }
         })
         this.hdmiApi.registerEvent('videoStreamInfoUpdate', notification => {
           console.log('videoStreamInfoUpdate ', JSON.stringify(notification))
@@ -865,7 +875,8 @@ export default class MainView extends Lightning.Component {
                   if (element.callsign === 'Netflix') {
                     console.log('Opening Netflix')
                     this.appApi.launchPremiumApp('Netflix');
-                    this.appApi.setVisibility('ResidentApp', false);
+                    Router.navigate('image', { src: Utils.asset('images/apps/Apps_Netflix_Splash.png') })
+                    //this.appApi.setVisibility('ResidentApp', false);
                   }
                 });
               })
