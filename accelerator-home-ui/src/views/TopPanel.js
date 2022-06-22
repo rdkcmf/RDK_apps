@@ -139,12 +139,12 @@ export default class TopPanel extends Lightning.Component {
 
 
   _build() {
-    Registry.setInterval((zone) => {
-      let _date = this._updateTime(zone)
-      if (zone) {
+    Registry.setInterval(() => {
+      let _date = this._updateTime(this.zone)
+      if (this.zone) {
         this.tag('Time').patch({ text: { text: _date.strTime } })
       }
-    }, 1000, this.zone)
+    }, 1000)
   }
 
   updateIcon(tagname, url) {

@@ -236,8 +236,9 @@ export default class App extends Router.App {
         }
       }
 
-      if (notification.callsign === 'Amazon' && notification.state === 'Activated') {
+      if (notification.callsign === 'Netflix' && notification.state === 'Activated') {
         Registry.setTimeout(() => {
+          appApi.visibile('ResidentApp', false);
           Router.navigate('menu')
         }, 2000)
       }

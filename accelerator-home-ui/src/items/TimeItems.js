@@ -44,6 +44,7 @@ export default class TimeItems extends Lightning.Component {
                     horizontal: false,
                     invertDirection: true,
                     roll: true,
+                    rollMax: 900,
                     itemScrollOffset: -4,
                 }
             },
@@ -85,7 +86,7 @@ export default class TimeItems extends Lightning.Component {
         console.log(`${this._item.zone}/${this.tag('List').element._item[0]}`)
         this.widgets.menu.updateTimeZone(`${this._item.zone}/${this.tag('List').element._item[0]}`)
         this.appApi.setZone(`${this._item.zone}/${this.tag('List').element._item[0]}`)
-        Router.navigate('settings/advanced/device/timezone')
+        Router.navigate('settings/advanced/device/timezone', { refresh: true })
     }
 
     _getFocused() {

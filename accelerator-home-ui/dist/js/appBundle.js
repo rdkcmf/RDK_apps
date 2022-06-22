@@ -1,9 +1,9 @@
 /*
- App version: 3.7 20/06/22
+ App version: 3.7 23/06/22
  SDK version: 4.8.3
  CLI version: 2.7.2
 
- gmtDate: Mon, 20 Jun 2022 12:00:16 GMT
+ gmtDate: Thu, 23 Jun 2022 09:46:20 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -5232,7 +5232,7 @@ SDK - v${this.sdkVersion}`;
           resolve(result.timeZone);
         }).catch((err) => {
           console.log("Failed to fetch Time Zone");
-          resolve(null);
+          resolve(void 0);
         });
       });
     }
@@ -10142,14 +10142,6 @@ SDK - v${this.sdkVersion}`;
         });
         this.hdmiApi.registerEvent("onInputStatusChanged", (notification) => {
           console.log("onInputStatusChanged ", JSON.stringify(notification));
-          if (notification.status === "stopped") {
-            this.appApi.setVisibility("ResidentApp", true);
-            this.widgets.fail.notify({
-              title: this.tag("Inputs.Slider").items[this.tag("Inputs.Slider").index].data.displayName,
-              msg: "Input disconnected"
-            });
-            Router_default.focusWidget("Fail");
-          }
         });
         this.hdmiApi.registerEvent("onSignalChanged", (notification) => {
           console.log("onSignalChanged ", JSON.stringify(notification));
@@ -10592,7 +10584,7 @@ SDK - v${this.sdkVersion}`;
                   console.log("Opening Netflix");
                   this.appApi.launchPremiumApp("Netflix");
                   Router_default.navigate("image", {
-                    src: Utils_default.asset("images/apps/Apps_Netflix_Splash.png")
+                    src: Utils_default.asset("images/apps/App_Netflix_Splash.png")
                   });
                 }
               });
@@ -28495,6 +28487,11 @@ Time Stamp - ${res.stbTimestamp} `;
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language_default.translate("Settings  Other Settings  Advanced Settings  Device  Time"));
     }
+    set params(args) {
+      if (args.refresh) {
+        this._firstEnable();
+      }
+    }
     pageTransition() {
       return "left";
     }
@@ -28514,6 +28511,7 @@ Time Stamp - ${res.stbTimestamp} `;
             horizontal: false,
             invertDirection: true,
             roll: true,
+            rollMax: 900,
             itemScrollOffset: -4
           },
           Error: {
@@ -28529,30 +28527,51 @@ Time Stamp - ${res.stbTimestamp} `;
                 textColor: 4294967295
               }
             }
+          },
+          Loader: {
+            x: 740,
+            y: 340,
+            w: 90,
+            h: 90,
+            mount: 0.5,
+            zIndex: 4,
+            src: Utils_default.asset("images/settings/Loading.gif")
           }
         }
       };
     }
     _firstEnable() {
       return __async(this, null, function* () {
+        this.loadingAnimation = this.tag("Loader").animation({
+          duration: 3,
+          repeat: -1,
+          stopMethod: "immediate",
+          stopDelay: 0.2,
+          actions: [{
+            p: "rotation",
+            v: {
+              sm: 0,
+              0: 0,
+              1: 2 * Math.PI
+            }
+          }]
+        });
+        this.loadingAnimation.start();
+        this.tag("Loader").visible = true;
         this.appApi = new AppApi();
         this.resp = yield this.appApi.fetchTimeZone();
-      });
-    }
-    _focus() {
-      return __async(this, null, function* () {
         let data = [];
         this.zone = yield this.appApi.getZone();
         try {
-          console.log(this.resp);
+          console.log(this.resp, this.zone);
           delete this.resp.Etc;
           for (const i in this.resp) {
             if (typeof this.resp[i] === "object") {
-              data.push([i, this.resp[i], this.zone.split("/")[0] === i]);
+              data.push([i, this.resp[i], this.zone !== void 0 ? this.zone.split("/")[0] === i : false]);
             }
           }
         } catch (error) {
-          console.log("no api present");
+          console.log("no api present", error);
         }
         console.log(data);
         if (data.length > 1) {
@@ -28564,16 +28583,24 @@ Time Stamp - ${res.stbTimestamp} `;
               h: 90,
               type: TimeZoneItem,
               item,
-              zone: this.zone.split("/")[1]
+              zone: this.zone !== void 0 ? this.zone.split("/")[1] : ""
             };
           });
         } else {
           this.tag("Error").alpha = 1;
         }
+        this.loadingAnimation.stop();
+        this.tag("Loader").visible = false;
       });
     }
     _getFocused() {
       return this.tag("List").element;
+    }
+    _unfocus() {
+      if (this.loadingAnimation.isPlaying()) {
+        this.loadingAnimation.stop();
+        this.tag("Loader").visible = false;
+      }
     }
     _handleDown() {
       this.tag("List").setNext();
@@ -28683,6 +28710,7 @@ Time Stamp - ${res.stbTimestamp} `;
             horizontal: false,
             invertDirection: true,
             roll: true,
+            rollMax: 900,
             itemScrollOffset: -4
           }
         }
@@ -28715,7 +28743,9 @@ Time Stamp - ${res.stbTimestamp} `;
       console.log(`${this._item.zone}/${this.tag("List").element._item[0]}`);
       this.widgets.menu.updateTimeZone(`${this._item.zone}/${this.tag("List").element._item[0]}`);
       this.appApi.setZone(`${this._item.zone}/${this.tag("List").element._item[0]}`);
-      Router_default.navigate("settings/advanced/device/timezone");
+      Router_default.navigate("settings/advanced/device/timezone", {
+        refresh: true
+      });
     }
     _getFocused() {
       return this.tag("List").element;
@@ -30494,6 +30524,11 @@ Time Stamp - ${res.stbTimestamp} `;
       this.currentIndex = args.currentIndex;
       this.data = args.list;
       this.cwd = args.cwd;
+      if (this.data != void 0 && this.data.length > 1) {
+        this.tag("Controls").alpha = 1;
+      } else {
+        this.tag("Controls").alpha = 0;
+      }
       if (args.src) {
         this.tag("Image").texture.src = args.src;
       }
@@ -44697,16 +44732,16 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       }
     }
     _build() {
-      Registry_default.setInterval((zone) => {
-        let _date = this._updateTime(zone);
-        if (zone) {
+      Registry_default.setInterval(() => {
+        let _date = this._updateTime(this.zone);
+        if (this.zone) {
           this.tag("Time").patch({
             text: {
               text: _date.strTime
             }
           });
         }
-      }, 1e3, this.zone);
+      }, 1e3);
     }
     updateIcon(tagname, url3) {
       this.tag(tagname).patch({
@@ -45326,8 +45361,9 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             this.advanceScreen.performOTPAction();
           }
         }
-        if (notification.callsign === "Amazon" && notification.state === "Activated") {
+        if (notification.callsign === "Netflix" && notification.state === "Activated") {
           Registry_default.setTimeout(() => {
+            appApi9.visibile("ResidentApp", false);
             Router_default.navigate("menu");
           }, 2e3);
         }

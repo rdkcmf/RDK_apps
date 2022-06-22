@@ -26,6 +26,11 @@ export default class ImageViewer extends Lightning.Component {
         this.currentIndex = args.currentIndex
         this.data = args.list
         this.cwd = args.cwd
+        if (this.data != undefined && this.data.length > 1) {
+            this.tag('Controls').alpha = 1
+        } else {
+            this.tag('Controls').alpha = 0
+        }
         if (args.src) {
             this.tag('Image').texture.src = args.src
         }

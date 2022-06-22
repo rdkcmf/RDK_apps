@@ -132,7 +132,7 @@ export default class AppApi {
         })
         .catch(err => {
           console.log('Failed to fetch Time Zone')
-          resolve(null)
+          resolve(undefined)
         })
     })
   }
