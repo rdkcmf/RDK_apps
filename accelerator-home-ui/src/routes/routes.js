@@ -35,6 +35,7 @@ import UIList from '../views/UIList'
 import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
 import liveTvRoutes from './liveTvRoutes'
+import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
 
 let api = null
 
@@ -115,6 +116,13 @@ export default {
         return Promise.resolve()
       },
       widgets: ['Menu', 'Fail'],
+    },
+    {
+      path: 'tv-overlay/:type',
+      component: TvOverlayScreen,
+      options:{
+        preventStorage: true,
+      }
     },
     {
       path: 'player',

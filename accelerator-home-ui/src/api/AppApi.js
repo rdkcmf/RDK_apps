@@ -419,7 +419,7 @@ export default class AppApi {
     if (lightningUrl != url) {
       thunder
         .call('org.rdk.RDKShell', 'launch', {
-          callsign: childCallsign,
+          callsign: 'Lightning',
           type: childCallsign,
           uri: url,
         })

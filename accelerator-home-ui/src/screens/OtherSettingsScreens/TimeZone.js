@@ -40,7 +40,7 @@ export default class TimeZone extends Lightning.Component {
                     invertDirection: true,
                     roll: true,
                     rollMax: 900,
-                    itemScrollOffset: -4,
+                    itemScrollOffset: -1,
                 },
                 Error: {
                     alpha: 0,

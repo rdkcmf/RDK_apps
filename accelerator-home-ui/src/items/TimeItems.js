@@ -36,16 +36,14 @@ export default class TimeItems extends Lightning.Component {
             color: CONFIG.theme.background,
             Time: {
                 x: 200,
-                y: 275,
+                y: 185,
                 List: {
                     type: Lightning.components.ListComponent,
                     w: 1920 - 300,
                     itemSize: 90,
                     horizontal: false,
                     invertDirection: true,
-                    roll: true,
-                    rollMax: 900,
-                    itemScrollOffset: -4,
+                    itemScrollOffset: -2,
                 }
             },
 

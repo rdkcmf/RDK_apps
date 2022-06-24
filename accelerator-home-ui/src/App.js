@@ -93,6 +93,9 @@ export default class App extends Router.App {
           })
           .then(result => {
             console.log('ResidentApp moveToFront Success');
+            if (Router.getActiveHash().startsWith("tv-overlay")) {
+              Router.navigate('menu');
+            }
           })
           .catch(err => {
             console.log('Error', err);
@@ -104,6 +107,59 @@ export default class App extends Router.App {
       }
       return true
 
+    }
+
+    if (key.keyCode == Keymap.Inputs_Shortcut) { //for inputs overlay
+      if (Storage.get("applicationType") !== "") {
+        if (Router.getActiveHash() === "tv-overlay/inputs") {
+          Router.reload();
+        } else {
+          Router.navigate("tv-overlay/inputs", false);
+        }
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: 'ResidentApp'
+        }).then(result => {
+          console.log('ResidentApp moveToFront Success');
+          thunder
+            .call("org.rdk.RDKShell", "setFocus", {
+              client: 'ResidentApp'
+            })
+            .then((result) => {
+              console.log("residentApp setFocus Success");
+            })
+            .catch((err) => {
+              console.log("Error", err);
+            });
+        });
+      }
+      return true
+    }
+    if (key.keyCode == Keymap.Picture_Setting_Shortcut) { //for video settings overlay
+      if (Storage.get("applicationType") !== "") {
+        if (Router.getActiveHash() === "tv-overlay/settings") {
+          Router.reload();
+        } else {
+          Router.navigate("tv-overlay/settings", false);
+        }
+        appApi.setVisibility('ResidentApp', true);
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: 'ResidentApp'
+        }).then(result => {
+          console.log('ResidentApp moveToFront Success');
+          thunder
+            .call("org.rdk.RDKShell", "setFocus", {
+              client: 'ResidentApp'
+            })
+            .then((result) => {
+              console.log("Resident App setFocus Success");
+            })
+            .catch((err) => {
+              console.log("Error", err);
+            });
+        });
+      }
+      return true;
     }
 
     if (key.keyCode == Keymap.Settings_Shortcut) {
@@ -174,6 +230,9 @@ export default class App extends Router.App {
   }
 
   _init() {
+    if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
+      Storage.set('applicationType', '');//to set the application type to none
+    }
     appApi.enableDisplaySettings()
     appApi.cobaltStateChangeEvent()
     appApi.launchforeground()
@@ -190,23 +249,6 @@ export default class App extends Router.App {
     thunder.on('Controller.1', 'all', noti => {
       if (noti.data.url && noti.data.url.slice(-5) === "#boot") { // to exit metro apps by pressing back key
         this.deactivateChildApp(Storage.get('applicationType'));
-        Storage.set('applicationType', '');
-        appApi.setVisibility('ResidentApp', true);
-        thunder.call('org.rdk.RDKShell', 'moveToFront', {
-          client: 'ResidentApp'
-        }).then(result => {
-          console.log('ResidentApp moveToFront Success');
-        });
-        thunder
-          .call('org.rdk.RDKShell', 'setFocus', {
-            client: 'ResidentApp'
-          })
-          .then(result => {
-            console.log('ResidentApp moveToFront Success');
-          })
-          .catch(err => {
-            console.log('Error', err);
-          });
       }
     })
 
@@ -214,6 +256,10 @@ export default class App extends Router.App {
       console.log(JSON.stringify(notification))
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
 
+        if (Router.getActiveHash().startsWith("tv-overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
+          console.log("navigating to homescreen")
+          Router.navigate("menu")
+        }
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
@@ -237,10 +283,12 @@ export default class App extends Router.App {
       }
 
       if (notification.callsign === 'Netflix' && notification.state === 'Activated') {
-        Registry.setTimeout(() => {
-          appApi.visibile('ResidentApp', false);
-          Router.navigate('menu')
-        }, 2000)
+        thunder.on('Netflix', 'notifyeventchange', notification => {
+          if (notification.EventName === "rendered") {
+            appApi.visibile('ResidentApp', false);
+            Router.navigate('menu')
+          }
+        })
       }
     });
 

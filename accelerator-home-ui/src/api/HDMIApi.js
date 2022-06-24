@@ -65,7 +65,7 @@ export default class HDMIApi {
                         resolve(false)
                 })
                 .catch(err => {
-                    console.log('Failed to activate HdmiInput plugin', err)
+                    console.log('Failed to activate HdmiInput plugin', JSON.stringify(err))
                     reject(false)
                 })
         })
@@ -79,7 +79,9 @@ export default class HDMIApi {
                     resolve(result.devices)
                 })
                 .catch(err => {
-                    resolve([])
+                    // reject(err) // #forTesting //make the api reject, instead of resolving empty array
+                    console.log("getHDMIDevices Error: ", JSON.stringify(err), " resolving empty array")
+                    resolve([]) 
                 })
             // resolve([
             //     {
@@ -105,7 +107,7 @@ export default class HDMIApi {
         return new Promise((resolve, reject) => {
             this._thunder.call('Controller.1', 'status@' + plugin)
                 .then(res => {
-                    console.log(res)
+                    console.log(JSON.stringify(res))
                 })
         })
     }
@@ -137,7 +139,6 @@ export default class HDMIApi {
     }
 
     setHDMIInput(portDetails) {
-        console.log(portDetails)
         return new Promise(async (resolve, reject) => {
             if (portDetails.connected) {
                 this._thunder

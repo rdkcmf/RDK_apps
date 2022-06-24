@@ -118,6 +118,34 @@ export function keyIntercept() {
             thunder
                 .call(rdkshellCallsign, 'addKeyIntercept', {
                     client: 'ResidentApp',
+                    keyCode: Keymap.Inputs_Shortcut,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Picture_Setting_Shortcut,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
                     keyCode: Keymap.Power,
                     modifiers: [],
                 })

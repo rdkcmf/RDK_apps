@@ -114,6 +114,8 @@ const keyMap = {
     "Home": 36,
     "Settings_Shortcut": 121,
     "Guide_Shortcut": 120,
+    "Inputs_Shortcut": 113, //F2
+    "Picture_Setting_Shortcut": 114, //F3
 }
 
 export default keyMap
