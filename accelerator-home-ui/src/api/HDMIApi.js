@@ -31,6 +31,19 @@ export default class HDMIApi {
         this._thunder = ThunderJS(config);
         this._events = new Map();
         this.callsign = 'org.rdk.HdmiInput'
+
+        this.resolution = {
+            ResolutionUnknown: [1920, 1080],
+            Resolution480I: [640, 480],
+            Resolution480P: [640, 480],
+            Resolution576I: [768, 576],
+            Resolution576P: [768, 576],
+            Resolution720P: [1280, 720],
+            Resolution1080I: [1920, 1080],
+            Resolution1080P: [1920, 1080],
+            Resolution2160P30: [3840, 2160],
+            Resolution2160P60: [3840, 2160]
+        }
     }
 
     activate() {
@@ -81,7 +94,7 @@ export default class HDMIApi {
                 .catch(err => {
                     // reject(err) // #forTesting //make the api reject, instead of resolving empty array
                     console.log("getHDMIDevices Error: ", JSON.stringify(err), " resolving empty array")
-                    resolve([]) 
+                    resolve([])
                 })
             // resolve([
             //     {
@@ -112,28 +125,16 @@ export default class HDMIApi {
         })
     }
 
-    getWidth() {
-        return new Promise((resolve, reject) => {
+    getDimensions() {
+        return new Promise((resolve) => {
             this._thunder
-                .call('DisplayInfo', 'width')
+                .call('PlayerInfo', 'resolution')
                 .then(result => {
-                    resolve(result)
+                    resolve(this.resolution[result])
                 })
                 .catch(err => {
-                    resolve('1920')
-                })
-        })
-    }
-
-    getHeight() {
-        return new Promise((resolve, reject) => {
-            this._thunder
-                .call('DisplayInfo', 'height')
-                .then(result => {
-                    resolve(result)
-                })
-                .catch(err => {
-                    resolve('1080')
+                    console.log('Failed to fetch dimensions', err)
+                    resolve([1920, 1080])
                 })
         })
     }
@@ -144,7 +145,7 @@ export default class HDMIApi {
                 this._thunder
                     .call(this.callsign, 'startHdmiInput', { portId: portDetails.id })
                     .then(async (result) => {
-                        const dimension = await Promise.all([this.getWidth(), this.getHeight()])
+                        const dimension = await this.getDimensions()
                         this._thunder
                             .call(this.callsign, 'setVideoRectangle', { x: 0, y: 0, w: dimension[0], h: dimension[1] })
                         resolve(result)

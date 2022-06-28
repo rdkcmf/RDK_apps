@@ -50,11 +50,13 @@ export default class PictureSettingsApi {
           "game",
           "sports"
         ]
+        // value: ["DemoValue(Api Fail)"] //#forTesting
       },
       {
         id: "_colorTemp",
         name: "Color Temperature",
         value: ["Standard", "Warm", "Cold", "User Defined"]
+        // value: ["DemoValue(Api Fail)"] //#forTesting
       },
       { id: "_backlight", name: "Backlight", value: "0" },
       { id: "_brightness", name: "Brightness", value: "0" },
@@ -126,14 +128,19 @@ export default class PictureSettingsApi {
   }
 
   getSupportedPictureModes() {
+    console.log("getSupportedPictureModes got called")
+
     return new Promise((resolve,reject) => {
+      // resolve(true) //#forTesting
       this._thunder.call(this.callsign, "getSupportedPictureModes").then(result => {
+        console.log("getSupportedPictureModes Result: ",JSON.stringify(result))
         if (result.success) {
           this.settingsOptions[0].value=result.SupportedPicmodes
           resolve(true)
         }
       }).catch(err => {
         // this.settingsOptions[0].value=["tempval1", "tempval2"]  //#forTesting
+        console.log("getSupportedPictureModes Error: ",JSON.stringify(err))
         reject(err)
       })
     })
@@ -143,6 +150,7 @@ export default class PictureSettingsApi {
     console.log("getSupportedColorTemps got called")
 
     return new Promise((resolve,reject) => {
+      // resolve(true) //#forTesting
       this._thunder.call(this.callsign, "getColorTemperature").then(result => {
         console.log("Log from getSupportedColorTemps API: ", JSON.stringify(result))
         if (result.success) {
@@ -159,6 +167,7 @@ export default class PictureSettingsApi {
 
   getPictureMode() {
     return new Promise((resolve, reject) => {
+      // resolve("custom") //#forTesting
       this._thunder
         .call(this.callsign, "getPictureMode")
         .then(result => {
@@ -188,6 +197,7 @@ export default class PictureSettingsApi {
 
   getColorTemperature() {
     return new Promise((resolve, reject) => {
+      // resolve("User Defined") //#forTesting
       this._thunder
         .call(this.callsign, "getColorTemperature")
         .then(result => {
@@ -219,6 +229,7 @@ export default class PictureSettingsApi {
 
   getBrightness() {
     return new Promise((resolve, reject) => {
+      // resolve("75") //#forTesting
       this._thunder
         .call(this.callsign, "getBrightness")
         .then(result => {
@@ -247,6 +258,7 @@ export default class PictureSettingsApi {
 
   getContrast() {
     return new Promise((resolve, reject) => {
+      // resolve("75") //#forTesting
       this._thunder
         .call(this.callsign, "getContrast")
         .then(result => {
@@ -275,6 +287,7 @@ export default class PictureSettingsApi {
 
   getSharpness() {
     return new Promise((resolve, reject) => {
+      // resolve("75") //#forTesting
       this._thunder
         .call(this.callsign, "getSharpness")
         .then(result => {
@@ -303,6 +316,7 @@ export default class PictureSettingsApi {
 
   getSaturation() {
     return new Promise((resolve, reject) => {
+      // resolve("75") //#forTesting
       this._thunder
         .call(this.callsign, "getSaturation")
         .then(result => {
@@ -331,6 +345,7 @@ export default class PictureSettingsApi {
 
   getBacklight() {
     return new Promise((resolve, reject) => {
+      // resolve("75") //#forTesting
       this._thunder
         .call(this.callsign, "getBacklight")
         .then(result => {

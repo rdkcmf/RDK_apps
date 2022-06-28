@@ -116,10 +116,11 @@ export default class App extends Router.App {
         } else {
           Router.navigate("tv-overlay/inputs", false);
         }
-        appApi.setVisibility('ResidentApp', true);
+        // appApi.setVisibility('ResidentApp', true);
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: 'ResidentApp'
         }).then(result => {
+          appApi.setVisibility('ResidentApp', true); //#requiredChange
           console.log('ResidentApp moveToFront Success');
           thunder
             .call("org.rdk.RDKShell", "setFocus", {
@@ -142,10 +143,11 @@ export default class App extends Router.App {
         } else {
           Router.navigate("tv-overlay/settings", false);
         }
-        appApi.setVisibility('ResidentApp', true);
+        // appApi.setVisibility('ResidentApp', true);
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: 'ResidentApp'
         }).then(result => {
+          appApi.setVisibility('ResidentApp', true); //#requiredChange
           console.log('ResidentApp moveToFront Success');
           thunder
             .call("org.rdk.RDKShell", "setFocus", {
@@ -254,7 +256,7 @@ export default class App extends Router.App {
 
     thunder.on('Controller', 'statechange', notification => {
       console.log(JSON.stringify(notification))
-      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
 
         if (Router.getActiveHash().startsWith("tv-overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")

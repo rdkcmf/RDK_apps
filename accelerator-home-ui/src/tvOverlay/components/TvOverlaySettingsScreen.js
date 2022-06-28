@@ -73,8 +73,6 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
           "ERROR from settings overlay screen init: getSupportedPictureModes: ",
           JSON.stringify(err)
         );
-        // this.options = this.pictureApi.getOptions(); //#forTesting
-        // this.refreshList(); //#forTesting
       });
     //the getSupportedColorTemps api call has some issue when working on chrome browser
     this.pictureApi
@@ -90,8 +88,6 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
           "ERROR from settings overlay screen init: getSupportedColorTemps: ",
           JSON.stringify(err)
         );
-        // this.options = this.pictureApi.getOptions(); //#forTesting
-        // this.refreshList(); //#forTesting
       });
   }
 
@@ -108,9 +104,8 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   }
 
   _focus() {
-    // this.refreshList(); //#forTesting
     console.log("index: ", this.tag("List").index);
-    this.tag("List").setIndex(0);
+    // this.tag("List").setIndex(0);//not necessary
     this.checkCustomStatus();
   }
 
@@ -131,8 +126,6 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
           "Error from getting _colorTemp on focus on overlay: ",
           JSON.stringify(err)
         );
-        // colorTempFlag = true; //#forTesting
-        // this.customFlag = colorTempFlag && pictureModeFlag; //#forTesting
         console.log(
           "colorTempFlag: ",
           colorTempFlag,
@@ -155,8 +148,6 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
           "Error from getting _pictureMode on focus on overlay: ",
           JSON.stringify(err)
         );
-        // pictureModeFlag = true; //#forTesting
-        // this.customFlag = colorTempFlag && pictureModeFlag; //#forTesting
         console.log(
           "colorTempFlag: ",
           colorTempFlag,

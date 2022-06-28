@@ -564,7 +564,7 @@ export default class AppApi {
    */
   suspendLightning() {
     lightningUrl = ''
-    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'LightningApp' })
+    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Lightning' })
   }
 
   /**
@@ -625,7 +625,7 @@ export default class AppApi {
    * Function to deactivate lightning app.
    */
   deactivateLightning() {
-    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'LightningApp' })
+    thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Lightning' })
     activatedLightning = false
     lightningUrl = ''
   }

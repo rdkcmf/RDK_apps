@@ -101,8 +101,8 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
       this.pictureApi
         .getSettingsValue(this._item.id)
         .then((res) => {
-          console.log(JSON.stringify(res));
-          let tIdx = this._item.value.findIndex(res);
+          console.log("getSettingsValue Result from fetchAndUpdateValues(array): ",JSON.stringify(res));
+          let tIdx = this._item.value.indexOf(res);
           if (tIdx >= 0) {
             this.valueIdx = tIdx;
           }
@@ -111,10 +111,6 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
           );
         })
         .catch((err) => {
-          // this.valueIdx = 3; //#forTesting
-          // this.updateValue(
-          //   this.formatItemName(this._item.value[this.valueIdx])
-          // ); //#forTesting
           console.log(
             "error from getSettingsValue(value is array) in set(item) in settings Item: ",
             JSON.stringify(err)
@@ -124,15 +120,12 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
       this.pictureApi
         .getSettingsValue(this._item.id)
         .then((res) => {
-          console.log(JSON.stringify(res));
+          console.log("getSettingsValue Result from fetchAndUpdateValues(number): ", JSON.stringify(res));
           this._item.value = +res;
           this.currentVal = +res; //to change to int
           this.updateValue(this._item.value);
         })
         .catch((err) => {
-          // this._item.value = 50; //#forTesting
-          // this.currentVal = 50; //#forTesting
-          // this.updateValue(this._item.value); //#forTesting
           console.log(
             "error from getSettingsValue(value is number) in set(item) in settings Item: ",
             JSON.stringify(err)
@@ -172,8 +165,6 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
         })
         .catch((err) => {
           console.log(JSON.stringify(err));
-          // this._item.value = this.currentVal; //#forTesting
-          // this.updateValue(this.currentVal); //#forTesting
           console.log("this._item: ", JSON.stringify(this._item));
         });
     }, 600);
@@ -217,7 +208,6 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
         })
         .catch((err) => {
           console.log(JSON.stringify(err));
-          // console.log(this._item.value[this.valueIdx]) //#forTesting
         });
     }, 600);
   }
