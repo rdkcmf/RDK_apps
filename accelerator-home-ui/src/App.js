@@ -285,10 +285,23 @@ export default class App extends Router.App {
       }
 
       if (notification.callsign === 'Netflix' && notification.state === 'Activated') {
+        appApi.getNetflixESN()
+          .then(res => {
+            Storage.set(res)
+          })
         thunder.on('Netflix', 'notifyeventchange', notification => {
           if (notification.EventName === "rendered") {
             appApi.visibile('ResidentApp', false);
             Router.navigate('menu')
+          }
+          if (notification.EventName === "requestsuspend") {
+            this.deactivateChildApp('Netflix')
+          }
+          if (notification.EventName === "updated") {
+            appApi.getNetflixESN()
+              .then(res => {
+                Storage.set(res)
+              })
           }
         })
       }

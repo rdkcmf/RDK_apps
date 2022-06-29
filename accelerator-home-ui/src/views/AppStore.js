@@ -151,40 +151,27 @@ export default class AppStore extends Lightning.Component {
                         appApi.setVisibility('ResidentApp', false);
                     } else if (Storage.get('applicationType') == 'Amazon') {
                         console.log('Launching app')
-                        fetch('http://127.0.0.1:9998/Service/Controller/')
-                            .then(res => res.json())
-                            .then(data => {
-                                console.log(data)
-                                data.plugins.forEach(element => {
-                                    if (element.callsign === 'Amazon') {
-                                        console.log('Opening Amazon')
-                                        appApi.launchPremiumApp('Amazon');
-                                        appApi.setVisibility('ResidentApp', false);
-                                    }
-                                });
+                        appApi.getPluginStatus('Amazon')
+                            .then(result => {
+                                appApi.launchPremiumApp('Amazon');
+                                appApi.setVisibility('ResidentApp', false);
                             })
                             .catch(err => {
-                                console.log('Amazon not working')
+                                console.log('Amazon plugin error', err)
                             })
 
                     } else if (Storage.get('applicationType') == 'Netflix') {
                         console.log('Launching app')
-                        fetch('http://127.0.0.1:9998/Service/Controller/')
-                            .then(res => res.json())
-                            .then(data => {
-                                console.log(data)
-                                data.plugins.forEach(element => {
-                                    if (element.callsign === 'Netflix') {
-                                        console.log('Opening Netflix')
-                                        appApi.launchPremiumApp('Netflix');
-                                        appApi.setVisibility('ResidentApp', false);
-                                    }
-                                });
+                        appApi.getPluginStatus('Netflix')
+                            .then(result => {
+                                if (result[0].state === 'deactivated') {
+                                    Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
+                                }
+                                appApi.launchPremiumApp('Netflix');
                             })
                             .catch(err => {
-                                console.log('Netflix not working')
+                                console.log('Netflix plugin error', err)
                             })
-
                     }
                 }
             }

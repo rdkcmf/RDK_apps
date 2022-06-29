@@ -843,40 +843,29 @@ export default class MainView extends Lightning.Component {
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
             this.appApi.launchNative(this.uri);
             this.appApi.setVisibility('ResidentApp', false);
+
           } else if (Storage.get('applicationType') == 'Amazon') {
             console.log('Launching app')
-            fetch('http://127.0.0.1:9998/Service/Controller/')
-              .then(res => res.json())
-              .then(data => {
-                console.log(data)
-                data.plugins.forEach(element => {
-                  if (element.callsign === 'Amazon') {
-                    console.log('Opening Amazon')
-                    this.appApi.launchPremiumApp('Amazon');
-                    this.appApi.setVisibility('ResidentApp', false);
-                  }
-                });
+            this.appApi.getPluginStatus('Amazon')
+              .then(result => {
+                this.appApi.launchPremiumApp('Amazon');
+                this.appApi.setVisibility('ResidentApp', false);
               })
               .catch(err => {
-                console.log('Amazon not working')
+                console.log('Amazon plugin error', err)
               })
 
           } else if (Storage.get('applicationType') == 'Netflix') {
             console.log('Launching app')
-            fetch('http://127.0.0.1:9998/Service/Controller/')
-              .then(res => res.json())
-              .then(data => {
-                data.plugins.forEach(element => {
-                  if (element.callsign === 'Netflix') {
-                    console.log('Opening Netflix')
-                    this.appApi.launchPremiumApp('Netflix');
-                    Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
-                    //this.appApi.setVisibility('ResidentApp', false);
-                  }
-                });
+            this.appApi.getPluginStatus('Netflix')
+              .then(result => {
+                if (result[0].state === 'deactivated') {
+                  Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
+                }
+                this.appApi.launchPremiumApp('Netflix');
               })
               .catch(err => {
-                console.log('Netflix not working')
+                console.log('Netflix plugin error', err)
               })
 
           } else {

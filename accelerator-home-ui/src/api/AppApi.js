@@ -147,6 +147,21 @@ export default class AppApi {
         }).catch(err => { resolve(false) })
     }).catch(err => { })
   }
+
+
+  getPluginStatus(plugin) {
+    return new Promise((resolve, reject) => {
+      thunder.call('Controller', `status@${plugin}`)
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+
+
   /**
    * Function to get resolution of the display screen.
    */
@@ -1347,6 +1362,15 @@ export default class AppApi {
         .catch(err => {
           console.log("error in reboot:", JSON.stringify(err, 3, null))
           resolve(false)
+        })
+    })
+  }
+
+  getNetflixESN() {
+    return new Promise((resolve) => {
+      thunder.call('Netflix', 'esn')
+        .then(res => {
+          resolve(res)
         })
     })
   }

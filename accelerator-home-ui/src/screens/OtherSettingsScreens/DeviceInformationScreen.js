@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Language, Router, Settings } from '@lightningjs/sdk'
+import { Lightning, Language, Router, Settings, Storage } from '@lightningjs/sdk'
 import { COLORS } from '../../colors/Colors'
 import { CONFIG } from '../../Config/Config'
 import AppApi from '../../api/AppApi.js';
@@ -224,7 +224,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 720,
                         mountY: 0.5,
                         text: {
-                            text: Language.translate(`App Versions`),
+                            text: Language.translate(`App Info`),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -235,7 +235,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                         y: 720,
                         mountY: 0.5,
                         text: {
-                            text: "Youtube:\nAmazon Prime:\nNetflix:",
+                            text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -256,11 +256,11 @@ export default class DeviceInformationScreen extends Lightning.Component {
 
     _init() {
         this._network = new NetworkApi();
+        this.appApi = new AppApi();
     }
 
     _focus() {
         this._setState('DeviceInformationScreen')
-        this.appApi = new AppApi();
         this.appApi.getSerialNumber().then(result => {
             this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
         })
@@ -317,6 +317,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
             this.tag('ChipSet.Value').text.text = `${result.chipset}`
             // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
         })
+        this.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`
         this.appApi.registerChangeLocation()
     }
 
