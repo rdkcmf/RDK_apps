@@ -48,6 +48,7 @@ export default class HDMIApi {
 
     activate() {
         return new Promise((resolve, reject) => {
+            // resolve(true)//#forTesting
             this._thunder
                 .call('Controller', 'activate', { callsign: this.callsign })
                 .then(result => {
@@ -86,6 +87,7 @@ export default class HDMIApi {
 
     getHDMIDevices() {
         return new Promise((resolve, reject) => {
+            // resolve([{id: 0,locator: "hdmiin://localhost/deviceid/0",connected: true,},{id: 1,locator: "hdmiin://localhost/deviceid/1",connected: false,},{id: 2,locator: "hdmiin://localhost/deviceid/2",connected: true,}]) //#forTesting
             this._thunder
                 .call(this.callsign, 'getHDMIInputDevices')
                 .then(result => {
@@ -96,23 +98,6 @@ export default class HDMIApi {
                     console.log("getHDMIDevices Error: ", JSON.stringify(err), " resolving empty array")
                     resolve([])
                 })
-            // resolve([
-            //     {
-            //         id: 0,
-            //         locator: "hdmiin://localhost/deviceid/0",
-            //         connected: true,
-            //     },
-            //     {
-            //         id: 1,
-            //         locator: "hdmiin://localhost/deviceid/1",
-            //         connected: true,
-            //     },
-            //     {
-            //         id: 2,
-            //         locator: "hdmiin://localhost/deviceid/2",
-            //         connected: true,
-            //     }
-            // ])
         })
     }
 
@@ -127,6 +112,7 @@ export default class HDMIApi {
 
     getDimensions() {
         return new Promise((resolve) => {
+            // resolve([1920, 1080])//#forTesting
             this._thunder
                 .call('PlayerInfo', 'resolution')
                 .then(result => {
@@ -141,6 +127,7 @@ export default class HDMIApi {
 
     setHDMIInput(portDetails) {
         return new Promise(async (resolve, reject) => {
+            // resolve(true)//#forTesting
             if (portDetails.connected) {
                 this._thunder
                     .call(this.callsign, 'startHdmiInput', { portId: portDetails.id })
@@ -161,6 +148,7 @@ export default class HDMIApi {
 
     stopHDMIInput() {
         return new Promise((resolve, reject) => {
+            // resolve(true)//#forTesting
             this._thunder
                 .call(this.callsign, 'stopHdmiInput')
                 .then(result => {

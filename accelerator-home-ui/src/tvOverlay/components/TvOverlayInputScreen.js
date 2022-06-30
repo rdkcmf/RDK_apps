@@ -93,8 +93,8 @@ export default class TvOverlayInputScreen extends Lightning.Component {
         w: 1720,
         h: 90,
         type: TvOverlayInputItem,
-        isTicked: JSON.stringify(selected) === JSON.stringify(item), //boolean stringify here because item is an object
-        itemName: this.options[index], //item.toUpperCase(), //pass the formated item name
+        isTicked: selected.id === item.id && selected.locator === item.locator,
+        itemName: this.options[index], //item.toUpperCase(), //pass the formated item name if required
         uniqID: item, //pass a uniq id that is to be returned when handle enter is pressed
         onHandleEnter: this.refreshItems.bind(this), //pass this function to refresh the tickmarks
       };
@@ -135,7 +135,6 @@ export default class TvOverlayInputScreen extends Lightning.Component {
       })
       .catch((err) => {
         console.log("inputScreen: getHDMIDevices Error: ", JSON.stringify(err));
-        // this.refreshItems(Storage.get("_currentInputMode")); //#forTesting
       });
   }
 

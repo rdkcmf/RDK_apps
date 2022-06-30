@@ -88,6 +88,7 @@ export default class TvOverlayInputItem extends Lightning.Component {
         visible: isTicked,
       },
     });
+    this.tag("Item.InputError").visible = false; //to remove the error text, when the list is refreshed.
   }
 
   _init() {
@@ -127,11 +128,11 @@ export default class TvOverlayInputItem extends Lightning.Component {
 
   _handleEnter() {
     if (!this.tag("Item.Tick").visible) {
-      // Storage.set("_currentInputMode", this.uniqID); //#forTesting
       //to start the loader
       this.loadingAnimation.start();
       this.tag("Item.Loader").visible = true;
       this.tag("Item.InputError").visible = false;
+      const minLoaderDuration = 1000; //1 sec min duration to show the loader before the tick mark appears in the ui
       /////////////////
       this.hdmiApi
         .getHDMIDevices() //api does not throw error, just consider error condition when result is empty
@@ -146,13 +147,13 @@ export default class TvOverlayInputItem extends Lightning.Component {
                     .setHDMIInput(item)
                     .then((res) => {
                       console.log("input set to: ", JSON.stringify(item));
-                      //to stop the loader
-                      this.loadingAnimation.stop();
-                      this.tag("Item.Loader").visible = false;
-                      ///////////////////////
-                      Storage.set("_currentInputMode", item);
-                      // this.onHandleEnter(this.uniqID); //not required, was for tick mark but if connected status is different for item and uniqID, tick mark won't appear
-                      this.fireAncestors("$getInputs"); //getInputs will fetch the inputs from api,
+                      //to stop the loader and show tickmark
+                      setTimeout(() => {
+                        this.loadingAnimation.stop();
+                        this.tag("Item.Loader").visible = false;
+                        Storage.set("_currentInputMode", {id:item.id, locator:item.locator});
+                        this.fireAncestors("$getInputs"); //getInputs will fetch the inputs from api,
+                      }, minLoaderDuration);
                     })
                     .catch((err) => {
                       console.log(
@@ -160,8 +161,10 @@ export default class TvOverlayInputItem extends Lightning.Component {
                         JSON.stringify(err)
                       );
                       //to stop the loader
-                      this.loadingAnimation.stop();
-                      this.tag("Item.Loader").visible = false;
+                      setTimeout(() => {
+                        this.loadingAnimation.stop();
+                        this.tag("Item.Loader").visible = false;
+                      }, minLoaderDuration);
                       ///////////////////////
                       //display the error in the notification
                     });
@@ -170,7 +173,11 @@ export default class TvOverlayInputItem extends Lightning.Component {
                     "device not connected! item: ",
                     JSON.stringify(item)
                   );
-                  this.tag("Item.InputError").visible = true;
+                  setTimeout(() => {
+                    this.loadingAnimation.stop();
+                    this.tag("Item.Loader").visible = false;
+                    this.tag("Item.InputError").visible = true;
+                  }, minLoaderDuration);
                 }
               } else {
                 console.log(
@@ -183,17 +190,19 @@ export default class TvOverlayInputItem extends Lightning.Component {
             });
           } else {
             console.log("getHDMIDevices returned empty array"); //in case of error, getHDMIDevices api return empty array
-            this.loadingAnimation.stop();
-            this.tag("Item.Loader").visible = false;
+            setTimeout(() => {
+              this.loadingAnimation.stop();
+              this.tag("Item.Loader").visible = false;
+            }, minLoaderDuration);
           }
         })
         .catch((err) => {
           console.log("Failed to getHDMIDevices", JSON.stringify(err));
           //to stop the loader
-          this.loadingAnimation.stop();
-          this.tag("Item.Loader").visible = false;
-          // this.tag("Item.InputError").visible = true; //#forTesting make the api reject
-          //////////////////////
+          setTimeout(() => {
+            this.loadingAnimation.stop();
+            this.tag("Item.Loader").visible = false;
+          }, minLoaderDuration);
         });
     } else {
       console.log(Storage.get("_currentInputMode"));

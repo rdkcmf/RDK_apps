@@ -763,11 +763,13 @@ export default class MainView extends Lightning.Component {
         }
 
         _handleEnter() {
-          console.log(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.id)
+          console.log(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data)
           this.hdmiApi.setHDMIInput(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data)
             .then(res => {
               console.log('completed')
               Storage.set('applicationType', 'HDMI');
+              const currentInput = this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data
+              Storage.set("_currentInputMode", {id:currentInput.id, locator:currentInput.locator});
               this.appApi.setVisibility('ResidentApp', false);
             })
             .catch(err => {

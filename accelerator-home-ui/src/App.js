@@ -350,6 +350,7 @@ export default class App extends Router.App {
         break;
       case 'HDMI':
         new HDMIApi().stopHDMIInput()
+        Storage.set("_currentInputMode",{});
         break;
       default:
         break;
