@@ -722,6 +722,10 @@ export default class AppApi {
     thunder.call('org.rdk.RDKShell', 'moveToFront', { client: cli, callsign: cli })
   }
 
+  moveToBack(cli) {
+    thunder.call('org.rdk.RDKShell', 'moveToBack', { client: cli })
+  }
+
   /**
  * Function to set the configuration of premium apps.
  * @param {appName} Name of the application
@@ -839,35 +843,6 @@ export default class AppApi {
     })
   }
 
-  audio_mute(value, audio_source) {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'setMuted', { "audioPort": audio_source, "muted": value })
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("audio mute error:", JSON.stringify(err, 3, null))
-          resolve(false)
-        })
-
-    })
-  }
-
-  muteStatus(port) {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'getMuted', { audioPort: port })
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log('audio mute error:', JSON.stringify(err, 3, null))
-          reject(false)
-        })
-    })
-  }
-
   enableDisplaySettings() {
     return new Promise((resolve, reject) => {
       thunder.call('org.rdk.RDKShell', 'launch', { callsign: 'org.rdk.DisplaySettings' })
@@ -877,21 +852,6 @@ export default class AppApi {
         })
         .catch(err => {
           console.log('Failed to enable DisplaySettings Service', JSON.stringify(err))
-        })
-    })
-  }
-
-
-  getVolumeLevel() {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'getVolumeLevel', { "audioPort": "HDMI0" })
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("audio mute error:", JSON.stringify(err, 3, null))
-          resolve(false)
         })
     })
   }
@@ -949,23 +909,6 @@ export default class AppApi {
         })
     })
   }
-
-  //Returns connected audio output ports (a subset of the ports supported on the device)
-  getConnectedAudioPorts() {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {})
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("audio mute error:", JSON.stringify(err, 3, null))
-          resolve(false)
-        })
-
-    })
-  }
-
 
   //Enable or disable the specified audio port based on the input audio port ID. 
   setEnableAudioPort(port) {
@@ -1069,36 +1012,6 @@ export default class AppApi {
         })
         .catch(err => {
           console.log("error while getting S upported audio ports ", JSON.stringify(err))
-          resolve(false)
-        })
-    })
-  }
-
-
-  getVolumeLevel() {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'getVolumeLevel')
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("error current volume level", JSON.stringify(err))
-          resolve(false)
-        })
-    })
-  }
-
-
-  setVolumeLevel(port, volume) {
-    return new Promise((resolve, reject) => {
-      thunder
-        .call('org.rdk.DisplaySettings', 'setVolumeLevel', { "audioPort": port, "volumeLevel": volume })
-        .then(result => {
-          resolve(result)
-        })
-        .catch(err => {
-          console.log("error while setting current volume level", JSON.stringify(err))
           resolve(false)
         })
     })
@@ -1523,6 +1436,90 @@ export default class AppApi {
         })
         .catch(err => {
           console.log("error in getting connected SSID:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+  // Volume Apis
+
+  getConnectedAudioPorts() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {})
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null))
+          reject(false)
+        })
+    })
+  }
+
+  getVolumeLevel(port) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'getVolumeLevel', {
+          audioPort: port,
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null))
+          reject(false)
+        })
+    })
+  }
+
+  muteStatus(port) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'getMuted', {
+          audioPort: port,
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null))
+          reject(false)
+        })
+    })
+  }
+
+  setVolumeLevel(port, volume) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'setVolumeLevel', {
+          audioPort: port,
+          volumeLevel: volume,
+        })
+        .then(result => {
+          console.log('############ setVolumeLevel #############')
+          console.log(JSON.stringify(result))
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('error while setting current volume level', JSON.stringify(err))
+          resolve(false)
+        })
+    })
+  }
+
+  audio_mute(audio_source, value) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'setMuted', {
+          audioPort: audio_source,
+          muted: value,
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log('audio mute error:', JSON.stringify(err, 3, null))
           resolve(false)
         })
     })

@@ -58,6 +58,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   }
 
   _init() {
+    this.customLock = false; //by default its unlocked | will get locked when user switches any preset value 
     this.pictureApi = new PictureSettingsApi();
     this.options = this.pictureApi.getOptions(); //#byDefault //not required //fetches the defaults dummy values //following api calls fetches the actual values from api here after
     this.pictureApi
@@ -106,58 +107,8 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   _focus() {
     console.log("index: ", this.tag("List").index);
     // this.tag("List").setIndex(0);//not necessary
-    this.checkCustomStatus();
   }
 
-  checkCustomStatus() {
-    this.customFlag = false;
-    let colorTempFlag = false;
-    let pictureModeFlag = false;
-    this.pictureApi
-      .getSettingsValue("_colorTemp")
-      .then((res) => {
-        if (res === "User Defined") {
-          colorTempFlag = true;
-          this.customFlag = colorTempFlag && pictureModeFlag;
-        }
-      })
-      .catch((err) => {
-        console.log(
-          "Error from getting _colorTemp on focus on overlay: ",
-          JSON.stringify(err)
-        );
-        console.log(
-          "colorTempFlag: ",
-          colorTempFlag,
-          " pictureModeFlag: ",
-          pictureModeFlag,
-          " customFlag: ",
-          this.customFlag
-        );
-      });
-    this.pictureApi
-      .getSettingsValue("_pictureMode")
-      .then((res) => {
-        if (res === "custom") {
-          pictureModeFlag = true;
-          this.customFlag = colorTempFlag && pictureModeFlag;
-        }
-      })
-      .catch((err) => {
-        console.log(
-          "Error from getting _pictureMode on focus on overlay: ",
-          JSON.stringify(err)
-        );
-        console.log(
-          "colorTempFlag: ",
-          colorTempFlag,
-          " pictureModeFlag: ",
-          pictureModeFlag,
-          " customFlag: ",
-          this.customFlag
-        );
-      });
-  }
   _getFocused() {
     return this.tag("List").element;
   }
@@ -165,16 +116,12 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   _handleDown() {
     if (this.tag("List").index < this.tag("List").length - 1) {
       //to prevent circular scrolling
-      if (this.tag("List").index >= 1) {
+      if (this.tag("List").index === 1) {
         //to check if user should be moving to third item
-        console.log("customFlag: ", this.customFlag);
-        if (this.customFlag) {
-          //to check if picture mode and color are set to custom
-          this.tag("List").setNext();
-        } else {
-          this.tag("List").setIndex(1);
-          console.log("refreshing custom status...");
-          this.checkCustomStatus(); //refresh and check if picturemode and colorTemp are custom
+        if(!this.customLock){ //customLock value is true means api call is happening wait before moving down
+          this.moveDownOnCustom()
+        } else{
+          console.log("changing the preset value cant moveDown now!!")
         }
       } else {
         this.tag("List").setNext();
@@ -188,4 +135,24 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
       this.tag("List").setPrevious();
     }
   }
+
+  async moveDownOnCustom() {
+    try{
+      const pictureMode = await this.pictureApi.getPictureMode();
+      const colorTemp = await this.pictureApi.getColorTemperature();
+      console.log("picture mode: ", pictureMode, " color temperature: ", colorTemp);
+      if(pictureMode === "custom" && colorTemp === "User Defined"){
+        this.tag("List").setNext();
+      } else {
+        this.tag("List").setIndex(1);
+      }
+    } catch {
+      console.log("error occoured in api call");
+    }
+  }
+
+  $moveDownLock(lock){
+    this.customLock = lock //prevents user from moving down when a preset value change api call is happening
+  }
+
 }

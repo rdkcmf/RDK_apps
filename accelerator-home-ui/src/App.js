@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage, Registry } from '@lightningjs/sdk';
+import { Utils, Router, Storage } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -27,6 +27,7 @@ import Menu from './views/Menu'
 import Failscreen from './screens/FailScreen';
 import { keyIntercept } from './keyIntercept/keyIntercept';
 import HDMIApi from './api/HDMIApi';
+import Volume from './tvOverlay/components/Volume';
 
 const config = {
   host: '127.0.0.1',
@@ -63,6 +64,9 @@ export default class App extends Router.App {
         },
         Fail: {
           type: Failscreen,
+        },
+        Volume: {
+          type: Volume
         }
       }
     }
@@ -208,27 +212,74 @@ export default class App extends Router.App {
       return true
 
     } else if (key.keyCode == Keymap.AudioVolumeMute) {
-      if (appApi.activatedForeground) {
-        appApi.setVisibility("foreground", true)
-        appApi.zorder('foreground')
+      if (Storage.get('applicationType') !== '') {
+        let activePage = Router.getActiveRoute()
+        if (activePage !== 'overlay/volume') {
+          Router.navigate('overlay/volume', { flag: true, route: activePage })
+          this._moveToFront()
+        } else {
+          this._moveToFront()
+          let page = Router.getActivePage()
+          page.onVolumeMute()
+        }
+      }
+      else {
+        if (Router.getActiveWidget()) {
+          let page = Router.getActiveWidget()
+          page.onVolumeMute()
+        }
+        Router.focusWidget('Volume')
       }
       return true
 
     } else if (key.keyCode == Keymap.AudioVolumeUp) {
-      if (appApi.activatedForeground) {
-        appApi.setVisibility("foreground", true)
-        appApi.zorder('foreground')
+      if (Storage.get('applicationType') !== '') {
+        let activePage = Router.getActiveRoute()
+        if (activePage !== 'overlay/volume') {
+          Router.navigate('overlay/volume', { flag: true, route: activePage })
+          this._moveToFront()
+        } else {
+          this._moveToFront()
+          let page = Router.getActivePage()
+          page.onVolumeKeyUp()
+        }
+      }
+      else {
+        if (Router.getActiveWidget()) {
+          let page = Router.getActiveWidget()
+          page.onVolumeKeyUp()
+        }
+        Router.focusWidget('Volume')
       }
       return true
 
     } else if (key.keyCode == Keymap.AudioVolumeDown) {
-      if (appApi.activatedForeground) {
-        appApi.setVisibility("foreground", true)
-        appApi.zorder('foreground')
+      if (Storage.get('applicationType') !== '') {
+        let activePage = Router.getActiveRoute()
+        if (activePage !== 'overlay/volume') {
+          Router.navigate('overlay/volume', { flag: true, route: activePage })
+          this._moveToFront()
+        } else {
+          this._moveToFront()
+          let page = Router.getActivePage()
+          page.onVolumeKeyDown()
+        }
+      }
+      else {
+        if (Router.getActiveWidget()) {
+          let page = Router.getActiveWidget()
+          page.onVolumeKeyDown()
+        }
+        Router.focusWidget('Volume')
       }
       return true
     }
     return false
+  }
+
+  _moveToFront() {
+    appApi.setVisibility('ResidentApp', true)
+    appApi.zorder('residentApp')
   }
 
   _init() {
@@ -237,7 +288,7 @@ export default class App extends Router.App {
     }
     appApi.enableDisplaySettings()
     appApi.cobaltStateChangeEvent()
-    appApi.launchforeground()
+    //appApi.launchforeground()
     this.xcastApi = new XcastApi();
     this.xcastApi.activate().then(result => {
       if (result) {
@@ -258,7 +309,7 @@ export default class App extends Router.App {
       console.log(JSON.stringify(notification))
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
 
-        if (Router.getActiveHash().startsWith("tv-overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")
           Router.navigate("menu")
         }
@@ -350,7 +401,7 @@ export default class App extends Router.App {
         break;
       case 'HDMI':
         new HDMIApi().stopHDMIInput()
-        Storage.set("_currentInputMode",{});
+        Storage.set("_currentInputMode", {});
         break;
       default:
         break;

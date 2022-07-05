@@ -482,7 +482,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     Router.back()
   }
 
-  _unfocus() {
+  _inactive() {
     this.tag('Image').alpha = 0
     this.tag('InfoOverlay').alpha = 0
     this.isUSB = false
@@ -490,6 +490,7 @@ export default class AAMPVideoPlayer extends Lightning.Component {
     this.stop()
     this.destroy()
   }
+
   _focus() {
     this._setState('HideControls')
     this.updateInfo()

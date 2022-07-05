@@ -20,24 +20,24 @@
 import DvbSScan from "../screens/DTVScreens/DvbSScan"
 import LiveTVScan from "../screens/DTVScreens/LiveTVScan"
 import LiveTVSettings from "../screens/DTVScreens/LiveTVSettings"
- 
- 
- const liveTvRoutes = [
+
+
+const liveTvRoutes = [
     {
         path: 'settings/livetv',
         component: LiveTVSettings,
-        widgets: ['Menu'],
+        widgets: ['Menu', 'Volume'],
     },
     {
         path: 'settings/livetv/scan',
         component: LiveTVScan,
-        widgets: ['Menu'],
+        widgets: ['Menu', 'Volume'],
     },
     {
         path: 'settings/livetv/scan/dvb-s-scan',
         component: DvbSScan,
-        widgets: ['Menu'],
+        widgets: ['Menu', 'Volume'],
     },
- ]
- 
- export default liveTvRoutes
+]
+
+export default liveTvRoutes

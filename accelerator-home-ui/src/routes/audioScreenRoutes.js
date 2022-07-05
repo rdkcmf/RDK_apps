@@ -28,22 +28,22 @@ export default {
     {
       path: 'settings/audio',
       component: AudioScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/audio/output',
       component: HdmiOutputScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/video',
       component: VideoScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'settings/video/resolution',
       component: ResolutionScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
   ]
 }

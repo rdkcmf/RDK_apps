@@ -769,7 +769,7 @@ export default class MainView extends Lightning.Component {
               console.log('completed')
               Storage.set('applicationType', 'HDMI');
               const currentInput = this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data
-              Storage.set("_currentInputMode", {id:currentInput.id, locator:currentInput.locator});
+              Storage.set("_currentInputMode", { id: currentInput.id, locator: currentInput.locator });
               this.appApi.setVisibility('ResidentApp', false);
             })
             .catch(err => {
@@ -823,8 +823,15 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
-            this.appApi.setVisibility('ResidentApp', false);
+            this.appApi.getPluginStatus('Cobalt')
+              .then(() => {
+                this.appApi.launchCobalt(this.uri);
+                this.appApi.setVisibility('ResidentApp', false);
+              })
+              .catch(err => {
+                console.log('Cobalt plugin error', err)
+                Storage.set('applicationType', '')
+              })
           } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
             this.appApi.launchWeb(this.uri)
               .then(() => {
@@ -855,6 +862,7 @@ export default class MainView extends Lightning.Component {
               })
               .catch(err => {
                 console.log('Amazon plugin error', err)
+                Storage.set('applicationType', '')
               })
 
           } else if (Storage.get('applicationType') == 'Netflix') {
@@ -868,6 +876,7 @@ export default class MainView extends Lightning.Component {
               })
               .catch(err => {
                 console.log('Netflix plugin error', err)
+                Storage.set('applicationType', '')
               })
 
           } else {

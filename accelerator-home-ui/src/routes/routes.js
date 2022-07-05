@@ -36,6 +36,7 @@ import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
 import liveTvRoutes from './liveTvRoutes'
 import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
+import Volume from '../tvOverlay/components/Volume'
 
 let api = null
 
@@ -62,7 +63,7 @@ export default {
     {
       path: 'settings',
       component: SettingsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'failscreen',
@@ -71,37 +72,42 @@ export default {
     {
       path: 'videoplayer',
       component: LightningPlayerControls,
+      widgets: ['Volume']
     },
     {
       path: 'usb',
       component: UsbAppsScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'epg',
       component: EpgScreen,
-      widgets: ['Menu'],
+      widgets: ['Menu', 'Volume'],
     },
     {
       path: 'apps',
       component: AppStore,
-      widgets: ['Menu']
+      widgets: ['Menu', 'Volume']
     },
     {
       path: 'usb/player',
-      component: AAMPVideoPlayer
+      component: AAMPVideoPlayer,
+      widgets: ['Volume']
     },
     {
       path: 'usb/image',
       component: ImageViewer,
+      widgets: ['Volume']
     },
     {
       path: 'image',
       component: ImageViewer,
+      widgets: ['Volume']
     },
     {
       path: 'ui',
       component: UIList,
+      widgets: ['Volume']
     },
     {
       path: 'menu',
@@ -115,18 +121,23 @@ export default {
         }
         return Promise.resolve()
       },
-      widgets: ['Menu', 'Fail'],
+      widgets: ['Menu', 'Fail', 'Volume'],
     },
     {
       path: 'tv-overlay/:type',
       component: TvOverlayScreen,
-      options:{
+      options: {
         preventStorage: true,
       }
     },
     {
+      path: 'overlay/volume',
+      component: Volume
+    },
+    {
       path: 'player',
-      component: AAMPVideoPlayer
+      component: AAMPVideoPlayer,
+      widgets: ['Volume']
     },
     {
       path: '!',

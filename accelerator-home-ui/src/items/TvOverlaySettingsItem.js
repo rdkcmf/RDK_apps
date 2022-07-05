@@ -171,6 +171,7 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
   }
 
   changePresetValueBy(direction) {
+    this.fireAncestors("$moveDownLock",true); //user switching values prevent moving down
     try {
       clearTimeout(this.changePresetTimer);
     } catch {
@@ -205,6 +206,7 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
           this.updateValue(
             this.formatItemName(this._item.value[this.valueIdx])
           );
+          this.fireAncestors("$moveDownLock",false); //api call success  user can move down
         })
         .catch((err) => {
           console.log(JSON.stringify(err));

@@ -30,39 +30,42 @@ const networkRoutes = [
     {
         path: 'settings/network',
         component: NetworkConfigurationScreen,
-        widgets: ['Menu'],
+        widgets: ['Menu', 'Volume'],
     },
     {
         path: 'settings/network/info',
         component: NetworkInfo,
-        widgets: ['Menu']
+        widgets: ['Menu', 'Volume']
     },
     {
         path: 'settings/network/interface',
         component: NetworkInterfaceScreen,
-        widgets: ['Menu']
+        widgets: ['Menu', 'Volume']
     },
     {
         path: 'settings/network/interface/wifi',
         component: WiFiScreen,
-        widgets: ['Menu', 'Fail']
+        widgets: ['Menu', 'Fail', 'Volume']
     },
     {
         path: 'settings/network/interface/wifi/connect',
         component: WifiPairingScreen,
+        widgets: ['Volume']
     },
     {
         path: 'settings/network/interface/wifi/another',
         component: JoinAnotherNetworkComponent,
+        widgets: ['Volume']
     },
     {
         path: 'settings/bluetooth',
         component: BluetoothScreen,
-        widgets: ['Menu', 'Fail']
+        widgets: ['Menu', 'Fail', 'Volume']
     },
     {
         path: 'settings/bluetooth/pairing',
         component: BluetoothPairingScreen,
+        widgets: ['Volume']
     }
 ]
 

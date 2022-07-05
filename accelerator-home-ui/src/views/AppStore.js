@@ -127,8 +127,15 @@ export default class AppStore extends Lightning.Component {
                     Storage.set('applicationType', applicationType);
                     console.log(this.uri, applicationType)
                     if (Storage.get('applicationType') == 'Cobalt') {
-                        appApi.launchCobalt(this.uri);
-                        appApi.setVisibility('ResidentApp', false);
+                        appApi.getPluginStatus('Cobalt')
+                            .then(() => {
+                                appApi.launchCobalt(this.uri);
+                                appApi.setVisibility('ResidentApp', false);
+                            })
+                            .catch(err => {
+                                console.log('Cobalt plugin error', err)
+                                Storage.set('applicationType', '')
+                            })
                     } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
                         appApi.launchWeb(this.uri)
                             .then(() => {
@@ -158,6 +165,7 @@ export default class AppStore extends Lightning.Component {
                             })
                             .catch(err => {
                                 console.log('Amazon plugin error', err)
+                                Storage.set('applicationType', '')
                             })
 
                     } else if (Storage.get('applicationType') == 'Netflix') {
@@ -171,6 +179,7 @@ export default class AppStore extends Lightning.Component {
                             })
                             .catch(err => {
                                 console.log('Netflix plugin error', err)
+                                Storage.set('applicationType', '')
                             })
                     }
                 }
