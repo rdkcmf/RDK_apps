@@ -335,26 +335,31 @@ export default class App extends Router.App {
         }
       }
 
-      if (notification.callsign === 'Netflix' && notification.state === 'Activated') {
-        appApi.getNetflixESN()
-          .then(res => {
-            Storage.set(res)
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
+        Storage.set('applicationType', notification.callsign)
+        if (notification.callsign === 'Netflix') {
+          appApi.getNetflixESN()
+            .then(res => {
+              Storage.set('Netflix_ESN', res)
+            })
+          thunder.on('Netflix', 'notifyeventchange', notification => {
+            if (notification.EventName === "rendered") {
+              appApi.visibile('ResidentApp', false);
+              Router.navigate('menu')
+            }
+            if (notification.EventName === "requestsuspend") {
+              this.deactivateChildApp('Netflix')
+            }
+            if (notification.EventName === "updated") {
+              appApi.getNetflixESN()
+                .then(res => {
+                  Storage.set('Netflix_ESN', res)
+                })
+            }
           })
-        thunder.on('Netflix', 'notifyeventchange', notification => {
-          if (notification.EventName === "rendered") {
-            appApi.visibile('ResidentApp', false);
-            Router.navigate('menu')
-          }
-          if (notification.EventName === "requestsuspend") {
-            this.deactivateChildApp('Netflix')
-          }
-          if (notification.EventName === "updated") {
-            appApi.getNetflixESN()
-              .then(res => {
-                Storage.set(res)
-              })
-          }
-        })
+        } else {
+          appApi.setFocus(notification.callsign)
+        }
       }
     });
 

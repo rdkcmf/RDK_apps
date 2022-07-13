@@ -84,10 +84,10 @@ export default class Network {
   /**
    * Function to return available interfaces.
    */
-  getInterfaces(){
+  getInterfaces() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'getInterfaces').then(result => {
-        if(result.success){
+      this._thunder.call(this.callsign, 'getInterfaces').then(result => {
+        if (result.success) {
           resolve(result.interfaces)
         }
       }).catch(err => {
@@ -100,10 +100,10 @@ export default class Network {
   /**
    * Function to return default interfaces.
    */
-  getDefaultInterface(){
+  getDefaultInterface() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'getDefaultInterface').then(result => {
-        if(result.success){
+      this._thunder.call(this.callsign, 'getDefaultInterface').then(result => {
+        if (result.success) {
           resolve(result.interface)
         }
       }).catch(err => {
@@ -113,9 +113,9 @@ export default class Network {
     })
   }
 
-  setDefaultInterface(interfaceName){
+  setDefaultInterface(interfaceName) {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'setDefaultInterface', 
+      this._thunder.call(this.callsign, 'setDefaultInterface',
         {
           "interface": interfaceName,
           "persist": true
@@ -128,9 +128,9 @@ export default class Network {
     })
   }
 
-  getSTBIPFamily(){
+  getSTBIPFamily() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'getSTBIPFamily').then(result => {
+      this._thunder.call(this.callsign, 'getSTBIPFamily').then(result => {
         //need to check
       })
     })
@@ -140,17 +140,17 @@ export default class Network {
    * Function to return IP Settings.
    */
 
-  getIPSettings(currentInterface){
+  getIPSettings(currentInterface) {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'getIPSettings', 
+      this._thunder.call(this.callsign, 'getIPSettings',
         {
           "interface": currentInterface,
         }).then(result => {
           resolve(result)
-      }).catch(err => {
-        console.error(`getIPSettings fail: ${err}`)
-        reject(err)
-      })
+        }).catch(err => {
+          console.error(`getIPSettings fail: ${err}`)
+          reject(err)
+        })
     })
   }
 
@@ -158,10 +158,10 @@ export default class Network {
    * Function to set IP Settings.
    */
 
-  setIPSettings(IPSettings){
+  setIPSettings(IPSettings) {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'setIPSettings', IPSettings).then(result => {
-          resolve(result)
+      this._thunder.call(this.callsign, 'setIPSettings', IPSettings).then(result => {
+        resolve(result)
       }).catch(err => {
         console.error(`setIPSettings fail: ${err}`)
         reject(err)
@@ -170,20 +170,17 @@ export default class Network {
   }
 
 
-  isConnectedToInternet(){
+  isConnectedToInternet() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign,'isConnectedToInternet').then(result => {
-        if(result.success){
-          resolve(result.connectedToInternet)
-        }
-      }).catch(err => {
-        console.error(`isConnectedToInternet fail: ${err}`)
-        reject(err)
-      })
+      this._thunder.call(this.callsign, 'isConnectedToInternet')
+        .then(result => {
+          if (result.success) {
+            resolve(result.connectedToInternet)
+          }
+        }).catch(err => {
+          console.error(`isConnectedToInternet fail: ${err}`)
+          reject(false)
+        })
     })
   }
-
-
-
-
 }

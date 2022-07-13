@@ -62,7 +62,6 @@ export default class Volume extends Lightning.Component {
     }
 
     _firstEnable() {
-        this.switch = false
         this.appApi = new AppApi()
         this.volTimeout = null
         this.volume = 0
@@ -86,16 +85,6 @@ export default class Volume extends Lightning.Component {
             .catch(err => {
                 this._updateText(this.volume)
             })
-    }
-
-    /**
-     * @param {flag} args
-     */
-    set params(args) {
-        this.options = args
-        if (args.flag) {
-            this.switch = true
-        }
     }
 
     onVolumeKeyDown() {
@@ -172,17 +161,13 @@ export default class Volume extends Lightning.Component {
                 y: -320
             }
         })
-        this.switch = false
     }
 
     _handleBack() {
         console.log(Storage.get('applicationType'))
-        if (this.switch) {
-            console.log(this.options)
+        if (Storage.get('applicationType')) {
             this.appApi.visibile('ResidentApp', false)
             this.appApi.setVisibility(Storage.get('applicationType'), true)
-            // console.log('going back to route')
-            // Router.back()
         }
         else {
             Router.focusPage()

@@ -86,6 +86,19 @@ export default class AppApi {
     })
   }
 
+  isConnectedToInternet() {
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.Network', 'isConnectedToInternet')
+        .then(result => {
+          resolve(result.connectedToInternet)
+        })
+        .catch((err) => {
+          console.log(err)
+          reject(false)
+        })
+    })
+  }
+
   fetchApiKey() {
     return new Promise((resolve) => {
       thunder
@@ -721,6 +734,11 @@ export default class AppApi {
   zorder(cli) {
     thunder.call('org.rdk.RDKShell', 'moveToFront', { client: cli, callsign: cli })
   }
+
+  setFocus(cli) {
+    thunder.call('org.rdk.RDKShell', 'setFocus', { client: cli })
+  }
+
 
   moveToBack(cli) {
     thunder.call('org.rdk.RDKShell', 'moveToBack', { client: cli })

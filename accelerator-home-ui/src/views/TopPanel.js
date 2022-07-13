@@ -101,16 +101,12 @@ export default class TopPanel extends Lightning.Component {
     this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
-  _init() {
-    this._setState('Setting')
-  }
-
   set index(index) {
     this.indexVal = index
   }
 
   _focus() {
-    this._setState(this.state)
+    this._setState('Setting')
     this.tag('Settings').color = CONFIG.theme.hex
   }
 

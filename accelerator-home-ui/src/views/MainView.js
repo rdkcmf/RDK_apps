@@ -314,8 +314,18 @@ export default class MainView extends Lightning.Component {
 
     var appItems = this.homeApi.getAppListInfo()
     var data = this.homeApi.getPartnerAppsInfo()
-    this.metroApps = this.homeApi.getMetroInfo()
+    this.metroApps = this.homeApi.getOfflineMetroApps()
     this.showcaseApps = this.homeApi.getShowCaseApps()
+
+    this.appApi.isConnectedToInternet()
+      .then(result => {
+        if (result) {
+          this.metroApps = this.homeApi.getOnlineMetroApps()
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
 
     var prop_apps = 'applications'
     var prop_displayname = 'displayName'

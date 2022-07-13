@@ -1,9 +1,9 @@
 /*
- App version: 3.7 29/06/22
+ App version: 3.7 13/07/22
  SDK version: 4.8.3
  CLI version: 2.8.0
 
- gmtDate: Thu, 07 Jul 2022 12:27:06 GMT
+ gmtDate: Wed, 13 Jul 2022 10:42:37 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -5135,7 +5135,7 @@ SDK - v${this.sdkVersion}`;
           }
         }).catch((err) => {
           console.error(`isConnectedToInternet fail: ${err}`);
-          reject(err);
+          reject(false);
         });
       });
     }
@@ -5194,6 +5194,16 @@ SDK - v${this.sdkVersion}`;
           });
         };
         poll();
+      });
+    }
+    isConnectedToInternet() {
+      return new Promise((resolve, reject) => {
+        thunder.call("org.rdk.Network", "isConnectedToInternet").then((result) => {
+          resolve(result.connectedToInternet);
+        }).catch((err) => {
+          console.log(err);
+          reject(false);
+        });
       });
     }
     fetchApiKey() {
@@ -5680,6 +5690,11 @@ SDK - v${this.sdkVersion}`;
       thunder.call("org.rdk.RDKShell", "moveToFront", {
         client: cli,
         callsign: cli
+      });
+    }
+    setFocus(cli) {
+      thunder.call("org.rdk.RDKShell", "setFocus", {
+        client: cli
       });
     }
     moveToBack(cli) {
@@ -10206,8 +10221,15 @@ SDK - v${this.sdkVersion}`;
       let thunder11 = thunderJS_default(config9);
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
-      this.metroApps = this.homeApi.getMetroInfo();
+      this.metroApps = this.homeApi.getOfflineMetroApps();
       this.showcaseApps = this.homeApi.getShowCaseApps();
+      this.appApi.isConnectedToInternet().then((result) => {
+        if (result) {
+          this.metroApps = this.homeApi.getOnlineMetroApps();
+        }
+      }).catch((err) => {
+        console.log(err);
+      });
       var prop_apps = "applications";
       var prop_displayname = "displayName";
       var prop_uri = "uri";
@@ -45487,7 +45509,6 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       };
     }
     _firstEnable() {
-      this.switch = false;
       this.appApi = new AppApi();
       this.volTimeout = null;
       this.volume = 0;
@@ -45505,12 +45526,6 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       }).catch((err) => {
         this._updateText(this.volume);
       });
-    }
-    set params(args) {
-      this.options = args;
-      if (args.flag) {
-        this.switch = true;
-      }
     }
     onVolumeKeyDown() {
       this.volTimeout && Registry_default.clearTimeout(this.volTimeout);
@@ -45571,12 +45586,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           y: -320
         }
       });
-      this.switch = false;
     }
     _handleBack() {
       console.log(Storage_default.get("applicationType"));
-      if (this.switch) {
-        console.log(this.options);
+      if (Storage_default.get("applicationType")) {
         this.appApi.visibile("ResidentApp", false);
         this.appApi.setVisibility(Storage_default.get("applicationType"), true);
       } else {
@@ -46042,14 +46055,11 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       });
       this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
-    _init() {
-      this._setState("Setting");
-    }
     set index(index2) {
       this.indexVal = index2;
     }
     _focus() {
-      this._setState(this.state);
+      this._setState("Setting");
       this.tag("Settings").color = CONFIG.theme.hex;
     }
     set changeText(text) {
@@ -46811,24 +46821,29 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             this.advanceScreen.performOTPAction();
           }
         }
-        if (notification.callsign === "Netflix" && notification.state === "Activated") {
-          appApi9.getNetflixESN().then((res) => {
-            Storage_default.set(res);
-          });
-          thunder10.on("Netflix", "notifyeventchange", (notification2) => {
-            if (notification2.EventName === "rendered") {
-              appApi9.visibile("ResidentApp", false);
-              Router_default.navigate("menu");
-            }
-            if (notification2.EventName === "requestsuspend") {
-              this.deactivateChildApp("Netflix");
-            }
-            if (notification2.EventName === "updated") {
-              appApi9.getNetflixESN().then((res) => {
-                Storage_default.set(res);
-              });
-            }
-          });
+        if (notification && (notification.callsign === "Cobalt" || notification.callsign === "Amazon" || notification.callsign === "Lightning" || notification.callsign === "Netflix") && notification.state == "Activated") {
+          Storage_default.set("applicationType", notification.callsign);
+          if (notification.callsign === "Netflix") {
+            appApi9.getNetflixESN().then((res) => {
+              Storage_default.set("Netflix_ESN", res);
+            });
+            thunder10.on("Netflix", "notifyeventchange", (notification2) => {
+              if (notification2.EventName === "rendered") {
+                appApi9.visibile("ResidentApp", false);
+                Router_default.navigate("menu");
+              }
+              if (notification2.EventName === "requestsuspend") {
+                this.deactivateChildApp("Netflix");
+              }
+              if (notification2.EventName === "updated") {
+                appApi9.getNetflixESN().then((res) => {
+                  Storage_default.set("Netflix_ESN", res);
+                });
+              }
+            });
+          } else {
+            appApi9.setFocus(notification.callsign);
+          }
         }
       });
     }

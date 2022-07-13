@@ -32,15 +32,15 @@ import { metroAppsInfoOffline } from "./../../static/data/MetroAppsInfoOffline.j
 import { showCaseApps } from "../../static/data/LightningShowcase";
 import xml2json from "@hendt/xml2json";
 
-var partnerApps = [];
+let partnerApps = [];
 
 /**
  * Get the ip address.
  */
-var IpAddress1 = "";
-var IpAddress2 = "";
+let IpAddress1 = "";
+let IpAddress2 = "";
 
-var networkApi = new NetworkApi();
+let networkApi = new NetworkApi();
 networkApi
   .getIP()
   .then((ip) => {
@@ -51,7 +51,7 @@ networkApi
     Storage.set("ipAddress", null);
   });
 
-var appApi = new AppApi();
+let appApi = new AppApi();
 appApi.getIP().then((ip) => {
   IpAddress2 = ip;
 });
@@ -170,7 +170,7 @@ export default class HomeApi {
   getLeftArrowInfo() {
     return leftArrowInfo;
   }
-  
+
   getMovieSubscriptions(id) {
     return new Promise((resolve, reject) => {
       appApi.fetchApiKey().then((res) => {
@@ -204,7 +204,7 @@ export default class HomeApi {
         month = month.toString();
         //fetch date time from the thunder plugins and pass it to the url
         try {
-          fetch("http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=" +year +"-" +month +"-" +day +"T08%3A00Z&includeAdult=false&imageSize=Lg&imageAspectTV=16x9&imageText=true&api_key=" +res)
+          fetch("http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=" + year + "-" + month + "-" + day + "T08%3A00Z&includeAdult=false&imageSize=Lg&imageAspectTV=16x9&imageText=true&api_key=" + res)
             .then((response) => response.json())
             .then((response) => {
               const ids = response.map((id) => id.program.rootId);
