@@ -31,7 +31,7 @@ export default class Volume extends Lightning.Component {
             },
             Overlay: {
                 Line: {
-                    y: 318,
+                    y: 317,
                     h: 3,
                     w: 1920,
                     rect: true,

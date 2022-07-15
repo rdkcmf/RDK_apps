@@ -395,19 +395,6 @@ export default class DvbSScan extends Lightning.Component {
   _firstActive() {
     ///////////////satellite
 
-    // this.satelliteList = [
-    //   {
-    //     name: "Satellite 1",
-    //     longitude: 282,
-    //     lnb: "Universal",
-    //   },
-    //   {
-    //     name: "Satellite 2",
-    //     longitude: 282,
-    //     lnb: "Universal",
-    //   },
-    // ]; //clear the satellite list and check the list is not empty before going to select satellite
-
     this.satelliteList = [];
     dtvApi.satelliteList().then((res) => {
       this.satelliteList = res;
@@ -418,6 +405,13 @@ export default class DvbSScan extends Lightning.Component {
     this.polarityList = [];
     dtvApi.polarityList().then((res) => {
       this.polarityList = res;
+    });
+
+    ///////////////////symbolRate
+    //symbol rate has some predefined values additional to custom imput
+    this.symbolRateList = [];
+    dtvApi.symbolRateList().then((res) => {
+      this.symbolRateList = res;
     });
 
     ////////////////////FEC
@@ -643,7 +637,7 @@ export default class DvbSScan extends Lightning.Component {
                   "Satellite: " +
                   (Object.keys(this.selectedSatellite).length !== 0
                     ? this.selectedSatellite.name
-                    : "Select a Satellite"); //format the not selected state(currently will show undefined)
+                    : "Select a Satellite"); 
               }
               _getFocused() {
                 return this.tag("SelectSatellite");
@@ -671,8 +665,8 @@ export default class DvbSScan extends Lightning.Component {
         _handleEnter() {
           this.tag("SelectFrequency").patch({
             prevVal: this.selectedFrequency, //previous value is passed to retain the previously entered value
-            onHandleDone: this.setFrequency.bind(this),
-          }); //pass a function that will be executed when done is clicked on the keyboard
+            onHandleDone: this.setFrequency.bind(this), //pass a function that will be executed when done is clicked on the keyboard
+          }); 
           this._setState("Frequency.SelectFrequency");
         }
         static _states() {
@@ -718,7 +712,6 @@ export default class DvbSScan extends Lightning.Component {
           this._setState("SymbolRate");
         }
         _handleEnter() {
-          // console.log(this.polarityList); //polarity list will be always available as it is static data
           this._setState("Polarity.SelectPolarity");
         }
         static _states() {
@@ -772,8 +765,9 @@ export default class DvbSScan extends Lightning.Component {
         _handleEnter() {
           this.tag("SelectSymbolRate").patch({
             prevVal: this.selectedSymbolRate, //previous value is passed to retain the previously entered value
-            onHandleDone: this.setSymbolRate.bind(this),
-          }); //pass a function that will be executed when done is clicked on the keyboard
+            onHandleDone: this.setSymbolRate.bind(this), //pass a function that will be executed when done is clicked on the keyboard
+            presetValues: this.symbolRateList, //can handle a list of predefined values that can be selected using arrow keys
+          }); 
           this._setState("SymbolRate.SelectSymbolRate");
         }
         static _states() {
@@ -819,7 +813,6 @@ export default class DvbSScan extends Lightning.Component {
           this._setState("DVBS2");
         }
         _handleEnter() {
-          // console.log(this.fecList); //fec list will be always available as it is static data
           this._setState("FEC.SelectFEC");
         }
         static _states() {
@@ -902,7 +895,6 @@ export default class DvbSScan extends Lightning.Component {
           this._setState("SearchType");
         }
         _handleEnter() {
-          // console.log(this.modulationList); //Modulation list will be always available as it is static data
           this._setState("Modulation.SelectModulation");
         }
         static _states() {
@@ -927,7 +919,7 @@ export default class DvbSScan extends Lightning.Component {
                   "Modulation: " +
                   (this.selectedModulation !== ""
                     ? this.selectedModulation.toUpperCase()
-                    : "Select a Modulation"); //format the not selected state(currently will show undefined)
+                    : "Select a Modulation"); 
               }
               _getFocused() {
                 return this.tag("SelectModulation");
@@ -955,7 +947,6 @@ export default class DvbSScan extends Lightning.Component {
           this._setState("Retune");
         }
         _handleEnter() {
-          // console.log(this.searchtypeList); //Modulation list will be always available as it is static data
           this._setState("SearchType.SelectSearchType");
         }
         static _states() {
@@ -982,7 +973,7 @@ export default class DvbSScan extends Lightning.Component {
                   (this.selectedSearchType !== ""
                     ? this.selectedSearchType.charAt(0).toUpperCase() +
                       this.selectedSearchType.slice(1)
-                    : "Select a Search Mode"); //format the not selected state(currently will show undefined)
+                    : "Select a Search Mode"); 
               }
               _getFocused() {
                 return this.tag("SelectSearchType");

@@ -512,6 +512,24 @@ export default class AppApi {
     childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
   }
 
+  launchPremiumAppURL(childCallsign, url) {
+
+    thunder
+      .call("org.rdk.RDKShell", "launch", {
+        callsign: childCallsign,
+        type: childCallsign
+      })
+      .then(() => {
+        thunder.call("org.rdk.RDKShell", "moveToFront", {
+          client: childCallsign
+        })
+        thunder.call(childCallsign, 'deeplink', url)
+        thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
+      })
+      .catch(err => { });
+    childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
+  }
+
   /**
    * Function to launch Resident app.
    * @param {String} url url of app.

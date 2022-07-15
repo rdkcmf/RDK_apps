@@ -80,7 +80,7 @@ export default class App extends Router.App {
   }
 
   _captureKey(key) {
-    console.log(key)
+    console.log(key, key.keyCode)
     if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         this.deactivateChildApp(Storage.get('applicationType'));
@@ -431,26 +431,42 @@ export default class App extends Router.App {
         } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
           appApi.configureApplication('Netflix', notification.parameters).then((res) => {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Netflix');
-            Storage.set('applicationType', 'Netflix');
-            appApi.setVisibility('ResidentApp', false);
-            if (AppApi.pluginStatus('Netflix')) {
-              let params = { applicationName: notification.applicationName, state: 'running' };
-              this.xcastApi.onApplicationStateChanged(params);
-            }
+
+            appApi.getPluginStatus('Netflix')
+              .then(result => {
+                if (result[0].state === 'deactivated') {
+                  Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
+                }
+                appApi.launchPremiumAppURL('Netflix', notification.parameters.url);
+                Storage.set('applicationType', 'Netflix');
+                let params = { applicationName: notification.applicationName, state: 'running' };
+                this.xcastApi.onApplicationStateChanged(params);
+              })
+              .catch(err => {
+                console.log('Netflix plugin error', err)
+                Storage.set('applicationType', '')
+              })
+
           }).catch((err) => {
             console.log('Error while launching ' + applicationName + ', Err: ' + JSON.stringify(err));
           });
         } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
           this.deactivateChildApp(Storage.get('applicationType'));
-          appApi.launchCobalt(notification.parameters.url + '&inApp=true');
-          Storage.set('applicationType', 'Cobalt');
-          appApi.setVisibility('ResidentApp', false);
-          let params = {
-            applicationName: notification.applicationName,
-            state: 'running',
-          };
-          this.xcastApi.onApplicationStateChanged(params);
+
+          appApi.getPluginStatus('Cobalt')
+            .then(() => {
+              appApi.launchCobalt(notification.parameters.url + '&inApp=true');
+              Storage.set('applicationType', 'Cobalt');
+              appApi.setVisibility('ResidentApp', false);
+              let params = {
+                applicationName: notification.applicationName,
+                state: 'running',
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            })
+            .catch(() => {
+              console.log('Failed to launch Cobalt using xcast')
+            })
         }
       }
     });

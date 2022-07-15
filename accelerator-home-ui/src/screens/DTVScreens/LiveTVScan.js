@@ -44,6 +44,7 @@
                 x: 200,
                 y: 275,
                 TScan: {
+                    alpha:0.3,
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -67,6 +68,7 @@
                     },
                 },
                 CScan: {
+                    alpha:0.3,
                     y: 90,
                     type: SettingsMainItem,
                     Title: {
@@ -119,10 +121,10 @@
     }
  
    _init() {
-     this._setState('TScan')
+     this._setState('SScan')
    }
    _focus() {
-     this._setState(this.state)
+     this._setState('SScan')
    }
  
    _handleBack() {
@@ -170,7 +172,7 @@
                 this.tag('SScan')._unfocus()
             }
             _handleUp() {
-                this._setState('CScan')
+                // this._setState('CScan')
             }
             _handleEnter() {
                 Router.navigate('settings/livetv/scan/dvb-s-scan')

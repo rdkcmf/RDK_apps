@@ -30,6 +30,7 @@ const systemcCallsign = "DTV";
 export default class DTVApi {
   activate() {
     return new Promise((resolve, reject) => {
+      // resolve(true); //#forTesting
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           resolve(true);
@@ -98,6 +99,7 @@ export default class DTVApi {
   //lists the satellites available
   satelliteList() {
     return new Promise((resolve, reject) => {
+      // resolve([{name: "Satellite 1",longitude: 282,lnb: "Universal" },{name: "Satellite 2",longitude: 282,lnb: "Universal" }]) //#forTesting
       thunder
         .call(systemcCallsign, "satelliteList")
         .then((result) => {
@@ -113,6 +115,13 @@ export default class DTVApi {
   polarityList() {
     return new Promise((resolve, reject) => {
       resolve(["horizontal", "vertical", "left", "right"]);
+    });
+  }
+
+  //returns the available symbolRate options for dvb-s scan, returns a list of static values
+  symbolRateList() {
+    return new Promise((resolve, reject) => {
+      resolve(["22000", "23000", "27500", "29500"]); //values can be edited/entered custom from UI, no need to mention custom here
     });
   }
   //returns the available FEC options for dvb-s scan, returns a list of static values

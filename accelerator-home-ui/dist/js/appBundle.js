@@ -1,9 +1,9 @@
 /*
- App version: 3.7 13/07/22
+ App version: 3.7 19/07/22
  SDK version: 4.8.3
  CLI version: 2.8.0
 
- gmtDate: Wed, 13 Jul 2022 10:42:37 GMT
+ gmtDate: Tue, 19 Jul 2022 12:15:33 GMT
 */
 var APP_accelerator_home_ui = (() => {
   var __create = Object.create;
@@ -5517,6 +5517,22 @@ SDK - v${this.sdkVersion}`;
       });
       childCallsign === "Amazon" ? activatedAmazon = true : activatedNetflix = true;
     }
+    launchPremiumAppURL(childCallsign, url3) {
+      thunder.call("org.rdk.RDKShell", "launch", {
+        callsign: childCallsign,
+        type: childCallsign
+      }).then(() => {
+        thunder.call("org.rdk.RDKShell", "moveToFront", {
+          client: childCallsign
+        });
+        thunder.call(childCallsign, "deeplink", url3);
+        thunder.call("org.rdk.RDKShell", "setFocus", {
+          client: childCallsign
+        });
+      }).catch((err) => {
+      });
+      childCallsign === "Amazon" ? activatedAmazon = true : activatedNetflix = true;
+    }
     launchResident(url3, client) {
       const childCallsign = client;
       thunder.call("org.rdk.RDKShell", "launch", {
@@ -6982,6 +6998,11 @@ SDK - v${this.sdkVersion}`;
     polarityList() {
       return new Promise((resolve, reject) => {
         resolve(["horizontal", "vertical", "left", "right"]);
+      });
+    }
+    symbolRateList() {
+      return new Promise((resolve, reject) => {
+        resolve(["22000", "23000", "27500", "29500"]);
       });
     }
     fecList() {
@@ -43218,6 +43239,109 @@ ${args.gracenoteItem.ratings[0].subRating}`;
     }
   };
 
+  // src/Config/Keymap.js
+  var keyMap = {
+    "0": 48,
+    "1": 49,
+    "2": 50,
+    "3": 51,
+    "4": 52,
+    "5": 53,
+    "6": 54,
+    "7": 55,
+    "8": 56,
+    "9": 57,
+    "F1": 112,
+    "F2": 113,
+    "F3": 114,
+    "F4": 115,
+    "F5": 116,
+    "Amazon": 117,
+    "Netflix": 118,
+    "Youtube": 119,
+    "F11": 122,
+    "F12": 123,
+    "q": 81,
+    "w": 87,
+    "e": 69,
+    "r": 82,
+    "t": 84,
+    "y": 89,
+    "u": 85,
+    "i": 73,
+    "o": 79,
+    "p": 80,
+    "a": 65,
+    "s": 83,
+    "d": 68,
+    "f": 70,
+    "g": 71,
+    "h": 72,
+    "j": 74,
+    "k": 75,
+    "l": 76,
+    "z": 90,
+    "x": 88,
+    "c": 67,
+    "v": 86,
+    "b": 66,
+    "n": 78,
+    "m": 77,
+    "Q": 81,
+    "W": 87,
+    "E": 69,
+    "R": 82,
+    "T": 84,
+    "Y": 89,
+    "U": 85,
+    "I": 73,
+    "O": 79,
+    "P": 80,
+    "A": 65,
+    "S": 83,
+    "D": 68,
+    "F": 70,
+    "G": 71,
+    "H": 72,
+    "J": 74,
+    "K": 75,
+    "L": 76,
+    "Z": 90,
+    "X": 88,
+    "C": 67,
+    "V": 86,
+    "B": 66,
+    "N": 78,
+    "M": 77,
+    "Enter": 13,
+    "Space": 32,
+    "ArrowUp": 38,
+    "ArrowLeft": 37,
+    "ArrowRight": 39,
+    "ArrowDown": 40,
+    "AudioVolumeDown": 174,
+    "AudioVolumeUp": 175,
+    "AudioVolumeMute": 173,
+    "MediaStop": 178,
+    "MediaTrackPrevious": 177,
+    "MediaPlay": 179,
+    "MediaTrackNext": 176,
+    "Escape": 27,
+    "Pause": 179,
+    "Backspace": 8,
+    "MediaRewind": 227,
+    "MediaFastForward": 228,
+    "Power": 116,
+    "PageUp": 33,
+    "PageDown": 34,
+    "Home": 36,
+    "Settings_Shortcut": 121,
+    "Guide_Shortcut": 120,
+    "Inputs_Shortcut": 113,
+    "Picture_Setting_Shortcut": 114
+  };
+  var Keymap_default = keyMap;
+
   // src/screens/DTVScreens/InputScreens/IntegerInput.js
   var IntegerInput = class extends Lightning_default.Component {
     static _template() {
@@ -43228,6 +43352,29 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           Border: {
             texture: Lightning_default.Tools.getRoundRect(1600, 90, 0, 3, 4294967295, false)
           },
+          Arrows: {
+            y: 50,
+            visible: false,
+            RightArrow: {
+              h: 50,
+              w: 50,
+              x: 1600,
+              mountX: 1,
+              mountY: 0.5,
+              color: 4294967295,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            },
+            LeftArrow: {
+              h: 50,
+              w: 50,
+              x: 0,
+              mountX: 0,
+              mountY: 0.5,
+              scaleX: -1,
+              color: 4294967295,
+              src: Utils_default.asset("images/settings/Arrow.png")
+            }
+          },
           Content: {
             x: 50,
             y: 50,
@@ -43236,7 +43383,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
               text: "Enter the value and click Done",
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
-              fontSize: 25
+              fontSize: 25,
+              wordWrap: false,
+              wordWrapWidth: 1500,
+              textOverflow: "ellipsis"
             }
           }
         },
@@ -43250,28 +43400,75 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         }
       };
     }
+    _init() {
+      this.numKeyCodes = [Keymap_default["0"], Keymap_default["1"], Keymap_default["2"], Keymap_default["3"], Keymap_default["4"], Keymap_default["5"], Keymap_default["6"], Keymap_default["7"], Keymap_default["8"], Keymap_default["9"]];
+    }
     _focus() {
       this._setState("InputBox");
       this.tag("Content").text.text = this.prevVal === "" ? "Enter the value and click Done" : this.prevVal;
       this.inputValue = this.prevVal;
+      console.log("presetValues: ", this.presetValues);
+      this.presetValuesLength = 0;
+      this.presetIdx = -1;
+      if (Array.isArray(this.presetValues)) {
+        this.presetValuesLength = this.presetValues.length;
+        console.log(this.presetValues, this.presetValuesLength);
+        this.tag("Arrows").visible = true;
+      } else {
+        this.tag("Arrows").visible = false;
+      }
     }
     handleDone() {
       this.onHandleDone(this.inputValue);
-      this._handleBack();
+    }
+    _handleKey(key) {
+      let keyValue = this.numKeyCodes.indexOf(key.keyCode);
+      if (keyValue >= 0) {
+        this.inputValue += String(keyValue);
+        this.tag("Content").text.text = this.inputValue;
+      } else {
+        return false;
+      }
     }
     static _states() {
       return [class InputBox extends this {
         $enter() {
-          this.tag("InputBox.Border").texture = Lightning_default.Tools.getRoundRect(1600, 90, 0, 5, CONFIG.theme.hex, false);
+          this.tag("InputBox.Border").texture = Lightning_default.Tools.getRoundRect(1600, 90, 0, 3, CONFIG.theme.hex, false);
+          this.tag("RightArrow").color = CONFIG.theme.hex;
+          this.tag("LeftArrow").color = CONFIG.theme.hex;
         }
         $exit() {
           this.tag("InputBox.Border").texture = Lightning_default.Tools.getRoundRect(1600, 90, 0, 3, 4294967295, false);
+          this.tag("RightArrow").color = 4294967295;
+          this.tag("LeftArrow").color = 4294967295;
         }
         _handleDown() {
           this._setState("Keyboard");
         }
         _handleEnter() {
           this._setState("Keyboard");
+        }
+        _handleLeft() {
+          if (this.presetValuesLength > 0) {
+            if (this.presetIdx <= 0) {
+              this.presetIdx = this.presetValuesLength - 1;
+            } else {
+              this.presetIdx -= 1;
+            }
+            this.inputValue = this.presetValues[this.presetIdx];
+            this.tag("Content").text.text = this.inputValue;
+          }
+        }
+        _handleRight() {
+          if (this.presetValuesLength > 0) {
+            if (this.presetIdx === this.presetValuesLength - 1 || this.presetIdx < 0) {
+              this.presetIdx = 0;
+            } else {
+              this.presetIdx += 1;
+            }
+            this.inputValue = this.presetValues[this.presetIdx];
+            this.tag("Content").text.text = this.inputValue;
+          }
         }
         _handleUp() {
         }
@@ -43644,6 +43841,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       dtvApi.polarityList().then((res) => {
         this.polarityList = res;
       });
+      this.symbolRateList = [];
+      dtvApi.symbolRateList().then((res) => {
+        this.symbolRateList = res;
+      });
       this.fecList = [];
       dtvApi.fecList().then((res) => {
         this.fecList = res;
@@ -43896,7 +44097,8 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         _handleEnter() {
           this.tag("SelectSymbolRate").patch({
             prevVal: this.selectedSymbolRate,
-            onHandleDone: this.setSymbolRate.bind(this)
+            onHandleDone: this.setSymbolRate.bind(this),
+            presetValues: this.symbolRateList
           });
           this._setState("SymbolRate.SelectSymbolRate");
         }
@@ -44141,6 +44343,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           x: 200,
           y: 275,
           TScan: {
+            alpha: 0.3,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -44164,6 +44367,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
             }
           },
           CScan: {
+            alpha: 0.3,
             y: 90,
             type: SettingsMainItem,
             Title: {
@@ -44215,10 +44419,10 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       };
     }
     _init() {
-      this._setState("TScan");
+      this._setState("SScan");
     }
     _focus() {
-      this._setState(this.state);
+      this._setState("SScan");
     }
     _handleBack() {
       Router_default.navigate("settings/livetv");
@@ -44259,7 +44463,6 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           this.tag("SScan")._unfocus();
         }
         _handleUp() {
-          this._setState("CScan");
         }
         _handleEnter() {
           Router_default.navigate("settings/livetv/scan/dvb-s-scan");
@@ -45479,7 +45682,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
         },
         Overlay: {
           Line: {
-            y: 318,
+            y: 317,
             h: 3,
             w: 1920,
             rect: true,
@@ -45686,109 +45889,6 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       component: LogoScreen
     }]
   };
-
-  // src/Config/Keymap.js
-  var keyMap = {
-    "0": 48,
-    "1": 49,
-    "2": 50,
-    "3": 51,
-    "4": 52,
-    "5": 53,
-    "6": 54,
-    "7": 55,
-    "8": 56,
-    "9": 57,
-    "F1": 112,
-    "F2": 113,
-    "F3": 114,
-    "F4": 115,
-    "F5": 116,
-    "Amazon": 117,
-    "Netflix": 118,
-    "Youtube": 119,
-    "F11": 122,
-    "F12": 123,
-    "q": 81,
-    "w": 87,
-    "e": 69,
-    "r": 82,
-    "t": 84,
-    "y": 89,
-    "u": 85,
-    "i": 73,
-    "o": 79,
-    "p": 80,
-    "a": 65,
-    "s": 83,
-    "d": 68,
-    "f": 70,
-    "g": 71,
-    "h": 72,
-    "j": 74,
-    "k": 75,
-    "l": 76,
-    "z": 90,
-    "x": 88,
-    "c": 67,
-    "v": 86,
-    "b": 66,
-    "n": 78,
-    "m": 77,
-    "Q": 81,
-    "W": 87,
-    "E": 69,
-    "R": 82,
-    "T": 84,
-    "Y": 89,
-    "U": 85,
-    "I": 73,
-    "O": 79,
-    "P": 80,
-    "A": 65,
-    "S": 83,
-    "D": 68,
-    "F": 70,
-    "G": 71,
-    "H": 72,
-    "J": 74,
-    "K": 75,
-    "L": 76,
-    "Z": 90,
-    "X": 88,
-    "C": 67,
-    "V": 86,
-    "B": 66,
-    "N": 78,
-    "M": 77,
-    "Enter": 13,
-    "Space": 32,
-    "ArrowUp": 38,
-    "ArrowLeft": 37,
-    "ArrowRight": 39,
-    "ArrowDown": 40,
-    "AudioVolumeDown": 174,
-    "AudioVolumeUp": 175,
-    "AudioVolumeMute": 173,
-    "MediaStop": 178,
-    "MediaTrackPrevious": 177,
-    "MediaPlay": 179,
-    "MediaTrackNext": 176,
-    "Escape": 27,
-    "Pause": 179,
-    "Backspace": 8,
-    "MediaRewind": 227,
-    "MediaFastForward": 228,
-    "Power": 116,
-    "PageUp": 33,
-    "PageDown": 34,
-    "Home": 36,
-    "Settings_Shortcut": 121,
-    "Guide_Shortcut": 120,
-    "Inputs_Shortcut": 113,
-    "Picture_Setting_Shortcut": 114
-  };
-  var Keymap_default = keyMap;
 
   // src/items/SidePanelItem.js
   var SidePanelItem = class extends Lightning_default.Component {
@@ -46586,7 +46686,7 @@ ${args.gracenoteItem.ratings[0].subRating}`;
       };
     }
     _captureKey(key) {
-      console.log(key);
+      console.log(key, key.keyCode);
       if (key.keyCode == Keymap_default.Escape || key.keyCode == Keymap_default.Home || key.keyCode === Keymap_default.m) {
         if (Storage_default.get("applicationType") != "") {
           this.deactivateChildApp(Storage_default.get("applicationType"));
@@ -46907,29 +47007,40 @@ ${args.gracenoteItem.ratings[0].subRating}`;
           } else if (applicationName == "Netflix" && Storage_default.get("applicationType") != "Netflix") {
             appApi9.configureApplication("Netflix", notification.parameters).then((res) => {
               this.deactivateChildApp(Storage_default.get("applicationType"));
-              appApi9.launchPremiumApp("Netflix");
-              Storage_default.set("applicationType", "Netflix");
-              appApi9.setVisibility("ResidentApp", false);
-              if (AppApi.pluginStatus("Netflix")) {
+              appApi9.getPluginStatus("Netflix").then((result) => {
+                if (result[0].state === "deactivated") {
+                  Router_default.navigate("image", {
+                    src: Utils_default.asset("images/apps/App_Netflix_Splash.png")
+                  });
+                }
+                appApi9.launchPremiumAppURL("Netflix", notification.parameters.url);
+                Storage_default.set("applicationType", "Netflix");
                 let params = {
                   applicationName: notification.applicationName,
                   state: "running"
                 };
                 this.xcastApi.onApplicationStateChanged(params);
-              }
+              }).catch((err) => {
+                console.log("Netflix plugin error", err);
+                Storage_default.set("applicationType", "");
+              });
             }).catch((err) => {
               console.log("Error while launching " + applicationName + ", Err: " + JSON.stringify(err));
             });
           } else if (applicationName == "Cobalt" && Storage_default.get("applicationType") != "Cobalt") {
             this.deactivateChildApp(Storage_default.get("applicationType"));
-            appApi9.launchCobalt(notification.parameters.url + "&inApp=true");
-            Storage_default.set("applicationType", "Cobalt");
-            appApi9.setVisibility("ResidentApp", false);
-            let params = {
-              applicationName: notification.applicationName,
-              state: "running"
-            };
-            this.xcastApi.onApplicationStateChanged(params);
+            appApi9.getPluginStatus("Cobalt").then(() => {
+              appApi9.launchCobalt(notification.parameters.url + "&inApp=true");
+              Storage_default.set("applicationType", "Cobalt");
+              appApi9.setVisibility("ResidentApp", false);
+              let params = {
+                applicationName: notification.applicationName,
+                state: "running"
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }).catch(() => {
+              console.log("Failed to launch Cobalt using xcast");
+            });
           }
         }
       });
