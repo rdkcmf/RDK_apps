@@ -57,7 +57,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
     };
   }
 
-  _init() {
+  _firstEnable() {
     this.customLock = false; //by default its unlocked | will get locked when user switches any preset value 
     this.pictureApi = new PictureSettingsApi();
     this.options = this.pictureApi.getOptions(); //#byDefault //not required //fetches the defaults dummy values //following api calls fetches the actual values from api here after
@@ -134,6 +134,13 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
       //to prevent circular scrolling
       this.tag("List").setPrevious();
     }
+  }
+
+  _handleLeft() {
+    // do nothing
+  }
+  _handleRight() {
+    // do nothing
   }
 
   async moveDownOnCustom() {

@@ -28,6 +28,9 @@ import Failscreen from './screens/FailScreen';
 import { keyIntercept } from './keyIntercept/keyIntercept';
 import HDMIApi from './api/HDMIApi';
 import Volume from './tvOverlay/components/Volume';
+import DTVApi from './api/DTVApi';
+import TvOverlayScreen from './tvOverlay/TvOverlayScreen';
+import ChannelOverlay from './MediaPlayer/ChannelOverlay';
 
 const config = {
   host: '127.0.0.1',
@@ -37,6 +40,7 @@ const config = {
 var powerState = 'ON';
 var thunder = ThunderJS(config);
 var appApi = new AppApi();
+var dtvApi = new DTVApi();
 
 
 export default class App extends Router.App {
@@ -50,6 +54,17 @@ export default class App extends Router.App {
         e.preventDefault();
       }
     };
+
+    function updateAddress() {
+      if (window.navigator.onLine) {
+        console.log(`is online`);
+      }
+      else {
+        Storage.set("ipAddress", null);
+        console.log(`is offline`)
+      }
+    }
+    window.addEventListener("offline", updateAddress)
   }
 
   static _template() {
@@ -67,6 +82,12 @@ export default class App extends Router.App {
         },
         Volume: {
           type: Volume
+        },
+        TvOverlays: {
+          type: TvOverlayScreen
+        },
+        ChannelOverlay: {
+          type: ChannelOverlay
         }
       }
     }
@@ -97,7 +118,7 @@ export default class App extends Router.App {
           })
           .then(result => {
             console.log('ResidentApp moveToFront Success');
-            if (Router.getActiveHash().startsWith("tv-overlay")) {
+            if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
               Router.navigate('menu');
             }
           })
@@ -106,6 +127,19 @@ export default class App extends Router.App {
           });
       } else {
         if (!Router.isNavigating()) {
+          if(Router.getActiveHash() === "dtvplayer"){ //exit scenario for dtv player
+            dtvApi
+            .exitChannel()
+            .then((res) => {
+              console.log("exit channel: ", JSON.stringify(res));
+            })
+            .catch((err) => {
+              console.log("failed to exit channel: ", JSON.stringify(err));
+            });
+            if(Router.getActiveWidget()){
+              Router.getActiveWidget()._setState("IdleState");
+            }
+          }
           Router.navigate('menu');
         }
       }
@@ -137,6 +171,11 @@ export default class App extends Router.App {
               console.log("Error", err);
             });
         });
+      } else {
+        if(Router.getActiveHash() === "dtvplayer"){
+          Router.focusWidget('TvOverlays');
+          Router.getActiveWidget()._setState("OverlayInputScreen")
+        }
       }
       return true
     }
@@ -164,6 +203,11 @@ export default class App extends Router.App {
               console.log("Error", err);
             });
         });
+      } else {
+        if(Router.getActiveHash() === "dtvplayer"){
+          Router.focusWidget('TvOverlays');
+          Router.getActiveWidget()._setState("OverlaySettingsScreen")
+        }
       }
       return true;
     }
@@ -477,19 +521,20 @@ export default class App extends Router.App {
         console.log('Hide ' + this.xcastApps(notification.applicationName));
         if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
           appApi.suspendPremiumApp('Amazon');
-          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          let params = { applicationName: notification.applicationName, state: 'suspended' };
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
           appApi.suspendPremiumApp('Netflix');
-          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          let params = { applicationName: notification.applicationName, state: 'suspended' };
           this.xcastApi.onApplicationStateChanged(params);
         } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
           appApi.suspendCobalt();
-          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          let params = { applicationName: notification.applicationName, state: 'suspended' };
+          console.log(`Event : On hide request, updating application Status to `, params);
           this.xcastApi.onApplicationStateChanged(params);
         }
         Storage.set('applicationType', '');
-        appApi.setVisibility('ResidentApp', true);
+        appApi.setVisibility('ResidentApp', true);// this will set visibility and focus for the given client
         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
           console.log('ResidentApp moveToFront Success');
         });
@@ -567,6 +612,9 @@ export default class App extends Router.App {
         appApi.registerEvent('statechange', results => {
           if (results.callsign === applicationName && results.state === 'Activated') {
             params.state = 'running'
+          }
+          else if (results.state == 'suspended') {
+            params.state = 'suspended';
           }
           this.xcastApi.onApplicationStateChanged(params);
           console.log('State of ' + this.xcastApps(notification.applicationName))

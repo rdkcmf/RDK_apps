@@ -30,13 +30,14 @@ import LightningPlayerControls from '../MediaPlayer/LightningPlayerControl'
 import ImageViewer from '../MediaPlayer/ImageViewer'
 import splashScreenRoutes from './splashScreenRoutes'
 import LogoScreen from '../screens/SplashScreens/LogoScreen'
-import EpgScreen from '../screens/EpgScreens/EpgScreen'
 import UIList from '../views/UIList'
 import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
 import liveTvRoutes from './liveTvRoutes'
 import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
 import Volume from '../tvOverlay/components/Volume'
+import EPGScreen from "../screens/EpgScreens/Epg"
+import DTVPlayer from '../MediaPlayer/DTVPlayer'
 
 let api = null
 
@@ -81,7 +82,7 @@ export default {
     },
     {
       path: 'epg',
-      component: EpgScreen,
+      component: EPGScreen,
       widgets: ['Menu', 'Volume'],
     },
     {
@@ -138,6 +139,11 @@ export default {
       path: 'player',
       component: AAMPVideoPlayer,
       widgets: ['Volume']
+    },
+    {
+      path:'dtvplayer',
+      component: DTVPlayer,
+      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay']
     },
     {
       path: '!',

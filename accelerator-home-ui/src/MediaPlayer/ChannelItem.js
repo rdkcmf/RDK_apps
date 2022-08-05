@@ -49,22 +49,18 @@
    }
  
    set item(item) {
-     this.shows = item.shows;
+    //  this.shows = item.shows;
      this._item = item
      this.tag('Item').patch({
          Title: {
              x: 10, 
              y: 45,
              mountY: 0.5,
-             text: { text: this.index+1 + "\t\t\t\t" + item.channelName, fontFace: CONFIG.language.font, fontSize: 21, textColor: 0xffFFFFFF,wordWrap:false,wordWrapWidth:232-20,maxLines:1,textOverflow:'...' }, // update the text
+             text: { text: this.index+1 + "\t\t\t\t" + item.shortname, fontFace: CONFIG.language.font, fontSize: 21, textColor: 0xffFFFFFF,wordWrap:false,wordWrapWidth:232-20,maxLines:1,textOverflow:'...' }, // update the text
          },
      })
    }
 
-   _handleEnter(){
-      this.fireAncestors("$changeChannel", this._item.channelUrl,"showName",this._item.channelName)
-      this.fireAncestors("$focusChannel", this.index)
-   }
  
  
   _focus(){

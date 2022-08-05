@@ -17,7 +17,6 @@
  * limitations under the License.
  **/
 import ThunderJS from "ThunderJS";
-
 const config = {
   host: "127.0.0.1",
   port: 9998,
@@ -25,6 +24,7 @@ const config = {
 };
 const thunder = ThunderJS(config);
 const systemcCallsign = "DTV";
+let playerID = -1; //set to -1 to indicate nothing is currently playing
 
 //plugin is activated by default, no need to call explicitly
 export default class DTVApi {
@@ -81,13 +81,21 @@ export default class DTVApi {
         });
     });
   }
+
   //returns the list of services(channels with name, uri and other details)
   serviceList() {
     return new Promise((resolve, reject) => {
       thunder
         .call(systemcCallsign, "serviceList@dvbs")
         .then((result) => {
-          //console.log("serviceListResult: ", JSON.stringify(result));
+          console.log("serviceListResult: ", JSON.stringify(result));
+
+          result.unshift(
+            { shortname: 'Amazon Prime', dvburi: 'OTT', lcn: 0 },
+            { shortname: 'Netflix', dvburi: 'OTT', lcn: 0 },
+            { shortname: 'Youtube', dvburi: 'OTT', lcn: 0 }
+          )
+
           resolve(result);
         })
         .catch((err) => {
@@ -96,6 +104,28 @@ export default class DTVApi {
         });
     });
   }
+
+  //returns the schedule for the given channel with provided dvburi
+  scheduleEvents(dvburi) {
+    let method = 'scheduleEvents@' + dvburi
+    return new Promise((resolve, reject) => {
+      thunder
+        .call(systemcCallsign, method)
+        .then((result) => {
+          console.log("scheduleEventsResult: ", JSON.stringify(result));
+          for (let show of result) {
+            show.starttime *= 1000;
+            show.duration *= 1000;
+          }
+          resolve(result);
+        })
+        .catch((err) => {
+          console.log("Error: scheduleEvents: ", JSON.stringify(err));
+          reject(err);
+        });
+    });
+  }
+
   //lists the satellites available
   satelliteList() {
     return new Promise((resolve, reject) => {
@@ -186,22 +216,7 @@ export default class DTVApi {
         });
     });
   }
-  //returns the schedule for the given channel with provided dvburi
-  scheduleEvents(dvburi) {
-    let method = "scheduleEvents@" + dvburi;
-    return new Promise((resolve, reject) => {
-      thunder
-        .call(systemcCallsign, method)
-        .then((result) => {
-          //console.log("scheduleEventsResult: ", JSON.stringify(result));
-          resolve(result);
-        })
-        .catch((err) => {
-          console.log("Error: scheduleEvents: ", JSON.stringify(err));
-          reject(err);
-        });
-    });
-  }
+
   //returns the current and next event details for the given channel with provided dvburi
   nowNextEvents(dvburi) {
     let method = "nowNextEvents@" + dvburi;
@@ -216,6 +231,113 @@ export default class DTVApi {
           console.log("Error: nowNextEvents: ", JSON.stringify(err));
           reject(err);
         });
+    });
+  }
+
+  
+  startPlaying(params) {
+    //params contains dvburi and lcn
+    console.log("PARAMS: startPlaying: ", JSON.stringify(params));
+    if (playerID !== -1) {
+      this.stopPlaying();
+      return Promise.reject("something is still playing Please retry");
+    }
+    return new Promise((resolve, reject) => {
+      thunder
+        .call(systemcCallsign, "startPlaying", params)
+        .then((result) => {
+          console.log("RESULT: startPlaying: ", JSON.stringify(result));
+          if (result === -1) {
+            reject("Can't be played");
+          } else {
+            playerID = result; //to be used in stopPlaying method
+            resolve(result);
+          }
+        })
+        .catch((err) => {
+          console.log("ERROR: startPlaying: ", JSON.stringify(err));
+          reject(err);
+        });
+    });
+  }
+
+  stopPlaying() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call(systemcCallsign, "stopPlaying", playerID)
+        .then((result) => {
+          //playerID is retuned from startPlaying method
+          console.log("RESULT: stopPlaying: ", JSON.stringify(result)); //result is always null
+          playerID = -1; //to set that nothing is being played currently
+          resolve(true);
+        })
+        .catch((err) => {
+          console.log("ERROR: stopPlaying: ", JSON.stringify(err));
+          reject(err);
+        });
+    });
+  }
+
+  launchChannel(dvburi) {
+    console.log("PARAMS: launchChannel: ", JSON.stringify(dvburi));
+    if(playerID!== -1){
+      this.exitChannel()
+      console.log("launchChannel: FAIL: something is still playing, trying to call exitChannel")
+      return Promise.reject("Fail: something is still playing")
+    }
+    return new Promise((resolve, reject) => {
+      let port = "8080"; //try to fetch it later
+      let cmd = "open"; //add other methods also
+      let url = "http://127.0.0.1:" + port + "/vldms/sessionmgr/" + cmd;
+      let data = {
+        "openRequest": {
+          "type": "main",
+          "locator": "dtv://"+dvburi,
+          "playerParams": {
+            "subContentType": "live",
+            "window": "0,0,1920,1080",
+            "videoBlank": false,
+          },
+        },
+      };
+      let params = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      };
+      console.log("launchChannel: url & params: ", JSON.stringify(url), JSON.stringify(params))
+      fetch(url,params).then(response => response.json()).then(result => {
+        console.log("launchChannel: SUCCESS: ",JSON.stringify(result))
+        playerID = result.openStatus.sessionId
+        console.log("launchChannel: SESSIONID: ",playerID)
+        resolve(result)
+      }).catch(err => {
+        console.log("launchChannel: FAILED: ",JSON.stringify(err))
+        reject(err)
+      })
+    });
+  }
+
+  exitChannel() {
+    return new Promise((resolve, reject) => {
+      let port = "8080"; //try to fetch it later
+      let cmd = "close"; //add other methods also
+      let url = "http://127.0.0.1:" + port + "/vldms/sessionmgr/" + cmd;
+      let data = { "closeRequest": { "sessionId": playerID } };
+      let params = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      };
+      console.log("exitChannel: url & params: ", JSON.stringify(url), JSON.stringify(params))
+      fetch(url,params).then(response => response.json()).then(result => {
+        console.log("exitChannel: SUCCESS: ",JSON.stringify(result))
+        playerID = -1
+        resolve(result)
+      }).catch(err => {
+        console.log("exitChannel: FAILED: ",JSON.stringify(err))
+        reject(err)
+      })
     });
   }
 }

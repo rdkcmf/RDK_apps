@@ -74,7 +74,7 @@ export default class TvOverlayScreen extends Lightning.Component {
   //     }
   //   }
 
-  _init() {
+  _firstEnable() {
     this.appApi = new AppApi();
     this._sidePanelAnimation = this.tag("OverlaySettingsScreen").animation({
       delay: 0.3,
@@ -117,8 +117,12 @@ export default class TvOverlayScreen extends Lightning.Component {
               });
           });
       } else {
-        console.log("else block navigating to menu");
-        Router.navigate("menu"); //if user is currently on resident app, might not be needed as user should not be able to get on this screen while on resident app
+        if(Router.getActiveHash() === "dtvplayer"){ //don't navigate to menu if route is dtvplayer
+          Router.focusPage();
+        } else{
+          console.log("else block navigating to menu");
+          Router.navigate("menu"); //if user is currently on resident app, might not be needed as user should not be able to get on this screen while on resident app
+        }
       }
     }, 500);
   }

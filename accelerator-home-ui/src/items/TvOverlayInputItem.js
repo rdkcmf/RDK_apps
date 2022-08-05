@@ -141,7 +141,7 @@ export default class TvOverlayInputItem extends Lightning.Component {
           if (res.length > 0) {
             res.map((item, index) => {
               if (item.id === this.uniqID.id) {
-                if (item.connected) {
+                if (item.connected === "true") {
                   //to check if the current item is connected
                   this.hdmiApi
                     .setHDMIInput(item)

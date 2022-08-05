@@ -101,7 +101,7 @@ export default class TvOverlayInputScreen extends Lightning.Component {
     });
   }
 
-  _init() {
+  _firstEnable() {
     this.options = ["HDMI1", "HDMI2", "HDMI3", "HDMI4"];
     this.inputItems = [
       {
@@ -152,5 +152,11 @@ export default class TvOverlayInputScreen extends Lightning.Component {
 
   _handleUp() {
     this.tag("List").setPrevious();
+  }
+  _handleLeft() {
+    // do nothing
+  }
+  _handleRight() {
+    // do nothing
   }
 }

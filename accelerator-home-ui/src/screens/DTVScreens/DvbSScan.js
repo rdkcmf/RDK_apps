@@ -27,8 +27,18 @@ import FEC from "./InputScreens/FEC";
 import Modulation from "./InputScreens/Modulation";
 import SearchType from "./InputScreens/Searchtype";
 import IntegerInput from "./InputScreens/IntegerInput";
+import ThunderJS from "ThunderJS";
 
 const dtvApi = new DTVApi();
+
+const config = {
+  host: "127.0.0.1",
+  port: 9998,
+  default: 1,
+};
+const thunder = ThunderJS(config);
+const systemcCallsign = "DTV";
+
 /**
  * Class for DVB Scan screen.
  */
@@ -314,6 +324,33 @@ export default class DvbSScan extends Lightning.Component {
             },
           },
         },
+        ScanProgress: {
+          x: 270,
+          y: 670,
+          h: 50,
+          visible: false,
+          Title: {
+            visible:false,
+            x: 40,
+            y: 25,
+            mountY: 0.5,
+            text: {
+              text: Language.translate("Please wait scan in progress..."),
+              textColor: CONFIG.theme.hex,
+              fontFace: CONFIG.language.font,
+              fontSize: 21,
+            },
+          },
+          Loader: {
+            h: 45,
+            w: 45,
+            x: 10,
+            mountX: 1,
+            y: 25,
+            mountY: 0.5,
+            src: Utils.asset("images/settings/Loading.gif"),
+          },
+        },
       },
       SelectSatellite: {
         type: Satellite,
@@ -348,6 +385,7 @@ export default class DvbSScan extends Lightning.Component {
 
   _init() {
     this._setState("Satellite");
+    this.preventExit = false;
     this.selectedSatellite = {};
     this.selectedFrequency = "";
     this.selectedPolarity = "";
@@ -357,6 +395,44 @@ export default class DvbSScan extends Lightning.Component {
     this.selectedModulation = "";
     this.selectedSearchType = "";
     this.selectedRetune = false; //default value is set to false
+
+    this.loadingAnimation = this.tag("ScanProgress.Loader").animation({
+      duration: 3,
+      repeat: -1,
+      stopMethod: "immediate",
+      actions: [{ p: "rotation", v: { sm: 0, 0: 0, 1: 2 * Math.PI } }],
+    });
+
+    this.inProgressAnimation = this.tag("ScanProgress.Title").animation({
+      duration: 0.6,
+      repeat: 0,
+      stopMethod: "immediate",
+      actions: [{ p: "text.text", v: { 0: "Please wait scan in progress", 0.3:"Please wait scan in progress.", 0.6:"Please wait scan in progress..", 0.9: "Please wait scan in progress..." } }],
+    });
+  }
+
+  setScanInProgress() {
+    this.preventExit = true;
+    this.loadingAnimation.start();
+    this.inProgressAnimation.start();
+    this.tag("ScanProgress").visible = true;
+  }
+
+  setScanFinished() {
+    this.preventExit = false;
+    this.loadingAnimation.stop();
+    this.inProgressAnimation.stop();
+    this.tag("ScanProgress").visible = false;
+    this.tag("ScanProgress.Title").visible = false;
+  }
+
+  _captureKey() {
+    if(this.preventExit){
+      this.tag("ScanProgress.Title").visible = true;
+      this.inProgressAnimation.start();
+    } else{
+      return false
+    }
   }
   consoleLog() {
     //log it everywhere
@@ -383,6 +459,7 @@ export default class DvbSScan extends Lightning.Component {
   }
   _focus() {
     // console.log("dvbscan screen in focus");
+    this.resetForm();
     this._setState("Satellite");
     this.consoleLog();
     // console.log(this.satelliteList);
@@ -393,6 +470,15 @@ export default class DvbSScan extends Lightning.Component {
   }
 
   _firstActive() {
+    let searchEventListener = thunder.on(systemcCallsign, "searchstatus", (notification) => {
+      console.log("SearchStatus Notification: ", JSON.stringify(notification));
+      if(notification.finished){
+        console.log("notification.finished: ", notification.finished)
+        this.setScanFinished();
+      }
+    })
+
+
     ///////////////satellite
 
     this.satelliteList = [];
@@ -521,6 +607,8 @@ export default class DvbSScan extends Lightning.Component {
   }
 
   resetForm() {
+
+    this.setScanFinished();
     //reset the form variables to initial state on exit from this form
     //satellite*********************
     this.selectedSatellite = {};
@@ -1047,7 +1135,11 @@ export default class DvbSScan extends Lightning.Component {
             };
             console.log(JSON.stringify(serviceSearchParams));
             dtvApi.startServiceSearch(serviceSearchParams).then((res) => {
+              this.setScanInProgress();
               console.log(res);
+              setTimeout(() => {
+                this.setScanFinished() //to give back controls after 30 sec in case searchstatus event fails
+              },30000)
             });
           } else {
             this.tag(
