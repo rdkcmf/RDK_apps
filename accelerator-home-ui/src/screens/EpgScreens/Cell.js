@@ -76,9 +76,11 @@ export default class Cell extends Lightning.Component {
     this.patch({
       Item: {
         // clipping: true,
-        w: w,
-        h: 81,
-        texture: Lightning.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727),
+        w: w-3,
+        h: 78,
+        color: 0xff272727,
+        rect:true,
+        // texture: Lightning.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727),
       }
     })
     this.tag('Title').text.wordWrapWidth = w - 20;

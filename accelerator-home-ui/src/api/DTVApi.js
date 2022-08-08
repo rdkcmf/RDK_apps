@@ -84,23 +84,22 @@ export default class DTVApi {
 
   //returns the list of services(channels with name, uri and other details)
   serviceList() {
+    let arr = [
+    { shortname: 'Amazon Prime', dvburi: 'OTT', lcn: 0 },
+    { shortname: 'Netflix', dvburi: 'OTT', lcn: 0 },
+    { shortname: 'Youtube', dvburi: 'OTT', lcn: 0 }
+    ];
     return new Promise((resolve, reject) => {
       thunder
         .call(systemcCallsign, "serviceList@dvbs")
         .then((result) => {
           console.log("serviceListResult: ", JSON.stringify(result));
-
-          result.unshift(
-            { shortname: 'Amazon Prime', dvburi: 'OTT', lcn: 0 },
-            { shortname: 'Netflix', dvburi: 'OTT', lcn: 0 },
-            { shortname: 'Youtube', dvburi: 'OTT', lcn: 0 }
-          )
-
-          resolve(result);
+          arr.concat(result)
+          resolve(arr);
         })
         .catch((err) => {
           console.log("Error: serviceList: ", JSON.stringify(err));
-          reject(err);
+          resolve(arr);
         });
     });
   }

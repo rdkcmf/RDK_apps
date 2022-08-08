@@ -172,15 +172,23 @@ export default class Network {
 
   isConnectedToInternet() {
     return new Promise((resolve, reject) => {
-      this._thunder.call(this.callsign, 'isConnectedToInternet')
-        .then(result => {
-          if (result.success) {
-            resolve(result.connectedToInternet)
-          }
-        }).catch(err => {
-          console.error(`isConnectedToInternet fail: ${err}`)
-          reject(false)
-        })
+      let header = new Headers();
+      header.append('pragma', 'no-cache');
+      header.append('cache-control', 'no-cache');
+      
+      fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html",{method: 'GET',headers: header,}).then(res => {
+        if(res.status >= 200 && res.status <= 300){
+          console.log("Connected to internet");
+          resolve(true)
+        } else{
+          console.log("No Internet Available");
+          resolve(false)
+        }
+      }).catch(err => {
+        console.log("Internet Check failed: No Internet Available");
+        resolve(false); //fail of fetch method needs to be considered as no internet
+      })
+
     })
   }
 }

@@ -215,7 +215,7 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
   }
 
   _handleLeft() {
-    console.log("handleLeft");
+    this.fireAncestors('$resetTimeout');
     if (this.valueLength > 0) {
       //value is an array
       this.changePresetValueBy("left");
@@ -226,7 +226,7 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
     }
   }
   _handleRight() {
-    console.log("handleRight");
+    this.fireAncestors('$resetTimeout');
     if (this.valueLength > 0) {
       //value is an array
       this.changePresetValueBy("right");
@@ -236,6 +236,10 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
         this.changeValueBy(1);
       }
     }
+  }
+
+  _handleEnter() {
+    this.fireAncestors('$resetTimeout');
   }
 
   _focus() {

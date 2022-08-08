@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.0
  * 
- * Generated: Fri, 05 Aug 2022 20:50:08 GMT
+ * Generated: Thu, 18 Aug 2022 14:27:38 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -407,7 +407,7 @@ var APP_accelerator_home_ui = (function () {
       proxyUrl = ensureUrlWithProtocol(config.proxyUrl);
     }
   };
-  var Utils$1 = {
+  var Utils = {
     asset(relPath) {
       return basePath + relPath;
     },
@@ -2564,7 +2564,7 @@ var APP_accelerator_home_ui = (function () {
           dictionary = translationsObj;
           resolve();
         } else if (typeof translationsObj === 'string') {
-          const url = Utils$1.asset(translationsObj);
+          const url = Utils.asset(translationsObj);
           fetch(url).then(response => response.json()).then(json => {
             // save the translations for this language (to prevent loading twice)
             translations[language$1] = json;
@@ -3107,7 +3107,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       loadLanguage(config) {
-        let file = Utils$1.asset('translations.json');
+        let file = Utils.asset('translations.json');
         let language = config;
 
         if (typeof language === 'object') {
@@ -3119,7 +3119,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       loadColors(config) {
-        let file = Utils$1.asset('colors.json');
+        let file = Utils.asset('colors.json');
 
         if (config && (typeof config === 'string' || typeof config === 'object')) {
           file = config;
@@ -7172,13 +7172,23 @@ var APP_accelerator_home_ui = (function () {
 
     isConnectedToInternet() {
       return new Promise((resolve, reject) => {
-        this._thunder.call(this.callsign, 'isConnectedToInternet').then(result => {
-          if (result.success) {
-            resolve(result.connectedToInternet);
+        let header = new Headers();
+        header.append('pragma', 'no-cache');
+        header.append('cache-control', 'no-cache');
+        fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html", {
+          method: 'GET',
+          headers: header
+        }).then(res => {
+          if (res.status >= 200 && res.status <= 300) {
+            console.log("Connected to internet");
+            resolve(true);
+          } else {
+            console.log("No Internet Available");
+            resolve(false);
           }
         }).catch(err => {
-          console.error(`isConnectedToInternet fail: ${err}`);
-          reject(false);
+          console.log("Internet Check failed: No Internet Available");
+          resolve(false); //fail of fetch method needs to be considered as no internet
         });
       });
     }
@@ -7210,7 +7220,6 @@ var APP_accelerator_home_ui = (function () {
   var activatedNetflix = false;
   var webUrl = '';
   var lightningUrl = '';
-  var nativeUrl = '';
   const config$8 = {
     host: '127.0.0.1',
     port: 9998,
@@ -7568,16 +7577,13 @@ var APP_accelerator_home_ui = (function () {
             callsign: childCallsign,
             type: childCallsign,
             uri: url
-          }).then(() => {
-            thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-              client: childCallsign
-            });
-            thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-              client: childCallsign
-            }).then(() => {
-              resolve(true);
-            });
-          }).catch(err => {});
+          }).then(res => {
+            console.log(`WebApp : webapp launch resulted in : `, JSON.stringify(res));
+            resolve(true);
+          }).catch(err => {
+            console.error("WebApp : error while launching web : ", JSON.stringify(err));
+            reject(false);
+          });
         } else {
           thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
@@ -7585,6 +7591,7 @@ var APP_accelerator_home_ui = (function () {
           thunder$9.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
+          resolve(true);
         }
 
         webUrl = url;
@@ -7598,32 +7605,34 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchLightning(url) {
-      const childCallsign = 'LightningApp';
+      return new Promise((resolve, reject) => {
+        const childCallsign = 'LightningApp';
 
-      if (lightningUrl != url) {
-        thunder$9.call('org.rdk.RDKShell', 'launch', {
-          callsign: 'Lightning',
-          type: childCallsign,
-          uri: url
-        }).then(() => {
+        if (lightningUrl != url) {
+          thunder$9.call('org.rdk.RDKShell', 'launch', {
+            callsign: 'Lightning',
+            type: childCallsign,
+            uri: url
+          }).then(res => {
+            console.log(`Lightning : launch lightning results in `, JSON.stringify(res));
+            resolve(true);
+          }).catch(err => {
+            console.error("Lightning : error while launching lightning : ", JSON.stringify(err));
+            reject(false);
+          });
+        } else {
           thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
           thunder$9.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
-        }).catch(err => {});
-      } else {
-        thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign
-        });
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: childCallsign
-        });
-      }
+          resolve(true);
+        }
 
-      lightningUrl = url;
-      activatedLightning = true;
+        lightningUrl = url;
+        activatedLightning = true;
+      });
     }
     /**
      * Function to launch Cobalt app.
@@ -7632,20 +7641,56 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchCobalt(url) {
-      const childCallsign = 'Cobalt';
-      thunder$9.call('org.rdk.RDKShell', 'launch', {
-        callsign: childCallsign,
-        type: childCallsign
-      }).then(() => {
-        thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign
+      return new Promise((resolve, reject) => {
+        const childCallsign = 'Cobalt';
+        thunder$9.call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: childCallsign
+        }).then(res => {
+          if (url) {
+            thunder$9.call('Cobalt', 'deeplink', url);
+          }
+
+          console.log("Cobalt : launch cobalt results in ", JSON.stringify(res));
+          resolve(true);
+        }).catch(err => {
+          console.error("Cobalt : error while launching cobalt : ", JSON.stringify(err));
+          reject(err);
         });
-        thunder$9.call('Cobalt', 'deeplink', url);
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: childCallsign
+        activatedCobalt = true;
+      });
+    }
+    /*  
+     *Function to launch apps in hidden mode
+     */
+
+
+    launchPremiumAppInSuspendMode(childCallsign) {
+      return new Promise((resolve, reject) => {
+        thunder$9.call("org.rdk.RDKShell", "launch", {
+          callsign: childCallsign,
+          type: childCallsign,
+          suspend: true,
+          visible: false,
+          focused: false
+        }).then(res => {
+          if (childCallsign == "Netflix") {
+            console.log(`Netflix : launch netflix results in :`, res);
+          } else {
+            console.log(`Amazon : launch amazon results in :`, res);
+          }
+
+          resolve(true);
+        }).catch(err => {
+          if (childCallsign == "Netflix") {
+            console.error(`Netflix : error while launching netflix :`, err);
+          } else {
+            console.log(`Amazon : error while launching amazon :`, err);
+          }
+
+          reject(false);
         });
-      }).catch(err => {});
-      activatedCobalt = true;
+      });
     }
     /**
      * Function to launch Netflix/Amazon Prime app.
@@ -7653,18 +7698,34 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchPremiumApp(childCallsign) {
-      thunder$9.call("org.rdk.RDKShell", "launch", {
-        callsign: childCallsign,
-        type: childCallsign
-      }).then(() => {
-        thunder$9.call("org.rdk.RDKShell", "moveToFront", {
-          client: childCallsign
+      return new Promise((resolve, reject) => {
+        thunder$9.call("org.rdk.RDKShell", "launch", {
+          callsign: childCallsign,
+          type: childCallsign,
+          visible: true,
+          focused: true
+        }).then(res => {
+          if (childCallsign == "Netflix") {
+            console.log(`Netflix : launch netflix results in :`, res);
+          } else {
+            console.log(`Amazon : launch amazon results in :`, res);
+          }
+
+          this.setVisibility("Amazon", true);
+          Storage.set("applicationType", "Amazon");
+          console.log(`the current application Type : `, Storage.get("applicationType"));
+          resolve(true);
+        }).catch(err => {
+          if (childCallsign == "Netflix") {
+            console.error(`Netflix : error while launching netflix :`, err);
+          } else {
+            console.log(`Amazon : error while launching amazon :`, err);
+          }
+
+          reject(false);
         });
-        thunder$9.call("org.rdk.RDKShell", "setFocus", {
-          client: childCallsign
-        });
-      }).catch(err => {});
-      childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
+        childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
+      });
     }
 
     launchPremiumAppURL(childCallsign, url) {
@@ -7689,20 +7750,19 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchResident(url, client) {
-      const childCallsign = client;
-      thunder$9.call('org.rdk.RDKShell', 'launch', {
-        callsign: childCallsign,
-        type: 'ResidentApp',
-        uri: url
-      }).then(() => {
-        thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign
+      return new Promise((resolve, reject) => {
+        const childCallsign = client;
+        thunder$9.call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: 'ResidentApp',
+          uri: url
+        }).then(res => {
+          console.log(`ResidentApp :  launching resident app resulted in : `, JSON.stringify(res));
+          resolve(true);
+        }).catch(err => {
+          console.error('ResidentApp : error while launching residentApp : ' + JSON.stringify(err));
+          reject(false);
         });
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: childCallsign
-        });
-      }).catch(err => {
-        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
       });
     }
 
@@ -7717,35 +7777,12 @@ var APP_accelerator_home_ui = (function () {
           thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
+          console.log(`Overlay : launched overlay : `, res);
+          resolve(res);
+        }).catch(err => {
+          console.error("Overlay : error while launching the overlay", err);
+          reject(err);
         });
-      });
-    }
-
-    launchforeground() {
-      const childCallsign = 'foreground';
-      let url = location.href.split(location.hash)[0].split('index.html')[0];
-      let notification_url = url + "static/notification/index.html";
-
-      if (location.host.includes('127.0.0.1')) {
-        notification_url = url + "lxresui/static/notification/index.html";
-      }
-
-      console.log(notification_url, '|', location.host, location);
-      thunder$9.call('org.rdk.RDKShell', 'launch', {
-        callsign: childCallsign,
-        type: 'LightningApp',
-        uri: notification_url
-      }).then(() => {
-        this.activatedForeground = true;
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: 'ResidentApp'
-        });
-        thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
-          client: 'foreground',
-          visible: false
-        });
-      }).catch(err => {}).catch(err => {
-        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
       });
     }
     /**
@@ -7771,23 +7808,19 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     /**
-     * Function to suspend cobalt app.
-     */
-
-
-    suspendCobalt() {
-      thunder$9.call('org.rdk.RDKShell', 'suspend', {
-        callsign: 'Cobalt'
-      });
-    }
-    /**
      * Function to suspend Netflix/Amazon Prime app.
      */
 
 
     suspendPremiumApp(appName) {
-      thunder$9.call('org.rdk.RDKShell', 'suspend', {
-        callsign: appName
+      return new Promise((resolve, reject) => {
+        thunder$9.call('org.rdk.RDKShell', 'suspend', {
+          callsign: appName
+        }).then(res => {
+          resolve(true);
+        }).catch(err => {
+          resolve(false);
+        });
       });
     }
     /**
@@ -7950,7 +7983,7 @@ var APP_accelerator_home_ui = (function () {
           thunder$9.call(plugin, method, res).then(resp => {
             resolve(true);
           }).catch(err => {
-            resolve(true);
+            reject(err);
           });
         }).catch(err => {
           reject(err);
@@ -7987,33 +8020,20 @@ var APP_accelerator_home_ui = (function () {
 
 
     launchNative(url) {
-      const childCallsign = 'testApp';
-
-      if (nativeUrl != url) {
+      return new Promise((resolve, reject) => {
+        const childCallsign = 'testApp';
         thunder$9.call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
-        }).then(() => {
-          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-            client: childCallsign
-          });
-          thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-            client: childCallsign
-          });
+        }).then(res => {
+          console.log("Native : launching native app resulted in : ", JSON.stringify(res));
+          resolve(true);
         }).catch(err => {
-          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err));
+          console.error('org.rdk.RDKShell launch ' + JSON.stringify(err));
+          reject(err);
         });
-      } else {
-        thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign
-        });
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: childCallsign
-        });
-      }
-
-      nativeUrl = url;
+      });
     }
     /**
        * Function to kill native app.
@@ -8024,7 +8044,6 @@ var APP_accelerator_home_ui = (function () {
       thunder$9.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
-      nativeUrl = '';
     }
 
     static pluginStatus(plugin) {
@@ -8064,10 +8083,11 @@ var APP_accelerator_home_ui = (function () {
         thunder$9.call('org.rdk.RDKShell', 'launch', {
           callsign: 'org.rdk.DisplaySettings'
         }).then(result => {
-          console.log('Successfully emabled DisplaySettings Service');
+          console.log('Successfully enabled DisplaySettings Service');
           resolve(result);
         }).catch(err => {
-          console.log('Failed to enable DisplaySettings Service', JSON.stringify(err));
+          console.error('Failed to enable DisplaySettings Service', JSON.stringify(err));
+          reject(err);
         });
       });
     }
@@ -9696,7 +9716,7 @@ var APP_accelerator_home_ui = (function () {
 
   class SettingsItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -9928,26 +9948,27 @@ var APP_accelerator_home_ui = (function () {
 
 
     serviceList() {
+      let arr = [{
+        shortname: 'Amazon Prime',
+        dvburi: 'OTT',
+        lcn: 0
+      }, {
+        shortname: 'Netflix',
+        dvburi: 'OTT',
+        lcn: 0
+      }, {
+        shortname: 'Youtube',
+        dvburi: 'OTT',
+        lcn: 0
+      }];
       return new Promise((resolve, reject) => {
         thunder$8.call(systemcCallsign$1, "serviceList@dvbs").then(result => {
           console.log("serviceListResult: ", JSON.stringify(result));
-          result.unshift({
-            shortname: 'Amazon Prime',
-            dvburi: 'OTT',
-            lcn: 0
-          }, {
-            shortname: 'Netflix',
-            dvburi: 'OTT',
-            lcn: 0
-          }, {
-            shortname: 'Youtube',
-            dvburi: 'OTT',
-            lcn: 0
-          });
-          resolve(result);
+          arr.concat(result);
+          resolve(arr);
         }).catch(err => {
           console.log("Error: serviceList: ", JSON.stringify(err));
-          reject(err);
+          resolve(arr);
         });
       });
     } //returns the schedule for the given channel with provided dvburi
@@ -10242,7 +10263,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Bluetooth: {
@@ -10266,7 +10287,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Video: {
@@ -10290,7 +10311,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Audio: {
@@ -10314,7 +10335,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OtherSettings: {
@@ -10338,7 +10359,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           DTVSettings: {
@@ -10363,7 +10384,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -10582,7 +10603,7 @@ var APP_accelerator_home_ui = (function () {
           y: this.y,
           w: this.w,
           h: this.h,
-          src: Utils$1.asset(this.data.url),
+          src: Utils.asset(this.data.url),
           scale: this.unfocus
         });
       } else {
@@ -11256,7 +11277,7 @@ var APP_accelerator_home_ui = (function () {
         y: this.y,
         w: this.w,
         h: this.h,
-        src: Utils$1.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
+        src: Utils.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
         scale: this.unfocus
       });
       /* Used static data for develpment purpose ,
@@ -11447,6 +11468,10 @@ var APP_accelerator_home_ui = (function () {
       this._uids = [];
       this._items = [];
       this._index = 0;
+
+      if (this._scrollTransition) {
+        this._scrollTransition.reset(0, 1);
+      }
 
       if (this.wrapper) {
         const hadChildren = this.wrapper.children > 0;
@@ -14601,6 +14626,8 @@ var APP_accelerator_home_ui = (function () {
     _firstEnable() {
       console.timeEnd('PerformanceTest');
       console.log('Mainview Screen timer end - ', new Date().toUTCString());
+      this.networkApi = new Network();
+      this.internetConnectivity = false;
     }
 
     scroll(val) {
@@ -14965,63 +14992,61 @@ var APP_accelerator_home_ui = (function () {
           Router.focusWidget('Menu');
         }
 
-        _handleEnter() {
+        async _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false;
+          }
+
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
-          this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
 
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.getPluginStatus('Cobalt').then(() => {
-              this.appApi.launchCobalt(this.uri);
-              this.appApi.setVisibility('ResidentApp', false);
-            }).catch(err => {
-              console.log('Cobalt plugin error', err);
-              Storage.set('applicationType', '');
-            });
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            this.appApi.launchCobalt(this.uri).catch(err => {});
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
             this.appApi.launchWeb(this.uri).then(() => {
               this.appApi.setVisibility('ResidentApp', false);
               let path = location.pathname.split('index.html')[0];
               let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
               let notification_url = location.origin + path + url;
-              this.appApi.launchOverlay(notification_url, 'TextOverlay');
+              this.appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => {});
               Registry.setTimeout(() => {
                 this.appApi.deactivateResidentApp('TextOverlay');
                 this.appApi.zorder('HtmlApp');
                 this.appApi.setVisibility('HtmlApp', true);
               }, 9000);
+            }).catch(err => {
+              console.error("WebApp : error while launching a webapp :", JSON.stringify(err));
+              Storage.set("applicationType", "");
             });
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => {
+              console.error("error while launching lightning app");
+              Storage.set('applicationType', "");
+            });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {
+              console.error("error while launching a native app");
+              Storage.set('applicationType', "");
+            });
             this.appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
             console.log('Launching app');
             this.appApi.getPluginStatus('Amazon').then(result => {
-              this.appApi.launchPremiumApp('Amazon');
-              this.appApi.setVisibility('ResidentApp', false);
+              this.appApi.launchPremiumApp('Amazon').catch(err => {
+                console.error("Amazon : error while launching amazon : ", JSON.stringify(err));
+              });
             }).catch(err => {
               console.log('Amazon plugin error', err);
               Storage.set('applicationType', '');
             });
           } else if (Storage.get('applicationType') == 'Netflix') {
             console.log('Launching app');
-            this.appApi.getPluginStatus('Netflix').then(result => {
-              if (result[0].state === 'deactivated') {
-                Router.navigate('image', {
-                  src: Utils$1.asset('images/apps/App_Netflix_Splash.png')
-                });
-              }
-
-              this.appApi.launchPremiumApp('Netflix');
-            }).catch(err => {
-              console.log('Netflix plugin error', err);
-              Storage.set('applicationType', '');
-            });
+            this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
           } else {
             if (this.uri === 'USB') {
               this.usbApi.getMountedDevices().then(result => {
@@ -15083,7 +15108,13 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false;
+          }
+
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
           applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
@@ -15091,16 +15122,16 @@ var APP_accelerator_home_ui = (function () {
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
 
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -15154,8 +15185,14 @@ var APP_accelerator_home_ui = (function () {
 
         }
 
-        _handleEnter() {
-          if (Storage.get('ipAddress')) {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false;
+          }
+
+          if (this.internetConnectivity) {
             //this.fireAncestors('$goToPlayer')
             Router.navigate('player');
           }
@@ -15214,7 +15251,13 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false;
+          }
+
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
           applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
@@ -15222,16 +15265,16 @@ var APP_accelerator_home_ui = (function () {
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
 
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -15279,7 +15322,13 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false;
+          }
+
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
           applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
@@ -15287,16 +15336,16 @@ var APP_accelerator_home_ui = (function () {
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
 
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => {});
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {});
             this.appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -16281,7 +16330,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Searching: {
@@ -16306,7 +16355,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.gif')
             }
           },
           Networks: {
@@ -16414,7 +16463,7 @@ var APP_accelerator_home_ui = (function () {
       if (this._bluetooth) {
         this.tag('Networks').visible = true;
         this.tag('AddADevice').visible = true;
-        this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.renderDeviceList(); //this._bt.startScan()
       }
     }
@@ -16901,7 +16950,7 @@ var APP_accelerator_home_ui = (function () {
             this._bluetooth = false;
             this.tag('Networks').visible = false;
             this.tag('AddADevice').visible = false;
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
           }
         }).catch(() => {
           console.log('Cannot turn off Bluetooth');
@@ -16912,7 +16961,7 @@ var APP_accelerator_home_ui = (function () {
             this._bluetooth = true;
             this.tag('Networks').visible = true;
             this.tag('AddADevice').visible = true;
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.renderDeviceList();
 
             this._bt.startScan();
@@ -20054,7 +20103,7 @@ var APP_accelerator_home_ui = (function () {
             w: 45,
             y: 15,
             x: 1220,
-            src: Utils$1.asset('images/settings/Arrow.png')
+            src: Utils.asset('images/settings/Arrow.png')
           },
           ArrowBackward: {
             h: 30,
@@ -20062,7 +20111,7 @@ var APP_accelerator_home_ui = (function () {
             x: 10,
             scaleX: -1,
             y: 15,
-            src: Utils$1.asset('images/settings/Arrow.png')
+            src: Utils.asset('images/settings/Arrow.png')
           }
         },
         TypeText: {
@@ -20410,7 +20459,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           NetworkInterface: {
@@ -20435,7 +20484,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           TestInternetAccess: {
@@ -20459,7 +20508,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.gif'),
               visible: false
             }
           },
@@ -20486,7 +20535,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -21009,7 +21058,7 @@ var APP_accelerator_home_ui = (function () {
   const wifi$2 = new Wifi();
   class NetworkInterfaceScreen extends lng$1.Component {
     _construct() {
-      this.LoadingIcon = Utils$1.asset('images/settings/Loading.gif');
+      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
     }
 
     static _template() {
@@ -21041,7 +21090,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Ethernet: {
@@ -21065,7 +21114,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.gif'),
               visible: false
             }
           }
@@ -21328,18 +21377,18 @@ var APP_accelerator_home_ui = (function () {
   class PasswordSwitch extends lng$1.Component {
     static _template() {
       return {
-        src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+        src: Utils.asset('images/settings/ToggleOffWhite.png')
       };
     }
 
     _handleEnter() {
       if (this.isOn) {
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+          src: Utils.asset("images/settings/ToggleOffWhite.png")
         });
       } else {
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOnOrange.png")
+          src: Utils.asset("images/settings/ToggleOnOrange.png")
         });
       }
 
@@ -21355,7 +21404,7 @@ var APP_accelerator_home_ui = (function () {
       if (this.isOn) {
         this.isOn = false;
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+          src: Utils.asset("images/settings/ToggleOffWhite.png")
         });
         this.fireAncestors('$handleEnter', this.isOn);
       }
@@ -21741,12 +21790,12 @@ var APP_accelerator_home_ui = (function () {
    **/
   class WiFiItem extends lng$1.Component {
     _construct() {
-      this.Lock = Utils$1.asset('/images/settings/Lock.png');
-      this.WiFi1 = Utils$1.asset('/images/settings/WiFi1.png');
-      this.WiFi2 = Utils$1.asset('/images/settings/WiFi2.png');
-      this.WiFi3 = Utils$1.asset('/images/settings/WiFi3.png');
-      this.WiFi4 = Utils$1.asset('/images/settings/WiFi4.png');
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Lock = Utils.asset('/images/settings/Lock.png');
+      this.WiFi1 = Utils.asset('/images/settings/WiFi1.png');
+      this.WiFi2 = Utils.asset('/images/settings/WiFi2.png');
+      this.WiFi3 = Utils.asset('/images/settings/WiFi3.png');
+      this.WiFi4 = Utils.asset('/images/settings/WiFi4.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     _init() {
@@ -21934,7 +21983,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.gif')
             },
             Button: {
               h: 45,
@@ -21943,7 +21992,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Networks: {
@@ -22089,7 +22138,7 @@ var APP_accelerator_home_ui = (function () {
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
-              this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
 
@@ -22206,7 +22255,7 @@ var APP_accelerator_home_ui = (function () {
       return [class Switch extends this {
         $enter() {
           if (this.wifiStatus === true) {
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.tag('Switch.Button').scaleX = 1;
           }
 
@@ -22232,7 +22281,7 @@ var APP_accelerator_home_ui = (function () {
           if (this.wifiStatus === true) {
             this.tag('Switch.Loader').visible = false;
             this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
         }
@@ -22260,7 +22309,7 @@ var APP_accelerator_home_ui = (function () {
           if (this.wifiStatus === true) {
             this.tag('Switch.Loader').visible = false;
             this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
         }
@@ -22367,7 +22416,7 @@ var APP_accelerator_home_ui = (function () {
                 this.tag('JoinAnotherNetwork').visible = false;
                 this.tag('Switch.Loader').visible = false;
                 this.wifiLoading.stop();
-                this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+                this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               }
             });
           }
@@ -22379,7 +22428,7 @@ var APP_accelerator_home_ui = (function () {
         this.tag('JoinAnotherNetwork').visible = true;
         this.wifiLoading.play();
         this.tag('Switch.Loader').visible = true;
-        this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
 
         this._wifi.discoverSSIDs();
       }
@@ -22567,15 +22616,15 @@ var APP_accelerator_home_ui = (function () {
           x: 820,
           y: 125,
           children: [{
-            src: Utils$1.asset('images/Media Player/Icon_Back_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Back_White_16k.png'),
             x: 17,
             y: 17
           }, {
-            src: Utils$1.asset('images/Media Player/Icon_Pause_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Pause_White_16k.png'),
             x: 17,
             y: 17
           }, {
-            src: Utils$1.asset('images/Media Player/Icon_Next_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Next_White_16k.png'),
             x: 17,
             y: 17
           }].map((item, idx) => ({
@@ -22708,7 +22757,7 @@ var APP_accelerator_home_ui = (function () {
     static _states() {
       return [class PlayPause extends this {
         $enter() {
-          this.focus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_Orange_16k.png');
+          this.focus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils.asset('images/Media Player/Icon_Pause_Orange_16k.png');
           this.timer();
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
@@ -22716,7 +22765,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         $exit() {
-          this.unfocus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_White_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_White_16k.png');
+          this.unfocus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_White_16k.png') : Utils.asset('images/Media Player/Icon_Pause_White_16k.png');
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.unfocus, 50, 50)
           });
@@ -22732,7 +22781,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           this.toggle = !this.toggle;
-          this.focus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_Orange_16k.png');
+          this.focus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils.asset('images/Media Player/Icon_Pause_Orange_16k.png');
           this.timer();
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
@@ -22759,13 +22808,13 @@ var APP_accelerator_home_ui = (function () {
         $enter() {
           this.timer();
           this.tag('Buttons').children[2].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Next_Orange_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_Orange_16k.png'), 50, 50)
           });
         }
 
         $exit() {
           this.tag('Buttons').children[2].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Next_White_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_White_16k.png'), 50, 50)
           });
         }
 
@@ -22789,13 +22838,13 @@ var APP_accelerator_home_ui = (function () {
         $enter() {
           this.timer();
           this.tag('Buttons').children[0].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Back_Orange_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_Orange_16k.png'), 50, 50)
           });
         }
 
         $exit() {
           this.tag('Buttons').children[0].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Back_White_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_White_16k.png'), 50, 50)
           });
         }
 
@@ -22968,6 +23017,8 @@ var APP_accelerator_home_ui = (function () {
     _firstEnable() {
       this.dtvApi = new DTVApi();
       this.options = [];
+      this.overlayTimeout = null;
+      this.timeoutDuration = 10000;
       this.dtvApi.serviceList().then(channels => {
         const [amazon, netflix, youtube, ...others] = channels; //to remove apps from the channel overlay
 
@@ -22999,13 +23050,25 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.overlayTimeout = Registry.setTimeout(() => {
+        this._handleBack();
+      }, this.timeoutDuration);
       this.$focusChannel(this.activeChannelIdx);
 
       this._overlayAnimation.start();
     }
 
     _unfocus() {
+      this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+
       this._overlayAnimation.stop();
+    }
+
+    resetTimeout() {
+      this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+      this.overlayTimeout = Registry.setTimeout(() => {
+        this._handleBack();
+      }, this.timeoutDuration);
     }
 
     $focusChannel(index) {
@@ -23018,10 +23081,12 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleDown() {
+      this.resetTimeout();
       this.tag('Channels').setNext();
     }
 
     _handleUp() {
+      this.resetTimeout();
       this.tag('Channels').setPrevious();
     }
 
@@ -23029,7 +23094,16 @@ var APP_accelerator_home_ui = (function () {
       Router.focusPage();
     }
 
+    _handleLeft() {
+      this._handleBack();
+    }
+
+    _handleRight() {
+      this._handleBack();
+    }
+
     _handleEnter() {
+      this.resetTimeout();
       let focusedChannelIdx = this.tag("Channels").index;
 
       if (focusedChannelIdx !== this.activeChannelIdx) {
@@ -23756,7 +23830,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           RemoteControl: {
@@ -23782,7 +23856,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           ScreenSaver: {
@@ -23808,7 +23882,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           EnergySaver: {
@@ -23832,7 +23906,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Language: {
@@ -23857,7 +23931,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Privacy: {
@@ -23882,7 +23956,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           AdvancedSettings: {
@@ -23906,7 +23980,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -24261,7 +24335,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class EnergySavingsItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -24421,7 +24495,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: true
           }
         }
@@ -24581,7 +24655,7 @@ var APP_accelerator_home_ui = (function () {
           mountY: 0.5,
           w: 32.5,
           h: 32.5,
-          src: Utils$1.asset('images/settings/Tick.png'),
+          src: Utils.asset('images/settings/Tick.png'),
           color: 0xffffffff,
           visible: localStorage.getItem('Language') === item ? true : item === 'English' && localStorage.getItem('Language') === null ? true : false
         },
@@ -24744,7 +24818,7 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$5.launchResident(notification_url, loader$1);
+            appApi$5.launchResident(notification_url, loader$1).catch(err => {});
             appApi$5.setVisibility('ResidentApp', false);
             location.reload();
           }
@@ -24827,7 +24901,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           UsbMediaDevices: {
@@ -24851,7 +24925,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           AudioInput: {
@@ -24875,7 +24949,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           ClearCookies: {
@@ -24914,7 +24988,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -24942,24 +25016,24 @@ var APP_accelerator_home_ui = (function () {
 
     checkUSBDeviceStatus() {
       if (!Storage.get('UsbMedia')) {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         Storage.set('UsbMedia', 'ON');
       } else if (Storage.get('UsbMedia') === 'ON') {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
       } else if (Storage.get('UsbMedia') === 'OFF') {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       }
     }
 
     checkLocalDeviceStatus() {
       xcastApi.getEnabled().then(res => {
         if (res.enabled) {
-          this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         } else {
-          this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
         }
       }).catch(err => {
-        this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
 
@@ -24968,19 +25042,19 @@ var APP_accelerator_home_ui = (function () {
         if (!res.enabled) {
           xcastApi.activate().then(res => {
             if (res) {
-              this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             }
           });
         } else {
           xcastApi.deactivate().then(res => {
             if (res) {
-              this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             }
           });
         }
       }).catch(err => {
         console.log('Service not active');
-        this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
 
@@ -25030,7 +25104,7 @@ var APP_accelerator_home_ui = (function () {
             this.fireAncestors('$deRegisterUsbMount');
             this.USBApi.deactivate().then(res => {
               Storage.set('UsbMedia', 'OFF');
-              this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               this.widgets.menu.refreshMainView();
             }).catch(err => {
               console.error(`error while disabling the usb plugin = ${err}`);
@@ -25039,7 +25113,7 @@ var APP_accelerator_home_ui = (function () {
           } else if (_UsbMedia === 'OFF') {
             this.USBApi.activate().then(res => {
               Storage.set('UsbMedia', 'ON');
-              this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
               this.fireAncestors('$registerUsbMount');
               this.widgets.menu.refreshMainView();
             });
@@ -25444,7 +25518,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           CECControl: {
@@ -25469,7 +25543,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Bug: {
@@ -25495,7 +25569,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Contact: {
@@ -25521,7 +25595,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Device: {
@@ -25545,7 +25619,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -25555,7 +25629,7 @@ var APP_accelerator_home_ui = (function () {
     _init() {
       this.cecApi = new CECApi();
       this.cecApi.activate().then(() => {
-        this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.performOTPAction();
       });
 
@@ -25588,11 +25662,11 @@ var APP_accelerator_home_ui = (function () {
 
         if (res.enabled) {
           this.cecApi.deactivate().then(() => {
-            this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
           });
         } else {
           this.cecApi.activate().then(() => {
-            this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
           });
         }
       });
@@ -25772,7 +25846,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           TimeZone: {
@@ -25796,7 +25870,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Firmware: {
@@ -25820,7 +25894,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Reboot: {
@@ -25861,7 +25935,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -26302,8 +26376,49 @@ var APP_accelerator_home_ui = (function () {
         console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
         this.tag('ChipSet.Value').text.text = `${result.chipset}`; // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
       });
-      this.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`;
+      let self = this;
+
+      if (Storage.get('Netflix_ESN')) {
+        self.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`;
+      } else {
+        self.appApi.getPluginStatus('Netflix').then(result => {
+          let sel = self;
+          console.log(`Netflix : plugin status : `, JSON.stringify(result));
+
+          if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
+            sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
+              console.log("Netflix : netflix launch for esn value in suspend mode returns : ", JSON.stringify(res));
+              let se = sel;
+              se.appApi.getNetflixESN().then(res => {
+                Storage.set('Netflix_ESN', res);
+                console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
+                se.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`;
+              }).catch(err => {
+                console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err));
+              });
+            }).catch(err => {
+              console.error(`Netflix : error while launching netflix in suspendMode : `, JSON.stringify(err));
+            });
+          } else {
+            self.appApi.getNetflixESN().then(res => {
+              Storage.set('Netflix_ESN', res);
+              console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
+              self.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`;
+            }).catch(err => {
+              console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err));
+            });
+          }
+        }).catch(err => {
+          console.error(`Netflix : error while getting netflix plugin status ie. `, JSON.stringify(err));
+        });
+      }
+
       this.appApi.registerChangeLocation();
+    }
+
+    set netflixESN(v) {
+      console.log(`setting netflix ESN value to ${v}`);
+      this.tag('AppVersions.Value').text.text = v;
     }
 
     _handleBack() {
@@ -26667,7 +26782,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           }
         }
@@ -26836,8 +26951,8 @@ var APP_accelerator_home_ui = (function () {
 
   class TimeZoneItem extends lng$1.Component {
     _construct() {
-      this.Arrow = Utils$1.asset('/images/settings/Arrow.png');
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Arrow = Utils.asset('/images/settings/Arrow.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -26992,7 +27107,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.gif")
           }
         }
       };
@@ -27108,7 +27223,7 @@ var APP_accelerator_home_ui = (function () {
 
   class TimeItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -27416,7 +27531,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OutputMode: {
@@ -27440,7 +27555,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           DynamicRange: {
@@ -27465,7 +27580,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           AudioLanguage: {
@@ -27490,7 +27605,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           NavigationFeedback: {
@@ -27515,7 +27630,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOnWhite.png')
+              src: Utils.asset('images/settings/ToggleOnWhite.png')
             }
           },
           Bluetooth: {
@@ -27540,7 +27655,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -27734,7 +27849,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class VideoAndAudioItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -27898,7 +28013,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: true
           }
         }
@@ -28053,7 +28168,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.gif")
           }
         }
       };
@@ -28215,7 +28330,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           HDR: {
@@ -28256,7 +28371,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OutputFormat: {
@@ -28282,7 +28397,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Chroma: {
@@ -28308,7 +28423,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           HDCP: {
@@ -28707,7 +28822,7 @@ var APP_accelerator_home_ui = (function () {
           y: this.y,
           w: this.w,
           h: this.h,
-          src: Utils$1.asset(this.data.url),
+          src: Utils.asset(this.data.url),
           scale: this.unfocus
         });
       } else {
@@ -29618,7 +29733,7 @@ var APP_accelerator_home_ui = (function () {
           mount: 0.5,
           x: 960,
           y: 540,
-          src: Utils$1.asset('/images/splash/RDKLogo.png')
+          src: Utils.asset('/images/splash/RDKLogo.png')
         },
         Sub: {
           mountY: 1,
@@ -29627,7 +29742,7 @@ var APP_accelerator_home_ui = (function () {
           y: 1000,
           w: 216,
           h: 121,
-          src: Utils$1.asset('/images/splash/gracenote.png')
+          src: Utils.asset('/images/splash/gracenote.png')
         }
       };
     }
@@ -29771,7 +29886,7 @@ var APP_accelerator_home_ui = (function () {
             w: 110,
             h: 110,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           },
           Buttons: {
@@ -30066,7 +30181,7 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$2.launchResident(notification_url, loader);
+            appApi$2.launchResident(notification_url, loader).catch(err => {});
             appApi$2.setVisibility('ResidentApp', false);
             location.reload();
           }
@@ -30469,7 +30584,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           }
         }
@@ -30592,7 +30707,7 @@ var APP_accelerator_home_ui = (function () {
             mountX: 1,
             y: 200,
             mountY: 0.5,
-            src: Utils$1.asset('images/settings/Loading.gif')
+            src: Utils.asset('images/settings/Loading.gif')
           },
           Networks: {
             x: -800,
@@ -30730,7 +30845,7 @@ var APP_accelerator_home_ui = (function () {
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
-              this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
 
@@ -31095,7 +31210,7 @@ var APP_accelerator_home_ui = (function () {
           w: 300,
           h: 150,
           zIndex: 3,
-          src: Utils$1.asset(this._item.url)
+          src: Utils.asset(this._item.url)
         }
       });
     }
@@ -31148,7 +31263,7 @@ var APP_accelerator_home_ui = (function () {
       return {
         w: 1920,
         h: 1080,
-        src: Utils$1.asset('images/splash/Splash-Background.jpg'),
+        src: Utils.asset('images/splash/Splash-Background.jpg'),
         UI: {
           x: 200,
           y: 465,
@@ -32072,7 +32187,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (data.url.startsWith('/images')) {
         this.tag('Image').patch({
-          src: Utils$1.asset(data.url)
+          src: Utils.asset(data.url)
         });
       } else {
         this.tag('Image').patch({
@@ -32289,7 +32404,7 @@ var APP_accelerator_home_ui = (function () {
 
           if (Storage.get('applicationType') == 'Cobalt') {
             appApi.getPluginStatus('Cobalt').then(() => {
-              appApi.launchCobalt(this.uri);
+              appApi.launchCobalt(this.uri).catch(err => {});
               appApi.setVisibility('ResidentApp', false);
             }).catch(err => {
               console.log('Cobalt plugin error', err);
@@ -32301,23 +32416,23 @@ var APP_accelerator_home_ui = (function () {
               let path = location.pathname.split('index.html')[0];
               let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
               let notification_url = location.origin + path + url;
-              appApi.launchOverlay(notification_url, 'TextOverlay');
+              appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => {});
               Registry.setTimeout(() => {
                 appApi.deactivateResidentApp('TextOverlay');
                 appApi.zorder('HtmlApp');
                 appApi.setVisibility('HtmlApp', true);
               }, 9000);
-            });
+            }).catch(() => {});
           } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri);
+            appApi.launchLightning(this.uri).catch(() => {});
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri);
+            appApi.launchNative(this.uri).catch(() => {});
             appApi.setVisibility('ResidentApp', false);
           } else if (Storage.get('applicationType') == 'Amazon') {
             console.log('Launching app');
             appApi.getPluginStatus('Amazon').then(result => {
-              appApi.launchPremiumApp('Amazon');
+              appApi.launchPremiumApp('Amazon').catch(() => {});
               appApi.setVisibility('ResidentApp', false);
             }).catch(err => {
               console.log('Amazon plugin error', err);
@@ -32325,18 +32440,7 @@ var APP_accelerator_home_ui = (function () {
             });
           } else if (Storage.get('applicationType') == 'Netflix') {
             console.log('Launching app');
-            appApi.getPluginStatus('Netflix').then(result => {
-              if (result[0].state === 'deactivated') {
-                Router.navigate('image', {
-                  src: Utils.asset('images/apps/App_Netflix_Splash.png')
-                });
-              }
-
-              appApi.launchPremiumApp('Netflix');
-            }).catch(err => {
-              console.log('Netflix plugin error', err);
-              Storage.set('applicationType', '');
-            });
+            this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
           }
         }
 
@@ -32415,7 +32519,7 @@ var APP_accelerator_home_ui = (function () {
                 scaleX: -1,
                 y: 38,
                 mountY: 0.5,
-                src: Utils$1.asset('images/settings/Arrow.png')
+                src: Utils.asset('images/settings/Arrow.png')
               },
               ArrowForward: {
                 h: 30,
@@ -32424,7 +32528,7 @@ var APP_accelerator_home_ui = (function () {
                 x: 484,
                 mountY: 0.5,
                 mountX: 1,
-                src: Utils$1.asset('images/settings/Arrow.png')
+                src: Utils.asset('images/settings/Arrow.png')
               }
             }
           },
@@ -32510,7 +32614,7 @@ var APP_accelerator_home_ui = (function () {
         Storage.set('applicationType', 'Cobalt');
         let appApi = new AppApi();
         console.log(this._item.url);
-        appApi.launchCobalt(this._item.url);
+        appApi.launchCobalt(this._item.url).catch(err => {});
         appApi.setVisibility('ResidentApp', false);
       }
     }
@@ -32657,7 +32761,7 @@ var APP_accelerator_home_ui = (function () {
             y: 510,
             w: 300,
             h: 168,
-            src: Utils$1.asset("images/powered_by_gracenote.png")
+            src: Utils.asset("images/powered_by_gracenote.png")
           }
         }
       };
@@ -32667,7 +32771,7 @@ var APP_accelerator_home_ui = (function () {
       this.rootId = args.gracenoteItem.program.tmsid;
       this.name = args.gracenoteItem.program.title;
       let imgUrl = "http://developer.tmsimg.com/" + args.gracenoteItem.program.preferredImage.uri.replace("w=1280&", "w=878&").replace("&h=720", "&h=493") + "&api_key=" + args.key;
-      this.tag("Image").src = Utils$1.proxyUrl(imgUrl);
+      this.tag("Image").src = Utils.proxyUrl(imgUrl);
       this.tag("Cast.Title").text.text = `${args.gracenoteItem.program.topCast[0]} \t ${args.gracenoteItem.program.topCast[1]} \t ${args.gracenoteItem.program.topCast[2]}`;
       this.tag("Description.Title").text.text = args.gracenoteItem.program.longDescription;
       this.tag("Time.Title").text.text = `${args.gracenoteItem.duration} Minutes`;
@@ -32810,7 +32914,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to render Tick mark Icon elements in the settings.
      */
     _construct() {
-      this.Tick = Utils$1.asset("/images/settings/Tick.png");
+      this.Tick = Utils.asset("/images/settings/Tick.png");
     }
 
     static _template() {
@@ -33468,7 +33572,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               mountY: 0.5,
               color: 0xffffffff,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             },
             LeftArrow: {
               h: 50,
@@ -33478,7 +33582,7 @@ var APP_accelerator_home_ui = (function () {
               mountY: 0.5,
               scaleX: -1,
               color: 0xffffffff,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             }
           },
           Content: {
@@ -33710,7 +33814,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Frequency: {
@@ -33734,7 +33838,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Polarity: {
@@ -33758,7 +33862,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               SymbolRate: {
@@ -33782,7 +33886,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               FEC: {
@@ -33806,7 +33910,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               DVBS2: {
@@ -33830,7 +33934,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
                 }
               },
               Modulation: {
@@ -33854,7 +33958,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               SearchType: {
@@ -33878,7 +33982,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Retune: {
@@ -33902,7 +34006,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
                 }
               }
             }
@@ -33968,7 +34072,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 25,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/Loading.gif")
+              src: Utils.asset("images/settings/Loading.gif")
             }
           }
         },
@@ -34237,7 +34341,7 @@ var APP_accelerator_home_ui = (function () {
       //dvbs2*********************
 
       this.selectedDVBS2 = false;
-      this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png"); //******************************
+      this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png"); //******************************
       //modulation*********************
 
       this.selectedModulation = "";
@@ -34249,7 +34353,7 @@ var APP_accelerator_home_ui = (function () {
       //retune*********************
 
       this.selectedRetune = false;
-      this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png"); //******************************
+      this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png"); //******************************
       //startscan*********************
 
       this.tag("ErrorNotification").visible = false; //******************************
@@ -34562,10 +34666,10 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           if (!this.selectedDVBS2) {
             this.selectedDVBS2 = true;
-            this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
           } else {
             this.selectedDVBS2 = false;
-            this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           } // console.log(this.selectedDVBS2);
 
         }
@@ -34693,10 +34797,10 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           if (!this.selectedRetune) {
             this.selectedRetune = true;
-            this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
           } else {
             this.selectedRetune = false;
-            this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           } // console.log(this.selectedRetune);
 
         }
@@ -34816,7 +34920,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           CScan: {
@@ -34841,7 +34945,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           SScan: {
@@ -34865,7 +34969,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -35004,7 +35108,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/ToggleOnOrange.png")
+              src: Utils.asset("images/settings/ToggleOnOrange.png")
             }
           },
           Scan: {
@@ -35028,7 +35132,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             }
           }
         }
@@ -35047,9 +35151,9 @@ var APP_accelerator_home_ui = (function () {
       this._setState(this.state);
 
       if (active) {
-        this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
-        this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       }
     }
 
@@ -35076,13 +35180,13 @@ var APP_accelerator_home_ui = (function () {
             this.dtvApi.deactivate().then(res => {
               console.log(res);
               active = false;
-              this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
             });
           } else {
             this.dtvApi.activate().then(res => {
               console.log(res);
               active = true;
-              this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
             });
           }
         }
@@ -35551,7 +35655,7 @@ var APP_accelerator_home_ui = (function () {
             scaleX: -1,
             y: 45,
             mountY: 0.5,
-            src: Utils$1.asset("images/settings/Arrow.png"),
+            src: Utils.asset("images/settings/Arrow.png"),
             color: 0xffffffff
           },
           RightArrow: {
@@ -35561,7 +35665,7 @@ var APP_accelerator_home_ui = (function () {
             x: 500,
             mountY: 0.5,
             mountX: 1,
-            src: Utils$1.asset("images/settings/Arrow.png"),
+            src: Utils.asset("images/settings/Arrow.png"),
             color: 0xffffffff
           }
         },
@@ -35688,7 +35792,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleLeft() {
-      console.log("handleLeft");
+      this.fireAncestors('$resetTimeout');
 
       if (this.valueLength > 0) {
         //value is an array
@@ -35701,7 +35805,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleRight() {
-      console.log("handleRight");
+      this.fireAncestors('$resetTimeout');
 
       if (this.valueLength > 0) {
         //value is an array
@@ -35712,6 +35816,10 @@ var APP_accelerator_home_ui = (function () {
           this.changeValueBy(1);
         }
       }
+    }
+
+    _handleEnter() {
+      this.fireAncestors('$resetTimeout');
     }
 
     _focus() {
@@ -35828,7 +35936,12 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.fireAncestors('$focusOverlay');
       console.log("index: ", this.tag("List").index); // this.tag("List").setIndex(0);//not necessary
+    }
+
+    _unfocus() {
+      this.fireAncestors('$unfocusOverlay');
     }
 
     _getFocused() {
@@ -35836,6 +35949,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleDown() {
+      this.fireAncestors('$resetTimeout');
+
       if (this.tag("List").index < this.tag("List").length - 1) {
         //to prevent circular scrolling
         if (this.tag("List").index === 1) {
@@ -35853,6 +35968,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleUp() {
+      this.fireAncestors('$resetTimeout');
+
       if (this.tag("List").index > 0) {
         //to prevent circular scrolling
         this.tag("List").setPrevious();
@@ -35907,7 +36024,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class TvOverlayInputItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset("/images/settings/Tick.png");
+      this.Tick = Utils.asset("/images/settings/Tick.png");
     }
 
     static _template() {
@@ -35932,7 +36049,7 @@ var APP_accelerator_home_ui = (function () {
             y: 45,
             mountY: 0.5,
             mountX: 1,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             color: 0xffffffff,
             visible: false
           },
@@ -36016,6 +36133,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleEnter() {
+      this.fireAncestors('$resetTimeout');
+
       if (!this.tag("Item.Tick").visible) {
         //to start the loader
         this.loadingAnimation.start();
@@ -36243,7 +36362,12 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.fireAncestors('$focusOverlay');
       this.$getInputs(); //fetch the input modes and refresh the list, in case input status changes
+    }
+
+    _unfocus() {
+      this.fireAncestors('$unfocusOverlay');
     }
 
     _getFocused() {
@@ -36251,17 +36375,21 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleDown() {
+      this.fireAncestors('$resetTimeout');
       this.tag("List").setNext();
     }
 
     _handleUp() {
+      this.fireAncestors('$resetTimeout');
       this.tag("List").setPrevious();
     }
 
-    _handleLeft() {// do nothing
+    _handleLeft() {
+      this.fireAncestors('$resetTimeout'); // do nothing
     }
 
-    _handleRight() {// do nothing
+    _handleRight() {
+      this.fireAncestors('$resetTimeout'); // do nothing
     }
 
   }
@@ -36334,6 +36462,8 @@ var APP_accelerator_home_ui = (function () {
 
     _firstEnable() {
       this.appApi = new AppApi();
+      this.overlayTimeout = null;
+      this.timeoutDuration = 30000;
       this._sidePanelAnimation = this.tag("OverlaySettingsScreen").animation({
         delay: 0.3,
         duration: 0.3,
@@ -36363,6 +36493,27 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {}
+
+    $focusOverlay() {
+      this.overlayTimeout = Registry.setTimeout(() => {
+        this._handleBack();
+      }, this.timeoutDuration);
+    }
+
+    $unfocusOverlay() {
+      this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+    }
+
+    $resetTimeout() {
+      this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+      this.overlayTimeout = Registry.setTimeout(() => {
+        this._handleBack();
+      }, this.timeoutDuration);
+    }
+
+    $closeOverlay() {
+      this._handleBack();
+    }
 
     _handleBack() {
       let currentApp = Storage.get("applicationType");
@@ -36512,7 +36663,7 @@ var APP_accelerator_home_ui = (function () {
           mountY: 0.5,
           h: 100,
           w: 100,
-          src: Utils$1.asset('/images/volume/Volume.png'),
+          src: Utils.asset('/images/volume/Volume.png'),
           Text: {
             x: 100,
             y: 0,
@@ -36591,9 +36742,9 @@ var APP_accelerator_home_ui = (function () {
 
     _updateIcon(check) {
       if (check) {
-        this.tag('VolumeInfo').src = Utils$1.asset('images/volume/Volume_Mute.png');
+        this.tag('VolumeInfo').src = Utils.asset('images/volume/Volume_Mute.png');
       } else {
-        this.tag('VolumeInfo').src = Utils$1.asset('/images/volume/Volume.png');
+        this.tag('VolumeInfo').src = Utils.asset('/images/volume/Volume.png');
       }
     }
 
@@ -36673,9 +36824,11 @@ var APP_accelerator_home_ui = (function () {
           }
         },
         Item: {
-          w: 236,
-          h: 81,
-          texture: lng$1.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c)
+          w: 236 - 3,
+          h: 78,
+          color: 0xff272727,
+          rect: true // texture: Lightning.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c),
+
         }
       };
     }
@@ -36805,9 +36958,11 @@ var APP_accelerator_home_ui = (function () {
       this.patch({
         Item: {
           // clipping: true,
-          w: w,
-          h: 81,
-          texture: lng$1.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727)
+          w: w - 3,
+          h: 78,
+          color: 0xff272727,
+          rect: true // texture: Lightning.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727),
+
         }
       });
       this.tag('Title').text.wordWrapWidth = w - 20;
@@ -36870,14 +37025,14 @@ var APP_accelerator_home_ui = (function () {
         smooth: {
           x: x,
           y: y,
-          w: w
+          w: w - 3
         }
       });
       this.tag("LowerLine").patch({
         smooth: {
           x: x,
           y: y + 79,
-          w: w
+          w: w - 3
         }
       });
     }
@@ -36902,7 +37057,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  let k = 6;
+  let k = 5;
   class Epg extends lng$1.Component {
     static _template() {
       return {
@@ -36918,7 +37073,7 @@ var APP_accelerator_home_ui = (function () {
           mount: 0.5,
           w: 100,
           h: 100,
-          src: Utils$1.asset("images/settings/Loading.gif"),
+          src: Utils.asset("images/settings/Loading.gif"),
           visible: true
         },
         Wrapper: {
@@ -37028,8 +37183,8 @@ var APP_accelerator_home_ui = (function () {
               TimeBar: {
                 // this is the gray bar
                 x: k,
-                y: 81 - 9,
-                // this should be the ShowLists "y" value - 9
+                y: 81 - 12,
+                // this should be the ShowLists "y" value - 9, extra -3 to accomodate margin
                 rect: true,
                 h: 9,
                 w: 0,
@@ -37038,8 +37193,8 @@ var APP_accelerator_home_ui = (function () {
               DownTriangle: {
                 // this is the little triangle over the white bar.
                 x: 4,
-                y: 81 - 9,
-                // this should be the same as TimeBar's "y" Value
+                y: 81 - 12,
+                // this should be the same as TimeBar's "y" Value, extra -3 to accomodate margin
                 mountX: 0.5,
                 mountY: 0.5,
                 color: 0xffffffff,
@@ -37106,9 +37261,9 @@ var APP_accelerator_home_ui = (function () {
         Storage.set("applicationType", app);
 
         if (app === "Cobalt") {
-          this.appApi.launchCobalt("https://www.youtube.com/tv");
+          this.appApi.launchCobalt("https://www.youtube.com/tv").catch(err => {});
         } else {
-          this.appApi.launchPremiumApp(app);
+          this.appApi.launchPremiumApp(app).catch(() => {});
         }
 
         this.appApi.setVisibility("ResidentApp", false);
@@ -37942,7 +38097,7 @@ var APP_accelerator_home_ui = (function () {
 
     _init() {
       this.tag('Image').patch({
-        src: Utils$1.asset(this.data.url),
+        src: Utils.asset(this.data.url),
         w: this.w,
         h: this.h,
         scale: this.unfocus
@@ -38210,14 +38365,14 @@ var APP_accelerator_home_ui = (function () {
             x: 105,
             // zIndex: 2,
             y: 87,
-            src: Utils$1.asset('/images/topPanel/microphone.png'),
+            src: Utils.asset('/images/topPanel/microphone.png'),
             w: 50,
             h: 50
           },
           Logo: {
             x: 200,
             y: 90,
-            src: Utils$1.asset('/images/' + CONFIG.theme.logo),
+            src: Utils.asset('/images/' + CONFIG.theme.logo),
             w: 227,
             h: 43
           },
@@ -38239,7 +38394,7 @@ var APP_accelerator_home_ui = (function () {
             x: 1825 - 105 - 160 - 37 + 30,
             y: 111,
             mountY: 0.5,
-            src: Utils$1.asset('/images/topPanel/setting.png'),
+            src: Utils.asset('/images/topPanel/setting.png'),
             w: 37,
             h: 37
           },
@@ -38305,9 +38460,9 @@ var APP_accelerator_home_ui = (function () {
 
     set changeMic(toggle) {
       if (toggle) {
-        this.tag('Mic').src = Utils$1.asset('/images/topPanel/microphone_mute.png');
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone_mute.png');
       } else {
-        this.tag('Mic').src = Utils$1.asset('/images/topPanel/microphone.png');
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png');
       }
     }
 
@@ -38327,7 +38482,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateIcon(tagname, url) {
       this.tag(tagname).patch({
-        src: Utils$1.asset(url)
+        src: Utils.asset(url)
       });
     }
     /**
@@ -38608,17 +38763,7 @@ var APP_accelerator_home_ui = (function () {
 
           if (Storage.get('applicationType') == notification.client) {
             Storage.set('applicationType', '');
-            appApi$1.setVisibility('ResidentApp', true);
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
-            thunder$1.call('org.rdk.RDKShell', 'setFocus', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp setFocus Success');
-            });
+            appApi$1.setVisibility("ResidentApp", true); // getclients and storage.set to the second client
           }
         }
       });
@@ -38878,7 +39023,7 @@ var APP_accelerator_home_ui = (function () {
     static getFonts() {
       return [{
         family: CONFIG.language.font,
-        url: Utils$1.asset('fonts/' + CONFIG.language.fontSrc)
+        url: Utils.asset('fonts/' + CONFIG.language.fontSrc)
       }];
     }
 
@@ -38931,7 +39076,7 @@ var APP_accelerator_home_ui = (function () {
 
     static language() {
       return {
-        file: Utils$1.asset('language/language-file.json'),
+        file: Utils.asset('language/language-file.json'),
         language: CONFIG.language.id
       };
     }
@@ -38943,23 +39088,16 @@ var APP_accelerator_home_ui = (function () {
         if (Storage.get('applicationType') != '') {
           this.deactivateChildApp(Storage.get('applicationType'));
           Storage.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true);
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success');
-          });
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success');
 
-            if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
-              Router.navigate('menu');
-            }
-          }).catch(err => {
-            console.log('Error', err);
-          });
+          if (!Router.isNavigating()) {
+            Router.navigate("menu");
+          }
+
+          appApi.setVisibility('ResidentApp', true);
+
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+            Router.navigate('menu');
+          }
         } else {
           if (!Router.isNavigating()) {
             if (Router.getActiveHash() === "dtvplayer") {
@@ -39069,13 +39207,13 @@ var APP_accelerator_home_ui = (function () {
 
       if (key.keyCode == keyMap.Youtube) {
         Storage.set('applicationType', 'Cobalt');
-        appApi.launchCobalt('');
+        appApi.launchCobalt('').catch(() => {});
         appApi.setVisibility('ResidentApp', false);
         return true;
       }
 
       if (key.keyCode == keyMap.Netflix) {
-        this.activateChildApp('Netflix');
+        this.$initLaunchPad().then(() => {}).catch(() => {});
         return true;
       }
 
@@ -39193,9 +39331,8 @@ var APP_accelerator_home_ui = (function () {
         Storage.set('applicationType', ''); //to set the application type to none
       }
 
-      appApi.enableDisplaySettings();
-      appApi.cobaltStateChangeEvent(); //appApi.launchforeground()
-
+      appApi.enableDisplaySettings().catch(err => {});
+      appApi.cobaltStateChangeEvent();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result => {
         if (result) {
@@ -39215,9 +39352,13 @@ var APP_accelerator_home_ui = (function () {
         }
       });
       thunder.on('Controller', 'statechange', notification => {
+        // get plugin status
+        console.log(`STATECHANGE 2 : `);
         console.log(JSON.stringify(notification));
 
-        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivation') {
+        if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
+          console.log(`${notification.callsign}'s ${notification.state} request`);
+
           if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
             console.log("navigating to homescreen");
@@ -39231,12 +39372,21 @@ var APP_accelerator_home_ui = (function () {
           }).then(result => {
             console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
           });
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
+        }
+
+        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivated') {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+            //navigate to homescreen if route is tv-overlay when exiting from any app
+            console.log("navigating to homescreen");
+            Router.navigate("menu");
+          }
+
+          Storage.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: 'ResidentApp'
           }).then(result => {
-            console.log('ResidentApp setFocus Success' + JSON.stringify(result));
-          }).catch(err => {
-            console.log('Error', err);
+            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
           });
         }
 
@@ -39257,9 +39407,11 @@ var APP_accelerator_home_ui = (function () {
               Storage.set('Netflix_ESN', res);
             });
             thunder.on('Netflix', 'notifyeventchange', notification => {
+              console.log(`NETFLIX : notifyEventChange notification = `, JSON.stringify(notification));
+
               if (notification.EventName === "rendered") {
-                appApi.visibile('ResidentApp', false);
                 Router.navigate('menu');
+                appApi.visibile('ResidentApp', false);
               }
 
               if (notification.EventName === "requestsuspend") {
@@ -39284,7 +39436,7 @@ var APP_accelerator_home_ui = (function () {
         data.plugins.forEach(element => {
           if (element.callsign === plugin) {
             Storage.set('applicationType', plugin);
-            appApi.launchPremiumApp(plugin);
+            appApi.launchPremiumApp(plugin).catch(() => {});
             appApi.setVisibility('ResidentApp', false);
           }
         });
@@ -39301,7 +39453,17 @@ var APP_accelerator_home_ui = (function () {
           break;
 
         case 'Cobalt':
-          appApi.suspendCobalt();
+          appApi.suspendPremiumApp("Cobalt").then(res => {
+            if (res) {
+              let params = {
+                applicationName: "YouTube",
+                state: 'suspended'
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+
+            console.log(`Cobalt : suspend cobalt request`);
+          });
           break;
 
         case 'Lightning':
@@ -39313,11 +39475,31 @@ var APP_accelerator_home_ui = (function () {
           break;
 
         case 'Amazon':
-          appApi.suspendPremiumApp('Amazon');
+          appApi.suspendPremiumApp('Amazon').then(res => {
+            if (res) {
+              let params = {
+                applicationName: "AmazonInstantVideo",
+                state: 'suspended'
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+          });
           break;
 
         case 'Netflix':
-          appApi.suspendPremiumApp('Netflix');
+          appApi.suspendPremiumApp('Netflix').then(res => {
+            thunder.call('org.rdk.RDKShell', 'setFocus', {
+              client: "ResidentApp"
+            });
+
+            if (res) {
+              let params = {
+                applicationName: "NetflixApp",
+                state: 'suspended'
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+          });
           break;
 
         case 'HDMI':
@@ -39325,6 +39507,64 @@ var APP_accelerator_home_ui = (function () {
           Storage.set("_currentInputMode", {});
           break;
       }
+    }
+
+    $initLaunchPad(url) {
+      return new Promise((resolve, reject) => {
+        appApi.getPluginStatus('Netflix').then(result => {
+          console.log(`netflix plugin status is :`, JSON.stringify(result));
+          console.log(`netflix plugin status is :`, result);
+
+          if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
+            Router.navigate('image', {
+              src: Utils.asset('images/apps/App_Netflix_Splash.png')
+            });
+
+            if (url) {
+              appApi.configureApplication('Netflix', url).then(() => {
+                appApi.launchPremiumApp("Netflix").then(res => {
+                  resolve(true);
+                }).catch(err => {
+                  reject(false);
+                }); // ie. org.rdk.RDKShell.launch
+              }).catch(err => {
+                console.error("Netflix : error while fetching configuration data : ", JSON.stringify(err));
+                reject(err);
+              }); // gets configuration object and sets configuration
+            } else {
+              appApi.launchPremiumApp("Netflix").then(res => {
+                resolve(true);
+              }).catch(err => {
+                reject(false);
+              }); // ie. org.rdk.RDKShell.launch
+            }
+          } else {
+            /* Not in deactivated; could be suspended */
+            if (url) {
+              appApi.launchPremiumApp("Netflix").then(res => {
+                thunder.call("Netflix", "systemcommand", {
+                  "command": url
+                }).then(res => {}).catch(err => {
+                  console.error("Netflix : error while sending systemcommand : ", JSON.stringify(err));
+                  reject(false);
+                });
+                resolve(true);
+              }).catch(err => {
+                reject(false);
+              }); // ie. org.rdk.RDKShell.launch
+            } else {
+              appApi.launchPremiumApp("Netflix").then(res => {
+                console.log(`Netflix : launch premium app resulted in `, JSON.stringify(res));
+                resolve(true);
+              });
+            }
+          }
+        }).catch(err => {
+          console.log('Netflix plugin error', err);
+          Storage.set('applicationType', '');
+          reject(false);
+        });
+      });
     }
     /**
      * Function to register event listeners for Xcast plugin.
@@ -39338,9 +39578,9 @@ var APP_accelerator_home_ui = (function () {
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
 
-          if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
+          if (applicationName == 'Amazon') {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Amazon');
+            appApi.launchPremiumApp('Amazon').catch(() => {});
             Storage.set('applicationType', 'Amazon');
             appApi.setVisibility('ResidentApp', false);
             let params = {
@@ -39348,34 +39588,26 @@ var APP_accelerator_home_ui = (function () {
               state: 'running'
             };
             this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
-            appApi.configureApplication('Netflix', notification.parameters).then(res => {
+          } else if (applicationName == 'Netflix') {
+            let url = notification.parameters.url;
+            let pApp = Storage.get('applicationType');
+            this.$initLaunchPad(url).then(res => {
+              console.log(`Netflix : storage has been set for netflix`);
+              Storage.set('applicationType', 'Netflix');
+              this.deactivateChildApp(pApp);
+              let params = {
+                applicationName: notification.applicationName,
+                state: 'running'
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }).catch(() => {});
+          } else if (applicationName == 'Cobalt') {
+            if (Storage.get('applicationType') != 'Cobalt') {
               this.deactivateChildApp(Storage.get('applicationType'));
-              appApi.getPluginStatus('Netflix').then(result => {
-                if (result[0].state === 'deactivated') {
-                  Router.navigate('image', {
-                    src: Utils$1.asset('images/apps/App_Netflix_Splash.png')
-                  });
-                }
+            }
 
-                appApi.launchPremiumAppURL('Netflix', notification.parameters.url);
-                Storage.set('applicationType', 'Netflix');
-                let params = {
-                  applicationName: notification.applicationName,
-                  state: 'running'
-                };
-                this.xcastApi.onApplicationStateChanged(params);
-              }).catch(err => {
-                console.log('Netflix plugin error', err);
-                Storage.set('applicationType', '');
-              });
-            }).catch(err => {
-              console.log('Error while launching ' + applicationName + ', Err: ' + JSON.stringify(err));
-            });
-          } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
-            this.deactivateChildApp(Storage.get('applicationType'));
             appApi.getPluginStatus('Cobalt').then(() => {
-              appApi.launchCobalt(notification.parameters.url + '&inApp=true');
+              appApi.launchCobalt(notification.parameters.url + '&inApp=true').catch(() => {});
               Storage.set('applicationType', 'Cobalt');
               appApi.setVisibility('ResidentApp', false);
               let params = {
@@ -39396,22 +39628,22 @@ var APP_accelerator_home_ui = (function () {
           let applicationName = this.xcastApps(notification.applicationName);
           console.log('Hide ' + this.xcastApps(notification.applicationName));
 
-          if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
+          if (applicationName === 'Amazon') {
             appApi.suspendPremiumApp('Amazon');
             let params = {
               applicationName: notification.applicationName,
               state: 'suspended'
             };
             this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
+          } else if (applicationName === 'Netflix') {
             appApi.suspendPremiumApp('Netflix');
             let params = {
               applicationName: notification.applicationName,
               state: 'suspended'
             };
             this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
-            appApi.suspendCobalt();
+          } else if (applicationName === 'Cobalt') {
+            this.deactivateChildApp("Cobalt");
             let params = {
               applicationName: notification.applicationName,
               state: 'suspended'
@@ -39437,31 +39669,34 @@ var APP_accelerator_home_ui = (function () {
           let applicationName = this.xcastApps(notification.applicationName);
           console.log('Resume ' + this.xcastApps(notification.applicationName));
 
-          if (applicationName == 'Amazon' && Storage.get('applicationType') != 'Amazon') {
+          if (applicationName == 'Amazon') {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Amazon');
-            Storage.set('applicationType', 'Amazon');
-            appApi.setVisibility('ResidentApp', false);
+            appApi.launchPremiumApp('Amazon').catch(() => {});
+            Storage.set('applicationType', 'Amazon'); // appApi.setVisibility('ResidentApp', false);
+
             let params = {
               applicationName: notification.applicationName,
               state: 'running'
             };
             this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName == 'Netflix' && Storage.get('applicationType') != 'Netflix') {
+          } else if (applicationName == 'Netflix') {
+            let url = notification.parameters.url ? notification.parameters.url : false;
+            let papp = Storage.get('applicationType');
+            this.$initLaunchPad(url).then(() => {
+              this.deactivateChildApp(papp);
+              Storage.set('applicationType', 'Netflix'); // appApi.setVisibility('ResidentApp', false);
+
+              let params = {
+                applicationName: notification.applicationName,
+                state: 'running'
+              };
+              this.xcastApi.onApplicationStateChanged(params);
+            }).catch(err => {});
+          } else if (applicationName == 'Cobalt') {
             this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Netflix');
-            Storage.set('applicationType', 'Amazon');
-            appApi.setVisibility('ResidentApp', false);
-            let params = {
-              applicationName: notification.applicationName,
-              state: 'running'
-            };
-            this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName == 'Cobalt' && Storage.get('applicationType') != 'Cobalt') {
-            this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchCobalt();
-            Storage.set('applicationType', 'Cobalt');
-            appApi.setVisibility('ResidentApp', false);
+            appApi.launchCobalt('').catch(() => {});
+            Storage.set('applicationType', 'Cobalt'); // appApi.setVisibility('ResidentApp', false);
+
             let params = {
               applicationName: notification.applicationName,
               state: 'running'
@@ -39471,49 +39706,42 @@ var APP_accelerator_home_ui = (function () {
         }
       });
       this.xcastApi.registerEvent('onApplicationStopRequest', notification => {
+        console.log('Received an xcast stop request ' + JSON.stringify(notification));
         console.log('Received a stop request ' + JSON.stringify(notification));
 
         if (this.xcastApps(notification.applicationName)) {
           console.log('Stop ' + this.xcastApps(notification.applicationName));
           let applicationName = this.xcastApps(notification.applicationName);
 
-          if (applicationName === 'Amazon' && Storage.get('applicationType') === 'Amazon') {
+          if (applicationName === 'Amazon') {
             appApi.deactivateNativeApp('Amazon');
             Storage.set('applicationType', '');
-            appApi.setVisibility('ResidentApp', true);
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
             let params = {
               applicationName: notification.applicationName,
               state: 'stopped'
             };
             this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Netflix' && Storage.get('applicationType') === 'Netflix') {
-            appApi.deactivateNativeApp('Netflix');
-            Storage.set('applicationType', '');
-            appApi.setVisibility('ResidentApp', true);
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
+          } else if (applicationName === 'Netflix') {
+            appApi.getPluginStatus('Netflix').then(result => {
+              console.log(`netflix plugin status is :`, JSON.stringify(result));
+
+              if (result[0].state != 'deactivated') {
+                appApi.deactivateNativeApp('Netflix');
+                Storage.set('applicationType', '');
+                let params = {
+                  applicationName: notification.applicationName,
+                  state: 'stopped'
+                };
+                this.xcastApi.onApplicationStateChanged(params);
+              } else {
+                console.log(`Netflix : application is already in deactivated state, hence skipping deactivation`);
+              }
+            }).catch(err => {
+              console.error("Netflix : error while fetching plugin status", JSON.stringify(err));
             });
-            let params = {
-              applicationName: notification.applicationName,
-              state: 'stopped'
-            };
-            this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Cobalt' && Storage.get('applicationType') === 'Cobalt') {
+          } else if (applicationName === 'Cobalt') {
             appApi.deactivateCobalt();
             Storage.set('applicationType', '');
-            appApi.setVisibility('ResidentApp', true);
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success');
-            });
             let params = {
               applicationName: notification.applicationName,
               state: 'stopped'
@@ -39523,7 +39751,8 @@ var APP_accelerator_home_ui = (function () {
         }
       });
       this.xcastApi.registerEvent('onApplicationStateRequest', notification => {
-        //console.log('Received a state request ' + JSON.stringify(notification));
+        // console.log('onApplicationStateRequest : ');
+        // console.log(JSON.stringify(notification))
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -39533,10 +39762,17 @@ var APP_accelerator_home_ui = (function () {
           appApi.registerEvent('statechange', results => {
             if (results.callsign === applicationName && results.state === 'Activated') {
               params.state = 'running';
+              Storage.set("applicationType", results.callsign);
+            } else if (results.state === 'Deactivation') {
+              params.state = "stopped";
+            } else if (results.state = "Activation") ; else if (results.state = "Resumed") {
+              params.state = "running";
             } else if (results.state == 'suspended') {
               params.state = 'suspended';
             }
 
+            console.log(`STATE CHANGED : `);
+            console.log(results);
             this.xcastApi.onApplicationStateChanged(params);
             console.log('State of ' + this.xcastApps(notification.applicationName));
           });
@@ -39598,15 +39834,15 @@ var APP_accelerator_home_ui = (function () {
                 appApi.setVisibility('ResidentApp', true);
               } else if (Storage.get('applicationType') == 'Amazon') {
                 Storage.set('applicationType', '');
-                appApi.suspendPremiumApp('Amazon');
+                this.deactivateChildApp('Amazon');
                 appApi.setVisibility('ResidentApp', true);
               } else if (Storage.get('applicationType') == 'Netflix') {
                 Storage.set('applicationType', '');
-                appApi.suspendPremiumApp('Netflix');
+                this.deactivateChildApp('Netflix');
                 appApi.setVisibility('ResidentApp', true);
               } else if (Storage.get('applicationType') == 'Cobalt') {
                 Storage.set('applicationType', '');
-                appApi.suspendCobalt();
+                this.deactivateChildApp("Cobalt");
                 appApi.setVisibility('ResidentApp', true);
               } else {
                 if (!Router.isNavigating() && Router.getActiveHash() === 'player') {

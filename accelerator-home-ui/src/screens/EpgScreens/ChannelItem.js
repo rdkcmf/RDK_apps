@@ -41,9 +41,11 @@ export default class ChannelItem extends Lightning.Component {
         },
       },
       Item: {
-        w: 236,
-        h: 81,
-        texture: Lightning.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c),
+        w: 236-3,
+        h: 78,
+        color: 0xff272727,
+        rect:true,
+        // texture: Lightning.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c),
       },
     }
   }

@@ -26,7 +26,7 @@ import CellCursor from './CellCursor'
 import { CONFIG } from "../../Config/Config"
 import AppApi from '../../api/AppApi'
 
-let k = 6
+let k = 5
 
 export default class Epg extends Lightning.Component {
 
@@ -162,7 +162,7 @@ export default class Epg extends Lightning.Component {
             TimeBar: {
               // this is the gray bar
               x: k,
-              y: 81 - 9, // this should be the ShowLists "y" value - 9
+              y: 81 - 12, // this should be the ShowLists "y" value - 9, extra -3 to accomodate margin
               rect: true,
               h: 9,
               w: 0,
@@ -172,7 +172,7 @@ export default class Epg extends Lightning.Component {
             DownTriangle: {
               // this is the little triangle over the white bar.
               x: 4,
-              y: 81 - 9, // this should be the same as TimeBar's "y" Value
+              y: 81 - 12, // this should be the same as TimeBar's "y" Value, extra -3 to accomodate margin
               mountX: 0.5,
               mountY: 0.5,
               color: 0xffffffff,
@@ -233,16 +233,16 @@ export default class Epg extends Lightning.Component {
       "Amazon Prime": "Amazon",
     };
     const app = apps[appName];
-    this.appApi.getPluginStatus(app).then( () => {
+    this.appApi.getPluginStatus(app).then(() => {
       Storage.set("applicationType", app);
-      if(app==="Cobalt"){
-        this.appApi.launchCobalt("https://www.youtube.com/tv");
-      } else{
-        this.appApi.launchPremiumApp(app);
+      if (app === "Cobalt") {
+        this.appApi.launchCobalt("https://www.youtube.com/tv").catch(err => { });
+      } else {
+        this.appApi.launchPremiumApp(app).catch(() => { });
       }
       this.appApi.setVisibility("ResidentApp", false);
     }).catch(err => {
-      console.log(appName," NOT supported: ",JSON.stringify(err))
+      console.log(appName, " NOT supported: ", JSON.stringify(err))
     })
   }
 
@@ -255,7 +255,7 @@ export default class Epg extends Lightning.Component {
     if (channel.dvburi === "OTT") {
       this.launchApp(channel.shortname);// check mapping in launchApp method
     } else {
-      if(!Router.isNavigating()){
+      if (!Router.isNavigating()) {
         this.DTV.launchChannel(channel.dvburi).then(res => {
           console.log("launchChannel method successful: ", JSON.stringify(res));
           this.widgets.channeloverlay.$focusChannel(this.D - 11 + this.currentlyFocusedRow);// -11 = -8 + -3(3 to accomodate apps which won't be shown on the overlay)
@@ -263,7 +263,7 @@ export default class Epg extends Lightning.Component {
         }).catch(err => {
           console.log("launchChannel method failed: ", JSON.stringify(err));
         })
-      }else {
+      } else {
         console.error("Router is still navigating.")
       }
     }

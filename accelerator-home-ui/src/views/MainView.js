@@ -27,6 +27,7 @@ import HomeApi from '../api/HomeApi.js'
 import GracenoteItem from '../items/GracenoteItem.js'
 import { List } from '@lightningjs/ui'
 import HDMIApi from '../api/HDMIApi.js'
+import Network from '../api/NetworkApi.js'
 
 /** Class for main view component in home UI */
 export default class MainView extends Lightning.Component {
@@ -503,6 +504,8 @@ export default class MainView extends Lightning.Component {
   _firstEnable() {
     console.timeEnd('PerformanceTest')
     console.log('Mainview Screen timer end - ', new Date().toUTCString())
+    this.networkApi = new Network();
+    this.internetConnectivity = false;
   }
 
 
@@ -826,49 +829,54 @@ export default class MainView extends Lightning.Component {
           this.tag('Text1').text.fontStyle = 'normal'
           Router.focusWidget('Menu')
         }
-        _handleEnter() {
+        async _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           Storage.set('applicationType', applicationType);
-          this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.getPluginStatus('Cobalt')
-              .then(() => {
-                this.appApi.launchCobalt(this.uri);
-                this.appApi.setVisibility('ResidentApp', false);
-              })
-              .catch(err => {
-                console.log('Cobalt plugin error', err)
-                Storage.set('applicationType', '')
-              })
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
+            this.appApi.launchCobalt(this.uri).catch(err => { });
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
             this.appApi.launchWeb(this.uri)
               .then(() => {
                 this.appApi.setVisibility('ResidentApp', false);
                 let path = location.pathname.split('index.html')[0]
                 let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
                 let notification_url = location.origin + path + url
-                this.appApi.launchOverlay(notification_url, 'TextOverlay')
+                this.appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => { })
                 Registry.setTimeout(() => {
                   this.appApi.deactivateResidentApp('TextOverlay')
                   this.appApi.zorder('HtmlApp')
                   this.appApi.setVisibility('HtmlApp', true)
                 }, 9000)
+              }).catch(err => {
+                console.error("WebApp : error while launching a webapp :", JSON.stringify(err))
+                Storage.set("applicationType", "")
               })
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => {
+              console.error("error while launching lightning app")
+              Storage.set('applicationType', "");
+            });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => {
+              console.error("error while launching a native app")
+              Storage.set('applicationType', "");
+            });
             this.appApi.setVisibility('ResidentApp', false);
-
           } else if (Storage.get('applicationType') == 'Amazon') {
+
             console.log('Launching app')
             this.appApi.getPluginStatus('Amazon')
               .then(result => {
-                this.appApi.launchPremiumApp('Amazon');
-                this.appApi.setVisibility('ResidentApp', false);
+                this.appApi.launchPremiumApp('Amazon').catch(err => {
+                  console.error("Amazon : error while launching amazon : ", JSON.stringify(err))
+                });
               })
               .catch(err => {
                 console.log('Amazon plugin error', err)
@@ -877,18 +885,7 @@ export default class MainView extends Lightning.Component {
 
           } else if (Storage.get('applicationType') == 'Netflix') {
             console.log('Launching app')
-            this.appApi.getPluginStatus('Netflix')
-              .then(result => {
-                if (result[0].state === 'deactivated') {
-                  Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
-                }
-                this.appApi.launchPremiumApp('Netflix');
-              })
-              .catch(err => {
-                console.log('Netflix plugin error', err)
-                Storage.set('applicationType', '')
-              })
-
+            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { })
           } else {
             if (this.uri === 'USB') {
               this.usbApi.getMountedDevices().then(result => {
@@ -941,7 +938,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
 
@@ -949,16 +951,16 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -1002,8 +1004,13 @@ export default class MainView extends Lightning.Component {
           this._setState("ShowcaseApps");
           //}
         }
-        _handleEnter() {
-          if (Storage.get('ipAddress')) {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
+          if (this.internetConnectivity) {
             //this.fireAncestors('$goToPlayer')
             Router.navigate('player')
           }
@@ -1054,7 +1061,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
 
@@ -1062,16 +1074,16 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
           }
         }
@@ -1113,7 +1125,12 @@ export default class MainView extends Lightning.Component {
             Router.focusWidget('Menu')
           }
         }
-        _handleEnter() {
+        async _handleEnter() {
+          try {
+            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
+          } catch {
+            this.internetConnectivity = false
+          }
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
 
@@ -1121,16 +1138,16 @@ export default class MainView extends Lightning.Component {
           Storage.set('applicationType', applicationType);
           this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
           if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri);
+            this.appApi.launchCobalt(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            this.appApi.launchWeb(this.uri);
+          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
+            this.appApi.launchWeb(this.uri).catch(() => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            this.appApi.launchLightning(this.uri);
+          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
+            this.appApi.launchLightning(this.uri).catch(() => { });
             this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            this.appApi.launchNative(this.uri);
+          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
+            this.appApi.launchNative(this.uri).catch(err => { });
             this.appApi.setVisibility('ResidentApp', false);
           }
         }

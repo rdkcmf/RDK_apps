@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Storage } from "@lightningjs/sdk";
+import { Router, Storage } from "@lightningjs/sdk";
 import ThunderJS from "ThunderJS";
 import AppApi from "../api/AppApi";
 import Keymap from "../Config/Keymap";
@@ -64,21 +64,14 @@ export function keyIntercept() {
             console.log('Error', err);
         })
 
-
-
         .then(result => {
             thunder.on(rdkshellCallsign, 'onSuspended', notification => {
                 if (notification) {
                     console.log('onSuspended notification: ' + notification.client);
                     if (Storage.get('applicationType') == notification.client) {
                         Storage.set('applicationType', '');
-                        appApi.setVisibility('ResidentApp', true);
-                        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-                            console.log('ResidentApp moveToFront Success');
-                        });
-                        thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' }).then(result => {
-                            console.log('ResidentApp setFocus Success');
-                        });
+                        appApi.setVisibility("ResidentApp",true)
+                        // getclients and storage.set to the second client
                     }
                 }
             });

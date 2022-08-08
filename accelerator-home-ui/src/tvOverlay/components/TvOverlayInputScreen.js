@@ -139,7 +139,12 @@ export default class TvOverlayInputScreen extends Lightning.Component {
   }
 
   _focus() {
+    this.fireAncestors('$focusOverlay');
     this.$getInputs(); //fetch the input modes and refresh the list, in case input status changes
+  }
+
+  _unfocus() {
+    this.fireAncestors('$unfocusOverlay');
   }
 
   _getFocused() {
@@ -147,16 +152,20 @@ export default class TvOverlayInputScreen extends Lightning.Component {
   }
 
   _handleDown() {
+    this.fireAncestors('$resetTimeout');
     this.tag("List").setNext();
   }
 
   _handleUp() {
+    this.fireAncestors('$resetTimeout');
     this.tag("List").setPrevious();
   }
   _handleLeft() {
+    this.fireAncestors('$resetTimeout');
     // do nothing
   }
   _handleRight() {
+    this.fireAncestors('$resetTimeout');
     // do nothing
   }
 }

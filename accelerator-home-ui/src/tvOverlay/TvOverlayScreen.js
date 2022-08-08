@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Storage, Utils, Router } from "@lightningjs/sdk";
+import { Lightning, Storage, Utils, Router, Registry } from "@lightningjs/sdk";
 import AppApi from "../api/AppApi";
 import { CONFIG } from "../Config/Config";
 import ThunderJS from "ThunderJS";
@@ -76,6 +76,8 @@ export default class TvOverlayScreen extends Lightning.Component {
 
   _firstEnable() {
     this.appApi = new AppApi();
+    this.overlayTimeout = null;
+    this.timeoutDuration = 30000;
     this._sidePanelAnimation = this.tag("OverlaySettingsScreen").animation({
       delay: 0.3,
       duration: 0.3,
@@ -91,6 +93,27 @@ export default class TvOverlayScreen extends Lightning.Component {
   }
 
   _focus() {}
+
+  $focusOverlay(){
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
+  }
+
+  $unfocusOverlay(){
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+  }
+
+  $resetTimeout() {
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
+  }
+
+  $closeOverlay() {
+    this._handleBack();
+  }
 
   _handleBack() {
     let currentApp = Storage.get("applicationType");

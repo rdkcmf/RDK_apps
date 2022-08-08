@@ -45,7 +45,7 @@ export default class CellCursor extends Lightning.Component {
     }
 
     patchCursor(x, y, w) {
-        this.tag("UpperLine").patch({ smooth: { x: x, y: y, w: w } });
-        this.tag("LowerLine").patch({ smooth: { x: x, y: y + 79, w: w } });
+        this.tag("UpperLine").patch({ smooth: { x: x, y: y, w: w-3 } });
+        this.tag("LowerLine").patch({ smooth: { x: x, y: y + 79, w: w-3 } });
     }
 }

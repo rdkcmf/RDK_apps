@@ -260,6 +260,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
     }
 
     _focus() {
+
         this._setState('DeviceInformationScreen')
         this.appApi.getSerialNumber().then(result => {
             this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
@@ -317,8 +318,56 @@ export default class DeviceInformationScreen extends Lightning.Component {
             this.tag('ChipSet.Value').text.text = `${result.chipset}`
             // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
         })
-        this.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`
+
+        let self = this;
+        if (Storage.get('Netflix_ESN')) {
+            self.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`
+        }
+        else {
+            self.appApi.getPluginStatus('Netflix')
+                .then(result => {
+                    let sel = self;
+                    console.log(`Netflix : plugin status : `, JSON.stringify(result));
+                    if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
+                        sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
+                            console.log("Netflix : netflix launch for esn value in suspend mode returns : ", JSON.stringify(res));
+                            let se = sel;
+                            se.appApi.getNetflixESN()
+                                .then(res => {
+                                    Storage.set('Netflix_ESN', res)
+                                    console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
+                                    se.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`
+                                })
+                                .catch(err => {
+                                    console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err))
+                                })
+                        }).catch(err => {
+                            console.error(`Netflix : error while launching netflix in suspendMode : `, JSON.stringify(err))
+                        })
+                    }
+                    else {
+                        self.appApi.getNetflixESN()
+                            .then(res => {
+                                Storage.set('Netflix_ESN', res)
+                                console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
+                                self.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`;
+                            })
+                            .catch(err => {
+                                console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err))
+                            })
+                    }
+                }).catch(err => {
+                    console.error(`Netflix : error while getting netflix plugin status ie. `, JSON.stringify(err))
+                })
+        }
+
+
         this.appApi.registerChangeLocation()
+    }
+
+    set netflixESN(v) {
+        console.log(`setting netflix ESN value to ${v}`);
+        this.tag('AppVersions.Value').text.text = v;
     }
 
     _handleBack() {

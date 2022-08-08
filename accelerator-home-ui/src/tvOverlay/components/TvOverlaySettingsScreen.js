@@ -105,8 +105,13 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   }
 
   _focus() {
+    this.fireAncestors('$focusOverlay');
     console.log("index: ", this.tag("List").index);
     // this.tag("List").setIndex(0);//not necessary
+  }
+
+  _unfocus() {
+    this.fireAncestors('$unfocusOverlay');
   }
 
   _getFocused() {
@@ -114,6 +119,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   }
 
   _handleDown() {
+    this.fireAncestors('$resetTimeout');
     if (this.tag("List").index < this.tag("List").length - 1) {
       //to prevent circular scrolling
       if (this.tag("List").index === 1) {
@@ -130,6 +136,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
   }
 
   _handleUp() {
+    this.fireAncestors('$resetTimeout');
     if (this.tag("List").index > 0) {
       //to prevent circular scrolling
       this.tag("List").setPrevious();

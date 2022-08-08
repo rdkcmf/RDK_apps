@@ -17,6 +17,7 @@
  * limitations under the License.
  **/
 import ThunderJS from 'ThunderJS';
+import { Storage } from '@lightningjs/sdk';
 
 var activatedWeb = false
 var activatedLightning = false
@@ -414,23 +415,22 @@ export default class AppApi {
             type: childCallsign,
             uri: url,
           })
-          .then(() => {
-            thunder.call('org.rdk.RDKShell', 'moveToFront', {
-              client: childCallsign,
-            })
-            thunder.call('org.rdk.RDKShell', 'setFocus', {
-              client: childCallsign,
-            })
-              .then(() => {
-                resolve(true)
-              })
+          .then((res) => {
+
+            console.log(`WebApp : webapp launch resulted in : `, JSON.stringify(res));
+            resolve(true)
+
           })
-          .catch(err => { })
+          .catch(err => {
+            console.error("WebApp : error while launching web : ", JSON.stringify(err))
+            reject(false)
+          })
       } else {
         thunder.call('org.rdk.RDKShell', 'moveToFront', {
           client: childCallsign,
         })
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
+        resolve(true)
       }
       webUrl = url
       activatedWeb = true
@@ -443,31 +443,34 @@ export default class AppApi {
    * @param {String} url url of app.
    */
   launchLightning(url) {
-    const childCallsign = 'LightningApp'
-    if (lightningUrl != url) {
-      thunder
-        .call('org.rdk.RDKShell', 'launch', {
-          callsign: 'Lightning',
-          type: childCallsign,
-          uri: url,
-        })
-        .then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: childCallsign,
+    return new Promise((resolve, reject) => {
+      const childCallsign = 'LightningApp'
+      if (lightningUrl != url) {
+        thunder
+          .call('org.rdk.RDKShell', 'launch', {
+            callsign: 'Lightning',
+            type: childCallsign,
+            uri: url,
           })
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: childCallsign,
+          .then((res) => {
+            console.log(`Lightning : launch lightning results in `, JSON.stringify(res));
+            resolve(true)
           })
+          .catch(err => {
+            console.error("Lightning : error while launching lightning : ", JSON.stringify(err))
+            reject(false)
+          })
+      } else {
+        thunder.call('org.rdk.RDKShell', 'moveToFront', {
+          client: childCallsign,
         })
-        .catch(err => { })
-    } else {
-      thunder.call('org.rdk.RDKShell', 'moveToFront', {
-        client: childCallsign,
-      })
-      thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
-    }
-    lightningUrl = url
-    activatedLightning = true
+        thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
+        resolve(true)
+      }
+      lightningUrl = url
+      activatedLightning = true
+    })
+
   }
 
   /**
@@ -475,41 +478,109 @@ export default class AppApi {
    * @param {String} url url of app.
    */
   launchCobalt(url) {
-    const childCallsign = 'Cobalt'
-    thunder
-      .call('org.rdk.RDKShell', 'launch', {
-        callsign: childCallsign,
-        type: childCallsign
-      })
-      .then(() => {
-        thunder.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign,
+    return new Promise((resolve, reject) => {
+      const childCallsign = 'Cobalt'
+      thunder
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: childCallsign
         })
-        thunder.call('Cobalt', 'deeplink', url)
-        thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
-      })
-      .catch(err => { })
-    activatedCobalt = true
+        .then((res) => {
+          if (url) {
+            thunder.call('Cobalt', 'deeplink', url)
+          }
+          console.log("Cobalt : launch cobalt results in ", JSON.stringify(res))
+          resolve(true)
+        })
+        .catch(err => {
+          console.error("Cobalt : error while launching cobalt : ", JSON.stringify(err))
+          reject(err)
+        })
+      activatedCobalt = true
+    })
+
+  }
+
+
+  /*  
+   *Function to launch apps in hidden mode
+   */
+  launchPremiumAppInSuspendMode(childCallsign) {
+
+    return new Promise((resolve, reject) => {
+
+      thunder
+        .call("org.rdk.RDKShell", "launch", {
+          callsign: childCallsign,
+          type: childCallsign,
+          suspend: true,
+          visible: false,
+          focused: false,
+        })
+        .then((res) => {
+
+          if (childCallsign == "Netflix") {
+            console.log(`Netflix : launch netflix results in :`, res);
+          }
+          else {
+            console.log(`Amazon : launch amazon results in :`, res);
+          }
+          resolve(true)
+
+        })
+        .catch(err => {
+
+          if (childCallsign == "Netflix") {
+            console.error(`Netflix : error while launching netflix :`, err);
+          }
+          else {
+            console.log(`Amazon : error while launching amazon :`, err);
+          }
+          reject(false)
+
+        });
+
+
+    })
+
   }
 
   /**
    * Function to launch Netflix/Amazon Prime app.
    */
   launchPremiumApp(childCallsign) {
-
-    thunder
-      .call("org.rdk.RDKShell", "launch", {
-        callsign: childCallsign,
-        type: childCallsign
-      })
-      .then(() => {
-        thunder.call("org.rdk.RDKShell", "moveToFront", {
-          client: childCallsign
+    return new Promise((resolve, reject) => {
+      thunder
+        .call("org.rdk.RDKShell", "launch", {
+          callsign: childCallsign,
+          type: childCallsign,
+          visible: true,
+          focused: true
         })
-        thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign });
-      })
-      .catch(err => { });
-    childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
+        .then((res) => {
+          if (childCallsign == "Netflix") {
+            console.log(`Netflix : launch netflix results in :`, res);
+          }
+          else {
+            console.log(`Amazon : launch amazon results in :`, res);
+          }
+          this.setVisibility("Amazon",true)
+          Storage.set("applicationType","Amazon")
+          console.log(`the current application Type : `,Storage.get("applicationType"));
+          resolve(true)
+        })
+        .catch(err => {
+          if (childCallsign == "Netflix") {
+            console.error(`Netflix : error while launching netflix :`, err);
+          }
+          else {
+            console.log(`Amazon : error while launching amazon :`, err);
+          }
+          reject(false)
+        });
+      childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
+    })
+
   }
 
   launchPremiumAppURL(childCallsign, url) {
@@ -535,22 +606,24 @@ export default class AppApi {
    * @param {String} url url of app.
    */
   launchResident(url, client) {
-    const childCallsign = client
-    thunder
-      .call('org.rdk.RDKShell', 'launch', {
-        callsign: childCallsign,
-        type: 'ResidentApp',
-        uri: url,
-      })
-      .then(() => {
-        thunder.call('org.rdk.RDKShell', 'moveToFront', {
-          client: childCallsign,
+    return new Promise((resolve, reject) => {
+      const childCallsign = client
+      thunder
+        .call('org.rdk.RDKShell', 'launch', {
+          callsign: childCallsign,
+          type: 'ResidentApp',
+          uri: url,
         })
-        thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
-      })
-      .catch(err => {
-        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
-      })
+        .then((res) => {
+          console.log(`ResidentApp :  launching resident app resulted in : `, JSON.stringify(res));
+          resolve(true)
+        })
+        .catch(err => {
+          console.error('ResidentApp : error while launching residentApp : ' + JSON.stringify(err))
+          reject(false)
+        })
+    })
+
   }
 
   launchOverlay(url, client) {
@@ -566,37 +639,17 @@ export default class AppApi {
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign,
           })
+          console.log(`Overlay : launched overlay : `, res);
+          resolve(res)
+        })
+        .catch(err => {
+          console.error("Overlay : error while launching the overlay", err)
+          reject(err)
         })
     })
   }
 
-  launchforeground() {
-    const childCallsign = 'foreground'
-    let url = location.href.split(location.hash)[0].split('index.html')[0]
-    let notification_url = url + "static/notification/index.html";
-    if (location.host.includes('127.0.0.1')) {
-      notification_url = url + "lxresui/static/notification/index.html";
-    }
 
-    console.log(notification_url, '|', location.host, location)
-    thunder.call('org.rdk.RDKShell', 'launch', {
-      callsign: childCallsign,
-      type: 'LightningApp',
-      uri: notification_url,
-    }).then(() => {
-      this.activatedForeground = true
-      thunder.call('org.rdk.RDKShell', 'setFocus', {
-        client: 'ResidentApp',
-      })
-      thunder.call('org.rdk.RDKShell', 'setVisibility', {
-        client: 'foreground',
-        visible: false,
-      })
-    }).catch(err => { })
-      .catch(err => {
-        console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
-      })
-  }
   /**
    * Function to suspend html app.
    */
@@ -613,19 +666,21 @@ export default class AppApi {
     thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Lightning' })
   }
 
-  /**
-   * Function to suspend cobalt app.
-   */
-  suspendCobalt() {
-    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: 'Cobalt' })
-  }
+
 
 
   /**
    * Function to suspend Netflix/Amazon Prime app.
    */
   suspendPremiumApp(appName) {
-    thunder.call('org.rdk.RDKShell', 'suspend', { callsign: appName })
+    return new Promise((resolve, reject) => {
+      thunder.call('org.rdk.RDKShell', 'suspend', { callsign: appName }).then(res => {
+        resolve(true);
+      })
+        .catch(err => {
+          resolve(false)
+        })
+    })
   }
 
   /**
@@ -777,7 +832,7 @@ export default class AppApi {
         thunder.call(plugin, method, res).then((resp) => {
           resolve(true);
         }).catch((err) => {
-          resolve(true);
+          reject(err);
         });
       }).catch((err) => {
         reject(err);
@@ -811,33 +866,28 @@ export default class AppApi {
    * @param {String} url url of app.
    */
   launchNative(url) {
-    const childCallsign = 'testApp'
-    if (nativeUrl != url) {
+    return new Promise((resolve, reject) => {
+
+      const childCallsign = 'testApp'
       thunder
         .call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
         })
-        .then(() => {
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: childCallsign,
-          })
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: childCallsign,
-          })
+        .then((res) => {
+          console.log("Native : launching native app resulted in : ", JSON.stringify(res))
+
+          resolve(true)
         })
         .catch(err => {
-          console.log('org.rdk.RDKShell launch ' + JSON.stringify(err))
+          console.error('org.rdk.RDKShell launch ' + JSON.stringify(err))
+          reject(err)
         })
-    } else {
-      thunder.call('org.rdk.RDKShell', 'moveToFront', {
-        client: childCallsign,
-      })
-      thunder.call('org.rdk.RDKShell', 'setFocus', { client: childCallsign })
-    }
-    nativeUrl = url
-    activatedNative = true
+      nativeUrl = url
+      activatedNative = true
+
+    })
   }
 
 
@@ -883,11 +933,16 @@ export default class AppApi {
     return new Promise((resolve, reject) => {
       thunder.call('org.rdk.RDKShell', 'launch', { callsign: 'org.rdk.DisplaySettings' })
         .then(result => {
-          console.log('Successfully emabled DisplaySettings Service')
+
+          console.log('Successfully enabled DisplaySettings Service')
           resolve(result)
+
         })
         .catch(err => {
-          console.log('Failed to enable DisplaySettings Service', JSON.stringify(err))
+
+          console.error('Failed to enable DisplaySettings Service', JSON.stringify(err))
+          reject(err)
+
         })
     })
   }

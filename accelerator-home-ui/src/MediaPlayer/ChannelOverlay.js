@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Lightning, Registry, Router } from '@lightningjs/sdk'
 import DTVApi from '../api/DTVApi'
 import ChannelItem from './ChannelItem'
 
@@ -54,6 +54,8 @@ export default class ChannelOverlay extends Lightning.Component {
   _firstEnable(){
     this.dtvApi = new DTVApi();
     this.options = [];
+    this.overlayTimeout = null;
+    this.timeoutDuration = 10000;
     this.dtvApi.serviceList().then(channels => {
       const [amazon,netflix,youtube, ...others] = channels;//to remove apps from the channel overlay
       this.options = others;
@@ -76,12 +78,23 @@ export default class ChannelOverlay extends Lightning.Component {
     });
   }
   _focus() {
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
     this.$focusChannel(this.activeChannelIdx)
     this._overlayAnimation.start();
   }
 
   _unfocus() {
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
     this._overlayAnimation.stop();
+  }
+
+  resetTimeout() {
+    this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
+    this.overlayTimeout = Registry.setTimeout(() => {
+      this._handleBack();
+    },this.timeoutDuration)
   }
 
   $focusChannel(index) {
@@ -94,10 +107,12 @@ export default class ChannelOverlay extends Lightning.Component {
   }
 
   _handleDown() {
+    this.resetTimeout()
     this.tag('Channels').setNext()
   }
 
   _handleUp() {
+    this.resetTimeout()
     this.tag('Channels').setPrevious()
   }
 
@@ -105,7 +120,16 @@ export default class ChannelOverlay extends Lightning.Component {
     Router.focusPage();
   }
 
+  _handleLeft() {
+    this._handleBack();
+  }
+
+  _handleRight() {
+    this._handleBack();
+  }
+
   _handleEnter() {
+    this.resetTimeout()
     let focusedChannelIdx = this.tag("Channels").index;
     if (focusedChannelIdx !== this.activeChannelIdx) {
       this.dtvApi.exitChannel().then( res => {

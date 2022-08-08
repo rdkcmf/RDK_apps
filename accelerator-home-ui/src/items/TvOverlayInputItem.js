@@ -127,6 +127,7 @@ export default class TvOverlayInputItem extends Lightning.Component {
   }
 
   _handleEnter() {
+    this.fireAncestors('$resetTimeout');
     if (!this.tag("Item.Tick").visible) {
       //to start the loader
       this.loadingAnimation.start();
