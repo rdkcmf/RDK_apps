@@ -70,7 +70,11 @@ export function keyIntercept() {
                     console.log('onSuspended notification: ' + notification.client);
                     if (Storage.get('applicationType') == notification.client) {
                         Storage.set('applicationType', '');
-                        appApi.setVisibility("ResidentApp",true)
+                        appApi.setVisibility("ResidentApp", true)
+                        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+                        });
+
                         // getclients and storage.set to the second client
                     }
                 }

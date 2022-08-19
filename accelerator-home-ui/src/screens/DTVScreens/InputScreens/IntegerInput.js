@@ -68,7 +68,7 @@ export default class IntegerInput extends Lightning.Component {
           y: 50,
           mountY: 0.5,
           text: {
-            text: "Enter the value and click Done",
+            text: Language.translate("Enter the value and click Done"),
             textColor: COLORS.titleColor,
             fontFace: CONFIG.language.font,
             fontSize: 25,
@@ -97,7 +97,7 @@ export default class IntegerInput extends Lightning.Component {
   _focus() {
     this._setState("InputBox");
     this.tag("Content").text.text =
-      this.prevVal === "" ? "Enter the value and click Done" : this.prevVal;
+      this.prevVal === "" ? Language.translate("Enter the value and click Done") : this.prevVal;
     this.inputValue = this.prevVal;
     console.log("presetValues: ",this.presetValues)
     this.presetValuesLength = 0;

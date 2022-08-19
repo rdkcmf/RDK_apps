@@ -1,4 +1,4 @@
-import { Lightning } from "@lightningjs/sdk";
+import { Language, Lightning } from "@lightningjs/sdk";
 import { CONFIG } from "../Config/Config";
 
 export default class OptionsItem extends Lightning.Component {
@@ -9,7 +9,11 @@ export default class OptionsItem extends Lightning.Component {
                     text: {
                         text: '',
                         fontFace: CONFIG.language.font,
-                        fontSize: 35
+                        fontSize: 35,
+                        wordWrap: false,
+                        wordWrapWidth: 230,
+                        fontStyle: "normal",
+                        textOverflow: "ellipsis",
                     },
                 },
                 Bar: {
@@ -31,7 +35,7 @@ export default class OptionsItem extends Lightning.Component {
     }
 
     static get width() {
-        return 200
+        return 250
     }
 
     _handleEnter() {
@@ -44,6 +48,9 @@ export default class OptionsItem extends Lightning.Component {
     }
 
     set element(item) {
-        this.tag('Text').text.text = item
+        this.tag('Text').text.text = Language.translate(item);
+        if(this.tag('Text').text.text.length > 11){
+            this.tag('Text').text.fontSize = 25 
+        }
     }
 }

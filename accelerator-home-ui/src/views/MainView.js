@@ -370,14 +370,6 @@ export default class MainView extends Lightning.Component {
     this.appItems = this.tempRow
     this.usbApps = usbAppsArr
 
-    //for testing purpose uncomment to see input sample modes on any device
-    // this.inputSelect=true
-    // if (this.inputSelect) {
-    //   this.inputItems = [{id:"HDMI1"},{id:"HDMI2"},{id:"HDMI3"},{id:"HDMI4"}]
-    // }
-    //----------------
-
-    // if (this.inputSelect) {
     this.hdmiApi.activate()
       .then(() => {
         this.hdmiApi.registerEvent('onDevicesChanged', notification => {
@@ -409,7 +401,7 @@ export default class MainView extends Lightning.Component {
         console.log('HDMIInput Plugin not activated', err)
       })
     //get the available input methods from the api
-    // }
+
 
     // for USB event
     const registerListener = () => {
@@ -433,8 +425,7 @@ export default class MainView extends Lightning.Component {
 
           if (currentPage === 'menu') { //refresh page to hide or show usb icon
             console.log('page refreshed on unplug/plug')
-            // Router.navigate('menu');
-            // document.location.reload()
+
           }
 
           if (!notification.mounted) { //if mounted is false
@@ -470,6 +461,8 @@ export default class MainView extends Lightning.Component {
   }
 
   _firstActive() {
+
+
     if (!Storage.get('UsbMedia')) {
       this.usbApi.activate().then(res => {
         Storage.set('UsbMedia', 'ON')
@@ -488,10 +481,7 @@ export default class MainView extends Lightning.Component {
         console.error(`error while disabling the usb plugin = ${err}`)
       })
     }
-  }
 
-
-  _focus() {
     if (this.gracenote) {
       this._setState("Gracenote")
     } else if (this.inputSelect) {
@@ -499,7 +489,11 @@ export default class MainView extends Lightning.Component {
     } else {
       this._setState("AppList.0")
     }
+
   }
+
+
+  _focus() { this._setState(this.state) }
 
   _firstEnable() {
     console.timeEnd('PerformanceTest')

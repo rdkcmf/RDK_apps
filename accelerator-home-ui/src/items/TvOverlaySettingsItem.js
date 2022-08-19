@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Utils } from "@lightningjs/sdk";
+import { Lightning, Utils, Language } from "@lightningjs/sdk";
 import PictureSettingsApi from "../api/PictureSettingsApi";
 import { CONFIG } from "../Config/Config";
 
@@ -135,7 +135,7 @@ export default class TvOverlaySettingsItem extends Lightning.Component {
   }
 
   updateValue(value) {
-    this.tag("Title").text.text = `${this._item.name}: ${value}`;
+    this.tag("Title").text.text = `${Language.translate(this._item.name)}: ${value}`;
   }
 
   formatItemName(name) {

@@ -537,7 +537,7 @@ export default class Epg extends Lightning.Component {
                 traversedChannels++;
                 channels[i].shows = [
                   {
-                    name: ' ',
+                    name: Language.translate("click to launch") + ` ${channel.shortname}`,
                     starttime: 0,
                     duration: e,
                     eventid: 0,

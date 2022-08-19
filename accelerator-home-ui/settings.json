@@ -12,9 +12,6 @@
     "path": "./static",
     "log": true,
     "showVersion": false,
-    "version": "3.7",
-    "router": {
-      "lazyCreate": true
-    }
+    "version": "3.7"
   }
 }

@@ -50,7 +50,7 @@ export default class AppStore extends Lightning.Component {
     _firstEnable() {
         let apps = homeApi.getAllApps()
         apps.shift()
-        const options = ['My Apps', 'App Catalog', 'ManageApps']
+        const options = ['My Apps', 'App Catalog', 'Manage Apps']
         this.tag('Apps').add(apps.map((element) => {
             return { h: AppStoreItem.height + 90, w: AppStoreItem.width, info: element }
         }));

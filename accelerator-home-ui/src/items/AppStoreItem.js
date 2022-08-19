@@ -1,4 +1,4 @@
-import { Lightning, Utils } from "@lightningjs/sdk";
+import { Lightning, Utils, Language } from "@lightningjs/sdk";
 import { CONFIG } from "../Config/Config";
 import { ProgressBar } from '@lightningjs/ui-components'
 
@@ -29,7 +29,7 @@ export default class AppStoreItem extends Lightning.Component {
                     x: this.width / 2,
                     y: this.height / 2,
                     text: {
-                        text: 'Installing',
+                        text: Language.translate('Installing'),
                         fontFace: CONFIG.language.font,
                         fontSize: 20,
                     },

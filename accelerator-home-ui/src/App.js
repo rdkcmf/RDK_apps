@@ -107,7 +107,7 @@ export default class App extends Router.App {
         this.deactivateChildApp(Storage.get('applicationType'));
         Storage.set('applicationType', '');
         if (!Router.isNavigating()) {
-         Router.navigate("menu")
+          Router.navigate("menu")
         }
 
         appApi.setVisibility('ResidentApp', true);
@@ -339,11 +339,30 @@ export default class App extends Router.App {
       }
     })
 
+
+    thunder.on('org.rdk.RDKShell', 'onApplicationDisconnected', notification => {
+      console.log("onApplicationDisconnectedNotification: ", JSON.stringify(notification))
+      if (notification.client === "lightning" || notification.client === "htmlapp") {
+        console.log("lightning/webapp app disconnected | bringing resident app in focus")
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+          console.log("navigating to homescreen")
+          Router.navigate("menu")
+        }
+        Storage.set('applicationType', '');
+        appApi.setVisibility('ResidentApp', true);
+        appApi.setFocus("ResidentApp");
+
+        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+          console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+        });
+      }
+    })
+
     thunder.on('Controller', 'statechange', notification => {
       // get plugin status
       console.log(`STATECHANGE 2 : `)
       console.log(JSON.stringify(notification))
-      if((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') &&  notification.state == 'Deactivation'){
+      if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
         console.log(`${notification.callsign}'s ${notification.state} request`)
         if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")
@@ -351,11 +370,10 @@ export default class App extends Router.App {
         }
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
-
+        thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
           console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
         });
-
       }
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivated') {
 
@@ -365,7 +383,7 @@ export default class App extends Router.App {
         }
         Storage.set('applicationType', '');
         appApi.setVisibility('ResidentApp', true);
-
+        thunder.call('org.rdk.RDKShell', 'setFocus', { client: 'ResidentApp' })
         thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
           console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
         });
@@ -389,7 +407,7 @@ export default class App extends Router.App {
           thunder.on('Netflix', 'notifyeventchange', notification => {
             console.log(`NETFLIX : notifyEventChange notification = `, JSON.stringify(notification));
             if (notification.EventName === "rendered") {
-              Router.navigate('menu') 
+              Router.navigate('menu')
               appApi.visibile('ResidentApp', false);
             }
             if (notification.EventName === "requestsuspend") {
@@ -438,9 +456,11 @@ export default class App extends Router.App {
         appApi.suspendPremiumApp("Cobalt").then(res => {
           if (res) {
             let params = { applicationName: "YouTube", state: 'suspended' };
-            this.xcastApi.onApplicationStateChanged(params);
+            this.xcastApi.onApplicationStateChanged(params).catch(err => { console.error(err) });
           }
           console.log(`Cobalt : suspend cobalt request`);
+        }).catch((err) => {
+          console.error(err)
         });
         break;
       case 'Lightning':
@@ -485,46 +505,46 @@ export default class App extends Router.App {
 
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
 
-              Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
-              if (url) {
-                appApi.configureApplication('Netflix', url).then(() => {
-                  appApi.launchPremiumApp("Netflix").then(res => { resolve(true) }).catch(err => { reject(false) });// ie. org.rdk.RDKShell.launch
-                 }).catch(err=>{
-                  console.error("Netflix : error while fetching configuration data : ", JSON.stringify(err))
-                  reject(err)
-
-                })// gets configuration object and sets configuration
-
-              }
-              else{
+            Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') })
+            if (url) {
+              appApi.configureApplication('Netflix', url).then(() => {
                 appApi.launchPremiumApp("Netflix").then(res => { resolve(true) }).catch(err => { reject(false) });// ie. org.rdk.RDKShell.launch
-              }
+              }).catch(err => {
+                console.error("Netflix : error while fetching configuration data : ", JSON.stringify(err))
+                reject(err)
+
+              })// gets configuration object and sets configuration
 
             }
             else {
-              /* Not in deactivated; could be suspended */
-              if(url){
-                appApi.launchPremiumApp("Netflix").then(res => {
-                  thunder.call("Netflix", "systemcommand",
-                    { "command": url })
-                    .then(res => {
-
-                    }).catch(err => {
-                      console.error("Netflix : error while sending systemcommand : ", JSON.stringify(err))
-                      reject(false);
-                    });
-                  resolve(true)
-                }).catch(err => { reject(false) });// ie. org.rdk.RDKShell.launch
-              }
-              else {
-                appApi.launchPremiumApp("Netflix").then(res => {
-                  console.log(`Netflix : launch premium app resulted in `,JSON.stringify(res));
-                  resolve(true)
-                });
-              }
-              
+              appApi.launchPremiumApp("Netflix").then(res => { resolve(true) }).catch(err => { reject(false) });// ie. org.rdk.RDKShell.launch
             }
-          })
+
+          }
+          else {
+            /* Not in deactivated; could be suspended */
+            if (url) {
+              appApi.launchPremiumApp("Netflix").then(res => {
+                thunder.call("Netflix", "systemcommand",
+                  { "command": url })
+                  .then(res => {
+
+                  }).catch(err => {
+                    console.error("Netflix : error while sending systemcommand : ", JSON.stringify(err))
+                    reject(false);
+                  });
+                resolve(true)
+              }).catch(err => { reject(false) });// ie. org.rdk.RDKShell.launch
+            }
+            else {
+              appApi.launchPremiumApp("Netflix").then(res => {
+                console.log(`Netflix : launch premium app resulted in `, JSON.stringify(res));
+                resolve(true)
+              });
+            }
+
+          }
+        })
         .catch(err => {
           console.log('Netflix plugin error', err)
           Storage.set('applicationType', '')

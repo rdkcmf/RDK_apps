@@ -1,9 +1,9 @@
 /**
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
- * CLI version: 2.8.0
+ * CLI version: 2.8.1
  * 
- * Generated: Thu, 18 Aug 2022 14:27:38 GMT
+ * Generated: Wed, 24 Aug 2022 12:55:49 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -39,7 +39,9 @@ var APP_accelerator_home_ui = (function () {
     subscribers[key] && subscribers[key].forEach(subscriber => subscriber(value));
   };
 
-  const dotGrab = (obj = {}, key) => {
+  const dotGrab = function () {
+    let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    let key = arguments.length > 1 ? arguments[1] : undefined;
     if (obj === null) return undefined;
     const keys = key.split('.');
 
@@ -51,7 +53,8 @@ var APP_accelerator_home_ui = (function () {
   };
 
   var Settings = {
-    get(type, key, fallback = undefined) {
+    get(type, key) {
+      let fallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
       const val = dotGrab(settings[type], key);
       return val !== undefined ? val : fallback;
     },
@@ -138,7 +141,9 @@ var APP_accelerator_home_ui = (function () {
 
   };
 
-  var executeAsPromise = ((method, args = null, context = null) => {
+  var executeAsPromise = (function (method) {
+    let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    let context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     let result;
 
     if (method && typeof method === 'function') {
@@ -202,7 +207,8 @@ var APP_accelerator_home_ui = (function () {
     'volumechange', 'waiting', 'seeking', 'seeked']
   }; // error metric function (added to each category)
 
-  const errorMetric = (type, message, code, visible, params = {}) => {
+  const errorMetric = function (type, message, code, visible) {
+    let params = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
     params = {
       params,
       ...{
@@ -214,9 +220,11 @@ var APP_accelerator_home_ui = (function () {
     sendMetric(type, 'error', params);
   };
 
-  const Metric = (type, events, options = {}) => {
+  const Metric = function (type, events) {
+    let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return events.reduce((obj, event) => {
-      obj[event] = (name, params = {}) => {
+      obj[event] = function (name) {
+        let params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         params = { ...options,
           ...(name ? {
             name
@@ -320,7 +328,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var autoSetupMixin = ((sourceObject, setup = () => {}) => {
+  var autoSetupMixin = (function (sourceObject) {
+    let setup = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : () => {};
     let ready = false;
 
     const doSetup = () => {
@@ -412,7 +421,8 @@ var APP_accelerator_home_ui = (function () {
       return basePath + relPath;
     },
 
-    proxyUrl(url, options = {}) {
+    proxyUrl(url) {
+      let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       return proxyUrl ? proxyUrl + '?' + makeQueryString(url, options) : url;
     },
 
@@ -437,7 +447,9 @@ var APP_accelerator_home_ui = (function () {
 
     return url;
   };
-  const makeFullStaticPath = (pathname = '/', path) => {
+  const makeFullStaticPath = function () {
+    let pathname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '/';
+    let path = arguments.length > 1 ? arguments[1] : undefined;
     // ensure path has traling slash
     path = path.charAt(path.length - 1) !== '/' ? path + '/' : path; // if path is URL, we assume it's already the full static path, so we just return it
 
@@ -464,7 +476,9 @@ var APP_accelerator_home_ui = (function () {
     return parts.join('/');
   };
 
-  const makeQueryString = (url, options = {}, type = 'url') => {
+  const makeQueryString = function (url) {
+    let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'url';
     // add operator as an option
     options.operator = 'metrological'; // Todo: make this configurable (via url?)
     // add type (= url or qr) as an option, with url as the value
@@ -752,7 +766,8 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    updateSettings(settings = {}) {
+    updateSettings() {
+      let settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       // The Component that 'consumes' the media player.
       this._consumer = settings.consumer;
 
@@ -820,10 +835,11 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    open(url, settings = {
-      hide: false,
-      videoPosition: null
-    }) {
+    open(url) {
+      let settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
+        hide: false,
+        videoPosition: null
+      };
       // prep the media url to play depending on platform (mediaPlayerplugin)
       url = mediaUrl$1(url);
       this._metrics = Metrics$1.media(url);
@@ -920,7 +936,9 @@ var APP_accelerator_home_ui = (function () {
       return Promise.resolve(this.videoEl.duration);
     }
 
-    seek(time, absolute = false) {
+    seek(time) {
+      let absolute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
       if (absolute) {
         this.videoEl.currentTime = time;
       } else {
@@ -1140,11 +1158,11 @@ var APP_accelerator_home_ui = (function () {
     _setItemCookie(e, t) {
       var o = new Date(),
           r = new Date(o.getTime() + 15768e7);
-      document.cookie = `${e}=${t}; expires=${r.toUTCString()};`;
+      document.cookie = "".concat(e, "=").concat(t, "; expires=").concat(r.toUTCString(), ";");
     }
 
     _removeItemCookie(e) {
-      document.cookie = `${e}=;Max-Age=-99999999;`;
+      document.cookie = "".concat(e, "=;Max-Age=-99999999;");
     }
 
     _clearCookies() {
@@ -1251,7 +1269,9 @@ var APP_accelerator_home_ui = (function () {
    * @returns {*}
    */
 
-  const stripRegex = (route, char = 'R') => {
+  const stripRegex = function (route) {
+    let char = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'R';
+
     // if route is part regular expressed we replace
     // the regular expression for a character to
     // simplify floor calculation and backtracking
@@ -1315,7 +1335,11 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   class Request {
-    constructor(hash = '', navArgs, storeCaller) {
+    constructor() {
+      let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      let navArgs = arguments.length > 1 ? arguments[1] : undefined;
+      let storeCaller = arguments.length > 2 ? arguments[2] : undefined;
+
       /**
        * Hash we navigate to
        * @type {string}
@@ -1384,7 +1408,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     cancel() {
-      Log.debug('[router]:', `cancelled ${this._hash}`);
+      Log.debug('[router]:', "cancelled ".concat(this._hash));
       this._cancelled = true;
     }
 
@@ -1485,7 +1509,8 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   class Route {
-    constructor(config = {}) {
+    constructor() {
+      let config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       // keep backwards compatible
       let type = ['on', 'before', 'after'].reduce((acc, type) => {
         return isFunction(config[type]) ? type : acc;
@@ -1609,7 +1634,7 @@ var APP_accelerator_home_ui = (function () {
         if (regMatches && regMatches.length) {
           route = regMatches.reduce((fullRoute, regex) => {
             const lookupId = regexStore.length;
-            fullRoute = fullRoute.replace(regex, `@@${lookupId}@@`);
+            fullRoute = fullRoute.replace(regex, "@@".concat(lookupId, "@@"));
             regexStore.push(regex.substring(1, regex.length - 1));
             return fullRoute;
           }, route);
@@ -1636,7 +1661,7 @@ var APP_accelerator_home_ui = (function () {
           if (regMatches && regMatches.length) {
             const expression = regMatches[1];
             const modifiers = regMatches[2];
-            const regex = new RegExp(`^/${expression}$`, modifiers);
+            const regex = new RegExp("^/".concat(expression, "$"), modifiers);
 
             if (!regex.test(hashPart)) {
               isMatching = false;
@@ -1673,7 +1698,9 @@ var APP_accelerator_home_ui = (function () {
 
     return false;
   };
-  const getValuesFromHash = (hash = '', path) => {
+  const getValuesFromHash = function () {
+    let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    let path = arguments.length > 1 ? arguments[1] : undefined;
     // replace the regex definition from the route because
     // we already did the matching part
     path = stripRegex(path, '');
@@ -1753,12 +1780,12 @@ var APP_accelerator_home_ui = (function () {
       if (obj.params) {
         const keys = Object.keys(obj.params);
         hash = keys.reduce((acc, key) => {
-          return acc.replace(`:${key}`, obj.params[key]);
+          return acc.replace(":".concat(key), obj.params[key]);
         }, route);
       }
 
       if (obj.query) {
-        return `${hash}${objectToQueryString(obj.query)}`;
+        return "".concat(hash).concat(objectToQueryString(obj.query));
       }
     }
 
@@ -1816,13 +1843,16 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  var emit$1 = ((page, events = [], params = {}) => {
+  var emit$1 = (function (page) {
+    let events = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+    let params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
     if (!isArray(events)) {
       events = [events];
     }
 
     events.forEach(e => {
-      const event = `_on${ucfirst(e)}`;
+      const event = "_on".concat(ucfirst(e));
 
       if (isFunction(page[event])) {
         page[event](params);
@@ -2040,7 +2070,10 @@ var APP_accelerator_home_ui = (function () {
 
     return state;
   };
-  const replaceHistoryState = (state = null, hash) => {
+  const replaceHistoryState = function () {
+    let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    let hash = arguments.length > 1 ? arguments[1] : undefined;
+
     if (!history.length) {
       return;
     }
@@ -2069,7 +2102,9 @@ var APP_accelerator_home_ui = (function () {
   const getHistory = () => {
     return history.slice(0);
   };
-  const setHistory = (arr = []) => {
+  const setHistory = function () {
+    let arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
     if (isArray(arr)) {
       history = arr;
     }
@@ -2222,7 +2257,9 @@ var APP_accelerator_home_ui = (function () {
    */
   let warned = false;
 
-  const deprecated = (force = false) => {
+  const deprecated = function () {
+    let force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
     if (force === true || warned === false) {
       console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'Language'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language'].join('\n\n'));
     }
@@ -2324,8 +2361,12 @@ var APP_accelerator_home_ui = (function () {
      *
      * @param  {...any} args List of arguments for placeholders.
      */
-    format(...args) {
-      const sub = args.reduce((string, arg, index) => string.split(`{${index}}`).join(arg), this);
+    format() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      const sub = args.reduce((string, arg, index) => string.split("{".concat(index, "}")).join(arg), this);
       return new LocalizedString(sub);
     }
 
@@ -2375,7 +2416,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _firstActive() {
-      this.tag('Text').text = `APP - v${this.version}\nSDK - v${this.sdkVersion}`;
+      this.tag('Text').text = "APP - v".concat(this.version, "\nSDK - v").concat(this.sdkVersion);
       this.tag('Text').loadTexture();
       this.w = this.tag('Text').renderWidth + 40;
       this.h = this.tag('Text').renderHeight + 5;
@@ -2477,7 +2518,7 @@ var APP_accelerator_home_ui = (function () {
       if (this.fps <= 40 && this.fps > 20) bgColor = 0xffffa500; // red
       else if (this.fps <= 20) bgColor = 0xffff0000;
       this.tag('Background').setSmooth('color', bgColor);
-      this.tag('Counter').text = `${this.fps}`;
+      this.tag('Counter').text = "".concat(this.fps);
       this.config.log && Log.info('FPS', this.fps);
     }
 
@@ -2505,7 +2546,8 @@ var APP_accelerator_home_ui = (function () {
   let translations = {};
   let language$1 = null;
   let dictionary = null;
-  const initLanguage = (file, language = null) => {
+  const initLanguage = function (file) {
+    let language = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     return new Promise((resolve, reject) => {
       fetch(file).then(response => response.json()).then(json => {
         setTranslations(json); // set language (directly or in a promise)
@@ -2646,7 +2688,11 @@ var APP_accelerator_home_ui = (function () {
   };
   var Registry = {
     // Timeouts
-    setTimeout(cb, timeout, ...params) {
+    setTimeout(cb, timeout) {
+      for (var _len = arguments.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        params[_key - 2] = arguments[_key];
+      }
+
       const timeoutId = setTimeout(() => {
         registry.timeouts = registry.timeouts.filter(id => id !== timeoutId);
         cb.apply(null, params);
@@ -2673,7 +2719,11 @@ var APP_accelerator_home_ui = (function () {
     },
 
     // Intervals
-    setInterval(cb, interval, ...params) {
+    setInterval(cb, interval) {
+      for (var _len2 = arguments.length, params = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        params[_key2 - 2] = arguments[_key2];
+      }
+
       const intervalId = setInterval(() => {
         registry.intervals.filter(id => id !== intervalId);
         cb.apply(null, params);
@@ -2966,20 +3016,23 @@ var APP_accelerator_home_ui = (function () {
   const customFontFaces = [];
 
   const fontLoader = (fonts, store) => new Promise((resolve, reject) => {
-    fonts.map(({
-      family,
-      url,
-      urls,
-      descriptors
-    }) => () => {
-      const src = urls ? urls.map(url => {
-        return 'url(' + url + ')';
-      }) : 'url(' + url + ')';
-      const fontFace = new FontFace(family, src, descriptors || {});
-      store.push(fontFace);
-      Log.info('Loading font', family);
-      document.fonts.add(fontFace);
-      return fontFace.load();
+    fonts.map(_ref => {
+      let {
+        family,
+        url,
+        urls,
+        descriptors
+      } = _ref;
+      return () => {
+        const src = urls ? urls.map(url => {
+          return 'url(' + url + ')';
+        }) : 'url(' + url + ')';
+        const fontFace = new FontFace(family, src, descriptors || {});
+        store.push(fontFace);
+        Log.info('Loading font', family);
+        document.fonts.add(fontFace);
+        return fontFace.load();
+      };
     }).reduce((promise, method) => {
       return promise.then(() => method());
     }, Promise.resolve(null)).then(resolve).catch(reject);
@@ -3350,7 +3403,7 @@ var APP_accelerator_home_ui = (function () {
           components.set(path, type);
         }
       } else {
-        console.error(`${path} already exists in routes configuration`);
+        console.error("".concat(path, " already exists in routes configuration"));
       }
     });
   };
@@ -3390,7 +3443,7 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       } else {
-        console.error(`[Router]: ${config.bootComponent} is not a valid boot component`);
+        console.error("[Router]: ".concat(config.bootComponent, " is not a valid boot component"));
       }
     }
 
@@ -3612,7 +3665,7 @@ var APP_accelerator_home_ui = (function () {
     return Array.isArray(v);
   };
   const ucfirst = v => {
-    return `${v.charAt(0).toUpperCase()}${v.slice(1)}`;
+    return "".concat(v.charAt(0).toUpperCase()).concat(v.slice(1));
   };
   const isString = v => {
     return typeof v === 'string';
@@ -3632,7 +3685,8 @@ var APP_accelerator_home_ui = (function () {
 
     return isObject(result) && isFunction(result.then);
   };
-  const cleanHash = (hash = '') => {
+  const cleanHash = function () {
+    let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     return hash.replace(/^#/, '').replace(/\/+$/, '');
   };
   const getConfigMap = () => {
@@ -3643,7 +3697,8 @@ var APP_accelerator_home_ui = (function () {
       return config;
     }, new Map());
   };
-  const getQueryStringParams = (hash = getActiveHash()) => {
+  const getQueryStringParams = function () {
+    let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getActiveHash();
     const resumeHash = getResumeHash();
 
     if ((hash === '$' || !hash) && resumeHash) {
@@ -3671,7 +3726,7 @@ var APP_accelerator_home_ui = (function () {
         hashParams = hashParams.replace(/^\?/, ''); // we parse hash params last so they we can always
         // override search params with hash params
 
-        parse = `${parse}&${hashParams}`;
+        parse = "".concat(parse, "&").concat(hashParams);
       } else {
         parse = hashParams;
       }
@@ -3695,7 +3750,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     return '?' + Object.keys(obj).map(key => {
-      return `${key}=${obj[key]}`;
+      return "".concat(key, "=").concat(obj[key]);
     }).join('&');
   };
   const symbols = {
@@ -3767,12 +3822,13 @@ var APP_accelerator_home_ui = (function () {
     });
   };
 
-  const addPersistData = ({
-    page,
-    route,
-    hash,
-    register = new Map()
-  }) => {
+  const addPersistData = _ref => {
+    let {
+      page,
+      route,
+      hash,
+      register = new Map()
+    } = _ref;
     const urlValues = getValuesFromHash(hash, route.path);
     const queryParams = getQueryStringParams(hash);
     const pageData = new Map([...urlValues, ...register]);
@@ -3916,10 +3972,10 @@ var APP_accelerator_home_ui = (function () {
     const bounds = axis === 'x' ? 1920 : 1080;
     return new Promise(resolve => {
       i.patch({
-        [`${axis}`]: direction ? bounds * -1 : bounds,
+        ["".concat(axis)]: direction ? bounds * -1 : bounds,
         visible: true,
         smooth: {
-          [`${axis}`]: [0, {
+          ["".concat(axis)]: [0, {
             duration: 0.4,
             delay: 0.2
           }]
@@ -3928,9 +3984,9 @@ var APP_accelerator_home_ui = (function () {
 
       if (o) {
         o.patch({
-          [`${axis}`]: 0,
+          ["".concat(axis)]: 0,
           smooth: {
-            [`${axis}`]: [direction ? bounds : bounds * -1, {
+            ["".concat(axis)]: [direction ? bounds : bounds * -1, {
               duration: 0.4,
               delay: 0.2
             }]
@@ -3996,7 +4052,8 @@ var APP_accelerator_home_ui = (function () {
    * @param pageOut
    */
 
-  const executeTransition = (pageIn, pageOut = null) => {
+  const executeTransition = function (pageIn) {
+    let pageOut = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     const transition = pageIn.pageTransition || pageIn.easing;
     const hasCustomTransitions = !!(pageIn.smoothIn || pageIn.smoothInOut || transition);
     const transitionsDisabled = getRouterConfig().get('disableTransitions');
@@ -4041,7 +4098,8 @@ var APP_accelerator_home_ui = (function () {
       if (pageIn.smoothIn) {
         // provide a smooth function that resolves itself
         // on transition finish
-        const smooth = (p, v, args = {}) => {
+        const smooth = function (p, v) {
+          let args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
           return new Promise(resolve => {
             pageIn.visible = true;
             pageIn.setSmooth(p, v, args);
@@ -4109,7 +4167,7 @@ var APP_accelerator_home_ui = (function () {
 
 
       if (expired || request.isCancelled) {
-        Log.debug('[router]:', `Rejected ${request.hash} because route to ${getLastHash()} started`);
+        Log.debug('[router]:', "Rejected ".concat(request.hash, " because route to ").concat(getLastHash(), " started"));
 
         if (request.isCreated && !request.isSharedInstance) {
           // remove from render-tree
@@ -4514,7 +4572,10 @@ var APP_accelerator_home_ui = (function () {
    */
 
 
-  const navigate = (url, args = {}, store) => {
+  const navigate = function (url) {
+    let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let store = arguments.length > 2 ? arguments[2] : undefined;
+
     if (isObject(url)) {
       url = getHashByName(url);
 
@@ -4553,7 +4614,9 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const queue = (hash, args = {}, store) => {
+  const queue = function (hash) {
+    let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let store = arguments.length > 2 ? arguments[2] : undefined;
     hash = cleanHash(hash);
 
     if (!navigateQueue.has(hash)) {
@@ -4592,7 +4655,7 @@ var APP_accelerator_home_ui = (function () {
           failedHash: hash
         });
       } else {
-        console.error(`Unable to navigate to: ${hash}`);
+        console.error("Unable to navigate to: ".concat(hash));
       }
 
       return;
@@ -4708,7 +4771,9 @@ var APP_accelerator_home_ui = (function () {
    */
 
 
-  const step = (level = 0) => {
+  const step = function () {
+    let level = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
     if (!level || isNaN(level)) {
       return false;
     }
@@ -5028,7 +5093,11 @@ var APP_accelerator_home_ui = (function () {
   let currentChannel;
   const callbacks = {};
 
-  const emit = (event, ...args) => {
+  const emit = function (event) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
     callbacks[event] && callbacks[event].forEach(cb => {
       cb.apply(null, args);
     });
@@ -5882,7 +5951,9 @@ var APP_accelerator_home_ui = (function () {
       customUnloader = unloaderFn;
     },
 
-    position(top = 0, left = 0) {
+    position() {
+      let top = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      let left = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       videoEl.style.left = withPrecision(left);
       videoEl.style.top = withPrecision(top);
 
@@ -5891,7 +5962,9 @@ var APP_accelerator_home_ui = (function () {
       }
     },
 
-    size(width = 1920, height = 1080) {
+    size() {
+      let width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1920;
+      let height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1080;
       videoEl.style.width = withPrecision(width);
       videoEl.style.height = withPrecision(height);
       videoEl.width = parseFloat(videoEl.style.width);
@@ -5902,12 +5975,17 @@ var APP_accelerator_home_ui = (function () {
       }
     },
 
-    area(top = 0, right = 1920, bottom = 1080, left = 0) {
+    area() {
+      let top = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      let right = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1920;
+      let bottom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1080;
+      let left = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
       this.position(top, left);
       this.size(right - left, bottom - top);
     },
 
-    open(url, config = {}) {
+    open(url) {
+      let config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (!this.canInteract) return;
       metrics = Metrics$1.media(url);
       this.hide();
@@ -6002,12 +6080,14 @@ var APP_accelerator_home_ui = (function () {
       this.playing === true ? this.pause() : this.play();
     },
 
-    mute(muted = true) {
+    mute() {
+      let muted = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       if (!this.canInteract) return;
       videoEl.muted = muted;
     },
 
-    loop(looped = true) {
+    loop() {
+      let looped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       videoEl.loop = looped;
     },
 
@@ -6057,7 +6137,8 @@ var APP_accelerator_home_ui = (function () {
       }
     },
 
-    enableAds(enabled = true) {
+    enableAds() {
+      let enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       state$1.adsEnabled = enabled;
     },
 
@@ -6191,7 +6272,8 @@ var APP_accelerator_home_ui = (function () {
     active: false
   };
 
-  const playSlot = (slot = []) => {
+  const playSlot = function () {
+    let slot = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     return slot.reduce((promise, ad) => {
       return promise.then(() => {
         return playAd(ad);
@@ -6423,7 +6505,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _getLookupId() {
-      return `${this._src}-${this._scalingOptions.type}-${this._scalingOptions.w}-${this._scalingOptions.h}`;
+      return "".concat(this._src, "-").concat(this._scalingOptions.type, "-").concat(this._scalingOptions.w, "-").concat(this._scalingOptions.h);
     }
 
     getNonDefaults() {
@@ -6829,12 +6911,20 @@ var APP_accelerator_home_ui = (function () {
         if (typeof prop !== 'undefined') {
           if (typeof prop === 'function') {
             if (['on', 'once', 'subscribe'].indexOf(propKey) > -1) {
-              return function (...args) {
+              return function () {
+                for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = arguments[_key];
+                }
+
                 return prop.apply(this, args);
               };
             }
 
-            return function (...args) {
+            return function () {
+              for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                args[_key2] = arguments[_key2];
+              }
+
               return resolve(prop.apply(this, args), args);
             };
           }
@@ -6853,7 +6943,11 @@ var APP_accelerator_home_ui = (function () {
             }));
           }
 
-          return function (...args) {
+          return function () {
+            for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+              args[_key3] = arguments[_key3];
+            }
+
             args.unshift(propKey);
             return target.call.apply(this, args);
           };
@@ -7094,7 +7188,7 @@ var APP_accelerator_home_ui = (function () {
             resolve(result.interfaces);
           }
         }).catch(err => {
-          console.error(`getInterfaces fail: ${err}`);
+          console.error("getInterfaces fail: ".concat(err));
           reject(err);
         });
       });
@@ -7111,7 +7205,7 @@ var APP_accelerator_home_ui = (function () {
             resolve(result.interface);
           }
         }).catch(err => {
-          console.error(`getDefaultInterface fail: ${err}`);
+          console.error("getDefaultInterface fail: ".concat(err));
           reject(err);
         });
       });
@@ -7125,7 +7219,7 @@ var APP_accelerator_home_ui = (function () {
         }).then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`setDefaultInterface fail: ${err}`);
+          console.error("setDefaultInterface fail: ".concat(err));
           reject(err);
         });
       });
@@ -7149,7 +7243,7 @@ var APP_accelerator_home_ui = (function () {
         }).then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`getIPSettings fail: ${err}`);
+          console.error("getIPSettings fail: ".concat(err));
           reject(err);
         });
       });
@@ -7164,7 +7258,7 @@ var APP_accelerator_home_ui = (function () {
         this._thunder.call(this.callsign, 'setIPSettings', IPSettings).then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`setIPSettings fail: ${err}`);
+          console.error("setIPSettings fail: ".concat(err));
           reject(err);
         });
       });
@@ -7355,7 +7449,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPluginStatus(plugin) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('Controller', `status@${plugin}`).then(result => {
+        thunder$9.call('Controller', "status@".concat(plugin)).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -7385,7 +7479,7 @@ var APP_accelerator_home_ui = (function () {
         thunder$9.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {}).catch(err => {
-          console.error(`error while activating the displaysettings plugin`);
+          console.error("error while activating the displaysettings plugin");
         });
       });
     }
@@ -7578,7 +7672,11 @@ var APP_accelerator_home_ui = (function () {
             type: childCallsign,
             uri: url
           }).then(res => {
-            console.log(`WebApp : webapp launch resulted in : `, JSON.stringify(res));
+            console.log("WebApp : webapp launch resulted in : ", JSON.stringify(res));
+            this.setVisibility("ResidentApp", false);
+            thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign
+            });
             resolve(true);
           }).catch(err => {
             console.error("WebApp : error while launching web : ", JSON.stringify(err));
@@ -7614,7 +7712,7 @@ var APP_accelerator_home_ui = (function () {
             type: childCallsign,
             uri: url
           }).then(res => {
-            console.log(`Lightning : launch lightning results in `, JSON.stringify(res));
+            console.log("Lightning : launch lightning results in ", JSON.stringify(res));
             resolve(true);
           }).catch(err => {
             console.error("Lightning : error while launching lightning : ", JSON.stringify(err));
@@ -7651,6 +7749,18 @@ var APP_accelerator_home_ui = (function () {
             thunder$9.call('Cobalt', 'deeplink', url);
           }
 
+          this.setVisibility("ResidentApp", false);
+          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+            client: "Cobalt"
+          }).catch(err => {
+            console.error(err);
+          });
+          thunder$9.call("org.rdk.RDKShell", "setFocus", {
+            client: childCallsign
+          }).catch(err => {
+            console.error(err);
+          });
+          Storage.set("applicationType", "Cobalt");
           console.log("Cobalt : launch cobalt results in ", JSON.stringify(res));
           resolve(true);
         }).catch(err => {
@@ -7675,17 +7785,17 @@ var APP_accelerator_home_ui = (function () {
           focused: false
         }).then(res => {
           if (childCallsign == "Netflix") {
-            console.log(`Netflix : launch netflix results in :`, res);
+            console.log("Netflix : launch netflix results in :", res);
           } else {
-            console.log(`Amazon : launch amazon results in :`, res);
+            console.log("Amazon : launch amazon results in :", res);
           }
 
           resolve(true);
         }).catch(err => {
           if (childCallsign == "Netflix") {
-            console.error(`Netflix : error while launching netflix :`, err);
+            console.error("Netflix : error while launching netflix :", err);
           } else {
-            console.log(`Amazon : error while launching amazon :`, err);
+            console.log("Amazon : error while launching amazon :", err);
           }
 
           reject(false);
@@ -7706,20 +7816,20 @@ var APP_accelerator_home_ui = (function () {
           focused: true
         }).then(res => {
           if (childCallsign == "Netflix") {
-            console.log(`Netflix : launch netflix results in :`, res);
+            console.log("Netflix : launch netflix results in :", res);
           } else {
-            console.log(`Amazon : launch amazon results in :`, res);
+            console.log("Amazon : launch amazon results in :", res);
           }
 
-          this.setVisibility("Amazon", true);
-          Storage.set("applicationType", "Amazon");
-          console.log(`the current application Type : `, Storage.get("applicationType"));
+          this.setVisibility(childCallsign, true);
+          Storage.set("applicationType", childCallsign);
+          console.log("the current application Type : ", Storage.get("applicationType"));
           resolve(true);
         }).catch(err => {
           if (childCallsign == "Netflix") {
-            console.error(`Netflix : error while launching netflix :`, err);
+            console.error("Netflix : error while launching netflix :", err);
           } else {
-            console.log(`Amazon : error while launching amazon :`, err);
+            console.log("Amazon : error while launching amazon :", err);
           }
 
           reject(false);
@@ -7757,7 +7867,7 @@ var APP_accelerator_home_ui = (function () {
           type: 'ResidentApp',
           uri: url
         }).then(res => {
-          console.log(`ResidentApp :  launching resident app resulted in : `, JSON.stringify(res));
+          console.log("ResidentApp :  launching resident app resulted in : ", JSON.stringify(res));
           resolve(true);
         }).catch(err => {
           console.error('ResidentApp : error while launching residentApp : ' + JSON.stringify(err));
@@ -7777,7 +7887,7 @@ var APP_accelerator_home_ui = (function () {
           thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          console.log(`Overlay : launched overlay : `, res);
+          console.log("Overlay : launched overlay : ", res);
           resolve(res);
         }).catch(err => {
           console.error("Overlay : error while launching the overlay", err);
@@ -7904,14 +8014,17 @@ var APP_accelerator_home_ui = (function () {
           client: client,
           visible: visible
         });
-        thunder$9.call('org.rdk.RDKShell', 'setFocus', {
-          client: client
-        }).then(res => {
-          resolve(true);
-        }).catch(err => {
-          console.log('Set focus error', JSON.stringify(err));
-          reject(false);
-        });
+
+        if (visible) {
+          thunder$9.call('org.rdk.RDKShell', 'setFocus', {
+            client: client
+          }).then(res => {
+            resolve(true);
+          }).catch(err => {
+            console.log('Set focus error', JSON.stringify(err));
+            reject(false);
+          });
+        }
       });
     }
 
@@ -9638,9 +9751,12 @@ var APP_accelerator_home_ui = (function () {
           try {
             fetch("http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=" + year + "-" + month + "-" + day + "T08%3A00Z&includeAdult=false&imageSize=Lg&imageAspectTV=16x9&imageText=true&api_key=" + res).then(response => response.json()).then(response => {
               const ids = response.map(id => id.program.rootId);
-              const filtered = response.filter(({
-                program
-              }, index) => !ids.includes(program.rootId, index + 1));
+              const filtered = response.filter((_ref, index) => {
+                let {
+                  program
+                } = _ref;
+                return !ids.includes(program.rootId, index + 1);
+              });
               resolve({
                 key: res,
                 data: filtered.slice(0, 20)
@@ -10969,7 +11085,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(result);
         }).catch(err => {
           reject(err);
-          console.error(`Error while getting the mounted device ${JSON.stringify(err)}`);
+          console.error("Error while getting the mounted device ".concat(JSON.stringify(err)));
         });
       });
     }
@@ -11207,6 +11323,9 @@ var APP_accelerator_home_ui = (function () {
 
         this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
           resolve(result);
+        }).catch(err => {
+          console.error(err);
+          resolve(false);
         });
       });
     }
@@ -11491,7 +11610,9 @@ var APP_accelerator_home_ui = (function () {
       this.addAt(item);
     }
 
-    addAt(item, index = this._items.length) {
+    addAt(item) {
+      let index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._items.length;
+
       if (index >= 0 && index <= this._items.length) {
         if (!Array.isArray(item)) {
           item = [item];
@@ -11520,7 +11641,9 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    removeAt(index, amount = 1) {
+    removeAt(index) {
+      let amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
       if (index < 0 && index >= this._items.length) {
         throw new Error('removeAt: The index ' + index + ' is out of bounds ' + this._items.length);
       }
@@ -11541,7 +11664,9 @@ var APP_accelerator_home_ui = (function () {
     plotItems(items, options) {//placeholder
     }
 
-    reposition(time = 70) {
+    reposition() {
+      let time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 70;
+
       if (this._repositionDebounce) {
         clearTimeout(this._repositionDebounce);
       }
@@ -11596,7 +11721,9 @@ var APP_accelerator_home_ui = (function () {
       return false;
     }
 
-    navigate(shift, direction = this._direction) {
+    navigate(shift) {
+      let direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._direction;
+
       if (direction !== this._direction) {
         return false;
       }
@@ -11711,9 +11838,11 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    $childInactive({
-      child
-    }) {
+    $childInactive(_ref) {
+      let {
+        child
+      } = _ref;
+
       if (typeof child === 'object') {
         const index = child.componentIndex;
 
@@ -11727,9 +11856,10 @@ var APP_accelerator_home_ui = (function () {
       this._collectGarbage();
     }
 
-    $getChildComponent({
-      index
-    }) {
+    $getChildComponent(_ref2) {
+      let {
+        index
+      } = _ref2;
       return this._items[index];
     }
 
@@ -11817,7 +11947,7 @@ var APP_accelerator_home_ui = (function () {
         return this._normalizeDataItem(item) || index;
       }).filter(item => {
         if (!isNaN(item)) {
-          console.warn(`Item at index: ${item}, is not a valid item. Removing it from dataset`);
+          console.warn("Item at index: ".concat(item, ", is not a valid item. Removing it from dataset"));
           return false;
         }
 
@@ -12416,12 +12546,12 @@ var APP_accelerator_home_ui = (function () {
           crossPos += targetCrossFromMargin;
         }
 
-        const ref = `IW-${item.assignedID}`;
+        const ref = "IW-".concat(item.assignedID);
         let tmp = mainPos;
         let tcp = crossPos;
         const existingItemWrapper = wrapper.tag(ref);
 
-        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext[`p${main}`] + wrapper[main] + mainPos <= viewboundMain || renderContext[`p${cross}`] + wrapper[cross] + crossPos <= viewboundCross))) {
+        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext["p".concat(main)] + wrapper[main] + mainPos <= viewboundMain || renderContext["p".concat(cross)] + wrapper[cross] + crossPos <= viewboundCross))) {
           tmp = existingItemWrapper[main];
           tcp = existingItemWrapper[cross];
           animateItems.push(index);
@@ -12433,8 +12563,8 @@ var APP_accelerator_home_ui = (function () {
           componentIndex: index,
           forceLoad: this._forceLoad,
           ...sizes,
-          [`assigned${main.toUpperCase()}`]: mainPos,
-          [`assigned${cross.toUpperCase()}`]: crossPos,
+          ["assigned".concat(main.toUpperCase())]: mainPos,
+          ["assigned".concat(cross.toUpperCase())]: crossPos,
           [main]: tmp,
           [cross]: tcp
         };
@@ -12513,8 +12643,8 @@ var APP_accelerator_home_ui = (function () {
         }
 
         item.patch({
-          [`assigned${main.toUpperCase()}`]: mainPos,
-          [`assigned${cross.toUpperCase()}`]: crossPos,
+          ["assigned".concat(main.toUpperCase())]: mainPos,
+          ["assigned".concat(cross.toUpperCase())]: crossPos,
           [main]: mainPos,
           [cross]: crossPos
         });
@@ -12724,16 +12854,18 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    onInputChanged({
-      input = ''
-    }) {
+    onInputChanged(_ref) {
+      let {
+        input = ''
+      } = _ref;
       let targetIndex = Math.max(input.length - this._input.length + this._cursorIndex, 0);
       this._input = input;
 
       this._update(targetIndex);
     }
 
-    toggleCursor(bool = !this._cursorVisible) {
+    toggleCursor() {
+      let bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : !this._cursorVisible;
       this._cursorVisible = bool;
       this.cursor[bool ? 'show' : 'hide']();
     }
@@ -12752,7 +12884,8 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    _update(index = 0) {
+    _update() {
+      let index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       const hasInput = this._input.length > 0;
       let pre = this._description + '';
       let post = '';
@@ -13145,7 +13278,7 @@ var APP_accelerator_home_ui = (function () {
       } = this._config;
 
       if (!this._layout || this._layout && layouts[this._layout] === undefined) {
-        console.error(`Configured layout "${this._layout}" does not exist. Picking first available: "${Object.keys(layouts)[0]}"`);
+        console.error("Configured layout \"".concat(this._layout, "\" does not exist. Picking first available: \"").concat(Object.keys(layouts)[0], "\""));
         this._layout = Object.keys(layouts)[0];
       }
 
@@ -13172,7 +13305,7 @@ var APP_accelerator_home_ui = (function () {
           marginBottom,
           spacing: rowHorizontalSpacing = horizontalSpacing || 0,
           align: rowAlign = align
-        } = styling[`Row${rowIndex + 1}`] || {};
+        } = styling["Row".concat(rowIndex + 1)] || {};
         let keyPosition = 0;
         let rowHeight = 0;
         const rowKeys = row.map((key, keyIndex) => {
@@ -13205,7 +13338,7 @@ var APP_accelerator_home_ui = (function () {
           const currentPosition = keyPosition + marginLeft;
           keyPosition += marginLeft + w + marginRight;
           return {
-            ref: `Key-{${keyIndex + 1}}`,
+            ref: "Key-{".concat(keyIndex + 1, "}"),
             type: KeyWrapper,
             keyboard: this,
             x: currentPosition,
@@ -13240,7 +13373,7 @@ var APP_accelerator_home_ui = (function () {
         const currentPosition = rowPosition + (marginTop || margin);
         rowPosition = currentPosition + rowHeight + (marginBottom || margin || verticalSpacing);
         return {
-          ref: `Row-${rowIndex + 1}`,
+          ref: "Row-".concat(rowIndex + 1),
           x: rowOffset,
           mountX: rowMount,
           w: keyPosition,
@@ -13272,10 +13405,12 @@ var APP_accelerator_home_ui = (function () {
       return this.navigate('column', 1);
     }
 
-    _handleKey({
-      key,
-      code = 'CustomKey'
-    }) {
+    _handleKey(_ref) {
+      let {
+        key,
+        code = 'CustomKey'
+      } = _ref;
+
       if (code === 'Backspace' && this._input.length === 0) {
         return false;
       }
@@ -13329,7 +13464,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (action !== 'Input') {
         const split = event.key.split(':');
-        const call = `on${split[0]}`;
+        const call = "on".concat(split[0]);
         const eventFunction = this[call];
         event.key = split[1];
 
@@ -13508,15 +13643,17 @@ var APP_accelerator_home_ui = (function () {
       return false;
     }
 
-    onSpace({
-      index
-    }) {
+    onSpace(_ref2) {
+      let {
+        index
+      } = _ref2;
       this.addAt(' ', index);
     }
 
-    onBackspace({
-      index
-    }) {
+    onBackspace(_ref3) {
+      let {
+        index
+      } = _ref3;
       this.removeAt(index);
     }
 
@@ -13524,9 +13661,10 @@ var APP_accelerator_home_ui = (function () {
       this.clear();
     }
 
-    onLayout({
-      key
-    }) {
+    onLayout(_ref4) {
+      let {
+        key
+      } = _ref4;
       this.layout(key);
     }
 
@@ -13629,14 +13767,14 @@ var APP_accelerator_home_ui = (function () {
           crossSize = sizes[crossDim];
         }
 
-        const ref = `IW-${item.assignedID}`;
+        const ref = "IW-".concat(item.assignedID);
         let mainPos = position;
         crossPos = item[cross] || crossPos;
         let tmp = mainPos;
         let tcp = crossPos;
         const existingItemWrapper = wrapper.tag(ref);
 
-        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext[`p${main}`] + wrapper[main] + mainPos <= viewboundMain || renderContext[`p${cross}`] + wrapper[cross] + crossPos <= viewboundCross))) {
+        if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext["p".concat(main)] + wrapper[main] + mainPos <= viewboundMain || renderContext["p".concat(cross)] + wrapper[cross] + crossPos <= viewboundCross))) {
           tmp = existingItemWrapper[main];
           tcp = existingItemWrapper[cross];
           animateItems.push(index);
@@ -13649,8 +13787,8 @@ var APP_accelerator_home_ui = (function () {
           componentIndex: index,
           forceLoad: this._forceLoad,
           ...sizes,
-          [`assigned${main.toUpperCase()}`]: mainPos,
-          [`assigned${cross.toUpperCase()}`]: crossPos,
+          ["assigned".concat(main.toUpperCase())]: mainPos,
+          ["assigned".concat(cross.toUpperCase())]: crossPos,
           [main]: tmp,
           [cross]: tcp
         };
@@ -13701,8 +13839,8 @@ var APP_accelerator_home_ui = (function () {
         const mainPos = position;
         position += sizes[mainDim] + (sizes[mainMarginTo] || sizes.margin || this.spacing);
         item.patch({
-          [`assigned${main.toUpperCase()}`]: mainPos,
-          [`assigned${cross.toUpperCase()}`]: 0,
+          ["assigned".concat(main.toUpperCase())]: mainPos,
+          ["assigned".concat(cross.toUpperCase())]: 0,
           [main]: mainPos,
           [cross]: crossPos,
           ...sizes
@@ -13782,7 +13920,8 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _update(label = this.tag('Label')) {
+    _update() {
+      let label = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tag('Label');
       const renderWidth = label.renderWidth;
       const noScroll = renderWidth <= this.renderWidth;
       let labelPos = 0;
@@ -13808,7 +13947,9 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _updateAnimation(label = this.tag('Label')) {
+    _updateAnimation() {
+      let label = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tag('Label');
+
       if (this._scrollAnimation) {
         this._scrollAnimation.stopNow();
       }
@@ -14496,14 +14637,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       this.appItems = this.tempRow;
-      this.usbApps = usbAppsArr; //for testing purpose uncomment to see input sample modes on any device
-      // this.inputSelect=true
-      // if (this.inputSelect) {
-      //   this.inputItems = [{id:"HDMI1"},{id:"HDMI2"},{id:"HDMI3"},{id:"HDMI4"}]
-      // }
-      //----------------
-      // if (this.inputSelect) {
-
+      this.usbApps = usbAppsArr;
       this.hdmiApi.activate().then(() => {
         this.hdmiApi.registerEvent('onDevicesChanged', notification => {
           console.log('onDevicesChanged ', JSON.stringify(notification));
@@ -14535,7 +14669,6 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.log('HDMIInput Plugin not activated', err);
       }); //get the available input methods from the api
-      // }
       // for USB event
 
       const registerListener = () => {
@@ -14556,12 +14689,11 @@ var APP_accelerator_home_ui = (function () {
               this._setState('AppList.0');
             }
 
-            console.log(`app items = ${this.appItems} ; `);
+            console.log("app items = ".concat(this.appItems, " ; "));
 
             if (currentPage === 'menu') {
               //refresh page to hide or show usb icon
-              console.log('page refreshed on unplug/plug'); // Router.navigate('menu');
-              // document.location.reload()
+              console.log('page refreshed on unplug/plug');
             }
 
             if (!notification.mounted) {
@@ -14574,7 +14706,7 @@ var APP_accelerator_home_ui = (function () {
             }
           }
 
-          console.log(`usb event successfully registered`);
+          console.log("usb event successfully registered");
         });
         return listener;
       };
@@ -14606,14 +14738,12 @@ var APP_accelerator_home_ui = (function () {
       } else if (Storage.get('UsbMedia') === 'OFF') {
         // deactivate usb Plugin here 
         this.usbApi.deactivate().then(res => {
-          console.log(`disabled the Usb Plugin`);
+          console.log("disabled the Usb Plugin");
         }).catch(err => {
-          console.error(`error while disabling the usb plugin = ${err}`);
+          console.error("error while disabling the usb plugin = ".concat(err));
         });
       }
-    }
 
-    _focus() {
       if (this.gracenote) {
         this._setState("Gracenote");
       } else if (this.inputSelect) {
@@ -14621,6 +14751,10 @@ var APP_accelerator_home_ui = (function () {
       } else {
         this._setState("AppList.0");
       }
+    }
+
+    _focus() {
+      this._setState(this.state);
     }
 
     _firstEnable() {
@@ -14699,7 +14833,7 @@ var APP_accelerator_home_ui = (function () {
           h: 151,
           type: ListItem,
           data: { ...info,
-            displayName: `Port ${info.id}`,
+            displayName: "Port ".concat(info.id),
             url: "/images/inputs/HDMI.jpg"
           },
           focus: 1.11,
@@ -15914,7 +16048,7 @@ var APP_accelerator_home_ui = (function () {
           this.btStatus = false;
           resolve(result);
         }).catch(err => {
-          console.error(`Can't disable : ${JSON.stringify(err)}`);
+          console.error("Can't disable : ".concat(JSON.stringify(err)));
         });
       });
     }
@@ -15929,7 +16063,7 @@ var APP_accelerator_home_ui = (function () {
           resolve(result);
           this.btStatus = true;
         }).catch(err => {
-          console.error(`Can't enable : ${JSON.stringify(err)}`);
+          console.error("Can't enable : ".concat(JSON.stringify(err)));
           reject();
         });
       });
@@ -15943,10 +16077,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'startScan', {
           timeout: '10',
-          profile: `KEYBOARD,
-                    MOUSE,
-                    JOYSTICK,
-                    HUMAN INTERFACE DEVICE`
+          profile: "KEYBOARD,\n                    MOUSE,\n                    JOYSTICK,\n                    HUMAN INTERFACE DEVICE"
         }).then(result => {
           if (result.success) resolve();else reject();
         }).catch(err => {
@@ -15981,7 +16112,7 @@ var APP_accelerator_home_ui = (function () {
           this._devices = result.discoveredDevices;
           resolve(result.discoveredDevices);
         }).catch(err => {
-          console.error(`Can't get discovered devices : ${JSON.stringify(err)}`);
+          console.error("Can't get discovered devices : ".concat(JSON.stringify(err)));
         });
       });
     }
@@ -16000,7 +16131,7 @@ var APP_accelerator_home_ui = (function () {
           this._pairedDevices = result.pairedDevices;
           resolve(result.pairedDevices);
         }).catch(err => {
-          console.error(`Can't get paired devices : ${err}`);
+          console.error("Can't get paired devices : ".concat(err));
           reject(false);
         });
       });
@@ -16020,7 +16151,7 @@ var APP_accelerator_home_ui = (function () {
           this._connectedDevices = result.connectedDevices;
           resolve(result.connectedDevices);
         }).catch(err => {
-          console.error(`Can't get connected devices : ${err}`);
+          console.error("Can't get connected devices : ".concat(err));
           reject();
         });
       });
@@ -16152,7 +16283,7 @@ var APP_accelerator_home_ui = (function () {
           this._connectedDevices = result.connectedDevices;
           resolve(result.connectedDevices);
         }).catch(err => {
-          console.error(`Can't get connected devices : ${err}`);
+          console.error("Can't get connected devices : ".concat(err));
           reject();
         });
       });
@@ -17084,13 +17215,15 @@ var APP_accelerator_home_ui = (function () {
    * @param {string} hex - 6 alphanumeric characters between 0-f
    * @param {number} [alpha] - number between 0-100 (0 is invisible, 100 is opaque)
    */
-  function getHexColor$1(hex, alpha = 100) {
+  function getHexColor$1(hex) {
+    let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+
     if (!hex) {
       return 0x00;
     }
 
     let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
-    let str = `0x${hexAlpha}${hex}`;
+    let str = "0x".concat(hexAlpha).concat(hex);
     return parseInt(Number(str), 10);
   }
   /**
@@ -17165,7 +17298,8 @@ var APP_accelerator_home_ui = (function () {
      * @param {number} options.paddingRight - px value for right padding, overrides options.padding
      * @param {number} options.strokeWidth - px value for stroke width
      */
-    getWidth(w, options = {}) {
+    getWidth(w) {
+      let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       const {
         padding,
         paddingLeft,
@@ -17192,7 +17326,8 @@ var APP_accelerator_home_ui = (function () {
      * @param {number} options.paddingTop - px value for top padding, overrides options.padding
      * @param {number} options.strokeWidth - px value for stroke width
      */
-    getHeight(h, options = {}) {
+    getHeight(h) {
+      let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       const {
         padding,
         paddingBottom,
@@ -17265,7 +17400,8 @@ var APP_accelerator_home_ui = (function () {
    * */
 
 
-  function measureTextWidth(text = {}) {
+  function measureTextWidth() {
+    let text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const {
@@ -17274,7 +17410,7 @@ var APP_accelerator_home_ui = (function () {
       fontSize,
       fontFamily = text.fontFace || 'sans-serif'
     } = text;
-    const fontCss = [fontStyle, fontWeight, fontSize ? `${fontSize}px` : '0', `'${fontFamily}'`].filter(Boolean).join(' ');
+    const fontCss = [fontStyle, fontWeight, fontSize ? "".concat(fontSize, "px") : '0', "'".concat(fontFamily, "'")].filter(Boolean).join(' ');
     ctx.font = fontCss;
     const textMetrics = ctx.measureText(text.text || '');
     return Math.round(textMetrics.width);
@@ -17284,7 +17420,11 @@ var APP_accelerator_home_ui = (function () {
    * @param {...*} number - maybe a number
    **/
 
-  function getFirstNumber(...numbers) {
+  function getFirstNumber() {
+    for (var _len = arguments.length, numbers = new Array(_len), _key = 0; _key < _len; _key++) {
+      numbers[_key] = arguments[_key];
+    }
+
     return numbers.find(Number.isFinite);
   }
   /**
@@ -17523,7 +17663,7 @@ var APP_accelerator_home_ui = (function () {
 
     switch (true) {
       case isSvgTag(icon):
-        template.texture = lng$1.Tools.getSvgTexture(`data:image/svg+xml,${encodeURIComponent(icon)}`, w, h);
+        template.texture = lng$1.Tools.getSvgTexture("data:image/svg+xml,".concat(encodeURIComponent(icon)), w, h);
         break;
 
       case isSvgURI(icon):
@@ -17796,12 +17936,14 @@ var APP_accelerator_home_ui = (function () {
       return this._icon;
     }
 
-    set icon({
-      src,
-      size = 20,
-      spacing = 5,
-      color = 0xffffffff
-    }) {
+    set icon(_ref) {
+      let {
+        src,
+        size = 20,
+        spacing = 5,
+        color = 0xffffffff
+      } = _ref;
+
       if (src) {
         this._icon = {
           src,
@@ -17960,7 +18102,8 @@ var APP_accelerator_home_ui = (function () {
       this.appendItems(items);
     }
 
-    appendItems(items = []) {
+    appendItems() {
+      let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       this.Items.childList.a(items);
 
       this._refocus();
@@ -18381,7 +18524,8 @@ var APP_accelerator_home_ui = (function () {
       return getY(this.Items);
     }
 
-    appendItems(items = []) {
+    appendItems() {
+      let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       let itemWidth = this.renderWidth;
       items.forEach(item => {
         item.parentFocus = this.hasFocus();
@@ -18397,7 +18541,8 @@ var APP_accelerator_home_ui = (function () {
       this._refocus();
     }
 
-    scrollTo(index, duration = this._itemTransition.duration * 100) {
+    scrollTo(index) {
+      let duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._itemTransition.duration * 100;
       if (duration === 0) this.selectedIndex = index;
 
       for (let i = 0; i !== Math.abs(this.selectedIndex - index); i++) {
@@ -18496,48 +18641,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
   }
-  FadeShader.fragmentShaderSource = `
-  #ifdef GL_ES
-  precision lowp float;
-  #endif
-
-  #define PI 3.14159265359
-
-  varying vec2 vTextureCoord;
-  varying vec4 vColor;
-
-  uniform sampler2D uSampler;
-  uniform vec2 resolution;
-  uniform float margin[2];
-
-  void main() {
-      vec4 color = texture2D(uSampler, vTextureCoord) * vColor;
-      vec2 halfRes = 0.5 * resolution.xy;
-      vec2 point = vTextureCoord.xy * resolution;
-
-
-      vec2 pos1 = vec2(point.x, point.y);
-      vec2 pos2 = pos1;
-      pos2.x += margin[0];
-
-      vec2 d = pos2 - pos1;
-      float t = dot(pos1, d) / dot(d, d);
-      t = smoothstep(0.0, 1.0, clamp(t, 0.0, 1.0));
-
-      vec2 pos3 = vec2(vTextureCoord.x * resolution.x, vTextureCoord.y);
-      pos3.x -= resolution.x - margin[1];
-      vec2 pos4 = vec2(vTextureCoord.x + margin[1], vTextureCoord.y);
-
-      vec2 d2 = pos4 - pos3;
-      float t2 = dot(pos3, d2) / dot(d2, d2);
-      t2 = smoothstep(0.0, 1.0, clamp(t2, 0.0, 1.0));
-
-      color = mix(vec4(0.0), color, t);
-      color = mix(color, vec4(0.0), t2);
-
-      gl_FragColor = color;
-  }
-`;
+  FadeShader.fragmentShaderSource = "\n  #ifdef GL_ES\n  precision lowp float;\n  #endif\n\n  #define PI 3.14159265359\n\n  varying vec2 vTextureCoord;\n  varying vec4 vColor;\n\n  uniform sampler2D uSampler;\n  uniform vec2 resolution;\n  uniform float margin[2];\n\n  void main() {\n      vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n      vec2 halfRes = 0.5 * resolution.xy;\n      vec2 point = vTextureCoord.xy * resolution;\n\n\n      vec2 pos1 = vec2(point.x, point.y);\n      vec2 pos2 = pos1;\n      pos2.x += margin[0];\n\n      vec2 d = pos2 - pos1;\n      float t = dot(pos1, d) / dot(d, d);\n      t = smoothstep(0.0, 1.0, clamp(t, 0.0, 1.0));\n\n      vec2 pos3 = vec2(vTextureCoord.x * resolution.x, vTextureCoord.y);\n      pos3.x -= resolution.x - margin[1];\n      vec2 pos4 = vec2(vTextureCoord.x + margin[1], vTextureCoord.y);\n\n      vec2 d2 = pos4 - pos3;\n      float t2 = dot(pos3, d2) / dot(d2, d2);\n      t2 = smoothstep(0.0, 1.0, clamp(t2, 0.0, 1.0));\n\n      color = mix(vec4(0.0), color, t);\n      color = mix(color, vec4(0.0), t2);\n\n      gl_FragColor = color;\n  }\n";
 
   /**
    * Copyright 2020 Comcast Cable Communications Management, LLC
@@ -18609,7 +18713,9 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    startScrolling(finalW = this.finalW) {
+    startScrolling() {
+      let finalW = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.finalW;
+
       if (this._textRenderedW === 0) {
         this._Text.on('txLoaded', () => {
           this.startScrolling();
@@ -18638,7 +18744,8 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    stopScrolling(finalW = this.finalW) {
+    stopScrolling() {
+      let finalW = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.finalW;
       this._scrolling = false;
 
       if (this._scrollAnimation) {
@@ -18998,7 +19105,8 @@ var APP_accelerator_home_ui = (function () {
       return getX(this.Items);
     }
 
-    appendItems(items = []) {
+    appendItems() {
+      let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       let itemHeight = this.renderHeight;
       items.forEach(item => {
         item.parentFocus = this.hasFocus();
@@ -19091,7 +19199,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (isUpperCase(this.title)) {
-        return `Capital ${this.title}, button`;
+        return "Capital ".concat(this.title, ", button");
       }
 
       return this.title + ', button';
@@ -19152,19 +19260,25 @@ var APP_accelerator_home_ui = (function () {
     }
 
     get announce() {
-      return 'Keyboard' + (this.title ? `, ${this.title}` : '');
+      return 'Keyboard' + (this.title ? ", ".concat(this.title) : '');
     }
 
     get announceContext() {
       return ['PAUSE-2', 'Use arrow keys to choose characters, press center to select'];
     }
 
-    set formats(formats = {}) {
+    set formats(formats) {
+      if (formats === void 0) {
+        formats = {};
+      }
+
       this._formats = formats;
       this._currentFormat = this._defaultFormat; // Ensure formats prop is set last
 
       this._whenEnabled.then(() => {
-        Object.entries(formats).forEach(([key, value]) => {
+        Object.entries(formats).forEach(_ref => {
+          let [key, value] = _ref;
+
           let keyboardData = this._formatKeyboardData(value);
 
           this._createKeyboard(key, this._createRows(keyboardData));
@@ -19175,7 +19289,8 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _createKeyboard(key, rows = []) {
+    _createKeyboard(key) {
+      let rows = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
       key = key.charAt(0).toUpperCase() + key.slice(1);
 
       if (rows.length === 1) {
@@ -19197,7 +19312,8 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    _createRows(rows = []) {
+    _createRows() {
+      let rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       return rows.map(keys => {
         let h = this.keysConfig && this.keysConfig.h || KEY_DIMENSIONS.h;
         return {
@@ -19210,7 +19326,8 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _createKeys(keys = []) {
+    _createKeys() {
+      let keys = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       return keys.map(keyProps => {
         const key = {
           type: this.keyComponent || Key,
@@ -19233,7 +19350,9 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
-    _formatKeyboardData(data = []) {
+    _formatKeyboardData() {
+      let data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
       if (Array.isArray(data) && data.length) {
         if (!Array.isArray(data[0]) && !this.inline) {
           let keyRows = [],
@@ -19269,10 +19388,11 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
-    selectKeyOn(keyboard, {
-      row,
-      column
-    } = this.getSelectedKey()) {
+    selectKeyOn(keyboard) {
+      let {
+        row,
+        column
+      } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getSelectedKey();
       let type = keyboard.constructor.name;
 
       if (type === 'Row') {
@@ -19714,7 +19834,7 @@ var APP_accelerator_home_ui = (function () {
 
           resolve(result);
         }).catch(err => {
-          console.error(`Wifi activation failed: ${err}`);
+          console.error("Wifi activation failed: ".concat(err));
           reject(err);
         });
       });
@@ -19748,7 +19868,7 @@ var APP_accelerator_home_ui = (function () {
         this._thunder.call(this.callsign, 'getConnectedSSID').then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`getConnectedSSID fail: ${err}`);
+          console.error("getConnectedSSID fail: ".concat(err));
           reject(err);
         });
       });
@@ -19768,7 +19888,7 @@ var APP_accelerator_home_ui = (function () {
           //console.log('startScan success')
           resolve(result);
         }).catch(err => {
-          console.error(`startScan fail: ${err}`);
+          console.error("startScan fail: ".concat(err));
           reject(err);
         });
       });
@@ -19784,7 +19904,7 @@ var APP_accelerator_home_ui = (function () {
           //console.log('stopScan success')
           resolve(result);
         }).catch(err => {
-          console.error(`stopScan fail: ${err}`);
+          console.error("stopScan fail: ".concat(err));
           reject(err);
         });
       });
@@ -19799,14 +19919,14 @@ var APP_accelerator_home_ui = (function () {
     connect(device, passphrase) {
       return new Promise((resolve, reject) => {
         this.disconnect().then(() => {
-          console.log(`connect SSID ${device.ssid}`);
+          console.log("connect SSID ".concat(device.ssid));
 
           this._thunder.call(this.callsign, 'connect', {
             ssid: device.ssid,
             passphrase: passphrase,
             securityMode: device.security
           }).then(result => {
-            console.log(`connected SSID ${device.ssid}`);
+            console.log("connected SSID ".concat(device.ssid));
             this.setInterface('WIFI', true).then(res => {
               if (res.success) {
                 this.setDefaultInterface('WIFI', true);
@@ -19814,7 +19934,7 @@ var APP_accelerator_home_ui = (function () {
             });
             resolve(result);
           }).catch(err => {
-            console.error(`Connection failed: ${err}`);
+            console.error("Connection failed: ".concat(err));
             reject(err);
           });
         });
@@ -19836,7 +19956,7 @@ var APP_accelerator_home_ui = (function () {
           });
           resolve(result);
         }).catch(err => {
-          console.error(`Can't disconnect WiFi: ${err}`);
+          console.error("Can't disconnect WiFi: ".concat(err));
           reject(false);
         });
       });
@@ -19849,10 +19969,10 @@ var APP_accelerator_home_ui = (function () {
     getCurrentState() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getCurrentState').then(result => {
-          console.log(`WiFi state: ${result.state}`);
+          console.log("WiFi state: ".concat(result.state));
           resolve(result.state);
         }).catch(err => {
-          console.error(`Can't get WiFi state: ${err}`);
+          console.error("Can't get WiFi state: ".concat(err));
           reject(err);
         });
       });
@@ -19884,7 +20004,7 @@ var APP_accelerator_home_ui = (function () {
         this._thunder.call(this.callsign, 'getPairedSSID', {}).then(result => {
           resolve(result);
         }).catch(err => {
-          console.error(`Can't get paired: ${err}`);
+          console.error("Can't get paired: ".concat(err));
           reject(err);
         });
       });
@@ -20313,9 +20433,11 @@ var APP_accelerator_home_ui = (function () {
           return this.tag('Keyboard');
         }
 
-        $onSoftKey({
-          key
-        }) {
+        $onSoftKey(_ref) {
+          let {
+            key
+          } = _ref;
+
           if (key === 'Done') {
             this.handleDone();
           } else if (key === 'Clear') {
@@ -20978,19 +21100,19 @@ var APP_accelerator_home_ui = (function () {
         this.getIPSetting(defaultInterface);
 
         if (defaultInterface === "WIFI") {
-          this.tag("ConnectionType.Value").text.text = `Wireless`;
+          this.tag("ConnectionType.Value").text.text = "Wireless";
           this.tag("SSID").alpha = 1;
           this.tag("SignalStrength").alpha = 1;
         } else if (defaultInterface === "ETHERNET") {
-          this.tag("ConnectionType.Value").text.text = `Ethernet`;
+          this.tag("ConnectionType.Value").text.text = "Ethernet";
           this.tag("SSID").alpha = 0;
           this.tag("SignalStrength").alpha = 0;
         } else {
-          this.tag("ConnectionType.Value").text.text = `NA`;
-          this.tag("Status.Value").text.text = `Disconnected`;
-          this.tag("IPAddress.Value").text.text = `NA`;
-          this.tag("Gateway.Value").text.text = `NA`;
-          this.tag("MACAddress.Value").text.text = `NA`;
+          this.tag("ConnectionType.Value").text.text = "NA";
+          this.tag("Status.Value").text.text = "Disconnected";
+          this.tag("IPAddress.Value").text.text = "NA";
+          this.tag("Gateway.Value").text.text = "NA";
+          this.tag("MACAddress.Value").text.text = "NA";
         } //Filtering the current interface
 
 
@@ -20998,29 +21120,29 @@ var APP_accelerator_home_ui = (function () {
           currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
 
           if (currentInterface[0].connected) {
-            this.tag("Status.Value").text.text = `Connected`;
+            this.tag("Status.Value").text.text = "Connected";
             appApi$6.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
-                this.tag("SignalStrength.Value").text.text = `Excellent`;
+                this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
-                this.tag("SignalStrength.Value").text.text = `Good`;
+                this.tag("SignalStrength.Value").text.text = "Good";
               } else if (parseInt(result.signalStrength) >= -67) {
-                this.tag("SignalStrength.Value").text.text = `Fair`;
+                this.tag("SignalStrength.Value").text.text = "Fair";
               } else {
-                this.tag("SignalStrength.Value").text.text = `Poor`;
+                this.tag("SignalStrength.Value").text.text = "Poor";
               }
 
-              this.tag("SSID.Value").text.text = `${result.ssid}`;
+              this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
             appApi$6.getIPSetting(defaultInterface).then(result => {
-              this.tag('IPAddress.Value').text.text = `${result.ipaddr}`;
-              this.tag("Gateway.Value").text.text = `${result.gateway}`;
+              this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
+              this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
           } else {
-            this.tag('Status.Value').text.text = `Disconnected`;
+            this.tag('Status.Value').text.text = "Disconnected";
           }
 
-          this.tag('MACAddress.Value').text.text = `${currentInterface[0].macAddress}`;
+          this.tag('MACAddress.Value').text.text = "".concat(currentInterface[0].macAddress);
         }).catch(error => console.log(error));
       }).catch(error => console.log(error));
     }
@@ -21665,9 +21787,11 @@ var APP_accelerator_home_ui = (function () {
           return this.tag("KeyBoard");
         }
 
-        $onSoftKey({
-          key
-        }) {
+        $onSoftKey(_ref) {
+          let {
+            key
+          } = _ref;
+
           if (key === 'Done') {
             this.startConnect(this.passwd);
           } else if (key === 'Clear') {
@@ -22680,7 +22804,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     set duration(duration) {
-      console.log(`duration was set = ${duration}`);
+      console.log("duration was set = ".concat(duration));
       this.videoDuration = duration;
       this.tag('Duration').text.text = this.SecondsTohhmmss(duration);
     }
@@ -23843,7 +23967,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Remote Control',
+                text: Language.translate('Remote Control'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -23869,7 +23993,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Screen-Saver: ',
+                text: Language.translate('Screen-Saver: '),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -24274,7 +24398,7 @@ var APP_accelerator_home_ui = (function () {
       this.fireAncestors('$registerInactivityMonitoringEvents').then(res => {
         this.fireAncestors('$resetSleepTimer', timeoutInterval);
       }).catch(err => {
-        console.error(`error while registering the inactivity monitoring event`);
+        console.error("error while registering the inactivity monitoring event");
       });
 
       this._setState('Options');
@@ -25107,7 +25231,7 @@ var APP_accelerator_home_ui = (function () {
               this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               this.widgets.menu.refreshMainView();
             }).catch(err => {
-              console.error(`error while disabling the usb plugin = ${err}`);
+              console.error("error while disabling the usb plugin = ".concat(err));
               this.fireAncestors('$registerUsbMount');
             });
           } else if (_UsbMedia === 'OFF') {
@@ -25206,92 +25330,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const _privacyPolicy = `Privacy
- Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (“RDK Management,” “we,” or “us”). This privacy policy discloses the privacy practices for this website only, including an explanation of:
- 
- the categories of personally identifiable information about you that may be collected and how that information is used;
- how we collect and use non-personally identifiable information about your use of the website;
- the categories of persons or entities with whom the information may be shared;
- the choices that are available to you regarding collection, use, and distribution of the information;
- how you can opt out of RDK-related promotional e-mail;
- the kind of security procedures that are in place to protect the loss, misuse or alteration of information;
- how you can review and request changes to the information; and
- how we notify users of this website of changes to this privacy policy.
- Questions regarding this policy should be directed to “RDK Management – Privacy Feedback” and can be submitted via e-mail to info@rdkcentral.com.
- 
- 
- What categories of information do we collect?
- The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.
- 
- To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you’ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.
- 
- The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you’re still free to take advantage of the publicly available content on our website without registration.
- 
- Does RDK Management analyze my interaction with this website?
- Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.
- 
- We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a “Do Not Track” Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to “Do Not Track” signals sent from browsers.
- 
- You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.
- 
- What categories of persons or entities do we share personally identifiable information with?
- We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.
- 
- What do we do to personalize your use of this website?
- We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.
- 
- To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a “cookie.” We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you’ve made so you don’t have to re-enter them.
- 
- RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.
- 
- The cookies we use don’t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user’s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user’s account information over our website, for example.
- 
- In connection with the standard operation of RDK Management’s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users’ experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.
- 
- We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management’s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.
- 
- Your Access to and Control over your information?
- You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.
- 
- Request to see all the information stored in the system
- Accuracy of your data can be checked or corrected.
- Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com
- Express any concern you have about our use of your data
- Opt out from receiving emails by clicking unsubscribe.
- How do users opt out of RDK-related promotional e-mail?
- You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of “RDK Management – E-mail Opt Out” via e-mail to info@rdkcentral.com.
- 
- Other Websites
- 
- To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don’t control. Once you leave our website by linking to another one (you can tell where you are by checking the address – known as a URL – in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you’re visiting. That policy may differ from ours. If you can’t find the privacy policy of any of these websites via a link from the site’s homepage, you should contact the website directly for more information.
- 
- Security
- 
- All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won’t be intercepted while being transmitted to us over the Internet. If you don’t want us to know any particular information about you, don’t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.
- 
- Changes to this Privacy Policy
- 
- We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we’ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.
- 
- A Special Note About Children
- 
- This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.
- 
- Contacting us:
- 
- If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.
- 
- Data Protection Officer:  Herman-Jan Smith
- 
- Email us at: hj.smith@rdkcentral.com
- 
- Contacting the appropriate authority:
- 
- Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner’s Office.
- 
- Email: compliance_team@rdkcentral.com
- 
- Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A`;
+  const _privacyPolicy = "Privacy\n Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (\u201CRDK Management,\u201D \u201Cwe,\u201D or \u201Cus\u201D). This privacy policy discloses the privacy practices for this website only, including an explanation of:\n \n the categories of personally identifiable information about you that may be collected and how that information is used;\n how we collect and use non-personally identifiable information about your use of the website;\n the categories of persons or entities with whom the information may be shared;\n the choices that are available to you regarding collection, use, and distribution of the information;\n how you can opt out of RDK-related promotional e-mail;\n the kind of security procedures that are in place to protect the loss, misuse or alteration of information;\n how you can review and request changes to the information; and\n how we notify users of this website of changes to this privacy policy.\n Questions regarding this policy should be directed to \u201CRDK Management \u2013 Privacy Feedback\u201D and can be submitted via e-mail to info@rdkcentral.com.\n \n \n What categories of information do we collect?\n The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.\n \n To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you\u2019ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.\n \n The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you\u2019re still free to take advantage of the publicly available content on our website without registration.\n \n Does RDK Management analyze my interaction with this website?\n Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.\n \n We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a \u201CDo Not Track\u201D Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to \u201CDo Not Track\u201D signals sent from browsers.\n \n You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.\n \n What categories of persons or entities do we share personally identifiable information with?\n We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.\n \n What do we do to personalize your use of this website?\n We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.\n \n To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a \u201Ccookie.\u201D We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you\u2019ve made so you don\u2019t have to re-enter them.\n \n RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.\n \n The cookies we use don\u2019t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user\u2019s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user\u2019s account information over our website, for example.\n \n In connection with the standard operation of RDK Management\u2019s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users\u2019 experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.\n \n We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management\u2019s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.\n \n Your Access to and Control over your information?\n You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.\n \n Request to see all the information stored in the system\n Accuracy of your data can be checked or corrected.\n Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com\n Express any concern you have about our use of your data\n Opt out from receiving emails by clicking unsubscribe.\n How do users opt out of RDK-related promotional e-mail?\n You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of \u201CRDK Management \u2013 E-mail Opt Out\u201D via e-mail to info@rdkcentral.com.\n \n Other Websites\n \n To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don\u2019t control. Once you leave our website by linking to another one (you can tell where you are by checking the address \u2013 known as a URL \u2013 in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you\u2019re visiting. That policy may differ from ours. If you can\u2019t find the privacy policy of any of these websites via a link from the site\u2019s homepage, you should contact the website directly for more information.\n \n Security\n \n All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won\u2019t be intercepted while being transmitted to us over the Internet. If you don\u2019t want us to know any particular information about you, don\u2019t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.\n \n Changes to this Privacy Policy\n \n We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we\u2019ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.\n \n A Special Note About Children\n \n This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.\n \n Contacting us:\n \n If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.\n \n Data Protection Officer:  Herman-Jan Smith\n \n Email us at: hj.smith@rdkcentral.com\n \n Contacting the appropriate authority:\n \n Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner\u2019s Office.\n \n Email: compliance_team@rdkcentral.com\n \n Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A";
   class PrivacyPolicyScreen extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy  Policy'));
@@ -25316,7 +25355,7 @@ var APP_accelerator_home_ui = (function () {
             y: 45,
             mountY: 0.5,
             text: {
-              text: `Privacy Policy`,
+              text: "Privacy Policy",
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontStyle: "bold",
@@ -25505,7 +25544,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'TTS Options',
+                text: Language.translate('TTS Options'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -25556,7 +25595,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Bug Report',
+                text: Language.translate('Bug Report'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -25582,7 +25621,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Contact Support',
+                text: Language.translate('Contact Support'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -25922,7 +25961,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Factory Reset',
+                text: Language.translate('Factory Reset'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26118,7 +26157,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Chipset`),
+                text: Language.translate("Chipset"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26129,7 +26168,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: `N/A`,
+                text: "N/A",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26150,7 +26189,7 @@ var APP_accelerator_home_ui = (function () {
               y: 135,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Serial Number`),
+                text: Language.translate("Serial Number"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26161,7 +26200,7 @@ var APP_accelerator_home_ui = (function () {
               y: 135,
               mountY: 0.5,
               text: {
-                text: `N/A`,
+                text: "N/A",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26182,7 +26221,7 @@ var APP_accelerator_home_ui = (function () {
               y: 225,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Location`),
+                text: Language.translate("Location"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26193,7 +26232,7 @@ var APP_accelerator_home_ui = (function () {
               y: 225,
               mountY: 0.5,
               text: {
-                text: `City: N/A , Country: N/A `,
+                text: "City: N/A , Country: N/A ",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26214,7 +26253,7 @@ var APP_accelerator_home_ui = (function () {
               y: 360,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Supported DRM & Key-System`),
+                text: Language.translate("Supported DRM & Key-System"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 wordWrapWidth: 1600,
@@ -26227,7 +26266,7 @@ var APP_accelerator_home_ui = (function () {
               y: 360,
               mountY: 0.5,
               text: {
-                text: `N/A`,
+                text: "N/A",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 wordWrapWidth: 1200,
@@ -26250,7 +26289,7 @@ var APP_accelerator_home_ui = (function () {
               y: 540,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Firmware version`),
+                text: Language.translate("Firmware version"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26261,7 +26300,7 @@ var APP_accelerator_home_ui = (function () {
               y: 540,
               mountY: 0.5,
               text: {
-                text: `UI Version: ${Settings.get('platform', 'version')}, Build Version: , Timestamp: `,
+                text: "UI Version: ".concat(Settings.get('platform', 'version'), ", Build Version: , Timestamp: "),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26282,7 +26321,7 @@ var APP_accelerator_home_ui = (function () {
               y: 720,
               mountY: 0.5,
               text: {
-                text: Language.translate(`App Info`),
+                text: Language.translate("App Info"),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -26321,30 +26360,30 @@ var APP_accelerator_home_ui = (function () {
       this._setState('DeviceInformationScreen');
 
       this.appApi.getSerialNumber().then(result => {
-        this.tag("SerialNumber.Value").text.text = `${result.serialNumber}`;
+        this.tag("SerialNumber.Value").text.text = "".concat(result.serialNumber);
       });
       this.appApi.getSystemVersions().then(res => {
-        this.tag('FirmwareVersions.Value').text.text = `UI Version - ${Settings.get('platform', 'version')} \nBuild Version - ${res.stbVersion} \nTime Stamp - ${res.stbTimestamp} `;
+        this.tag('FirmwareVersions.Value').text.text = "UI Version - ".concat(Settings.get('platform', 'version'), " \nBuild Version - ").concat(res.stbVersion, " \nTime Stamp - ").concat(res.stbTimestamp, " ");
       }).catch(err => {
-        console.error(`error while getting the system versions`);
+        console.error("error while getting the system versions");
       });
       this.appApi.getDRMS().then(result => {
         console.log('from device info supported drms ' + JSON.stringify(result));
         var drms = "";
         result.forEach(element => {
-          drms += `${element.name} :`;
+          drms += "".concat(element.name, " :");
 
           if (element.keysystems) {
             drms += "\t";
             element.keysystems.forEach(keySystem => {
-              drms += `${keySystem}, `;
+              drms += "".concat(keySystem, ", ");
             });
             drms += "\n";
           } else {
             drms += "\n";
           }
         });
-        this.tag('SupportedDRM.Value').text.text = `${drms.substring(0, drms.length - 1)}`;
+        this.tag('SupportedDRM.Value').text.text = "".concat(drms.substring(0, drms.length - 1));
       });
 
       this._network.isConnectedToInternet().then(result => {
@@ -26365,25 +26404,25 @@ var APP_accelerator_home_ui = (function () {
               locationInfo += ", Country: N/A ";
             }
 
-            this.tag('Location.Value').text.text = `${locationInfo}`;
+            this.tag('Location.Value').text.text = "".concat(locationInfo);
           });
         } else {
-          this.tag('Location.Value').text.text = `City: N/A, Country: N/A`;
+          this.tag('Location.Value').text.text = "City: N/A, Country: N/A";
         }
       });
 
       this.appApi.getDeviceIdentification().then(result => {
         console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
-        this.tag('ChipSet.Value').text.text = `${result.chipset}`; // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+        this.tag('ChipSet.Value').text.text = "".concat(result.chipset); // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
       });
       let self = this;
 
       if (Storage.get('Netflix_ESN')) {
-        self.tag('AppVersions.Value').text.text = `Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ${Storage.get('Netflix_ESN')}`;
+        self.tag('AppVersions.Value').text.text = "Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ".concat(Storage.get('Netflix_ESN'));
       } else {
         self.appApi.getPluginStatus('Netflix').then(result => {
           let sel = self;
-          console.log(`Netflix : plugin status : `, JSON.stringify(result));
+          console.log("Netflix : plugin status : ", JSON.stringify(result));
 
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
@@ -26391,25 +26430,25 @@ var APP_accelerator_home_ui = (function () {
               let se = sel;
               se.appApi.getNetflixESN().then(res => {
                 Storage.set('Netflix_ESN', res);
-                console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
-                se.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`;
+                console.log("Netflix : netflix esn call returns : ", JSON.stringify(res));
+                se.netflixESN = "Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ".concat(res);
               }).catch(err => {
-                console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err));
+                console.error("Netflix : error while getting netflix esn : ", JSON.stringify(err));
               });
             }).catch(err => {
-              console.error(`Netflix : error while launching netflix in suspendMode : `, JSON.stringify(err));
+              console.error("Netflix : error while launching netflix in suspendMode : ", JSON.stringify(err));
             });
           } else {
             self.appApi.getNetflixESN().then(res => {
               Storage.set('Netflix_ESN', res);
-              console.log(`Netflix : netflix esn call returns : `, JSON.stringify(res));
-              self.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ${res}`;
+              console.log("Netflix : netflix esn call returns : ", JSON.stringify(res));
+              self.netflixESN = "Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ".concat(res);
             }).catch(err => {
-              console.error(`Netflix : error while getting netflix esn : `, JSON.stringify(err));
+              console.error("Netflix : error while getting netflix esn : ", JSON.stringify(err));
             });
           }
         }).catch(err => {
-          console.error(`Netflix : error while getting netflix plugin status ie. `, JSON.stringify(err));
+          console.error("Netflix : error while getting netflix plugin status ie. ", JSON.stringify(err));
         });
       }
 
@@ -26417,7 +26456,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     set netflixESN(v) {
-      console.log(`setting netflix ESN value to ${v}`);
+      console.log("setting netflix ESN value to ".concat(v));
       this.tag('AppVersions.Value').text.text = v;
     }
 
@@ -26511,7 +26550,7 @@ var APP_accelerator_home_ui = (function () {
               y: 135,
               mountY: 0.5,
               text: {
-                text: Language.translate(`Downloaded Firmware Version: `),
+                text: Language.translate("Downloaded Firmware Version: "),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 22
@@ -26569,11 +26608,11 @@ var APP_accelerator_home_ui = (function () {
         callsign: systemcCallsign
       }).then(res => {
         thunder.on(callsign, "onFirmwareUpdateStateChange", notification => {
-          console.log(`Tanjirou's notification : on Firmware update state changed notifcation = ${JSON.stringify(notification)}`);
+          console.log("Tanjirou's notification : on Firmware update state changed notifcation = ".concat(JSON.stringify(notification)));
 
           if (state[notification.firmwareUpdateStateChange] == "Downloading") {
             this.downloadInterval = setInterval(() => {
-              console.log(`Downloading...`);
+              console.log("Downloading...");
               this.getDownloadPercent();
             }, 1000);
           } else if (state[notification.firmwareUpdateStateChange] != "Downloading" && this.downloadInterval) {
@@ -26581,10 +26620,10 @@ var APP_accelerator_home_ui = (function () {
             this.downloadInterval = null;
           }
         }, err => {
-          console.error(`error while fetching notification ie. ${err}`);
+          console.error("error while fetching notification ie. ".concat(err));
         });
       }).catch(err => {
-        console.error(`error while activating the system plugin`);
+        console.error("error while activating the system plugin");
       });
     }
 
@@ -26615,7 +26654,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadPercent() {
       this._appApi.getFirmwareDownloadPercent().then(res => {
-        console.log(`getFirmwareDownloadPercent : ${JSON.stringify(res)}`);
+        console.log("getFirmwareDownloadPercent : ".concat(JSON.stringify(res)));
 
         if (res.downloadPercent < 0) {
           this.tag('DownloadedPercent.Title').text.text = "";
@@ -26630,8 +26669,8 @@ var APP_accelerator_home_ui = (function () {
     getDownloadFirmwareInfo() {
       this._appApi.updateFirmware().then(res => {
         this._appApi.getDownloadFirmwareInfo().then(result => {
-          console.log(`getDownloadFirmwareInfo : ${JSON.stringify(result.downloadFWVersion)}`);
-          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') + `${result.downloadFWVersion ? result.downloadFWVersion : 'NA'}`;
+          console.log("getDownloadFirmwareInfo : ".concat(JSON.stringify(result.downloadFWVersion)));
+          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') + "".concat(result.downloadFWVersion ? result.downloadFWVersion : 'NA');
         }).catch(err => {
           console.error(err);
         });
@@ -27382,9 +27421,9 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleEnter() {
-      console.log(`${this._item.zone}/${this.tag('List').element._item[0]}`);
-      this.widgets.menu.updateTimeZone(`${this._item.zone}/${this.tag('List').element._item[0]}`);
-      this.appApi.setZone(`${this._item.zone}/${this.tag('List').element._item[0]}`);
+      console.log("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
+      this.widgets.menu.updateTimeZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
+      this.appApi.setZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
       Router.navigate('settings/advanced/device/timezone', {
         refresh: true
       });
@@ -27518,7 +27557,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Audio Output: HDMI',
+                text: Language.translate('Audio Output: ') + " HDMI",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27567,7 +27606,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Full Dynamic Range',
+                text: Language.translate('Full Dynamic Range'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27592,7 +27631,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Audio Language: Auto',
+                text: Language.translate('Audio Language: ') + "Auto",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27617,7 +27656,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Navigation Feedback',
+                text: Language.translate('Navigation Feedback'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27642,7 +27681,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Bluetooth: None',
+                text: Language.translate('Bluetooth: ') + "None",
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -27771,7 +27810,7 @@ var APP_accelerator_home_ui = (function () {
             console.log(err);
           });
           this.appApi.getSupportedAudioPorts().catch(err => {
-            console.log(`Error while getting the supported Audio ports ie. ${err}`);
+            console.log("Error while getting the supported Audio ports ie. ".concat(err));
           }); // set enable Audio POrt
 
           this.appApi.setEnableAudioPort("HDMI0").then(res => {
@@ -27891,7 +27930,7 @@ var APP_accelerator_home_ui = (function () {
     _handleEnter() {
       if (this.videoElement === true) {
         this.appApi.setResolution(this._item).catch(err => {
-          console.log(`there was an error while setting the resolution.`);
+          console.log("there was an error while setting the resolution.");
         });
       } else {
         this.appApi.setSoundMode(this._item).then(result => {
@@ -28246,7 +28285,7 @@ var APP_accelerator_home_ui = (function () {
 
           this._setState("Options");
         }).catch(err => {
-          console.log(`error while fetching the supported resolution ${err}`);
+          console.log("error while fetching the supported resolution ".concat(err));
         });
       });
     }
@@ -28358,7 +28397,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Match Content: Match Dynamic Range',
+                text: Language.translate('Match Content: '),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -28384,7 +28423,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Output Format: YCbCr',
+                text: Language.translate('Output Format:'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -28410,7 +28449,7 @@ var APP_accelerator_home_ui = (function () {
               y: 45,
               mountY: 0.5,
               text: {
-                text: 'Chroma: 4:4:4',
+                text: Language.translate('Chroma:'),
                 textColor: COLORS.titleColor,
                 fontFace: CONFIG.language.font,
                 fontSize: 25
@@ -28461,9 +28500,9 @@ var APP_accelerator_home_ui = (function () {
 
       this._appApi.getHDCPStatus().then(result => {
         if (result.isHDCPCompliant && result.isHDCPEnabled) {
-          this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Enabled, Version: ${result.currentHDCPVersion}`;
+          this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Enabled, Version: ").concat(result.currentHDCPVersion);
         } else {
-          this.tag("HDCP.Title").text.text = `${Language.translate('HDCP Status: ')}Not Supported `;
+          this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Not Supported ");
         }
       });
 
@@ -28666,7 +28705,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (args.title && args.msg) {
         this.tag('FailScreen.Title').text.text = args.title;
-        this.tag('FailScreen.Message').text.text = args.msg;
+        this.tag('FailScreen.Message').text.text = Language.translate(args.msg);
       }
     }
 
@@ -28734,7 +28773,7 @@ var APP_accelerator_home_ui = (function () {
               y: 25,
               mount: 0.5,
               text: {
-                text: "OK",
+                text: Language.translate("OK"),
                 fontFace: CONFIG.language.font,
                 fontSize: 22
               }
@@ -29143,7 +29182,7 @@ var APP_accelerator_home_ui = (function () {
           this.cwd.pop();
           this.loadData();
         }).catch(err => {
-          console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+          console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
         });
       } else {
         Router.navigate('menu');
@@ -29373,7 +29412,7 @@ var APP_accelerator_home_ui = (function () {
 
             this.loadData();
           }).catch(err => {
-            console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+            console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
           });
         }
 
@@ -29560,10 +29599,10 @@ var APP_accelerator_home_ui = (function () {
           usbApi.cd(dname).then(res => {
             this.loadData();
 
-            this._setState(this.traversableRows[this.index] + `.${this.currentIndex}`); //focus on first element
+            this._setState(this.traversableRows[this.index] + ".".concat(this.currentIndex)); //focus on first element
 
           }).catch(err => {
-            console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+            console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
           });
         }
       } else {
@@ -29575,7 +29614,7 @@ var APP_accelerator_home_ui = (function () {
 
           this._setState(this.traversableRows[this.index]);
         }).catch(err => {
-          console.error(`error while getting the usb contents; error = ${JSON.stringify(err)}`);
+          console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
         });
       } // this._setState(this.traversableRows[this.index])
 
@@ -29957,7 +29996,7 @@ var APP_accelerator_home_ui = (function () {
       const timerText = this.tag('Timer');
       this.timeInterval = Registry.setInterval(() => {
         const time = this.getTimeRemaining(endTime);
-        timerText.text.text = `0:0${time.seconds}`;
+        timerText.text.text = "0:0".concat(time.seconds);
 
         if (time.total <= 0) {
           Registry.clearInterval(this.timeInterval);
@@ -31373,7 +31412,9 @@ var APP_accelerator_home_ui = (function () {
    * @return { { number, number } }
    */
 
-  function getDimensions(obj = {}, fallback = {}) {
+  function getDimensions() {
+    let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    let fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     let {
       w,
       h,
@@ -31512,13 +31553,15 @@ var APP_accelerator_home_ui = (function () {
    * @param {string} hex - 6 alphanumeric characters between 0-f
    * @param {number} [alpha] - number between 0-100 (0 is invisible, 100 is opaque)
    */
-  function getHexColor(hex, alpha = 100) {
+  function getHexColor(hex) {
+    let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+
     if (!hex) {
       return 0x00;
     }
 
     let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
-    let str = `0x${hexAlpha}${hex}`;
+    let str = "0x".concat(hexAlpha).concat(hex);
     return parseInt(Number(str), 10);
   }
   /**
@@ -31774,7 +31817,7 @@ var APP_accelerator_home_ui = (function () {
   function getPropertyDescriptor(name, key) {
     return {
       get() {
-        const customGetter = this[`_get${capital(name)}`];
+        const customGetter = this["_get".concat(capital(name))];
 
         if (customGetter && typeof customGetter === 'function') {
           const value = customGetter.call(this, this[key]);
@@ -31788,7 +31831,7 @@ var APP_accelerator_home_ui = (function () {
         const oldValue = this[key];
 
         if (value !== oldValue) {
-          const changeHandler = this[`_set${capital(name)}`];
+          const changeHandler = this["_set".concat(capital(name))];
 
           if (changeHandler && typeof changeHandler === 'function') {
             value = changeHandler.call(this, value);
@@ -31884,7 +31927,8 @@ var APP_accelerator_home_ui = (function () {
         return this._processEvent(keyEvent, 'Release');
       }
 
-      _processEvent(keyEvent, suffix = '') {
+      _processEvent(keyEvent) {
+        let suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
         let {
           key
         } = keyEvent;
@@ -31894,11 +31938,11 @@ var APP_accelerator_home_ui = (function () {
           key = keyMap[keyEvent.keyCode];
         }
 
-        if (key && typeof this[`on${key}${suffix}`] === 'function') {
-          return this[`on${key}${suffix}`].call(this, this, keyEvent) || false;
+        if (key && typeof this["on".concat(key).concat(suffix)] === 'function') {
+          return this["on".concat(key).concat(suffix)].call(this, this, keyEvent) || false;
         }
 
-        this.fireAncestors(`$on${key}${suffix}`, this, keyEvent);
+        this.fireAncestors("$on".concat(key).concat(suffix), this, keyEvent);
         return false;
       }
 
@@ -32154,7 +32198,7 @@ var APP_accelerator_home_ui = (function () {
             x: this.width / 2,
             y: this.height / 2,
             text: {
-              text: 'Installing',
+              text: Language.translate('Installing'),
               fontFace: CONFIG.language.font,
               fontSize: 20
             },
@@ -32230,7 +32274,11 @@ var APP_accelerator_home_ui = (function () {
             text: {
               text: '',
               fontFace: CONFIG.language.font,
-              fontSize: 35
+              fontSize: 35,
+              wordWrap: false,
+              wordWrapWidth: 230,
+              fontStyle: "normal",
+              textOverflow: "ellipsis"
             }
           },
           Bar: {
@@ -32252,7 +32300,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     static get width() {
-      return 200;
+      return 250;
     }
 
     _handleEnter() {
@@ -32266,7 +32314,11 @@ var APP_accelerator_home_ui = (function () {
     }
 
     set element(item) {
-      this.tag('Text').text.text = item;
+      this.tag('Text').text.text = Language.translate(item);
+
+      if (this.tag('Text').text.text.length > 11) {
+        this.tag('Text').text.fontSize = 25;
+      }
     }
 
   }
@@ -32312,7 +32364,7 @@ var APP_accelerator_home_ui = (function () {
     _firstEnable() {
       let apps = homeApi$1.getAllApps();
       apps.shift();
-      const options = ['My Apps', 'App Catalog', 'ManageApps'];
+      const options = ['My Apps', 'App Catalog', 'Manage Apps'];
       this.tag('Apps').add(apps.map(element => {
         return {
           h: AppStoreItem.height + 90,
@@ -32772,12 +32824,12 @@ var APP_accelerator_home_ui = (function () {
       this.name = args.gracenoteItem.program.title;
       let imgUrl = "http://developer.tmsimg.com/" + args.gracenoteItem.program.preferredImage.uri.replace("w=1280&", "w=878&").replace("&h=720", "&h=493") + "&api_key=" + args.key;
       this.tag("Image").src = Utils.proxyUrl(imgUrl);
-      this.tag("Cast.Title").text.text = `${args.gracenoteItem.program.topCast[0]} \t ${args.gracenoteItem.program.topCast[1]} \t ${args.gracenoteItem.program.topCast[2]}`;
+      this.tag("Cast.Title").text.text = "".concat(args.gracenoteItem.program.topCast[0], " \t ").concat(args.gracenoteItem.program.topCast[1], " \t ").concat(args.gracenoteItem.program.topCast[2]);
       this.tag("Description.Title").text.text = args.gracenoteItem.program.longDescription;
-      this.tag("Time.Title").text.text = `${args.gracenoteItem.duration} Minutes`;
+      this.tag("Time.Title").text.text = "".concat(args.gracenoteItem.duration, " Minutes");
 
       if (args.gracenoteItem.ratings) {
-        this.tag("Rating.Title").text.text = `${args.gracenoteItem.ratings[0].body} \n${args.gracenoteItem.ratings[0].subRating}`;
+        this.tag("Rating.Title").text.text = "".concat(args.gracenoteItem.ratings[0].body, " \n").concat(args.gracenoteItem.ratings[0].subRating);
       } else {
         this.tag("Rating.Title").text.text = "";
       }
@@ -33590,7 +33642,7 @@ var APP_accelerator_home_ui = (function () {
             y: 50,
             mountY: 0.5,
             text: {
-              text: "Enter the value and click Done",
+              text: Language.translate("Enter the value and click Done"),
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 25,
@@ -33618,7 +33670,7 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this._setState("InputBox");
 
-      this.tag("Content").text.text = this.prevVal === "" ? "Enter the value and click Done" : this.prevVal;
+      this.tag("Content").text.text = this.prevVal === "" ? Language.translate("Enter the value and click Done") : this.prevVal;
       this.inputValue = this.prevVal;
       console.log("presetValues: ", this.presetValues);
       this.presetValuesLength = 0;
@@ -33716,9 +33768,11 @@ var APP_accelerator_home_ui = (function () {
           this._setState("InputBox");
         }
 
-        $onSoftKey({
-          key
-        }) {
+        $onSoftKey(_ref) {
+          let {
+            key
+          } = _ref;
+
           if (key === "Done") {
             this.handleDone();
           } else if (key === "Clear") {
@@ -34059,7 +34113,7 @@ var APP_accelerator_home_ui = (function () {
               y: 25,
               mountY: 0.5,
               text: {
-                text: Language.translate("Please wait scan in progress..."),
+                text: Language.translate("Please wait scan in progress") + "...",
                 textColor: CONFIG.theme.hex,
                 fontFace: CONFIG.language.font,
                 fontSize: 21
@@ -34142,10 +34196,10 @@ var APP_accelerator_home_ui = (function () {
         actions: [{
           p: "text.text",
           v: {
-            0: "Please wait scan in progress",
-            0.3: "Please wait scan in progress.",
-            0.6: "Please wait scan in progress..",
-            0.9: "Please wait scan in progress..."
+            0: Language.translate("Please wait scan in progress"),
+            0.3: Language.translate("Please wait scan in progress") + ".",
+            0.6: Language.translate("Please wait scan in progress") + "..",
+            0.9: Language.translate("Please wait scan in progress") + "..."
           }
         }]
       });
@@ -34303,91 +34357,70 @@ var APP_accelerator_home_ui = (function () {
     setFrequency(frequency) {
       this._setState("Frequency");
 
-      this.selectedFrequency = frequency; // console.log(this.selectedFrequency);
-
-      this.tag("Frequency.Title").text.text = "Frequency: " + (this.selectedFrequency !== "" ? this.selectedFrequency : "Select a Frequency"); //this.consoleLog();
+      this.selectedFrequency = frequency;
+      this.tag("Frequency.Title").text.text = Language.translate("Frequency") + ": " + (this.selectedFrequency !== "" ? this.selectedFrequency : Language.translate("Select a") + " " + Language.translate("Frequency"));
     }
 
     setSymbolRate(symbolrate) {
       this._setState("SymbolRate");
 
-      this.selectedSymbolRate = symbolrate; // console.log(this.selectedSymbolRate);
-
-      this.tag("SymbolRate.Title").text.text = "Symbol Rate: " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : "Select a Symbol Rate"); //this.consoleLog();
+      this.selectedSymbolRate = symbolrate;
+      this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate") + ": " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : Language.translate("Select a") + " " + Language.translate("Symbol Rate"));
     }
 
     resetForm() {
       this.setScanFinished(); //reset the form variables to initial state on exit from this form
-      //satellite*********************
 
       this.selectedSatellite = {};
-      this.tag("Satellite.Title").text.text = "Satellite"; //******************************
-      //satellite*********************
-
+      this.tag("Satellite.Title").text.text = Language.translate("Satellite");
       this.selectedFrequency = "";
-      this.tag("Frequency.Title").text.text = "Frequency"; //******************************
-      //polarity*********************
-
+      this.tag("Frequency.Title").text.text = Language.translate("Frequency");
       this.selectedPolarity = "";
-      this.tag("Polarity.Title").text.text = "Polarity"; //******************************
-      //satellite*********************
-
+      this.tag("Polarity.Title").text.text = Language.translate("Polarity");
       this.selectedSymbolRate = "";
-      this.tag("SymbolRate.Title").text.text = "SymbolRate"; //******************************
-      //fec*********************
-
+      this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate");
       this.selectedFEC = "";
-      this.tag("FEC.Title").text.text = "FEC"; //******************************
-      //dvbs2*********************
-
+      this.tag("FEC.Title").text.text = Language.translate("FEC");
       this.selectedDVBS2 = false;
-      this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png"); //******************************
-      //modulation*********************
-
+      this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       this.selectedModulation = "";
-      this.tag("Modulation.Title").text.text = "Modulation"; //******************************
-      //searchtype*********************
-
+      this.tag("Modulation.Title").text.text = Language.translate("Modulation");
       this.selectedSearchType = "";
-      this.tag("SearchType.Title").text.text = "Search Mode"; //******************************
-      //retune*********************
-
+      this.tag("SearchType.Title").text.text = Language.translate("Search Mode");
       this.selectedRetune = false;
-      this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png"); //******************************
-      //startscan*********************
-
-      this.tag("ErrorNotification").visible = false; //******************************
+      this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+      this.tag("ErrorNotification").visible = false;
     }
 
     verifyInputs() {
       let errorString = "";
 
       if (Object.keys(this.selectedSatellite).length === 0) {
-        errorString += "| Satellite ";
+        errorString += "| " + Language.translate("Satellite") + " ";
       }
 
       if (this.selectedFrequency === "") {
-        errorString += "| Frequency ";
+        errorString += "| " + Language.translate("Frequency") + " ";
       }
 
       if (this.selectedPolarity === "") {
-        errorString += "| Polarity ";
+        errorString += "| " + Language.translate("Polarity") + " ";
       }
 
       if (this.selectedSymbolRate === "") {
-        errorString += "| Symbol Rate ";
+        errorString += "| " + Language.translate("Symbol Rate") + " ";
       }
 
       if (this.selectedFEC === "") {
-        errorString += "| FEC ";
+        errorString += "| " + Language.translate("FEC") + " ";
       }
 
       if (this.selectedModulation === "") {
-        errorString += "| Modulation ";
+        errorString += "| " + Language.translate("Modulation") + " ";
       }
 
       if (this.selectedSearchType === "") {
-        errorString += "| Search Mode ";
+        errorString += "| " + Language.translate("Search Mode") + " ";
       }
 
       return errorString;
@@ -34408,7 +34441,6 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          // console.log(this.satelliteList);
           if (this.satelliteList.length > 0) {
             this._setState("Satellite.SelectSatellite");
           } else {
@@ -34423,14 +34455,14 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSatellite").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Satellite"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Satellite"));
             }
 
             $exit() {
               this.tag("SelectSatellite").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
-              this.tag("Satellite.Title").text.text = "Satellite: " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : "Select a Satellite");
+              this.tag("Satellite.Title").text.text = Language.translate("Satellite") + ": " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : Language.translate("Select a") + " " + Language.translate("Satellite"));
             }
 
             _getFocused() {
@@ -34477,7 +34509,7 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectFrequency").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Frequency"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Frequency"));
             }
 
             $exit() {
@@ -34523,14 +34555,14 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectPolarity").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Polarity"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Polarity"));
             }
 
             $exit() {
               this.tag("SelectPolarity").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
-              this.tag("Polarity.Title").text.text = "Polarity: " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : "Select a Polarity");
+              this.tag("Polarity.Title").text.text = Language.translate("Polarity") + ": " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : Language.translate("Select a") + " " + Language.translate("Polarity"));
             }
 
             _getFocused() {
@@ -34579,7 +34611,7 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSymbolRate").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Symbol Rate"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Symbol Rate"));
             }
 
             $exit() {
@@ -34625,14 +34657,14 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectFEC").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / FEC"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("FEC"));
             }
 
             $exit() {
               this.tag("SelectFEC").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
-              this.tag("FEC.Title").text.text = "FEC: " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : "Select a FEC");
+              this.tag("FEC.Title").text.text = Language.translate("FEC") + ": " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : Language.translate("Select a") + " " + Language.translate("FEC"));
             }
 
             _getFocused() {
@@ -34670,8 +34702,7 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.selectedDVBS2 = false;
             this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
-          } // console.log(this.selectedDVBS2);
-
+          }
         }
 
       }, class Modulation extends this {
@@ -34702,14 +34733,14 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectModulation").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Modulation"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Modulation"));
             }
 
             $exit() {
               this.tag("SelectModulation").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
-              this.tag("Modulation.Title").text.text = "Modulation: " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : "Select a Modulation");
+              this.tag("Modulation.Title").text.text = Language.translate("Modulation") + ": " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : Language.translate("Select a") + " " + Language.translate("Modulation"));
             }
 
             _getFocused() {
@@ -34753,15 +34784,14 @@ var APP_accelerator_home_ui = (function () {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSearchType").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan / Search Mode"));
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Search Mode"));
             }
 
             $exit() {
               this.tag("SelectSearchType").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")); // console.log(this.selectedSearchType);
-
-              this.tag("SearchType.Title").text.text = "Search Mode: " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : "Select a Search Mode");
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("SearchType.Title").text.text = Language.translate("Search Mode") + ": " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : Language.translate("Select a") + " " + Language.translate("Search Mode"));
             }
 
             _getFocused() {
@@ -34801,8 +34831,7 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.selectedRetune = false;
             this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
-          } // console.log(this.selectedRetune);
-
+          }
         }
 
       }, class StartScan extends this {
@@ -34849,7 +34878,7 @@ var APP_accelerator_home_ui = (function () {
               }, 30000);
             });
           } else {
-            this.tag("ErrorNotification.Content").text.text = Language.translate("Please enter the values for the following " + errorString);
+            this.tag("ErrorNotification.Content").text.text = Language.translate("Please enter the values for the following ") + errorString;
             this.tag("ErrorNotification").visible = true;
           }
         }
@@ -35362,10 +35391,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("getSettingsValue called for : ", settingsName);
       return new Promise((resolve, reject) => {
         this.methodNames[settingsName].get().then(result => {
-          console.log(`Result from getSettingsValue API for ${settingsName} : ${JSON.stringify(result)}`);
+          console.log("Result from getSettingsValue API for ".concat(settingsName, " : ").concat(JSON.stringify(result)));
           resolve(result);
         }).catch(err => {
-          console.log(`Error from getSettingsValue API for ${settingsName} : ${JSON.stringify(err)}`);
+          console.log("Error from getSettingsValue API for ".concat(settingsName, " : ").concat(JSON.stringify(err)));
           reject(err);
         });
       });
@@ -35375,10 +35404,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("setSettingsValue called for : ", settingsName, " and for value: ", value);
       return new Promise((resolve, reject) => {
         this.methodNames[settingsName].set(value).then(result => {
-          console.log(`Result from setSettingsValue API for ${settingsName} : ${JSON.stringify(result)}`);
+          console.log("Result from setSettingsValue API for ".concat(settingsName, " : ").concat(JSON.stringify(result)));
           resolve(result);
         }).catch(err => {
-          console.log(`Error from setSettingsValue API for ${settingsName} and value : ${value} | Error: ${JSON.stringify(err)}`);
+          console.log("Error from setSettingsValue API for ".concat(settingsName, " and value : ").concat(value, " | Error: ").concat(JSON.stringify(err)));
           reject(err);
         });
       });
@@ -35490,7 +35519,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_brightness",`${value}`)) //#forTesting 
         this._thunder.call(this.callsign, "setBrightness", {
-          "brightness": `${value}`
+          "brightness": "".concat(value)
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35514,7 +35543,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_contrast",`${value}`)) //#forTesting 
         this._thunder.call(this.callsign, "setContrast", {
-          "contrast": `${value}`
+          "contrast": "".concat(value)
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35538,7 +35567,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_sharpness",`${value}`)) //#forTesting 
         this._thunder.call(this.callsign, "setSharpness", {
-          "sharpness": `${value}`
+          "sharpness": "".concat(value)
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35562,7 +35591,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_saturation",`${value}`)) //#forTesting 
         this._thunder.call(this.callsign, "setSaturation", {
-          "saturation": `${value}`
+          "saturation": "".concat(value)
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35586,7 +35615,7 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_backlight",`${value}`)) //#forTesting 
         this._thunder.call(this.callsign, "setBacklight", {
-          "backlight": `${value}`
+          "backlight": "".concat(value)
         }).then(result => {
           resolve(result);
         }).catch(err => {
@@ -35720,7 +35749,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     updateValue(value) {
-      this.tag("Title").text.text = `${this._item.name}: ${value}`;
+      this.tag("Title").text.text = "".concat(Language.translate(this._item.name), ": ").concat(value);
     }
 
     formatItemName(name) {
@@ -35740,7 +35769,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       this.changeValueTimer = setTimeout(() => {
-        console.log(`SENDING VALUE:${this.currentVal} TO API: ${this._item.id}`); ///////////////// call set method and update the value in _item
+        console.log("SENDING VALUE:".concat(this.currentVal, " TO API: ").concat(this._item.id)); ///////////////// call set method and update the value in _item
 
         this.pictureApi.setSettingsValue(this._item.id, this.currentVal).then(res => {
           console.log(JSON.stringify(res));
@@ -35778,7 +35807,7 @@ var APP_accelerator_home_ui = (function () {
 
       this.updateValue(this.formatItemName(this._item.value[this.valueIdx]));
       this.changePresetTimer = setTimeout(() => {
-        console.log(`SENDING VALUE:${this._item.value[this.valueIdx]} TO API: ${this._item.id}`); ///////// call set method and update the value in _item
+        console.log("SENDING VALUE:".concat(this._item.value[this.valueIdx], " TO API: ").concat(this._item.id)); ///////// call set method and update the value in _item
 
         this.pictureApi.setSettingsValue(this._item.id, this._item.value[this.valueIdx]).then(res => {
           console.log(JSON.stringify(res));
@@ -35910,7 +35939,7 @@ var APP_accelerator_home_ui = (function () {
           this.refreshList();
         }
       }).catch(err => {
-        console.log("ERROR from settings overlay screen init: getSupportedPictureModes: ", JSON.stringify(err));
+        console.log("ERROR from settings overlay screen firstEnable: getSupportedPictureModes: ", JSON.stringify(err));
       }); //the getSupportedColorTemps api call has some issue when working on chrome browser
 
       this.pictureApi.getSupportedColorTemps().then(res => {
@@ -35919,7 +35948,7 @@ var APP_accelerator_home_ui = (function () {
           this.refreshList();
         }
       }).catch(err => {
-        console.log("ERROR from settings overlay screen init: getSupportedColorTemps: ", JSON.stringify(err));
+        console.log("ERROR from settings overlay screen firstEnable: getSupportedColorTemps: ", JSON.stringify(err));
       });
     }
 
@@ -36268,7 +36297,7 @@ var APP_accelerator_home_ui = (function () {
             y: 70,
             x: 100,
             text: {
-              text: "Video Input",
+              text: Language.translate("Video Input"),
               fontFace: CONFIG.language.font,
               textColor: CONFIG.theme.hex,
               fontSize: 40,
@@ -36613,8 +36642,8 @@ var APP_accelerator_home_ui = (function () {
   }
 
   class Volume extends lng$1.Component {
-    constructor(...args) {
-      super(...args);
+    constructor() {
+      super(...arguments);
 
       _defineProperty(this, "setVolume", async val => {
         const value = await this.appApi.setVolumeLevel('HDMI0', val);
@@ -37199,7 +37228,7 @@ var APP_accelerator_home_ui = (function () {
                 mountY: 0.5,
                 color: 0xffffffff,
                 text: {
-                  text: `${String.fromCodePoint(9662)}`,
+                  text: "".concat(String.fromCodePoint(9662)),
                   fontSize: 25,
                   textColor: 0xffffffff
                 }
@@ -37302,7 +37331,8 @@ var APP_accelerator_home_ui = (function () {
       return currentChannel;
     }
 
-    setShows4Channels(channels, headStart = 0) {
+    setShows4Channels(channels) {
+      let headStart = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       this.strtindexesofrows = [];
       var ltp = this.ltp;
       var rtp = new Date(this.ltp.getTime() + 3 * 60 * 60 * 1000);
@@ -37403,7 +37433,7 @@ var APP_accelerator_home_ui = (function () {
           y: 35,
           mountY: 0,
           text: {
-            text: H >= 12 ? H === 12 ? `${H}:${M}PM` : `${H - 12}:${M}PM` : `${H}:${M}AM`,
+            text: H >= 12 ? H === 12 ? "".concat(H, ":").concat(M, "PM") : "".concat(H - 12, ":").concat(M, "PM") : "".concat(H, ":").concat(M, "AM"),
             fontFace: CONFIG.language.font,
             fontStyle: 'normal',
             fontSize: 21,
@@ -37574,7 +37604,7 @@ var APP_accelerator_home_ui = (function () {
               if (channel.dvburi === "OTT") {
                 traversedChannels++;
                 channels[i].shows = [{
-                  name: ' ',
+                  name: Language.translate("click to launch") + " ".concat(channel.shortname),
                   starttime: 0,
                   duration: e,
                   eventid: 0,
@@ -37628,7 +37658,7 @@ var APP_accelerator_home_ui = (function () {
         loader.visible = false;
         wrapper.visible = true;
       }).catch(err => {
-        console.log(`error while fetching data from dtv`, err);
+        console.log("error while fetching data from dtv", err);
         Router.navigate('menu');
       });
     }
@@ -37868,7 +37898,7 @@ var APP_accelerator_home_ui = (function () {
             shours -= 12;
           }
 
-          this.tag('ShowTimings').text.text = `${shours}:${sminutes} - ${ehours}:${eminutes}`;
+          this.tag('ShowTimings').text.text = "".concat(shours, ":").concat(sminutes, " - ").concat(ehours, ":").concat(eminutes);
           this.updateDayLabel(currentCell.starttime);
         }
 
@@ -38763,7 +38793,12 @@ var APP_accelerator_home_ui = (function () {
 
           if (Storage.get('applicationType') == notification.client) {
             Storage.set('applicationType', '');
-            appApi$1.setVisibility("ResidentApp", true); // getclients and storage.set to the second client
+            appApi$1.setVisibility("ResidentApp", true);
+            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
+              client: 'ResidentApp'
+            }).then(result => {
+              console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+            }); // getclients and storage.set to the second client
           }
         }
       });
@@ -39038,10 +39073,10 @@ var APP_accelerator_home_ui = (function () {
 
       function updateAddress() {
         if (window.navigator.onLine) {
-          console.log(`is online`);
+          console.log("is online");
         } else {
           Storage.set("ipAddress", null);
-          console.log(`is offline`);
+          console.log("is offline");
         }
       }
 
@@ -39351,13 +39386,34 @@ var APP_accelerator_home_ui = (function () {
           this.deactivateChildApp(Storage.get('applicationType'));
         }
       });
+      thunder.on('org.rdk.RDKShell', 'onApplicationDisconnected', notification => {
+        console.log("onApplicationDisconnectedNotification: ", JSON.stringify(notification));
+
+        if (notification.client === "lightning" || notification.client === "htmlapp") {
+          console.log("lightning/webapp app disconnected | bringing resident app in focus");
+
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+            console.log("navigating to homescreen");
+            Router.navigate("menu");
+          }
+
+          Storage.set('applicationType', '');
+          appApi.setVisibility('ResidentApp', true);
+          appApi.setFocus("ResidentApp");
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: 'ResidentApp'
+          }).then(result => {
+            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+          });
+        }
+      });
       thunder.on('Controller', 'statechange', notification => {
         // get plugin status
-        console.log(`STATECHANGE 2 : `);
+        console.log("STATECHANGE 2 : ");
         console.log(JSON.stringify(notification));
 
         if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
-          console.log(`${notification.callsign}'s ${notification.state} request`);
+          console.log("".concat(notification.callsign, "'s ").concat(notification.state, " request"));
 
           if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
@@ -39367,6 +39423,9 @@ var APP_accelerator_home_ui = (function () {
 
           Storage.set('applicationType', '');
           appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          });
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: 'ResidentApp'
           }).then(result => {
@@ -39383,6 +39442,9 @@ var APP_accelerator_home_ui = (function () {
 
           Storage.set('applicationType', '');
           appApi.setVisibility('ResidentApp', true);
+          thunder.call('org.rdk.RDKShell', 'setFocus', {
+            client: 'ResidentApp'
+          });
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: 'ResidentApp'
           }).then(result => {
@@ -39407,7 +39469,7 @@ var APP_accelerator_home_ui = (function () {
               Storage.set('Netflix_ESN', res);
             });
             thunder.on('Netflix', 'notifyeventchange', notification => {
-              console.log(`NETFLIX : notifyEventChange notification = `, JSON.stringify(notification));
+              console.log("NETFLIX : notifyEventChange notification = ", JSON.stringify(notification));
 
               if (notification.EventName === "rendered") {
                 Router.navigate('menu');
@@ -39442,7 +39504,7 @@ var APP_accelerator_home_ui = (function () {
         });
         console.log('launching app');
       }).catch(err => {
-        console.log(`${plugin} not available`, err);
+        console.log("".concat(plugin, " not available"), err);
       });
     }
 
@@ -39459,10 +39521,14 @@ var APP_accelerator_home_ui = (function () {
                 applicationName: "YouTube",
                 state: 'suspended'
               };
-              this.xcastApi.onApplicationStateChanged(params);
+              this.xcastApi.onApplicationStateChanged(params).catch(err => {
+                console.error(err);
+              });
             }
 
-            console.log(`Cobalt : suspend cobalt request`);
+            console.log("Cobalt : suspend cobalt request");
+          }).catch(err => {
+            console.error(err);
           });
           break;
 
@@ -39512,8 +39578,8 @@ var APP_accelerator_home_ui = (function () {
     $initLaunchPad(url) {
       return new Promise((resolve, reject) => {
         appApi.getPluginStatus('Netflix').then(result => {
-          console.log(`netflix plugin status is :`, JSON.stringify(result));
-          console.log(`netflix plugin status is :`, result);
+          console.log("netflix plugin status is :", JSON.stringify(result));
+          console.log("netflix plugin status is :", result);
 
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             Router.navigate('image', {
@@ -39554,7 +39620,7 @@ var APP_accelerator_home_ui = (function () {
               }); // ie. org.rdk.RDKShell.launch
             } else {
               appApi.launchPremiumApp("Netflix").then(res => {
-                console.log(`Netflix : launch premium app resulted in `, JSON.stringify(res));
+                console.log("Netflix : launch premium app resulted in ", JSON.stringify(res));
                 resolve(true);
               });
             }
@@ -39592,7 +39658,7 @@ var APP_accelerator_home_ui = (function () {
             let url = notification.parameters.url;
             let pApp = Storage.get('applicationType');
             this.$initLaunchPad(url).then(res => {
-              console.log(`Netflix : storage has been set for netflix`);
+              console.log("Netflix : storage has been set for netflix");
               Storage.set('applicationType', 'Netflix');
               this.deactivateChildApp(pApp);
               let params = {
@@ -39648,7 +39714,7 @@ var APP_accelerator_home_ui = (function () {
               applicationName: notification.applicationName,
               state: 'suspended'
             };
-            console.log(`Event : On hide request, updating application Status to `, params);
+            console.log("Event : On hide request, updating application Status to ", params);
             this.xcastApi.onApplicationStateChanged(params);
           }
 
@@ -39723,7 +39789,7 @@ var APP_accelerator_home_ui = (function () {
             this.xcastApi.onApplicationStateChanged(params);
           } else if (applicationName === 'Netflix') {
             appApi.getPluginStatus('Netflix').then(result => {
-              console.log(`netflix plugin status is :`, JSON.stringify(result));
+              console.log("netflix plugin status is :", JSON.stringify(result));
 
               if (result[0].state != 'deactivated') {
                 appApi.deactivateNativeApp('Netflix');
@@ -39734,7 +39800,7 @@ var APP_accelerator_home_ui = (function () {
                 };
                 this.xcastApi.onApplicationStateChanged(params);
               } else {
-                console.log(`Netflix : application is already in deactivated state, hence skipping deactivation`);
+                console.log("Netflix : application is already in deactivated state, hence skipping deactivation");
               }
             }).catch(err => {
               console.error("Netflix : error while fetching plugin status", JSON.stringify(err));
@@ -39771,7 +39837,7 @@ var APP_accelerator_home_ui = (function () {
               params.state = 'suspended';
             }
 
-            console.log(`STATE CHANGED : `);
+            console.log("STATE CHANGED : ");
             console.log(results);
             this.xcastApi.onApplicationStateChanged(params);
             console.log('State of ' + this.xcastApps(notification.applicationName));
@@ -39793,29 +39859,29 @@ var APP_accelerator_home_ui = (function () {
 
     $mountEventConstructor(fun) {
       this.ListenerConstructor = fun;
-      console.log(`MountEventConstructor was initialized`); // console.log(`listener constructor was set t0 = ${this.ListenerConstructor}`);
+      console.log("MountEventConstructor was initialized"); // console.log(`listener constructor was set t0 = ${this.ListenerConstructor}`);
     }
 
     $registerUsbMount() {
       this.disposableListener = this.ListenerConstructor();
-      console.log(`Successfully registered the usb Mount`);
+      console.log("Successfully registered the usb Mount");
     }
 
     $deRegisterUsbMount() {
-      console.log(`the current usbListener = ${this.disposableListener}`);
+      console.log("the current usbListener = ".concat(this.disposableListener));
       this.disposableListener.dispose();
-      console.log(`successfully deregistered usb listener`);
+      console.log("successfully deregistered usb listener");
     }
 
     standby(value) {
-      console.log(`standby call`);
+      console.log("standby call");
 
       if (value == 'Back') ; else {
         if (powerState == 'ON') {
-          console.log(`Power state was on trying to set it to standby`);
+          console.log("Power state was on trying to set it to standby");
           appApi.standby(value).then(res => {
             if (res.success) {
-              console.log(`successfully set to standby`);
+              console.log("successfully set to standby");
               powerState = 'STANDBY';
 
               if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
@@ -39855,7 +39921,7 @@ var APP_accelerator_home_ui = (function () {
               }).then(result => {
                 console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
               }).catch(err => {
-                console.log(`error while moving the resident app to front = ${err}`);
+                console.log("error while moving the resident app to front = ".concat(err));
               });
               thunder.call('org.rdk.RDKShell', 'setFocus', {
                 client: 'ResidentApp'
@@ -39873,7 +39939,7 @@ var APP_accelerator_home_ui = (function () {
 
     $registerInactivityMonitoringEvents() {
       return new Promise((resolve, reject) => {
-        console.log(`registered inactivity listener`);
+        console.log("registered inactivity listener");
         appApi.standby('ON').then(res => {
           if (res.success) {
             powerState = 'ON';
@@ -39883,26 +39949,26 @@ var APP_accelerator_home_ui = (function () {
         thunder.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {
-          console.log(`activated the rdk shell plugin trying to set the inactivity listener; res = ${JSON.stringify(res)}`);
+          console.log("activated the rdk shell plugin trying to set the inactivity listener; res = ".concat(JSON.stringify(res)));
           thunder.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
-            console.log(`user was inactive`);
+            console.log("user was inactive");
 
             if (powerState === "ON" && Storage.get('applicationType') == '') {
               this.standby("STANDBY");
             }
           }, err => {
-            console.error(`error while inactivity monitoring , ${err}`);
+            console.error("error while inactivity monitoring , ".concat(err));
           });
           resolve(res);
         }).catch(err => {
           reject(err);
-          console.error(`error while activating the displaysettings plugin; err = ${err}`);
+          console.error("error while activating the displaysettings plugin; err = ".concat(err));
         });
       });
     }
 
     $resetSleepTimer(t) {
-      console.log(`reset sleep timer call ${t}`);
+      console.log("reset sleep timer call ".concat(t));
       var arr = t.split(" ");
 
       function setTimer() {
@@ -39913,18 +39979,18 @@ var APP_accelerator_home_ui = (function () {
           let temp1 = parseFloat(arr[0]) * 60;
           appApi.setInactivityInterval(temp1).then(res => {
             Storage.set('TimeoutInterval', t);
-            console.log(`successfully set the timer to ${t} hours`);
+            console.log("successfully set the timer to ".concat(t, " hours"));
           }).catch(err => {
-            console.error(`error while setting the timer`);
+            console.error("error while setting the timer");
           });
         } else if (temp === 'M') {
-          console.log(`minutes`);
+          console.log("minutes");
           let temp1 = parseFloat(arr[0]);
           appApi.setInactivityInterval(temp1).then(res => {
             Storage.set('TimeoutInterval', t);
-            console.log(`successfully set the timer to ${t} minutes`);
+            console.log("successfully set the timer to ".concat(t, " minutes"));
           }).catch(err => {
-            console.error(`error while setting the timer`);
+            console.error("error while setting the timer");
           });
         }
       }
@@ -39933,20 +39999,20 @@ var APP_accelerator_home_ui = (function () {
         appApi.enabledisableinactivityReporting(false).then(res => {
           if (res.success === true) {
             Storage.set('TimeoutInterval', false);
-            console.log(`Disabled inactivity reporting`); // this.timerIsOff = true;
+            console.log("Disabled inactivity reporting"); // this.timerIsOff = true;
           }
         }).catch(err => {
-          console.error(`error : unable to set the reset; error = ${err}`);
+          console.error("error : unable to set the reset; error = ".concat(err));
         });
       } else {
         appApi.enabledisableinactivityReporting(true).then(res => {
           if (res.success === true) {
-            console.log(`Enabled inactivity reporting; trying to set the timer to ${t}`); // this.timerIsOff = false;
+            console.log("Enabled inactivity reporting; trying to set the timer to ".concat(t)); // this.timerIsOff = false;
 
             setTimer();
           }
         }).catch(err => {
-          console.error(`error while enabling inactivity reporting`);
+          console.error("error while enabling inactivity reporting");
         });
       }
     }

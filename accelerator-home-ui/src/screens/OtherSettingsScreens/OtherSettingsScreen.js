@@ -78,7 +78,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Remote Control',
+                            text: Language.translate('Remote Control'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
@@ -103,7 +103,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Screen-Saver: ',
+                            text: Language.translate('Screen-Saver: '),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,

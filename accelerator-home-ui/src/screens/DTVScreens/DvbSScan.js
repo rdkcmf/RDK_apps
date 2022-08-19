@@ -335,7 +335,7 @@ export default class DvbSScan extends Lightning.Component {
             y: 25,
             mountY: 0.5,
             text: {
-              text: Language.translate("Please wait scan in progress..."),
+              text: Language.translate("Please wait scan in progress") + "...",
               textColor: CONFIG.theme.hex,
               fontFace: CONFIG.language.font,
               fontSize: 21,
@@ -407,7 +407,7 @@ export default class DvbSScan extends Lightning.Component {
       duration: 0.6,
       repeat: 0,
       stopMethod: "immediate",
-      actions: [{ p: "text.text", v: { 0: "Please wait scan in progress", 0.3:"Please wait scan in progress.", 0.6:"Please wait scan in progress..", 0.9: "Please wait scan in progress..." } }],
+      actions: [{ p: "text.text", v: { 0: Language.translate("Please wait scan in progress"), 0.3:Language.translate("Please wait scan in progress")+".", 0.6:Language.translate("Please wait scan in progress")+"..", 0.9: Language.translate("Please wait scan in progress")+"..." } }],
     });
   }
 
@@ -585,98 +585,74 @@ export default class DvbSScan extends Lightning.Component {
   setFrequency(frequency) {
     this._setState("Frequency");
     this.selectedFrequency = frequency;
-    // console.log(this.selectedFrequency);
     this.tag("Frequency.Title").text.text =
-      "Frequency: " +
+    Language.translate("Frequency") + ": " +
       (this.selectedFrequency !== ""
         ? this.selectedFrequency
-        : "Select a Frequency");
-    //this.consoleLog();
+        : Language.translate("Select a")+ " " + Language.translate("Frequency"));
   }
 
   setSymbolRate(symbolrate) {
     this._setState("SymbolRate");
     this.selectedSymbolRate = symbolrate;
-    // console.log(this.selectedSymbolRate);
     this.tag("SymbolRate.Title").text.text =
-      "Symbol Rate: " +
+    Language.translate("Symbol Rate") + ": " +
       (this.selectedSymbolRate !== ""
         ? this.selectedSymbolRate
-        : "Select a Symbol Rate");
-    //this.consoleLog();
+        : Language.translate("Select a")+ " " + Language.translate("Symbol Rate"));
   }
 
   resetForm() {
 
     this.setScanFinished();
     //reset the form variables to initial state on exit from this form
-    //satellite*********************
     this.selectedSatellite = {};
-    this.tag("Satellite.Title").text.text = "Satellite";
-    //******************************
-    //satellite*********************
+    this.tag("Satellite.Title").text.text = Language.translate("Satellite");
     this.selectedFrequency = "";
-    this.tag("Frequency.Title").text.text = "Frequency";
-    //******************************
-    //polarity*********************
+    this.tag("Frequency.Title").text.text = Language.translate("Frequency");
     this.selectedPolarity = "";
-    this.tag("Polarity.Title").text.text = "Polarity";
-    //******************************
-    //satellite*********************
+    this.tag("Polarity.Title").text.text = Language.translate("Polarity");
     this.selectedSymbolRate = "";
-    this.tag("SymbolRate.Title").text.text = "SymbolRate";
-    //******************************
-    //fec*********************
+    this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate");
     this.selectedFEC = "";
-    this.tag("FEC.Title").text.text = "FEC";
-    //******************************
-    //dvbs2*********************
+    this.tag("FEC.Title").text.text = Language.translate("FEC");
     this.selectedDVBS2 = false;
     this.tag("DVBS2.Button").src = Utils.asset(
       "images/settings/ToggleOffWhite.png"
     );
-    //******************************
-    //modulation*********************
     this.selectedModulation = "";
-    this.tag("Modulation.Title").text.text = "Modulation";
-    //******************************
-    //searchtype*********************
+    this.tag("Modulation.Title").text.text = Language.translate("Modulation");
     this.selectedSearchType = "";
-    this.tag("SearchType.Title").text.text = "Search Mode";
-    //******************************
-    //retune*********************
+    this.tag("SearchType.Title").text.text = Language.translate("Search Mode");
     this.selectedRetune = false;
     this.tag("Retune.Button").src = Utils.asset(
       "images/settings/ToggleOffWhite.png"
     );
-    //******************************
-    //startscan*********************
     this.tag("ErrorNotification").visible = false;
-    //******************************
   }
 
   verifyInputs() {
     let errorString = "";
     if (Object.keys(this.selectedSatellite).length === 0) {
-      errorString += "| Satellite ";
+      errorString += "| " + Language.translate("Satellite") + " ";
     }
     if (this.selectedFrequency === "") {
-      errorString += "| Frequency ";
+      errorString += "| " + Language.translate("Frequency") + " ";
     }
     if (this.selectedPolarity === "") {
-      errorString += "| Polarity ";
+      errorString += "| " + Language.translate("Polarity") + " ";
     }
     if (this.selectedSymbolRate === "") {
-      errorString += "| Symbol Rate ";
+      errorString += "| " + Language.translate("Symbol Rate") + " ";
     }
     if (this.selectedFEC === "") {
-      errorString += "| FEC ";
+      errorString += "| " + Language.translate("FEC") + " ";
     }
     if (this.selectedModulation === "") {
-      errorString += "| Modulation ";
+      errorString += "| " + Language.translate("Modulation") + " ";
     }
     if (this.selectedSearchType === "") {
-      errorString += "| Search Mode ";
+      errorString += "| " + Language.translate("Search Mode") + " ";
     }
     return errorString;
   }
@@ -694,7 +670,6 @@ export default class DvbSScan extends Lightning.Component {
           this._setState("Frequency");
         }
         _handleEnter() {
-          // console.log(this.satelliteList);
           if (this.satelliteList.length > 0) {
             this._setState("Satellite.SelectSatellite");
           } else {
@@ -709,11 +684,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectSatellite").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Satellite"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Satellite"));
               }
               $exit() {
                 this.tag("SelectSatellite").visible = false;
@@ -722,10 +693,10 @@ export default class DvbSScan extends Lightning.Component {
                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
                 );
                 this.tag("Satellite.Title").text.text =
-                  "Satellite: " +
+                Language.translate("Satellite") + ": " +
                   (Object.keys(this.selectedSatellite).length !== 0
                     ? this.selectedSatellite.name
-                    : "Select a Satellite"); 
+                    : Language.translate("Select a")+ " " + Language.translate("Satellite")); 
               }
               _getFocused() {
                 return this.tag("SelectSatellite");
@@ -763,11 +734,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectFrequency").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Frequency"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Frequency"));
               }
               $exit() {
                 this.tag("SelectFrequency").visible = false;
@@ -808,11 +775,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectPolarity").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Polarity"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Polarity"));
               }
               $exit() {
                 this.tag("SelectPolarity").visible = false;
@@ -821,11 +784,11 @@ export default class DvbSScan extends Lightning.Component {
                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
                 );
                 this.tag("Polarity.Title").text.text =
-                  "Polarity: " +
+                Language.translate("Polarity") +  ": " +
                   (this.selectedPolarity !== ""
                     ? this.selectedPolarity.charAt(0).toUpperCase() +
                       this.selectedPolarity.slice(1)
-                    : "Select a Polarity");
+                    : Language.translate("Select a")+ " " + Language.translate("Polarity"));
               }
               _getFocused() {
                 return this.tag("SelectPolarity");
@@ -864,11 +827,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectSymbolRate").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Symbol Rate"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Symbol Rate"));
               }
               $exit() {
                 this.tag("SelectSymbolRate").visible = false;
@@ -909,11 +868,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectFEC").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / FEC"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("FEC"));
               }
               $exit() {
                 this.tag("SelectFEC").visible = false;
@@ -922,13 +877,13 @@ export default class DvbSScan extends Lightning.Component {
                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
                 );
                 this.tag("FEC.Title").text.text =
-                  "FEC: " +
+                Language.translate("FEC") + ": " +
                   (this.selectedFEC !== ""
                     ? this.selectedFEC
                         .replace("fec", "")
                         .replace("_", "/")
                         .toUpperCase()
-                    : "Select a FEC");
+                    : Language.translate("Select a")+ " " + Language.translate("FEC"));
               }
               _getFocused() {
                 return this.tag("SelectFEC");
@@ -965,7 +920,6 @@ export default class DvbSScan extends Lightning.Component {
               "images/settings/ToggleOffWhite.png"
             );
           }
-          // console.log(this.selectedDVBS2);
         }
       },
       class Modulation extends this {
@@ -991,11 +945,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectModulation").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Modulation"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Modulation"));
               }
               $exit() {
                 this.tag("SelectModulation").visible = false;
@@ -1004,10 +954,10 @@ export default class DvbSScan extends Lightning.Component {
                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
                 );
                 this.tag("Modulation.Title").text.text =
-                  "Modulation: " +
+                Language.translate("Modulation") + ": " +
                   (this.selectedModulation !== ""
                     ? this.selectedModulation.toUpperCase()
-                    : "Select a Modulation"); 
+                    : Language.translate("Select a")+ " " + Language.translate("Modulation")); 
               }
               _getFocused() {
                 return this.tag("SelectModulation");
@@ -1043,11 +993,7 @@ export default class DvbSScan extends Lightning.Component {
               $enter() {
                 this.tag("DvbSScanScreenContents").visible = false;
                 this.tag("SelectSearchType").visible = true;
-                this.widgets.menu.updateTopPanelText(
-                  Language.translate(
-                    "Settings / Live TV / Scan / DVB-S Scan / Search Mode"
-                  )
-                );
+                this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Search Mode"));
               }
               $exit() {
                 this.tag("SelectSearchType").visible = false;
@@ -1055,13 +1001,12 @@ export default class DvbSScan extends Lightning.Component {
                 this.widgets.menu.updateTopPanelText(
                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
                 );
-                // console.log(this.selectedSearchType);
                 this.tag("SearchType.Title").text.text =
-                  "Search Mode: " +
+                Language.translate("Search Mode") + ": " +
                   (this.selectedSearchType !== ""
                     ? this.selectedSearchType.charAt(0).toUpperCase() +
                       this.selectedSearchType.slice(1)
-                    : "Select a Search Mode"); 
+                    : Language.translate("Select a")+ " " + Language.translate("Search Mode")); 
               }
               _getFocused() {
                 return this.tag("SelectSearchType");
@@ -1099,7 +1044,6 @@ export default class DvbSScan extends Lightning.Component {
               "images/settings/ToggleOffWhite.png"
             );
           }
-          // console.log(this.selectedRetune);
         }
       },
       class StartScan extends this {
@@ -1144,9 +1088,7 @@ export default class DvbSScan extends Lightning.Component {
           } else {
             this.tag(
               "ErrorNotification.Content"
-            ).text.text = Language.translate(
-              "Please enter the values for the following " + errorString
-            );
+            ).text.text = Language.translate("Please enter the values for the following ") + errorString;
             this.tag("ErrorNotification").visible = true;
           }
         }

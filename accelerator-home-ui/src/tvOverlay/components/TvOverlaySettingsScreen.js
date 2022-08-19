@@ -71,7 +71,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
       })
       .catch((err) => {
         console.log(
-          "ERROR from settings overlay screen init: getSupportedPictureModes: ",
+          "ERROR from settings overlay screen firstEnable: getSupportedPictureModes: ",
           JSON.stringify(err)
         );
       });
@@ -86,7 +86,7 @@ export default class TvOverlaySettingsScreen extends Lightning.Component {
       })
       .catch((err) => {
         console.log(
-          "ERROR from settings overlay screen init: getSupportedColorTemps: ",
+          "ERROR from settings overlay screen firstEnable: getSupportedColorTemps: ",
           JSON.stringify(err)
         );
       });

@@ -418,6 +418,10 @@ export default class AppApi {
           .then((res) => {
 
             console.log(`WebApp : webapp launch resulted in : `, JSON.stringify(res));
+            this.setVisibility("ResidentApp", false)
+            thunder.call('org.rdk.RDKShell', 'moveToFront', {
+              client: childCallsign,
+            })
             resolve(true)
 
           })
@@ -489,6 +493,12 @@ export default class AppApi {
           if (url) {
             thunder.call('Cobalt', 'deeplink', url)
           }
+          this.setVisibility("ResidentApp", false)
+          thunder.call('org.rdk.RDKShell', 'moveToFront', {
+            client: "Cobalt",
+          }).catch(err => { console.error(err) })
+          thunder.call("org.rdk.RDKShell", "setFocus", { client: childCallsign }).catch(err => { console.error(err) });
+          Storage.set("applicationType", "Cobalt");
           console.log("Cobalt : launch cobalt results in ", JSON.stringify(res))
           resolve(true)
         })
@@ -564,9 +574,9 @@ export default class AppApi {
           else {
             console.log(`Amazon : launch amazon results in :`, res);
           }
-          this.setVisibility("Amazon",true)
-          Storage.set("applicationType","Amazon")
-          console.log(`the current application Type : `,Storage.get("applicationType"));
+          this.setVisibility(childCallsign, true)
+          Storage.set("applicationType", childCallsign)
+          console.log(`the current application Type : `, Storage.get("applicationType"));
           resolve(true)
         })
         .catch(err => {
@@ -749,14 +759,16 @@ export default class AppApi {
         client: client,
         visible: visible,
       })
-      thunder.call('org.rdk.RDKShell', 'setFocus', { client: client })
-        .then(res => {
-          resolve(true)
-        })
-        .catch(err => {
-          console.log('Set focus error', JSON.stringify(err))
-          reject(false)
-        })
+      if(visible){
+        thunder.call('org.rdk.RDKShell', 'setFocus', { client: client })
+          .then(res => {
+            resolve(true)
+          })
+          .catch(err => {
+            console.log('Set focus error', JSON.stringify(err))
+            reject(false)
+          })
+      }
     })
   }
 

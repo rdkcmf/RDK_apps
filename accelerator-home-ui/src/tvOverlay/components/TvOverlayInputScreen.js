@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Storage } from "@lightningjs/sdk";
+import { Language, Lightning, Storage } from "@lightningjs/sdk";
 import { CONFIG } from "../../Config/Config";
 import TvOverlayInputItem from "../../items/TvOverlayInputItem";
 import HDMIApi from "../../api/HDMIApi";
@@ -41,7 +41,7 @@ export default class TvOverlayInputScreen extends Lightning.Component {
           y: 70,
           x: 100,
           text: {
-            text: "Video Input",
+            text: Language.translate("Video Input"),
             fontFace: CONFIG.language.font,
             textColor: CONFIG.theme.hex,
             fontSize: 40,

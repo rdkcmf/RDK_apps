@@ -142,7 +142,7 @@ export default class DeviceScreen extends Lightning.Component {
                         y: 45,
                         mountY: 0.5,
                         text: {
-                            text: 'Factory Reset',
+                            text: Language.translate('Factory Reset'),
                             textColor: COLORS.titleColor,
                             fontFace: CONFIG.language.font,
                             fontSize: 25,
