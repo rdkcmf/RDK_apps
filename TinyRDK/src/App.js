@@ -24,6 +24,7 @@ import thunder from './api/ThunderInstance';
 import AppApi from './api/AppApi';
 import {CONFIG} from './Config/Config'
 import { keyIntercept } from './keyIntercept/keyIntercept';
+import Menu from './views/Menu'
 
 var powerState = 'ON';
 
@@ -47,6 +48,11 @@ export default class App extends Router.App {
         // this hosts all the pages
         forceZIndexContext: true
       },
+      Widgets: {
+        Menu: {
+          type: Menu
+        },
+      }
     }
   }
 

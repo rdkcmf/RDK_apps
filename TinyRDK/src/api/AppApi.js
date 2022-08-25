@@ -212,6 +212,90 @@ export default class AppApi {
         })
     })
   }
+  getZone() {
+    return new Promise((resolve, reject) => {
+      const systemcCallsign = 'org.rdk.System'
+      thunder.call(systemcCallsign, 'getTimeZoneDST')
+        .then(result => {
+          resolve(result.timeZone)
+        })
+        .catch(err => {
+          console.log('Failed to fetch Time Zone')
+          resolve(undefined)
+        })
+    })
+  }
 
+  getPluginStatus(plugin) {
+    return new Promise((resolve, reject) => {
+      thunder.call('Controller', `status@${plugin}`)
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  }
+  //2. Get default interface
+  getDefaultInterface() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'getDefaultInterface')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting default interface:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+   //1. Get IP Setting
+   getIPSetting(defaultInterface) {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Network', 'getIPSettings', {
+          "interface": defaultInterface,
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting network info:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+
+   //5. getConnectedSSID
+   getConnectedSSID() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.Wifi', 'getConnectedSSID')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("error in getting connected SSID:", JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+  }
+ //4. Get interfaces
+ getInterfaces() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.Network', 'getInterfaces')
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("error in getting interfaces:", JSON.stringify(err, 3, null))
+        resolve(false)
+      })
+  })
+}
 
 }

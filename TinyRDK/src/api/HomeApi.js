@@ -20,22 +20,18 @@
  import { metroAppsInfo } from "./../../static/data/MetroAppsInfo.js";
  import { metroAppsInfoOffline } from "./../../static/data/MetroAppsInfoOffline.js";
  import { tvShowsInfo } from "./../../static/data/TvShowsInfo.js";
+ import { sidePanelInfo } from "./../../static/data/SidePanelInfo.js";
+ import { showCaseApps } from "../../static/data/LightningShowcase";
+ import { appListInfoOffline } from "../../static/data/AppListInfoOffline";
 
 /**
  * Class that returns the data required for home screen.
  */
-export default class HomeApi{
 
-  getAppListInfo() {
-    let  appsMetaData = appListInfo;
-    return appsMetaData;
-  }
-
-  
-  getMetroInfo() {
-    let  metroAppsMetaData = metroAppsInfo;
-    return metroAppsMetaData;
-  }
+ let IpAddress1 = "";
+ let IpAddress2 = "";
+ 
+export default class HomeApi{ 
 
   getOfflineMetroApps() {
     return metroAppsInfoOffline;
@@ -43,5 +39,41 @@ export default class HomeApi{
   getTVShowsInfo() {
     return tvShowsInfo;
   }
+   getSidePanelInfo() {
+    return sidePanelInfo;
+  }
+  getAppListInfo() {
+    let appsMetaData;
 
+    if (IpAddress1 || IpAddress2) {
+      appsMetaData = appListInfo;
+    } else {
+      appsMetaData = appListInfoOffline;
+    }
+
+    return appsMetaData;
+  }
+
+  getMetroInfo() {
+    let metroAppsMetaData;
+
+    if (IpAddress1 || IpAddress2) {
+      metroAppsMetaData = metroAppsInfo;
+    } else {
+      metroAppsMetaData = metroAppsInfoOffline;
+    }
+
+    return metroAppsMetaData;
+  }
+
+  getShowCaseApps() {
+    return showCaseApps;
+  }
+  getAllApps() {
+    return [
+      ...this.getAppListInfo(),
+      ...this.getMetroInfo(),
+      ...this.getShowCaseApps(),
+    ];
+  }
 }

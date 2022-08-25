@@ -243,7 +243,13 @@ _firstActive(){
         _handleDown() {
           this._setState('MetroApps')
         }
-
+        _handleUp() {
+            this.widgets.menu.notify('TopPanel')
+        }
+        _handleLeft() {
+          this.tag('Text1').text.fontStyle = 'normal'
+          Router.focusWidget('Menu')
+        }
         _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
