@@ -441,12 +441,14 @@ export default class Epg extends Lightning.Component {
     } else {
       this.D++
     }
+    console.log(`setting vertical scroll from ${this.D - 8} to ${this.D} based the value ${n}`)
     this.activeChannels = this.channels.slice(this.D - 8, this.D)
     this.setChannels(this.activeChannels)
     this.setShows4Channels(this.activeChannels)
   }
 
   onDataProvidedX() {
+    console.log(`on Data Provided`)
     this.initialize()
     this.scrollVertically()
     this.cellTimeTracker = this.gridInstance[this.currentCellIndex].starttime
@@ -466,9 +468,14 @@ export default class Epg extends Lightning.Component {
 
 
   _focus() {
+
+    this.D = 7
     this.DTV = this.DTV ? this.DTV : new DTVApi();
     let wrapper = this.tag("Wrapper")
     let loader = this.tag("Loader")
+
+    wrapper.visible = false;
+    loader.visible = true;
 
     this.loadingAnimation.start();
     let self = this;
@@ -546,6 +553,7 @@ export default class Epg extends Lightning.Component {
                 ]
 
                 if (channels.length - 1 === traversedChannels) {
+                  console.log(`premium apps exclusive resolve`);
                   page.channels = channels
                   resolve(true)
                 }
@@ -616,8 +624,6 @@ export default class Epg extends Lightning.Component {
   }
 
   _unfocus() {
-    this.tag("Wrapper").visible = false;
-    this.tag("Loader").visible = true;
     //resetting all variables
     this.D = 7
     this.currentCellIndex = 0
@@ -685,7 +691,10 @@ export default class Epg extends Lightning.Component {
             this.updateCursor()
           } else if (this.gridInstance[this.currentCellIndex].showIndex > 0) {
             this.scrollHorizontally(-1)
-          } else console.log("can't traverse any left")
+          } else {
+            console.log("can't traverse any left")
+            Router.focusWidget('Menu')
+          }
           this.paintCell()
         }
 

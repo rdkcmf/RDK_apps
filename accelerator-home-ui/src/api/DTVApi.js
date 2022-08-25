@@ -30,7 +30,6 @@ let playerID = -1; //set to -1 to indicate nothing is currently playing
 export default class DTVApi {
   activate() {
     return new Promise((resolve, reject) => {
-      // resolve(true); //#forTesting
       thunder.Controller.activate({ callsign: systemcCallsign })
         .then(() => {
           resolve(true);
@@ -85,16 +84,16 @@ export default class DTVApi {
   //returns the list of services(channels with name, uri and other details)
   serviceList() {
     let arr = [
-    { shortname: 'Amazon Prime', dvburi: 'OTT', lcn: 0 },
-    { shortname: 'Netflix', dvburi: 'OTT', lcn: 0 },
-    { shortname: 'Youtube', dvburi: 'OTT', lcn: 0 }
+      { shortname: 'Amazon Prime', dvburi: 'OTT', lcn: 0 },
+      { shortname: 'Netflix', dvburi: 'OTT', lcn: 0 },
+      { shortname: 'Youtube', dvburi: 'OTT', lcn: 0 }
     ];
     return new Promise((resolve, reject) => {
       thunder
         .call(systemcCallsign, "serviceList@dvbs")
         .then((result) => {
-          console.log("serviceListResult: ", JSON.stringify(result));
-          arr.concat(result)
+          arr = arr.concat(result)
+          console.log("serviceListResult: ", JSON.stringify(arr));
           resolve(arr);
         })
         .catch((err) => {
@@ -233,7 +232,7 @@ export default class DTVApi {
     });
   }
 
-  
+
   startPlaying(params) {
     //params contains dvburi and lcn
     console.log("PARAMS: startPlaying: ", JSON.stringify(params));
@@ -279,7 +278,7 @@ export default class DTVApi {
 
   launchChannel(dvburi) {
     console.log("PARAMS: launchChannel: ", JSON.stringify(dvburi));
-    if(playerID!== -1){
+    if (playerID !== -1) {
       this.exitChannel()
       console.log("launchChannel: FAIL: something is still playing, trying to call exitChannel")
       return Promise.reject("Fail: something is still playing")
@@ -291,7 +290,7 @@ export default class DTVApi {
       let data = {
         "openRequest": {
           "type": "main",
-          "locator": "dtv://"+dvburi,
+          "locator": "dtv://" + dvburi,
           "playerParams": {
             "subContentType": "live",
             "window": "0,0,1920,1080",
@@ -305,13 +304,13 @@ export default class DTVApi {
         body: JSON.stringify(data)
       };
       console.log("launchChannel: url & params: ", JSON.stringify(url), JSON.stringify(params))
-      fetch(url,params).then(response => response.json()).then(result => {
-        console.log("launchChannel: SUCCESS: ",JSON.stringify(result))
+      fetch(url, params).then(response => response.json()).then(result => {
+        console.log("launchChannel: SUCCESS: ", JSON.stringify(result))
         playerID = result.openStatus.sessionId
-        console.log("launchChannel: SESSIONID: ",playerID)
+        console.log("launchChannel: SESSIONID: ", playerID)
         resolve(result)
       }).catch(err => {
-        console.log("launchChannel: FAILED: ",JSON.stringify(err))
+        console.log("launchChannel: FAILED: ", JSON.stringify(err))
         reject(err)
       })
     });
@@ -329,12 +328,12 @@ export default class DTVApi {
         body: JSON.stringify(data)
       };
       console.log("exitChannel: url & params: ", JSON.stringify(url), JSON.stringify(params))
-      fetch(url,params).then(response => response.json()).then(result => {
-        console.log("exitChannel: SUCCESS: ",JSON.stringify(result))
+      fetch(url, params).then(response => response.json()).then(result => {
+        console.log("exitChannel: SUCCESS: ", JSON.stringify(result))
         playerID = -1
         resolve(result)
       }).catch(err => {
-        console.log("exitChannel: FAILED: ",JSON.stringify(err))
+        console.log("exitChannel: FAILED: ", JSON.stringify(err))
         reject(err)
       })
     });
