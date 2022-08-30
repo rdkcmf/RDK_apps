@@ -66,7 +66,13 @@ export default class AppApi {
   /**
    * Function to launch Netflix/Amazon Prime app.
    */
-  launchApp(childCallsign,url) {
+ async launchApp(childCallsign,url, preventInternetCheck) {
+    if(!preventInternetCheck){//preventInternetCheck is a boolean, 
+      let internet = await this.isConnectedToInternet();
+      if(!internet){
+        return new Promise.reject("No Internet Available, can't launch app.")
+      }
+    }
     let params = {}
     if(url !== undefined && childCallsign !== "Cobalt"){ //for cobalt url is passed through deep link method instead of launch
       params = {
@@ -295,6 +301,28 @@ export default class AppApi {
         console.log("error in getting interfaces:", JSON.stringify(err, 3, null))
         resolve(false)
       })
+  })
+}
+
+isConnectedToInternet() {
+  return new Promise((resolve, reject) => {
+    let header = new Headers();
+    header.append('pragma', 'no-cache');
+    header.append('cache-control', 'no-cache');
+    
+    fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html",{method: 'GET',headers: header,}).then(res => {
+      if(res.status >= 200 && res.status <= 300){
+        console.log("Connected to internet");
+        resolve(true)
+      } else{
+        console.log("No Internet Available");
+        resolve(false)
+      }
+    }).catch(err => {
+      console.log("Internet Check failed: No Internet Available");
+      resolve(false); //fail of fetch method needs to be considered as no internet
+    })
+
   })
 }
 

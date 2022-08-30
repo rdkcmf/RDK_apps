@@ -4,7 +4,6 @@ import { List } from '@lightningjs/ui'
 import HomeApi from "../api/HomeApi.js";
 import ListItem from '../items/ListItem.js'
 import AppApi from "../api/AppApi.js";
-import { ProgressBar } from '@lightningjs/ui-components'
 
 export default class MainView extends Lightning.Component {
   static _template() {
@@ -61,7 +60,7 @@ export default class MainView extends Lightning.Component {
           x: -20,
           y: 435,
           type: List,
-          // flex: { direction: 'row', paddingLeft: 20, wrap: false },
+         flex: { direction: 'row', paddingLeft: 20, wrap: false },
           // w: 1745,
           h: 300,
           scroll: {
@@ -91,6 +90,7 @@ export default class MainView extends Lightning.Component {
           x: -20,
           y: 735,
           type: List,
+          flex: { direction: 'row', paddingLeft: 20, wrap: false },
           h: 300,
           scroll: {
             after: 12
@@ -336,9 +336,9 @@ _firstActive(){
           //   Router.focusWidget('Menu')
           // }
         }
-        _handleEnter() {
-          if (Storage.get('ipAddress')) {
-            //this.fireAncestors('$goToPlayer')
+       async _handleEnter() {
+          let internet = await this.appApi.isConnectedToInternet();
+          if (internet) {
             Router.navigate('player')
           }
        

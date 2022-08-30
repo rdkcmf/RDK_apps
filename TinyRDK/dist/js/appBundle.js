@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 26 Aug 2022 12:56:47 GMT
+ * Generated: Tue, 30 Aug 2022 16:17:11 GMT
  */
 
 var APP_com_metrological_app_TinyRDK = (function () {
@@ -9506,7 +9506,7 @@ var APP_com_metrological_app_TinyRDK = (function () {
     url: '/images/apps/App_YouTube_454x255.png'
   }, {
     displayName: 'Xumo',
-    applicationType: 'WebApp',
+    applicationType: 'HtmlApp',
     uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png'
   }, {
@@ -10231,7 +10231,16 @@ var APP_com_metrological_app_TinyRDK = (function () {
      */
 
 
-    launchApp(childCallsign, url) {
+    async launchApp(childCallsign, url, preventInternetCheck) {
+      if (!preventInternetCheck) {
+        //preventInternetCheck is a boolean, 
+        let internet = await this.isConnectedToInternet();
+
+        if (!internet) {
+          return new Promise.reject("No Internet Available, can't launch app.");
+        }
+      }
+
       let params = {};
 
       if (url !== undefined && childCallsign !== "Cobalt") {
@@ -10407,29 +10416,7 @@ var APP_com_metrological_app_TinyRDK = (function () {
           reject(err);
         });
       });
-    } // launchOverlay(url, client) {
-    //   return new Promise(resolve => {
-    //     const childCallsign = client
-    //     thunder
-    //       .call('org.rdk.RDKShell', 'launch', {
-    //         callsign: childCallsign,
-    //         type: 'ResidentApp',
-    //         uri: url,
-    //       })
-    //       .then(res => {
-    //         thunder.call('org.rdk.RDKShell', 'moveToFront', {
-    //           client: childCallsign,
-    //         })
-    //         console.log(`Overlay : launched overlay : `, res);
-    //         resolve(res)
-    //       })
-    //       .catch(err => {
-    //         console.error("Overlay : error while launching the overlay", err)
-    //         reject(err)
-    //       })
-    //   })
-    // }
-    //2. Get default interface
+    } //2. Get default interface
 
 
     getDefaultInterface() {
@@ -10481,904 +10468,27 @@ var APP_com_metrological_app_TinyRDK = (function () {
       });
     }
 
-  }
-
-  /**
-   * Copyright 2020 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-
-  /**
-   * Grid
-   *
-   * Contains global grid style information to easily maintain consistency throughout components.
-   */
-
-  /**
-   * Sets up spacing configurations to correctly position Items and Rows.
-   */
-  const GRID = {
-    gutters: {
-      horizontal: 80,
-      // space between rows
-      vertical: 40 // space between columns (items)
-
-    },
-    margin: {
-      x: 80,
-      y: 112
-    },
-    spacingIncrement: 8,
-    // the grid is built on an 8-point system
-    columnWidth: 110
-  };
-  /**
-   * Establishes the screen size to be 1080p resolution (1920x1080).
-   */
-
-  const SCREEN = {
-    w: 1920,
-    h: 1080
-  };
-  /**
-   * Determines the width and height of an item based off the data passed into the item
-   * (either all necessary parameters to calculate the dimensions dynamically,
-   * OR all the necessary parameters to hard set the dimensions).
-   *
-   * @param { object } obj
-   * @param { object } fallback
-   *
-   * @return { { number, number } }
-   */
-
-  function getDimensions() {
-    let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    let fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    let {
-      w,
-      h,
-      ratioX,
-      ratioY,
-      upCount
-    } = obj;
-    let fallbackW = fallback.w || 0;
-    let fallbackH = fallback.h || 0;
-    let dimensions = {}; // hard set width and height values were passed in and should override other params
-
-    if (w && h) {
-      dimensions = {
-        w,
-        h: h
-      };
-    } // hard set height and ratio values were passed in, meaning the row has items with mixed ratios,
-    // so the width needs to be calculated
-    else if (h && ratioX && ratioY) {
-      dimensions = {
-        w: Math.round(h * ratioX / ratioY),
-        h: h
-      };
-    } // calculate dynamic width and height based off item ratios
-    else if (ratioX && ratioY && upCount) {
-      dimensions = getItemRatioDimensions(ratioX, ratioY, upCount);
-    } // calculate dynamic width based off a row upcount and a given height
-    else if (h && upCount) {
-      dimensions = {
-        w: Math.round(calculateColumnWidth(upCount)),
-        h: h
-      };
-    } else if (h) {
-      dimensions = {
-        w: fallbackW,
-        h: h
-      };
-    } else if (w) {
-      dimensions = {
-        w: w,
-        h: fallbackH
-      };
-    } // not enough information was provided to properly size the component
-    else {
-      dimensions = {
-        w: fallbackW,
-        h: fallbackH
-      };
-    }
-
-    dimensions = { ...dimensions,
-      ratioX,
-      ratioY,
-      upCount
-    };
-    return dimensions;
-  }
-  /**
-   * Calculates the width and height of an item based off the given ratios
-   * and number of columns across the screen that should be visible before peaking
-   *
-   * @param { number } ratioX
-   * @param { number } ratioY
-   * @param { number } upCount
-   *
-   * @return { { number, number } }
-   */
-
-  function getItemRatioDimensions(ratioX, ratioY, upCount) {
-    let w, h;
-
-    if (ratioX && ratioY && upCount) {
-      w = Math.round(calculateColumnWidth(upCount));
-      h = Math.round(w / ratioX * ratioY);
-    } else {
-      w = 0;
-      h = 0;
-    }
-
-    return {
-      w,
-      h
-    };
-  }
-  /**
-   * Calculates the width of an item given how many columns are requested
-   *
-   * @param { number } upCount
-   *
-   * @return { number }
-   */
-
-  function calculateColumnWidth(upCount) {
-    // the screen width, minus the margin x on each side
-    let rowWidth = SCREEN.w - GRID.margin.x * 2;
-
-    if (upCount) {
-      // the total space of column gaps in between items
-      let columnGapTotal = (upCount - 1) * GRID.gutters.vertical; // the remaining amount of space left for all items
-
-      let totalColumnsWidth = rowWidth - columnGapTotal; // the width of each item in that remaining width
-
-      let itemWidth = totalColumnsWidth / upCount;
-      return itemWidth;
-    }
-
-    return rowWidth;
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-
-  /**
-   * Colors
-   *
-   * Contains global color style information to easily maintain consistency throughout components.
-   */
-
-  /**
-   * Combines rgb hex string and alpha into argb hexadecimal number
-   * @param {string} hex - 6 alphanumeric characters between 0-f
-   * @param {number} [alpha] - number between 0-100 (0 is invisible, 100 is opaque)
-   */
-  function getHexColor$1(hex) {
-    let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
-    if (!hex) {
-      return 0x00;
-    }
-
-    let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
-    let str = "0x".concat(hexAlpha).concat(hex);
-    return parseInt(Number(str), 10);
-  }
-  /**
-   * Returns valid string of HEX color
-   *
-   * @param {string} color
-   * @param {boolean} fill
-   */
-
-  function getValidColor(color) {
-    if (/^0x[0-9a-fA-F]{8}/g.test(color)) {
-      // User enters a valid 0x00000000 hex code
-      return Number(color);
-    } else if (/^#[0-9a-fA-F]{6}/g.test(color)) {
-      // User enters valid #000000 hex code
-      return getHexColor$1(color.substr(1, 6));
-    } else if (typeof color === 'string' && /^[0-9]{8,10}/g.test(color)) {
-      return parseInt(color);
-    } else if (typeof color === 'number' && /^[0-9]{8,10}/g.test(color.toString())) {
-      return color;
-    } else if (typeof color === 'string' && color.indexOf('rgba') > -1) {
-      return rgba2argb(color);
-    } else if (typeof color === 'string' && color.indexOf('rgb') > -1) {
-      let rgba = [...color.replace(/rgb\(|\)/g, '').split(','), '255'];
-      return lng.StageUtils.getArgbNumber(rgba);
-    }
-
-    return null;
-  }
-
-  /**
-   * Copyright 2020 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-
-  /**
-   * Returns a styles object for use by components
-   * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
-   * @param {Object} theme - theme to be provided to styles
-   */
-  var createStyles$1 = ((styles, theme) => {
-    return typeof styles === 'function' ? styles(theme) : styles;
-  });
-
-  /**
-   * Copyright 2020 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  /**
-   * Merges two objects together and returns the duplicate.
-   *
-   * @param {Object} target - object to be cloned
-   * @param {Object} [object] - secondary object to merge into clone
-   */
-
-  function clone$1(target, object) {
-    const _clone = { ...target
-    };
-    if (!object || target === object) return _clone;
-
-    for (const key in object) {
-      const value = object[key];
-
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        _clone[key] = getMergeValue$1(key, target, object);
-      } else {
-        _clone[key] = value;
-      }
-    }
-
-    return _clone;
-  }
-
-  function getMergeValue$1(key, target, object) {
-    const targetVal = target[key];
-    const objectVal = object[key];
-    const targetValType = typeof targetVal;
-    const objectValType = typeof objectVal;
-
-    if (targetValType !== objectValType || objectValType === 'function' || Array.isArray(objectVal)) {
-      return objectVal;
-    }
-
-    if (objectVal && objectValType === 'object') {
-      return clone$1(targetVal, objectVal);
-    }
-
-    return objectVal;
-  }
-  /**
-   * Naively looks for dimensional prop (i.e. w, h, x, y, etc.), first searching for
-   * a transition target value then defaulting to the current set value
-   * @param {string} prop - property key
-   * @param {lng.Component} component - Lightning component to operate against
-   */
-
-  function getDimension$1(prop, component) {
-    if (!component) return 0;
-    const transition = component.transition(prop);
-    if (transition.isRunning()) return transition.targetValue;
-    return component[prop];
-  }
-  getDimension$1.bind(null, 'x');
-  getDimension$1.bind(null, 'y');
-  /**
-   * Deep equality check two values
-   *
-   * @param {any} valA - value to be compared against valB
-   * @param {any} valB - value to be compared against valA
-   *
-   * @return {boolean} - returns true if values are equal
-   */
-
-  function stringifyCompare(valA, valB) {
-    return JSON.stringify(valA) === JSON.stringify(valB);
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function withStyles$1(Base, styles, theme) {
-    const _theme = theme || Base.theme;
-
-    const _styles = Base.styles ? clone$1(Base.styles, createStyles$1(styles, _theme)) : createStyles$1(styles, _theme);
-
-    return class extends Base {
-      static get name() {
-        return Base.name;
-      }
-
-      static get styles() {
-        return _styles;
-      }
-
-      get styles() {
-        return _styles;
-      }
-
-    };
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function getPropertyDescriptor$1(path) {
-    return {
-      get() {
-        return this.tag(path);
-      },
-
-      configurable: true,
-      enumerable: true
-    };
-  }
-
-  function withTags(Base) {
-    return class extends Base {
-      static get name() {
-        return Base.name;
-      }
-
-      _construct() {
-        const tags = this.constructor.tags || [];
-        let name, path;
-        tags.forEach(tag => {
-          if (typeof tag === 'object') {
-            ({
-              name,
-              path
-            } = tag);
+    isConnectedToInternet() {
+      return new Promise((resolve, reject) => {
+        let header = new Headers();
+        header.append('pragma', 'no-cache');
+        header.append('cache-control', 'no-cache');
+        fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html", {
+          method: 'GET',
+          headers: header
+        }).then(res => {
+          if (res.status >= 200 && res.status <= 300) {
+            console.log("Connected to internet");
+            resolve(true);
           } else {
-            name = tag;
-            path = tag;
+            console.log("No Internet Available");
+            resolve(false);
           }
-
-          const key = '_' + name;
-          const descriptor = getPropertyDescriptor$1(path);
-          Object.defineProperty(Object.getPrototypeOf(this), key, descriptor);
+        }).catch(err => {
+          console.log("Internet Check failed: No Internet Available");
+          resolve(false); //fail of fetch method needs to be considered as no internet
         });
-        super._construct && super._construct();
-      }
-
-    };
-  }
-
-  /**
-   * Returns a function, that, as long as it continues to be invoked, will not
-   * be triggered. The function will be called after it stops being called for
-   * N milliseconds. If `immediate` is passed, trigger the function on the
-   * leading edge, instead of the trailing. The function also has a property 'clear' 
-   * that is a function which will clear the timer to prevent previously scheduled executions. 
-   *
-   * @source underscore.js
-   * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
-   * @param {Function} function to wrap
-   * @param {Number} timeout in ms (`100`)
-   * @param {Boolean} whether to execute at the beginning (`false`)
-   * @api public
-   */
-
-  function debounce(func, wait, immediate) {
-    var timeout, args, context, timestamp, result;
-    if (null == wait) wait = 100;
-
-    function later() {
-      var last = Date.now() - timestamp;
-
-      if (last < wait && last >= 0) {
-        timeout = setTimeout(later, wait - last);
-      } else {
-        timeout = null;
-
-        if (!immediate) {
-          result = func.apply(context, args);
-          context = args = null;
-        }
-      }
-    }
-
-    var debounced = function () {
-      context = this;
-      args = arguments;
-      timestamp = Date.now();
-      var callNow = immediate && !timeout;
-      if (!timeout) timeout = setTimeout(later, wait);
-
-      if (callNow) {
-        result = func.apply(context, args);
-        context = args = null;
-      }
-
-      return result;
-    };
-
-    debounced.clear = function () {
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-    };
-
-    debounced.flush = function () {
-      if (timeout) {
-        result = func.apply(context, args);
-        context = args = null;
-        clearTimeout(timeout);
-        timeout = null;
-      }
-    };
-
-    return debounced;
-  }
-
-  debounce.debounce = debounce;
-  var debounce_1 = debounce;
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-
-  function capital(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  function getPropertyDescriptor(name, key) {
-    return {
-      get() {
-        const customGetter = this["_get".concat(capital(name))];
-
-        if (customGetter && typeof customGetter === 'function') {
-          const value = customGetter.call(this, this[key]);
-          this[key] = value;
-        }
-
-        return this[key];
-      },
-
-      set(value) {
-        const oldValue = this[key];
-
-        if (value !== oldValue) {
-          const changeHandler = this["_set".concat(capital(name))];
-
-          if (changeHandler && typeof changeHandler === 'function') {
-            value = changeHandler.call(this, value);
-          }
-
-          this[key] = value;
-
-          this._requestUpdateDebounce();
-        }
-      },
-
-      configurable: true,
-      enumerable: true
-    };
-  }
-
-  function withUpdates(Base) {
-    return class extends Base {
-      static get name() {
-        return Base.name;
-      }
-
-      _construct() {
-        let props = this.constructor.properties || [];
-        props.forEach(name => {
-          const key = '_' + name;
-          const descriptor = getPropertyDescriptor(name, key);
-
-          if (descriptor !== undefined) {
-            Object.defineProperty(Object.getPrototypeOf(this), name, descriptor);
-          }
-        });
-        this._whenEnabled = new Promise(resolve => {
-          this._whenEnabledResolver = resolve;
-        });
-        this._requestUpdateDebounce = debounce_1.debounce(this._requestUpdate.bind(this), 0);
-        super._construct && super._construct();
-      }
-
-      _firstEnable() {
-        this._readyForUpdates = true;
-
-        this._whenEnabledResolver();
-
-        this._update();
-
-        super._firstEnable && super._firstEnable();
-      }
-
-      _detach() {
-        super._detach();
-
-        this._requestUpdateDebounce.clear();
-      }
-
-      _requestUpdate() {
-        if (this._readyForUpdates) {
-          this._update();
-        }
-      }
-
-    };
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function withHandleKey(Base) {
-    return class extends Base {
-      static get name() {
-        return Base.name;
-      }
-
-      _handleKey(keyEvent) {
-        return this._processEvent(keyEvent);
-      }
-
-      _handleKeyRelease(keyEvent) {
-        return this._processEvent(keyEvent, 'Release');
-      }
-
-      _processEvent(keyEvent) {
-        let suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-        let {
-          key
-        } = keyEvent;
-
-        if (!key) {
-          const keyMap = this.stage.application.__keymap || {};
-          key = keyMap[keyEvent.keyCode];
-        }
-
-        if (key && typeof this["on".concat(key).concat(suffix)] === 'function') {
-          return this["on".concat(key).concat(suffix)].call(this, this, keyEvent) || false;
-        }
-
-        this.fireAncestors("$on".concat(key).concat(suffix), this, keyEvent);
-        return false;
-      }
-
-    };
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  function withLayout(Base) {
-    return class extends Base {
-      get itemLayout() {
-        return this._itemLayout;
-      }
-
-      set itemLayout(itemLayout) {
-        if (!stringifyCompare(this._itemLayout, itemLayout)) {
-          this._itemLayout = itemLayout;
-          const {
-            w,
-            h
-          } = getDimensions(itemLayout); // If there is not enough information passed in args to calculate item size
-          // Do not try to set h/w this will cause issues sizing the focus ring
-
-          if (h || w) {
-            const {
-              w: width,
-              h: height
-            } = SCREEN;
-            this.h = h || w * (height / width);
-            this.w = w || h * (width / height);
-            super._update && super._update();
-          }
-        }
-      }
-
-    };
-  }
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-
-  const baseStyles = () => ({
-    getUnfocusScale: () => 1 // getFocusScale: theme.getFocusScale
-
-  });
-
-  class Base extends lng$1.Component {
-    _construct() {
-      this._whenEnabled = new Promise(resolve => this._whenEnabledResolver = resolve);
-
-      this._getFocusScale = this.styles.getFocusScale || function () {};
-
-      this._getUnfocusScale = this.styles.getUnfocusScale || function () {};
-    }
-
-    _firstEnable() {
-      this._whenEnabledResolver();
-    }
-
-    _init() {
-      this._update();
-    }
-
-    _update() {}
-
-    _focus() {
-      if (this._smooth === undefined) this._smooth = true;
-
-      this._update();
-    }
-
-    _unfocus() {
-      this._update();
-    }
-
-  }
-
-  function withMixins(baseComponent) {
-    return withLayout(withUpdates(withTags(withHandleKey(baseComponent))));
-  }
-
-  var Base$1 = withMixins(withStyles$1(Base, baseStyles));
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  var styles$1 = {
-    h: 8,
-    w: 410,
-    radius: 4,
-    barColor: 0xffceceda,
-    progressColor: 4127195135
-  };
-
-  /**
-   * Copyright 2021 Comcast Cable Communications Management, LLC
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License");
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   *
-   * SPDX-License-Identifier: Apache-2.0
-   */
-  class ProgressBar extends withStyles$1(Base$1, styles$1) {
-    static _template() {
-      return {
-        Bar: {
-          zIndex: 1
-        },
-        Progress: {
-          alpha: 0,
-          zIndex: 2
-        }
-      };
-    }
-
-    static get properties() {
-      return ['animationDuration', 'barColor', 'progress', 'progressColor', 'radius'];
-    }
-
-    static get tags() {
-      return ['Bar', 'Progress'];
-    }
-
-    _construct() {
-      super._construct();
-
-      this._w = this.styles.w;
-      this.h = this.styles.h;
-      this._progress = 0;
-      this._radius = this.styles.radius;
-      this._progressColor = this.styles.progressColor;
-      this._barColor = this.styles.barColor;
-      this._animationDuration = 0;
-    }
-
-    _init() {
-      this._update();
-    }
-
-    set w(w) {
-      if (this._w !== w) {
-        this._w = w;
-
-        this._update();
-      }
-    }
-
-    get w() {
-      return this._w;
-    }
-
-    _update() {
-      const p = this.w * this.progress;
-      const w = p <= 0 ? 0 : Math.min(p, this._w);
-      this._Bar.texture = lng$1.Tools.getRoundRect( // getRoundRect adds 2 to the width
-      this.w - 2, this.h, this.radius, 0, 0, true, this.barColor);
-      this._Progress.texture = lng$1.Tools.getRoundRect(w + 1, this.h, this.radius, 0, 0, true, this.progressColor);
-      this._Progress.smooth = {
-        w: [w, {
-          duration: this._animationDuration
-        }],
-        alpha: Number(w > 0)
-      };
-    }
-
-    _setBarColor(barColor) {
-      return getValidColor(barColor);
-    }
-
-    _setProgressColor(progressColor) {
-      return getValidColor(progressColor);
+      });
     }
 
   }
@@ -11435,7 +10545,11 @@ var APP_com_metrological_app_TinyRDK = (function () {
             x: -20,
             y: 435,
             type: List,
-            // flex: { direction: 'row', paddingLeft: 20, wrap: false },
+            flex: {
+              direction: 'row',
+              paddingLeft: 20,
+              wrap: false
+            },
             // w: 1745,
             h: 300,
             scroll: {
@@ -11465,6 +10579,11 @@ var APP_com_metrological_app_TinyRDK = (function () {
             x: -20,
             y: 735,
             type: List,
+            flex: {
+              direction: 'row',
+              paddingLeft: 20,
+              wrap: false
+            },
             h: 300,
             scroll: {
               after: 12
@@ -11721,9 +10840,10 @@ var APP_com_metrological_app_TinyRDK = (function () {
 
         }
 
-        _handleEnter() {
-          if (Storage.get('ipAddress')) {
-            //this.fireAncestors('$goToPlayer')
+        async _handleEnter() {
+          let internet = await this.appApi.isConnectedToInternet();
+
+          if (internet) {
             Router.navigate('player');
           }
         }
@@ -12678,6 +11798,906 @@ var APP_com_metrological_app_TinyRDK = (function () {
       //      }
       //    },
       ];
+    }
+
+  }
+
+  /**
+   * Copyright 2020 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  /**
+   * Grid
+   *
+   * Contains global grid style information to easily maintain consistency throughout components.
+   */
+
+  /**
+   * Sets up spacing configurations to correctly position Items and Rows.
+   */
+  const GRID = {
+    gutters: {
+      horizontal: 80,
+      // space between rows
+      vertical: 40 // space between columns (items)
+
+    },
+    margin: {
+      x: 80,
+      y: 112
+    },
+    spacingIncrement: 8,
+    // the grid is built on an 8-point system
+    columnWidth: 110
+  };
+  /**
+   * Establishes the screen size to be 1080p resolution (1920x1080).
+   */
+
+  const SCREEN = {
+    w: 1920,
+    h: 1080
+  };
+  /**
+   * Determines the width and height of an item based off the data passed into the item
+   * (either all necessary parameters to calculate the dimensions dynamically,
+   * OR all the necessary parameters to hard set the dimensions).
+   *
+   * @param { object } obj
+   * @param { object } fallback
+   *
+   * @return { { number, number } }
+   */
+
+  function getDimensions() {
+    let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    let fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    let {
+      w,
+      h,
+      ratioX,
+      ratioY,
+      upCount
+    } = obj;
+    let fallbackW = fallback.w || 0;
+    let fallbackH = fallback.h || 0;
+    let dimensions = {}; // hard set width and height values were passed in and should override other params
+
+    if (w && h) {
+      dimensions = {
+        w,
+        h: h
+      };
+    } // hard set height and ratio values were passed in, meaning the row has items with mixed ratios,
+    // so the width needs to be calculated
+    else if (h && ratioX && ratioY) {
+      dimensions = {
+        w: Math.round(h * ratioX / ratioY),
+        h: h
+      };
+    } // calculate dynamic width and height based off item ratios
+    else if (ratioX && ratioY && upCount) {
+      dimensions = getItemRatioDimensions(ratioX, ratioY, upCount);
+    } // calculate dynamic width based off a row upcount and a given height
+    else if (h && upCount) {
+      dimensions = {
+        w: Math.round(calculateColumnWidth(upCount)),
+        h: h
+      };
+    } else if (h) {
+      dimensions = {
+        w: fallbackW,
+        h: h
+      };
+    } else if (w) {
+      dimensions = {
+        w: w,
+        h: fallbackH
+      };
+    } // not enough information was provided to properly size the component
+    else {
+      dimensions = {
+        w: fallbackW,
+        h: fallbackH
+      };
+    }
+
+    dimensions = { ...dimensions,
+      ratioX,
+      ratioY,
+      upCount
+    };
+    return dimensions;
+  }
+  /**
+   * Calculates the width and height of an item based off the given ratios
+   * and number of columns across the screen that should be visible before peaking
+   *
+   * @param { number } ratioX
+   * @param { number } ratioY
+   * @param { number } upCount
+   *
+   * @return { { number, number } }
+   */
+
+  function getItemRatioDimensions(ratioX, ratioY, upCount) {
+    let w, h;
+
+    if (ratioX && ratioY && upCount) {
+      w = Math.round(calculateColumnWidth(upCount));
+      h = Math.round(w / ratioX * ratioY);
+    } else {
+      w = 0;
+      h = 0;
+    }
+
+    return {
+      w,
+      h
+    };
+  }
+  /**
+   * Calculates the width of an item given how many columns are requested
+   *
+   * @param { number } upCount
+   *
+   * @return { number }
+   */
+
+  function calculateColumnWidth(upCount) {
+    // the screen width, minus the margin x on each side
+    let rowWidth = SCREEN.w - GRID.margin.x * 2;
+
+    if (upCount) {
+      // the total space of column gaps in between items
+      let columnGapTotal = (upCount - 1) * GRID.gutters.vertical; // the remaining amount of space left for all items
+
+      let totalColumnsWidth = rowWidth - columnGapTotal; // the width of each item in that remaining width
+
+      let itemWidth = totalColumnsWidth / upCount;
+      return itemWidth;
+    }
+
+    return rowWidth;
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  /**
+   * Colors
+   *
+   * Contains global color style information to easily maintain consistency throughout components.
+   */
+
+  /**
+   * Combines rgb hex string and alpha into argb hexadecimal number
+   * @param {string} hex - 6 alphanumeric characters between 0-f
+   * @param {number} [alpha] - number between 0-100 (0 is invisible, 100 is opaque)
+   */
+  function getHexColor$1(hex) {
+    let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
+
+    if (!hex) {
+      return 0x00;
+    }
+
+    let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
+    let str = "0x".concat(hexAlpha).concat(hex);
+    return parseInt(Number(str), 10);
+  }
+  /**
+   * Returns valid string of HEX color
+   *
+   * @param {string} color
+   * @param {boolean} fill
+   */
+
+  function getValidColor(color) {
+    if (/^0x[0-9a-fA-F]{8}/g.test(color)) {
+      // User enters a valid 0x00000000 hex code
+      return Number(color);
+    } else if (/^#[0-9a-fA-F]{6}/g.test(color)) {
+      // User enters valid #000000 hex code
+      return getHexColor$1(color.substr(1, 6));
+    } else if (typeof color === 'string' && /^[0-9]{8,10}/g.test(color)) {
+      return parseInt(color);
+    } else if (typeof color === 'number' && /^[0-9]{8,10}/g.test(color.toString())) {
+      return color;
+    } else if (typeof color === 'string' && color.indexOf('rgba') > -1) {
+      return rgba2argb(color);
+    } else if (typeof color === 'string' && color.indexOf('rgb') > -1) {
+      let rgba = [...color.replace(/rgb\(|\)/g, '').split(','), '255'];
+      return lng.StageUtils.getArgbNumber(rgba);
+    }
+
+    return null;
+  }
+
+  /**
+   * Copyright 2020 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  /**
+   * Returns a styles object for use by components
+   * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
+   * @param {Object} theme - theme to be provided to styles
+   */
+  var createStyles$1 = ((styles, theme) => {
+    return typeof styles === 'function' ? styles(theme) : styles;
+  });
+
+  /**
+   * Copyright 2020 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * Merges two objects together and returns the duplicate.
+   *
+   * @param {Object} target - object to be cloned
+   * @param {Object} [object] - secondary object to merge into clone
+   */
+
+  function clone$1(target, object) {
+    const _clone = { ...target
+    };
+    if (!object || target === object) return _clone;
+
+    for (const key in object) {
+      const value = object[key];
+
+      if (Object.prototype.hasOwnProperty.call(target, key)) {
+        _clone[key] = getMergeValue$1(key, target, object);
+      } else {
+        _clone[key] = value;
+      }
+    }
+
+    return _clone;
+  }
+
+  function getMergeValue$1(key, target, object) {
+    const targetVal = target[key];
+    const objectVal = object[key];
+    const targetValType = typeof targetVal;
+    const objectValType = typeof objectVal;
+
+    if (targetValType !== objectValType || objectValType === 'function' || Array.isArray(objectVal)) {
+      return objectVal;
+    }
+
+    if (objectVal && objectValType === 'object') {
+      return clone$1(targetVal, objectVal);
+    }
+
+    return objectVal;
+  }
+  /**
+   * Naively looks for dimensional prop (i.e. w, h, x, y, etc.), first searching for
+   * a transition target value then defaulting to the current set value
+   * @param {string} prop - property key
+   * @param {lng.Component} component - Lightning component to operate against
+   */
+
+  function getDimension$1(prop, component) {
+    if (!component) return 0;
+    const transition = component.transition(prop);
+    if (transition.isRunning()) return transition.targetValue;
+    return component[prop];
+  }
+  getDimension$1.bind(null, 'x');
+  getDimension$1.bind(null, 'y');
+  /**
+   * Deep equality check two values
+   *
+   * @param {any} valA - value to be compared against valB
+   * @param {any} valB - value to be compared against valA
+   *
+   * @return {boolean} - returns true if values are equal
+   */
+
+  function stringifyCompare(valA, valB) {
+    return JSON.stringify(valA) === JSON.stringify(valB);
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function withStyles$1(Base, styles, theme) {
+    const _theme = theme || Base.theme;
+
+    const _styles = Base.styles ? clone$1(Base.styles, createStyles$1(styles, _theme)) : createStyles$1(styles, _theme);
+
+    return class extends Base {
+      static get name() {
+        return Base.name;
+      }
+
+      static get styles() {
+        return _styles;
+      }
+
+      get styles() {
+        return _styles;
+      }
+
+    };
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function getPropertyDescriptor$1(path) {
+    return {
+      get() {
+        return this.tag(path);
+      },
+
+      configurable: true,
+      enumerable: true
+    };
+  }
+
+  function withTags(Base) {
+    return class extends Base {
+      static get name() {
+        return Base.name;
+      }
+
+      _construct() {
+        const tags = this.constructor.tags || [];
+        let name, path;
+        tags.forEach(tag => {
+          if (typeof tag === 'object') {
+            ({
+              name,
+              path
+            } = tag);
+          } else {
+            name = tag;
+            path = tag;
+          }
+
+          const key = '_' + name;
+          const descriptor = getPropertyDescriptor$1(path);
+          Object.defineProperty(Object.getPrototypeOf(this), key, descriptor);
+        });
+        super._construct && super._construct();
+      }
+
+    };
+  }
+
+  /**
+   * Returns a function, that, as long as it continues to be invoked, will not
+   * be triggered. The function will be called after it stops being called for
+   * N milliseconds. If `immediate` is passed, trigger the function on the
+   * leading edge, instead of the trailing. The function also has a property 'clear' 
+   * that is a function which will clear the timer to prevent previously scheduled executions. 
+   *
+   * @source underscore.js
+   * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+   * @param {Function} function to wrap
+   * @param {Number} timeout in ms (`100`)
+   * @param {Boolean} whether to execute at the beginning (`false`)
+   * @api public
+   */
+
+  function debounce(func, wait, immediate) {
+    var timeout, args, context, timestamp, result;
+    if (null == wait) wait = 100;
+
+    function later() {
+      var last = Date.now() - timestamp;
+
+      if (last < wait && last >= 0) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        timeout = null;
+
+        if (!immediate) {
+          result = func.apply(context, args);
+          context = args = null;
+        }
+      }
+    }
+
+    var debounced = function () {
+      context = this;
+      args = arguments;
+      timestamp = Date.now();
+      var callNow = immediate && !timeout;
+      if (!timeout) timeout = setTimeout(later, wait);
+
+      if (callNow) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+
+      return result;
+    };
+
+    debounced.clear = function () {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+    };
+
+    debounced.flush = function () {
+      if (timeout) {
+        result = func.apply(context, args);
+        context = args = null;
+        clearTimeout(timeout);
+        timeout = null;
+      }
+    };
+
+    return debounced;
+  }
+
+  debounce.debounce = debounce;
+  var debounce_1 = debounce;
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  function capital(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function getPropertyDescriptor(name, key) {
+    return {
+      get() {
+        const customGetter = this["_get".concat(capital(name))];
+
+        if (customGetter && typeof customGetter === 'function') {
+          const value = customGetter.call(this, this[key]);
+          this[key] = value;
+        }
+
+        return this[key];
+      },
+
+      set(value) {
+        const oldValue = this[key];
+
+        if (value !== oldValue) {
+          const changeHandler = this["_set".concat(capital(name))];
+
+          if (changeHandler && typeof changeHandler === 'function') {
+            value = changeHandler.call(this, value);
+          }
+
+          this[key] = value;
+
+          this._requestUpdateDebounce();
+        }
+      },
+
+      configurable: true,
+      enumerable: true
+    };
+  }
+
+  function withUpdates(Base) {
+    return class extends Base {
+      static get name() {
+        return Base.name;
+      }
+
+      _construct() {
+        let props = this.constructor.properties || [];
+        props.forEach(name => {
+          const key = '_' + name;
+          const descriptor = getPropertyDescriptor(name, key);
+
+          if (descriptor !== undefined) {
+            Object.defineProperty(Object.getPrototypeOf(this), name, descriptor);
+          }
+        });
+        this._whenEnabled = new Promise(resolve => {
+          this._whenEnabledResolver = resolve;
+        });
+        this._requestUpdateDebounce = debounce_1.debounce(this._requestUpdate.bind(this), 0);
+        super._construct && super._construct();
+      }
+
+      _firstEnable() {
+        this._readyForUpdates = true;
+
+        this._whenEnabledResolver();
+
+        this._update();
+
+        super._firstEnable && super._firstEnable();
+      }
+
+      _detach() {
+        super._detach();
+
+        this._requestUpdateDebounce.clear();
+      }
+
+      _requestUpdate() {
+        if (this._readyForUpdates) {
+          this._update();
+        }
+      }
+
+    };
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function withHandleKey(Base) {
+    return class extends Base {
+      static get name() {
+        return Base.name;
+      }
+
+      _handleKey(keyEvent) {
+        return this._processEvent(keyEvent);
+      }
+
+      _handleKeyRelease(keyEvent) {
+        return this._processEvent(keyEvent, 'Release');
+      }
+
+      _processEvent(keyEvent) {
+        let suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+        let {
+          key
+        } = keyEvent;
+
+        if (!key) {
+          const keyMap = this.stage.application.__keymap || {};
+          key = keyMap[keyEvent.keyCode];
+        }
+
+        if (key && typeof this["on".concat(key).concat(suffix)] === 'function') {
+          return this["on".concat(key).concat(suffix)].call(this, this, keyEvent) || false;
+        }
+
+        this.fireAncestors("$on".concat(key).concat(suffix), this, keyEvent);
+        return false;
+      }
+
+    };
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  function withLayout(Base) {
+    return class extends Base {
+      get itemLayout() {
+        return this._itemLayout;
+      }
+
+      set itemLayout(itemLayout) {
+        if (!stringifyCompare(this._itemLayout, itemLayout)) {
+          this._itemLayout = itemLayout;
+          const {
+            w,
+            h
+          } = getDimensions(itemLayout); // If there is not enough information passed in args to calculate item size
+          // Do not try to set h/w this will cause issues sizing the focus ring
+
+          if (h || w) {
+            const {
+              w: width,
+              h: height
+            } = SCREEN;
+            this.h = h || w * (height / width);
+            this.w = w || h * (width / height);
+            super._update && super._update();
+          }
+        }
+      }
+
+    };
+  }
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+  const baseStyles = () => ({
+    getUnfocusScale: () => 1 // getFocusScale: theme.getFocusScale
+
+  });
+
+  class Base extends lng$1.Component {
+    _construct() {
+      this._whenEnabled = new Promise(resolve => this._whenEnabledResolver = resolve);
+
+      this._getFocusScale = this.styles.getFocusScale || function () {};
+
+      this._getUnfocusScale = this.styles.getUnfocusScale || function () {};
+    }
+
+    _firstEnable() {
+      this._whenEnabledResolver();
+    }
+
+    _init() {
+      this._update();
+    }
+
+    _update() {}
+
+    _focus() {
+      if (this._smooth === undefined) this._smooth = true;
+
+      this._update();
+    }
+
+    _unfocus() {
+      this._update();
+    }
+
+  }
+
+  function withMixins(baseComponent) {
+    return withLayout(withUpdates(withTags(withHandleKey(baseComponent))));
+  }
+
+  var Base$1 = withMixins(withStyles$1(Base, baseStyles));
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  var styles$1 = {
+    h: 8,
+    w: 410,
+    radius: 4,
+    barColor: 0xffceceda,
+    progressColor: 4127195135
+  };
+
+  /**
+   * Copyright 2021 Comcast Cable Communications Management, LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  class ProgressBar extends withStyles$1(Base$1, styles$1) {
+    static _template() {
+      return {
+        Bar: {
+          zIndex: 1
+        },
+        Progress: {
+          alpha: 0,
+          zIndex: 2
+        }
+      };
+    }
+
+    static get properties() {
+      return ['animationDuration', 'barColor', 'progress', 'progressColor', 'radius'];
+    }
+
+    static get tags() {
+      return ['Bar', 'Progress'];
+    }
+
+    _construct() {
+      super._construct();
+
+      this._w = this.styles.w;
+      this.h = this.styles.h;
+      this._progress = 0;
+      this._radius = this.styles.radius;
+      this._progressColor = this.styles.progressColor;
+      this._barColor = this.styles.barColor;
+      this._animationDuration = 0;
+    }
+
+    _init() {
+      this._update();
+    }
+
+    set w(w) {
+      if (this._w !== w) {
+        this._w = w;
+
+        this._update();
+      }
+    }
+
+    get w() {
+      return this._w;
+    }
+
+    _update() {
+      const p = this.w * this.progress;
+      const w = p <= 0 ? 0 : Math.min(p, this._w);
+      this._Bar.texture = lng$1.Tools.getRoundRect( // getRoundRect adds 2 to the width
+      this.w - 2, this.h, this.radius, 0, 0, true, this.barColor);
+      this._Progress.texture = lng$1.Tools.getRoundRect(w + 1, this.h, this.radius, 0, 0, true, this.progressColor);
+      this._Progress.smooth = {
+        w: [w, {
+          duration: this._animationDuration
+        }],
+        alpha: Number(w > 0)
+      };
+    }
+
+    _setBarColor(barColor) {
+      return getValidColor(barColor);
+    }
+
+    _setProgressColor(progressColor) {
+      return getValidColor(progressColor);
     }
 
   }
@@ -21721,8 +21741,7 @@ var APP_com_metrological_app_TinyRDK = (function () {
       widgets: ['Menu']
     }, {
       path: 'player',
-      component: AAMPVideoPlayer,
-      widgets: ['Menu']
+      component: AAMPVideoPlayer
     }, {
       path: 'apps',
       component: AppStore,

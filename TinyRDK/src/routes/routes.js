@@ -16,8 +16,7 @@ export default {
           },
           {
             path: 'player',
-            component: AAMPVideoPlayer,
-            widgets: ['Menu']
+            component: AAMPVideoPlayer
           },
           {
             path: 'apps',
