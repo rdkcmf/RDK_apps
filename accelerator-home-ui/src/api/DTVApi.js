@@ -131,6 +131,9 @@ export default class DTVApi {
       thunder
         .call(systemcCallsign, "satelliteList")
         .then((result) => {
+          if (result.length === 0) {
+            result = [{ "name": "Astra 28.2E", "longitude": 282, "lnb": "Universal" }]
+          }
           resolve(result);
         })
         .catch((err) => {

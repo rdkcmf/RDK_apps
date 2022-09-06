@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 26 Aug 2022 15:56:17 GMT
+ * Generated: Tue, 06 Sep 2022 14:59:20 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -10113,6 +10113,14 @@ var APP_accelerator_home_ui = (function () {
       return new Promise((resolve, reject) => {
         // resolve([{name: "Satellite 1",longitude: 282,lnb: "Universal" },{name: "Satellite 2",longitude: 282,lnb: "Universal" }]) //#forTesting
         thunder$8.call(systemcCallsign$1, "satelliteList").then(result => {
+          if (result.length === 0) {
+            result = [{
+              "name": "Astra 28.2E",
+              "longitude": 282,
+              "lnb": "Universal"
+            }];
+          }
+
           resolve(result);
         }).catch(err => {
           console.log("Error: satelliteList: ", JSON.stringify(err));
