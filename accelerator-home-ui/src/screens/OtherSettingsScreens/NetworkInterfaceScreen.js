@@ -33,7 +33,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
     static _template() {
         return {
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             w: 1920,
             h: 1080,
             NetworkInterfaceScreenContents: {
@@ -92,6 +92,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
     }
 
     _focus() {
+        this.widgets.menu.setPanelsVisibility()
         this._setState('WiFi');
     }
 
@@ -106,15 +107,15 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
         const eventName = 'onDefaultInterfaceChanged'
         const listener = this._thunder.on(systemcCallsign, eventName, (notification) => {
             console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification)
-            if(notification.newInterfaceName==="ETHERNET"){
+            if (notification.newInterfaceName === "ETHERNET") {
                 this.loadingAnimation.stop()
                 this.tag('Ethernet.Loader').visible = false
                 this.tag('Ethernet.Title').text.text = 'Ethernet: Connected'
-            } else if(notification.newInterfaceName==="" && notification.oldInterfaceName==="WIFI"){
+            } else if (notification.newInterfaceName === "" && notification.oldInterfaceName === "WIFI") {
                 this.loadingAnimation.stop()
                 this.tag('Ethernet.Loader').visible = false
                 this.tag('Ethernet.Title').text.text = 'Ethernet: Error, Retry!'
-            } else if(notification.newInterfaceName==="WIFI"){
+            } else if (notification.newInterfaceName === "WIFI") {
                 this.loadingAnimation.stop()
                 this.tag('Ethernet.Loader').visible = false
                 this.tag('Ethernet.Title').text.text = 'Ethernet'
@@ -126,7 +127,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
             actions: [{ p: 'rotation', v: { sm: 0, 0: 0, 1: 2 * Math.PI } }]
         });
 
-        this.tag('Ethernet.Loader').src=this.LoadingIcon
+        this.tag('Ethernet.Loader').src = this.LoadingIcon
     }
 
     _firstActive() {
@@ -199,9 +200,9 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                 }
                 _handleEnter() {
                     wifi.getDefaultInterface().then(res => {
-                        if(res.success){
-                            if(res.interface !== "ETHERNET"){
-                                this.setEthernetInterface()                                
+                        if (res.success) {
+                            if (res.interface !== "ETHERNET") {
+                                this.setEthernetInterface()
                             }
                         }
                     })

@@ -33,7 +33,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
     static _template() {
         return {
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             w: 1920,
             h: 1080,
             NetworkConfigurationScreenContents: {
@@ -163,6 +163,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
         });
     }
     _focus() {
+        this.widgets.menu.setPanelsVisibility()
         this._setState(this.state) //can be used on init as well
 
         this._network.getDefaultInterface().then(interfaceName => {
@@ -267,7 +268,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInfo')
                 }
                 _handleEnter() {
-                   
+
                 }
             },
         ]

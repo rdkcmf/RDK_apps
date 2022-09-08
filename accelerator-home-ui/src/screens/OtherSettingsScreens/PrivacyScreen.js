@@ -44,7 +44,7 @@ export default class PrivacyScreen extends Lightning.Component {
     static _template() {
         return {
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             w: 1920,
             h: 1080,
             PrivacyScreenContents: {
@@ -186,10 +186,10 @@ export default class PrivacyScreen extends Lightning.Component {
 
     checkUSBDeviceStatus() {
         if (!Storage.get('UsbMedia')) {
-                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
-                Storage.set('UsbMedia', 'ON')
+            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+            Storage.set('UsbMedia', 'ON')
         } else if (Storage.get('UsbMedia') === 'ON') {
-                this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
+            this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
         } else if (Storage.get('UsbMedia') === 'OFF') {
             this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
         }
@@ -267,11 +267,11 @@ export default class PrivacyScreen extends Lightning.Component {
                     let _UsbMedia = Storage.get('UsbMedia')
                     if (_UsbMedia === 'ON') {
                         this.fireAncestors('$deRegisterUsbMount')
-                        this.USBApi.deactivate().then((res)=>{
+                        this.USBApi.deactivate().then((res) => {
                             Storage.set('UsbMedia', 'OFF')
                             this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png')
                             this.widgets.menu.refreshMainView()
-                        }).catch(err=>{
+                        }).catch(err => {
                             console.error(`error while disabling the usb plugin = ${err}`)
                             this.fireAncestors('$registerUsbMount')
                         })

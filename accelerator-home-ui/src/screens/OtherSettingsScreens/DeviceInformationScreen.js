@@ -42,7 +42,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
             rect: true,
             h: 1080,
             w: 1920,
-            color: 0xff000000,
+            color: 0xCC000000,
             DeviceInfoContents: {
                 x: 200,
                 y: 275,

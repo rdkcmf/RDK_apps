@@ -27,6 +27,12 @@ export var appListInfo = [
     url: '/images/usb/USB_Featured_Item.jpg',
   }, //the first item should be usb
   {
+    displayName: 'Netflix',
+    applicationType: 'Netflix',
+    uri: '',
+    url: '/images/apps/App_Netflix_454x255.png',//replace with online url
+  },
+  {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
@@ -39,15 +45,15 @@ export var appListInfo = [
     url: '/images/apps/App_YouTube_454x255.png',//replace with online url
   },
   {
+    displayName: 'Peacock',
+    applicationType: 'Lightning',
+    uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
+    url: '/images/apps/App_Peacock_454x255.png',//replace with online url
+  },
+  {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png',//replace with online url
-  },
-  {
-    displayName: 'Netflix',
-    applicationType: 'Netflix',
-    uri: '',
-    url: '/images/apps/App_Netflix_454x255.png',//replace with online url
-  },
+  } 
 ]

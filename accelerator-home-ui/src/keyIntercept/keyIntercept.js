@@ -153,6 +153,22 @@ export function keyIntercept() {
         .catch(err => {
             console.log('Error', err);
         })
+
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Settings_Shortcut,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+
         .then(result => {
             thunder
                 .call(rdkshellCallsign, 'addKeyIntercept', {

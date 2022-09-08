@@ -88,6 +88,7 @@ export default class TopPanel extends Lightning.Component {
     this.zone = res
   }
 
+
   _construct() {
     this.indexVal = 1;
     this.audiointerval = null;

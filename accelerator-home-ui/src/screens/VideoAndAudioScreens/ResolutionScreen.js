@@ -46,7 +46,7 @@ export default class ResolutionScreen extends Lightning.Component {
             w: 1920,
             h: 1080,
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             ResolutionScreenContents: {
                 x: 200,
                 y: 275,

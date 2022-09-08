@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Tue, 06 Sep 2022 14:59:20 GMT
+ * Generated: Fri, 16 Sep 2022 11:22:24 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -8780,6 +8780,12 @@ var APP_accelerator_home_ui = (function () {
     url: '/images/usb/USB_Featured_Item.jpg'
   }, //the first item should be usb
   {
+    displayName: 'Netflix',
+    applicationType: 'Netflix',
+    uri: '',
+    url: '/images/apps/App_Netflix_454x255.png' //replace with online url
+
+  }, {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
@@ -8792,16 +8798,16 @@ var APP_accelerator_home_ui = (function () {
     url: '/images/apps/App_YouTube_454x255.png' //replace with online url
 
   }, {
+    displayName: 'Peacock',
+    applicationType: 'Lightning',
+    uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
+    url: '/images/apps/App_Peacock_454x255.png' //replace with online url
+
+  }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png' //replace with online url
-
-  }, {
-    displayName: 'Netflix',
-    applicationType: 'Netflix',
-    uri: '',
-    url: '/images/apps/App_Netflix_454x255.png' //replace with online url
 
   }];
 
@@ -8834,6 +8840,11 @@ var APP_accelerator_home_ui = (function () {
     url: '/images/usb/USB_Featured_Item.jpg'
   }, //the first item should be usb
   {
+    displayName: 'Netflix',
+    applicationType: 'Netflix',
+    uri: '',
+    url: '/images/apps/App_Netflix_454x255.png'
+  }, {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
@@ -8844,15 +8855,16 @@ var APP_accelerator_home_ui = (function () {
     uri: 'https://www.youtube.com/tv',
     url: '/images/apps/App_YouTube_454x255.png'
   }, {
+    displayName: 'Peacock',
+    applicationType: 'Lightning',
+    uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
+    url: '/images/apps/App_Peacock_454x255.png' //replace with online url
+
+  }, {
     displayName: 'Xumo',
     applicationType: 'WebApp',
     uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png'
-  }, {
-    displayName: 'Netflix',
-    applicationType: 'Netflix',
-    uri: '',
-    url: '/images/apps/App_Netflix_454x255.png'
   }];
 
   /**
@@ -10360,7 +10372,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         SettingsScreenContents: {
@@ -10515,10 +10527,19 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _init() {
+      let self = this;
+      this.appApi = new AppApi();
+
       this._setState('NetworkConfiguration');
+
+      this.fireAncestors("$registerHide", function () {
+        self.widgets.menu.setPanelsVisibility();
+      });
     }
 
     _focus() {
+      this.widgets.menu.setPanelsVisibility();
+
       this._setState(this.state);
     }
 
@@ -10534,7 +10555,22 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router.navigate('menu');
+      console.log("application Type = ", Storage.get("applicationType"));
+
+      if (Storage.get("applicationType") == "") {
+        Router.navigate('menu');
+      } else {
+        this.appApi.visibile("ResidentApp", false);
+        let appType = Storage.get("applicationType");
+
+        if (appType === "WebApp") {
+          appType = "HtmlApp";
+        }
+
+        this.appApi.setFocus(appType);
+        this.appApi.zorder(appType);
+        this.widgets.menu.setPanelsVisibility();
+      }
     }
 
     static _states() {
@@ -12493,6 +12529,11 @@ var APP_accelerator_home_ui = (function () {
 
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
+      this._previous = {
+        mainIndex,
+        crossIndex,
+        realIndex: previousIndex
+      };
       this._index = targetIndex;
 
       this._indexChanged({
@@ -15681,6 +15722,8 @@ var APP_accelerator_home_ui = (function () {
 
     _focus() {
       this._setState(this.state);
+
+      this.widgets.menu.setPanelsVisibility();
     }
 
     _firstEnable() {
@@ -17348,7 +17391,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         Bluetooth: {
@@ -17513,6 +17556,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.widgets.menu.setPanelsVisibility();
+
       this._setState('AddADevice');
 
       this._enable();
@@ -21084,7 +21129,7 @@ var APP_accelerator_home_ui = (function () {
           w: 1920,
           h: 1080,
           rect: true,
-          color: 0xff000000
+          color: 0xCC000000
         },
         Text: {
           x: 758,
@@ -21480,7 +21525,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         NetworkConfigurationScreenContents: {
@@ -21621,6 +21666,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.widgets.menu.setPanelsVisibility();
+
       this._setState(this.state); //can be used on init as well
 
 
@@ -21789,7 +21836,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         NetworkInfoScreenContents: {
@@ -22020,7 +22067,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
-      //Getting the default interface
+      this.widgets.menu.setPanelsVisibility(); //Getting the default interface
+
       appApi$6.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
@@ -22112,7 +22160,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         NetworkInterfaceScreenContents: {
@@ -22171,6 +22219,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.widgets.menu.setPanelsVisibility();
+
       this._setState('WiFi');
     }
 
@@ -22488,7 +22538,7 @@ var APP_accelerator_home_ui = (function () {
         w: 1920,
         h: 1080,
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         PairingScreen: {
           Title: {
             x: 960,
@@ -23005,7 +23055,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         WifiContents: {
@@ -23107,6 +23157,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _focus() {
+      this.widgets.menu.setPanelsVisibility();
+
       this._setState('Switch');
 
       this._enable();
@@ -24853,7 +24905,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         OtherSettingsScreenContents: {
@@ -25259,7 +25311,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         SleepTimer: {
@@ -25522,7 +25574,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         EnerygySavingContents: {
@@ -25783,7 +25835,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         LanguageScreenContents: {
@@ -25924,7 +25976,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         PrivacyScreenContents: {
@@ -26269,7 +26321,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         clipping: true,
@@ -26455,7 +26507,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         AdvanceScreenContents: {
@@ -26785,7 +26837,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         DeviceScreenContents: {
@@ -27065,7 +27117,7 @@ var APP_accelerator_home_ui = (function () {
         rect: true,
         h: 1080,
         w: 1920,
-        color: 0xff000000,
+        color: 0xCC000000,
         DeviceInfoContents: {
           x: 200,
           y: 275,
@@ -27438,7 +27490,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         FirmwareContents: {
@@ -27654,7 +27706,7 @@ var APP_accelerator_home_ui = (function () {
         w: 1920,
         h: 2000,
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         RebootScreen: {
           x: 950,
           y: 270,
@@ -28468,7 +28520,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         Wrapper: {
@@ -28959,7 +29011,7 @@ var APP_accelerator_home_ui = (function () {
         w: 1920,
         h: 1080,
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         HdmiOutputScreenContents: {
           x: 200,
           y: 275,
@@ -29112,7 +29164,7 @@ var APP_accelerator_home_ui = (function () {
         w: 1920,
         h: 1080,
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         ResolutionScreenContents: {
           x: 200,
           y: 275,
@@ -29269,7 +29321,7 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         rect: true,
-        color: 0xff000000,
+        color: 0xCC000000,
         w: 1920,
         h: 1080,
         VideoScreenContents: {
@@ -39638,6 +39690,18 @@ var APP_accelerator_home_ui = (function () {
       }
     }
 
+    setPanelsVisibility() {
+      console.log("Side and Top Panel's Visibility changed!");
+
+      if (Storage.get("applicationType") == '') {
+        this.tag("TopPanel").visible = true;
+        this.tag("SidePanel").visible = true;
+      } else {
+        this.tag("TopPanel").visible = false;
+        this.tag("SidePanel").visible = false;
+      }
+    }
+
     $scroll(val) {
       if (this.mainView) {
         this.mainView.scroll(val);
@@ -39781,6 +39845,16 @@ var APP_accelerator_home_ui = (function () {
       thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Power,
+        modifiers: []
+      }).catch(err => {
+        console.log('Error', err);
+      });
+    }).catch(err => {
+      console.log('Error', err);
+    }).then(result => {
+      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+        client: 'ResidentApp',
+        keyCode: keyMap.Settings_Shortcut,
         modifiers: []
       }).catch(err => {
         console.log('Error', err);
@@ -40160,6 +40234,22 @@ var APP_accelerator_home_ui = (function () {
 
       if (key.keyCode == keyMap.Settings_Shortcut) {
         Router.navigate('settings');
+
+        if (Storage.get("applicationType") !== "") {
+          appApi.zorder('ResidentApp');
+          appApi.setFocus("ResidentApp");
+
+          if (Router.isNavigating()) {
+            setTimeout(function () {
+              appApi.setVisibility("ResidentApp", true);
+            }, 0);
+          } else {
+            appApi.setVisibility("ResidentApp", true);
+            appApi.setFocus("ResidentApp");
+            appApi.zorder('residentApp');
+          }
+        }
+
         return true;
       }
 
@@ -40293,6 +40383,10 @@ var APP_accelerator_home_ui = (function () {
       appApi.zorder('residentApp');
     }
 
+    $registerHide(h) {
+      this.setPanelsVisibility = h;
+    }
+
     _init() {
       if (Storage.get("applicationType") !== "HDMI") {
         //to default to hdmi, if previous input was hdmi
@@ -40325,7 +40419,7 @@ var APP_accelerator_home_ui = (function () {
         if (notification.client === "lightning" || notification.client === "htmlapp") {
           console.log("lightning/webapp app disconnected | bringing resident app in focus");
 
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             console.log("navigating to homescreen");
             Router.navigate("menu");
           }
@@ -40346,9 +40440,9 @@ var APP_accelerator_home_ui = (function () {
         console.log(JSON.stringify(notification));
 
         if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
-          console.log("".concat(notification.callsign, "'s ").concat(notification.state, " request"));
+          console.log("".concat(notification.callsign, " status = ").concat(notification.state));
 
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
             console.log("navigating to homescreen");
             Router.navigate("menu");
@@ -40367,7 +40461,10 @@ var APP_accelerator_home_ui = (function () {
         }
 
         if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivated') {
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+          this.setPanelsVisibility();
+          console.log("".concat(notification.callsign, " status = ").concat(notification.state));
+
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
             console.log("navigating to homescreen");
             Router.navigate("menu");

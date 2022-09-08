@@ -39,7 +39,7 @@ export default class HdmiOutputScreen extends Lightning.Component {
             w: 1920,
             h: 1080,
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             HdmiOutputScreenContents: {
                 x: 200,
                 y: 275,

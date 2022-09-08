@@ -37,7 +37,7 @@ export default class WiFiScreen extends Lightning.Component {
   static _template() {
     return {
       rect: true,
-      color: 0xff000000,
+      color: 0xCC000000,
       w: 1920,
       h: 1080,
       WifiContents: {
@@ -134,6 +134,7 @@ export default class WiFiScreen extends Lightning.Component {
   }
 
   _focus() {
+    this.widgets.menu.setPanelsVisibility()
     this._setState('Switch')
     this._enable()
   }

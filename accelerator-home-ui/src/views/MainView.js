@@ -493,7 +493,10 @@ export default class MainView extends Lightning.Component {
   }
 
 
-  _focus() { this._setState(this.state) }
+  _focus() {
+    this._setState(this.state);
+    this.widgets.menu.setPanelsVisibility()
+  }
 
   _firstEnable() {
     console.timeEnd('PerformanceTest')

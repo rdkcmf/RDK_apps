@@ -35,7 +35,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
             w: 1920,
             h: 2000,
             rect: true,
-            color: 0xff000000,
+            color: 0xCC000000,
             RebootScreen: {
                 x: 950,
                 y: 270,

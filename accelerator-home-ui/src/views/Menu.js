@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Router } from "@lightningjs/sdk"
+import { Lightning, Router, Storage } from "@lightningjs/sdk"
 import HomeApi from "../api/HomeApi"
 import SidePanel from "./SidePanel"
 import TopPanel from "./TopPanel"
@@ -93,6 +93,17 @@ export default class Menu extends Lightning.Component {
         if (val === 'TopPanel') {
             Router.focusWidget('Menu')
             this._setState('TopPanel')
+        }
+    }
+    setPanelsVisibility() {
+        console.log("Side and Top Panel's Visibility changed!")
+        if (Storage.get("applicationType") == '') {
+            this.tag("TopPanel").visible = true;
+            this.tag("SidePanel").visible = true;
+        }
+        else {
+            this.tag("TopPanel").visible = false;
+            this.tag("SidePanel").visible = false;
         }
     }
 

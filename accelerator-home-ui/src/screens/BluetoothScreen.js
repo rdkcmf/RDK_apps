@@ -36,7 +36,7 @@ export default class BluetoothScreen extends Lightning.Component {
   static _template() {
     return {
       rect: true,
-      color: 0xff000000,
+      color: 0xCC000000,
       w: 1920,
       h: 1080,
       Bluetooth: {
@@ -191,6 +191,8 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   _focus() {
+    this.widgets.menu.setPanelsVisibility()
+
     this._setState('AddADevice')
     this._enable()
     if (this._bluetooth) {

@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Lightning, Utils, Language, Router } from '@lightningjs/sdk'
+import { Lightning, Utils, Language, Router, Storage } from '@lightningjs/sdk'
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
 import DTVApi from '../api/DTVApi';
+import AppApi from '../api/AppApi';
 
 /**
  * Class for settings screen.
@@ -38,7 +39,7 @@ export default class SettingsScreen extends Lightning.Component {
   static _template() {
     return {
       rect: true,
-      color: 0xff000000,
+      color: 0xCC000000,
       w: 1920,
       h: 1080,
       SettingsScreenContents: {
@@ -164,7 +165,7 @@ export default class SettingsScreen extends Lightning.Component {
           },
         },
         DTVSettings: {
-          alpha:0.3,
+          alpha: 0.3,
           y: 450,
           type: SettingsMainItem,
           Title: {
@@ -193,9 +194,15 @@ export default class SettingsScreen extends Lightning.Component {
   }
 
   _init() {
+    let self = this;
+    this.appApi = new AppApi();
     this._setState('NetworkConfiguration')
+    this.fireAncestors("$registerHide", function () {
+      self.widgets.menu.setPanelsVisibility()
+    })
   }
   _focus() {
+    this.widgets.menu.setPanelsVisibility()
     this._setState(this.state)
   }
   _firstActive() {
@@ -203,14 +210,28 @@ export default class SettingsScreen extends Lightning.Component {
     this.dtvPlugin = false; //plugin availability
     this.dtvApi.activate().then((res) => {
       // if (res){
-        this.dtvPlugin=true;
-        this.tag("DTVSettings").alpha = 1;
+      this.dtvPlugin = true;
+      this.tag("DTVSettings").alpha = 1;
       // }
     })
   }
 
   _handleBack() {
-    Router.navigate('menu')
+
+    console.log("application Type = ", Storage.get("applicationType"))
+    if (Storage.get("applicationType") == "") {
+      Router.navigate('menu')
+    }
+    else {
+      this.appApi.visibile("ResidentApp", false)
+      let appType = Storage.get("applicationType");
+      if(appType ==="WebApp"){
+        appType = "HtmlApp"
+      }
+      this.appApi.setFocus(appType)
+      this.appApi.zorder(appType)
+      this.widgets.menu.setPanelsVisibility()
+    }
   }
 
   static _states() {
@@ -300,7 +321,7 @@ export default class SettingsScreen extends Lightning.Component {
           Router.navigate('settings/other')
         }
         _handleDown() {
-          if(this.dtvPlugin){
+          if (this.dtvPlugin) {
             this._setState('DTVSettings')
           }
         }
@@ -316,7 +337,7 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('OtherSettings')
         }
         _handleEnter() {
-          if(this.dtvPlugin){
+          if (this.dtvPlugin) {
             Router.navigate('settings/livetv')
           }
           // dtvApi.activate().then(res =>{

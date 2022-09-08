@@ -30,13 +30,13 @@ export default class WifiPairingScreen extends Lightning.Component {
     return 'left'
   }
 
-  
+
   static _template() {
     return {
       w: 1920,
       h: 1080,
       rect: true,
-      color: 0xff000000,
+      color: 0xCC000000,
       PairingScreen: {
         Title: {
           x: 960,
@@ -213,11 +213,11 @@ export default class WifiPairingScreen extends Lightning.Component {
   startConnect(password) {
     this._wifi.connect(this._item, password).then(() => {
       this._wifi.saveSSID(this._item.ssid, password, this._item.security).then((response) => {
-        if(response.result===0){
+        if (response.result === 0) {
           // console.log(response);
           // Router.back()
         }
-        else if(response.result!==0){
+        else if (response.result !== 0) {
           this._wifi.clearSSID().then((response) => {
             // console.log(response)
             // Router.back()

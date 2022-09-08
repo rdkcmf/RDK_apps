@@ -205,6 +205,20 @@ export default class App extends Router.App {
 
     if (key.keyCode == Keymap.Settings_Shortcut) {
       Router.navigate('settings')
+      if (Storage.get("applicationType") !== "") {
+        appApi.zorder('ResidentApp')
+        appApi.setFocus("ResidentApp")
+        if (Router.isNavigating()) {
+          setTimeout(function () {
+            appApi.setVisibility("ResidentApp", true)
+          }, 0)
+        }
+        else {
+          appApi.setVisibility("ResidentApp", true)
+          appApi.setFocus("ResidentApp")
+          appApi.zorder('residentApp')
+        }
+      }
       return true
     }
     if (key.keyCode == Keymap.Guide_Shortcut) {
@@ -317,6 +331,10 @@ export default class App extends Router.App {
     appApi.zorder('residentApp')
   }
 
+  $registerHide(h) {
+    this.setPanelsVisibility = h;
+  }
+
   _init() {
     if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
       Storage.set('applicationType', '');//to set the application type to none
@@ -344,7 +362,7 @@ export default class App extends Router.App {
       console.log("onApplicationDisconnectedNotification: ", JSON.stringify(notification))
       if (notification.client === "lightning" || notification.client === "htmlapp") {
         console.log("lightning/webapp app disconnected | bringing resident app in focus")
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
           console.log("navigating to homescreen")
           Router.navigate("menu")
         }
@@ -363,8 +381,8 @@ export default class App extends Router.App {
       console.log(`STATECHANGE 2 : `)
       console.log(JSON.stringify(notification))
       if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
-        console.log(`${notification.callsign}'s ${notification.state} request`)
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
+        console.log(`${notification.callsign} status = ${notification.state}`)
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")
           Router.navigate("menu")
         }
@@ -376,8 +394,9 @@ export default class App extends Router.App {
         });
       }
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivated') {
-
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) { //navigate to homescreen if route is tv-overlay when exiting from any app
+        this.setPanelsVisibility()
+        console.log(`${notification.callsign} status = ${notification.state}`)
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")
           Router.navigate("menu")
         }
