@@ -759,7 +759,7 @@ export default class AppApi {
         client: client,
         visible: visible,
       })
-      if(visible){
+      if (visible) {
         thunder.call('org.rdk.RDKShell', 'setFocus', { client: client })
           .then(res => {
             resolve(true)
@@ -943,7 +943,7 @@ export default class AppApi {
 
   enableDisplaySettings() {
     return new Promise((resolve, reject) => {
-      thunder.call('org.rdk.RDKShell', 'launch', { callsign: 'org.rdk.DisplaySettings' })
+      thunder.call('Controller', 'activate', { callsign: 'org.rdk.DisplaySettings' })
         .then(result => {
 
           console.log('Successfully enabled DisplaySettings Service')

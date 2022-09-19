@@ -339,9 +339,9 @@ export default class App extends Router.App {
     if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
       Storage.set('applicationType', '');//to set the application type to none
     }
-    appApi.enableDisplaySettings().catch(err => { })
+    appApi.enableDisplaySettings().then(res => { console.log(`results : ${JSON.stringify(res)}`) }).catch(err => { console.error("error while enabling displaysettings") })
     appApi.cobaltStateChangeEvent()
-    this.xcastApi = new XcastApi();
+    this.xcastApi = new XcastApi()
     this.xcastApi.activate().then(result => {
       if (result) {
         this.registerXcastListeners()
