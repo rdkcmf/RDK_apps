@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 16 Sep 2022 11:22:24 GMT
+ * Generated: Wed, 21 Sep 2022 14:16:19 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -8193,7 +8193,7 @@ var APP_accelerator_home_ui = (function () {
 
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'launch', {
+        thunder$9.call('Controller', 'activate', {
           callsign: 'org.rdk.DisplaySettings'
         }).then(result => {
           console.log('Successfully enabled DisplaySettings Service');
@@ -40070,6 +40070,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _setup() {
+      console.log("accelerator-home-ui version: " + Settings.get("platform", "version"));
       Router.startRouter(routes, this);
 
       document.onkeydown = e => {
@@ -40393,7 +40394,11 @@ var APP_accelerator_home_ui = (function () {
         Storage.set('applicationType', ''); //to set the application type to none
       }
 
-      appApi.enableDisplaySettings().catch(err => {});
+      appApi.enableDisplaySettings().then(res => {
+        console.log("results : ".concat(JSON.stringify(res)));
+      }).catch(err => {
+        console.error("error while enabling displaysettings");
+      });
       appApi.cobaltStateChangeEvent();
       this.xcastApi = new XcastApi();
       this.xcastApi.activate().then(result => {

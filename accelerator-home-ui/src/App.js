@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import { Utils, Router, Storage } from '@lightningjs/sdk';
+import { Utils, Router, Storage, Settings } from '@lightningjs/sdk';
 import ThunderJS from 'ThunderJS';
 import routes from './routes/routes';
 import AppApi from '../src/api/AppApi.js';
@@ -48,6 +48,7 @@ export default class App extends Router.App {
     return [{ family: CONFIG.language.font, url: Utils.asset('fonts/' + CONFIG.language.fontSrc) }];
   }
   _setup() {
+    console.log("accelerator-home-ui version: " + Settings.get("platform","version"))
     Router.startRouter(routes, this);
     document.onkeydown = e => {
       if (e.keyCode == Keymap.Backspace) {
