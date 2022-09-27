@@ -233,17 +233,7 @@ export default class Epg extends Lightning.Component {
       "Amazon Prime": "Amazon",
     };
     const app = apps[appName];
-    this.appApi.getPluginStatus(app).then(() => {
-      Storage.set("applicationType", app);
-      if (app === "Cobalt") {
-        this.appApi.launchCobalt("https://www.youtube.com/tv").catch(err => { });
-      } else {
-        this.appApi.launchPremiumApp(app).catch(() => { });
-      }
-      this.appApi.setVisibility("ResidentApp", false);
-    }).catch(err => {
-      console.log(appName, " NOT supported: ", JSON.stringify(err))
-    })
+    this.appApi.launchApp(app);
   }
 
   _handleBack() {

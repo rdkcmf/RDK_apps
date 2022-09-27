@@ -20,13 +20,13 @@
 export var showCaseApps = [
     {
         displayName: "Strike Benchmark",
-        applicationType: "Lightning",
+        applicationType: "LightningApp",
         uri: "https://strike.lightningjs.io/es6/#home",
         url: "/images/lightningApps/strike_app.png"
     },
     {
         displayName: "TMBD App",
-        applicationType: "Lightning",
+        applicationType: "LightningApp",
         uri: "https://lightningjs.io/tmdb/#splash",
         url: "/images/lightningApps/tmbd.png"
     },

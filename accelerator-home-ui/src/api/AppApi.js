@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 import ThunderJS from 'ThunderJS';
-import { Storage } from '@lightningjs/sdk';
+import { Registry, Settings, Storage } from '@lightningjs/sdk';
 
 var activatedWeb = false
 var activatedLightning = false
@@ -89,14 +89,23 @@ export default class AppApi {
 
   isConnectedToInternet() {
     return new Promise((resolve, reject) => {
-      thunder.call('org.rdk.Network', 'isConnectedToInternet')
-        .then(result => {
-          resolve(result.connectedToInternet)
-        })
-        .catch((err) => {
-          console.log(err)
-          reject(false)
-        })
+      let header = new Headers();
+      header.append('pragma', 'no-cache');
+      header.append('cache-control', 'no-cache');
+
+      fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html", { method: 'GET', headers: header, }).then(res => {
+        if (res.status >= 200 && res.status <= 300) {
+          console.log("Connected to internet");
+          resolve(true)
+        } else {
+          console.log("No Internet Available");
+          resolve(false)
+        }
+      }).catch(err => {
+        console.log("Internet Check failed: No Internet Available");
+        resolve(false); //fail of fetch method needs to be considered as no internet
+      })
+
     })
   }
 
@@ -402,6 +411,259 @@ export default class AppApi {
   }
 
   /**
+   * Function to launch All types of apps.
+   * @param {String} callsign callsign of the particular app.
+   * @param {string} url optional for youtube, required for Lightning and WebApps
+   * @param {boolean} preventInternetCheck to prevent bydefault check for internet
+   * @param {boolean} preventCurrentExit to prevent bydefault launch of previous app
+   */
+
+  async launchApp(callsign, url, preventInternetCheck, preventCurrentExit) {
+
+    console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit);
+
+    const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
+
+    if (!availableCallsigns.includes(callsign)) {
+      return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
+    }
+
+    if (!preventInternetCheck) {
+      let internet = await this.isConnectedToInternet();
+      if (!internet) {
+        return Promise.reject("No Internet Available, can't launchApp.");
+      }
+    }
+
+    const currentApp = Storage.get("applicationType"); //get it from stack if required. | current app ==="" means residentApp
+
+    let pluginStatus, pluginState;// to check if the plugin is active, resumed, deactivated etc
+    try {
+      pluginStatus = await this.getPluginStatus(callsign);
+      if (pluginStatus !== undefined) {
+        pluginState = pluginStatus[0].state;
+        console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+      }
+      else {
+        return Promise.reject("PluginError: " + callsign + ": App not supported on this device");
+      }
+    } catch (err) {
+      return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
+    }
+
+    //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
+    // if(pluginState==="Deactivated" || pluginState==="Deactivation"){
+    //   console.log("activating the plugin that has the state: " + JSON.stringify(pluginState))
+    //   thunder.Controller.activate({ callsign: systemcCallsign })
+    // } 
+
+    let params = {};
+    if ((url !== undefined || url !== "") && callsign !== "Cobalt") { //for cobalt url is passed through deeplink method instead of launch
+      params = {
+        "callsign": callsign,
+        "type": callsign,
+        "uri": url
+      }
+    } else {
+      params = {
+        "callsign": callsign,
+        "type": callsign
+      }
+    }
+
+    if (!preventCurrentExit && currentApp !== "") { //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
+      try {
+        console.log("calling exitApp with params: callsign and exitInBackground", currentApp, "true")
+        await this.exitApp(currentApp, true)
+      }
+      catch (err) {
+        console.log("currentApp exit failed!: launching new app...")
+      }
+    }
+
+    if (currentApp === "") { //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
+      thunder.call('org.rdk.RDKShell', 'setVisibility', {
+        "client": "ResidentApp",
+        "visible": false,
+      })
+    }
+
+    return new Promise((resolve, reject) => {
+      thunder.call("org.rdk.RDKShell", "launch", params).then(res => {
+        if (res.success) {
+          thunder.call("org.rdk.RDKShell", "moveToFront", {
+            "client": callsign,
+            "callsign": callsign
+          }).catch(err => {
+            console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front")
+          })
+
+          thunder.call("org.rdk.RDKShell", "setFocus", {
+            "client": callsign,
+            "callsign": callsign
+          }).catch(err => {
+            console.error("failed to setFocus : ", callsign, " ERROR: ", JSON.stringify(err))
+          })
+
+          thunder.call("org.rdk.RDKShell", "setVisibility", {
+            "client": callsign,
+            "visible": true
+          }).catch(err => {
+            console.error("failed to setVisibility : ", callsign, " ERROR: ", JSON.stringify(err))
+          })
+
+          if (callsign === "HtmlApp") { //exit method info overlay to be shown on html/webapps
+            this.launchTextOverlayForHtmlApp()
+          }
+
+          if (callsign === "Cobalt" && url) { //passing url to cobalt once launched
+            thunder.call(callsign, 'deeplink', url)
+          }
+
+          Storage.set("applicationType", callsign);
+
+          resolve(res);
+
+        } else {
+          console.error("failed to launchApp(success false) : ", callsign, " ERROR: ", JSON.stringify(res))
+          reject(res)
+        }
+      }).catch(err => {
+        console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back")
+
+        //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
+        thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
+        this.launchResidentApp();
+
+        reject(err)
+      })
+    })
+
+  }
+
+
+  /**
+   * Function to launch Exit types of apps.
+   * @param {String} callsign callsign of the particular app.
+   * @param {boolean} preventPreviousLaunch to prevent bydefault check for internet
+   * @param {boolean} forceDestroy to prevent bydefault launch of previous app
+   */
+
+  // exit method does not need to launch the previous app.
+  async exitApp(callsign, exitInBackground, forceDestroy) { //test the new exit app method
+
+    if (callsign === "") { //previousApp==="" means it's residentApp | change it to residentApp in cache and here
+      return Promise.reject("Can't exit from ResidentApp");
+    }
+
+    if (callsign === "HDMI") {
+      console.log("exit method called for hdmi")
+      //check for hdmi scenario
+    }
+
+    if (callsign === "LightningApp" || callsign === "HtmlApp") {
+      forceDestroy = true //html and lightning apps need not be suspended.
+    }
+
+    let pluginStatus, pluginState;// to check if the plugin is active, resumed, deactivated etc
+    try {
+      pluginStatus = await this.getPluginStatus(callsign);
+      if (pluginStatus !== undefined) {
+        pluginState = pluginStatus[0].state;
+        console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+      }
+      else {
+        return Promise.reject("PluginError: " + callsign + ": App not supported on this device");
+      }
+    } catch (err) {
+      return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
+    }
+
+    if (!exitInBackground) { //means resident App needs to be launched
+      this.launchResidentApp();
+    }
+
+    //to hide the current app
+    console.log("setting visibility of " + callsign + " to false")
+    await thunder.call("org.rdk.RDKShell", "setVisibility", {
+      "client": callsign,
+      "visible": false
+    }).catch(err => {
+      console.error("failed to setVisibility : " + callsign + " ERROR: ", JSON.stringify(err))
+    })
+
+
+    if (forceDestroy) {
+      console.log("Force Destroying the app: ", callsign)
+      await thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
+      return Promise.resolve(true);
+    }
+    else {
+      console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended"));
+      //enableAppSuspended = true means apps will be suspended by default
+      if (Settings.get("platform", "enableAppSuspended")) {
+        await thunder.call('org.rdk.RDKShell', 'suspend', { "callsign": callsign }).catch(err => {
+          console.error("Error in suspending app: ", callsign, " | trying to destroy the app");
+          thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
+        })
+        return Promise.resolve(true)
+      }
+      else {
+        await thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
+        return Promise.resolve(true);
+      }
+    }
+
+  }
+
+
+
+  /**
+   * Function to launch ResidentApp explicitly(incase of special scenarios)
+   * Prefer using launchApp and exitApp for ALL app launch and exit scenarios.
+   */
+
+  async launchResidentApp() {
+    console.log("launchResidentApp got Called: setting visibility, focus and moving to front the ResidentApp")
+    await thunder.call("org.rdk.RDKShell", "moveToFront", {
+      "client": "ResidentApp",
+      "callsign": "ResidentApp"
+    }).catch(err => {
+      console.error("failed to moveToFront : ResidentApp ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front")
+    })
+
+    await thunder.call("org.rdk.RDKShell", "setFocus", {
+      "client": "ResidentApp",
+      "callsign": "ResidentApp"
+    }).catch(err => {
+      console.error("failed to setFocus : ResidentApp ERROR: ", JSON.stringify(err))
+    })
+
+    await thunder.call("org.rdk.RDKShell", "setVisibility", {
+      "client": "ResidentApp",
+      "visible": true
+    }).catch(err => {
+      console.error("failed to setVisibility : ResidentApp ERROR: ", JSON.stringify(err))
+    })
+
+    Storage.set("applicationType", ""); //since it's residentApp aplication type is "" | change application type to ResidentApp 
+  }
+
+
+
+  launchTextOverlayForHtmlApp() {
+    console.log("Launching \"homeKey exit\" text overlay for html/web app.")
+    let path = location.pathname.split('index.html')[0]
+    let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
+    let notification_url = location.origin + path + url
+    this.launchOverlay(notification_url, 'TextOverlay').catch(() => { })
+    Registry.setTimeout(() => {
+      this.deactivateResidentApp('TextOverlay')
+      this.zorder('HtmlApp')
+      this.setVisibility('HtmlApp', true)
+    }, 9000)
+  }
+  /**
    * Function to launch Html app.
    * @param {String} url url of app.
    */
@@ -575,6 +837,7 @@ export default class AppApi {
             console.log(`Amazon : launch amazon results in :`, res);
           }
           this.setVisibility(childCallsign, true)
+          this.zorder(childCallsign)
           Storage.set("applicationType", childCallsign)
           console.log(`the current application Type : `, Storage.get("applicationType"));
           resolve(true)
@@ -976,7 +1239,8 @@ export default class AppApi {
   }
 
   setSoundMode(mode) {
-
+    mode = mode.startsWith("AUTO") ? "AUTO": mode
+    console.log("mode",mode)
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings', 'setSoundMode', {

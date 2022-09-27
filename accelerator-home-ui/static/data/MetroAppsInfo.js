@@ -22,121 +22,121 @@
 export var metroAppsInfo = [
   {
     displayName: "CNN",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
   },
   {
     displayName: "VimeoRelease",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
   },
   {
     displayName: "WeatherNetwork",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
   },
   {
     displayName: "EuroNews",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
   },
   {
     displayName: "AccuWeather",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
   },
   {
     displayName: "BaebleMusic",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
   },
   {
     displayName: "Aljazeera",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
   },
   {
     displayName: "GuessThatCity",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
   },
   {
     displayName: "Radioline",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
   },
   {
     displayName: "WallStreetJournal",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   },
   {
     displayName: "FRacer",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   },
   {
     displayName: "Aquarium",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aquarium",
     url: "/images/metroApps/Aquarium.png"
   },
   {
     displayName: "Fireplace",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Fireplace",
     url: "/images/metroApps/Fireplace.png"
   },
   {
     displayName: "Deutsche Welle",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.DW",
     url: "/images/metroApps/DWelle.png"
   },
   {
     displayName: "MyTuner Radio",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.appgeneration.mytuner",
     url: "/images/metroApps/Radio.png"
   },
   {
     displayName: "Sudoku",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sudoku",
     url: "/images/metroApps/Sudoku.png"
   },
   {
     displayName: "Tastemade",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Tastemade",
     url: "/images/metroApps/Tastemade.png"
   },
   {
     displayName: "Bloomberg",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.bloomberg.metrological.x1",
     url: "/images/metroApps/Bloomberg.png"
   },
   {
     displayName: "Playworks",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids",
     url: "/images/metroApps/Playworks.png"
   },
   {
     displayName: "Sunrise",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sunrise",
     url: "/images/metroApps/Sunrise.png"
   },

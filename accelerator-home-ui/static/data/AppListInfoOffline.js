@@ -46,13 +46,13 @@
     },
     {
       displayName: 'Peacock',
-      applicationType: 'Lightning',
+      applicationType: 'LightningApp',
       uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
       url: '/images/apps/App_Peacock_454x255.png',//replace with online url
     },
     {
       displayName: 'Xumo',
-      applicationType: 'WebApp',
+      applicationType: 'HtmlApp',
       uri: 'https://x1box-app.xumo.com/index.html',
       url: '/images/apps/App_Xumo_454x255.png',
     },

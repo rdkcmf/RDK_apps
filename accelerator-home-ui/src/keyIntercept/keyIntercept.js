@@ -65,18 +65,18 @@ export function keyIntercept() {
         })
 
         .then(result => {
-            thunder.on(rdkshellCallsign, 'onSuspended', notification => {
+            thunder.on(rdkshellCallsign, 'onSuspended', notification => { //check if necessary
                 if (notification) {
-                    console.log('onSuspended notification: ' + notification.client);
-                    if (Storage.get('applicationType') == notification.client) {
-                        Storage.set('applicationType', '');
-                        appApi.setVisibility("ResidentApp", true)
-                        thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-                            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-                        });
+                    console.log('onSuspended notification from KeyIntercept: ' + notification.client);
+                    // if (Storage.get('applicationType') == notification.client) {
+                    //     Storage.set('applicationType', '');
+                    //     appApi.setVisibility("ResidentApp", true)
+                    //     thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+                    //         console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+                    //     });
 
-                        // getclients and storage.set to the second client
-                    }
+                    //     // getclients and storage.set to the second client
+                    // }
                 }
             });
         })
@@ -159,6 +159,48 @@ export function keyIntercept() {
                 .call(rdkshellCallsign, 'addKeyIntercept', {
                     client: 'ResidentApp',
                     keyCode: Keymap.Settings_Shortcut,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Youtube,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Amazon,
+                    modifiers: [],
+                })
+                .catch(err => {
+                    console.log('Error', err);
+                });
+        })
+        .catch(err => {
+            console.log('Error', err);
+        })
+        .then(result => {
+            thunder
+                .call(rdkshellCallsign, 'addKeyIntercept', {
+                    client: 'ResidentApp',
+                    keyCode: Keymap.Netflix,
                     modifiers: [],
                 })
                 .catch(err => {

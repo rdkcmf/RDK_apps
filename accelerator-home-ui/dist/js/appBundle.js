@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Wed, 21 Sep 2022 14:16:19 GMT
+ * Generated: Thu, 29 Sep 2022 09:15:27 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7374,11 +7374,23 @@ var APP_accelerator_home_ui = (function () {
 
     isConnectedToInternet() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Network', 'isConnectedToInternet').then(result => {
-          resolve(result.connectedToInternet);
+        let header = new Headers();
+        header.append('pragma', 'no-cache');
+        header.append('cache-control', 'no-cache');
+        fetch("https://apps.rdkcentral.com/rdk-apps/accelerator-home-ui/index.html", {
+          method: 'GET',
+          headers: header
+        }).then(res => {
+          if (res.status >= 200 && res.status <= 300) {
+            console.log("Connected to internet");
+            resolve(true);
+          } else {
+            console.log("No Internet Available");
+            resolve(false);
+          }
         }).catch(err => {
-          console.log(err);
-          reject(false);
+          console.log("Internet Check failed: No Internet Available");
+          resolve(false); //fail of fetch method needs to be considered as no internet
         });
       });
     }
@@ -7657,6 +7669,257 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     /**
+     * Function to launch All types of apps.
+     * @param {String} callsign callsign of the particular app.
+     * @param {string} url optional for youtube, required for Lightning and WebApps
+     * @param {boolean} preventInternetCheck to prevent bydefault check for internet
+     * @param {boolean} preventCurrentExit to prevent bydefault launch of previous app
+     */
+
+
+    async launchApp(callsign, url, preventInternetCheck, preventCurrentExit) {
+      console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit);
+      const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
+
+      if (!availableCallsigns.includes(callsign)) {
+        return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
+      }
+
+      if (!preventInternetCheck) {
+        let internet = await this.isConnectedToInternet();
+
+        if (!internet) {
+          return Promise.reject("No Internet Available, can't launchApp.");
+        }
+      }
+
+      const currentApp = Storage.get("applicationType"); //get it from stack if required. | current app ==="" means residentApp
+
+      let pluginStatus, pluginState; // to check if the plugin is active, resumed, deactivated etc
+
+      try {
+        pluginStatus = await this.getPluginStatus(callsign);
+
+        if (pluginStatus !== undefined) {
+          pluginState = pluginStatus[0].state;
+          console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+        } else {
+          return Promise.reject("PluginError: " + callsign + ": App not supported on this device");
+        }
+      } catch (err) {
+        return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
+      } //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
+      // if(pluginState==="Deactivated" || pluginState==="Deactivation"){
+      //   console.log("activating the plugin that has the state: " + JSON.stringify(pluginState))
+      //   thunder.Controller.activate({ callsign: systemcCallsign })
+      // } 
+
+
+      let params = {};
+
+      if ((url !== undefined || url !== "") && callsign !== "Cobalt") {
+        //for cobalt url is passed through deeplink method instead of launch
+        params = {
+          "callsign": callsign,
+          "type": callsign,
+          "uri": url
+        };
+      } else {
+        params = {
+          "callsign": callsign,
+          "type": callsign
+        };
+      }
+
+      if (!preventCurrentExit && currentApp !== "") {
+        //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
+        try {
+          console.log("calling exitApp with params: callsign and exitInBackground", currentApp, "true");
+          await this.exitApp(currentApp, true);
+        } catch (err) {
+          console.log("currentApp exit failed!: launching new app...");
+        }
+      }
+
+      if (currentApp === "") {
+        //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
+        thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
+          "client": "ResidentApp",
+          "visible": false
+        });
+      }
+
+      return new Promise((resolve, reject) => {
+        thunder$9.call("org.rdk.RDKShell", "launch", params).then(res => {
+          if (res.success) {
+            thunder$9.call("org.rdk.RDKShell", "moveToFront", {
+              "client": callsign,
+              "callsign": callsign
+            }).catch(err => {
+              console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
+            });
+            thunder$9.call("org.rdk.RDKShell", "setFocus", {
+              "client": callsign,
+              "callsign": callsign
+            }).catch(err => {
+              console.error("failed to setFocus : ", callsign, " ERROR: ", JSON.stringify(err));
+            });
+            thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+              "client": callsign,
+              "visible": true
+            }).catch(err => {
+              console.error("failed to setVisibility : ", callsign, " ERROR: ", JSON.stringify(err));
+            });
+
+            if (callsign === "HtmlApp") {
+              //exit method info overlay to be shown on html/webapps
+              this.launchTextOverlayForHtmlApp();
+            }
+
+            if (callsign === "Cobalt" && url) {
+              //passing url to cobalt once launched
+              thunder$9.call(callsign, 'deeplink', url);
+            }
+
+            Storage.set("applicationType", callsign);
+            resolve(res);
+          } else {
+            console.error("failed to launchApp(success false) : ", callsign, " ERROR: ", JSON.stringify(res));
+            reject(res);
+          }
+        }).catch(err => {
+          console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back"); //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
+
+          thunder$9.call('org.rdk.RDKShell', 'destroy', {
+            "callsign": callsign
+          });
+          this.launchResidentApp();
+          reject(err);
+        });
+      });
+    }
+    /**
+     * Function to launch Exit types of apps.
+     * @param {String} callsign callsign of the particular app.
+     * @param {boolean} preventPreviousLaunch to prevent bydefault check for internet
+     * @param {boolean} forceDestroy to prevent bydefault launch of previous app
+     */
+    // exit method does not need to launch the previous app.
+
+
+    async exitApp(callsign, exitInBackground, forceDestroy) {
+      //test the new exit app method
+      if (callsign === "") {
+        //previousApp==="" means it's residentApp | change it to residentApp in cache and here
+        return Promise.reject("Can't exit from ResidentApp");
+      }
+
+      if (callsign === "HDMI") {
+        console.log("exit method called for hdmi"); //check for hdmi scenario
+      }
+
+      if (callsign === "LightningApp" || callsign === "HtmlApp") {
+        forceDestroy = true; //html and lightning apps need not be suspended.
+      }
+
+      let pluginStatus, pluginState; // to check if the plugin is active, resumed, deactivated etc
+
+      try {
+        pluginStatus = await this.getPluginStatus(callsign);
+
+        if (pluginStatus !== undefined) {
+          pluginState = pluginStatus[0].state;
+          console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+        } else {
+          return Promise.reject("PluginError: " + callsign + ": App not supported on this device");
+        }
+      } catch (err) {
+        return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
+      }
+
+      if (!exitInBackground) {
+        //means resident App needs to be launched
+        this.launchResidentApp();
+      } //to hide the current app
+
+
+      console.log("setting visibility of " + callsign + " to false");
+      await thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+        "client": callsign,
+        "visible": false
+      }).catch(err => {
+        console.error("failed to setVisibility : " + callsign + " ERROR: ", JSON.stringify(err));
+      });
+
+      if (forceDestroy) {
+        console.log("Force Destroying the app: ", callsign);
+        await thunder$9.call('org.rdk.RDKShell', 'destroy', {
+          "callsign": callsign
+        });
+        return Promise.resolve(true);
+      } else {
+        console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended")); //enableAppSuspended = true means apps will be suspended by default
+
+        if (Settings.get("platform", "enableAppSuspended")) {
+          await thunder$9.call('org.rdk.RDKShell', 'suspend', {
+            "callsign": callsign
+          }).catch(err => {
+            console.error("Error in suspending app: ", callsign, " | trying to destroy the app");
+            thunder$9.call('org.rdk.RDKShell', 'destroy', {
+              "callsign": callsign
+            });
+          });
+          return Promise.resolve(true);
+        } else {
+          await thunder$9.call('org.rdk.RDKShell', 'destroy', {
+            "callsign": callsign
+          });
+          return Promise.resolve(true);
+        }
+      }
+    }
+    /**
+     * Function to launch ResidentApp explicitly(incase of special scenarios)
+     * Prefer using launchApp and exitApp for ALL app launch and exit scenarios.
+     */
+
+
+    async launchResidentApp() {
+      console.log("launchResidentApp got Called: setting visibility, focus and moving to front the ResidentApp");
+      await thunder$9.call("org.rdk.RDKShell", "moveToFront", {
+        "client": "ResidentApp",
+        "callsign": "ResidentApp"
+      }).catch(err => {
+        console.error("failed to moveToFront : ResidentApp ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
+      });
+      await thunder$9.call("org.rdk.RDKShell", "setFocus", {
+        "client": "ResidentApp",
+        "callsign": "ResidentApp"
+      }).catch(err => {
+        console.error("failed to setFocus : ResidentApp ERROR: ", JSON.stringify(err));
+      });
+      await thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+        "client": "ResidentApp",
+        "visible": true
+      }).catch(err => {
+        console.error("failed to setVisibility : ResidentApp ERROR: ", JSON.stringify(err));
+      });
+      Storage.set("applicationType", ""); //since it's residentApp aplication type is "" | change application type to ResidentApp 
+    }
+
+    launchTextOverlayForHtmlApp() {
+      console.log("Launching \"homeKey exit\" text overlay for html/web app.");
+      let path = location.pathname.split('index.html')[0];
+      let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
+      let notification_url = location.origin + path + url;
+      this.launchOverlay(notification_url, 'TextOverlay').catch(() => {});
+      Registry.setTimeout(() => {
+        this.deactivateResidentApp('TextOverlay');
+        this.zorder('HtmlApp');
+        this.setVisibility('HtmlApp', true);
+      }, 9000);
+    }
+    /**
      * Function to launch Html app.
      * @param {String} url url of app.
      */
@@ -7822,6 +8085,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           this.setVisibility(childCallsign, true);
+          this.zorder(childCallsign);
           Storage.set("applicationType", childCallsign);
           console.log("the current application Type : ", Storage.get("applicationType"));
           resolve(true);
@@ -8219,6 +8483,8 @@ var APP_accelerator_home_ui = (function () {
     }
 
     setSoundMode(mode) {
+      mode = mode.startsWith("AUTO") ? "AUTO" : mode;
+      console.log("mode", mode);
       return new Promise((resolve, reject) => {
         thunder$9.call('org.rdk.DisplaySettings', 'setSoundMode', {
           "audioPort": "HDMI0",
@@ -8783,32 +9049,27 @@ var APP_accelerator_home_ui = (function () {
     displayName: 'Netflix',
     applicationType: 'Netflix',
     uri: '',
-    url: '/images/apps/App_Netflix_454x255.png' //replace with online url
-
+    url: '/images/apps/App_Netflix_454x255.png'
   }, {
     displayName: 'Amazon Prime video',
     applicationType: 'Amazon',
     uri: '',
-    url: '/images/apps/App_Amazon_Prime_454x255.png' //replace with online url
-
+    url: '/images/apps/App_Amazon_Prime_454x255.png'
   }, {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
     uri: 'https://www.youtube.com/tv',
-    url: '/images/apps/App_YouTube_454x255.png' //replace with online url
-
+    url: '/images/apps/App_YouTube_454x255.png'
   }, {
     displayName: 'Peacock',
-    applicationType: 'Lightning',
+    applicationType: 'LightningApp',
     uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
-    url: '/images/apps/App_Peacock_454x255.png' //replace with online url
-
+    url: '/images/apps/App_Peacock_454x255.png'
   }, {
     displayName: 'Xumo',
-    applicationType: 'WebApp',
+    applicationType: 'HtmlApp',
     uri: 'https://x1box-app.xumo.com/index.html',
-    url: '/images/apps/App_Xumo_454x255.png' //replace with online url
-
+    url: '/images/apps/App_Xumo_454x255.png'
   }];
 
   /**
@@ -8856,13 +9117,13 @@ var APP_accelerator_home_ui = (function () {
     url: '/images/apps/App_YouTube_454x255.png'
   }, {
     displayName: 'Peacock',
-    applicationType: 'Lightning',
+    applicationType: 'LightningApp',
     uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
     url: '/images/apps/App_Peacock_454x255.png' //replace with online url
 
   }, {
     displayName: 'Xumo',
-    applicationType: 'WebApp',
+    applicationType: 'HtmlApp',
     uri: 'https://x1box-app.xumo.com/index.html',
     url: '/images/apps/App_Xumo_454x255.png'
   }];
@@ -9100,102 +9361,102 @@ var APP_accelerator_home_ui = (function () {
    */
   var metroAppsInfo = [{
     displayName: "CNN",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.CNN.png"
   }, {
     displayName: "VimeoRelease",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.VimeoRelease.png"
   }, {
     displayName: "WeatherNetwork",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WeatherNetwork.png"
   }, {
     displayName: "EuroNews",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Euronews.png"
   }, {
     displayName: "AccuWeather",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
   }, {
     displayName: "BaebleMusic",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
   }, {
     displayName: "Aljazeera",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Aljazeera.png"
   }, {
     displayName: "GuessThatCity",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.GuessThatCity.png"
   }, {
     displayName: "Radioline",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.Radioline.png"
   }, {
     displayName: "WallStreetJournal",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.WallStreetJournal.png"
   }, {
     displayName: "FRacer",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   }, {
     displayName: "Aquarium",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aquarium",
     url: "/images/metroApps/Aquarium.png"
   }, {
     displayName: "Fireplace",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Fireplace",
     url: "/images/metroApps/Fireplace.png"
   }, {
     displayName: "Deutsche Welle",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.DW",
     url: "/images/metroApps/DWelle.png"
   }, {
     displayName: "MyTuner Radio",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.appgeneration.mytuner",
     url: "/images/metroApps/Radio.png"
   }, {
     displayName: "Sudoku",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sudoku",
     url: "/images/metroApps/Sudoku.png"
   }, {
     displayName: "Tastemade",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Tastemade",
     url: "/images/metroApps/Tastemade.png"
   }, {
     displayName: "Bloomberg",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.bloomberg.metrological.x1",
     url: "/images/metroApps/Bloomberg.png"
   }, {
     displayName: "Playworks",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids",
     url: "/images/metroApps/Playworks.png"
   }, {
     displayName: "Sunrise",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sunrise",
     url: "/images/metroApps/Sunrise.png"
   }];
@@ -9224,102 +9485,102 @@ var APP_accelerator_home_ui = (function () {
    */
   var metroAppsInfoOffline = [{
     displayName: "CNN",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN",
     url: "/images/metroApps/Test-01.jpg"
   }, {
     displayName: "VimeoRelease",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease",
     url: "/images/metroApps/Test-02.jpg"
   }, {
     displayName: "WeatherNetwork",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork",
     url: "/images/metroApps/Test-03.jpg"
   }, {
     displayName: "EuroNews",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews",
     url: "/images/metroApps/Test-04.jpg"
   }, {
     displayName: "AccuWeather",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     url: "/images/metroApps/Test-05.jpg"
   }, {
     displayName: "BaebleMusic",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
     url: "/images/metroApps/Test-06.jpg"
   }, {
     displayName: "Aljazeera",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
     url: "/images/metroApps/Test-07.jpg"
   }, {
     displayName: "GuessThatCity",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.GuessThatCity",
     url: "/images/metroApps/Test-08.jpg"
   }, {
     displayName: "Radioline",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline",
     url: "/images/metroApps/Test-09.jpg"
   }, {
     displayName: "WallStreetJournal",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal",
     url: "/images/metroApps/Test-10.jpg"
   }, {
     displayName: "FRacer",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://lightningjs.io/fracer/#main",
     url: "/images/metroApps/fracer-steerling.png"
   }, {
     displayName: "Aquarium",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aquarium",
     url: "/images/metroApps/Aquarium.png"
   }, {
     displayName: "Fireplace",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Fireplace",
     url: "/images/metroApps/Fireplace.png"
   }, {
     displayName: "Deutsche Welle",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.DW",
     url: "/images/metroApps/DWelle.png"
   }, {
     displayName: "MyTuner Radio",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.appgeneration.mytuner",
     url: "/images/metroApps/Radio.png"
   }, {
     displayName: "Sudoku",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sudoku",
     url: "/images/metroApps/Sudoku.png"
   }, {
     displayName: "Tastemade",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Tastemade",
     url: "/images/metroApps/Tastemade.png"
   }, {
     displayName: "Bloomberg",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.bloomberg.metrological.x1",
     url: "/images/metroApps/Bloomberg.png"
   }, {
     displayName: "Playworks",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids",
     url: "/images/metroApps/Playworks.png"
   }, {
     displayName: "Sunrise",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Sunrise",
     url: "/images/metroApps/Sunrise.png"
   }];
@@ -9344,12 +9605,12 @@ var APP_accelerator_home_ui = (function () {
    **/
   var showCaseApps = [{
     displayName: "Strike Benchmark",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://strike.lightningjs.io/es6/#home",
     url: "/images/lightningApps/strike_app.png"
   }, {
     displayName: "TMBD App",
-    applicationType: "Lightning",
+    applicationType: "LightningApp",
     uri: "https://lightningjs.io/tmdb/#splash",
     url: "/images/lightningApps/tmbd.png"
   }];
@@ -9607,8 +9868,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage.set("ipAddress", null);
   });
-  let appApi$7 = new AppApi();
-  appApi$7.getIP().then(ip => {
+  let appApi$6 = new AppApi();
+  appApi$6.getIP().then(ip => {
     IpAddress2 = ip;
   });
   /**
@@ -9738,7 +9999,7 @@ var APP_accelerator_home_ui = (function () {
 
     getMovieSubscriptions(id) {
       return new Promise((resolve, reject) => {
-        appApi$7.fetchApiKey().then(res => {
+        appApi$6.fetchApiKey().then(res => {
           // console.log("Key is: ", res);
           // console.log("tmsID is :", id);
           try {
@@ -9754,7 +10015,7 @@ var APP_accelerator_home_ui = (function () {
 
     getAPIKey() {
       return new Promise((resolve, reject) => {
-        appApi$7.fetchApiKey().then(res => {
+        appApi$6.fetchApiKey().then(res => {
           let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
           month += 1;
           day = day.toString();
@@ -12456,27 +12717,6 @@ var APP_accelerator_home_ui = (function () {
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
   };
-  const defineProperties = (component, props) => {
-    props.forEach(prop => {
-      Object.defineProperty(component, prop, {
-        set: function (value) {
-          component["_".concat(prop)] = value;
-        },
-        get: function () {
-          return component["_".concat(prop)];
-        }
-      });
-    });
-  };
-  const findIndexOfObject = (array, search, targetProp) => {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][targetProp] === search) {
-        return i;
-      }
-    }
-
-    return -1;
-  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -12529,11 +12769,6 @@ var APP_accelerator_home_ui = (function () {
 
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
-      this._previous = {
-        mainIndex,
-        crossIndex,
-        realIndex: previousIndex
-      };
       this._index = targetIndex;
 
       this._indexChanged({
@@ -14157,904 +14392,6 @@ var APP_accelerator_home_ui = (function () {
     right: 1
   };
 
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  const calcCarouselNavigation = (dir, current, min, max) => {
-    let target = current + dir;
-
-    if (target < min) {
-      target = max;
-    }
-
-    if (target > max) {
-      target = min;
-    }
-
-    return target;
-  };
-
-  class Stepper extends lng$1.Component {
-    static _template() {
-      return {
-        h: 80,
-        w: 574,
-        Focus: {
-          alpha: 0,
-          w: w => w,
-          h: h => h,
-          rect: true
-        },
-        Label: {
-          x: 30,
-          y: h => h * 0.5,
-          mountY: 0.5,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        },
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 30;
-      this._max = 100;
-      this._min = 0;
-      this._value = 50;
-      this._options = undefined;
-      this._label = 'label';
-      this._focusAnimation = null;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'Label',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this._update();
-    }
-
-    _navigate(dir) {
-      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
-      const event = {
-        value: this._value
-      };
-
-      if (this._options) {
-        event.options = this._options;
-      }
-
-      this.fireAncestors('$onValueChanged', event);
-      this.signal('onValueChanged', event);
-    }
-
-    _handleLeft() {
-      this._navigate(-1);
-    }
-
-    _handleRight() {
-      this._navigate(1);
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set label(str) {
-      this._label = str;
-
-      if (this.active) {
-        this.tag('Label').text.text = str;
-      }
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    set value(str) {
-      this._value = str;
-
-      if (this.active) {
-        this.tag('Value').text.text = this.optionValue || this._value;
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    get optionValue() {
-      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
-    }
-
-    set options(arr) {
-      const refactor = arr.map(option => {
-        if (typeof option === 'string') {
-          return {
-            label: option
-          };
-        }
-
-        return option;
-      });
-      this._value = 0;
-      this._options = refactor;
-      this._max = refactor.length - 1;
-
-      this._update();
-    }
-
-    get options() {
-      return this._options;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ArrowStepper extends Stepper {
-    static _template() {
-      return { ...super._template(),
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          ArrowLeft: {
-            y: h => h * 0.5,
-            mountY: 0.5
-          },
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          },
-          ArrowRight: {
-            y: h => h * 0.5,
-            x: w => w,
-            mountY: 0.5,
-            mountX: 1
-          }
-        }
-      };
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          ArrowLeft: {
-            color: this._labelColor
-          },
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          },
-          ArrowRight: {
-            color: this._labelColor
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'ValueWrapper.ArrowLeft',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.ArrowRight',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      const arrowLeft = this.tag('ArrowLeft');
-      const arrowRight = this.tag('ArrowRight');
-
-      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
-        arrowLeft.text = {
-          text: '\u25c0',
-          fontSize: 18
-        };
-      }
-
-      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
-        arrowRight.text = {
-          text: '\u25b6',
-          fontSize: 18
-        };
-      }
-
-      this._update();
-    }
-
-  }
-
-  class ColorShift extends lng$1.Component {
-    static _template() {
-      return {
-        w: 574,
-        h: 240,
-        List: {
-          type: List,
-          w: w => w,
-          h: h => h,
-          forceLoad: true,
-          spacing: 0,
-          direction: 'column'
-        }
-      };
-    }
-
-    _construct() {
-      this._autoColorShift = true;
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._options = [{
-        type: 'neutral',
-        label: 'normal'
-      }, {
-        type: 'protanopia',
-        label: 'Protanopia'
-      }, {
-        type: 'deuteranopia',
-        label: 'Deuteranopia'
-      }, {
-        type: 'tritanopia',
-        label: 'Tritanopia'
-      }, {
-        type: 'monochromacy',
-        label: 'Achromatopsia'
-      }];
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
-    }
-
-    _getFocused() {
-      return this.tag('List');
-    }
-
-    _shiftColors() {
-      if (this._autoColorShift && this.application && this.application.colorshift) {
-        this.application.colorshift(this._settings.correction, this._settings);
-      }
-    }
-
-    $onValueChanged() {
-      const listItems = this.tag('List').items;
-      const correction = listItems[0];
-      this._settings = {
-        correction: correction.options[correction.value].type,
-        brightness: listItems[1].value,
-        contrast: listItems[2].value,
-        gamma: listItems[3].value
-      };
-
-      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
-        const steppers = listItems.slice(1);
-        steppers.forEach(stepper => {
-          stepper.value = 50;
-        });
-      }
-
-      this._currentCorrection = this._settings.correction;
-
-      this._shiftColors();
-
-      this.signal('onColorShift', this._settings);
-    }
-
-    _update() {
-      const list = this.tag('List');
-      const steppers = ['Brightness', 'Contrast', 'Gamma'];
-      const options = this._options;
-      const settings = this._settings;
-      const colors = {
-        focusColor: this._focusColor,
-        labelColor: this._labelColor,
-        labelColorFocused: this._labelColorFocused
-      };
-
-      this._shiftColors();
-
-      const settingItems = steppers.map(stepper => {
-        const lowerC = stepper.toLocaleLowerCase();
-        return {
-          type: this["".concat(lowerC, "Component")],
-          label: stepper,
-          value: settings[lowerC],
-          w: this.finalW,
-          h: 80,
-          ...colors
-        };
-      });
-      settingItems.unshift({
-        type: this.correctionComponent,
-        options,
-        value: findIndexOfObject(options, settings.correction, 'type'),
-        label: 'Color adjustment',
-        w: this.finalW,
-        h: 80,
-        ...colors
-      });
-      list.clear();
-      list.add(settingItems);
-    }
-
-    _firstActive() {
-      if (!this._settings) {
-        this._settings = {
-          correction: 'neutral',
-          brightness: 50,
-          contrast: 50,
-          gamma: 50
-        };
-      }
-
-      this._update();
-    }
-
-    set settings(obj) {
-      this._settings = obj;
-
-      if (this.active) {
-        const listItems = this.tag('List').items;
-        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
-        listItems[1] = obj.brightness || 50;
-        listItems[2] = obj.contrast || 50;
-        listItems[3] = obj.gamma || 50;
-      }
-    }
-
-    get settings() {
-      return this._settings;
-    }
-
-    get correctionTag() {
-      return this.tag('List').items[0];
-    }
-
-    get brightnessTag() {
-      return this.tag('List').items[1];
-    }
-
-    get contrastTag() {
-      return this.tag('List').items[2];
-    }
-
-    get gammaTag() {
-      return this.tag('List').items[3];
-    }
-
-    get adjustmentTags() {
-      return this.tag('List').items;
-    }
-
-    set stepperComponent(component) {
-      this._stepperComponent = component;
-    }
-
-    get stepperComponent() {
-      return this._stepperComponent || ArrowStepper;
-    }
-
-    set correctionComponent(component) {
-      this._correctionComponent = component;
-    }
-
-    get correctionComponent() {
-      return this._correctionComponent || this.stepperComponent;
-    }
-
-    set brightnessComponent(component) {
-      this._brightnessComponent = component;
-    }
-
-    get brightnessComponent() {
-      return this._brightnessComponent || this.stepperComponent;
-    }
-
-    set contrastComponent(component) {
-      this._contrastComponent = component;
-    }
-
-    get contrastComponent() {
-      return this._contrastComponent || this.stepperComponent;
-    }
-
-    set gammaComponent(component) {
-      this._gammaComponent = component;
-    }
-
-    get gammaComponent() {
-      return this._gammaComponent || this.stepperComponent;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  class CarouselItem extends lng$1.Component {
-    static _template() {
-      return {
-        Focus: {
-          alpha: 0,
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          w: 120,
-          h: 50,
-          rect: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 25
-          }
-        },
-        Label: {
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          renderOffscreen: true,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 40;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
-    }
-
-    set label(str) {
-      this.tag('Label').text.text = str;
-      this._label = str;
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    _init() {
-      const label = this.tag('Label');
-      label.on('txLoaded', () => {
-        this.patch({
-          w: label.renderWidth,
-          Focus: {
-            w: label.renderWidth + this._padding * 2
-          }
-        });
-
-        if (this.collectionWrapper) {
-          this.collectionWrapper.reposition();
-        }
-      });
-    }
-
-    _focus() {
-      this.patch({
-        Focus: {
-          smooth: {
-            alpha: 1
-          }
-        },
-        Label: {
-          smooth: {
-            color: this._labelColorFocused
-          }
-        }
-      });
-    }
-
-    _unfocus(target) {
-      if (target.isCarouselItem === true) {
-        this.patch({
-          Focus: {
-            smooth: {
-              alpha: 0
-            }
-          },
-          Label: {
-            smooth: {
-              color: this._labelColor
-            }
-          }
-        });
-      }
-    }
-
-    _firstActive() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          color: this._labelColor
-        }
-      });
-
-      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
-        this._focus();
-      }
-    }
-
-    get isCarouselItem() {
-      return true;
-    }
-
-    static get width() {
-      return 120;
-    }
-
-    static get height() {
-      return 50;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ProgressBar$1 extends lng$1.Component {
-    static _template() {
-      return {
-        w: 300,
-        h: 10,
-        Background: {
-          w: w => w,
-          h: h => h,
-          rect: true,
-          rtt: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 5
-          },
-          Progress: {
-            h: h => h,
-            w: 10,
-            rect: true,
-            shader: {
-              type: lng$1.shaders.RoundedRectangle,
-              radius: 0
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._progressColor = 0xff009245;
-      this._progressColorFocused = undefined;
-      this._backgroundColor = 0xff9d9d9d;
-      this._backgroundColorFocused = undefined;
-      this._backgroundRadius = 5;
-      this._progressRadius = 0;
-      this.value = 0.5;
-      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
-    }
-
-    progress(p) {
-      if (p > 1) {
-        p = p / 100;
-      }
-
-      this._value = p;
-      this.tag('Progress').w = this.w * p;
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Background',
-          p: 'color',
-          v: {
-            0: this._backgroundColor,
-            1: this._backgroundColorFocused || this._backgroundColor
-          }
-        }, {
-          t: 'Background.Progress',
-          p: 'color',
-          v: {
-            0: this._progressColor,
-            1: this._progressColorFocused || this._progressColor
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this.patch({
-        Background: {
-          color: this._backgroundColor,
-          shader: {
-            radius: this._backgroundRadius
-          },
-          Progress: {
-            color: this._progressColor,
-            shader: {
-              radius: this._progressRadius
-            }
-          }
-        }
-      });
-      this.progress(this._value);
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set value(p) {
-      this._value = p;
-
-      if (this.active) {
-        this.progress(p);
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    set backgroundRadius(num) {
-      this._backgroundRadius = num;
-
-      if (this.active) {
-        this.tag('Background').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    set progressRadius(num) {
-      this._progressRadius = num;
-
-      if (this.active) {
-        this.tag('Progress').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    get backgroundTag() {
-      return this.tag('Background');
-    }
-
-    get progressTag() {
-      return this.tag('Progress');
-    }
-
-  }
-
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -16097,68 +15434,21 @@ var APP_accelerator_home_ui = (function () {
 
         async _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
+          let uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
 
-          try {
-            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
-          } catch {
-            this.internetConnectivity = false;
-          }
-
-          this.uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-          Storage.set('applicationType', applicationType);
-
-          if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri).catch(err => {});
-          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
-            this.appApi.launchWeb(this.uri).then(() => {
-              this.appApi.setVisibility('ResidentApp', false);
-              let path = location.pathname.split('index.html')[0];
-              let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
-              let notification_url = location.origin + path + url;
-              this.appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => {});
-              Registry.setTimeout(() => {
-                this.appApi.deactivateResidentApp('TextOverlay');
-                this.appApi.zorder('HtmlApp');
-                this.appApi.setVisibility('HtmlApp', true);
-              }, 9000);
-            }).catch(err => {
-              console.error("WebApp : error while launching a webapp :", JSON.stringify(err));
-              Storage.set("applicationType", "");
+          if (uri === 'USB') {
+            this.usbApi.getMountedDevices().then(result => {
+              if (result.mounted.length === 1) {
+                Router.navigate('usb');
+              }
             });
-          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
-            this.appApi.launchLightning(this.uri).catch(err => {
-              console.error("error while launching lightning app");
-              Storage.set('applicationType', "");
-            });
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
-            this.appApi.launchNative(this.uri).catch(err => {
-              console.error("error while launching a native app");
-              Storage.set('applicationType', "");
-            });
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Amazon') {
-            console.log('Launching app');
-            this.appApi.getPluginStatus('Amazon').then(result => {
-              this.appApi.launchPremiumApp('Amazon').catch(err => {
-                console.error("Amazon : error while launching amazon : ", JSON.stringify(err));
-              });
-            }).catch(err => {
-              console.log('Amazon plugin error', err);
-              Storage.set('applicationType', '');
-            });
-          } else if (Storage.get('applicationType') == 'Netflix') {
-            console.log('Launching app');
+          } else if (applicationType === "Netflix") {
+            console.log("Launching netflix using $initLaunchPad method");
             this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
           } else {
-            if (this.uri === 'USB') {
-              this.usbApi.getMountedDevices().then(result => {
-                if (result.mounted.length === 1) {
-                  // this.fireAncestors('$goToUsb')
-                  Router.navigate('usb');
-                }
-              });
-            }
+            this.appApi.launchApp(applicationType, uri).catch(err => {
+              console.log("ApplaunchError: ", JSON.stringify(err), err);
+            });
           }
         }
 
@@ -16212,30 +15502,16 @@ var APP_accelerator_home_ui = (function () {
         }
 
         async _handleEnter() {
-          try {
-            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
-          } catch {
-            this.internetConnectivity = false;
-          }
-
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
-          this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
-          Storage.set('applicationType', applicationType);
-          this.uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
+          let uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
 
-          if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
-            this.appApi.launchWeb(this.uri).catch(() => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
-            this.appApi.launchLightning(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
-            this.appApi.launchNative(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
+          if (applicationType === "Netflix") {
+            console.log("Launching netflix using $initLaunchPad method");
+            this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
+          } else {
+            this.appApi.launchApp(applicationType, uri).catch(err => {
+              console.log("ApplaunchError: ", JSON.stringify(err), err);
+            });
           }
         }
 
@@ -16331,7 +15607,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleRight() {
-          if (this.tag('ShowcaseApps').length - 1 != this.tag('MetroApps').index) {
+          if (this.tag('ShowcaseApps').length - 1 != this.tag('ShowcaseApps').index) {
             this.tag('ShowcaseApps').setNext();
             return this.tag('ShowcaseApps').element;
           }
@@ -16355,30 +15631,16 @@ var APP_accelerator_home_ui = (function () {
         }
 
         async _handleEnter() {
-          try {
-            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
-          } catch {
-            this.internetConnectivity = false;
-          }
-
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
-          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
-          applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
-          Storage.set('applicationType', applicationType);
-          this.uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
+          let uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
 
-          if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
-            this.appApi.launchWeb(this.uri).catch(() => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
-            this.appApi.launchLightning(this.uri).catch(() => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
-            this.appApi.launchNative(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
+          if (applicationType === "Netflix") {
+            console.log("Launching netflix using $initLaunchPad method");
+            this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
+          } else {
+            this.appApi.launchApp(applicationType, uri).catch(err => {
+              console.log("ApplaunchError: ", JSON.stringify(err), err);
+            });
           }
         }
 
@@ -16426,30 +15688,16 @@ var APP_accelerator_home_ui = (function () {
         }
 
         async _handleEnter() {
-          try {
-            this.internetConnectivity = await this.networkApi.isConnectedToInternet();
-          } catch {
-            this.internetConnectivity = false;
-          }
-
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
-          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
-          applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
-          Storage.set('applicationType', applicationType);
-          this.uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
+          let uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
 
-          if (Storage.get('applicationType') == 'Cobalt') {
-            this.appApi.launchCobalt(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'WebApp' && this.internetConnectivity) {
-            this.appApi.launchWeb(this.uri).catch(() => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Lightning' && this.internetConnectivity) {
-            this.appApi.launchLightning(this.uri).catch(() => {});
-            this.appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && this.internetConnectivity) {
-            this.appApi.launchNative(this.uri).catch(err => {});
-            this.appApi.setVisibility('ResidentApp', false);
+          if (applicationType === "Netflix") {
+            console.log("Launching netflix using $initLaunchPad method");
+            this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
+          } else {
+            this.appApi.launchApp(applicationType, uri).catch(err => {
+              console.log("ApplaunchError: ", JSON.stringify(err), err);
+            });
           }
         }
 
@@ -21817,7 +21065,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$6 = new AppApi();
+  var appApi$5 = new AppApi();
   var defaultInterface = "";
   var currentInterface = [];
   class NetworkInfo extends lng$1.Component {
@@ -22061,7 +21309,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     getIPSetting(interfaceName) {
-      appApi$6.getIPSetting(interfaceName).then(result => {
+      appApi$5.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
@@ -22069,7 +21317,7 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.widgets.menu.setPanelsVisibility(); //Getting the default interface
 
-      appApi$6.getDefaultInterface().then(result => {
+      appApi$5.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
 
@@ -22090,12 +21338,12 @@ var APP_accelerator_home_ui = (function () {
         } //Filtering the current interface
 
 
-        appApi$6.getInterfaces().then(result => {
+        appApi$5.getInterfaces().then(result => {
           currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
 
           if (currentInterface[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
-            appApi$6.getConnectedSSID().then(result => {
+            appApi$5.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -22108,7 +21356,7 @@ var APP_accelerator_home_ui = (function () {
 
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
-            appApi$6.getIPSetting(defaultInterface).then(result => {
+            appApi$5.getIPSetting(defaultInterface).then(result => {
               this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
               this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
@@ -25816,7 +25064,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$5 = new AppApi();
+  const appApi$4 = new AppApi();
   const thunder$6 = thunderJS({
     host: '127.0.0.1',
     port: 9998,
@@ -25873,8 +25121,8 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      appApi$5.deactivateResidentApp(loader$1);
-      appApi$5.setVisibility('ResidentApp', true);
+      appApi$4.deactivateResidentApp(loader$1);
+      appApi$4.setVisibility('ResidentApp', true);
       thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
         client: 'ResidentApp'
       }).then(result => {
@@ -25920,8 +25168,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$5.launchResident(notification_url, loader$1).catch(err => {});
-            appApi$5.setVisibility('ResidentApp', false);
+            appApi$4.launchResident(notification_url, loader$1).catch(err => {});
+            appApi$4.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -27691,7 +26939,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$4 = new AppApi();
+  const appApi$3 = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -27836,7 +27084,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          appApi$4.reboot().then(result => {
+          appApi$3.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
 
             this._setState('Rebooting');
@@ -28996,7 +28244,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for HDMI Output Screen.
    */
 
-  var appApi$3 = new AppApi();
+  var appApi$2 = new AppApi();
   class HdmiOutputScreen extends lng$1.Component {
     pageTransition() {
       return 'left';
@@ -29072,8 +28320,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$3.getSoundMode().then(result => {
-        appApi$3.getSupportedAudioModes().then(res => {
+      appApi$2.getSoundMode().then(result => {
+        appApi$2.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -31060,7 +30308,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$2 = new AppApi();
+  const appApi$1 = new AppApi();
   const loader = 'Loader';
   class LanguageScreen extends lng$1.Component {
     static _template() {
@@ -31198,8 +30446,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$2.launchResident(notification_url, loader).catch(err => {});
-            appApi$2.setVisibility('ResidentApp', false);
+            appApi$1.launchResident(notification_url, loader).catch(err => {});
+            appApi$1.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -33427,50 +32675,16 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           let appApi = new AppApi();
           let applicationType = this.tag('Apps').currentItem.data.applicationType;
-          this.uri = this.tag('Apps').currentItem.data.uri;
-          applicationType = this.tag('Apps').currentItem.data.applicationType;
-          Storage.set('applicationType', applicationType);
-          console.log(this.uri, applicationType);
+          let uri = this.tag('Apps').currentItem.data.uri;
+          console.log(uri, applicationType);
 
-          if (Storage.get('applicationType') == 'Cobalt') {
-            appApi.getPluginStatus('Cobalt').then(() => {
-              appApi.launchCobalt(this.uri).catch(err => {});
-              appApi.setVisibility('ResidentApp', false);
-            }).catch(err => {
-              console.log('Cobalt plugin error', err);
-              Storage.set('applicationType', '');
-            });
-          } else if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-            appApi.launchWeb(this.uri).then(() => {
-              appApi.setVisibility('ResidentApp', false);
-              let path = location.pathname.split('index.html')[0];
-              let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html";
-              let notification_url = location.origin + path + url;
-              appApi.launchOverlay(notification_url, 'TextOverlay').catch(() => {});
-              Registry.setTimeout(() => {
-                appApi.deactivateResidentApp('TextOverlay');
-                appApi.zorder('HtmlApp');
-                appApi.setVisibility('HtmlApp', true);
-              }, 9000);
-            }).catch(() => {});
-          } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-            appApi.launchLightning(this.uri).catch(() => {});
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-            appApi.launchNative(this.uri).catch(() => {});
-            appApi.setVisibility('ResidentApp', false);
-          } else if (Storage.get('applicationType') == 'Amazon') {
-            console.log('Launching app');
-            appApi.getPluginStatus('Amazon').then(result => {
-              appApi.launchPremiumApp('Amazon').catch(() => {});
-              appApi.setVisibility('ResidentApp', false);
-            }).catch(err => {
-              console.log('Amazon plugin error', err);
-              Storage.set('applicationType', '');
-            });
-          } else if (Storage.get('applicationType') == 'Netflix') {
+          if (applicationType == 'Netflix') {
             console.log('Launching app');
             this.fireAncestors("$initLaunchPad").then(() => {}).catch(() => {});
+          } else {
+            appApi.launchApp(applicationType, uri).catch(err => {
+              console.log(applicationType + ' plugin error: ' + JSON.stringify(err));
+            });
           }
         }
 
@@ -33641,11 +32855,9 @@ var APP_accelerator_home_ui = (function () {
     _handleEnter() {
       // this.handleDone()
       if (this._item.host["_@attribute"].toLowerCase() === "youtube") {
-        Storage.set('applicationType', 'Cobalt');
         let appApi = new AppApi();
         console.log(this._item.url);
-        appApi.launchCobalt(this._item.url).catch(err => {});
-        appApi.setVisibility('ResidentApp', false);
+        appApi.launchApp("Cobalt", this._item.url).catch(err => {});
       }
     }
 
@@ -38264,19 +37476,7 @@ var APP_accelerator_home_ui = (function () {
         "Amazon Prime": "Amazon"
       };
       const app = apps[appName];
-      this.appApi.getPluginStatus(app).then(() => {
-        Storage.set("applicationType", app);
-
-        if (app === "Cobalt") {
-          this.appApi.launchCobalt("https://www.youtube.com/tv").catch(err => {});
-        } else {
-          this.appApi.launchPremiumApp(app).catch(() => {});
-        }
-
-        this.appApi.setVisibility("ResidentApp", false);
-      }).catch(err => {
-        console.log(appName, " NOT supported: ", JSON.stringify(err));
-      });
+      this.appApi.launchApp(app);
     }
 
     _handleBack() {
@@ -39756,7 +38956,7 @@ var APP_accelerator_home_ui = (function () {
     default: 1
   };
   const thunder$1 = thunderJS(config$1);
-  const appApi$1 = new AppApi();
+  new AppApi();
   function keyIntercept() {
     const rdkshellCallsign = 'org.rdk.RDKShell';
     thunder$1.Controller.activate({
@@ -39785,18 +38985,16 @@ var APP_accelerator_home_ui = (function () {
       console.log('Error', err);
     }).then(result => {
       thunder$1.on(rdkshellCallsign, 'onSuspended', notification => {
+        //check if necessary
         if (notification) {
-          console.log('onSuspended notification: ' + notification.client);
-
-          if (Storage.get('applicationType') == notification.client) {
-            Storage.set('applicationType', '');
-            appApi$1.setVisibility("ResidentApp", true);
-            thunder$1.call('org.rdk.RDKShell', 'moveToFront', {
-              client: 'ResidentApp'
-            }).then(result => {
-              console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-            }); // getclients and storage.set to the second client
-          }
+          console.log('onSuspended notification from KeyIntercept: ' + notification.client); // if (Storage.get('applicationType') == notification.client) {
+          //     Storage.set('applicationType', '');
+          //     appApi.setVisibility("ResidentApp", true)
+          //     thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
+          //         console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
+          //     });
+          //     // getclients and storage.set to the second client
+          // }
         }
       });
     }).catch(err => {
@@ -39855,6 +39053,36 @@ var APP_accelerator_home_ui = (function () {
       thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Settings_Shortcut,
+        modifiers: []
+      }).catch(err => {
+        console.log('Error', err);
+      });
+    }).catch(err => {
+      console.log('Error', err);
+    }).then(result => {
+      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+        client: 'ResidentApp',
+        keyCode: keyMap.Youtube,
+        modifiers: []
+      }).catch(err => {
+        console.log('Error', err);
+      });
+    }).catch(err => {
+      console.log('Error', err);
+    }).then(result => {
+      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+        client: 'ResidentApp',
+        keyCode: keyMap.Amazon,
+        modifiers: []
+      }).catch(err => {
+        console.log('Error', err);
+      });
+    }).catch(err => {
+      console.log('Error', err);
+    }).then(result => {
+      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+        client: 'ResidentApp',
+        keyCode: keyMap.Netflix,
         modifiers: []
       }).catch(err => {
         console.log('Error', err);
@@ -40129,16 +39357,11 @@ var APP_accelerator_home_ui = (function () {
 
       if (key.keyCode == keyMap.Escape || key.keyCode == keyMap.Home || key.keyCode === keyMap.m) {
         if (Storage.get('applicationType') != '') {
-          this.deactivateChildApp(Storage.get('applicationType'));
-          Storage.set('applicationType', '');
+          appApi.exitApp(Storage.get('applicationType')).catch(err => {
+            console.log(err);
+          });
 
-          if (!Router.isNavigating()) {
-            Router.navigate("menu");
-          }
-
-          appApi.setVisibility('ResidentApp', true);
-
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             Router.navigate('menu');
           }
         } else {
@@ -40234,23 +39457,35 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (key.keyCode == keyMap.Settings_Shortcut) {
+        console.log("settings shortcut");
         Router.navigate('settings');
-
-        if (Storage.get("applicationType") !== "") {
-          appApi.zorder('ResidentApp');
-          appApi.setFocus("ResidentApp");
-
-          if (Router.isNavigating()) {
-            setTimeout(function () {
-              appApi.setVisibility("ResidentApp", true);
-            }, 0);
+        thunder.call("org.rdk.RDKShell", "getZOrder").then(res => {
+          if (res.clients[0] == "residentapp") {
+            if (Storage.get("applicationType") !== "") {
+              console.log("found resident app to be on top ,but it shouldn't have been on top, therefore changing its zorder");
+              let c_app = Storage.get("applicationType");
+              appApi.zorder(c_app);
+              appApi.setFocus(c_app);
+              appApi.setVisibility(c_app, true);
+            } else {
+              console.log("found resident app to be on top ,therefore just routing the application to the settings page");
+            }
           } else {
-            appApi.setVisibility("ResidentApp", true);
+            console.log("found a non resident app to be on top");
+            appApi.zorder('ResidentApp');
             appApi.setFocus("ResidentApp");
-            appApi.zorder('residentApp');
-          }
-        }
 
+            if (Router.isNavigating()) {
+              appApi.setVisibility("ResidentApp", true);
+            } else {
+              appApi.setVisibility("ResidentApp", true);
+              appApi.setFocus("ResidentApp");
+              appApi.zorder('residentApp');
+            }
+          }
+        }).catch(err => {
+          console.error(err);
+        });
         return true;
       }
 
@@ -40260,14 +39495,16 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (key.keyCode == keyMap.Amazon) {
-        this.activateChildApp('Amazon');
+        appApi.launchApp("Amazon").catch(err => {
+          console.error("Error in launching Amazon via dedicated key: " + JSON.stringify(err));
+        });
         return true;
       }
 
       if (key.keyCode == keyMap.Youtube) {
-        Storage.set('applicationType', 'Cobalt');
-        appApi.launchCobalt('').catch(() => {});
-        appApi.setVisibility('ResidentApp', false);
+        appApi.launchApp("Cobalt").catch(err => {
+          console.error("Error in launching Youtube via dedicated key: " + JSON.stringify(err));
+        });
         return true;
       }
 
@@ -40415,37 +39652,19 @@ var APP_accelerator_home_ui = (function () {
       thunder.on('Controller.1', 'all', noti => {
         if (noti.data.url && noti.data.url.slice(-5) === "#boot") {
           // to exit metro apps by pressing back key
-          this.deactivateChildApp(Storage.get('applicationType'));
+          appApi.exitApp(Storage.get('applicationType'));
         }
       });
       thunder.on('org.rdk.RDKShell', 'onApplicationDisconnected', notification => {
         console.log("onApplicationDisconnectedNotification: ", JSON.stringify(notification));
-
-        if (notification.client === "lightning" || notification.client === "htmlapp") {
-          console.log("lightning/webapp app disconnected | bringing resident app in focus");
-
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
-            console.log("navigating to homescreen");
-            Router.navigate("menu");
-          }
-
-          Storage.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true);
-          appApi.setFocus("ResidentApp");
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-          });
-        }
       });
       thunder.on('Controller', 'statechange', notification => {
         // get plugin status
-        console.log("STATECHANGE 2 : ");
-        console.log(JSON.stringify(notification));
+        console.log("Controller statechange Notification : " + JSON.stringify(notification));
 
-        if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && notification.state == 'Deactivation') {
+        if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
           console.log("".concat(notification.callsign, " status = ").concat(notification.state));
+          console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
 
           if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
@@ -40453,38 +39672,11 @@ var APP_accelerator_home_ui = (function () {
             Router.navigate("menu");
           }
 
-          Storage.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true);
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: 'ResidentApp'
-          });
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-          });
-        }
-
-        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Deactivated') {
-          this.setPanelsVisibility();
-          console.log("".concat(notification.callsign, " status = ").concat(notification.state));
-
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
-            //navigate to homescreen if route is tv-overlay when exiting from any app
-            console.log("navigating to homescreen");
-            Router.navigate("menu");
+          if (notification.callsign === Storage.get("applicationType")) {
+            //only launch residentApp iff notification is from currentApp
+            console.log(notification.callsign + " is in: " + notification.state + " state, and application type in Storage is still: " + Storage.get("applicationType") + " calling launchResidentApp");
+            appApi.launchResidentApp();
           }
-
-          Storage.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true);
-          thunder.call('org.rdk.RDKShell', 'setFocus', {
-            client: 'ResidentApp'
-          });
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-          });
         }
 
         if (notification && notification.callsign === 'org.rdk.HdmiCec_2' && notification.state === 'Activated') {
@@ -40497,7 +39689,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
-          Storage.set('applicationType', notification.callsign);
+          Storage.set('applicationType', notification.callsign); //required in case app launch happens using curl command.
 
           if (notification.callsign === 'Netflix') {
             appApi.getNetflixESN().then(res => {
@@ -40522,13 +39714,14 @@ var APP_accelerator_home_ui = (function () {
               }
             });
           } else {
-            appApi.setFocus(notification.callsign);
+            appApi.setFocus(notification.callsign); //required in case app launch happens using curl command.
           }
         }
       });
     }
 
     activateChildApp(plugin) {
+      //#currentlyNotUsed #needToBeRemoved
       fetch('http://127.0.0.1:9998/Service/Controller/').then(res => res.json()).then(data => {
         data.plugins.forEach(element => {
           if (element.callsign === plugin) {
@@ -40544,6 +39737,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     deactivateChildApp(plugin) {
+      //#needToBeRemoved
       switch (plugin) {
         case 'WebApp':
           appApi.deactivateWeb();
@@ -40624,6 +39818,7 @@ var APP_accelerator_home_ui = (function () {
             if (url) {
               appApi.configureApplication('Netflix', url).then(() => {
                 appApi.launchPremiumApp("Netflix").then(res => {
+                  appApi.setVisibility('ResidentApp', false);
                   resolve(true);
                 }).catch(err => {
                   reject(false);
@@ -40634,6 +39829,7 @@ var APP_accelerator_home_ui = (function () {
               }); // gets configuration object and sets configuration
             } else {
               appApi.launchPremiumApp("Netflix").then(res => {
+                appApi.setVisibility('ResidentApp', false);
                 resolve(true);
               }).catch(err => {
                 reject(false);
@@ -40649,6 +39845,7 @@ var APP_accelerator_home_ui = (function () {
                   console.error("Netflix : error while sending systemcommand : ", JSON.stringify(err));
                   reject(false);
                 });
+                appApi.setVisibility('ResidentApp', false);
                 resolve(true);
               }).catch(err => {
                 reject(false);
@@ -40656,6 +39853,7 @@ var APP_accelerator_home_ui = (function () {
             } else {
               appApi.launchPremiumApp("Netflix").then(res => {
                 console.log("Netflix : launch premium app resulted in ", JSON.stringify(res));
+                appApi.setVisibility('ResidentApp', false);
                 resolve(true);
               });
             }
@@ -40680,10 +39878,9 @@ var APP_accelerator_home_ui = (function () {
           let applicationName = this.xcastApps(notification.applicationName);
 
           if (applicationName == 'Amazon') {
-            this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Amazon').catch(() => {});
-            Storage.set('applicationType', 'Amazon');
-            appApi.setVisibility('ResidentApp', false);
+            appApi.launchApp(applicationName).catch(err => {
+              console.log("Error in launching Amazon on casting request: " + JSON.stringify(err));
+            });
             let params = {
               applicationName: notification.applicationName,
               state: 'running'
@@ -40703,22 +39900,14 @@ var APP_accelerator_home_ui = (function () {
               this.xcastApi.onApplicationStateChanged(params);
             }).catch(() => {});
           } else if (applicationName == 'Cobalt') {
-            if (Storage.get('applicationType') != 'Cobalt') {
-              this.deactivateChildApp(Storage.get('applicationType'));
-            }
-
-            appApi.getPluginStatus('Cobalt').then(() => {
-              appApi.launchCobalt(notification.parameters.url + '&inApp=true').catch(() => {});
-              Storage.set('applicationType', 'Cobalt');
-              appApi.setVisibility('ResidentApp', false);
-              let params = {
-                applicationName: notification.applicationName,
-                state: 'running'
-              };
-              this.xcastApi.onApplicationStateChanged(params);
-            }).catch(() => {
-              console.log('Failed to launch Cobalt using xcast');
+            appApi.launchApp(applicationName, notification.parameters.url + '&inApp=true').catch(err => {
+              console.log("Error in launching Amazon on casting request: " + JSON.stringify(err));
             });
+            let params = {
+              applicationName: notification.applicationName,
+              state: 'running'
+            };
+            this.xcastApi.onApplicationStateChanged(params);
           }
         }
       });
@@ -40727,40 +39916,17 @@ var APP_accelerator_home_ui = (function () {
 
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
-          console.log('Hide ' + this.xcastApps(notification.applicationName));
+          console.log('Hide ' + this.xcastApps(notification.applicationName)); //second argument true means resident app won't be launched the required app will be exited in the background.
+          //only bring up the resident app when the notification is from the current app(ie app in focus)
 
-          if (applicationName === 'Amazon') {
-            appApi.suspendPremiumApp('Amazon');
-            let params = {
-              applicationName: notification.applicationName,
-              state: 'suspended'
-            };
-            this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Netflix') {
-            appApi.suspendPremiumApp('Netflix');
-            let params = {
-              applicationName: notification.applicationName,
-              state: 'suspended'
-            };
-            this.xcastApi.onApplicationStateChanged(params);
-          } else if (applicationName === 'Cobalt') {
-            this.deactivateChildApp("Cobalt");
-            let params = {
-              applicationName: notification.applicationName,
-              state: 'suspended'
-            };
-            console.log("Event : On hide request, updating application Status to ", params);
-            this.xcastApi.onApplicationStateChanged(params);
-          }
-
-          Storage.set('applicationType', '');
-          appApi.setVisibility('ResidentApp', true); // this will set visibility and focus for the given client
-
-          thunder.call('org.rdk.RDKShell', 'moveToFront', {
-            client: 'ResidentApp'
-          }).then(result => {
-            console.log('ResidentApp moveToFront Success');
-          });
+          console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+          appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
+          let params = {
+            applicationName: notification.applicationName,
+            state: 'suspended'
+          };
+          console.log("Event : On hide request, updating application Status to ", params);
+          this.xcastApi.onApplicationStateChanged(params);
         }
       });
       this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
@@ -40771,10 +39937,9 @@ var APP_accelerator_home_ui = (function () {
           console.log('Resume ' + this.xcastApps(notification.applicationName));
 
           if (applicationName == 'Amazon') {
-            this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchPremiumApp('Amazon').catch(() => {});
-            Storage.set('applicationType', 'Amazon'); // appApi.setVisibility('ResidentApp', false);
-
+            appApi.launchApp(applicationName).catch(err => {
+              console.log("Error in launching" + applicationName + "on casting resume request: " + JSON.stringify(err));
+            });
             let params = {
               applicationName: notification.applicationName,
               state: 'running'
@@ -40794,10 +39959,9 @@ var APP_accelerator_home_ui = (function () {
               this.xcastApi.onApplicationStateChanged(params);
             }).catch(err => {});
           } else if (applicationName == 'Cobalt') {
-            this.deactivateChildApp(Storage.get('applicationType'));
-            appApi.launchCobalt('').catch(() => {});
-            Storage.set('applicationType', 'Cobalt'); // appApi.setVisibility('ResidentApp', false);
-
+            appApi.launchApp(applicationName).catch(err => {
+              console.log("Error in launching" + applicationName + "on casting resume request: " + JSON.stringify(err));
+            });
             let params = {
               applicationName: notification.applicationName,
               state: 'running'
@@ -40815,8 +39979,10 @@ var APP_accelerator_home_ui = (function () {
           let applicationName = this.xcastApps(notification.applicationName);
 
           if (applicationName === 'Amazon') {
-            appApi.deactivateNativeApp('Amazon');
-            Storage.set('applicationType', '');
+            //second argument true means resident app won't be launched the required app will be exited in the background.
+            //only bring up the resident app when the notification is from the current app(ie app in focus)
+            console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+            appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
             let params = {
               applicationName: notification.applicationName,
               state: 'stopped'
@@ -40827,8 +39993,10 @@ var APP_accelerator_home_ui = (function () {
               console.log("netflix plugin status is :", JSON.stringify(result));
 
               if (result[0].state != 'deactivated') {
-                appApi.deactivateNativeApp('Netflix');
-                Storage.set('applicationType', '');
+                //second argument true means resident app won't be launched the required app will be exited in the background.
+                //only bring up the resident app when the notification is from the current app(ie app in focus)
+                console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+                appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
                 let params = {
                   applicationName: notification.applicationName,
                   state: 'stopped'
@@ -40841,8 +40009,10 @@ var APP_accelerator_home_ui = (function () {
               console.error("Netflix : error while fetching plugin status", JSON.stringify(err));
             });
           } else if (applicationName === 'Cobalt') {
-            appApi.deactivateCobalt();
-            Storage.set('applicationType', '');
+            //second argument true means resident app won't be launched the required app will be exited in the background.
+            //only bring up the resident app when the notification is from the current app(ie app in focus)
+            console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+            appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
             let params = {
               applicationName: notification.applicationName,
               state: 'stopped'
@@ -40863,7 +40033,7 @@ var APP_accelerator_home_ui = (function () {
           appApi.registerEvent('statechange', results => {
             if (results.callsign === applicationName && results.state === 'Activated') {
               params.state = 'running';
-              Storage.set("applicationType", results.callsign);
+              Storage.set("applicationType", results.callsign); //required in case app launch happens using curl command.
             } else if (results.state === 'Deactivation') {
               params.state = "stopped";
             } else if (results.state = "Activation") ; else if (results.state = "Resumed") {
@@ -40919,52 +40089,13 @@ var APP_accelerator_home_ui = (function () {
               console.log("successfully set to standby");
               powerState = 'STANDBY';
 
-              if (Storage.get('applicationType') == 'WebApp' && Storage.get('ipAddress')) {
-                Storage.set('applicationType', ''); // appApi.deactivateWeb();
-
-                appApi.suspendWeb();
-                appApi.setVisibility('ResidentApp', true);
-              } else if (Storage.get('applicationType') == 'Lightning' && Storage.get('ipAddress')) {
-                Storage.set('applicationType', ''); // appApi.deactivateLightning();
-
-                appApi.suspendLightning();
-                appApi.setVisibility('ResidentApp', true);
-              } else if (Storage.get('applicationType') == 'Native' && Storage.get('ipAddress')) {
-                Storage.set('applicationType', '');
-                appApi.killNative();
-                appApi.setVisibility('ResidentApp', true);
-              } else if (Storage.get('applicationType') == 'Amazon') {
-                Storage.set('applicationType', '');
-                this.deactivateChildApp('Amazon');
-                appApi.setVisibility('ResidentApp', true);
-              } else if (Storage.get('applicationType') == 'Netflix') {
-                Storage.set('applicationType', '');
-                this.deactivateChildApp('Netflix');
-                appApi.setVisibility('ResidentApp', true);
-              } else if (Storage.get('applicationType') == 'Cobalt') {
-                Storage.set('applicationType', '');
-                this.deactivateChildApp("Cobalt");
-                appApi.setVisibility('ResidentApp', true);
+              if (Storage.get('applicationType') !== "") {
+                appApi.exitApp(Storage.get('applicationType'), false, true); //setting to forceDestroy since standby is supposed to deactivate the app.
               } else {
-                if (!Router.isNavigating() && Router.getActiveHash() === 'player') {
+                if (!Router.isNavigating()) {
                   Router.navigate('menu');
                 }
               }
-
-              thunder.call('org.rdk.RDKShell', 'moveToFront', {
-                client: 'ResidentApp'
-              }).then(result => {
-                console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-              }).catch(err => {
-                console.log("error while moving the resident app to front = ".concat(err));
-              });
-              thunder.call('org.rdk.RDKShell', 'setFocus', {
-                client: 'ResidentApp'
-              }).then(result => {
-                console.log('ResidentApp setFocus Success' + JSON.stringify(result));
-              }).catch(err => {
-                console.log('Error', err);
-              });
             }
           });
           return true;
