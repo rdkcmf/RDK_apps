@@ -835,12 +835,9 @@ export default class MainView extends Lightning.Component {
                 Router.navigate('usb');
               }
             })
-          } else if(applicationType=== "Netflix"){
-            console.log("Launching netflix using $initLaunchPad method");
-            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { });
           } else{
-            this.appApi.launchApp(applicationType,uri).catch(err => {
-              console.log("ApplaunchError: ",JSON.stringify(err), err)
+            this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
+              console.log("ApplaunchError: ", err)
             });
           }
         }
@@ -887,14 +884,9 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           let uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          if(applicationType=== "Netflix"){
-            console.log("Launching netflix using $initLaunchPad method");
-            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { });
-          } else{
-            this.appApi.launchApp(applicationType,uri).catch(err => {
-              console.log("ApplaunchError: ",JSON.stringify(err), err)
-            });
-          }
+          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
+            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          });
         }
       },
       class TVShows extends this {
@@ -996,14 +988,9 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           let uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
-          if(applicationType=== "Netflix"){
-            console.log("Launching netflix using $initLaunchPad method");
-            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { });
-          } else{
-            this.appApi.launchApp(applicationType,uri).catch(err => {
-              console.log("ApplaunchError: ",JSON.stringify(err), err)
-            });
-          }
+          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
+            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          });
         }
       },
 
@@ -1046,14 +1033,9 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           let uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
-          if(applicationType=== "Netflix"){
-            console.log("Launching netflix using $initLaunchPad method");
-            this.fireAncestors("$initLaunchPad").then(() => { }).catch(() => { });
-          } else{
-            this.appApi.launchApp(applicationType,uri).catch(err => {
-              console.log("ApplaunchError: ",JSON.stringify(err), err)
-            });
-          }
+          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
+            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          });
         }
       },
       class RightArrow extends this {

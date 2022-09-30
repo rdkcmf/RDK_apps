@@ -18,6 +18,9 @@
  **/
 import ThunderJS from 'ThunderJS';
 import { Registry, Settings, Storage } from '@lightningjs/sdk';
+import HDMIApi from './HDMIApi';;
+import NetflixIIDs from "../../static/data/NetflixIIDs.json";
+import HomeApi from './HomeApi';
 
 var activatedWeb = false
 var activatedLightning = false
@@ -413,14 +416,28 @@ export default class AppApi {
   /**
    * Function to launch All types of apps.
    * @param {String} callsign callsign of the particular app.
-   * @param {string} url optional for youtube, required for Lightning and WebApps
-   * @param {boolean} preventInternetCheck to prevent bydefault check for internet
-   * @param {boolean} preventCurrentExit to prevent bydefault launch of previous app
+   * @param {string} url optional for youtube, netflix, required for Lightning and WebApps
+   * @param {boolean} preventInternetCheck optional | true will prevent bydefault check for internet
+   * @param {boolean} preventCurrentExit optional |  true will prevent bydefault launch of previous app
+   * @param {string} launchLocation to pass launch location (IIDs) for Netflix currently | can be generalized for all apps.
    */
 
-  async launchApp(callsign, url, preventInternetCheck, preventCurrentExit) {
+  async launchApp(callsign, url, preventInternetCheck, preventCurrentExit, launchLocation) {
 
-    console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit);
+    console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
+
+    let IIDqueryString = "";
+    let netflixIIDs = await this.getNetflixIIDs();
+    if(callsign === "Netflix"){
+      if(launchLocation){
+        IIDqueryString = `source_type=${netflixIIDs[launchLocation].sourceType}&iid=${netflixIIDs[launchLocation].iid}`;
+        if(url){
+          IIDqueryString = "&"+IIDqueryString; //so that IIDqueryString can be appended with url later.
+        }
+      }else {
+        console.log("launchLocation(IID) not specified while launching netflix");
+      }
+    }
 
     const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
 
@@ -440,15 +457,49 @@ export default class AppApi {
     let pluginStatus, pluginState;// to check if the plugin is active, resumed, deactivated etc
     try {
       pluginStatus = await this.getPluginStatus(callsign);
-      if (pluginStatus !== undefined) {
-        pluginState = pluginStatus[0].state;
-        console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
-      }
-      else {
-        return Promise.reject("PluginError: " + callsign + ": App not supported on this device");
-      }
+      pluginState = pluginStatus[0].state;
     } catch (err) {
+      console.log(err);
       return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
+    }
+    console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+
+    if (callsign === "Netflix"){
+      if (pluginState === "deactivated" || pluginState === "deactivation"){ //netflix cold launch scenario
+        Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png')}); //to show the splash screen for netflix
+        if (url) {
+          try{
+            console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ",url,IIDqueryString);
+            await this.configureApplication("Netflix",url+IIDqueryString);
+          } catch(err) {
+            console.log("Netflix configureApplication error: ",err);
+          }
+        } else {
+          try{
+            console.log("Netflix ColdLaunch passing netflix IIDqueryString using configureApplication method:  ",IIDqueryString);
+            await this.configureApplication("Netflix",IIDqueryString);
+          } catch(err) {
+            console.log("Netflix configureApplication error: ",err);
+          }
+        }
+      } else { //netflix hot launch scenario
+        if(url){
+          try{
+            console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ",url,IIDqueryString);
+            await thunder.call("Netflix", "systemcommand", { command: url+IIDqueryString });
+          } catch(err) {
+            console.log("Netflix systemcommand error: ",err);
+          }
+        }
+        else {
+          try{
+            console.log("Netflix HotLaunch passing netflix IIDqueryString using systemcommand method: ",IIDqueryString);
+            await thunder.call("Netflix", "systemcommand", { command: IIDqueryString });
+          } catch(err) {
+            console.log("Netflix systemcommand error: ",err);
+          }
+        }
+     }
     }
 
     //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
@@ -458,7 +509,7 @@ export default class AppApi {
     // } 
 
     let params = {};
-    if ((url !== undefined || url !== "") && callsign !== "Cobalt") { //for cobalt url is passed through deeplink method instead of launch
+    if (url && (callsign==="LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
       params = {
         "callsign": callsign,
         "type": callsign,
@@ -481,7 +532,7 @@ export default class AppApi {
       }
     }
 
-    if (currentApp === "") { //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
+    if (currentApp === "" && callsign !== "Netflix") { //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack | for netflix keep the splash screen visible till it launches
       thunder.call('org.rdk.RDKShell', 'setVisibility', {
         "client": "ResidentApp",
         "visible": false,
@@ -512,8 +563,13 @@ export default class AppApi {
             console.error("failed to setVisibility : ", callsign, " ERROR: ", JSON.stringify(err))
           })
 
-          if (callsign === "HtmlApp") { //exit method info overlay to be shown on html/webapps
-            this.launchTextOverlayForHtmlApp()
+          if(callsign === "Netflix") {
+            console.log("Netflix launched: hiding residentApp");
+            thunder.call('org.rdk.RDKShell', 'setVisibility', {
+              "client": "ResidentApp",
+              "visible": false,
+            }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
+            
           }
 
           if (callsign === "Cobalt" && url) { //passing url to cobalt once launched
@@ -545,8 +601,8 @@ export default class AppApi {
   /**
    * Function to launch Exit types of apps.
    * @param {String} callsign callsign of the particular app.
-   * @param {boolean} preventPreviousLaunch to prevent bydefault check for internet
-   * @param {boolean} forceDestroy to prevent bydefault launch of previous app
+   * @param {boolean} exitInBackground to make the app not bring up residentApp on exit
+   * @param {boolean} forceDestroy to force the app to do rdkshell.destroy instead of suspend
    */
 
   // exit method does not need to launch the previous app.
@@ -558,6 +614,12 @@ export default class AppApi {
 
     if (callsign === "HDMI") {
       console.log("exit method called for hdmi")
+      new HDMIApi().stopHDMIInput()
+      Storage.set("_currentInputMode", {});
+      if (!exitInBackground) { //means resident App needs to be launched
+        this.launchResidentApp();
+      }
+      return Promise.resolve(true);
       //check for hdmi scenario
     }
 
@@ -650,18 +712,29 @@ export default class AppApi {
   }
 
 
-
-  launchTextOverlayForHtmlApp() {
-    console.log("Launching \"homeKey exit\" text overlay for html/web app.")
-    let path = location.pathname.split('index.html')[0]
-    let url = path.slice(-1) === '/' ? "static/overlayText/index.html" : "/static/overlayText/index.html"
-    let notification_url = location.origin + path + url
-    this.launchOverlay(notification_url, 'TextOverlay').catch(() => { })
-    Registry.setTimeout(() => {
-      this.deactivateResidentApp('TextOverlay')
-      this.zorder('HtmlApp')
-      this.setVisibility('HtmlApp', true)
-    }, 9000)
+  async getNetflixIIDs() {
+    let defaultIIDs = NetflixIIDs;
+    let data = new HomeApi().getPartnerAppsInfo();
+    if(!data) {
+      return defaultIIDs;
+    }
+    console.log("homedata: ",data);
+    try {
+      data = await JSON.parse(data);
+      if (data != null && data.hasOwnProperty("netflix-iid-file-path")) {
+        let url = data["netflix-iid-file-path"]
+        console.log(`Netflix : requested to fetch iids from `, url)
+        const fetchResponse = await fetch(url);
+        const fetchData = await fetchResponse.json();
+        return fetchData;
+      } else {
+        console.log("Netflix IID file path not found in conf file, using deffault IIDs");
+        return defaultIIDs;
+      }
+    }catch(err){
+      console.log("Error in fetching iid data from specified path, returning defaultIIDs | Error:",err);
+      return defaultIIDs;
+    }
   }
   /**
    * Function to launch Html app.
@@ -1107,33 +1180,11 @@ export default class AppApi {
         thunder.call(plugin, method, res).then((resp) => {
           resolve(true);
         }).catch((err) => {
-          reject(err);
+          reject(err); //resolve(true)
         });
       }).catch((err) => {
         reject(err);
       });
-    })
-  }
-  /**
-   * Function to set the configuration of premium apps.
-   * @param {appName} Name of the application
-   * @param {config_data} config_data configuration data
-   */
-
-  configureApplication(appName, config_data) {
-    let plugin = 'Controller';
-    let method = 'configuration@' + appName;
-    return new Promise((resolve, reject) => {
-      thunder.call(plugin, method).then((res) => {
-        res.querystring = config_data;
-        thunder.call(plugin, method, res).then((resp) => {
-          resolve(true);
-        }).catch((err) => {
-          resolve(true);
-        })
-      }).catch((err) => {
-        reject(err);
-      })
     })
   }
   /**

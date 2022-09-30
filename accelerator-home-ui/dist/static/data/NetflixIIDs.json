@@ -1,0 +1,22 @@
+{
+    "iconInLaunchpad": {
+        "iid": "a1b2c3d4",
+        "sourceType": 3
+    },
+    "netflixButton": {
+        "iid": "a11b22c33",
+        "sourceType": 3
+    },
+    "iconInAppRow": {
+        "iid": "8641153e",
+        "sourceType": 3
+    },
+    "dial": {
+        "iid": "32107139",
+        "sourceType": 12
+    },
+    "suspendAtPowerOn": {
+        "iid": "ee4255bf",
+        "sourceType": 22
+    }
+}

@@ -65,18 +65,9 @@ export function keyIntercept() {
         })
 
         .then(result => {
-            thunder.on(rdkshellCallsign, 'onSuspended', notification => { //check if necessary
+            thunder.on(rdkshellCallsign, 'onSuspended', notification => {
                 if (notification) {
                     console.log('onSuspended notification from KeyIntercept: ' + notification.client);
-                    // if (Storage.get('applicationType') == notification.client) {
-                    //     Storage.set('applicationType', '');
-                    //     appApi.setVisibility("ResidentApp", true)
-                    //     thunder.call('org.rdk.RDKShell', 'moveToFront', { client: 'ResidentApp' }).then(result => {
-                    //         console.log('ResidentApp moveToFront Success' + JSON.stringify(result));
-                    //     });
-
-                    //     // getclients and storage.set to the second client
-                    // }
                 }
             });
         })

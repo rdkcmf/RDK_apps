@@ -248,8 +248,10 @@ export default class App extends Router.App {
       });
       return true
     }
-    if (key.keyCode == Keymap.Netflix) {
-      this.$initLaunchPad().then(() => { }).catch(() => { })
+    if (key.keyCode == Keymap.Netflix) { //5th argument is launchLocation
+      appApi.launchApp("Netflix","",false,false,"netflixButton").catch(err => {
+        console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err))
+      });
       return true
     }
 
@@ -572,34 +574,16 @@ export default class App extends Router.App {
 
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        if (applicationName == 'Amazon') {
-          appApi.launchApp(applicationName).catch(err => {
-            console.log("Error in launching Amazon on casting request: " + JSON.stringify(err));
-          });
+        let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
+        
+        appApi.launchApp(applicationName,url,false,false,"dial").then(res => {
+          console.log("App launched on xcast event: ",res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
-        } else if (applicationName == 'Netflix') {
+        }).catch(err => {
+          console.log("Applaunch error on xcast notification: ",err)
+        })
 
-          let url = notification.parameters.url;
-          let pApp = Storage.get('applicationType');
-          this.$initLaunchPad(url).then(res => {
-            console.log(`Netflix : storage has been set for netflix`);
-            Storage.set('applicationType', 'Netflix');
-            this.deactivateChildApp(pApp);
-            let params = { applicationName: notification.applicationName, state: 'running' };
-            this.xcastApi.onApplicationStateChanged(params);
-          }).catch(() => { })
-
-        } else if (applicationName == 'Cobalt') {
-          appApi.launchApp(applicationName, notification.parameters.url + '&inApp=true').catch(err => {
-            console.log("Error in launching Amazon on casting request: " + JSON.stringify(err));
-          });
-          let params = {
-            applicationName: notification.applicationName,
-            state: 'running',
-          };
-          this.xcastApi.onApplicationStateChanged(params);
-        }
       }
     });
 
@@ -622,33 +606,15 @@ export default class App extends Router.App {
       console.log('Received a resume request ' + JSON.stringify(notification));
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        console.log('Resume ' + this.xcastApps(notification.applicationName));
-
-        if (applicationName == 'Amazon') {
-          appApi.launchApp(applicationName).catch(err => {
-            console.log("Error in launching" + applicationName + "on casting resume request: " + JSON.stringify(err));
-          });
+        let url = notification.parameters.url;
+        console.log('Resume ', applicationName, " with url: ", url);
+        appApi.launchApp(applicationName,url,false,false,"dial").then(res => {
+          console.log("launched ",applicationName ," on casting resume request: ",res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
-        } else if (applicationName == 'Netflix') {
-
-          let url = notification.parameters.url ? notification.parameters.url : false;
-          let papp = Storage.get('applicationType');
-          this.$initLaunchPad(url).then(() => {
-            this.deactivateChildApp(papp);
-            Storage.set('applicationType', 'Netflix');
-            // appApi.setVisibility('ResidentApp', false);
-            let params = { applicationName: notification.applicationName, state: 'running' };
-            this.xcastApi.onApplicationStateChanged(params);
-          }).catch(err => { })
-
-        } else if (applicationName == 'Cobalt') {
-          appApi.launchApp(applicationName).catch(err => {
-            console.log("Error in launching" + applicationName + "on casting resume request: " + JSON.stringify(err));
-          });
-          let params = { applicationName: notification.applicationName, state: 'running' };
-          this.xcastApi.onApplicationStateChanged(params);
-        }
+        }).catch(err => {
+          console.log("Error in launching ", applicationName ," on casting resume request: ", err);
+        })
       }
     });
     this.xcastApi.registerEvent('onApplicationStopRequest', notification => {
@@ -657,48 +623,13 @@ export default class App extends Router.App {
       if (this.xcastApps(notification.applicationName)) {
         console.log('Stop ' + this.xcastApps(notification.applicationName));
         let applicationName = this.xcastApps(notification.applicationName);
+        //second argument true means resident app won't be launched the required app will be exited in the background.
+        //only bring up the resident app when the notification is from the current app(ie app in focus)
+        console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+        appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
 
-        if (applicationName === 'Amazon') {
-          //second argument true means resident app won't be launched the required app will be exited in the background.
-          //only bring up the resident app when the notification is from the current app(ie app in focus)
-          console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
-          appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
-
-          let params = { applicationName: notification.applicationName, state: 'stopped' };
-          this.xcastApi.onApplicationStateChanged(params);
-        } else if (applicationName === 'Netflix') {
-
-
-          appApi.getPluginStatus('Netflix')
-            .then(result => {
-              console.log(`netflix plugin status is :`, JSON.stringify(result));
-              if (result[0].state != 'deactivated') {
-
-                //second argument true means resident app won't be launched the required app will be exited in the background.
-                //only bring up the resident app when the notification is from the current app(ie app in focus)
-                console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
-                appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
-
-                let params = { applicationName: notification.applicationName, state: 'stopped' };
-                this.xcastApi.onApplicationStateChanged(params);
-
-              }
-              else {
-                console.log(`Netflix : application is already in deactivated state, hence skipping deactivation`);
-              }
-            }).catch(err => { console.error("Netflix : error while fetching plugin status", JSON.stringify(err)) })
-
-
-
-        } else if (applicationName === 'Cobalt') {
-          //second argument true means resident app won't be launched the required app will be exited in the background.
-          //only bring up the resident app when the notification is from the current app(ie app in focus)
-          console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
-          appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
-
-          let params = { applicationName: notification.applicationName, state: 'stopped' };
-          this.xcastApi.onApplicationStateChanged(params);
-        }
+        let params = { applicationName: notification.applicationName, state: 'stopped' };
+        this.xcastApi.onApplicationStateChanged(params);
       }
     });
     this.xcastApi.registerEvent('onApplicationStateRequest', notification => {
