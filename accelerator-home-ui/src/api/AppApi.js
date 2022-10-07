@@ -21,6 +21,7 @@ import { Registry, Router, Settings, Storage } from '@lightningjs/sdk';
 import HDMIApi from './HDMIApi';;
 import NetflixIIDs from "../../static/data/NetflixIIDs.json";
 import HomeApi from './HomeApi';
+import { Utils } from '@lightningjs/sdk';
 
 var activatedWeb = false
 var activatedLightning = false
@@ -427,14 +428,14 @@ export default class AppApi {
     console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
 
     let IIDqueryString = "";
-    if(callsign === "Netflix"){
+    if (callsign === "Netflix") {
       let netflixIids = await this.getNetflixIIDs();
-      if(launchLocation){
-        IIDqueryString = `source_type=${netflixIids[launchLocation].sourceType}&iid=${netflixIids[launchLocation].iid}`;
-        if(url){
-          IIDqueryString = "&"+IIDqueryString; //so that IIDqueryString can be appended with url later.
+      if (launchLocation) {
+        IIDqueryString = `source_type=${netflixIids[launchLocation].source_type}&iid=${netflixIids[launchLocation].iid}`;
+        if (url) {
+          IIDqueryString = "&" + IIDqueryString; //so that IIDqueryString can be appended with url later.
         }
-      }else {
+      } else {
         console.log("launchLocation(IID) not specified while launching netflix");
       }
     }
@@ -462,44 +463,46 @@ export default class AppApi {
       console.log(err);
       return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
     }
-    console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+    console.log("Netflix : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
 
-    if (callsign === "Netflix"){
-      if (pluginState === "deactivated" || pluginState === "deactivation"){ //netflix cold launch scenario
-        Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png')}); //to show the splash screen for netflix
+    if (callsign === "Netflix") {
+      if (pluginState === "deactivated" || pluginState === "deactivation") { //netflix cold launch scenario
+        console.log(`Netflix : ColdLaunch`)
+        Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') }); //to show the splash screen for netflix
         if (url) {
-          try{
-            console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ",url,IIDqueryString);
-            await this.configureApplication("Netflix",url+IIDqueryString);
-          } catch(err) {
-            console.log("Netflix configureApplication error: ",err);
+          try {
+            console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ", url, IIDqueryString);
+            await this.configureApplication("Netflix", url + IIDqueryString);
+          } catch (err) {
+            console.log("Netflix configureApplication error: ", err);
           }
         } else {
-          try{
-            console.log("Netflix ColdLaunch passing netflix IIDqueryString using configureApplication method:  ",IIDqueryString);
-            await this.configureApplication("Netflix",IIDqueryString);
-          } catch(err) {
-            console.log("Netflix configureApplication error: ",err);
+          try {
+            console.log("Netflix ColdLaunch passing netflix IIDqueryString using configureApplication method:  ", IIDqueryString);
+            await this.configureApplication("Netflix", IIDqueryString);
+          } catch (err) {
+            console.log("Netflix configureApplication error: ", err);
           }
         }
       } else { //netflix hot launch scenario
-        if(url){
-          try{
-            console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ",url,IIDqueryString);
-            await thunder.call("Netflix", "systemcommand", { command: url+IIDqueryString });
-          } catch(err) {
-            console.log("Netflix systemcommand error: ",err);
+        console.log("Netflix : HotLaunch")
+        if (url) {
+          try {
+            console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ", url, IIDqueryString);
+            await thunder.call("Netflix", "systemcommand", { command: url + IIDqueryString });
+          } catch (err) {
+            console.log("Netflix systemcommand error: ", err);
           }
         }
         else {
-          try{
-            console.log("Netflix HotLaunch passing netflix IIDqueryString using systemcommand method: ",IIDqueryString);
+          try {
+            console.log("Netflix HotLaunch passing netflix IIDqueryString using systemcommand method: ", IIDqueryString);
             await thunder.call("Netflix", "systemcommand", { command: IIDqueryString });
-          } catch(err) {
-            console.log("Netflix systemcommand error: ",err);
+          } catch (err) {
+            console.log("Netflix systemcommand error: ", err);
           }
         }
-     }
+      }
     }
 
     //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
@@ -509,7 +512,7 @@ export default class AppApi {
     // } 
 
     let params = {};
-    if (url && (callsign==="LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
+    if (url && (callsign === "LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
       params = {
         "callsign": callsign,
         "type": callsign,
@@ -541,6 +544,7 @@ export default class AppApi {
 
     return new Promise((resolve, reject) => {
       thunder.call("org.rdk.RDKShell", "launch", params).then(res => {
+        console.log(`${callsign} : Launch results in ${res}`)
         if (res.success) {
           thunder.call("org.rdk.RDKShell", "moveToFront", {
             "client": callsign,
@@ -563,13 +567,13 @@ export default class AppApi {
             console.error("failed to setVisibility : ", callsign, " ERROR: ", JSON.stringify(err))
           })
 
-          if(callsign === "Netflix") {
+          if (callsign === "Netflix") {
             console.log("Netflix launched: hiding residentApp");
             thunder.call('org.rdk.RDKShell', 'setVisibility', {
               "client": "ResidentApp",
               "visible": false,
             }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
-            
+
           }
 
           if (callsign === "Cobalt" && url) { //passing url to cobalt once launched
@@ -715,10 +719,10 @@ export default class AppApi {
   async getNetflixIIDs() {
     let defaultIIDs = NetflixIIDs;
     let data = new HomeApi().getPartnerAppsInfo();
-    if(!data) {
+    if (!data) {
       return defaultIIDs;
     }
-    console.log("homedata: ",data);
+    console.log("homedata: ", data);
     try {
       data = await JSON.parse(data);
       if (data != null && data.hasOwnProperty("netflix-iid-file-path")) {
@@ -731,8 +735,8 @@ export default class AppApi {
         console.log("Netflix IID file path not found in conf file, using deffault IIDs");
         return defaultIIDs;
       }
-    }catch(err){
-      console.log("Error in fetching iid data from specified path, returning defaultIIDs | Error:",err);
+    } catch (err) {
+      console.log("Error in fetching iid data from specified path, returning defaultIIDs | Error:", err);
       return defaultIIDs;
     }
   }
@@ -1178,6 +1182,7 @@ export default class AppApi {
       thunder.call(plugin, method).then((res) => {
         res.querystring = config_data;
         thunder.call(plugin, method, res).then((resp) => {
+          console.log(`${appName} : updating configuration with object ${res} results in ${resp}`)
           resolve(true);
         }).catch((err) => {
           reject(err); //resolve(true)
@@ -1290,8 +1295,8 @@ export default class AppApi {
   }
 
   setSoundMode(mode) {
-    mode = mode.startsWith("AUTO") ? "AUTO": mode
-    console.log("mode",mode)
+    mode = mode.startsWith("AUTO") ? "AUTO" : mode
+    console.log("mode", mode)
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.DisplaySettings', 'setSoundMode', {

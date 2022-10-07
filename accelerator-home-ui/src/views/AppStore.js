@@ -124,8 +124,8 @@ export default class AppStore extends Lightning.Component {
                     let applicationType = this.tag('Apps').currentItem.data.applicationType;
                     let uri = this.tag('Apps').currentItem.data.uri;
                     console.log(uri, applicationType)
-                    appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
-                        console.log(applicationType + ' plugin error: '+JSON.stringify(err))
+                    appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Section").catch(err => {
+                        console.log(applicationType + ' plugin error: ' + JSON.stringify(err))
                     })
                 }
             }

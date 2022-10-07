@@ -205,12 +205,12 @@ export default class App extends Router.App {
     if (key.keyCode == Keymap.Settings_Shortcut) {
       console.log(`settings shortcut`)
 
-      if(Storage.get("applicationType") === "" && Router.getActiveHash() === "player"){ //launch settings overlay as widget for videoplayer
-        if(Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay"){ //currently focused on settings overlay, so hide it
+      if (Storage.get("applicationType") === "" && Router.getActiveHash() === "player") { //launch settings overlay as widget for videoplayer
+        if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") { //currently focused on settings overlay, so hide it
           Router.focusPage();
         }
         else { //launch the settings overlay
-          Router.focusWidget('SettingsOverlay'); 
+          Router.focusWidget('SettingsOverlay');
         }
         return true;
       }
@@ -264,7 +264,7 @@ export default class App extends Router.App {
       return true
     }
     if (key.keyCode == Keymap.Netflix) { //5th argument is launchLocation
-      appApi.launchApp("Netflix","",false,false,"netflixButton").catch(err => {
+      appApi.launchApp("Netflix", "", false, false, "App_launched_via_Netflix_Button").catch(err => {
         console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err))
       });
       return true
@@ -590,13 +590,13 @@ export default class App extends Router.App {
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
         let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
-        
-        appApi.launchApp(applicationName,url,false,false,"dial").then(res => {
-          console.log("App launched on xcast event: ",res);
+
+        appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+          console.log("App launched on xcast event: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
         }).catch(err => {
-          console.log("Applaunch error on xcast notification: ",err)
+          console.log("Applaunch error on xcast notification: ", err)
         })
 
       }
@@ -623,12 +623,12 @@ export default class App extends Router.App {
         let applicationName = this.xcastApps(notification.applicationName);
         let url = notification.parameters.url;
         console.log('Resume ', applicationName, " with url: ", url);
-        appApi.launchApp(applicationName,url,false,false,"dial").then(res => {
-          console.log("launched ",applicationName ," on casting resume request: ",res);
+        appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+          console.log("launched ", applicationName, " on casting resume request: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
         }).catch(err => {
-          console.log("Error in launching ", applicationName ," on casting resume request: ", err);
+          console.log("Error in launching ", applicationName, " on casting resume request: ", err);
         })
       }
     });

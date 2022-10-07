@@ -835,8 +835,8 @@ export default class MainView extends Lightning.Component {
                 Router.navigate('usb');
               }
             })
-          } else{
-            this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
+          } else {
+            this.appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page").catch(err => {
               console.log("ApplaunchError: ", err)
             });
           }
@@ -884,8 +884,8 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           let uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
-            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          this.appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page").catch(err => {
+            console.log("ApplaunchError: ", JSON.stringify(err), err)
           });
         }
       },
@@ -988,8 +988,8 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           let uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
-          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
-            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          this.appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page").catch(err => {
+            console.log("ApplaunchError: ", JSON.stringify(err), err)
           });
         }
       },
@@ -1033,8 +1033,8 @@ export default class MainView extends Lightning.Component {
         async _handleEnter() {
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           let uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
-          this.appApi.launchApp(applicationType,uri,false,false,"iconInAppRow").catch(err => {
-            console.log("ApplaunchError: ",JSON.stringify(err), err)
+          this.appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page").catch(err => {
+            console.log("ApplaunchError: ", JSON.stringify(err), err)
           });
         }
       },

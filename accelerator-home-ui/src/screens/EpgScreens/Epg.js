@@ -233,7 +233,7 @@ export default class Epg extends Lightning.Component {
       "Amazon Prime": "Amazon",
     };
     const app = apps[appName];
-    this.appApi.launchApp(app);
+    this.appApi.launchApp(app, "", false, false, "App_launched_from_EPG_Grid");
   }
 
   _handleBack() {
