@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 30 Sep 2022 17:14:39 GMT
+ * Generated: Fri, 07 Oct 2022 09:51:51 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -4409,7 +4409,7 @@ var APP_accelerator_home_ui = (function () {
            */
 
           if (!isBoolean(restoreFocus) || restoreFocus === true) {
-            Router$1.focusPage();
+            Router.focusPage();
           }
         }
 
@@ -4446,7 +4446,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     _getFocused() {
-      return Router$1.getActivePage();
+      return Router.getActivePage();
     }
 
   }
@@ -4951,7 +4951,7 @@ var APP_accelerator_home_ui = (function () {
   }; // export API
 
 
-  var Router$1 = {
+  var Router = {
     startRouter,
     navigate,
     resume,
@@ -7059,7 +7059,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleEnter() {
-      Router$1.navigate('menu');
+      Router.navigate('menu');
     }
 
     _focus() {
@@ -7876,11 +7876,12 @@ var APP_accelerator_home_ui = (function () {
     async launchApp(callsign, url, preventInternetCheck, preventCurrentExit, launchLocation) {
       console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
       let IIDqueryString = "";
-      let netflixIIDs = await this.getNetflixIIDs();
 
       if (callsign === "Netflix") {
+        let netflixIids = await this.getNetflixIIDs();
+
         if (launchLocation) {
-          IIDqueryString = "source_type=".concat(netflixIIDs[launchLocation].sourceType, "&iid=").concat(netflixIIDs[launchLocation].iid);
+          IIDqueryString = "source_type=".concat(netflixIids[launchLocation].sourceType, "&iid=").concat(netflixIids[launchLocation].iid);
 
           if (url) {
             IIDqueryString = "&" + IIDqueryString; //so that IIDqueryString can be appended with url later.
@@ -11078,7 +11079,7 @@ var APP_accelerator_home_ui = (function () {
       console.log("application Type = ", Storage.get("applicationType"));
 
       if (Storage.get("applicationType") == "") {
-        Router$1.navigate('menu');
+        Router.navigate('menu');
       } else {
         this.appApi.visibile("ResidentApp", false);
         let appType = Storage.get("applicationType");
@@ -11108,7 +11109,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/network');
+          Router.navigate('settings/network');
         }
 
       }, class Bluetooth extends this {
@@ -11131,7 +11132,7 @@ var APP_accelerator_home_ui = (function () {
         _handleLeft() {}
 
         _handleEnter() {
-          Router$1.navigate('settings/bluetooth');
+          Router.navigate('settings/bluetooth');
         }
 
       }, class Video extends this {
@@ -11152,7 +11153,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/video');
+          Router.navigate('settings/video');
         }
 
       }, class Audio extends this {
@@ -11169,7 +11170,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/audio');
+          Router.navigate('settings/audio');
         }
 
         _handleDown() {
@@ -11190,7 +11191,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other');
+          Router.navigate('settings/other');
         }
 
         _handleDown() {
@@ -11214,7 +11215,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           if (this.dtvPlugin) {
-            Router$1.navigate('settings/livetv');
+            Router.navigate('settings/livetv');
           } // dtvApi.activate().then(res =>{
           //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
           // })
@@ -15974,7 +15975,7 @@ var APP_accelerator_home_ui = (function () {
               title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName,
               msg: 'Input disconnected'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
         });
         this.hdmiApi.registerEvent('videoStreamInfoUpdate', notification => {
@@ -16021,7 +16022,7 @@ var APP_accelerator_home_ui = (function () {
               if (currentPage === 'usb' || currentPage === 'usb/image' || currentPage === 'usb/player') {
                 // hot exit if we are on usb screen or sub screens
                 // this.$changeHomeText('Home')
-                Router$1.navigate('menu');
+                Router.navigate('menu');
               }
             }
           }
@@ -16326,12 +16327,12 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Gracenote').setPrevious();
             return this.tag('Gracenote').element;
           } else {
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
         _handleEnter() {
-          Router$1.navigate('menu/details', {
+          Router.navigate('menu/details', {
             gracenoteItem: this.tag('Gracenote').element.data,
             key: this.key
           });
@@ -16374,7 +16375,7 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('Inputs.Slider').element;
           } else {
             this.tag('Inputs.Title').text.fontStyle = 'normal';
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
@@ -16402,7 +16403,7 @@ var APP_accelerator_home_ui = (function () {
               title: this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data.displayName,
               msg: 'Select a different input.'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           });
         }
 
@@ -16445,7 +16446,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal';
-          Router$1.focusWidget('Menu');
+          Router.focusWidget('Menu');
         }
 
         async _handleEnter() {
@@ -16455,7 +16456,7 @@ var APP_accelerator_home_ui = (function () {
           if (uri === 'USB') {
             this.usbApi.getMountedDevices().then(result => {
               if (result.mounted.length === 1) {
-                Router$1.navigate('usb');
+                Router.navigate('usb');
               }
             });
           } else {
@@ -16510,7 +16511,7 @@ var APP_accelerator_home_ui = (function () {
             this.tag('MetroApps').setPrevious();
             return this.tag('MetroApps').element;
           } else {
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
@@ -16561,7 +16562,7 @@ var APP_accelerator_home_ui = (function () {
             this.tag('TVShows').setPrevious();
             return this.tag('TVShows').element;
           } else {
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
@@ -16580,7 +16581,7 @@ var APP_accelerator_home_ui = (function () {
 
           if (this.internetConnectivity) {
             //this.fireAncestors('$goToPlayer')
-            Router$1.navigate('player');
+            Router.navigate('player');
           }
         }
 
@@ -16633,7 +16634,7 @@ var APP_accelerator_home_ui = (function () {
             this.tag('ShowcaseApps').setPrevious();
             return this.tag('ShowcaseApps').element;
           } else {
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
@@ -16684,7 +16685,7 @@ var APP_accelerator_home_ui = (function () {
             this.tag('UsbApps').setPrevious();
             return this.tag('UsbApps').element;
           } else {
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
         }
 
@@ -16733,7 +16734,7 @@ var APP_accelerator_home_ui = (function () {
       if (args.bluetoothItem) {
         this.item(args.bluetoothItem);
       } else {
-        Router$1.navigate('settings/bluetooth');
+        Router.navigate('settings/bluetooth');
       }
     }
 
@@ -16878,13 +16879,13 @@ var APP_accelerator_home_ui = (function () {
           if (_item.connected) {
             // this.tag('Pairing').text = "Connecting to " + _item.name
             //this.fireAncestors('$pressEnter', 'Disconnect')
-            Router$1.navigate('settings/bluetooth', {
+            Router.navigate('settings/bluetooth', {
               action: 'Disconnect'
             });
           } else {
             // this.tag('Pairing').text = "Disconnecting from " + _item.name
             // this.fireAncestors('$pressEnter', 'Connect')
-            Router$1.navigate('settings/bluetooth', {
+            Router.navigate('settings/bluetooth', {
               action: 'Connect'
             });
           }
@@ -16927,7 +16928,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Unpair')
-          Router$1.navigate('settings/bluetooth', {
+          Router.navigate('settings/bluetooth', {
             action: 'Unpair'
           });
         }
@@ -16973,7 +16974,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Cancel')
-          Router$1.navigate('settings/bluetooth', {
+          Router.navigate('settings/bluetooth', {
             action: 'Cancel'
           });
         }
@@ -17814,7 +17815,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings');
+      Router.navigate('settings');
     }
     /**
      * Function to be excuted when the Bluetooth screen is enabled.
@@ -18052,13 +18053,13 @@ var APP_accelerator_home_ui = (function () {
               title: btName,
               msg: 'Pairing Succesful'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           } else {
             this.widgets.fail.notify({
               title: btName,
               msg: 'Pairing Failed'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
 
           this.hideAvailableDevices();
@@ -18072,7 +18073,7 @@ var APP_accelerator_home_ui = (function () {
               title: btName,
               msg: 'Connection Failed'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           } else {
             this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID);
 
@@ -18080,7 +18081,7 @@ var APP_accelerator_home_ui = (function () {
               title: btName,
               msg: 'Connection Successful'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
         });
       } else if (option === 'Disconnect') {
@@ -18092,13 +18093,13 @@ var APP_accelerator_home_ui = (function () {
               title: btName,
               msg: 'Failed to Disconnect'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           } else {
             this.widgets.fail.notify({
               title: btName,
               msg: 'Disconnected'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
         });
       } else if (option === 'Unpair') {
@@ -18110,13 +18111,13 @@ var APP_accelerator_home_ui = (function () {
               title: btName,
               msg: 'Unpaired'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           } else {
             this.widgets.fail.notify({
               title: btName,
               msg: 'Unpairing Failed'
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
         });
       }
@@ -18178,7 +18179,7 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           //this.showPairingScreen()
           //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
-          Router$1.navigate('settings/bluetooth/pairing', {
+          Router.navigate('settings/bluetooth/pairing', {
             bluetoothItem: this._pairedNetworks.tag('List').element._item
           }); //this._setState('PairingScreen')
         }
@@ -18346,7 +18347,7 @@ var APP_accelerator_home_ui = (function () {
                 title: btName,
                 msg: 'CONNECTION SUCCESS'
               });
-              Router$1.focusWidget('Fail');
+              Router.focusWidget('Fail');
             }
           } else {
             if (this.widgets.fail) {
@@ -18354,7 +18355,7 @@ var APP_accelerator_home_ui = (function () {
                 title: btName,
                 msg: 'CONNECTION FAILED'
               });
-              Router$1.focusWidget('Fail');
+              Router.focusWidget('Fail');
             }
           }
         });
@@ -18380,7 +18381,7 @@ var APP_accelerator_home_ui = (function () {
               title: notification.name,
               msg: notification.newStatus
             });
-            Router$1.focusWidget('Fail');
+            Router.focusWidget('Fail');
           }
         });
       }).catch(err => {
@@ -21363,7 +21364,7 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       });
-      Router$1.back();
+      Router.back();
     }
 
     static _template() {
@@ -21533,7 +21534,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.back();
+      Router.back();
     }
 
     static _states() {
@@ -21928,7 +21929,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings');
+      Router.navigate('settings');
     }
 
     _onChanged() {
@@ -21950,7 +21951,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/network/info');
+          Router.navigate('settings/network/info');
         }
 
       }, class NetworkInterface extends this {
@@ -21971,8 +21972,8 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          if (!Router$1.isNavigating()) {
-            Router$1.navigate('settings/network/interface');
+          if (!Router.isNavigating()) {
+            Router.navigate('settings/network/interface');
           }
         }
 
@@ -22069,7 +22070,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/network');
+      Router.navigate('settings/network');
     }
 
     _onChanged() {
@@ -22545,7 +22546,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/network');
+      Router.navigate('settings/network');
     }
 
     pageTransition() {
@@ -22571,8 +22572,8 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          if (!Router$1.isNavigating()) {
-            Router$1.navigate('settings/network/interface/wifi');
+          if (!Router.isNavigating()) {
+            Router.navigate('settings/network/interface/wifi');
           }
         }
 
@@ -22898,7 +22899,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.back();
+      Router.back();
     }
     /**
      * @param {{ item: Wifi Response Object; }} args
@@ -22909,7 +22910,7 @@ var APP_accelerator_home_ui = (function () {
       if (args.wifiItem) {
         this.item(args.wifiItem);
       } else {
-        Router$1.navigate('settings/network/interface/wifi');
+        Router.navigate('settings/network/interface/wifi');
       }
     }
 
@@ -22958,7 +22959,7 @@ var APP_accelerator_home_ui = (function () {
 
     pressEnter(option) {
       if (option === 'Cancel') {
-        Router$1.back();
+        Router.back();
       } else if (option === 'Connect') {
         if (this._item) {
           console.log('trying to connect wifi');
@@ -22968,10 +22969,10 @@ var APP_accelerator_home_ui = (function () {
           });
         }
 
-        Router$1.back();
+        Router.back();
       } else if (option === 'Disconnect') {
         this._wifi.disconnect().then(() => {
-          Router$1.back();
+          Router.back();
         });
       }
     } // startConnect(password) {
@@ -22991,7 +22992,7 @@ var APP_accelerator_home_ui = (function () {
           }
         });
 
-        Router$1.back();
+        Router.back();
       });
     }
 
@@ -23589,7 +23590,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/network/interface');
+      Router.navigate('settings/network/interface');
     }
 
     _onChanged() {
@@ -23644,7 +23645,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/network/interface/wifi/connect', {
+          Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._pairedNetworks.tag('List').element._item
           });
         }
@@ -23672,7 +23673,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/network/interface/wifi/connect', {
+          Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._availableNetworks.tag('List').element._item
           });
         }
@@ -23688,7 +23689,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           if (this.wifiStatus) {
-            Router$1.navigate('settings/network/interface/wifi/another');
+            Router.navigate('settings/network/interface/wifi/another');
           }
         }
 
@@ -23812,7 +23813,7 @@ var APP_accelerator_home_ui = (function () {
             title: 'WiFi Error',
             msg: this.onError[notification.code]
           });
-          Router$1.focusWidget('Fail');
+          Router.focusWidget('Fail');
         }
       });
 
@@ -24436,7 +24437,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.focusPage();
+      Router.focusPage();
     }
 
     _handleLeft() {
@@ -25006,7 +25007,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     _handleBack() {
-      Router$1.back();
+      Router.back();
     }
 
     _inactive() {
@@ -25369,7 +25370,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings');
+      Router.navigate('settings');
     }
 
     static _states() {
@@ -25392,7 +25393,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other/timer');
+          Router.navigate('settings/other/timer');
         }
 
       }, class RemoteControl extends this {
@@ -25453,7 +25454,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other/energy');
+          Router.navigate('settings/other/energy');
         }
 
       }, class Language extends this {
@@ -25474,7 +25475,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other/language');
+          Router.navigate('settings/other/language');
         }
 
       }, class Privacy extends this {
@@ -25495,7 +25496,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other/privacy');
+          Router.navigate('settings/other/privacy');
         }
 
       }, class AdvancedSettings extends this {
@@ -25516,7 +25517,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced');
+          Router.navigate('settings/advanced');
         }
 
       }];
@@ -25626,7 +25627,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other');
+      Router.navigate('settings/other');
     }
 
     static _states() {
@@ -25857,7 +25858,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other');
+      Router.navigate('settings/other');
     }
 
     static _states() {
@@ -26137,7 +26138,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other');
+      Router.navigate('settings/other');
     }
 
     static _states() {
@@ -26356,7 +26357,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other');
+      Router.navigate('settings/other');
     }
 
     checkUSBDeviceStatus() {
@@ -26525,7 +26526,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/other/privacyPolicy');
+          Router.navigate('settings/other/privacyPolicy');
         }
 
       }];
@@ -26606,7 +26607,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other/privacy');
+      Router.navigate('settings/other/privacy');
     }
 
     _handleUp() {
@@ -26901,7 +26902,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/other');
+      Router.navigate('settings/other');
     }
 
     performOTPAction() {
@@ -27038,7 +27039,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced/device');
+          Router.navigate('settings/advanced/device');
         }
 
       }];
@@ -27214,7 +27215,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/advanced');
+      Router.navigate('settings/advanced');
     }
 
     static _states() {
@@ -27236,7 +27237,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced/device/info');
+          Router.navigate('settings/advanced/device/info');
         }
 
       }, class TimeZone extends this {
@@ -27257,7 +27258,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced/device/timezone');
+          Router.navigate('settings/advanced/device/timezone');
         }
 
       }, class Firmware extends this {
@@ -27278,7 +27279,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced/device/firmware');
+          Router.navigate('settings/advanced/device/firmware');
         }
 
       }, class Reboot extends this {
@@ -27299,7 +27300,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/advanced/device/reboot');
+          Router.navigate('settings/advanced/device/reboot');
         }
 
       }, class Reset extends this {
@@ -27682,7 +27683,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/advanced/device');
+      Router.navigate('settings/advanced/device');
     }
 
     _handleDown() {
@@ -27901,7 +27902,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/advanced/device');
+      Router.navigate('settings/advanced/device');
     }
 
     static _states() {
@@ -28069,7 +28070,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/advanced/device');
+      Router.navigate('settings/advanced/device');
     }
 
     static _states() {
@@ -28122,7 +28123,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.back();
+          Router.back();
         }
 
         _handleLeft() {
@@ -28279,7 +28280,7 @@ var APP_accelerator_home_ui = (function () {
 
     _handleEnter() {
       console.log('enter', this._item[1]);
-      Router$1.navigate('settings/advanced/device/timezone/item', {
+      Router.navigate('settings/advanced/device/timezone/item', {
         time_region: this._item[1],
         zone: this._item[0],
         isActive: this.zone
@@ -28450,7 +28451,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/advanced/device');
+      Router.navigate('settings/advanced/device');
     }
 
     static _states() {
@@ -28645,7 +28646,7 @@ var APP_accelerator_home_ui = (function () {
       console.log("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
       this.widgets.menu.updateTimeZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
       this.appApi.setZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
-      Router$1.navigate('settings/advanced/device/timezone', {
+      Router.navigate('settings/advanced/device/timezone', {
         refresh: true
       });
     }
@@ -28945,7 +28946,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings');
+      Router.navigate('settings');
     }
 
     static _states() {
@@ -28963,7 +28964,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/audio/output');
+          Router.navigate('settings/audio/output');
         }
 
       }, class OutputMode extends this {
@@ -28982,7 +28983,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/audio/output');
+          Router.navigate('settings/audio/output');
         }
 
       }, class DynamicRange extends this {
@@ -29344,7 +29345,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/audio');
+      Router.navigate('settings/audio');
     }
 
     static _states() {
@@ -29470,7 +29471,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/video');
+      Router.navigate('settings/video');
     }
 
     _focus() {
@@ -29743,7 +29744,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings');
+      Router.navigate('settings');
     }
 
     static _states() {
@@ -29761,7 +29762,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/video/resolution');
+          Router.navigate('settings/video/resolution');
         }
 
       }, class HDR extends this {
@@ -30017,11 +30018,11 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleEnter() {
-      Router$1.focusPage();
+      Router.focusPage();
     }
 
     _handleBack() {
-      Router$1.focusPage();
+      Router.focusPage();
     }
 
   }
@@ -30406,7 +30407,7 @@ var APP_accelerator_home_ui = (function () {
           console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
         });
       } else {
-        Router$1.navigate('menu');
+        Router.navigate('menu');
       }
     }
 
@@ -30480,7 +30481,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('usb/player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row1').element.data.uri,
             currentIndex: this.tag('Row1').element.idx,
             list: this.tag('Row1').items,
@@ -30521,7 +30522,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('usb/player', {
+          Router.navigate('usb/player', {
             url: this.tag('Row2').element.data.uri,
             isAudio: true,
             list: this.tag('Row2').items,
@@ -30571,7 +30572,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           // console.log(this.tag('Row3').items)
-          Router$1.navigate('usb/image', {
+          Router.navigate('usb/image', {
             src: this.tag('Row3').element.data.uri,
             currentIndex: this.tag('Row3').element.idx,
             list: this.tag('Row3').items,
@@ -30898,12 +30899,12 @@ var APP_accelerator_home_ui = (function () {
 
     _handleBack() {
       if (this.cwd) {
-        Router$1.navigate('usb', {
+        Router.navigate('usb', {
           currentIndex: this.currentIndex,
           cwd: this.cwd
         });
       } else {
-        Router$1.back();
+        Router.back();
       }
     }
 
@@ -31059,7 +31060,7 @@ var APP_accelerator_home_ui = (function () {
         path = this.checkPath(path);
       });
       setTimeout(() => {
-        Router$1.navigate(path);
+        Router.navigate(path);
       }, 5000);
     }
 
@@ -31221,7 +31222,7 @@ var APP_accelerator_home_ui = (function () {
 
         if (time.total <= 0) {
           Registry.clearInterval(this.timeInterval);
-          Router$1.navigate('splash/language');
+          Router.navigate('splash/language');
         }
       }, 1000);
     }
@@ -31272,7 +31273,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleRight() {
-          Router$1.navigate('splash/language');
+          Router.navigate('splash/language');
         }
 
         $exit() {
@@ -31479,7 +31480,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('splash/network');
+          Router.navigate('splash/network');
         }
 
         $exit() {
@@ -31651,7 +31652,7 @@ var APP_accelerator_home_ui = (function () {
           wifi$1.setInterface('WIFI', true).then(res => {
             if (res.success) {
               wifi$1.setDefaultInterface('WIFI', true).then(() => {
-                Router$1.navigate('splash/networkList');
+                Router.navigate('splash/networkList');
               });
             }
           });
@@ -31675,9 +31676,9 @@ var APP_accelerator_home_ui = (function () {
                   let eth = res.filter(item => item.interface == 'ETHERNET');
 
                   if (eth[0].interface == 'ETHERNET' && eth[0].enabled == true && eth[0].connected == true) {
-                    Router$1.navigate('menu');
+                    Router.navigate('menu');
                   } else if (eth[0].interface == 'ETHERNET' && eth[0].connected == false) {
-                    Router$1.navigate('splash/networkPrompt');
+                    Router.navigate('splash/networkPrompt');
                   }
                 });
               });
@@ -31721,7 +31722,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('menu');
+          Router.navigate('menu');
         }
 
         _handleUp() {
@@ -31856,7 +31857,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('splash/networkPrompt');
+      Router.navigate('splash/networkPrompt');
     }
 
     static _states() {
@@ -31866,7 +31867,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('splash/network');
+          Router.navigate('splash/network');
         }
 
         _focus() {
@@ -32225,7 +32226,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           console.log(this._availableNetworks.tag('List').element._item);
-          Router$1.navigate('settings/network/interface/wifi/connect', {
+          Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._availableNetworks.tag('List').element._item
           });
         }
@@ -32240,7 +32241,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           if (this.wifiStatus) {
-            Router$1.navigate('settings/network/interface/wifi/another');
+            Router.navigate('settings/network/interface/wifi/another');
           }
         }
 
@@ -32335,9 +32336,9 @@ var APP_accelerator_home_ui = (function () {
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
         console.log(JSON.stringify(notification));
 
-        if (notification.state === 5 && Router$1.getActiveRoute().includes('splash')) {
+        if (notification.state === 5 && Router.getActiveRoute().includes('splash')) {
           Registry.setTimeout(() => {
-            Router$1.navigate('menu');
+            Router.navigate('menu');
           }, 2000);
         }
       });
@@ -32567,7 +32568,7 @@ var APP_accelerator_home_ui = (function () {
         return;
       }
 
-      Router$1.navigate('menu');
+      Router.navigate('menu');
     }
 
   }
@@ -33633,7 +33634,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleLeft() {
-      Router$1.focusWidget('Menu');
+      Router.focusWidget('Menu');
     }
 
     pageTransition() {
@@ -34049,7 +34050,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate("menu");
+      Router.navigate("menu");
     }
 
     static _states() {
@@ -35470,7 +35471,7 @@ var APP_accelerator_home_ui = (function () {
 
     _handleBack() {
       this.resetForm();
-      Router$1.navigate("settings/livetv/scan");
+      Router.navigate("settings/livetv/scan");
     }
 
     $getSatelliteList() {
@@ -36193,7 +36194,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate('settings/livetv');
+      Router.navigate('settings/livetv');
     }
 
     static _states() {
@@ -36246,7 +36247,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate('settings/livetv/scan/dvb-s-scan');
+          Router.navigate('settings/livetv/scan/dvb-s-scan');
         }
 
       }];
@@ -36366,7 +36367,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate("settings");
+      Router.navigate("settings");
     }
 
     static _states() {
@@ -36413,7 +36414,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          Router$1.navigate("settings/livetv/scan");
+          Router.navigate("settings/livetv/scan");
         }
 
       }];
@@ -37745,12 +37746,12 @@ var APP_accelerator_home_ui = (function () {
             });
           });
         } else {
-          if (Router$1.getActiveHash() === "dtvplayer") {
+          if (Router.getActiveHash() === "dtvplayer") {
             //don't navigate to menu if route is dtvplayer
-            Router$1.focusPage();
+            Router.focusPage();
           } else {
             console.log("else block navigating to menu");
-            Router$1.navigate("menu"); //if user is currently on resident app, might not be needed as user should not be able to get on this screen while on resident app
+            Router.navigate("menu"); //if user is currently on resident app, might not be needed as user should not be able to get on this screen while on resident app
           }
         }
       }, 500);
@@ -37983,7 +37984,7 @@ var APP_accelerator_home_ui = (function () {
         this.appApi.visibile('ResidentApp', false);
         this.appApi.setVisibility(Storage.get('applicationType'), true);
       } else {
-        Router$1.focusPage();
+        Router.focusPage();
       }
     }
 
@@ -38469,7 +38470,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleBack() {
-      Router$1.navigate("menu");
+      Router.navigate("menu");
     }
 
     _handleEnter() {
@@ -38478,12 +38479,12 @@ var APP_accelerator_home_ui = (function () {
       if (channel.dvburi === "OTT") {
         this.launchApp(channel.shortname); // check mapping in launchApp method
       } else {
-        if (!Router$1.isNavigating()) {
+        if (!Router.isNavigating()) {
           this.DTV.launchChannel(channel.dvburi).then(res => {
             console.log("launchChannel method successful: ", JSON.stringify(res));
             this.widgets.channeloverlay.$focusChannel(this.D - 11 + this.currentlyFocusedRow); // -11 = -8 + -3(3 to accomodate apps which won't be shown on the overlay)
 
-            Router$1.navigate("dtvplayer");
+            Router.navigate("dtvplayer");
           }).catch(err => {
             console.log("launchChannel method failed: ", JSON.stringify(err));
           });
@@ -38832,7 +38833,7 @@ var APP_accelerator_home_ui = (function () {
         wrapper.visible = true;
       }).catch(err => {
         console.log("error while fetching data from dtv", err);
-        Router$1.navigate('menu');
+        Router.navigate('menu');
       });
     }
 
@@ -38903,7 +38904,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _handleLeft() {
-      Router$1.focusWidget('Menu');
+      Router.focusWidget('Menu');
     }
 
     _handleUp() {
@@ -38925,7 +38926,7 @@ var APP_accelerator_home_ui = (function () {
             this.scrollHorizontally(-1);
           } else {
             console.log("can't traverse any left");
-            Router$1.focusWidget('Menu');
+            Router.focusWidget('Menu');
           }
 
           this.paintCell();
@@ -39135,11 +39136,11 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.log("failed to exit channel: ", JSON.stringify(err));
       });
-      Router$1.back();
+      Router.back();
     }
 
     _handleLeft() {
-      Router$1.focusWidget("ChannelOverlay");
+      Router.focusWidget("ChannelOverlay");
     }
 
   }
@@ -39240,7 +39241,7 @@ var APP_accelerator_home_ui = (function () {
     }, {
       path: 'player',
       component: AAMPVideoPlayer,
-      widgets: ['Volume']
+      widgets: ['Volume', "SettingsOverlay"]
     }, {
       path: 'dtvplayer',
       component: DTVPlayer,
@@ -39756,12 +39757,12 @@ var APP_accelerator_home_ui = (function () {
 
         _handleKey(key) {
           if (key.keyCode === keyMap.ArrowDown) {
-            Router$1.focusPage();
+            Router.focusPage();
             this.tag('Settings').color = 0xffffffff;
           } else if (key.keyCode === keyMap.ArrowLeft) ; else if (key.keyCode === keyMap.Enter) {
             //this.tag('Page').text.text = Language.translate('settings')
-            Router$1.navigate('settings');
-            Router$1.focusPage();
+            Router.navigate('settings');
+            Router.focusPage();
             this.tag('Settings').color = 0xffffffff;
           }
         }
@@ -39795,16 +39796,16 @@ var APP_accelerator_home_ui = (function () {
    **/
   var route = {
     1: () => {
-      Router$1.navigate('epg');
-      Router$1.focusPage();
+      Router.navigate('epg');
+      Router.focusPage();
     },
     3: () => {
-      Router$1.navigate('apps');
-      Router$1.focusPage();
+      Router.navigate('apps');
+      Router.focusPage();
     },
     'default': () => {
-      Router$1.navigate('menu');
-      Router$1.focusPage();
+      Router.navigate('menu');
+      Router.focusPage();
     }
   };
   class Menu extends lng$1.Component {
@@ -39830,20 +39831,20 @@ var APP_accelerator_home_ui = (function () {
 
     _focus() {
       if (!this.mainView) {
-        this.mainView = Router$1.activePage();
+        this.mainView = Router.activePage();
       }
 
       this._setState('SidePanel');
     }
 
     _handleRight() {
-      Router$1.focusPage();
+      Router.focusPage();
     }
 
     $goToTopPanel() {
       this._setState('TopPanel');
 
-      Router$1.focusWidget('Menu');
+      Router.focusWidget('Menu');
     }
 
     $goToSidePanel() {
@@ -39873,7 +39874,7 @@ var APP_accelerator_home_ui = (function () {
 
     notify(val) {
       if (val === 'TopPanel') {
-        Router$1.focusWidget('Menu');
+        Router.focusWidget('Menu');
 
         this._setState('TopPanel');
       }
@@ -40261,6 +40262,387 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  /**
+   * Class for settings screen.
+   */
+
+  class SettingsOverlay extends lng$1.Component {
+    static _template() {
+      return {
+        Wrapper: {
+          rect: true,
+          color: 0xcc000000,
+          w: 1920,
+          h: 1080,
+          visible: false,
+          BreadCrumbs: {
+            x: 200,
+            y: 184,
+            text: {
+              fontSize: 40,
+              text: Language.translate("settings"),
+              textColor: CONFIG.theme.hex,
+              fontStyle: "bolder",
+              fontFace: CONFIG.language.font,
+              wordWrapWidth: 1720,
+              maxLines: 1
+            }
+          },
+          SettingsScreenContents: {
+            x: 200,
+            y: 275,
+            NetworkConfiguration: {
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Network Configuration"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            },
+            Bluetooth: {
+              y: 90,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Pair Remote Control"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            },
+            Video: {
+              y: 180,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Video"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            },
+            Audio: {
+              y: 270,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Audio"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            },
+            OtherSettings: {
+              y: 360,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Other Settings"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            },
+            DTVSettings: {
+              alpha: 0.3,
+              y: 450,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Live TV"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 45,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils$1.asset("images/settings/Arrow.png")
+              }
+            }
+          }
+        }
+      };
+    }
+
+    _focus() {
+      this.tag("Wrapper").visible = true;
+
+      this._setState("NetworkConfiguration");
+
+      this.$updatePageTitle("settings"); //use this method as fireancestor from child components to change the page title
+    }
+
+    _unfocus() {
+      this.tag("Wrapper").visible = false;
+    }
+
+    _firstActive() {
+      this.appApi = new AppApi();
+      this.dtvApi = new DTVApi();
+      this.dtvPlugin = false; //plugin availability
+
+      this.dtvApi.activate().then(res => {
+        // if (res){
+        this.dtvPlugin = true;
+        this.tag("DTVSettings").alpha = 1; // }
+      });
+    }
+
+    _handleBack() {
+      console.log("application Type = ", Storage.get("applicationType"));
+
+      if (Storage.get("applicationType") == "") {
+        if (Router.getActiveHash() === "player") {
+          Router.focusPage();
+        } else {
+          Router.focusPage();
+          Router.navigate("menu");
+        }
+      } else {
+        Router.focusPage();
+        this.appApi.visibile("ResidentApp", false);
+        this.appApi.setFocus(Storage.get("applicationType"));
+      }
+    }
+
+    _handleLeft() {//do nothing
+    }
+
+    _handleRight() {//do nothing
+    }
+
+    _handleUp() {//do nothing
+    }
+
+    _handleDown() {//do nothing
+    }
+
+    $updatePageTitle(title) {
+      this.tag("BreadCrumbs").text.text = Language.translate(title);
+    }
+
+    static _states() {
+      return [class NetworkConfiguration extends this {
+        $enter() {
+          this.tag("NetworkConfiguration")._focus();
+        }
+
+        $exit() {
+          this.tag("NetworkConfiguration")._unfocus();
+        }
+
+        _handleDown() {
+          this._setState("Bluetooth");
+        }
+
+        _handleEnter() {//Router.navigate("settings/network"); //change to state based implementation
+        }
+
+      }, class Bluetooth extends this {
+        $enter() {
+          this.tag("Bluetooth")._focus();
+        }
+
+        $exit() {
+          this.tag("Bluetooth")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("NetworkConfiguration");
+        }
+
+        _handleDown() {
+          this._setState("Video");
+        }
+
+        _handleLeft() {}
+
+        _handleEnter() {//    Router.navigate("settings/bluetooth"); ////change to state based implementation
+        }
+
+      }, class Video extends this {
+        $enter() {
+          this.tag("Video")._focus();
+        }
+
+        $exit() {
+          this.tag("Video")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Bluetooth");
+        }
+
+        _handleDown() {
+          this._setState("Audio");
+        }
+
+        _handleEnter() {//    Router.navigate("settings/video"); //change to state based implementation
+        }
+
+      }, class Audio extends this {
+        $enter() {
+          this.tag("Audio")._focus();
+        }
+
+        $exit() {
+          this.tag("Audio")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Video");
+        }
+
+        _handleEnter() {//    Router.navigate("settings/audio"); //change to state based implementation
+        }
+
+        _handleDown() {
+          this._setState("OtherSettings");
+        }
+
+      }, class OtherSettings extends this {
+        $enter() {
+          this.tag("OtherSettings")._focus();
+        }
+
+        $exit() {
+          this.tag("OtherSettings")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Audio");
+        }
+
+        _handleEnter() {//    Router.navigate("settings/other"); //change to state based implementation
+        }
+
+        _handleDown() {
+          if (this.dtvPlugin) {
+            this._setState("DTVSettings");
+          }
+        }
+
+      }, class DTVSettings extends this {
+        $enter() {
+          this.tag("DTVSettings")._focus();
+        }
+
+        $exit() {
+          this.tag("DTVSettings")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("OtherSettings");
+        }
+
+        _handleEnter() {//change to state based implementation
+          //    if (this.dtvPlugin) {
+          //      Router.navigate("settings/livetv");
+          //    }
+          // dtvApi.activate().then(res =>{
+          //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
+          // })
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   const config = {
     host: '127.0.0.1',
     port: 9998,
@@ -40270,7 +40652,7 @@ var APP_accelerator_home_ui = (function () {
   var thunder = thunderJS(config);
   var appApi = new AppApi();
   var dtvApi = new DTVApi();
-  class App extends Router$1.App {
+  class App extends Router.App {
     static getFonts() {
       return [{
         family: CONFIG.language.font,
@@ -40280,7 +40662,7 @@ var APP_accelerator_home_ui = (function () {
 
     _setup() {
       console.log("accelerator-home-ui version: " + Settings.get("platform", "version"));
-      Router$1.startRouter(routes, this);
+      Router.startRouter(routes, this);
 
       document.onkeydown = e => {
         if (e.keyCode == keyMap.Backspace) {
@@ -40321,6 +40703,9 @@ var APP_accelerator_home_ui = (function () {
           },
           ChannelOverlay: {
             type: ChannelOverlay
+          },
+          SettingsOverlay: {
+            type: SettingsOverlay
           }
         }
       };
@@ -40342,12 +40727,12 @@ var APP_accelerator_home_ui = (function () {
             console.log(err);
           });
 
-          if (Router$1.getActiveHash().startsWith("tv-overlay") || Router$1.getActiveHash().startsWith("overlay") || Router$1.getActiveHash().startsWith("settings")) {
-            Router$1.navigate('menu');
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
+            Router.navigate('menu');
           }
         } else {
-          if (!Router$1.isNavigating()) {
-            if (Router$1.getActiveHash() === "dtvplayer") {
+          if (!Router.isNavigating()) {
+            if (Router.getActiveHash() === "dtvplayer") {
               //exit scenario for dtv player
               dtvApi.exitChannel().then(res => {
                 console.log("exit channel: ", JSON.stringify(res));
@@ -40355,12 +40740,12 @@ var APP_accelerator_home_ui = (function () {
                 console.log("failed to exit channel: ", JSON.stringify(err));
               });
 
-              if (Router$1.getActiveWidget()) {
-                Router$1.getActiveWidget()._setState("IdleState");
+              if (Router.getActiveWidget()) {
+                Router.getActiveWidget()._setState("IdleState");
               }
             }
 
-            Router$1.navigate('menu');
+            Router.navigate('menu');
           }
         }
 
@@ -40370,10 +40755,10 @@ var APP_accelerator_home_ui = (function () {
       if (key.keyCode == keyMap.Inputs_Shortcut) {
         //for inputs overlay
         if (Storage.get("applicationType") !== "") {
-          if (Router$1.getActiveHash() === "tv-overlay/inputs") {
-            Router$1.reload();
+          if (Router.getActiveHash() === "tv-overlay/inputs") {
+            Router.reload();
           } else {
-            Router$1.navigate("tv-overlay/inputs", false);
+            Router.navigate("tv-overlay/inputs", false);
           } // appApi.setVisibility('ResidentApp', true);
 
 
@@ -40392,10 +40777,10 @@ var APP_accelerator_home_ui = (function () {
             });
           });
         } else {
-          if (Router$1.getActiveHash() === "dtvplayer") {
-            Router$1.focusWidget('TvOverlays');
+          if (Router.getActiveHash() === "dtvplayer") {
+            Router.focusWidget('TvOverlays');
 
-            Router$1.getActiveWidget()._setState("OverlayInputScreen");
+            Router.getActiveWidget()._setState("OverlayInputScreen");
           }
         }
 
@@ -40405,10 +40790,10 @@ var APP_accelerator_home_ui = (function () {
       if (key.keyCode == keyMap.Picture_Setting_Shortcut) {
         //for video settings overlay
         if (Storage.get("applicationType") !== "") {
-          if (Router$1.getActiveHash() === "tv-overlay/settings") {
-            Router$1.reload();
+          if (Router.getActiveHash() === "tv-overlay/settings") {
+            Router.reload();
           } else {
-            Router$1.navigate("tv-overlay/settings", false);
+            Router.navigate("tv-overlay/settings", false);
           } // appApi.setVisibility('ResidentApp', true);
 
 
@@ -40427,10 +40812,10 @@ var APP_accelerator_home_ui = (function () {
             });
           });
         } else {
-          if (Router$1.getActiveHash() === "dtvplayer") {
-            Router$1.focusWidget('TvOverlays');
+          if (Router.getActiveHash() === "dtvplayer") {
+            Router.focusWidget('TvOverlays');
 
-            Router$1.getActiveWidget()._setState("OverlaySettingsScreen");
+            Router.getActiveWidget()._setState("OverlaySettingsScreen");
           }
         }
 
@@ -40439,7 +40824,21 @@ var APP_accelerator_home_ui = (function () {
 
       if (key.keyCode == keyMap.Settings_Shortcut) {
         console.log("settings shortcut");
-        Router$1.navigate('settings');
+
+        if (Storage.get("applicationType") === "" && Router.getActiveHash() === "player") {
+          //launch settings overlay as widget for videoplayer
+          if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") {
+            //currently focused on settings overlay, so hide it
+            Router.focusPage();
+          } else {
+            //launch the settings overlay
+            Router.focusWidget('SettingsOverlay');
+          }
+
+          return true;
+        }
+
+        Router.navigate('settings');
         thunder.call("org.rdk.RDKShell", "getZOrder").then(res => {
           if (res.clients[0] == "residentapp") {
             if (Storage.get("applicationType") !== "") {
@@ -40456,7 +40855,7 @@ var APP_accelerator_home_ui = (function () {
             appApi.zorder('ResidentApp');
             appApi.setFocus("ResidentApp");
 
-            if (Router$1.isNavigating()) {
+            if (Router.isNavigating()) {
               appApi.setVisibility("ResidentApp", true);
             } else {
               appApi.setVisibility("ResidentApp", true);
@@ -40471,7 +40870,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (key.keyCode == keyMap.Guide_Shortcut) {
-        Router$1.navigate('epg');
+        Router.navigate('epg');
         return true;
       }
 
@@ -40516,10 +40915,10 @@ var APP_accelerator_home_ui = (function () {
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeMute) {
         if (Storage.get('applicationType') !== '') {
-          let activePage = Router$1.getActiveRoute();
+          let activePage = Router.getActiveRoute();
 
           if (activePage !== 'overlay/volume') {
-            Router$1.navigate('overlay/volume', {
+            Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
@@ -40528,25 +40927,25 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this._moveToFront();
 
-            let page = Router$1.getActivePage();
+            let page = Router.getActivePage();
             page.onVolumeMute();
           }
         } else {
-          if (Router$1.getActiveWidget()) {
-            let page = Router$1.getActiveWidget();
+          if (Router.getActiveWidget()) {
+            let page = Router.getActiveWidget();
             page.onVolumeMute();
           }
 
-          Router$1.focusWidget('Volume');
+          Router.focusWidget('Volume');
         }
 
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeUp) {
         if (Storage.get('applicationType') !== '') {
-          let activePage = Router$1.getActiveRoute();
+          let activePage = Router.getActiveRoute();
 
           if (activePage !== 'overlay/volume') {
-            Router$1.navigate('overlay/volume', {
+            Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
@@ -40555,25 +40954,25 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this._moveToFront();
 
-            let page = Router$1.getActivePage();
+            let page = Router.getActivePage();
             page.onVolumeKeyUp();
           }
         } else {
-          if (Router$1.getActiveWidget()) {
-            let page = Router$1.getActiveWidget();
+          if (Router.getActiveWidget()) {
+            let page = Router.getActiveWidget();
             page.onVolumeKeyUp();
           }
 
-          Router$1.focusWidget('Volume');
+          Router.focusWidget('Volume');
         }
 
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeDown) {
         if (Storage.get('applicationType') !== '') {
-          let activePage = Router$1.getActiveRoute();
+          let activePage = Router.getActiveRoute();
 
           if (activePage !== 'overlay/volume') {
-            Router$1.navigate('overlay/volume', {
+            Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
@@ -40582,16 +40981,16 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this._moveToFront();
 
-            let page = Router$1.getActivePage();
+            let page = Router.getActivePage();
             page.onVolumeKeyDown();
           }
         } else {
-          if (Router$1.getActiveWidget()) {
-            let page = Router$1.getActiveWidget();
+          if (Router.getActiveWidget()) {
+            let page = Router.getActiveWidget();
             page.onVolumeKeyDown();
           }
 
-          Router$1.focusWidget('Volume');
+          Router.focusWidget('Volume');
         }
 
         return true;
@@ -40650,10 +41049,10 @@ var APP_accelerator_home_ui = (function () {
           console.log("".concat(notification.callsign, " status = ").concat(notification.state));
           console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
 
-          if (Router$1.getActiveHash().startsWith("tv-overlay") || Router$1.getActiveHash().startsWith("overlay") || Router$1.getActiveHash().startsWith("settings")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
             console.log("navigating to homescreen");
-            Router$1.navigate("menu");
+            Router.navigate("menu");
           }
 
           if (notification.callsign === Storage.get("applicationType")) {
@@ -40664,7 +41063,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         if (notification && notification.callsign === 'org.rdk.HdmiCec_2' && notification.state === 'Activated') {
-          this.advanceScreen = Router$1.activePage();
+          this.advanceScreen = Router.activePage();
 
           if (typeof this.advanceScreen.performOTPAction === 'function') {
             console.log('otp action');
@@ -40683,7 +41082,7 @@ var APP_accelerator_home_ui = (function () {
               console.log("NETFLIX : notifyEventChange notification = ", JSON.stringify(notification));
 
               if (notification.EventName === "rendered") {
-                Router$1.navigate('menu');
+                Router.navigate('menu');
                 appApi.visibile('ResidentApp', false);
               }
 
@@ -40795,7 +41194,7 @@ var APP_accelerator_home_ui = (function () {
           console.log("netflix plugin status is :", result);
 
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
-            Router$1.navigate('image', {
+            Router.navigate('image', {
               src: Utils$1.asset('images/apps/App_Netflix_Splash.png')
             });
 
@@ -40999,8 +41398,8 @@ var APP_accelerator_home_ui = (function () {
               if (Storage.get('applicationType') !== "") {
                 appApi.exitApp(Storage.get('applicationType'), false, true); //setting to forceDestroy since standby is supposed to deactivate the app.
               } else {
-                if (!Router$1.isNavigating()) {
-                  Router$1.navigate('menu');
+                if (!Router.isNavigating()) {
+                  Router.navigate('menu');
                 }
               }
             }

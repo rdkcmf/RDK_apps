@@ -138,7 +138,7 @@ export default {
     {
       path: 'player',
       component: AAMPVideoPlayer,
-      widgets: ['Volume']
+      widgets: ['Volume',"SettingsOverlay"]
     },
     {
       path:'dtvplayer',

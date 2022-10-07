@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 import ThunderJS from 'ThunderJS';
-import { Registry, Settings, Storage } from '@lightningjs/sdk';
+import { Registry, Router, Settings, Storage } from '@lightningjs/sdk';
 import HDMIApi from './HDMIApi';;
 import NetflixIIDs from "../../static/data/NetflixIIDs.json";
 import HomeApi from './HomeApi';
@@ -427,10 +427,10 @@ export default class AppApi {
     console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
 
     let IIDqueryString = "";
-    let netflixIIDs = await this.getNetflixIIDs();
     if(callsign === "Netflix"){
+      let netflixIids = await this.getNetflixIIDs();
       if(launchLocation){
-        IIDqueryString = `source_type=${netflixIIDs[launchLocation].sourceType}&iid=${netflixIIDs[launchLocation].iid}`;
+        IIDqueryString = `source_type=${netflixIids[launchLocation].sourceType}&iid=${netflixIids[launchLocation].iid}`;
         if(url){
           IIDqueryString = "&"+IIDqueryString; //so that IIDqueryString can be appended with url later.
         }

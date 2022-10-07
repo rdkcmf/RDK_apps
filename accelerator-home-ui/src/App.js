@@ -31,6 +31,7 @@ import Volume from './tvOverlay/components/Volume';
 import DTVApi from './api/DTVApi';
 import TvOverlayScreen from './tvOverlay/TvOverlayScreen';
 import ChannelOverlay from './MediaPlayer/ChannelOverlay';
+import SettingsOverlay from './overlays/SettingsOverlay';
 
 const config = {
   host: '127.0.0.1',
@@ -89,6 +90,9 @@ export default class App extends Router.App {
         },
         ChannelOverlay: {
           type: ChannelOverlay
+        },
+        SettingsOverlay: {
+          type: SettingsOverlay
         }
       }
     }
@@ -200,6 +204,17 @@ export default class App extends Router.App {
 
     if (key.keyCode == Keymap.Settings_Shortcut) {
       console.log(`settings shortcut`)
+
+      if(Storage.get("applicationType") === "" && Router.getActiveHash() === "player"){ //launch settings overlay as widget for videoplayer
+        if(Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay"){ //currently focused on settings overlay, so hide it
+          Router.focusPage();
+        }
+        else { //launch the settings overlay
+          Router.focusWidget('SettingsOverlay'); 
+        }
+        return true;
+      }
+
       Router.navigate('settings')
       thunder.call("org.rdk.RDKShell", "getZOrder").then(res => {
         if (res.clients[0] == "residentapp") {
