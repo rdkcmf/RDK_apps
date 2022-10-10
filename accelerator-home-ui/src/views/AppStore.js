@@ -122,9 +122,12 @@ export default class AppStore extends Lightning.Component {
                 _handleEnter() {
                     let appApi = new AppApi();
                     let applicationType = this.tag('Apps').currentItem.data.applicationType;
-                    let uri = this.tag('Apps').currentItem.data.uri;
-                    console.log(uri, applicationType)
-                    appApi.launchApp(applicationType, uri, false, false, "App_launched_via_Netflix_Icon_On_The_Apps_Section").catch(err => {
+                    let params = {
+                        url: this.tag('Apps').currentItem.data.uri,
+                        launchLocation: "appsMenu"
+                    }
+                    console.log(params, applicationType)
+                    appApi.launchApp(applicationType, params).catch(err => {
                         console.log(applicationType + ' plugin error: ' + JSON.stringify(err))
                     })
                 }

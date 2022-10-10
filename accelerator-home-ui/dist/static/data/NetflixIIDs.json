@@ -1,22 +1,38 @@
 {
-    "iconInLaunchpad": {
-        "iid": "a1b2c3d4",
-        "sourceType": 3
+    "App_launched_via_Netflix_Button": {
+        "source_type": 3,
+        "iid": "0b2a9564"
     },
-    "netflixButton": {
-        "iid": "a11b22c33",
-        "sourceType": 3
+    "App_launched_at_suspended_mode_at_power_on": {
+        "source_type": 22,
+        "iid": "ee4255bf"
     },
-    "iconInAppRow": {
-        "iid": "8641153e",
-        "sourceType": 3
+    "App_launched_via_DIAL_request": {
+        "source_type": 12,
+        "iid": "99a5fb82"
     },
-    "dial": {
-        "iid": "32107139",
-        "sourceType": 12
+    "App_launched_from_EPG_Grid": {
+        "source_type": 3,
+        "iid": "g5127fac"
     },
-    "suspendAtPowerOn": {
-        "iid": "ee4255bf",
-        "sourceType": 22
+    "App_launched_via_channel_number": {
+        "source_type": 3,
+        "iid": "521ge753"
+    },
+    "App_launched_from_channel_info_bar": {
+        "source_type": 3,
+        "iid": "5h0x31l4"
+    },
+    "App_launched_via_channel_surf_option": {
+        "source_type": 3,
+        "iid": "5m938124"
+    },
+    "App_launched_via_Netflix_Icon_On_The_Apps_Section": {
+        "source_type": 3,
+        "iid": "513v474y"
+    },
+    "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page": {
+        "source_type": 3,
+        "iid": "k5r7313g"
     }
 }

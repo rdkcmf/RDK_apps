@@ -258,13 +258,19 @@ export default class App extends Router.App {
       return true
     }
     if (key.keyCode == Keymap.Youtube) {
-      appApi.launchApp("Cobalt").catch(err => {
+      let params = {
+        launchLocation:"dedicatedButton"
+      }
+      appApi.launchApp("Cobalt",params).catch(err => {
         console.error("Error in launching Youtube via dedicated key: " + JSON.stringify(err))
       });
       return true
     }
-    if (key.keyCode == Keymap.Netflix) { //5th argument is launchLocation
-      appApi.launchApp("Netflix", "", false, false, "App_launched_via_Netflix_Button").catch(err => {
+    if (key.keyCode == Keymap.Netflix) { //launchLocation mapping is in launchApp method in AppApi.js
+      let params = {
+        launchLocation:"dedicatedButton"
+      }
+      appApi.launchApp("Netflix",params).catch(err => {
         console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err))
       });
       return true
@@ -590,8 +596,11 @@ export default class App extends Router.App {
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
         let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
-
-        appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+        let params = {
+          url: url,
+          launchLocation: "dial"
+        }
+        appApi.launchApp(applicationName,params).then(res => {
           console.log("App launched on xcast event: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
@@ -621,9 +630,12 @@ export default class App extends Router.App {
       console.log('Received a resume request ' + JSON.stringify(notification));
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        let url = notification.parameters.url;
-        console.log('Resume ', applicationName, " with url: ", url);
-        appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+        let params = {
+          url: notification.parameters.url,
+          launchLocation: "dial"
+        }
+        console.log('Resume ', applicationName, " with params: ", params);
+        appApi.launchApp(applicationName,params).then(res => {
           console.log("launched ", applicationName, " on casting resume request: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);

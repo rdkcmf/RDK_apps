@@ -415,17 +415,40 @@ export default class AppApi {
   }
 
   /**
-   * Function to launch All types of apps.
-   * @param {String} callsign callsign of the particular app.
-   * @param {string} url optional for youtube, netflix, required for Lightning and WebApps
-   * @param {boolean} preventInternetCheck optional | true will prevent bydefault check for internet
-   * @param {boolean} preventCurrentExit optional |  true will prevent bydefault launch of previous app
-   * @param {string} launchLocation to pass launch location (IIDs) for Netflix currently | can be generalized for all apps.
+   * Function to launch All types of apps. Accepts 2 params.
+   * @param {String} callsign String required callsign of the particular app.
+   * @param {Object} args Object optional depending on following properties.
+   *  @property {string} url: optional for youtube & netflix | required for Lightning and WebApps
+   *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote",]
+   *  @property {boolean} preventInternetCheck: optional | true will prevent bydefault check for internet
+   *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
    */
 
-  async launchApp(callsign, url, preventInternetCheck, preventCurrentExit, launchLocation) {
+   async launchApp(callsign, args) {
+    console.log("launchApp called with: ",callsign,args)
+    let url,preventInternetCheck,preventCurrentExit,launchLocation;
+    if(args){
+      url = args.url;
+      preventInternetCheck = args.preventInternetCheck;
+      preventCurrentExit = args.preventCurrentExit;
+      launchLocation = args.launchLocation
+    }
 
-    console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
+    const launchLocationKeyMapping = { //currently supported launch locations by the UI and mapping to corresponding reason/keys for IID
+      "mainView": { "Cobalt": "menu", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" }, 
+      "dedicatedButton": { "Cobalt": "remote", "Netflix": "App_launched_via_Netflix_Button" },
+      "appsMenu": { "Cobalt": "menu", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Section" },
+      "epgScreen": { "Cobalt": "guide", "Netflix": "App_launched_from_EPG_Grid" },
+      "dial": { "Cobalt": "dial", "Netflix": "App_launched_via_DIAL_request" },
+      "gracenote": { "Cobalt": "gracenote", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" },
+    };
+    if(launchLocation && launchLocationKeyMapping[launchLocation]){
+      if(callsign === "Netflix" || callsign === "Cobalt"){
+        launchLocation = launchLocationKeyMapping[launchLocation][callsign]
+      }
+    }
+
+    console.log("launchApp getting executed with callsign: " + callsign +" | url: " + url +" | preventInternetCheck: " + preventInternetCheck + " | preventCurrentExit: " + preventCurrentExit + " | launchLocation: " + launchLocation);
 
     let IIDqueryString = "";
     if (callsign === "Netflix") {
@@ -505,23 +528,22 @@ export default class AppApi {
       }
     }
 
-    //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
-    // if(pluginState==="Deactivated" || pluginState==="Deactivation"){
-    //   console.log("activating the plugin that has the state: " + JSON.stringify(pluginState))
-    //   thunder.Controller.activate({ callsign: systemcCallsign })
-    // } 
 
-    let params = {};
-    if (url && (callsign === "LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
-      params = {
-        "callsign": callsign,
-        "type": callsign,
-        "uri": url
-      }
-    } else {
-      params = {
-        "callsign": callsign,
-        "type": callsign
+    let params = {
+      "callsign": callsign,
+      "type": callsign
+    };
+    if (url && (callsign==="LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
+      params.uri = url
+    } else if(callsign ==="Cobalt"){
+      url = url ? url : "https://www.youtube.com/tv?"
+      url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url
+      url = url + "&launch=" + launchLocation //push the changes after integration, everything working fine
+      if( (pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote" ){ //for youtube cold launch | currently only urls from dial can be passed via configuration
+        params.configuration = { //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
+          "url": url,
+          "launchtype":"launch=" + launchLocation
+        } 
       }
     }
 
@@ -542,6 +564,7 @@ export default class AppApi {
       })
     }
 
+    console.log("Calling launchApp with params: ",params);
     return new Promise((resolve, reject) => {
       thunder.call("org.rdk.RDKShell", "launch", params).then(res => {
         console.log(`${callsign} : Launch results in ${res}`)
@@ -576,7 +599,8 @@ export default class AppApi {
 
           }
 
-          if (callsign === "Cobalt" && url) { //passing url to cobalt once launched
+          if (callsign === "Cobalt" && url && !params.configuration) { //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
+            console.log("Calling deeplink for cobalt with url: " + url);
             thunder.call(callsign, 'deeplink', url)
           }
 

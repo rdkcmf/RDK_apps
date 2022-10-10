@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 07 Oct 2022 09:51:51 GMT
+ * Generated: Mon, 10 Oct 2022 14:27:25 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -416,7 +416,7 @@ var APP_accelerator_home_ui = (function () {
       proxyUrl = ensureUrlWithProtocol(config.proxyUrl);
     }
   };
-  var Utils$1 = {
+  var Utils = {
     asset(relPath) {
       return basePath + relPath;
     },
@@ -2606,7 +2606,7 @@ var APP_accelerator_home_ui = (function () {
           dictionary = translationsObj;
           resolve();
         } else if (typeof translationsObj === 'string') {
-          const url = Utils$1.asset(translationsObj);
+          const url = Utils.asset(translationsObj);
           fetch(url).then(response => response.json()).then(json => {
             // save the translations for this language (to prevent loading twice)
             translations[language$1] = json;
@@ -3160,7 +3160,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       loadLanguage(config) {
-        let file = Utils$1.asset('translations.json');
+        let file = Utils.asset('translations.json');
         let language = config;
 
         if (typeof language === 'object') {
@@ -3172,7 +3172,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       loadColors(config) {
-        let file = Utils$1.asset('colors.json');
+        let file = Utils.asset('colors.json');
 
         if (config && (typeof config === 'string' || typeof config === 'object')) {
           file = config;
@@ -7456,32 +7456,52 @@ var APP_accelerator_home_ui = (function () {
 
   }
 
-  var iconInLaunchpad = {
-  	iid: "a1b2c3d4",
-  	sourceType: 3
+  var App_launched_via_Netflix_Button = {
+  	source_type: 3,
+  	iid: "0b2a9564"
   };
-  var netflixButton = {
-  	iid: "a11b22c33",
-  	sourceType: 3
+  var App_launched_at_suspended_mode_at_power_on = {
+  	source_type: 22,
+  	iid: "ee4255bf"
   };
-  var iconInAppRow = {
-  	iid: "8641153e",
-  	sourceType: 3
+  var App_launched_via_DIAL_request = {
+  	source_type: 12,
+  	iid: "99a5fb82"
   };
-  var dial = {
-  	iid: "32107139",
-  	sourceType: 12
+  var App_launched_from_EPG_Grid = {
+  	source_type: 3,
+  	iid: "g5127fac"
   };
-  var suspendAtPowerOn = {
-  	iid: "ee4255bf",
-  	sourceType: 22
+  var App_launched_via_channel_number = {
+  	source_type: 3,
+  	iid: "521ge753"
+  };
+  var App_launched_from_channel_info_bar = {
+  	source_type: 3,
+  	iid: "5h0x31l4"
+  };
+  var App_launched_via_channel_surf_option = {
+  	source_type: 3,
+  	iid: "5m938124"
+  };
+  var App_launched_via_Netflix_Icon_On_The_Apps_Section = {
+  	source_type: 3,
+  	iid: "513v474y"
+  };
+  var App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page = {
+  	source_type: 3,
+  	iid: "k5r7313g"
   };
   var NetflixIIDs = {
-  	iconInLaunchpad: iconInLaunchpad,
-  	netflixButton: netflixButton,
-  	iconInAppRow: iconInAppRow,
-  	dial: dial,
-  	suspendAtPowerOn: suspendAtPowerOn
+  	App_launched_via_Netflix_Button: App_launched_via_Netflix_Button,
+  	App_launched_at_suspended_mode_at_power_on: App_launched_at_suspended_mode_at_power_on,
+  	App_launched_via_DIAL_request: App_launched_via_DIAL_request,
+  	App_launched_from_EPG_Grid: App_launched_from_EPG_Grid,
+  	App_launched_via_channel_number: App_launched_via_channel_number,
+  	App_launched_from_channel_info_bar: App_launched_from_channel_info_bar,
+  	App_launched_via_channel_surf_option: App_launched_via_channel_surf_option,
+  	App_launched_via_Netflix_Icon_On_The_Apps_Section: App_launched_via_Netflix_Icon_On_The_Apps_Section,
+  	App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page: App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page
   };
 
   /**
@@ -7864,24 +7884,69 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     /**
-     * Function to launch All types of apps.
-     * @param {String} callsign callsign of the particular app.
-     * @param {string} url optional for youtube, netflix, required for Lightning and WebApps
-     * @param {boolean} preventInternetCheck optional | true will prevent bydefault check for internet
-     * @param {boolean} preventCurrentExit optional |  true will prevent bydefault launch of previous app
-     * @param {string} launchLocation to pass launch location (IIDs) for Netflix currently | can be generalized for all apps.
+     * Function to launch All types of apps. Accepts 2 params.
+     * @param {String} callsign String required callsign of the particular app.
+     * @param {Object} args Object optional depending on following properties.
+     *  @property {string} url: optional for youtube & netflix | required for Lightning and WebApps
+     *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote",]
+     *  @property {boolean} preventInternetCheck: optional | true will prevent bydefault check for internet
+     *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
      */
 
 
-    async launchApp(callsign, url, preventInternetCheck, preventCurrentExit, launchLocation) {
-      console.log("launchApp called with params: ", callsign, url, preventInternetCheck, preventCurrentExit, launchLocation);
+    async launchApp(callsign, args) {
+      console.log("launchApp called with: ", callsign, args);
+      let url, preventInternetCheck, preventCurrentExit, launchLocation;
+
+      if (args) {
+        url = args.url;
+        preventInternetCheck = args.preventInternetCheck;
+        preventCurrentExit = args.preventCurrentExit;
+        launchLocation = args.launchLocation;
+      }
+
+      const launchLocationKeyMapping = {
+        //currently supported launch locations by the UI and mapping to corresponding reason/keys for IID
+        "mainView": {
+          "Cobalt": "menu",
+          "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
+        },
+        "dedicatedButton": {
+          "Cobalt": "remote",
+          "Netflix": "App_launched_via_Netflix_Button"
+        },
+        "appsMenu": {
+          "Cobalt": "menu",
+          "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Section"
+        },
+        "epgScreen": {
+          "Cobalt": "guide",
+          "Netflix": "App_launched_from_EPG_Grid"
+        },
+        "dial": {
+          "Cobalt": "dial",
+          "Netflix": "App_launched_via_DIAL_request"
+        },
+        "gracenote": {
+          "Cobalt": "gracenote",
+          "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
+        }
+      };
+
+      if (launchLocation && launchLocationKeyMapping[launchLocation]) {
+        if (callsign === "Netflix" || callsign === "Cobalt") {
+          launchLocation = launchLocationKeyMapping[launchLocation][callsign];
+        }
+      }
+
+      console.log("launchApp getting executed with callsign: " + callsign + " | url: " + url + " | preventInternetCheck: " + preventInternetCheck + " | preventCurrentExit: " + preventCurrentExit + " | launchLocation: " + launchLocation);
       let IIDqueryString = "";
 
       if (callsign === "Netflix") {
         let netflixIids = await this.getNetflixIIDs();
 
         if (launchLocation) {
-          IIDqueryString = "source_type=".concat(netflixIids[launchLocation].sourceType, "&iid=").concat(netflixIids[launchLocation].iid);
+          IIDqueryString = "source_type=".concat(netflixIids[launchLocation].source_type, "&iid=").concat(netflixIids[launchLocation].iid);
 
           if (url) {
             IIDqueryString = "&" + IIDqueryString; //so that IIDqueryString can be appended with url later.
@@ -7917,11 +7982,12 @@ var APP_accelerator_home_ui = (function () {
         return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
       }
 
-      console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+      console.log("Netflix : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
 
       if (callsign === "Netflix") {
         if (pluginState === "deactivated" || pluginState === "deactivation") {
           //netflix cold launch scenario
+          console.log("Netflix : ColdLaunch");
           Router.navigate('image', {
             src: Utils.asset('images/apps/App_Netflix_Splash.png')
           }); //to show the splash screen for netflix
@@ -7943,6 +8009,8 @@ var APP_accelerator_home_ui = (function () {
           }
         } else {
           //netflix hot launch scenario
+          console.log("Netflix : HotLaunch");
+
           if (url) {
             try {
               console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ", url, IIDqueryString);
@@ -7963,27 +8031,29 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-      } //activating the plugin might not be necessary as rdkShell.launch will activate the plugin by default
-      // if(pluginState==="Deactivated" || pluginState==="Deactivation"){
-      //   console.log("activating the plugin that has the state: " + JSON.stringify(pluginState))
-      //   thunder.Controller.activate({ callsign: systemcCallsign })
-      // } 
+      }
 
-
-      let params = {};
+      let params = {
+        "callsign": callsign,
+        "type": callsign
+      };
 
       if (url && (callsign === "LightningApp" || callsign === "HtmlApp")) {
         //for lightning/htmlapp url is passed via rdkshell.launch method
-        params = {
-          "callsign": callsign,
-          "type": callsign,
-          "uri": url
-        };
-      } else {
-        params = {
-          "callsign": callsign,
-          "type": callsign
-        };
+        params.uri = url;
+      } else if (callsign === "Cobalt") {
+        url = url ? url : "https://www.youtube.com/tv?";
+        url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url;
+        url = url + "&launch=" + launchLocation; //push the changes after integration, everything working fine
+
+        if ((pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote") {
+          //for youtube cold launch | currently only urls from dial can be passed via configuration
+          params.configuration = {
+            //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
+            "url": url,
+            "launchtype": "launch=" + launchLocation
+          };
+        }
       }
 
       if (!preventCurrentExit && currentApp !== "") {
@@ -8004,8 +8074,11 @@ var APP_accelerator_home_ui = (function () {
         });
       }
 
+      console.log("Calling launchApp with params: ", params);
       return new Promise((resolve, reject) => {
         thunder$9.call("org.rdk.RDKShell", "launch", params).then(res => {
+          console.log("".concat(callsign, " : Launch results in ").concat(res));
+
           if (res.success) {
             thunder$9.call("org.rdk.RDKShell", "moveToFront", {
               "client": callsign,
@@ -8034,8 +8107,9 @@ var APP_accelerator_home_ui = (function () {
               }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
             }
 
-            if (callsign === "Cobalt" && url) {
-              //passing url to cobalt once launched
+            if (callsign === "Cobalt" && url && !params.configuration) {
+              //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
+              console.log("Calling deeplink for cobalt with url: " + url);
               thunder$9.call(callsign, 'deeplink', url);
             }
 
@@ -8641,6 +8715,7 @@ var APP_accelerator_home_ui = (function () {
         thunder$9.call(plugin, method).then(res => {
           res.querystring = config_data;
           thunder$9.call(plugin, method, res).then(resp => {
+            console.log("".concat(appName, " : updating configuration with object ").concat(res, " results in ").concat(resp));
             resolve(true);
           }).catch(err => {
             reject(err); //resolve(true)
@@ -10365,7 +10440,7 @@ var APP_accelerator_home_ui = (function () {
 
   class SettingsItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -10919,7 +10994,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Bluetooth: {
@@ -10943,7 +11018,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Video: {
@@ -10967,7 +11042,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Audio: {
@@ -10991,7 +11066,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OtherSettings: {
@@ -11015,7 +11090,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           DTVSettings: {
@@ -11040,7 +11115,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -11283,7 +11358,7 @@ var APP_accelerator_home_ui = (function () {
           y: this.y,
           w: this.w,
           h: this.h,
-          src: Utils$1.asset(this.data.url),
+          src: Utils.asset(this.data.url),
           scale: this.unfocus
         });
       } else {
@@ -11960,7 +12035,7 @@ var APP_accelerator_home_ui = (function () {
         y: this.y,
         w: this.w,
         h: this.h,
-        src: Utils$1.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
+        src: Utils.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
         scale: this.unfocus
       });
       /* Used static data for develpment purpose ,
@@ -16460,7 +16535,11 @@ var APP_accelerator_home_ui = (function () {
               }
             });
           } else {
-            this.appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
+            let params = {
+              url: uri,
+              launchLocation: "mainView"
+            };
+            this.appApi.launchApp(applicationType, params).catch(err => {
               console.log("ApplaunchError: ", err);
             });
           }
@@ -16517,8 +16596,11 @@ var APP_accelerator_home_ui = (function () {
 
         async _handleEnter() {
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
-          let uri = this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri;
-          this.appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
+          let params = {
+            url: this.tag('MetroApps').items[this.tag('MetroApps').index].data.uri,
+            launchLocation: "mainView"
+          };
+          this.appApi.launchApp(applicationType, params).catch(err => {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
@@ -16640,8 +16722,11 @@ var APP_accelerator_home_ui = (function () {
 
         async _handleEnter() {
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
-          let uri = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri;
-          this.appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
+          let params = {
+            url: this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.uri,
+            launchLocation: "mainView"
+          };
+          this.appApi.launchApp(applicationType, params).catch(err => {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
@@ -16691,8 +16776,11 @@ var APP_accelerator_home_ui = (function () {
 
         async _handleEnter() {
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
-          let uri = this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri;
-          this.appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
+          let params = {
+            url: this.tag('UsbApps').items[this.tag('UsbApps').index].data.uri,
+            launchLocation: "mainView"
+          };
+          this.appApi.launchApp(applicationType, params).catch(err => {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
@@ -17674,7 +17762,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Searching: {
@@ -17699,7 +17787,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.gif')
             }
           },
           Networks: {
@@ -17809,7 +17897,7 @@ var APP_accelerator_home_ui = (function () {
       if (this._bluetooth) {
         this.tag('Networks').visible = true;
         this.tag('AddADevice').visible = true;
-        this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.renderDeviceList(); //this._bt.startScan()
       }
     }
@@ -18296,7 +18384,7 @@ var APP_accelerator_home_ui = (function () {
             this._bluetooth = false;
             this.tag('Networks').visible = false;
             this.tag('AddADevice').visible = false;
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
           }
         }).catch(() => {
           console.log('Cannot turn off Bluetooth');
@@ -18307,7 +18395,7 @@ var APP_accelerator_home_ui = (function () {
             this._bluetooth = true;
             this.tag('Networks').visible = true;
             this.tag('AddADevice').visible = true;
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.renderDeviceList();
 
             this._bt.startScan();
@@ -21438,7 +21526,7 @@ var APP_accelerator_home_ui = (function () {
             w: 45,
             y: 15,
             x: 1220,
-            src: Utils$1.asset('images/settings/Arrow.png')
+            src: Utils.asset('images/settings/Arrow.png')
           },
           ArrowBackward: {
             h: 30,
@@ -21446,7 +21534,7 @@ var APP_accelerator_home_ui = (function () {
             x: 10,
             scaleX: -1,
             y: 15,
-            src: Utils$1.asset('images/settings/Arrow.png')
+            src: Utils.asset('images/settings/Arrow.png')
           }
         },
         TypeText: {
@@ -21796,7 +21884,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           NetworkInterface: {
@@ -21821,7 +21909,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           TestInternetAccess: {
@@ -21845,7 +21933,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.gif'),
               visible: false
             }
           },
@@ -21872,7 +21960,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -22398,7 +22486,7 @@ var APP_accelerator_home_ui = (function () {
   const wifi$2 = new Wifi();
   class NetworkInterfaceScreen extends lng$1.Component {
     _construct() {
-      this.LoadingIcon = Utils$1.asset('images/settings/Loading.gif');
+      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
     }
 
     static _template() {
@@ -22430,7 +22518,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Ethernet: {
@@ -22454,7 +22542,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.gif'),
               visible: false
             }
           }
@@ -22719,18 +22807,18 @@ var APP_accelerator_home_ui = (function () {
   class PasswordSwitch extends lng$1.Component {
     static _template() {
       return {
-        src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+        src: Utils.asset('images/settings/ToggleOffWhite.png')
       };
     }
 
     _handleEnter() {
       if (this.isOn) {
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+          src: Utils.asset("images/settings/ToggleOffWhite.png")
         });
       } else {
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOnOrange.png")
+          src: Utils.asset("images/settings/ToggleOnOrange.png")
         });
       }
 
@@ -22746,7 +22834,7 @@ var APP_accelerator_home_ui = (function () {
       if (this.isOn) {
         this.isOn = false;
         this.patch({
-          src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+          src: Utils.asset("images/settings/ToggleOffWhite.png")
         });
         this.fireAncestors('$handleEnter', this.isOn);
       }
@@ -23134,12 +23222,12 @@ var APP_accelerator_home_ui = (function () {
    **/
   class WiFiItem extends lng$1.Component {
     _construct() {
-      this.Lock = Utils$1.asset('/images/settings/Lock.png');
-      this.WiFi1 = Utils$1.asset('/images/settings/WiFi1.png');
-      this.WiFi2 = Utils$1.asset('/images/settings/WiFi2.png');
-      this.WiFi3 = Utils$1.asset('/images/settings/WiFi3.png');
-      this.WiFi4 = Utils$1.asset('/images/settings/WiFi4.png');
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Lock = Utils.asset('/images/settings/Lock.png');
+      this.WiFi1 = Utils.asset('/images/settings/WiFi1.png');
+      this.WiFi2 = Utils.asset('/images/settings/WiFi2.png');
+      this.WiFi3 = Utils.asset('/images/settings/WiFi3.png');
+      this.WiFi4 = Utils.asset('/images/settings/WiFi4.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     _init() {
@@ -23327,7 +23415,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.gif')
             },
             Button: {
               h: 45,
@@ -23336,7 +23424,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Networks: {
@@ -23484,7 +23572,7 @@ var APP_accelerator_home_ui = (function () {
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
-              this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
 
@@ -23601,7 +23689,7 @@ var APP_accelerator_home_ui = (function () {
       return [class Switch extends this {
         $enter() {
           if (this.wifiStatus === true) {
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.tag('Switch.Button').scaleX = 1;
           }
 
@@ -23627,7 +23715,7 @@ var APP_accelerator_home_ui = (function () {
           if (this.wifiStatus === true) {
             this.tag('Switch.Loader').visible = false;
             this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
         }
@@ -23655,7 +23743,7 @@ var APP_accelerator_home_ui = (function () {
           if (this.wifiStatus === true) {
             this.tag('Switch.Loader').visible = false;
             this.wifiLoading.stop();
-            this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             this.tag('Switch.Button').scaleX = -1;
           }
         }
@@ -23762,7 +23850,7 @@ var APP_accelerator_home_ui = (function () {
                 this.tag('JoinAnotherNetwork').visible = false;
                 this.tag('Switch.Loader').visible = false;
                 this.wifiLoading.stop();
-                this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+                this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               }
             });
           }
@@ -23774,7 +23862,7 @@ var APP_accelerator_home_ui = (function () {
         this.tag('JoinAnotherNetwork').visible = true;
         this.wifiLoading.play();
         this.tag('Switch.Loader').visible = true;
-        this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
 
         this._wifi.discoverSSIDs();
       }
@@ -23962,15 +24050,15 @@ var APP_accelerator_home_ui = (function () {
           x: 820,
           y: 125,
           children: [{
-            src: Utils$1.asset('images/Media Player/Icon_Back_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Back_White_16k.png'),
             x: 17,
             y: 17
           }, {
-            src: Utils$1.asset('images/Media Player/Icon_Pause_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Pause_White_16k.png'),
             x: 17,
             y: 17
           }, {
-            src: Utils$1.asset('images/Media Player/Icon_Next_White_16k.png'),
+            src: Utils.asset('images/Media Player/Icon_Next_White_16k.png'),
             x: 17,
             y: 17
           }].map((item, idx) => ({
@@ -24103,7 +24191,7 @@ var APP_accelerator_home_ui = (function () {
     static _states() {
       return [class PlayPause extends this {
         $enter() {
-          this.focus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_Orange_16k.png');
+          this.focus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils.asset('images/Media Player/Icon_Pause_Orange_16k.png');
           this.timer();
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
@@ -24111,7 +24199,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         $exit() {
-          this.unfocus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_White_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_White_16k.png');
+          this.unfocus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_White_16k.png') : Utils.asset('images/Media Player/Icon_Pause_White_16k.png');
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.unfocus, 50, 50)
           });
@@ -24127,7 +24215,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           this.toggle = !this.toggle;
-          this.focus = this.toggle ? Utils$1.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils$1.asset('images/Media Player/Icon_Pause_Orange_16k.png');
+          this.focus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils.asset('images/Media Player/Icon_Pause_Orange_16k.png');
           this.timer();
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
@@ -24154,13 +24242,13 @@ var APP_accelerator_home_ui = (function () {
         $enter() {
           this.timer();
           this.tag('Buttons').children[2].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Next_Orange_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_Orange_16k.png'), 50, 50)
           });
         }
 
         $exit() {
           this.tag('Buttons').children[2].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Next_White_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_White_16k.png'), 50, 50)
           });
         }
 
@@ -24184,13 +24272,13 @@ var APP_accelerator_home_ui = (function () {
         $enter() {
           this.timer();
           this.tag('Buttons').children[0].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Back_Orange_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_Orange_16k.png'), 50, 50)
           });
         }
 
         $exit() {
           this.tag('Buttons').children[0].tag('ControlIcon').patch({
-            texture: lng$1.Tools.getSvgTexture(Utils$1.asset('images/Media Player/Icon_Back_White_16k.png'), 50, 50)
+            texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_White_16k.png'), 50, 50)
           });
         }
 
@@ -25176,7 +25264,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           RemoteControl: {
@@ -25202,7 +25290,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           ScreenSaver: {
@@ -25228,7 +25316,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           EnergySaver: {
@@ -25252,7 +25340,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Language: {
@@ -25277,7 +25365,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Privacy: {
@@ -25302,7 +25390,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           AdvancedSettings: {
@@ -25326,7 +25414,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -25681,7 +25769,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class EnergySavingsItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -25841,7 +25929,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: true
           }
         }
@@ -26001,7 +26089,7 @@ var APP_accelerator_home_ui = (function () {
           mountY: 0.5,
           w: 32.5,
           h: 32.5,
-          src: Utils$1.asset('images/settings/Tick.png'),
+          src: Utils.asset('images/settings/Tick.png'),
           color: 0xffffffff,
           visible: localStorage.getItem('Language') === item ? true : item === 'English' && localStorage.getItem('Language') === null ? true : false
         },
@@ -26247,7 +26335,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           UsbMediaDevices: {
@@ -26271,7 +26359,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           AudioInput: {
@@ -26295,7 +26383,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           ClearCookies: {
@@ -26334,7 +26422,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -26362,24 +26450,24 @@ var APP_accelerator_home_ui = (function () {
 
     checkUSBDeviceStatus() {
       if (!Storage.get('UsbMedia')) {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         Storage.set('UsbMedia', 'ON');
       } else if (Storage.get('UsbMedia') === 'ON') {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
       } else if (Storage.get('UsbMedia') === 'OFF') {
-        this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       }
     }
 
     checkLocalDeviceStatus() {
       xcastApi.getEnabled().then(res => {
         if (res.enabled) {
-          this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         } else {
-          this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
         }
       }).catch(err => {
-        this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
 
@@ -26388,19 +26476,19 @@ var APP_accelerator_home_ui = (function () {
         if (!res.enabled) {
           xcastApi.activate().then(res => {
             if (res) {
-              this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             }
           });
         } else {
           xcastApi.deactivate().then(res => {
             if (res) {
-              this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             }
           });
         }
       }).catch(err => {
         console.log('Service not active');
-        this.tag('LocalDeviceDiscovery.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
 
@@ -26450,7 +26538,7 @@ var APP_accelerator_home_ui = (function () {
             this.fireAncestors('$deRegisterUsbMount');
             this.USBApi.deactivate().then(res => {
               Storage.set('UsbMedia', 'OFF');
-              this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
               this.widgets.menu.refreshMainView();
             }).catch(err => {
               console.error("error while disabling the usb plugin = ".concat(err));
@@ -26459,7 +26547,7 @@ var APP_accelerator_home_ui = (function () {
           } else if (_UsbMedia === 'OFF') {
             this.USBApi.activate().then(res => {
               Storage.set('UsbMedia', 'ON');
-              this.tag('UsbMediaDevices.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
               this.fireAncestors('$registerUsbMount');
               this.widgets.menu.refreshMainView();
             });
@@ -26779,7 +26867,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           CECControl: {
@@ -26804,7 +26892,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOffWhite.png')
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
             }
           },
           Bug: {
@@ -26830,7 +26918,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Contact: {
@@ -26856,7 +26944,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Device: {
@@ -26880,7 +26968,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -26890,7 +26978,7 @@ var APP_accelerator_home_ui = (function () {
     _init() {
       this.cecApi = new CECApi();
       this.cecApi.activate().then(() => {
-        this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+        this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.performOTPAction();
       });
 
@@ -26923,11 +27011,11 @@ var APP_accelerator_home_ui = (function () {
 
         if (res.enabled) {
           this.cecApi.deactivate().then(() => {
-            this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
           });
         } else {
           this.cecApi.activate().then(() => {
-            this.tag('CECControl.Button').src = Utils$1.asset('images/settings/ToggleOnOrange.png');
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
           });
         }
       });
@@ -27107,7 +27195,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           TimeZone: {
@@ -27131,7 +27219,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Firmware: {
@@ -27155,7 +27243,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Reboot: {
@@ -27196,7 +27284,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -28043,7 +28131,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           }
         }
@@ -28212,8 +28300,8 @@ var APP_accelerator_home_ui = (function () {
 
   class TimeZoneItem extends lng$1.Component {
     _construct() {
-      this.Arrow = Utils$1.asset('/images/settings/Arrow.png');
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Arrow = Utils.asset('/images/settings/Arrow.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -28368,7 +28456,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.gif")
           }
         }
       };
@@ -28484,7 +28572,7 @@ var APP_accelerator_home_ui = (function () {
 
   class TimeItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -28792,7 +28880,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OutputMode: {
@@ -28816,7 +28904,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           DynamicRange: {
@@ -28841,7 +28929,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           AudioLanguage: {
@@ -28866,7 +28954,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           NavigationFeedback: {
@@ -28891,7 +28979,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/ToggleOnWhite.png')
+              src: Utils.asset('images/settings/ToggleOnWhite.png')
             }
           },
           Bluetooth: {
@@ -28916,7 +29004,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -29110,7 +29198,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class VideoAndAudioItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset('/images/settings/Tick.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
     }
 
     static _template() {
@@ -29274,7 +29362,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: true
           }
         }
@@ -29429,7 +29517,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils$1.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.gif")
           }
         }
       };
@@ -29591,7 +29679,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           HDR: {
@@ -29632,7 +29720,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           OutputFormat: {
@@ -29658,7 +29746,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           Chroma: {
@@ -29684,7 +29772,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           HDCP: {
@@ -30083,7 +30171,7 @@ var APP_accelerator_home_ui = (function () {
           y: this.y,
           w: this.w,
           h: this.h,
-          src: Utils$1.asset(this.data.url),
+          src: Utils.asset(this.data.url),
           scale: this.unfocus
         });
       } else {
@@ -30994,7 +31082,7 @@ var APP_accelerator_home_ui = (function () {
           mount: 0.5,
           x: 960,
           y: 540,
-          src: Utils$1.asset('/images/splash/RDKLogo.png')
+          src: Utils.asset('/images/splash/RDKLogo.png')
         },
         Sub: {
           mountY: 1,
@@ -31003,7 +31091,7 @@ var APP_accelerator_home_ui = (function () {
           y: 1000,
           w: 216,
           h: 121,
-          src: Utils$1.asset('/images/splash/gracenote.png')
+          src: Utils.asset('/images/splash/gracenote.png')
         }
       };
     }
@@ -31147,7 +31235,7 @@ var APP_accelerator_home_ui = (function () {
             w: 110,
             h: 110,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           },
           Buttons: {
@@ -31845,7 +31933,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             visible: false
           }
         }
@@ -31968,7 +32056,7 @@ var APP_accelerator_home_ui = (function () {
             mountX: 1,
             y: 200,
             mountY: 0.5,
-            src: Utils$1.asset('images/settings/Loading.gif')
+            src: Utils.asset('images/settings/Loading.gif')
           },
           Networks: {
             x: -800,
@@ -32106,7 +32194,7 @@ var APP_accelerator_home_ui = (function () {
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
-              this.tag('Switch.Button').src = Utils$1.asset('images/settings/ToggleOffWhite.png');
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
 
               this._setState('Switch');
 
@@ -32471,7 +32559,7 @@ var APP_accelerator_home_ui = (function () {
           w: 300,
           h: 150,
           zIndex: 3,
-          src: Utils$1.asset(this._item.url)
+          src: Utils.asset(this._item.url)
         }
       });
     }
@@ -32524,7 +32612,7 @@ var APP_accelerator_home_ui = (function () {
       return {
         w: 1920,
         h: 1080,
-        src: Utils$1.asset('images/splash/Splash-Background.jpg'),
+        src: Utils.asset('images/splash/Splash-Background.jpg'),
         UI: {
           x: 200,
           y: 465,
@@ -33453,7 +33541,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (data.url.startsWith('/images')) {
         this.tag('Image').patch({
-          src: Utils$1.asset(data.url)
+          src: Utils.asset(data.url)
         });
       } else {
         this.tag('Image').patch({
@@ -33671,9 +33759,12 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           let appApi = new AppApi();
           let applicationType = this.tag('Apps').currentItem.data.applicationType;
-          let uri = this.tag('Apps').currentItem.data.uri;
-          console.log(uri, applicationType);
-          appApi.launchApp(applicationType, uri, false, false, "iconInAppRow").catch(err => {
+          let params = {
+            url: this.tag('Apps').currentItem.data.uri,
+            launchLocation: "appsMenu"
+          };
+          console.log(params, applicationType);
+          appApi.launchApp(applicationType, params).catch(err => {
             console.log(applicationType + ' plugin error: ' + JSON.stringify(err));
           });
         }
@@ -33753,7 +33844,7 @@ var APP_accelerator_home_ui = (function () {
                 scaleX: -1,
                 y: 38,
                 mountY: 0.5,
-                src: Utils$1.asset('images/settings/Arrow.png')
+                src: Utils.asset('images/settings/Arrow.png')
               },
               ArrowForward: {
                 h: 30,
@@ -33762,7 +33853,7 @@ var APP_accelerator_home_ui = (function () {
                 x: 484,
                 mountY: 0.5,
                 mountX: 1,
-                src: Utils$1.asset('images/settings/Arrow.png')
+                src: Utils.asset('images/settings/Arrow.png')
               }
             }
           },
@@ -33847,7 +33938,11 @@ var APP_accelerator_home_ui = (function () {
       if (this._item.host["_@attribute"].toLowerCase() === "youtube") {
         let appApi = new AppApi();
         console.log(this._item.url);
-        appApi.launchApp("Cobalt", this._item.url).catch(err => {});
+        let params = {
+          url: this._item.url,
+          launchLocation: "gracenote"
+        };
+        appApi.launchApp("Cobalt", params).catch(err => {});
       }
     }
 
@@ -33993,7 +34088,7 @@ var APP_accelerator_home_ui = (function () {
             y: 510,
             w: 300,
             h: 168,
-            src: Utils$1.asset("images/powered_by_gracenote.png")
+            src: Utils.asset("images/powered_by_gracenote.png")
           }
         }
       };
@@ -34003,7 +34098,7 @@ var APP_accelerator_home_ui = (function () {
       this.rootId = args.gracenoteItem.program.tmsid;
       this.name = args.gracenoteItem.program.title;
       let imgUrl = "http://developer.tmsimg.com/" + args.gracenoteItem.program.preferredImage.uri.replace("w=1280&", "w=878&").replace("&h=720", "&h=493") + "&api_key=" + args.key;
-      this.tag("Image").src = Utils$1.proxyUrl(imgUrl);
+      this.tag("Image").src = Utils.proxyUrl(imgUrl);
       this.tag("Cast.Title").text.text = "".concat(args.gracenoteItem.program.topCast[0], " \t ").concat(args.gracenoteItem.program.topCast[1], " \t ").concat(args.gracenoteItem.program.topCast[2]);
       this.tag("Description.Title").text.text = args.gracenoteItem.program.longDescription;
       this.tag("Time.Title").text.text = "".concat(args.gracenoteItem.duration, " Minutes");
@@ -34146,7 +34241,7 @@ var APP_accelerator_home_ui = (function () {
      * Function to render Tick mark Icon elements in the settings.
      */
     _construct() {
-      this.Tick = Utils$1.asset("/images/settings/Tick.png");
+      this.Tick = Utils.asset("/images/settings/Tick.png");
     }
 
     static _template() {
@@ -34804,7 +34899,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               mountY: 0.5,
               color: 0xffffffff,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             },
             LeftArrow: {
               h: 50,
@@ -34814,7 +34909,7 @@ var APP_accelerator_home_ui = (function () {
               mountY: 0.5,
               scaleX: -1,
               color: 0xffffffff,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             }
           },
           Content: {
@@ -35048,7 +35143,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Frequency: {
@@ -35072,7 +35167,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Polarity: {
@@ -35096,7 +35191,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               SymbolRate: {
@@ -35120,7 +35215,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               FEC: {
@@ -35144,7 +35239,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               DVBS2: {
@@ -35168,7 +35263,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
                 }
               },
               Modulation: {
@@ -35192,7 +35287,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               SearchType: {
@@ -35216,7 +35311,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/Arrow.png")
+                  src: Utils.asset("images/settings/Arrow.png")
                 }
               },
               Retune: {
@@ -35240,7 +35335,7 @@ var APP_accelerator_home_ui = (function () {
                   mountX: 1,
                   y: 45,
                   mountY: 0.5,
-                  src: Utils$1.asset("images/settings/ToggleOffWhite.png")
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
                 }
               }
             }
@@ -35306,7 +35401,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 25,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/Loading.gif")
+              src: Utils.asset("images/settings/Loading.gif")
             }
           }
         },
@@ -35562,13 +35657,13 @@ var APP_accelerator_home_ui = (function () {
       this.selectedFEC = "";
       this.tag("FEC.Title").text.text = Language.translate("FEC");
       this.selectedDVBS2 = false;
-      this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+      this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       this.selectedModulation = "";
       this.tag("Modulation.Title").text.text = Language.translate("Modulation");
       this.selectedSearchType = "";
       this.tag("SearchType.Title").text.text = Language.translate("Search Mode");
       this.selectedRetune = false;
-      this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+      this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       this.tag("ErrorNotification").visible = false;
     }
 
@@ -35878,10 +35973,10 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           if (!this.selectedDVBS2) {
             this.selectedDVBS2 = true;
-            this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
           } else {
             this.selectedDVBS2 = false;
-            this.tag("DVBS2.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
 
@@ -36007,10 +36102,10 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           if (!this.selectedRetune) {
             this.selectedRetune = true;
-            this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
           } else {
             this.selectedRetune = false;
-            this.tag("Retune.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
 
@@ -36129,7 +36224,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           CScan: {
@@ -36154,7 +36249,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           },
           SScan: {
@@ -36178,7 +36273,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset('images/settings/Arrow.png')
+              src: Utils.asset('images/settings/Arrow.png')
             }
           }
         }
@@ -36317,7 +36412,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/ToggleOnOrange.png")
+              src: Utils.asset("images/settings/ToggleOnOrange.png")
             }
           },
           Scan: {
@@ -36341,7 +36436,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils$1.asset("images/settings/Arrow.png")
+              src: Utils.asset("images/settings/Arrow.png")
             }
           }
         }
@@ -36360,9 +36455,9 @@ var APP_accelerator_home_ui = (function () {
       this._setState(this.state);
 
       if (active) {
-        this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
-        this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       }
     }
 
@@ -36389,13 +36484,13 @@ var APP_accelerator_home_ui = (function () {
             this.dtvApi.deactivate().then(res => {
               console.log(res);
               active = false;
-              this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOffWhite.png");
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
             });
           } else {
             this.dtvApi.activate().then(res => {
               console.log(res);
               active = true;
-              this.tag("Activate.Button").src = Utils$1.asset("images/settings/ToggleOnOrange.png");
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
             });
           }
         }
@@ -36864,7 +36959,7 @@ var APP_accelerator_home_ui = (function () {
             scaleX: -1,
             y: 45,
             mountY: 0.5,
-            src: Utils$1.asset("images/settings/Arrow.png"),
+            src: Utils.asset("images/settings/Arrow.png"),
             color: 0xffffffff
           },
           RightArrow: {
@@ -36874,7 +36969,7 @@ var APP_accelerator_home_ui = (function () {
             x: 500,
             mountY: 0.5,
             mountX: 1,
-            src: Utils$1.asset("images/settings/Arrow.png"),
+            src: Utils.asset("images/settings/Arrow.png"),
             color: 0xffffffff
           }
         },
@@ -37233,7 +37328,7 @@ var APP_accelerator_home_ui = (function () {
    **/
   class TvOverlayInputItem extends lng$1.Component {
     _construct() {
-      this.Tick = Utils$1.asset("/images/settings/Tick.png");
+      this.Tick = Utils.asset("/images/settings/Tick.png");
     }
 
     static _template() {
@@ -37258,7 +37353,7 @@ var APP_accelerator_home_ui = (function () {
             y: 45,
             mountY: 0.5,
             mountX: 1,
-            src: Utils$1.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.gif"),
             color: 0xffffffff,
             visible: false
           },
@@ -37872,7 +37967,7 @@ var APP_accelerator_home_ui = (function () {
           mountY: 0.5,
           h: 100,
           w: 100,
-          src: Utils$1.asset('/images/volume/Volume.png'),
+          src: Utils.asset('/images/volume/Volume.png'),
           Text: {
             x: 100,
             y: 0,
@@ -37951,9 +38046,9 @@ var APP_accelerator_home_ui = (function () {
 
     _updateIcon(check) {
       if (check) {
-        this.tag('VolumeInfo').src = Utils$1.asset('images/volume/Volume_Mute.png');
+        this.tag('VolumeInfo').src = Utils.asset('images/volume/Volume_Mute.png');
       } else {
-        this.tag('VolumeInfo').src = Utils$1.asset('/images/volume/Volume.png');
+        this.tag('VolumeInfo').src = Utils.asset('/images/volume/Volume.png');
       }
     }
 
@@ -38282,7 +38377,7 @@ var APP_accelerator_home_ui = (function () {
           mount: 0.5,
           w: 100,
           h: 100,
-          src: Utils$1.asset("images/settings/Loading.gif"),
+          src: Utils.asset("images/settings/Loading.gif"),
           visible: true
         },
         Wrapper: {
@@ -38466,7 +38561,10 @@ var APP_accelerator_home_ui = (function () {
         "Amazon Prime": "Amazon"
       };
       const app = apps[appName];
-      this.appApi.launchApp(app);
+      let params = {
+        launchLocation: "epgScreen"
+      };
+      this.appApi.launchApp(app, params);
     }
 
     _handleBack() {
@@ -39302,7 +39400,7 @@ var APP_accelerator_home_ui = (function () {
 
     _init() {
       this.tag('Image').patch({
-        src: Utils$1.asset(this.data.url),
+        src: Utils.asset(this.data.url),
         w: this.w,
         h: this.h,
         scale: this.unfocus
@@ -39570,14 +39668,14 @@ var APP_accelerator_home_ui = (function () {
             x: 105,
             // zIndex: 2,
             y: 87,
-            src: Utils$1.asset('/images/topPanel/microphone.png'),
+            src: Utils.asset('/images/topPanel/microphone.png'),
             w: 50,
             h: 50
           },
           Logo: {
             x: 200,
             y: 90,
-            src: Utils$1.asset('/images/' + CONFIG.theme.logo),
+            src: Utils.asset('/images/' + CONFIG.theme.logo),
             w: 227,
             h: 43
           },
@@ -39599,7 +39697,7 @@ var APP_accelerator_home_ui = (function () {
             x: 1825 - 105 - 160 - 37 + 30,
             y: 111,
             mountY: 0.5,
-            src: Utils$1.asset('/images/topPanel/setting.png'),
+            src: Utils.asset('/images/topPanel/setting.png'),
             w: 37,
             h: 37
           },
@@ -39665,9 +39763,9 @@ var APP_accelerator_home_ui = (function () {
 
     set changeMic(toggle) {
       if (toggle) {
-        this.tag('Mic').src = Utils$1.asset('/images/topPanel/microphone_mute.png');
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone_mute.png');
       } else {
-        this.tag('Mic').src = Utils$1.asset('/images/topPanel/microphone.png');
+        this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png');
       }
     }
 
@@ -39687,7 +39785,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateIcon(tagname, url) {
       this.tag(tagname).patch({
-        src: Utils$1.asset(url)
+        src: Utils.asset(url)
       });
     }
     /**
@@ -40311,7 +40409,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             },
             Bluetooth: {
@@ -40335,7 +40433,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             },
             Video: {
@@ -40359,7 +40457,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             },
             Audio: {
@@ -40383,7 +40481,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             },
             OtherSettings: {
@@ -40407,7 +40505,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             },
             DTVSettings: {
@@ -40432,7 +40530,7 @@ var APP_accelerator_home_ui = (function () {
                 mountX: 1,
                 y: 45,
                 mountY: 0.5,
-                src: Utils$1.asset("images/settings/Arrow.png")
+                src: Utils.asset("images/settings/Arrow.png")
               }
             }
           }
@@ -40656,7 +40754,7 @@ var APP_accelerator_home_ui = (function () {
     static getFonts() {
       return [{
         family: CONFIG.language.font,
-        url: Utils$1.asset('fonts/' + CONFIG.language.fontSrc)
+        url: Utils.asset('fonts/' + CONFIG.language.fontSrc)
       }];
     }
 
@@ -40713,7 +40811,7 @@ var APP_accelerator_home_ui = (function () {
 
     static language() {
       return {
-        file: Utils$1.asset('language/language-file.json'),
+        file: Utils.asset('language/language-file.json'),
         language: CONFIG.language.id
       };
     }
@@ -40882,15 +40980,21 @@ var APP_accelerator_home_ui = (function () {
       }
 
       if (key.keyCode == keyMap.Youtube) {
-        appApi.launchApp("Cobalt").catch(err => {
+        let params = {
+          launchLocation: "dedicatedButton"
+        };
+        appApi.launchApp("Cobalt", params).catch(err => {
           console.error("Error in launching Youtube via dedicated key: " + JSON.stringify(err));
         });
         return true;
       }
 
       if (key.keyCode == keyMap.Netflix) {
-        //5th argument is launchLocation
-        appApi.launchApp("Netflix", "", false, false, "netflixButton").catch(err => {
+        //launchLocation mapping is in launchApp method in AppApi.js
+        let params = {
+          launchLocation: "dedicatedButton"
+        };
+        appApi.launchApp("Netflix", params).catch(err => {
           console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err));
         });
         return true;
@@ -41195,7 +41299,7 @@ var APP_accelerator_home_ui = (function () {
 
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             Router.navigate('image', {
-              src: Utils$1.asset('images/apps/App_Netflix_Splash.png')
+              src: Utils.asset('images/apps/App_Netflix_Splash.png')
             });
 
             if (url) {
@@ -41260,7 +41364,11 @@ var APP_accelerator_home_ui = (function () {
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
-          appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+          let params = {
+            url: url,
+            launchLocation: "dial"
+          };
+          appApi.launchApp(applicationName, params).then(res => {
             console.log("App launched on xcast event: ", res);
             let params = {
               applicationName: notification.applicationName,
@@ -41295,9 +41403,12 @@ var APP_accelerator_home_ui = (function () {
 
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
-          let url = notification.parameters.url;
-          console.log('Resume ', applicationName, " with url: ", url);
-          appApi.launchApp(applicationName, url, false, false, "dial").then(res => {
+          let params = {
+            url: notification.parameters.url,
+            launchLocation: "dial"
+          };
+          console.log('Resume ', applicationName, " with params: ", params);
+          appApi.launchApp(applicationName, params).then(res => {
             console.log("launched ", applicationName, " on casting resume request: ", res);
             let params = {
               applicationName: notification.applicationName,
