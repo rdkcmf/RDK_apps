@@ -22,6 +22,7 @@ import HDMIApi from './HDMIApi';;
 import NetflixIIDs from "../../static/data/NetflixIIDs.json";
 import HomeApi from './HomeApi';
 import { Utils } from '@lightningjs/sdk';
+import { availableLanguageCodes } from '../Config/Config';
 
 var activatedWeb = false
 var activatedLightning = false
@@ -41,6 +42,7 @@ const config = {
     'org.rdk.System': 2
   }
 }
+var pluginParams=[];
 const thunder = ThunderJS(config)
 /**
  * Class that contains functions which commuicates with thunder API's
@@ -486,7 +488,7 @@ export default class AppApi {
       console.log(err);
       return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
     }
-    console.log("Netflix : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+    console.log(callsign+" : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
 
     if (callsign === "Netflix") {
       if (pluginState === "deactivated" || pluginState === "deactivation") { //netflix cold launch scenario
@@ -536,11 +538,14 @@ export default class AppApi {
     if (url && (callsign==="LightningApp" || callsign === "HtmlApp")) { //for lightning/htmlapp url is passed via rdkshell.launch method
       params.uri = url
     } else if(callsign ==="Cobalt"){
+      let language = localStorage.getItem("Language");
+      language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US" //default to english US if language is not available.
       url = url ? url : "https://www.youtube.com/tv?"
       url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url
-      url = url + "&launch=" + launchLocation //push the changes after integration, everything working fine
+      url = launchLocation==="gracenote" ? url : url + "&launch=" + launchLocation //skipping to append launch reason to url if launchLocation is gracenote
       if( (pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote" ){ //for youtube cold launch | currently only urls from dial can be passed via configuration
         params.configuration = { //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
+          "language": language,
           "url": url,
           "launchtype":"launch=" + launchLocation
         } 
@@ -567,7 +572,7 @@ export default class AppApi {
     console.log("Calling launchApp with params: ",params);
     return new Promise((resolve, reject) => {
       thunder.call("org.rdk.RDKShell", "launch", params).then(res => {
-        console.log(`${callsign} : Launch results in ${res}`)
+        console.log(`${callsign} : Launch results in ${JSON.stringify(res)}`)
         if (res.success) {
           thunder.call("org.rdk.RDKShell", "moveToFront", {
             "client": callsign,
@@ -1971,5 +1976,37 @@ export default class AppApi {
         })
     })
   }
+ //created only to get the required params
+  getPluginStatusParams(plugin) {
+    return new Promise((resolve, reject) => {
+      thunder.call('Controller', `status@${plugin}`)
+        .then(result => {
+          console.log("pluginstatus",result)
+          let pluginParams=[result[0].callsign,result[0].state]
+          resolve(pluginParams)
+        })
+        .catch(err => {
+          console.log("pluginstatusErr",err)
+          reject(err)
+        })
+    })
+  }
+//activate autopairing for stack
+  activateAutoPairing(){
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.RemoteControl', 'startPairing', {
+          "netType": '1',
+          "timeout": '30'
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log(' remote autoPair plugin error:', JSON.stringify(err, 3, null))
+          resolve(false)
+        })
+    })
+   }
 
 }

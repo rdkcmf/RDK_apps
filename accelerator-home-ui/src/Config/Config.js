@@ -46,6 +46,10 @@ const language = {
 }
 
 export const availableLanguages = ['English', 'Spanish'];
+export const availableLanguageCodes = {
+  "English":"en-US",
+  "Spanish":"es-US"
+}
 
 export var CONFIG = {
   theme: themeOptions['partnerOne'],

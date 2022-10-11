@@ -259,18 +259,18 @@ export default class App extends Router.App {
     }
     if (key.keyCode == Keymap.Youtube) {
       let params = {
-        launchLocation:"dedicatedButton"
+        launchLocation: "dedicatedButton"
       }
-      appApi.launchApp("Cobalt",params).catch(err => {
+      appApi.launchApp("Cobalt", params).catch(err => {
         console.error("Error in launching Youtube via dedicated key: " + JSON.stringify(err))
       });
       return true
     }
     if (key.keyCode == Keymap.Netflix) { //launchLocation mapping is in launchApp method in AppApi.js
       let params = {
-        launchLocation:"dedicatedButton"
+        launchLocation: "dedicatedButton"
       }
-      appApi.launchApp("Netflix",params).catch(err => {
+      appApi.launchApp("Netflix", params).catch(err => {
         console.error("Error in launching Netflix via dedicated key: " + JSON.stringify(err))
       });
       return true
@@ -401,7 +401,7 @@ export default class App extends Router.App {
     thunder.on('Controller', 'statechange', notification => {
       // get plugin status
       console.log("Controller statechange Notification : " + JSON.stringify(notification))
-      if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
         console.log(`${notification.callsign} status = ${notification.state}`)
         console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
         if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) { //navigate to homescreen if route is tv-overlay when exiting from any app
@@ -421,7 +421,7 @@ export default class App extends Router.App {
         }
       }
 
-      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
+      if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
         Storage.set('applicationType', notification.callsign) //required in case app launch happens using curl command.
         if (notification.callsign === 'Netflix') {
           appApi.getNetflixESN()
@@ -432,12 +432,28 @@ export default class App extends Router.App {
             console.log(`NETFLIX : notifyEventChange notification = `, JSON.stringify(notification));
             if (notification.EventName === "rendered") {
               Router.navigate('menu')
+              if (Storage.get("NFRStatus")) {
+                thunder.call("Netflix.1", "nfrstatus", { "params": "enable" }).then(nr => {
+                  console.log(`Netflix : nfr enable results in ${nr}`)
+                }).catch(nerr => {
+                  console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+                })
+              } else {
+                thunder.call("Netflix.1", "nfrstatus", { "params": "disable" }).then(nr => {
+                  console.log(`Netflix : nfr disable results in ${nr}`)
+                }).catch(nerr => {
+                  console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+                })
+              }
+
+
               appApi.visibile('ResidentApp', false);
             }
             if (notification.EventName === "requestsuspend") {
               this.deactivateChildApp('Netflix')
             }
             if (notification.EventName === "updated") {
+              console.log(`Netflix : xxxxxxxxxxxxxxxxxx Updated Event Trigger xxxxxxxxxxxxxxxxxxxx`)
               appApi.getNetflixESN()
                 .then(res => {
                   Storage.set('Netflix_ESN', res)
@@ -600,7 +616,7 @@ export default class App extends Router.App {
           url: url,
           launchLocation: "dial"
         }
-        appApi.launchApp(applicationName,params).then(res => {
+        appApi.launchApp(applicationName, params).then(res => {
           console.log("App launched on xcast event: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
@@ -635,7 +651,7 @@ export default class App extends Router.App {
           launchLocation: "dial"
         }
         console.log('Resume ', applicationName, " with params: ", params);
-        appApi.launchApp(applicationName,params).then(res => {
+        appApi.launchApp(applicationName, params).then(res => {
           console.log("launched ", applicationName, " on casting resume request: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);

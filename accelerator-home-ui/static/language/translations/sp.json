@@ -160,5 +160,6 @@
   "Ethernet cable is not connected": "El cable Ethernet no está conectado",
   "Try Again": "Intentar otra vez",
   "Skip": "Saltar",
-  "UI Voice": "UI Voz"
+  "UI Voice": "UI Voz",
+  "Native Frame Rate": "Velocidad de fotogramas nativa"
 }

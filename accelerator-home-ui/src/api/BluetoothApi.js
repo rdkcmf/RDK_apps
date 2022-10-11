@@ -39,6 +39,33 @@ export default class BluetoothApi {
   /**
    * Function to activate the Bluetooth plugin
    */
+
+ btactivate() {
+  return new Promise((resolve, reject) => {
+    this.callsign = 'org.rdk.Bluetooth'
+    this._thunder
+      .call('Controller', 'activate', { callsign: this.callsign })
+      .then(result => {
+        resolve(true)
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+
+deactivateBluetooth(){
+  return new Promise((resolve, reject) => {
+    this.callsign = 'org.rdk.Bluetooth'
+    this._thunder
+      .call('Controller', 'deactivate', { callsign: this.callsign })
+      .then(result => {
+        resolve(true)
+      }).catch(err => {
+        reject(err)
+      })
+  })
+}
+
   activate() {
     return new Promise((resolve, reject) => {
       this.callsign = 'org.rdk.Bluetooth'
@@ -158,6 +185,27 @@ export default class BluetoothApi {
         .catch(err => {
           console.error('Error', err)
           reject()
+        })
+    })
+  }
+
+  startScanBluetooth() {
+    return new Promise((resolve, reject) => {
+      this._thunder
+        .call('org.rdk.Bluetooth', 'startScan', {
+          timeout: 1000,
+          profile: `KEYBOARD,
+          MOUSE,
+          JOYSTICK,
+          HUMAN INTERFACE DEVICE`,
+        })
+        .then(result => {
+          if (result.success) resolve(result)
+          else reject(result)
+        })
+        .catch(err => {
+          console.error('Error', err)
+          reject(err)
         })
     })
   }

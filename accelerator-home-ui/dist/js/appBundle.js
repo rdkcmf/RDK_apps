@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Mon, 10 Oct 2022 14:27:25 GMT
+ * Generated: Thu, 13 Oct 2022 14:17:38 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6824,7 +6824,7 @@ var APP_accelerator_home_ui = (function () {
       options.token = window.thunder.token();
     }
 
-    return wrapper({ ...thunder$a(options),
+    return wrapper({ ...thunder$b(options),
       ...plugins
     });
   };
@@ -6845,7 +6845,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const thunder$a = options => ({
+  const thunder$b = options => ({
     options,
     api: API(options),
     plugin: false,
@@ -6870,7 +6870,7 @@ var APP_accelerator_home_ui = (function () {
     },
 
     registerPlugin(name, plugin) {
-      this[name] = wrapper(Object.assign(Object.create(thunder$a), plugin, {
+      this[name] = wrapper(Object.assign(Object.create(thunder$b), plugin, {
         plugin: name
       }));
     },
@@ -6930,7 +6930,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           if (typeof prop === 'object') {
-            return wrapper(Object.assign(Object.create(thunder$a(target.options)), prop, {
+            return wrapper(Object.assign(Object.create(thunder$b(target.options)), prop, {
               plugin: propKey
             }));
           }
@@ -6938,7 +6938,7 @@ var APP_accelerator_home_ui = (function () {
           return prop;
         } else {
           if (target.plugin === false) {
-            return wrapper(Object.assign(Object.create(thunder$a(target.options)), {}, {
+            return wrapper(Object.assign(Object.create(thunder$b(target.options)), {}, {
               plugin: propKey
             }));
           }
@@ -7002,6 +7002,10 @@ var APP_accelerator_home_ui = (function () {
     }
   };
   const availableLanguages = ['English', 'Spanish'];
+  const availableLanguageCodes = {
+    "English": "en-US",
+    "Spanish": "es-US"
+  };
   var CONFIG = {
     theme: themeOptions['partnerOne'],
     language: localStorage.getItem('Language') != null && availableLanguages.includes(localStorage.getItem('Language')) ? language[localStorage.getItem('Language')] : language['English']
@@ -7529,7 +7533,7 @@ var APP_accelerator_home_ui = (function () {
   var activatedNetflix = false;
   var webUrl = '';
   var lightningUrl = '';
-  const config$8 = {
+  const config$a = {
     host: '127.0.0.1',
     port: 9998,
     default: 1,
@@ -7537,7 +7541,7 @@ var APP_accelerator_home_ui = (function () {
       'org.rdk.System': 2
     }
   };
-  const thunder$9 = thunderJS(config$8);
+  const thunder$a = thunderJS(config$a);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -7561,7 +7565,7 @@ var APP_accelerator_home_ui = (function () {
 
     fetchTimeZone() {
       return new Promise(resolve => {
-        thunder$9.call('org.rdk.System', 'getTimeZones').then(result => {
+        thunder$a.call('org.rdk.System', 'getTimeZones').then(result => {
           resolve(result.zoneinfo);
         }).catch(err => {
           console.log('Cannot fetch time zone', err);
@@ -7612,7 +7616,7 @@ var APP_accelerator_home_ui = (function () {
 
     fetchApiKey() {
       return new Promise(resolve => {
-        thunder$9.call('org.rdk.PersistentStore', 'getValue', {
+        thunder$a.call('org.rdk.PersistentStore', 'getValue', {
           namespace: 'gracenote',
           key: 'apiKey'
         }).then(result => {
@@ -7631,10 +7635,10 @@ var APP_accelerator_home_ui = (function () {
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'getDeviceInfo', {
+          thunder$a.call(systemcCallsign, 'getDeviceInfo', {
             params: 'estb_ip'
           }).then(result => {
             resolve(result.success);
@@ -7652,7 +7656,7 @@ var APP_accelerator_home_ui = (function () {
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$9.call(systemcCallsign, 'getTimeZoneDST').then(result => {
+        thunder$a.call(systemcCallsign, 'getTimeZoneDST').then(result => {
           resolve(result.timeZone);
         }).catch(err => {
           console.log('Failed to fetch Time Zone');
@@ -7664,7 +7668,7 @@ var APP_accelerator_home_ui = (function () {
     setZone(zone) {
       console.log(zone);
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'setTimeZoneDST', {
+        thunder$a.call('org.rdk.System', 'setTimeZoneDST', {
           timeZone: zone
         }).then(result => {
           resolve(result.success);
@@ -7676,7 +7680,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPluginStatus(plugin) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('Controller', "status@".concat(plugin)).then(result => {
+        thunder$a.call('Controller', "status@".concat(plugin)).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -7690,7 +7694,7 @@ var APP_accelerator_home_ui = (function () {
 
     getResolution() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
           "videoDisplay": "HDMI0"
         }).then(result => {
           resolve(result.resolution);
@@ -7703,7 +7707,7 @@ var APP_accelerator_home_ui = (function () {
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.DisplaySettings";
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {}).catch(err => {
           console.error("error while activating the displaysettings plugin");
@@ -7714,10 +7718,10 @@ var APP_accelerator_home_ui = (function () {
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'getSupportedResolutions', {
+          thunder$a.call(systemcCallsign, 'getSupportedResolutions', {
             params: 'HDMI0'
           }).then(result => {
             resolve(result.supportedResolutions);
@@ -7737,10 +7741,10 @@ var APP_accelerator_home_ui = (function () {
     setResolution(res) {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'setCurrentResolution', {
+          thunder$a.call(systemcCallsign, 'setCurrentResolution', {
             videoDisplay: 'HDMI0',
             resolution: res,
             persist: true
@@ -7763,10 +7767,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdcpProfile';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'getHDCPStatus').then(result => {
+          thunder$a.call(systemcCallsign, 'getHDCPStatus').then(result => {
             resolve(result.HDCPStatus);
             console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus));
           }).catch(err => {
@@ -7785,10 +7789,10 @@ var APP_accelerator_home_ui = (function () {
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'getTvHDRSupport').then(result => {
+          thunder$a.call(systemcCallsign, 'getTvHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7807,10 +7811,10 @@ var APP_accelerator_home_ui = (function () {
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
+          thunder$a.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7829,10 +7833,10 @@ var APP_accelerator_home_ui = (function () {
     getHDRSetting() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'DisplayInfo';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'hdrsetting').then(result => {
+          thunder$a.call(systemcCallsign, 'hdrsetting').then(result => {
             resolve(result);
             console.log("HDR format in use from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7852,10 +7856,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'OCDM';
-        thunder$9.Controller.activate({
+        thunder$a.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$9.call(systemcCallsign, 'drms').then(result => {
+          thunder$a.call(systemcCallsign, 'drms').then(result => {
             resolve(result);
             console.log("supported drms from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7874,7 +7878,7 @@ var APP_accelerator_home_ui = (function () {
     clearCache() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'ResidentApp';
-        thunder$9.call(systemcCallsign, 'delete', {
+        thunder$a.call(systemcCallsign, 'delete', {
           path: ".cache"
         }).then(result => {
           resolve(result);
@@ -7982,7 +7986,7 @@ var APP_accelerator_home_ui = (function () {
         return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
       }
 
-      console.log("Netflix : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
+      console.log(callsign + " : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
 
       if (callsign === "Netflix") {
         if (pluginState === "deactivated" || pluginState === "deactivation") {
@@ -8014,7 +8018,7 @@ var APP_accelerator_home_ui = (function () {
           if (url) {
             try {
               console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ", url, IIDqueryString);
-              await thunder$9.call("Netflix", "systemcommand", {
+              await thunder$a.call("Netflix", "systemcommand", {
                 command: url + IIDqueryString
               });
             } catch (err) {
@@ -8023,7 +8027,7 @@ var APP_accelerator_home_ui = (function () {
           } else {
             try {
               console.log("Netflix HotLaunch passing netflix IIDqueryString using systemcommand method: ", IIDqueryString);
-              await thunder$9.call("Netflix", "systemcommand", {
+              await thunder$a.call("Netflix", "systemcommand", {
                 command: IIDqueryString
               });
             } catch (err) {
@@ -8042,14 +8046,18 @@ var APP_accelerator_home_ui = (function () {
         //for lightning/htmlapp url is passed via rdkshell.launch method
         params.uri = url;
       } else if (callsign === "Cobalt") {
+        let language = localStorage.getItem("Language");
+        language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"; //default to english US if language is not available.
+
         url = url ? url : "https://www.youtube.com/tv?";
         url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url;
-        url = url + "&launch=" + launchLocation; //push the changes after integration, everything working fine
+        url = launchLocation === "gracenote" ? url : url + "&launch=" + launchLocation; //skipping to append launch reason to url if launchLocation is gracenote
 
         if ((pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote") {
           //for youtube cold launch | currently only urls from dial can be passed via configuration
           params.configuration = {
             //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
+            "language": language,
             "url": url,
             "launchtype": "launch=" + launchLocation
           };
@@ -8068,7 +8076,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (currentApp === "" && callsign !== "Netflix") {
         //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack | for netflix keep the splash screen visible till it launches
-        thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
           "client": "ResidentApp",
           "visible": false
         });
@@ -8076,23 +8084,23 @@ var APP_accelerator_home_ui = (function () {
 
       console.log("Calling launchApp with params: ", params);
       return new Promise((resolve, reject) => {
-        thunder$9.call("org.rdk.RDKShell", "launch", params).then(res => {
-          console.log("".concat(callsign, " : Launch results in ").concat(res));
+        thunder$a.call("org.rdk.RDKShell", "launch", params).then(res => {
+          console.log("".concat(callsign, " : Launch results in ").concat(JSON.stringify(res)));
 
           if (res.success) {
-            thunder$9.call("org.rdk.RDKShell", "moveToFront", {
+            thunder$a.call("org.rdk.RDKShell", "moveToFront", {
               "client": callsign,
               "callsign": callsign
             }).catch(err => {
               console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
             });
-            thunder$9.call("org.rdk.RDKShell", "setFocus", {
+            thunder$a.call("org.rdk.RDKShell", "setFocus", {
               "client": callsign,
               "callsign": callsign
             }).catch(err => {
               console.error("failed to setFocus : ", callsign, " ERROR: ", JSON.stringify(err));
             });
-            thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+            thunder$a.call("org.rdk.RDKShell", "setVisibility", {
               "client": callsign,
               "visible": true
             }).catch(err => {
@@ -8101,7 +8109,7 @@ var APP_accelerator_home_ui = (function () {
 
             if (callsign === "Netflix") {
               console.log("Netflix launched: hiding residentApp");
-              thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
+              thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
                 "client": "ResidentApp",
                 "visible": false
               }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
@@ -8110,7 +8118,7 @@ var APP_accelerator_home_ui = (function () {
             if (callsign === "Cobalt" && url && !params.configuration) {
               //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
               console.log("Calling deeplink for cobalt with url: " + url);
-              thunder$9.call(callsign, 'deeplink', url);
+              thunder$a.call(callsign, 'deeplink', url);
             }
 
             Storage.set("applicationType", callsign);
@@ -8122,7 +8130,7 @@ var APP_accelerator_home_ui = (function () {
         }).catch(err => {
           console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back"); //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
 
-          thunder$9.call('org.rdk.RDKShell', 'destroy', {
+          thunder$a.call('org.rdk.RDKShell', 'destroy', {
             "callsign": callsign
           });
           this.launchResidentApp();
@@ -8185,7 +8193,7 @@ var APP_accelerator_home_ui = (function () {
 
 
       console.log("setting visibility of " + callsign + " to false");
-      await thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+      await thunder$a.call("org.rdk.RDKShell", "setVisibility", {
         "client": callsign,
         "visible": false
       }).catch(err => {
@@ -8194,7 +8202,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (forceDestroy) {
         console.log("Force Destroying the app: ", callsign);
-        await thunder$9.call('org.rdk.RDKShell', 'destroy', {
+        await thunder$a.call('org.rdk.RDKShell', 'destroy', {
           "callsign": callsign
         });
         return Promise.resolve(true);
@@ -8202,17 +8210,17 @@ var APP_accelerator_home_ui = (function () {
         console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended")); //enableAppSuspended = true means apps will be suspended by default
 
         if (Settings.get("platform", "enableAppSuspended")) {
-          await thunder$9.call('org.rdk.RDKShell', 'suspend', {
+          await thunder$a.call('org.rdk.RDKShell', 'suspend', {
             "callsign": callsign
           }).catch(err => {
             console.error("Error in suspending app: ", callsign, " | trying to destroy the app");
-            thunder$9.call('org.rdk.RDKShell', 'destroy', {
+            thunder$a.call('org.rdk.RDKShell', 'destroy', {
               "callsign": callsign
             });
           });
           return Promise.resolve(true);
         } else {
-          await thunder$9.call('org.rdk.RDKShell', 'destroy', {
+          await thunder$a.call('org.rdk.RDKShell', 'destroy', {
             "callsign": callsign
           });
           return Promise.resolve(true);
@@ -8227,19 +8235,19 @@ var APP_accelerator_home_ui = (function () {
 
     async launchResidentApp() {
       console.log("launchResidentApp got Called: setting visibility, focus and moving to front the ResidentApp");
-      await thunder$9.call("org.rdk.RDKShell", "moveToFront", {
+      await thunder$a.call("org.rdk.RDKShell", "moveToFront", {
         "client": "ResidentApp",
         "callsign": "ResidentApp"
       }).catch(err => {
         console.error("failed to moveToFront : ResidentApp ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
       });
-      await thunder$9.call("org.rdk.RDKShell", "setFocus", {
+      await thunder$a.call("org.rdk.RDKShell", "setFocus", {
         "client": "ResidentApp",
         "callsign": "ResidentApp"
       }).catch(err => {
         console.error("failed to setFocus : ResidentApp ERROR: ", JSON.stringify(err));
       });
-      await thunder$9.call("org.rdk.RDKShell", "setVisibility", {
+      await thunder$a.call("org.rdk.RDKShell", "setVisibility", {
         "client": "ResidentApp",
         "visible": true
       }).catch(err => {
@@ -8287,14 +8295,14 @@ var APP_accelerator_home_ui = (function () {
         const childCallsign = 'HtmlApp';
 
         if (webUrl != url) {
-          thunder$9.call('org.rdk.RDKShell', 'launch', {
+          thunder$a.call('org.rdk.RDKShell', 'launch', {
             callsign: childCallsign,
             type: childCallsign,
             uri: url
           }).then(res => {
             console.log("WebApp : webapp launch resulted in : ", JSON.stringify(res));
             this.setVisibility("ResidentApp", false);
-            thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+            thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign
             });
             resolve(true);
@@ -8303,10 +8311,10 @@ var APP_accelerator_home_ui = (function () {
             reject(false);
           });
         } else {
-          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$9.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
           resolve(true);
@@ -8327,7 +8335,7 @@ var APP_accelerator_home_ui = (function () {
         const childCallsign = 'LightningApp';
 
         if (lightningUrl != url) {
-          thunder$9.call('org.rdk.RDKShell', 'launch', {
+          thunder$a.call('org.rdk.RDKShell', 'launch', {
             callsign: 'Lightning',
             type: childCallsign,
             uri: url
@@ -8339,10 +8347,10 @@ var APP_accelerator_home_ui = (function () {
             reject(false);
           });
         } else {
-          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$9.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
           resolve(true);
@@ -8361,21 +8369,21 @@ var APP_accelerator_home_ui = (function () {
     launchCobalt(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'Cobalt';
-        thunder$9.call('org.rdk.RDKShell', 'launch', {
+        thunder$a.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign
         }).then(res => {
           if (url) {
-            thunder$9.call('Cobalt', 'deeplink', url);
+            thunder$a.call('Cobalt', 'deeplink', url);
           }
 
           this.setVisibility("ResidentApp", false);
-          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
             client: "Cobalt"
           }).catch(err => {
             console.error(err);
           });
-          thunder$9.call("org.rdk.RDKShell", "setFocus", {
+          thunder$a.call("org.rdk.RDKShell", "setFocus", {
             client: childCallsign
           }).catch(err => {
             console.error(err);
@@ -8397,7 +8405,7 @@ var APP_accelerator_home_ui = (function () {
 
     launchPremiumAppInSuspendMode(childCallsign) {
       return new Promise((resolve, reject) => {
-        thunder$9.call("org.rdk.RDKShell", "launch", {
+        thunder$a.call("org.rdk.RDKShell", "launch", {
           callsign: childCallsign,
           type: childCallsign,
           suspend: true,
@@ -8429,7 +8437,7 @@ var APP_accelerator_home_ui = (function () {
 
     launchPremiumApp(childCallsign) {
       return new Promise((resolve, reject) => {
-        thunder$9.call("org.rdk.RDKShell", "launch", {
+        thunder$a.call("org.rdk.RDKShell", "launch", {
           callsign: childCallsign,
           type: childCallsign,
           visible: true,
@@ -8460,15 +8468,15 @@ var APP_accelerator_home_ui = (function () {
     }
 
     launchPremiumAppURL(childCallsign, url) {
-      thunder$9.call("org.rdk.RDKShell", "launch", {
+      thunder$a.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$9.call("org.rdk.RDKShell", "moveToFront", {
+        thunder$a.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
         });
-        thunder$9.call(childCallsign, 'deeplink', url);
-        thunder$9.call("org.rdk.RDKShell", "setFocus", {
+        thunder$a.call(childCallsign, 'deeplink', url);
+        thunder$a.call("org.rdk.RDKShell", "setFocus", {
           client: childCallsign
         });
       }).catch(err => {});
@@ -8483,7 +8491,7 @@ var APP_accelerator_home_ui = (function () {
     launchResident(url, client) {
       return new Promise((resolve, reject) => {
         const childCallsign = client;
-        thunder$9.call('org.rdk.RDKShell', 'launch', {
+        thunder$a.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: 'ResidentApp',
           uri: url
@@ -8500,12 +8508,12 @@ var APP_accelerator_home_ui = (function () {
     launchOverlay(url, client) {
       return new Promise(resolve => {
         const childCallsign = client;
-        thunder$9.call('org.rdk.RDKShell', 'launch', {
+        thunder$a.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: 'ResidentApp',
           uri: url
         }).then(res => {
-          thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
           console.log("Overlay : launched overlay : ", res);
@@ -8523,7 +8531,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendWeb() {
       webUrl = '';
-      thunder$9.call('org.rdk.RDKShell', 'suspend', {
+      thunder$a.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'HtmlApp'
       });
     }
@@ -8534,7 +8542,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendLightning() {
       lightningUrl = '';
-      thunder$9.call('org.rdk.RDKShell', 'suspend', {
+      thunder$a.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'Lightning'
       });
     }
@@ -8545,7 +8553,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendPremiumApp(appName) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'suspend', {
+        thunder$a.call('org.rdk.RDKShell', 'suspend', {
           callsign: appName
         }).then(res => {
           resolve(true);
@@ -8560,7 +8568,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateWeb() {
-      thunder$9.call('org.rdk.RDKShell', 'destroy', {
+      thunder$a.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'HtmlApp'
       });
       activatedWeb = false;
@@ -8572,7 +8580,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateCobalt() {
-      thunder$9.call('org.rdk.RDKShell', 'destroy', {
+      thunder$a.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
@@ -8580,7 +8588,7 @@ var APP_accelerator_home_ui = (function () {
 
     cobaltStateChangeEvent() {
       try {
-        thunder$9.on('Controller', 'statechange', notification => {
+        thunder$a.on('Controller', 'statechange', notification => {
           if (this._events.has('statechange')) {
             this._events.get('statechange')(notification);
           }
@@ -8595,7 +8603,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateNativeApp(appName) {
-      thunder$9.call('org.rdk.RDKShell', 'destroy', {
+      thunder$a.call('org.rdk.RDKShell', 'destroy', {
         callsign: appName
       });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
@@ -8606,7 +8614,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateLightning() {
-      thunder$9.call('org.rdk.RDKShell', 'destroy', {
+      thunder$a.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Lightning'
       });
       activatedLightning = false;
@@ -8618,7 +8626,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateResidentApp(client) {
-      thunder$9.call('org.rdk.RDKShell', 'destroy', {
+      thunder$a.call('org.rdk.RDKShell', 'destroy', {
         callsign: client
       });
     }
@@ -8631,13 +8639,13 @@ var APP_accelerator_home_ui = (function () {
 
     setVisibility(client, visible) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
 
         if (visible) {
-          thunder$9.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
             client: client
           }).then(res => {
             resolve(true);
@@ -8651,7 +8659,7 @@ var APP_accelerator_home_ui = (function () {
 
     visibile(client, visible) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
@@ -8660,7 +8668,7 @@ var APP_accelerator_home_ui = (function () {
 
     enabledisableinactivityReporting(bool) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'enableInactivityReporting', {
+        thunder$a.call('org.rdk.RDKShell', 'enableInactivityReporting', {
           "enable": bool
         }).then(result => {
           resolve(result);
@@ -8673,7 +8681,7 @@ var APP_accelerator_home_ui = (function () {
 
     setInactivityInterval(t) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.RDKShell', 'setInactivityInterval', {
+        thunder$a.call('org.rdk.RDKShell', 'setInactivityInterval', {
           "interval": t
         }).then(result => {
           resolve(result);
@@ -8684,20 +8692,20 @@ var APP_accelerator_home_ui = (function () {
     }
 
     zorder(cli) {
-      thunder$9.call('org.rdk.RDKShell', 'moveToFront', {
+      thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
         client: cli,
         callsign: cli
       });
     }
 
     setFocus(cli) {
-      thunder$9.call('org.rdk.RDKShell', 'setFocus', {
+      thunder$a.call('org.rdk.RDKShell', 'setFocus', {
         client: cli
       });
     }
 
     moveToBack(cli) {
-      thunder$9.call('org.rdk.RDKShell', 'moveToBack', {
+      thunder$a.call('org.rdk.RDKShell', 'moveToBack', {
         client: cli
       });
     }
@@ -8712,9 +8720,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$9.call(plugin, method).then(res => {
+        thunder$a.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$9.call(plugin, method, res).then(resp => {
+          thunder$a.call(plugin, method, res).then(resp => {
             console.log("".concat(appName, " : updating configuration with object ").concat(res, " results in ").concat(resp));
             resolve(true);
           }).catch(err => {
@@ -8734,7 +8742,7 @@ var APP_accelerator_home_ui = (function () {
     launchNative(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'testApp';
-        thunder$9.call('org.rdk.RDKShell', 'launchApplication', {
+        thunder$a.call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
@@ -8753,7 +8761,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     killNative() {
-      thunder$9.call('org.rdk.RDKShell', 'kill', {
+      thunder$a.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
     }
@@ -8779,7 +8787,7 @@ var APP_accelerator_home_ui = (function () {
 
     standby(value) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'setPowerState', {
+        thunder$a.call('org.rdk.System', 'setPowerState', {
           "powerState": value,
           "standbyReason": "Requested by user"
         }).then(result => {
@@ -8792,7 +8800,7 @@ var APP_accelerator_home_ui = (function () {
 
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('Controller', 'activate', {
+        thunder$a.call('Controller', 'activate', {
           callsign: 'org.rdk.DisplaySettings'
         }).then(result => {
           console.log('Successfully enabled DisplaySettings Service');
@@ -8806,7 +8814,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSoundMode() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getSoundMode', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getSoundMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8821,7 +8829,7 @@ var APP_accelerator_home_ui = (function () {
       mode = mode.startsWith("AUTO") ? "AUTO" : mode;
       console.log("mode", mode);
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setSoundMode', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setSoundMode', {
           "audioPort": "HDMI0",
           "soundMode": mode,
           "persist": true
@@ -8836,7 +8844,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioModes() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8850,7 +8858,7 @@ var APP_accelerator_home_ui = (function () {
 
     setEnableAudioPort(port) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
           "audioPort": port,
           "enable": true
         }).then(result => {
@@ -8864,7 +8872,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDRCMode() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getDRCMode', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getDRCMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8877,7 +8885,7 @@ var APP_accelerator_home_ui = (function () {
 
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setDRCMode', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setDRCMode', {
           "DRCMode": DRCNum
         }).then(result => {
           resolve(result);
@@ -8890,7 +8898,7 @@ var APP_accelerator_home_ui = (function () {
 
     getZoomSetting() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
+        thunder$a.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting Zoom Setting", JSON.stringify(err));
@@ -8901,7 +8909,7 @@ var APP_accelerator_home_ui = (function () {
 
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setZoomSetting', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setZoomSetting', {
           "zoomSetting": zoom
         }).then(result => {
           resolve(result);
@@ -8914,7 +8922,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
           "audioPort": audioPort
         }).then(result => {
           resolve(result);
@@ -8927,7 +8935,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
+        thunder$a.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting S upported audio ports ", JSON.stringify(err));
@@ -8942,7 +8950,7 @@ var APP_accelerator_home_ui = (function () {
 
     speak() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.TextToSpeech', 'speak', {
+        thunder$a.call('org.rdk.TextToSpeech', 'speak', {
           "text": "speech_1"
         }).then(result => {
           resolve(result);
@@ -8956,7 +8964,7 @@ var APP_accelerator_home_ui = (function () {
 
     resume() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.TextToSpeech', 'resume', {
+        thunder$a.call('org.rdk.TextToSpeech', 'resume', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8970,7 +8978,7 @@ var APP_accelerator_home_ui = (function () {
 
     pause() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.TextToSpeech', 'pause', {
+        thunder$a.call('org.rdk.TextToSpeech', 'pause', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8984,7 +8992,7 @@ var APP_accelerator_home_ui = (function () {
 
     getlistVoices() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.TextToSpeech', 'listvoices', {
+        thunder$a.call('org.rdk.TextToSpeech', 'listvoices', {
           "language": "en-US"
         }).then(result => {
           resolve(result);
@@ -8998,7 +9006,7 @@ var APP_accelerator_home_ui = (function () {
 
     syncLocation() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('LocationSync', 'sync').then(result => {
+        thunder$a.call('LocationSync', 'sync').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in syncing location:", JSON.stringify(err, 3, null));
@@ -9009,7 +9017,7 @@ var APP_accelerator_home_ui = (function () {
 
     getLocation() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('LocationSync', 'location').then(result => {
+        thunder$a.call('LocationSync', 'location').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting location:", JSON.stringify(err, 3, null));
@@ -9022,7 +9030,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateInfo() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
+        thunder$a.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update info:", JSON.stringify(err, 3, null));
@@ -9034,7 +9042,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateState() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
+        thunder$a.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update state:", JSON.stringify(err, 3, null));
@@ -9046,7 +9054,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
+        thunder$a.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded info:", JSON.stringify(err, 3, null));
@@ -9058,7 +9066,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSerialNumber() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getSerialNumber').then(result => {
+        thunder$a.call('org.rdk.System', 'getSerialNumber').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -9070,7 +9078,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSystemVersions() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getSystemVersions').then(result => {
+        thunder$a.call('org.rdk.System', 'getSystemVersions').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -9083,7 +9091,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateFirmware() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'updateFirmware').then(result => {
+        thunder$a.call('org.rdk.System', 'updateFirmware').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in firmware update:", JSON.stringify(err, 3, null));
@@ -9095,7 +9103,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
+        thunder$a.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded percentage:", JSON.stringify(err, 3, null));
@@ -9107,7 +9115,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDeviceIdentification() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('DeviceIdentification', 'deviceidentification').then(result => {
+        thunder$a.call('DeviceIdentification', 'deviceidentification').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting device Identification:", JSON.stringify(err, 3, null));
@@ -9119,7 +9127,7 @@ var APP_accelerator_home_ui = (function () {
 
     systeminfo() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('DeviceInfo', 'systeminfo').then(result => {
+        thunder$a.call('DeviceInfo', 'systeminfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting system info:", JSON.stringify(err, 3, null));
@@ -9131,7 +9139,7 @@ var APP_accelerator_home_ui = (function () {
 
     reboot() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'reboot', {
+        thunder$a.call('org.rdk.System', 'reboot', {
           "rebootReason": "FIRMWARE_FAILURE"
         }).then(result => {
           resolve(result);
@@ -9144,7 +9152,7 @@ var APP_accelerator_home_ui = (function () {
 
     getNetflixESN() {
       return new Promise(resolve => {
-        thunder$9.call('Netflix', 'esn').then(res => {
+        thunder$a.call('Netflix', 'esn').then(res => {
           resolve(res);
         });
       });
@@ -9153,7 +9161,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPreferredStandbyMode() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
+        thunder$a.call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getPreferredStandbyMode:", JSON.stringify(err, 3, null));
@@ -9165,7 +9173,7 @@ var APP_accelerator_home_ui = (function () {
     setPreferredStandbyMode(standbyMode) {
       console.log("setPreferredStandbyMode called : " + standbyMode);
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.System', 'setPreferredStandbyMode', {
+        thunder$a.call('org.rdk.System', 'setPreferredStandbyMode', {
           "standbyMode": standbyMode
         }).then(result => {
           resolve(result);
@@ -9178,10 +9186,10 @@ var APP_accelerator_home_ui = (function () {
 
     registerChangeLocation() {
       var callsign = "LocationSync";
-      thunder$9.call('Controller', 'activate', {
+      thunder$a.call('Controller', 'activate', {
         callsign: callsign
       }).then(result => {
-        thunder$9.on(callsign, "locationchange", notification => {
+        thunder$a.on(callsign, "locationchange", notification => {
           console.log("location was changed and the notification = ", notification);
         });
       }).catch(err => {
@@ -9190,7 +9198,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     async sendAppState(value) {
-      const state = await thunder$9.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
+      const state = await thunder$a.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
       this.state = state;
       let params = {
         applicationName: value,
@@ -9214,14 +9222,14 @@ var APP_accelerator_home_ui = (function () {
         activatedCobalt = false;
       }
 
-      await thunder$9.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
+      await thunder$a.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
     } //NETWORK INFO APIS
     //1. Get IP Setting
 
 
     getIPSetting(defaultInterface) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Network', 'getIPSettings', {
+        thunder$a.call('org.rdk.Network', 'getIPSettings', {
           "interface": defaultInterface
         }).then(result => {
           resolve(result);
@@ -9235,7 +9243,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Network', 'getDefaultInterface').then(result => {
+        thunder$a.call('org.rdk.Network', 'getDefaultInterface').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting default interface:", JSON.stringify(err, 3, null));
@@ -9247,7 +9255,7 @@ var APP_accelerator_home_ui = (function () {
 
     isInterfaceEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Network', 'isInterfaceEnabled', {
+        thunder$a.call('org.rdk.Network', 'isInterfaceEnabled', {
           "interface": "WIFI"
         }).then(result => {
           resolve(result);
@@ -9261,7 +9269,7 @@ var APP_accelerator_home_ui = (function () {
 
     getInterfaces() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Network', 'getInterfaces').then(result => {
+        thunder$a.call('org.rdk.Network', 'getInterfaces').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting interfaces:", JSON.stringify(err, 3, null));
@@ -9273,7 +9281,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedSSID() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
+        thunder$a.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting connected SSID:", JSON.stringify(err, 3, null));
@@ -9285,7 +9293,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {}).then(result => {
+        thunder$a.call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {}).then(result => {
           resolve(result);
         }).catch(err => {
           console.log('audio mute error:', JSON.stringify(err, 3, null));
@@ -9296,7 +9304,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel(port) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
           audioPort: port
         }).then(result => {
           resolve(result);
@@ -9309,7 +9317,7 @@ var APP_accelerator_home_ui = (function () {
 
     muteStatus(port) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'getMuted', {
+        thunder$a.call('org.rdk.DisplaySettings', 'getMuted', {
           audioPort: port
         }).then(result => {
           resolve(result);
@@ -9322,7 +9330,7 @@ var APP_accelerator_home_ui = (function () {
 
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
           audioPort: port,
           volumeLevel: volume
         }).then(result => {
@@ -9338,13 +9346,42 @@ var APP_accelerator_home_ui = (function () {
 
     audio_mute(audio_source, value) {
       return new Promise((resolve, reject) => {
-        thunder$9.call('org.rdk.DisplaySettings', 'setMuted', {
+        thunder$a.call('org.rdk.DisplaySettings', 'setMuted', {
           audioPort: audio_source,
           muted: value
         }).then(result => {
           resolve(result);
         }).catch(err => {
           console.log('audio mute error:', JSON.stringify(err, 3, null));
+          resolve(false);
+        });
+      });
+    } //created only to get the required params
+
+
+    getPluginStatusParams(plugin) {
+      return new Promise((resolve, reject) => {
+        thunder$a.call('Controller', "status@".concat(plugin)).then(result => {
+          console.log("pluginstatus", result);
+          let pluginParams = [result[0].callsign, result[0].state];
+          resolve(pluginParams);
+        }).catch(err => {
+          console.log("pluginstatusErr", err);
+          reject(err);
+        });
+      });
+    } //activate autopairing for stack
+
+
+    activateAutoPairing() {
+      return new Promise((resolve, reject) => {
+        thunder$a.call('org.rdk.RemoteControl', 'startPairing', {
+          "netType": '1',
+          "timeout": '30'
+        }).then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log(' remote autoPair plugin error:', JSON.stringify(err, 3, null));
           resolve(false);
         });
       });
@@ -10203,8 +10240,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage.set("ipAddress", null);
   });
-  let appApi$6 = new AppApi();
-  appApi$6.getIP().then(ip => {
+  let appApi$7 = new AppApi();
+  appApi$7.getIP().then(ip => {
     IpAddress2 = ip;
   });
   /**
@@ -10334,7 +10371,7 @@ var APP_accelerator_home_ui = (function () {
 
     getMovieSubscriptions(id) {
       return new Promise((resolve, reject) => {
-        appApi$6.fetchApiKey().then(res => {
+        appApi$7.fetchApiKey().then(res => {
           // console.log("Key is: ", res);
           // console.log("tmsID is :", id);
           try {
@@ -10350,7 +10387,7 @@ var APP_accelerator_home_ui = (function () {
 
     getAPIKey() {
       return new Promise((resolve, reject) => {
-        appApi$6.fetchApiKey().then(res => {
+        appApi$7.fetchApiKey().then(res => {
           let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
           month += 1;
           day = day.toString();
@@ -10608,12 +10645,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$7 = {
+  const config$9 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  const thunder$8 = thunderJS(config$7);
+  const thunder$9 = thunderJS(config$9);
   const systemcCallsign$1 = "DTV";
   let playerID = -1; //set to -1 to indicate nothing is currently playing
   //plugin is activated by default, no need to call explicitly
@@ -10621,7 +10658,7 @@ var APP_accelerator_home_ui = (function () {
   class DTVApi {
     activate() {
       return new Promise((resolve, reject) => {
-        thunder$8.Controller.activate({
+        thunder$9.Controller.activate({
           callsign: systemcCallsign$1
         }).then(() => {
           resolve(true);
@@ -10634,7 +10671,7 @@ var APP_accelerator_home_ui = (function () {
 
     deactivate() {
       return new Promise((resolve, reject) => {
-        thunder$8.Controller.deactivate({
+        thunder$9.Controller.deactivate({
           callsign: systemcCallsign$1
         }).then(() => {
           resolve(true);
@@ -10648,7 +10685,7 @@ var APP_accelerator_home_ui = (function () {
 
     noOfCountries() {
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "numberOfCountries").then(result => {
+        thunder$9.call(systemcCallsign$1, "numberOfCountries").then(result => {
           resolve(result);
         }).catch(err => {
           console.log("Error: noOfCountries: ", JSON.stringify(err));
@@ -10660,7 +10697,7 @@ var APP_accelerator_home_ui = (function () {
 
     countryList() {
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "countryList").then(result => {
+        thunder$9.call(systemcCallsign$1, "countryList").then(result => {
           resolve(result);
         }).catch(err => {
           console.log("Error: countryList: ", JSON.stringify(err));
@@ -10685,7 +10722,7 @@ var APP_accelerator_home_ui = (function () {
         lcn: 0
       }];
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "serviceList@dvbs").then(result => {
+        thunder$9.call(systemcCallsign$1, "serviceList@dvbs").then(result => {
           arr = arr.concat(result);
           console.log("serviceListResult: ", JSON.stringify(arr));
           resolve(arr);
@@ -10700,7 +10737,7 @@ var APP_accelerator_home_ui = (function () {
     scheduleEvents(dvburi) {
       let method = 'scheduleEvents@' + dvburi;
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, method).then(result => {
+        thunder$9.call(systemcCallsign$1, method).then(result => {
           console.log("scheduleEventsResult: ", JSON.stringify(result));
 
           for (let show of result) {
@@ -10720,7 +10757,7 @@ var APP_accelerator_home_ui = (function () {
     satelliteList() {
       return new Promise((resolve, reject) => {
         // resolve([{name: "Satellite 1",longitude: 282,lnb: "Universal" },{name: "Satellite 2",longitude: 282,lnb: "Universal" }]) //#forTesting
-        thunder$8.call(systemcCallsign$1, "satelliteList").then(result => {
+        thunder$9.call(systemcCallsign$1, "satelliteList").then(result => {
           if (result.length === 0) {
             result = [{
               "name": "Astra 28.2E",
@@ -10775,7 +10812,7 @@ var APP_accelerator_home_ui = (function () {
 
     startServiceSearch(params) {
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "startServiceSearch", params).then(result => {
+        thunder$9.call(systemcCallsign$1, "startServiceSearch", params).then(result => {
           //console.log("serviceSearchResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10788,7 +10825,7 @@ var APP_accelerator_home_ui = (function () {
 
     noOfServices() {
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "numberOfServices").then(result => {
+        thunder$9.call(systemcCallsign$1, "numberOfServices").then(result => {
           //console.log("numberOfServicesResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10802,7 +10839,7 @@ var APP_accelerator_home_ui = (function () {
     nowNextEvents(dvburi) {
       let method = "nowNextEvents@" + dvburi;
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, method).then(result => {
+        thunder$9.call(systemcCallsign$1, method).then(result => {
           //console.log("nowNextEventsResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10822,7 +10859,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "startPlaying", params).then(result => {
+        thunder$9.call(systemcCallsign$1, "startPlaying", params).then(result => {
           console.log("RESULT: startPlaying: ", JSON.stringify(result));
 
           if (result === -1) {
@@ -10841,7 +10878,7 @@ var APP_accelerator_home_ui = (function () {
 
     stopPlaying() {
       return new Promise((resolve, reject) => {
-        thunder$8.call(systemcCallsign$1, "stopPlaying", playerID).then(result => {
+        thunder$9.call(systemcCallsign$1, "stopPlaying", playerID).then(result => {
           //playerID is retuned from startPlaying method
           console.log("RESULT: stopPlaying: ", JSON.stringify(result)); //result is always null
 
@@ -10952,6 +10989,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const config$8 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+  var thunder$8 = thunderJS(config$8);
   /**
    * Class for settings screen.
    */
@@ -11093,9 +11136,33 @@ var APP_accelerator_home_ui = (function () {
               src: Utils.asset('images/settings/Arrow.png')
             }
           },
+          NFRStatus: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Native Frame Rate'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
           DTVSettings: {
             alpha: 0.3,
-            y: 450,
+            y: 540,
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -11140,6 +11207,14 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _firstActive() {
+      if (Storage.get("NFRStatus")) {
+        console.log("Netflix : NFRStatus is found to be enabled");
+        this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png";
+      } else {
+        console.log("Netflix : NFRStatus is found to be disabled");
+        this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
+      }
+
       this.dtvApi = new DTVApi();
       this.dtvPlugin = false; //plugin availability
 
@@ -11270,9 +11345,53 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleDown() {
+          this._setState("NFRStatus");
+        }
+
+      }, class NFRStatus extends this {
+        $enter() {
+          this.tag('NFRStatus')._focus();
+        }
+
+        $exit() {
+          this.tag('NFRStatus')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OtherSettings');
+        }
+
+        _handleDown() {
           if (this.dtvPlugin) {
             this._setState('DTVSettings');
           }
+        }
+
+        _handleEnter() {
+          //handle Switch
+          if (Storage.get("NFRStatus")) {
+            Storage.set("NFRStatus", false);
+            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
+            thunder$8.call("Netflix.1", "nfrstatus", {
+              "params": "disable"
+            }).then(nr => {
+              console.log("Netflix : nfr disable updation results in ".concat(nr));
+            }).catch(nerr => {
+              console.error("Netflix : error while updating nfrstatus ".concat(nerr));
+            });
+          } else {
+            Storage.set("NFRStatus", true);
+            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png";
+            thunder$8.call("Netflix.1", "nfrstatus", {
+              "params": "enable"
+            }).then(nr => {
+              console.log("Netflix : nfr enable results in ".concat(nr));
+            }).catch(nerr => {
+              console.error("Netflix : error while updating nfrstatus ".concat(nerr));
+            });
+          }
+
+          console.log("Netflix : updated NFRStatus to ".concat(Storage.get("NFRStatus")));
         }
 
       }, class DTVSettings extends this {
@@ -11285,7 +11404,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleUp() {
-          this._setState('OtherSettings');
+          this._setState('NFRStatus');
         }
 
         _handleEnter() {
@@ -11567,7 +11686,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$6 = {
+  const config$7 = {
     host: '127.0.0.1',
     port: 9998,
     versions: {
@@ -11576,7 +11695,7 @@ var APP_accelerator_home_ui = (function () {
       UsbAccess: 2
     }
   };
-  var thunder$7 = thunderJS(config$6);
+  var thunder$7 = thunderJS(config$7);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -13052,27 +13171,6 @@ var APP_accelerator_home_ui = (function () {
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
   };
-  const defineProperties = (component, props) => {
-    props.forEach(prop => {
-      Object.defineProperty(component, prop, {
-        set: function (value) {
-          component["_".concat(prop)] = value;
-        },
-        get: function () {
-          return component["_".concat(prop)];
-        }
-      });
-    });
-  };
-  const findIndexOfObject = (array, search, targetProp) => {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][targetProp] === search) {
-        return i;
-      }
-    }
-
-    return -1;
-  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -13125,11 +13223,6 @@ var APP_accelerator_home_ui = (function () {
 
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
-      this._previous = {
-        mainIndex,
-        crossIndex,
-        realIndex: previousIndex
-      };
       this._index = targetIndex;
 
       this._indexChanged({
@@ -14753,904 +14846,6 @@ var APP_accelerator_home_ui = (function () {
     right: 1
   };
 
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  const calcCarouselNavigation = (dir, current, min, max) => {
-    let target = current + dir;
-
-    if (target < min) {
-      target = max;
-    }
-
-    if (target > max) {
-      target = min;
-    }
-
-    return target;
-  };
-
-  class Stepper extends lng$1.Component {
-    static _template() {
-      return {
-        h: 80,
-        w: 574,
-        Focus: {
-          alpha: 0,
-          w: w => w,
-          h: h => h,
-          rect: true
-        },
-        Label: {
-          x: 30,
-          y: h => h * 0.5,
-          mountY: 0.5,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        },
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 30;
-      this._max = 100;
-      this._min = 0;
-      this._value = 50;
-      this._options = undefined;
-      this._label = 'label';
-      this._focusAnimation = null;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'Label',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this._update();
-    }
-
-    _navigate(dir) {
-      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
-      const event = {
-        value: this._value
-      };
-
-      if (this._options) {
-        event.options = this._options;
-      }
-
-      this.fireAncestors('$onValueChanged', event);
-      this.signal('onValueChanged', event);
-    }
-
-    _handleLeft() {
-      this._navigate(-1);
-    }
-
-    _handleRight() {
-      this._navigate(1);
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set label(str) {
-      this._label = str;
-
-      if (this.active) {
-        this.tag('Label').text.text = str;
-      }
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    set value(str) {
-      this._value = str;
-
-      if (this.active) {
-        this.tag('Value').text.text = this.optionValue || this._value;
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    get optionValue() {
-      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
-    }
-
-    set options(arr) {
-      const refactor = arr.map(option => {
-        if (typeof option === 'string') {
-          return {
-            label: option
-          };
-        }
-
-        return option;
-      });
-      this._value = 0;
-      this._options = refactor;
-      this._max = refactor.length - 1;
-
-      this._update();
-    }
-
-    get options() {
-      return this._options;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ArrowStepper extends Stepper {
-    static _template() {
-      return { ...super._template(),
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          ArrowLeft: {
-            y: h => h * 0.5,
-            mountY: 0.5
-          },
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          },
-          ArrowRight: {
-            y: h => h * 0.5,
-            x: w => w,
-            mountY: 0.5,
-            mountX: 1
-          }
-        }
-      };
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          ArrowLeft: {
-            color: this._labelColor
-          },
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          },
-          ArrowRight: {
-            color: this._labelColor
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'ValueWrapper.ArrowLeft',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.ArrowRight',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      const arrowLeft = this.tag('ArrowLeft');
-      const arrowRight = this.tag('ArrowRight');
-
-      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
-        arrowLeft.text = {
-          text: '\u25c0',
-          fontSize: 18
-        };
-      }
-
-      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
-        arrowRight.text = {
-          text: '\u25b6',
-          fontSize: 18
-        };
-      }
-
-      this._update();
-    }
-
-  }
-
-  class ColorShift extends lng$1.Component {
-    static _template() {
-      return {
-        w: 574,
-        h: 240,
-        List: {
-          type: List,
-          w: w => w,
-          h: h => h,
-          forceLoad: true,
-          spacing: 0,
-          direction: 'column'
-        }
-      };
-    }
-
-    _construct() {
-      this._autoColorShift = true;
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._options = [{
-        type: 'neutral',
-        label: 'normal'
-      }, {
-        type: 'protanopia',
-        label: 'Protanopia'
-      }, {
-        type: 'deuteranopia',
-        label: 'Deuteranopia'
-      }, {
-        type: 'tritanopia',
-        label: 'Tritanopia'
-      }, {
-        type: 'monochromacy',
-        label: 'Achromatopsia'
-      }];
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
-    }
-
-    _getFocused() {
-      return this.tag('List');
-    }
-
-    _shiftColors() {
-      if (this._autoColorShift && this.application && this.application.colorshift) {
-        this.application.colorshift(this._settings.correction, this._settings);
-      }
-    }
-
-    $onValueChanged() {
-      const listItems = this.tag('List').items;
-      const correction = listItems[0];
-      this._settings = {
-        correction: correction.options[correction.value].type,
-        brightness: listItems[1].value,
-        contrast: listItems[2].value,
-        gamma: listItems[3].value
-      };
-
-      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
-        const steppers = listItems.slice(1);
-        steppers.forEach(stepper => {
-          stepper.value = 50;
-        });
-      }
-
-      this._currentCorrection = this._settings.correction;
-
-      this._shiftColors();
-
-      this.signal('onColorShift', this._settings);
-    }
-
-    _update() {
-      const list = this.tag('List');
-      const steppers = ['Brightness', 'Contrast', 'Gamma'];
-      const options = this._options;
-      const settings = this._settings;
-      const colors = {
-        focusColor: this._focusColor,
-        labelColor: this._labelColor,
-        labelColorFocused: this._labelColorFocused
-      };
-
-      this._shiftColors();
-
-      const settingItems = steppers.map(stepper => {
-        const lowerC = stepper.toLocaleLowerCase();
-        return {
-          type: this["".concat(lowerC, "Component")],
-          label: stepper,
-          value: settings[lowerC],
-          w: this.finalW,
-          h: 80,
-          ...colors
-        };
-      });
-      settingItems.unshift({
-        type: this.correctionComponent,
-        options,
-        value: findIndexOfObject(options, settings.correction, 'type'),
-        label: 'Color adjustment',
-        w: this.finalW,
-        h: 80,
-        ...colors
-      });
-      list.clear();
-      list.add(settingItems);
-    }
-
-    _firstActive() {
-      if (!this._settings) {
-        this._settings = {
-          correction: 'neutral',
-          brightness: 50,
-          contrast: 50,
-          gamma: 50
-        };
-      }
-
-      this._update();
-    }
-
-    set settings(obj) {
-      this._settings = obj;
-
-      if (this.active) {
-        const listItems = this.tag('List').items;
-        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
-        listItems[1] = obj.brightness || 50;
-        listItems[2] = obj.contrast || 50;
-        listItems[3] = obj.gamma || 50;
-      }
-    }
-
-    get settings() {
-      return this._settings;
-    }
-
-    get correctionTag() {
-      return this.tag('List').items[0];
-    }
-
-    get brightnessTag() {
-      return this.tag('List').items[1];
-    }
-
-    get contrastTag() {
-      return this.tag('List').items[2];
-    }
-
-    get gammaTag() {
-      return this.tag('List').items[3];
-    }
-
-    get adjustmentTags() {
-      return this.tag('List').items;
-    }
-
-    set stepperComponent(component) {
-      this._stepperComponent = component;
-    }
-
-    get stepperComponent() {
-      return this._stepperComponent || ArrowStepper;
-    }
-
-    set correctionComponent(component) {
-      this._correctionComponent = component;
-    }
-
-    get correctionComponent() {
-      return this._correctionComponent || this.stepperComponent;
-    }
-
-    set brightnessComponent(component) {
-      this._brightnessComponent = component;
-    }
-
-    get brightnessComponent() {
-      return this._brightnessComponent || this.stepperComponent;
-    }
-
-    set contrastComponent(component) {
-      this._contrastComponent = component;
-    }
-
-    get contrastComponent() {
-      return this._contrastComponent || this.stepperComponent;
-    }
-
-    set gammaComponent(component) {
-      this._gammaComponent = component;
-    }
-
-    get gammaComponent() {
-      return this._gammaComponent || this.stepperComponent;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  class CarouselItem extends lng$1.Component {
-    static _template() {
-      return {
-        Focus: {
-          alpha: 0,
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          w: 120,
-          h: 50,
-          rect: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 25
-          }
-        },
-        Label: {
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          renderOffscreen: true,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 40;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
-    }
-
-    set label(str) {
-      this.tag('Label').text.text = str;
-      this._label = str;
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    _init() {
-      const label = this.tag('Label');
-      label.on('txLoaded', () => {
-        this.patch({
-          w: label.renderWidth,
-          Focus: {
-            w: label.renderWidth + this._padding * 2
-          }
-        });
-
-        if (this.collectionWrapper) {
-          this.collectionWrapper.reposition();
-        }
-      });
-    }
-
-    _focus() {
-      this.patch({
-        Focus: {
-          smooth: {
-            alpha: 1
-          }
-        },
-        Label: {
-          smooth: {
-            color: this._labelColorFocused
-          }
-        }
-      });
-    }
-
-    _unfocus(target) {
-      if (target.isCarouselItem === true) {
-        this.patch({
-          Focus: {
-            smooth: {
-              alpha: 0
-            }
-          },
-          Label: {
-            smooth: {
-              color: this._labelColor
-            }
-          }
-        });
-      }
-    }
-
-    _firstActive() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          color: this._labelColor
-        }
-      });
-
-      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
-        this._focus();
-      }
-    }
-
-    get isCarouselItem() {
-      return true;
-    }
-
-    static get width() {
-      return 120;
-    }
-
-    static get height() {
-      return 50;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ProgressBar$1 extends lng$1.Component {
-    static _template() {
-      return {
-        w: 300,
-        h: 10,
-        Background: {
-          w: w => w,
-          h: h => h,
-          rect: true,
-          rtt: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 5
-          },
-          Progress: {
-            h: h => h,
-            w: 10,
-            rect: true,
-            shader: {
-              type: lng$1.shaders.RoundedRectangle,
-              radius: 0
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._progressColor = 0xff009245;
-      this._progressColorFocused = undefined;
-      this._backgroundColor = 0xff9d9d9d;
-      this._backgroundColorFocused = undefined;
-      this._backgroundRadius = 5;
-      this._progressRadius = 0;
-      this.value = 0.5;
-      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
-    }
-
-    progress(p) {
-      if (p > 1) {
-        p = p / 100;
-      }
-
-      this._value = p;
-      this.tag('Progress').w = this.w * p;
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Background',
-          p: 'color',
-          v: {
-            0: this._backgroundColor,
-            1: this._backgroundColorFocused || this._backgroundColor
-          }
-        }, {
-          t: 'Background.Progress',
-          p: 'color',
-          v: {
-            0: this._progressColor,
-            1: this._progressColorFocused || this._progressColor
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this.patch({
-        Background: {
-          color: this._backgroundColor,
-          shader: {
-            radius: this._backgroundRadius
-          },
-          Progress: {
-            color: this._progressColor,
-            shader: {
-              radius: this._progressRadius
-            }
-          }
-        }
-      });
-      this.progress(this._value);
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set value(p) {
-      this._value = p;
-
-      if (this.active) {
-        this.progress(p);
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    set backgroundRadius(num) {
-      this._backgroundRadius = num;
-
-      if (this.active) {
-        this.tag('Background').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    set progressRadius(num) {
-      this._progressRadius = num;
-
-      if (this.active) {
-        this.tag('Progress').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    get backgroundTag() {
-      return this.tag('Background');
-    }
-
-    get progressTag() {
-      return this.tag('Progress');
-    }
-
-  }
-
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -17267,6 +16462,34 @@ var APP_accelerator_home_ui = (function () {
      */
 
 
+    btactivate() {
+      return new Promise((resolve, reject) => {
+        this.callsign = 'org.rdk.Bluetooth';
+
+        this._thunder.call('Controller', 'activate', {
+          callsign: this.callsign
+        }).then(result => {
+          resolve(true);
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    }
+
+    deactivateBluetooth() {
+      return new Promise((resolve, reject) => {
+        this.callsign = 'org.rdk.Bluetooth';
+
+        this._thunder.call('Controller', 'deactivate', {
+          callsign: this.callsign
+        }).then(result => {
+          resolve(true);
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    }
+
     activate() {
       return new Promise((resolve, reject) => {
         this.callsign = 'org.rdk.Bluetooth';
@@ -17384,6 +16607,20 @@ var APP_accelerator_home_ui = (function () {
         }).catch(err => {
           console.error('Error', err);
           reject();
+        });
+      });
+    }
+
+    startScanBluetooth() {
+      return new Promise((resolve, reject) => {
+        this._thunder.call('org.rdk.Bluetooth', 'startScan', {
+          timeout: 1000,
+          profile: "KEYBOARD,\n          MOUSE,\n          JOYSTICK,\n          HUMAN INTERFACE DEVICE"
+        }).then(result => {
+          if (result.success) resolve(result);else reject(result);
+        }).catch(err => {
+          console.error('Error', err);
+          reject(err);
         });
       });
     }
@@ -22149,7 +21386,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$5 = new AppApi();
+  var appApi$6 = new AppApi();
   var defaultInterface = "";
   var currentInterface = [];
   class NetworkInfo extends lng$1.Component {
@@ -22393,7 +21630,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     getIPSetting(interfaceName) {
-      appApi$5.getIPSetting(interfaceName).then(result => {
+      appApi$6.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
@@ -22401,7 +21638,7 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.widgets.menu.setPanelsVisibility(); //Getting the default interface
 
-      appApi$5.getDefaultInterface().then(result => {
+      appApi$6.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
 
@@ -22422,12 +21659,12 @@ var APP_accelerator_home_ui = (function () {
         } //Filtering the current interface
 
 
-        appApi$5.getInterfaces().then(result => {
+        appApi$6.getInterfaces().then(result => {
           currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
 
           if (currentInterface[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
-            appApi$5.getConnectedSSID().then(result => {
+            appApi$6.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -22440,7 +21677,7 @@ var APP_accelerator_home_ui = (function () {
 
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
-            appApi$5.getIPSetting(defaultInterface).then(result => {
+            appApi$6.getIPSetting(defaultInterface).then(result => {
               this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
               this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
@@ -26148,7 +25385,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$4 = new AppApi();
+  const appApi$5 = new AppApi();
   const thunder$6 = thunderJS({
     host: '127.0.0.1',
     port: 9998,
@@ -26205,8 +25442,8 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      appApi$4.deactivateResidentApp(loader$1);
-      appApi$4.setVisibility('ResidentApp', true);
+      appApi$5.deactivateResidentApp(loader$1);
+      appApi$5.setVisibility('ResidentApp', true);
       thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
         client: 'ResidentApp'
       }).then(result => {
@@ -26252,8 +25489,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$4.launchResident(notification_url, loader$1).catch(err => {});
-            appApi$4.setVisibility('ResidentApp', false);
+            appApi$5.launchResident(notification_url, loader$1).catch(err => {});
+            appApi$5.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -26724,12 +25961,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$5 = {
+  const config$6 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$5 = thunderJS(config$5);
+  const thunder$5 = thunderJS(config$6);
   class CECApi {
     activate() {
       return new Promise((resolve, reject) => {
@@ -26817,12 +26054,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$4 = {
+  const config$5 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  thunderJS(config$4);
+  thunderJS(config$5);
   /**
    * Class for AdvancedSettings screen.
    */
@@ -28023,7 +27260,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$3 = new AppApi();
+  const appApi$4 = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -28168,7 +27405,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          appApi$3.reboot().then(result => {
+          appApi$4.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
 
             this._setState('Rebooting');
@@ -29328,7 +28565,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for HDMI Output Screen.
    */
 
-  var appApi$2 = new AppApi();
+  var appApi$3 = new AppApi();
   class HdmiOutputScreen extends lng$1.Component {
     pageTransition() {
       return 'left';
@@ -29404,8 +28641,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$2.getSoundMode().then(result => {
-        appApi$2.getSupportedAudioModes().then(res => {
+      appApi$3.getSoundMode().then(result => {
+        appApi$3.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -31176,6 +30413,16 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  var appApi$2 = new AppApi();
+  var bluetoothApi = new BluetoothApi();
+  const config$4 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+
+  const _thunder = thunderJS(config$4);
+
   class BluetoothScreen extends lng$1.Component {
     static _template() {
       return {
@@ -31274,7 +30521,83 @@ var APP_accelerator_home_ui = (function () {
       };
     }
 
-    _init() {}
+    _PairingApis() {
+      //bluetoothApi.btactivate().then(enableResult =>{
+      //  console.log('1')
+      bluetoothApi.enable().then(res => {
+        console.log("1.5 enable result: ", res);
+        bluetoothApi.startScanBluetooth().then(startScanresult => {
+          console.log('2: ', startScanresult);
+
+          var SubscribeEvent = _thunder.on('org.rdk.Bluetooth', 'onDiscoveredDevice', notification => {
+            bluetoothApi.getDiscoveredDevices().then(getdocoveredInfo => {
+              console.log('onDiscoveredDevice', getdocoveredInfo[0].name);
+              this.tag('Info').text.text = "pairing this device ".concat(getdocoveredInfo[0].name);
+              bluetoothApi.connect(getdocoveredInfo[0].deviceID, getdocoveredInfo[0].deviceType).then(connectresult => {
+                console.log("connectresult", connectresult);
+                bluetoothApi.pair(getdocoveredInfo[0].deviceID).then(Pairresult => {
+                  console.log("Pairresult", Pairresult);
+                  bluetoothApi.getConnectedDevices().then(getCdresult => {
+                    console.log("getConnectedDevices", getCdresult);
+                    bluetoothApi.getPairedDevices().then(getpairedDevices => {
+                      console.log("getpairedDevices", getpairedDevices);
+                      bluetoothApi.stopScan().then(stopScan => {
+                        console.log("stopscan", stopScan);
+                        SubscribeEvent.dispose(); //bluetoothApi.disable().then(disable =>{
+                        //console.log("disable")
+
+                        bluetoothApi.deactivateBluetooth().then(deactivateBluetooth => {
+                          console.log("DeactivatedBluetooth", deactivateBluetooth);
+                          Router.navigate('splash/language');
+                        });
+                      }).catch(err => {
+                        console.error("cant stopscan device : ".concat(JSON.stringify(err)));
+                      });
+                    }).catch(err => {
+                      console.error("cant getpaired device : ".concat(JSON.stringify(err)));
+                    });
+                  }).catch(err => {
+                    console.error("Can't getconnected device : ".concat(JSON.stringify(err)));
+                  });
+                }).catch(err => {
+                  console.error("Can't pair device : ".concat(JSON.stringify(err)));
+                });
+              }).catch(err => {
+                console.error("Can't connect : ".concat(JSON.stringify(err)));
+              });
+            }); // })
+          });
+        }).catch(err => {
+          console.error("Can't scan enable : ".concat(JSON.stringify(err)));
+        });
+      });
+    }
+
+    _firstEnable() {
+      console.log("checking");
+      appApi$2.getPluginStatus('org.rdk.RemoteControl').then(result => {
+        appApi$2.activateAutoPairing().then(result => {
+          console.log("paired devices result", result); //this.initTimer();
+
+          Router.navigate('splash/language');
+        });
+      }).catch(err => {
+        console.log(' remote autoPair plugin error:', JSON.stringify(err));
+        appApi$2.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
+          console.log("status", pluginresult[1]);
+
+          if (pluginresult[1] === 'deactivated') {
+            bluetoothApi.btactivate().then(result => {
+              console.log("pairing bluetooth");
+
+              this._PairingApis();
+            });
+          } else {
+            this._PairingApis();
+          }
+        });
+      });
+    }
 
     _focus() {
       this.initTimer();
@@ -31287,9 +30610,8 @@ var APP_accelerator_home_ui = (function () {
     _unfocus() {
       if (this.timeInterval) {
         Registry.clearInterval(this.timeInterval);
-      }
+      } //this.tag('Timer').text.text = '0:10'
 
-      this.tag('Timer').text.text = '0:10';
     }
 
     getTimeRemaining(endtime) {
@@ -31309,8 +30631,7 @@ var APP_accelerator_home_ui = (function () {
         timerText.text.text = "0:0".concat(time.seconds);
 
         if (time.total <= 0) {
-          Registry.clearInterval(this.timeInterval);
-          Router.navigate('splash/language');
+          Registry.clearInterval(this.timeInterval); // Router.navigate('splash/language')
         }
       }, 1000);
     }
@@ -41149,7 +40470,7 @@ var APP_accelerator_home_ui = (function () {
         // get plugin status
         console.log("Controller statechange Notification : " + JSON.stringify(notification));
 
-        if ((notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
+        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
           console.log("".concat(notification.callsign, " status = ").concat(notification.state));
           console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
 
@@ -41175,7 +40496,7 @@ var APP_accelerator_home_ui = (function () {
           }
         }
 
-        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'Lightning' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
+        if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
           Storage.set('applicationType', notification.callsign); //required in case app launch happens using curl command.
 
           if (notification.callsign === 'Netflix') {
@@ -41187,6 +40508,25 @@ var APP_accelerator_home_ui = (function () {
 
               if (notification.EventName === "rendered") {
                 Router.navigate('menu');
+
+                if (Storage.get("NFRStatus")) {
+                  thunder.call("Netflix.1", "nfrstatus", {
+                    "params": "enable"
+                  }).then(nr => {
+                    console.log("Netflix : nfr enable results in ".concat(nr));
+                  }).catch(nerr => {
+                    console.error("Netflix : error while updating nfrstatus ".concat(nerr));
+                  });
+                } else {
+                  thunder.call("Netflix.1", "nfrstatus", {
+                    "params": "disable"
+                  }).then(nr => {
+                    console.log("Netflix : nfr disable results in ".concat(nr));
+                  }).catch(nerr => {
+                    console.error("Netflix : error while updating nfrstatus ".concat(nerr));
+                  });
+                }
+
                 appApi.visibile('ResidentApp', false);
               }
 
@@ -41195,6 +40535,7 @@ var APP_accelerator_home_ui = (function () {
               }
 
               if (notification.EventName === "updated") {
+                console.log("Netflix : xxxxxxxxxxxxxxxxxx Updated Event Trigger xxxxxxxxxxxxxxxxxxxx");
                 appApi.getNetflixESN().then(res => {
                   Storage.set('Netflix_ESN', res);
                 });

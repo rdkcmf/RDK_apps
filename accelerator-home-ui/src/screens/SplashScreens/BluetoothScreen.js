@@ -19,6 +19,18 @@
 
 import { Lightning, Registry, Router, Utils } from '@lightningjs/sdk'
 import { CONFIG } from '../../Config/Config'
+import AppApi  from '../../api/AppApi';
+import BluetoothApi  from '../../api/BluetoothApi';
+import ThunderJS from 'ThunderJS'
+
+var appApi = new AppApi();
+var bluetoothApi = new BluetoothApi();
+const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1,
+    }
+const _thunder = ThunderJS(config)
 
 export default class BluetoothScreen extends Lightning.Component {
     static _template() {
@@ -102,7 +114,102 @@ export default class BluetoothScreen extends Lightning.Component {
         }
     }
 
-    _init() {
+    _PairingApis(){
+        //bluetoothApi.btactivate().then(enableResult =>{
+          //  console.log('1')
+            bluetoothApi.enable().then(res => {
+                console.log("1.5 enable result: ",res)
+                bluetoothApi.startScanBluetooth().then( startScanresult =>{
+                    console.log('2: ',startScanresult)
+                    var SubscribeEvent=  _thunder.on('org.rdk.Bluetooth', 'onDiscoveredDevice', notification => {
+                        bluetoothApi.getDiscoveredDevices().then((getdocoveredInfo) => {
+                          console.log('onDiscoveredDevice',getdocoveredInfo[0].name )
+                          this.tag('Info').text.text = `pairing this device ${getdocoveredInfo[0].name}` 
+                          bluetoothApi.connect(getdocoveredInfo[0].deviceID, getdocoveredInfo[0].deviceType).then(connectresult=>{
+                                 console.log("connectresult",connectresult)
+                                 bluetoothApi.pair(getdocoveredInfo[0].deviceID).then(Pairresult=>{
+                                    console.log("Pairresult",Pairresult)
+                                    bluetoothApi.getConnectedDevices().then(getCdresult =>{
+                                        console.log("getConnectedDevices",getCdresult)
+                                        bluetoothApi.getPairedDevices().then(getpairedDevices =>{
+                                            
+                                                console.log("getpairedDevices",getpairedDevices)
+                                            bluetoothApi.stopScan().then(stopScan =>{
+                                               console.log("stopscan",stopScan)
+                                               SubscribeEvent.dispose();
+                                               //bluetoothApi.disable().then(disable =>{
+                                                //console.log("disable")
+                                                bluetoothApi.deactivateBluetooth().then(deactivateBluetooth =>{
+                                                    console.log("DeactivatedBluetooth",deactivateBluetooth)
+                                                    Router.navigate('splash/language')
+                                                })
+                                               
+                                            })
+                                            .catch(err => {
+                                                console.error(`cant stopscan device : ${JSON.stringify(err)}`)
+                                                
+                                              })
+                                            
+                                           
+                                            
+                                        })
+                                        .catch(err => {
+                                            console.error(`cant getpaired device : ${JSON.stringify(err)}`)
+                                          })
+                                    })
+                                    .catch(err => {
+                                        console.error(`Can't getconnected device : ${JSON.stringify(err)}`)
+                                        
+                                      })
+                                 })
+                                 .catch(err => {
+                                    console.error(`Can't pair device : ${JSON.stringify(err)}`)
+                                    
+                                  })
+                          })
+                          .catch(err => {
+                            console.error(`Can't connect : ${JSON.stringify(err)}`)
+                            
+                          })
+                        })
+                        // })
+                      })
+            })
+            .catch(err => {
+                console.error(`Can't scan enable : ${JSON.stringify(err)}`)
+                
+              })
+        })
+    }
+
+    _firstEnable(){
+        console.log("checking")
+        appApi.getPluginStatus('org.rdk.RemoteControl')
+        .then(result => {
+            var bluetoothPluginResult = result;
+            appApi.activateAutoPairing()
+            .then(result=>{
+                console.log("paired devices result", result)
+                //this.initTimer();
+                Router.navigate('splash/language')
+            })
+         })
+        .catch(err => {
+            console.log(' remote autoPair plugin error:', JSON.stringify(err))
+            appApi.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult =>{
+                console.log("status",pluginresult[1])
+                if(pluginresult[1] === 'deactivated'){
+                    bluetoothApi.btactivate().then(result=>{
+                        console.log("pairing bluetooth")
+                        this._PairingApis()
+                    })  
+                }
+                else{
+                    this._PairingApis()
+                    
+                }
+            })
+          })
     }
 
     _focus() {
@@ -117,7 +224,7 @@ export default class BluetoothScreen extends Lightning.Component {
         if (this.timeInterval) {
             Registry.clearInterval(this.timeInterval)
         }
-        this.tag('Timer').text.text = '0:10'
+        //this.tag('Timer').text.text = '0:10'
     }
 
     getTimeRemaining(endtime) {
@@ -134,7 +241,7 @@ export default class BluetoothScreen extends Lightning.Component {
             timerText.text.text = `0:0${time.seconds}`
             if (time.total <= 0) {
                 Registry.clearInterval(this.timeInterval)
-                Router.navigate('splash/language')
+               // Router.navigate('splash/language')
             }
         }, 1000)
     }

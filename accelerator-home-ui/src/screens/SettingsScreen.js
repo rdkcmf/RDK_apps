@@ -17,11 +17,20 @@
  * limitations under the License.
  **/
 import { Lightning, Utils, Language, Router, Storage } from '@lightningjs/sdk'
+import ThunderJS from 'ThunderJS';
 import { COLORS } from '../colors/Colors'
 import SettingsMainItem from '../items/SettingsMainItem'
 import { CONFIG } from '../Config/Config'
 import DTVApi from '../api/DTVApi';
 import AppApi from '../api/AppApi';
+
+const config = {
+  host: '127.0.0.1',
+  port: 9998,
+  default: 1,
+};
+var thunder = ThunderJS(config);
+
 
 /**
  * Class for settings screen.
@@ -164,9 +173,37 @@ export default class SettingsScreen extends Lightning.Component {
             src: Utils.asset('images/settings/Arrow.png'),
           },
         },
+
+
+        NFRStatus: {
+          y: 450,
+          type: SettingsMainItem,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: Language.translate('Native Frame Rate'),
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 25,
+            }
+          },
+          Button: {
+            h: 45,
+            w: 67,
+            x: 1600,
+            mountX: 1,
+            y: 45,
+            mountY: 0.5,
+            src: Utils.asset('images/settings/ToggleOffWhite.png'),
+          },
+        },
+
+
         DTVSettings: {
           alpha: 0.3,
-          y: 450,
+          y: 540,
           type: SettingsMainItem,
           Title: {
             x: 10,
@@ -189,11 +226,17 @@ export default class SettingsScreen extends Lightning.Component {
             src: Utils.asset('images/settings/Arrow.png'),
           },
         },
+
+
+
+
+
       },
     }
   }
 
   _init() {
+
     let self = this;
     this.appApi = new AppApi();
     this._setState('NetworkConfiguration')
@@ -202,10 +245,23 @@ export default class SettingsScreen extends Lightning.Component {
     })
   }
   _focus() {
+
+
     this.widgets.menu.setPanelsVisibility()
     this._setState(this.state)
   }
   _firstActive() {
+
+    if (Storage.get("NFRStatus")) {
+      console.log(`Netflix : NFRStatus is found to be enabled`)
+      this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
+    }
+    else {
+      console.log(`Netflix : NFRStatus is found to be disabled`)
+      this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
+    }
+
+
     this.dtvApi = new DTVApi();
     this.dtvPlugin = false; //plugin availability
     this.dtvApi.activate().then((res) => {
@@ -225,7 +281,7 @@ export default class SettingsScreen extends Lightning.Component {
     else {
       this.appApi.visibile("ResidentApp", false)
       let appType = Storage.get("applicationType");
-      if(appType ==="WebApp"){
+      if (appType === "WebApp") {
         appType = "HtmlApp"
       }
       this.appApi.setFocus(appType)
@@ -321,11 +377,54 @@ export default class SettingsScreen extends Lightning.Component {
           Router.navigate('settings/other')
         }
         _handleDown() {
+          this._setState("NFRStatus")
+        }
+      },
+
+      class NFRStatus extends this{
+        $enter() {
+          this.tag('NFRStatus')._focus()
+        }
+        $exit() {
+          this.tag('NFRStatus')._unfocus()
+        }
+        _handleUp() {
+          this._setState('OtherSettings')
+        }
+        _handleDown() {
           if (this.dtvPlugin) {
             this._setState('DTVSettings')
           }
         }
+        _handleEnter() {
+          //handle Switch
+          if (Storage.get("NFRStatus")) {
+            Storage.set("NFRStatus", false)
+            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
+
+            thunder.call("Netflix.1", "nfrstatus", { "params": "disable" }).then(nr => {
+              console.log(`Netflix : nfr disable updation results in ${nr}`)
+            }).catch(nerr => {
+              console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+            })
+
+          }
+          else {
+            Storage.set("NFRStatus", true)
+            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
+
+            thunder.call("Netflix.1", "nfrstatus", { "params": "enable" }).then(nr => {
+              console.log(`Netflix : nfr enable results in ${nr}`)
+            }).catch(nerr => {
+              console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+            })
+
+          }
+          console.log(`Netflix : updated NFRStatus to ${Storage.get("NFRStatus")}`)
+
+        }
       },
+
       class DTVSettings extends this{
         $enter() {
           this.tag('DTVSettings')._focus()
@@ -334,7 +433,7 @@ export default class SettingsScreen extends Lightning.Component {
           this.tag('DTVSettings')._unfocus()
         }
         _handleUp() {
-          this._setState('OtherSettings')
+          this._setState('NFRStatus')
         }
         _handleEnter() {
           if (this.dtvPlugin) {
