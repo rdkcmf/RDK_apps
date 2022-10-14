@@ -398,29 +398,31 @@ export default class SettingsScreen extends Lightning.Component {
         }
         _handleEnter() {
           //handle Switch
+          let self = this;
           if (Storage.get("NFRStatus")) {
-            Storage.set("NFRStatus", false)
-            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
 
             thunder.call("Netflix.1", "nfrstatus", { "params": "disable" }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
+              Storage.set("NFRStatus", false)
               console.log(`Netflix : nfr disable updation results in ${nr}`)
             }).catch(nerr => {
-              console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+              console.error(`Netflix : error while updating nfrstatus`)
+              console.error(nerr)
             })
 
           }
           else {
-            Storage.set("NFRStatus", true)
-            this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
 
             thunder.call("Netflix.1", "nfrstatus", { "params": "enable" }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
+              Storage.set("NFRStatus", true)
               console.log(`Netflix : nfr enable results in ${nr}`)
             }).catch(nerr => {
-              console.error(`Netflix : error while updating nfrstatus ${nerr}`)
+              console.error(`Netflix : error while updating nfrstatus `)
+              console.error(nerr)
             })
 
           }
-          console.log(`Netflix : updated NFRStatus to ${Storage.get("NFRStatus")}`)
 
         }
       },
