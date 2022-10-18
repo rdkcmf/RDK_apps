@@ -22,12 +22,24 @@
  import { CONFIG } from "../Config/Config";
  import DTVApi from "../api/DTVApi";
  import AppApi from "../api/AppApi";
- 
+ import AudioScreenOverlay from './AudioScreens/AudioScreenOverlay'
+ import VideoScreenOverlay from './AudioScreens/VideoScreenOverlay';
+ import NetworkConfigurationOverlay from "./NetworkScreens/NetworkConfigurationOverlay";
+ import BluetoothScreenOverlay from './NetworkScreens/BluetoothScreenOverlay'
+ import LiveTvSettings from './LiveTvSettings/LiveTvSettingsOverlay'
+ import ThunderJS from 'ThunderJS';
+ import OtherSettingsScreen from "./OtherSettings/OtherSettingsOverlay";
+
+ const config = {
+  host: '127.0.0.1',
+  port: 9998,
+  default: 1,
+};
+var thunder = ThunderJS(config);
  /**
   * Class for settings screen.
   */
  export default class SettingsOverlay extends Lightning.Component {
- 
    static _template() {
      return {
        Wrapper:{
@@ -171,9 +183,35 @@
                src: Utils.asset("images/settings/Arrow.png"),
              },
            },
+           NFRStatus: {
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Native Frame Rate'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25,
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png'),
+            },
+          },
+  
+
            DTVSettings: {
-             alpha: 0.3,
-             y: 450,
+            alpha: 0.3,
+          y: 540,
              type: SettingsMainItem,
              Title: {
                x: 10,
@@ -196,7 +234,33 @@
                src: Utils.asset("images/settings/Arrow.png"),
              },
            },
+           
          },
+         AudioScreenOverlay:{
+          type: AudioScreenOverlay,
+          visible: false,
+       },
+       NetworkConfigurationOverlay:{
+        type: NetworkConfigurationOverlay,
+        visible: false,
+       },
+       BluetoothScreenOverlay:{
+        type: BluetoothScreenOverlay,
+        visible: false
+       },
+       LiveTvSettings:{
+        type: LiveTvSettings,
+        visible: false
+       },
+       VideoScreenOverlay:{
+        type: VideoScreenOverlay,
+        visible: false,
+       },
+       OtherSettingsScreen:{
+        type: OtherSettingsScreen,
+        visible: false
+       }
+       
        }
      };
    }
@@ -210,6 +274,15 @@
      this.tag("Wrapper").visible = false;
    }
    _firstActive() {
+    if (Storage.get("NFRStatus")) {
+      console.log(`Netflix : NFRStatus is found to be enabled`)
+      this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
+    }
+    else {
+      console.log(`Netflix : NFRStatus is found to be disabled`)
+      this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
+    }
+
      this.appApi = new AppApi();
      this.dtvApi = new DTVApi();
      this.dtvPlugin = false; //plugin availability
@@ -219,6 +292,11 @@
        this.tag("DTVSettings").alpha = 1;
        // }
      });
+   }
+
+   $changeState(state){
+    console.log("check", state)
+    this._setState(state)
    }
  
    _handleBack() {
@@ -251,10 +329,26 @@
    }
 
    $updatePageTitle(title){
+    console.log("title",title)
     this.tag("BreadCrumbs").text.text = Language.translate(title);
    }
 
- 
+   hide() {
+    this.tag('SettingsScreenContents').visible = false
+   
+ }
+
+ show() {
+    this.tag('SettingsScreenContents').visible = true
+  }
+  $hideBreadCrum(){ 
+    console.log("hide breadcrum")
+    this.tag("BreadCrumbs").visible = false;
+  }
+  $showBreadCrum(){
+  this.tag("BreadCrumbs").visible = true;
+ }
+
    static _states() {
      return [
        class NetworkConfiguration extends this {
@@ -268,6 +362,8 @@
            this._setState("Bluetooth");
          }
          _handleEnter() {
+          console.log("n/w")
+          this._setState('NetworkConfigurationOverlay')
            //Router.navigate("settings/network"); //change to state based implementation
          }
        },
@@ -286,6 +382,7 @@
          }
          _handleLeft() {}
          _handleEnter() {
+          this._setState("BluetoothScreenOverlay")
         //    Router.navigate("settings/bluetooth"); ////change to state based implementation
          }
        },
@@ -304,6 +401,7 @@
            this._setState("Audio");
          }
          _handleEnter() {
+          this._setState('VideoScreenOverlay')
         //    Router.navigate("settings/video"); //change to state based implementation
          }
        },
@@ -319,6 +417,7 @@
            this._setState("Video");
          }
          _handleEnter() {
+          this._setState('AudioScreenOverlay')
         //    Router.navigate("settings/audio"); //change to state based implementation
          }
          _handleDown() {
@@ -337,14 +436,60 @@
            this._setState("Audio");
          }
          _handleEnter() {
+          this._setState("OtherSettingsScreen")
         //    Router.navigate("settings/other"); //change to state based implementation
          }
          _handleDown() {
-           if (this.dtvPlugin) {
-             this._setState("DTVSettings");
-           }
-         }
+          this._setState("NFRStatus")
+        }
        },
+       class NFRStatus extends this{
+        $enter() {
+          this.tag('NFRStatus')._focus()
+        }
+        $exit() {
+          this.tag('NFRStatus')._unfocus()
+        }
+        _handleUp() {
+          this._setState('OtherSettings')
+        }
+        _handleDown() {
+          if (this.dtvPlugin) {
+            this._setState('DTVSettings')
+          }
+        }
+        _handleEnter() {
+          //handle Switch
+          let self = this;
+          if (Storage.get("NFRStatus")) {
+
+            thunder.call("Netflix.1", "nfrstatus", { "params": "disable" }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png"
+              Storage.set("NFRStatus", false)
+              console.log(`Netflix : nfr disable updation results in ${nr}`)
+            }).catch(nerr => {
+              console.error(`Netflix : error while updating nfrstatus`)
+              console.error(nerr)
+            })
+
+          }
+          else {
+
+            thunder.call("Netflix.1", "nfrstatus", { "params": "enable" }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png"
+              Storage.set("NFRStatus", true)
+              console.log(`Netflix : nfr enable results in ${nr}`)
+            }).catch(nerr => {
+              console.error(`Netflix : error while updating nfrstatus `)
+              console.error(nerr)
+            })
+
+          }
+
+        }
+      },
+
+
        class DTVSettings extends this {
          $enter() {
            this.tag("DTVSettings")._focus();
@@ -353,9 +498,10 @@
            this.tag("DTVSettings")._unfocus();
          }
          _handleUp() {
-           this._setState("OtherSettings");
-         }
+          this._setState('NFRStatus')
+        }
          _handleEnter() {
+          this._setState("LiveTvSettings")
             //change to state based implementation
         //    if (this.dtvPlugin) {
         //      Router.navigate("settings/livetv");
@@ -365,6 +511,123 @@
            // })
          }
        },
+       class AudioScreenOverlay extends this {
+        $enter() {
+          this.hide()
+          this.tag('AudioScreenOverlay').visible = true
+          this.$updatePageTitle('Settings  Audio')
+        }
+        _getFocused() {
+          return this.tag('AudioScreenOverlay')
+        }
+        $exit() {
+          this.show()
+          this.tag('AudioScreenOverlay').visible = false
+         this.$updatePageTitle('Settings')
+        }
+        _handleBack() {
+          console.log("1")
+          this._setState("Audio");
+        }
+      },
+      class VideoScreenOverlay extends this {
+        $enter() {
+          this.hide()
+          this.tag('VideoScreenOverlay').visible = true
+          this.$updatePageTitle('Settings  Video')
+        }
+        _getFocused() {
+          return this.tag('VideoScreenOverlay')
+        }
+        $exit() {
+          this.show()
+          this.tag('VideoScreenOverlay').visible = false
+          this.$updatePageTitle('Settings')
+        }
+        _handleBack() {
+          console.log("videopage")
+          this._setState('Video')
+        }
+      },
+      class NetworkConfigurationOverlay extends this{
+        $enter() {
+          console.log("n/w enter")
+          this.hide()
+          this.tag('NetworkConfigurationOverlay').visible = true
+          this.$updatePageTitle("Settings  Network Configuration")
+        }
+        _getFocused() {
+          return this.tag('NetworkConfigurationOverlay')
+        }
+        $exit() {
+          this.show()
+          this.tag('NetworkConfigurationOverlay').visible = false
+          this.$updatePageTitle('Settings')
+        }
+       _handleBack(){
+        this._setState("NetworkConfiguration")
+       }
+      },
+      class BluetoothScreenOverlay extends this {
+        $enter() {
+          console.log("bpscreen")
+          this.hide()
+          this.tag('BluetoothScreenOverlay').visible = true
+          this.$updatePageTitle('Settings  Bluetooth On/Off')
+        }
+        _getFocused() {
+          console.log("getfocusedbp")
+          return this.tag('BluetoothScreenOverlay')
+        }
+        $exit() {
+          this.show()
+          this.tag('BluetoothScreenOverlay').visible = false
+          this.$updatePageTitle('Settings')
+        }
+        _handleBack() {
+          this._setState('Bluetooth')
+        }
+      },
+      class OtherSettingsScreen extends this {
+        $enter() {
+          console.log("bpscreen")
+          this.hide()
+          this.tag('OtherSettingsScreen').visible = true
+          this.$updatePageTitle('Settings  Other Settings')
+        }
+        _getFocused() {
+          console.log("getfocusedbp")
+          return this.tag('OtherSettingsScreen')
+        }
+        $exit() {
+          this.show()
+          this.tag('OtherSettingsScreen').visible = false
+          this.$updatePageTitle('Settings')
+        }
+        _handleBack() {
+          this._setState('OtherSettings')
+        }
+      },
+      class LiveTvSettings extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide()
+          this.tag('LiveTvSettings').visible = true
+          this.$updatePageTitle('Settings  Pair Remote Control')
+        }
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('LiveTvSettings')
+        }
+        $exit() {
+          this.show()
+          this.tag('LiveTvSettings').visible = false
+          this.$updatePageTitle('Settings')
+        }
+        _handleBack() {
+          this._setState('DTVSettings')
+        }
+      },
      ];
    }
  }

@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.8.1
  * 
- * Generated: Fri, 14 Oct 2022 16:13:02 GMT
+ * Generated: Wed, 19 Oct 2022 06:06:38 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -4145,7 +4145,7 @@ var APP_accelerator_home_ui = (function () {
     let expired = false;
 
     try {
-      request = await loader$3(request);
+      request = await loader$4(request);
 
       if (request && !request.isCancelled) {
         // in case of on() providing we need to reset
@@ -4203,7 +4203,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const loader$3 = async request => {
+  const loader$4 = async request => {
     const route = request.route;
     const hash = request.hash;
     const register = request.register; // todo: grab from Route instance
@@ -5847,7 +5847,7 @@ var APP_accelerator_home_ui = (function () {
   let customLoader = null;
   let customUnloader = null;
 
-  const loader$2 = (url, videoEl, config) => {
+  const loader$3 = (url, videoEl, config) => {
     return customLoader && typeof customLoader === 'function' ? customLoader(url, videoEl, config) : new Promise(resolve => {
       url = mediaUrl(url);
       videoEl.setAttribute('src', url);
@@ -6007,7 +6007,7 @@ var APP_accelerator_home_ui = (function () {
           state$1.playingAds = true;
           ads.prerolls().then(() => {
             state$1.playingAds = false;
-            loader$2(url, videoEl, config).then(() => {
+            loader$3(url, videoEl, config).then(() => {
               registerEventListeners();
               this.show();
               this.play();
@@ -6824,7 +6824,7 @@ var APP_accelerator_home_ui = (function () {
       options.token = window.thunder.token();
     }
 
-    return wrapper({ ...thunder$b(options),
+    return wrapper({ ...thunder$f(options),
       ...plugins
     });
   };
@@ -6845,7 +6845,7 @@ var APP_accelerator_home_ui = (function () {
     }
   };
 
-  const thunder$b = options => ({
+  const thunder$f = options => ({
     options,
     api: API(options),
     plugin: false,
@@ -6870,7 +6870,7 @@ var APP_accelerator_home_ui = (function () {
     },
 
     registerPlugin(name, plugin) {
-      this[name] = wrapper(Object.assign(Object.create(thunder$b), plugin, {
+      this[name] = wrapper(Object.assign(Object.create(thunder$f), plugin, {
         plugin: name
       }));
     },
@@ -6930,7 +6930,7 @@ var APP_accelerator_home_ui = (function () {
           }
 
           if (typeof prop === 'object') {
-            return wrapper(Object.assign(Object.create(thunder$b(target.options)), prop, {
+            return wrapper(Object.assign(Object.create(thunder$f(target.options)), prop, {
               plugin: propKey
             }));
           }
@@ -6938,7 +6938,7 @@ var APP_accelerator_home_ui = (function () {
           return prop;
         } else {
           if (target.plugin === false) {
-            return wrapper(Object.assign(Object.create(thunder$b(target.options)), {}, {
+            return wrapper(Object.assign(Object.create(thunder$f(target.options)), {}, {
               plugin: propKey
             }));
           }
@@ -7533,7 +7533,7 @@ var APP_accelerator_home_ui = (function () {
   var activatedNetflix = false;
   var webUrl = '';
   var lightningUrl = '';
-  const config$a = {
+  const config$d = {
     host: '127.0.0.1',
     port: 9998,
     default: 1,
@@ -7541,7 +7541,7 @@ var APP_accelerator_home_ui = (function () {
       'org.rdk.System': 2
     }
   };
-  const thunder$a = thunderJS(config$a);
+  const thunder$e = thunderJS(config$d);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -7565,7 +7565,7 @@ var APP_accelerator_home_ui = (function () {
 
     fetchTimeZone() {
       return new Promise(resolve => {
-        thunder$a.call('org.rdk.System', 'getTimeZones').then(result => {
+        thunder$e.call('org.rdk.System', 'getTimeZones').then(result => {
           resolve(result.zoneinfo);
         }).catch(err => {
           console.log('Cannot fetch time zone', err);
@@ -7616,7 +7616,7 @@ var APP_accelerator_home_ui = (function () {
 
     fetchApiKey() {
       return new Promise(resolve => {
-        thunder$a.call('org.rdk.PersistentStore', 'getValue', {
+        thunder$e.call('org.rdk.PersistentStore', 'getValue', {
           namespace: 'gracenote',
           key: 'apiKey'
         }).then(result => {
@@ -7635,10 +7635,10 @@ var APP_accelerator_home_ui = (function () {
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'getDeviceInfo', {
+          thunder$e.call(systemcCallsign, 'getDeviceInfo', {
             params: 'estb_ip'
           }).then(result => {
             resolve(result.success);
@@ -7656,7 +7656,7 @@ var APP_accelerator_home_ui = (function () {
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
-        thunder$a.call(systemcCallsign, 'getTimeZoneDST').then(result => {
+        thunder$e.call(systemcCallsign, 'getTimeZoneDST').then(result => {
           resolve(result.timeZone);
         }).catch(err => {
           console.log('Failed to fetch Time Zone');
@@ -7668,7 +7668,7 @@ var APP_accelerator_home_ui = (function () {
     setZone(zone) {
       console.log(zone);
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'setTimeZoneDST', {
+        thunder$e.call('org.rdk.System', 'setTimeZoneDST', {
           timeZone: zone
         }).then(result => {
           resolve(result.success);
@@ -7680,7 +7680,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPluginStatus(plugin) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('Controller', "status@".concat(plugin)).then(result => {
+        thunder$e.call('Controller', "status@".concat(plugin)).then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -7694,7 +7694,7 @@ var APP_accelerator_home_ui = (function () {
 
     getResolution() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
           "videoDisplay": "HDMI0"
         }).then(result => {
           resolve(result.resolution);
@@ -7707,7 +7707,7 @@ var APP_accelerator_home_ui = (function () {
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.DisplaySettings";
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {}).catch(err => {
           console.error("error while activating the displaysettings plugin");
@@ -7718,10 +7718,10 @@ var APP_accelerator_home_ui = (function () {
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'getSupportedResolutions', {
+          thunder$e.call(systemcCallsign, 'getSupportedResolutions', {
             params: 'HDMI0'
           }).then(result => {
             resolve(result.supportedResolutions);
@@ -7741,10 +7741,10 @@ var APP_accelerator_home_ui = (function () {
     setResolution(res) {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'setCurrentResolution', {
+          thunder$e.call(systemcCallsign, 'setCurrentResolution', {
             videoDisplay: 'HDMI0',
             resolution: res,
             persist: true
@@ -7767,10 +7767,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdcpProfile';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'getHDCPStatus').then(result => {
+          thunder$e.call(systemcCallsign, 'getHDCPStatus').then(result => {
             resolve(result.HDCPStatus);
             console.log("HDCP Status from AppApi.js : " + JSON.stringify(result.HDCPStatus));
           }).catch(err => {
@@ -7789,10 +7789,10 @@ var APP_accelerator_home_ui = (function () {
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'getTvHDRSupport').then(result => {
+          thunder$e.call(systemcCallsign, 'getTvHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7811,10 +7811,10 @@ var APP_accelerator_home_ui = (function () {
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
+          thunder$e.call(systemcCallsign, 'getSettopHDRSupport').then(result => {
             resolve(result);
             console.log("HDR Support Status for STB from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7833,10 +7833,10 @@ var APP_accelerator_home_ui = (function () {
     getHDRSetting() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'DisplayInfo';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'hdrsetting').then(result => {
+          thunder$e.call(systemcCallsign, 'hdrsetting').then(result => {
             resolve(result);
             console.log("HDR format in use from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7856,10 +7856,10 @@ var APP_accelerator_home_ui = (function () {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'OCDM';
-        thunder$a.Controller.activate({
+        thunder$e.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
-          thunder$a.call(systemcCallsign, 'drms').then(result => {
+          thunder$e.call(systemcCallsign, 'drms').then(result => {
             resolve(result);
             console.log("supported drms from AppApi.js : " + JSON.stringify(result));
           }).catch(err => {
@@ -7878,7 +7878,7 @@ var APP_accelerator_home_ui = (function () {
     clearCache() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'ResidentApp';
-        thunder$a.call(systemcCallsign, 'delete', {
+        thunder$e.call(systemcCallsign, 'delete', {
           path: ".cache"
         }).then(result => {
           resolve(result);
@@ -8018,7 +8018,7 @@ var APP_accelerator_home_ui = (function () {
           if (url) {
             try {
               console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ", url, IIDqueryString);
-              await thunder$a.call("Netflix", "systemcommand", {
+              await thunder$e.call("Netflix", "systemcommand", {
                 command: url + IIDqueryString
               });
             } catch (err) {
@@ -8027,7 +8027,7 @@ var APP_accelerator_home_ui = (function () {
           } else {
             try {
               console.log("Netflix HotLaunch passing netflix IIDqueryString using systemcommand method: ", IIDqueryString);
-              await thunder$a.call("Netflix", "systemcommand", {
+              await thunder$e.call("Netflix", "systemcommand", {
                 command: IIDqueryString
               });
             } catch (err) {
@@ -8076,7 +8076,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (currentApp === "" && callsign !== "Netflix") {
         //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack | for netflix keep the splash screen visible till it launches
-        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
           "client": "ResidentApp",
           "visible": false
         });
@@ -8084,23 +8084,23 @@ var APP_accelerator_home_ui = (function () {
 
       console.log("Calling launchApp with params: ", params);
       return new Promise((resolve, reject) => {
-        thunder$a.call("org.rdk.RDKShell", "launch", params).then(res => {
+        thunder$e.call("org.rdk.RDKShell", "launch", params).then(res => {
           console.log("".concat(callsign, " : Launch results in ").concat(JSON.stringify(res)));
 
           if (res.success) {
-            thunder$a.call("org.rdk.RDKShell", "moveToFront", {
+            thunder$e.call("org.rdk.RDKShell", "moveToFront", {
               "client": callsign,
               "callsign": callsign
             }).catch(err => {
               console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
             });
-            thunder$a.call("org.rdk.RDKShell", "setFocus", {
+            thunder$e.call("org.rdk.RDKShell", "setFocus", {
               "client": callsign,
               "callsign": callsign
             }).catch(err => {
               console.error("failed to setFocus : ", callsign, " ERROR: ", JSON.stringify(err));
             });
-            thunder$a.call("org.rdk.RDKShell", "setVisibility", {
+            thunder$e.call("org.rdk.RDKShell", "setVisibility", {
               "client": callsign,
               "visible": true
             }).catch(err => {
@@ -8109,7 +8109,7 @@ var APP_accelerator_home_ui = (function () {
 
             if (callsign === "Netflix") {
               console.log("Netflix launched: hiding residentApp");
-              thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
+              thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
                 "client": "ResidentApp",
                 "visible": false
               }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
@@ -8118,7 +8118,7 @@ var APP_accelerator_home_ui = (function () {
             if (callsign === "Cobalt" && url && !params.configuration) {
               //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
               console.log("Calling deeplink for cobalt with url: " + url);
-              thunder$a.call(callsign, 'deeplink', url);
+              thunder$e.call(callsign, 'deeplink', url);
             }
 
             Storage.set("applicationType", callsign);
@@ -8130,7 +8130,7 @@ var APP_accelerator_home_ui = (function () {
         }).catch(err => {
           console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back"); //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
 
-          thunder$a.call('org.rdk.RDKShell', 'destroy', {
+          thunder$e.call('org.rdk.RDKShell', 'destroy', {
             "callsign": callsign
           });
           this.launchResidentApp();
@@ -8193,7 +8193,7 @@ var APP_accelerator_home_ui = (function () {
 
 
       console.log("setting visibility of " + callsign + " to false");
-      await thunder$a.call("org.rdk.RDKShell", "setVisibility", {
+      await thunder$e.call("org.rdk.RDKShell", "setVisibility", {
         "client": callsign,
         "visible": false
       }).catch(err => {
@@ -8202,7 +8202,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (forceDestroy) {
         console.log("Force Destroying the app: ", callsign);
-        await thunder$a.call('org.rdk.RDKShell', 'destroy', {
+        await thunder$e.call('org.rdk.RDKShell', 'destroy', {
           "callsign": callsign
         });
         return Promise.resolve(true);
@@ -8210,17 +8210,17 @@ var APP_accelerator_home_ui = (function () {
         console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended")); //enableAppSuspended = true means apps will be suspended by default
 
         if (Settings.get("platform", "enableAppSuspended")) {
-          await thunder$a.call('org.rdk.RDKShell', 'suspend', {
+          await thunder$e.call('org.rdk.RDKShell', 'suspend', {
             "callsign": callsign
           }).catch(err => {
             console.error("Error in suspending app: ", callsign, " | trying to destroy the app");
-            thunder$a.call('org.rdk.RDKShell', 'destroy', {
+            thunder$e.call('org.rdk.RDKShell', 'destroy', {
               "callsign": callsign
             });
           });
           return Promise.resolve(true);
         } else {
-          await thunder$a.call('org.rdk.RDKShell', 'destroy', {
+          await thunder$e.call('org.rdk.RDKShell', 'destroy', {
             "callsign": callsign
           });
           return Promise.resolve(true);
@@ -8235,19 +8235,19 @@ var APP_accelerator_home_ui = (function () {
 
     async launchResidentApp() {
       console.log("launchResidentApp got Called: setting visibility, focus and moving to front the ResidentApp");
-      await thunder$a.call("org.rdk.RDKShell", "moveToFront", {
+      await thunder$e.call("org.rdk.RDKShell", "moveToFront", {
         "client": "ResidentApp",
         "callsign": "ResidentApp"
       }).catch(err => {
         console.error("failed to moveToFront : ResidentApp ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
       });
-      await thunder$a.call("org.rdk.RDKShell", "setFocus", {
+      await thunder$e.call("org.rdk.RDKShell", "setFocus", {
         "client": "ResidentApp",
         "callsign": "ResidentApp"
       }).catch(err => {
         console.error("failed to setFocus : ResidentApp ERROR: ", JSON.stringify(err));
       });
-      await thunder$a.call("org.rdk.RDKShell", "setVisibility", {
+      await thunder$e.call("org.rdk.RDKShell", "setVisibility", {
         "client": "ResidentApp",
         "visible": true
       }).catch(err => {
@@ -8295,14 +8295,14 @@ var APP_accelerator_home_ui = (function () {
         const childCallsign = 'HtmlApp';
 
         if (webUrl != url) {
-          thunder$a.call('org.rdk.RDKShell', 'launch', {
+          thunder$e.call('org.rdk.RDKShell', 'launch', {
             callsign: childCallsign,
             type: childCallsign,
             uri: url
           }).then(res => {
             console.log("WebApp : webapp launch resulted in : ", JSON.stringify(res));
             this.setVisibility("ResidentApp", false);
-            thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+            thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
               client: childCallsign
             });
             resolve(true);
@@ -8311,10 +8311,10 @@ var APP_accelerator_home_ui = (function () {
             reject(false);
           });
         } else {
-          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$e.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
           resolve(true);
@@ -8335,7 +8335,7 @@ var APP_accelerator_home_ui = (function () {
         const childCallsign = 'LightningApp';
 
         if (lightningUrl != url) {
-          thunder$a.call('org.rdk.RDKShell', 'launch', {
+          thunder$e.call('org.rdk.RDKShell', 'launch', {
             callsign: 'Lightning',
             type: childCallsign,
             uri: url
@@ -8347,10 +8347,10 @@ var APP_accelerator_home_ui = (function () {
             reject(false);
           });
         } else {
-          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
-          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$e.call('org.rdk.RDKShell', 'setFocus', {
             client: childCallsign
           });
           resolve(true);
@@ -8369,21 +8369,21 @@ var APP_accelerator_home_ui = (function () {
     launchCobalt(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'Cobalt';
-        thunder$a.call('org.rdk.RDKShell', 'launch', {
+        thunder$e.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: childCallsign
         }).then(res => {
           if (url) {
-            thunder$a.call('Cobalt', 'deeplink', url);
+            thunder$e.call('Cobalt', 'deeplink', url);
           }
 
           this.setVisibility("ResidentApp", false);
-          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
             client: "Cobalt"
           }).catch(err => {
             console.error(err);
           });
-          thunder$a.call("org.rdk.RDKShell", "setFocus", {
+          thunder$e.call("org.rdk.RDKShell", "setFocus", {
             client: childCallsign
           }).catch(err => {
             console.error(err);
@@ -8405,7 +8405,7 @@ var APP_accelerator_home_ui = (function () {
 
     launchPremiumAppInSuspendMode(childCallsign) {
       return new Promise((resolve, reject) => {
-        thunder$a.call("org.rdk.RDKShell", "launch", {
+        thunder$e.call("org.rdk.RDKShell", "launch", {
           callsign: childCallsign,
           type: childCallsign,
           suspend: true,
@@ -8437,7 +8437,7 @@ var APP_accelerator_home_ui = (function () {
 
     launchPremiumApp(childCallsign) {
       return new Promise((resolve, reject) => {
-        thunder$a.call("org.rdk.RDKShell", "launch", {
+        thunder$e.call("org.rdk.RDKShell", "launch", {
           callsign: childCallsign,
           type: childCallsign,
           visible: true,
@@ -8468,15 +8468,15 @@ var APP_accelerator_home_ui = (function () {
     }
 
     launchPremiumAppURL(childCallsign, url) {
-      thunder$a.call("org.rdk.RDKShell", "launch", {
+      thunder$e.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
         type: childCallsign
       }).then(() => {
-        thunder$a.call("org.rdk.RDKShell", "moveToFront", {
+        thunder$e.call("org.rdk.RDKShell", "moveToFront", {
           client: childCallsign
         });
-        thunder$a.call(childCallsign, 'deeplink', url);
-        thunder$a.call("org.rdk.RDKShell", "setFocus", {
+        thunder$e.call(childCallsign, 'deeplink', url);
+        thunder$e.call("org.rdk.RDKShell", "setFocus", {
           client: childCallsign
         });
       }).catch(err => {});
@@ -8491,7 +8491,7 @@ var APP_accelerator_home_ui = (function () {
     launchResident(url, client) {
       return new Promise((resolve, reject) => {
         const childCallsign = client;
-        thunder$a.call('org.rdk.RDKShell', 'launch', {
+        thunder$e.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: 'ResidentApp',
           uri: url
@@ -8508,12 +8508,12 @@ var APP_accelerator_home_ui = (function () {
     launchOverlay(url, client) {
       return new Promise(resolve => {
         const childCallsign = client;
-        thunder$a.call('org.rdk.RDKShell', 'launch', {
+        thunder$e.call('org.rdk.RDKShell', 'launch', {
           callsign: childCallsign,
           type: 'ResidentApp',
           uri: url
         }).then(res => {
-          thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+          thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
             client: childCallsign
           });
           console.log("Overlay : launched overlay : ", res);
@@ -8531,7 +8531,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendWeb() {
       webUrl = '';
-      thunder$a.call('org.rdk.RDKShell', 'suspend', {
+      thunder$e.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'HtmlApp'
       });
     }
@@ -8542,7 +8542,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendLightning() {
       lightningUrl = '';
-      thunder$a.call('org.rdk.RDKShell', 'suspend', {
+      thunder$e.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'Lightning'
       });
     }
@@ -8553,7 +8553,7 @@ var APP_accelerator_home_ui = (function () {
 
     suspendPremiumApp(appName) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RDKShell', 'suspend', {
+        thunder$e.call('org.rdk.RDKShell', 'suspend', {
           callsign: appName
         }).then(res => {
           resolve(true);
@@ -8568,7 +8568,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateWeb() {
-      thunder$a.call('org.rdk.RDKShell', 'destroy', {
+      thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'HtmlApp'
       });
       activatedWeb = false;
@@ -8580,7 +8580,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateCobalt() {
-      thunder$a.call('org.rdk.RDKShell', 'destroy', {
+      thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
@@ -8588,7 +8588,7 @@ var APP_accelerator_home_ui = (function () {
 
     cobaltStateChangeEvent() {
       try {
-        thunder$a.on('Controller', 'statechange', notification => {
+        thunder$e.on('Controller', 'statechange', notification => {
           if (this._events.has('statechange')) {
             this._events.get('statechange')(notification);
           }
@@ -8603,7 +8603,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateNativeApp(appName) {
-      thunder$a.call('org.rdk.RDKShell', 'destroy', {
+      thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: appName
       });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
@@ -8614,7 +8614,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateLightning() {
-      thunder$a.call('org.rdk.RDKShell', 'destroy', {
+      thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Lightning'
       });
       activatedLightning = false;
@@ -8626,7 +8626,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     deactivateResidentApp(client) {
-      thunder$a.call('org.rdk.RDKShell', 'destroy', {
+      thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: client
       });
     }
@@ -8639,13 +8639,13 @@ var APP_accelerator_home_ui = (function () {
 
     setVisibility(client, visible) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
 
         if (visible) {
-          thunder$a.call('org.rdk.RDKShell', 'setFocus', {
+          thunder$e.call('org.rdk.RDKShell', 'setFocus', {
             client: client
           }).then(res => {
             resolve(true);
@@ -8659,7 +8659,7 @@ var APP_accelerator_home_ui = (function () {
 
     visibile(client, visible) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RDKShell', 'setVisibility', {
+        thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
@@ -8668,7 +8668,7 @@ var APP_accelerator_home_ui = (function () {
 
     enabledisableinactivityReporting(bool) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RDKShell', 'enableInactivityReporting', {
+        thunder$e.call('org.rdk.RDKShell', 'enableInactivityReporting', {
           "enable": bool
         }).then(result => {
           resolve(result);
@@ -8681,7 +8681,7 @@ var APP_accelerator_home_ui = (function () {
 
     setInactivityInterval(t) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RDKShell', 'setInactivityInterval', {
+        thunder$e.call('org.rdk.RDKShell', 'setInactivityInterval', {
           "interval": t
         }).then(result => {
           resolve(result);
@@ -8692,20 +8692,20 @@ var APP_accelerator_home_ui = (function () {
     }
 
     zorder(cli) {
-      thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
+      thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
         client: cli,
         callsign: cli
       });
     }
 
     setFocus(cli) {
-      thunder$a.call('org.rdk.RDKShell', 'setFocus', {
+      thunder$e.call('org.rdk.RDKShell', 'setFocus', {
         client: cli
       });
     }
 
     moveToBack(cli) {
-      thunder$a.call('org.rdk.RDKShell', 'moveToBack', {
+      thunder$e.call('org.rdk.RDKShell', 'moveToBack', {
         client: cli
       });
     }
@@ -8720,9 +8720,9 @@ var APP_accelerator_home_ui = (function () {
       let plugin = 'Controller';
       let method = 'configuration@' + appName;
       return new Promise((resolve, reject) => {
-        thunder$a.call(plugin, method).then(res => {
+        thunder$e.call(plugin, method).then(res => {
           res.querystring = config_data;
-          thunder$a.call(plugin, method, res).then(resp => {
+          thunder$e.call(plugin, method, res).then(resp => {
             console.log("".concat(appName, " : updating configuration with object ").concat(res, " results in ").concat(resp));
             resolve(true);
           }).catch(err => {
@@ -8742,7 +8742,7 @@ var APP_accelerator_home_ui = (function () {
     launchNative(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'testApp';
-        thunder$a.call('org.rdk.RDKShell', 'launchApplication', {
+        thunder$e.call('org.rdk.RDKShell', 'launchApplication', {
           client: childCallsign,
           uri: url,
           mimeType: 'application/native'
@@ -8761,7 +8761,7 @@ var APP_accelerator_home_ui = (function () {
 
 
     killNative() {
-      thunder$a.call('org.rdk.RDKShell', 'kill', {
+      thunder$e.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
     }
@@ -8787,7 +8787,7 @@ var APP_accelerator_home_ui = (function () {
 
     standby(value) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'setPowerState', {
+        thunder$e.call('org.rdk.System', 'setPowerState', {
           "powerState": value,
           "standbyReason": "Requested by user"
         }).then(result => {
@@ -8800,7 +8800,7 @@ var APP_accelerator_home_ui = (function () {
 
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('Controller', 'activate', {
+        thunder$e.call('Controller', 'activate', {
           callsign: 'org.rdk.DisplaySettings'
         }).then(result => {
           console.log('Successfully enabled DisplaySettings Service');
@@ -8814,7 +8814,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSoundMode() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getSoundMode', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getSoundMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8829,7 +8829,7 @@ var APP_accelerator_home_ui = (function () {
       mode = mode.startsWith("AUTO") ? "AUTO" : mode;
       console.log("mode", mode);
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setSoundMode', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setSoundMode', {
           "audioPort": "HDMI0",
           "soundMode": mode,
           "persist": true
@@ -8844,7 +8844,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioModes() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8858,7 +8858,7 @@ var APP_accelerator_home_ui = (function () {
 
     setEnableAudioPort(port) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
           "audioPort": port,
           "enable": true
         }).then(result => {
@@ -8872,7 +8872,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDRCMode() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getDRCMode', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getDRCMode', {
           "audioPort": "HDMI0"
         }).then(result => {
           resolve(result);
@@ -8885,7 +8885,7 @@ var APP_accelerator_home_ui = (function () {
 
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setDRCMode', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setDRCMode', {
           "DRCMode": DRCNum
         }).then(result => {
           resolve(result);
@@ -8898,7 +8898,7 @@ var APP_accelerator_home_ui = (function () {
 
     getZoomSetting() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
+        thunder$e.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting Zoom Setting", JSON.stringify(err));
@@ -8909,7 +8909,7 @@ var APP_accelerator_home_ui = (function () {
 
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setZoomSetting', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setZoomSetting', {
           "zoomSetting": zoom
         }).then(result => {
           resolve(result);
@@ -8922,7 +8922,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
           "audioPort": audioPort
         }).then(result => {
           resolve(result);
@@ -8935,7 +8935,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
+        thunder$e.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error while getting S upported audio ports ", JSON.stringify(err));
@@ -8950,7 +8950,7 @@ var APP_accelerator_home_ui = (function () {
 
     speak() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.TextToSpeech', 'speak', {
+        thunder$e.call('org.rdk.TextToSpeech', 'speak', {
           "text": "speech_1"
         }).then(result => {
           resolve(result);
@@ -8964,7 +8964,7 @@ var APP_accelerator_home_ui = (function () {
 
     resume() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.TextToSpeech', 'resume', {
+        thunder$e.call('org.rdk.TextToSpeech', 'resume', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8978,7 +8978,7 @@ var APP_accelerator_home_ui = (function () {
 
     pause() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.TextToSpeech', 'pause', {
+        thunder$e.call('org.rdk.TextToSpeech', 'pause', {
           "speechid": 1
         }).then(result => {
           resolve(result);
@@ -8992,7 +8992,7 @@ var APP_accelerator_home_ui = (function () {
 
     getlistVoices() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.TextToSpeech', 'listvoices', {
+        thunder$e.call('org.rdk.TextToSpeech', 'listvoices', {
           "language": "en-US"
         }).then(result => {
           resolve(result);
@@ -9006,7 +9006,7 @@ var APP_accelerator_home_ui = (function () {
 
     syncLocation() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('LocationSync', 'sync').then(result => {
+        thunder$e.call('LocationSync', 'sync').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in syncing location:", JSON.stringify(err, 3, null));
@@ -9017,7 +9017,7 @@ var APP_accelerator_home_ui = (function () {
 
     getLocation() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('LocationSync', 'location').then(result => {
+        thunder$e.call('LocationSync', 'location').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting location:", JSON.stringify(err, 3, null));
@@ -9030,7 +9030,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateInfo() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
+        thunder$e.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update info:", JSON.stringify(err, 3, null));
@@ -9042,7 +9042,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareUpdateState() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
+        thunder$e.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting firmware update state:", JSON.stringify(err, 3, null));
@@ -9054,7 +9054,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
+        thunder$e.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded info:", JSON.stringify(err, 3, null));
@@ -9066,7 +9066,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSerialNumber() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getSerialNumber').then(result => {
+        thunder$e.call('org.rdk.System', 'getSerialNumber').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -9078,7 +9078,7 @@ var APP_accelerator_home_ui = (function () {
 
     getSystemVersions() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getSystemVersions').then(result => {
+        thunder$e.call('org.rdk.System', 'getSystemVersions').then(result => {
           console.log(JSON.stringify(result, 3, null));
           resolve(result);
         }).catch(err => {
@@ -9091,7 +9091,7 @@ var APP_accelerator_home_ui = (function () {
 
     updateFirmware() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'updateFirmware').then(result => {
+        thunder$e.call('org.rdk.System', 'updateFirmware').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in firmware update:", JSON.stringify(err, 3, null));
@@ -9103,7 +9103,7 @@ var APP_accelerator_home_ui = (function () {
 
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
+        thunder$e.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting downloaded percentage:", JSON.stringify(err, 3, null));
@@ -9115,7 +9115,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDeviceIdentification() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('DeviceIdentification', 'deviceidentification').then(result => {
+        thunder$e.call('DeviceIdentification', 'deviceidentification').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting device Identification:", JSON.stringify(err, 3, null));
@@ -9127,7 +9127,7 @@ var APP_accelerator_home_ui = (function () {
 
     systeminfo() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('DeviceInfo', 'systeminfo').then(result => {
+        thunder$e.call('DeviceInfo', 'systeminfo').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting system info:", JSON.stringify(err, 3, null));
@@ -9139,7 +9139,7 @@ var APP_accelerator_home_ui = (function () {
 
     reboot() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'reboot', {
+        thunder$e.call('org.rdk.System', 'reboot', {
           "rebootReason": "FIRMWARE_FAILURE"
         }).then(result => {
           resolve(result);
@@ -9152,7 +9152,7 @@ var APP_accelerator_home_ui = (function () {
 
     getNetflixESN() {
       return new Promise(resolve => {
-        thunder$a.call('Netflix', 'esn').then(res => {
+        thunder$e.call('Netflix', 'esn').then(res => {
           resolve(res);
         });
       });
@@ -9161,7 +9161,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPreferredStandbyMode() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
+        thunder$e.call('org.rdk.System', 'getPreferredStandbyMode').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getPreferredStandbyMode:", JSON.stringify(err, 3, null));
@@ -9173,7 +9173,7 @@ var APP_accelerator_home_ui = (function () {
     setPreferredStandbyMode(standbyMode) {
       console.log("setPreferredStandbyMode called : " + standbyMode);
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.System', 'setPreferredStandbyMode', {
+        thunder$e.call('org.rdk.System', 'setPreferredStandbyMode', {
           "standbyMode": standbyMode
         }).then(result => {
           resolve(result);
@@ -9186,10 +9186,10 @@ var APP_accelerator_home_ui = (function () {
 
     registerChangeLocation() {
       var callsign = "LocationSync";
-      thunder$a.call('Controller', 'activate', {
+      thunder$e.call('Controller', 'activate', {
         callsign: callsign
       }).then(result => {
-        thunder$a.on(callsign, "locationchange", notification => {
+        thunder$e.on(callsign, "locationchange", notification => {
           console.log("location was changed and the notification = ", notification);
         });
       }).catch(err => {
@@ -9198,7 +9198,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     async sendAppState(value) {
-      const state = await thunder$a.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
+      const state = await thunder$e.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
       this.state = state;
       let params = {
         applicationName: value,
@@ -9222,14 +9222,14 @@ var APP_accelerator_home_ui = (function () {
         activatedCobalt = false;
       }
 
-      await thunder$a.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
+      await thunder$e.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
     } //NETWORK INFO APIS
     //1. Get IP Setting
 
 
     getIPSetting(defaultInterface) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.Network', 'getIPSettings', {
+        thunder$e.call('org.rdk.Network', 'getIPSettings', {
           "interface": defaultInterface
         }).then(result => {
           resolve(result);
@@ -9243,7 +9243,7 @@ var APP_accelerator_home_ui = (function () {
 
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.Network', 'getDefaultInterface').then(result => {
+        thunder$e.call('org.rdk.Network', 'getDefaultInterface').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting default interface:", JSON.stringify(err, 3, null));
@@ -9255,7 +9255,7 @@ var APP_accelerator_home_ui = (function () {
 
     isInterfaceEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.Network', 'isInterfaceEnabled', {
+        thunder$e.call('org.rdk.Network', 'isInterfaceEnabled', {
           "interface": "WIFI"
         }).then(result => {
           resolve(result);
@@ -9269,7 +9269,7 @@ var APP_accelerator_home_ui = (function () {
 
     getInterfaces() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.Network', 'getInterfaces').then(result => {
+        thunder$e.call('org.rdk.Network', 'getInterfaces').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting interfaces:", JSON.stringify(err, 3, null));
@@ -9281,7 +9281,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedSSID() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
+        thunder$e.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
           resolve(result);
         }).catch(err => {
           console.log("error in getting connected SSID:", JSON.stringify(err, 3, null));
@@ -9293,7 +9293,7 @@ var APP_accelerator_home_ui = (function () {
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {}).then(result => {
+        thunder$e.call('org.rdk.DisplaySettings', 'getConnectedAudioPorts', {}).then(result => {
           resolve(result);
         }).catch(err => {
           console.log('audio mute error:', JSON.stringify(err, 3, null));
@@ -9304,7 +9304,7 @@ var APP_accelerator_home_ui = (function () {
 
     getVolumeLevel(port) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
           audioPort: port
         }).then(result => {
           resolve(result);
@@ -9317,7 +9317,7 @@ var APP_accelerator_home_ui = (function () {
 
     muteStatus(port) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'getMuted', {
+        thunder$e.call('org.rdk.DisplaySettings', 'getMuted', {
           audioPort: port
         }).then(result => {
           resolve(result);
@@ -9330,7 +9330,7 @@ var APP_accelerator_home_ui = (function () {
 
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
           audioPort: port,
           volumeLevel: volume
         }).then(result => {
@@ -9346,7 +9346,7 @@ var APP_accelerator_home_ui = (function () {
 
     audio_mute(audio_source, value) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.DisplaySettings', 'setMuted', {
+        thunder$e.call('org.rdk.DisplaySettings', 'setMuted', {
           audioPort: audio_source,
           muted: value
         }).then(result => {
@@ -9361,7 +9361,7 @@ var APP_accelerator_home_ui = (function () {
 
     getPluginStatusParams(plugin) {
       return new Promise((resolve, reject) => {
-        thunder$a.call('Controller', "status@".concat(plugin)).then(result => {
+        thunder$e.call('Controller', "status@".concat(plugin)).then(result => {
           console.log("pluginstatus", result);
           let pluginParams = [result[0].callsign, result[0].state];
           resolve(pluginParams);
@@ -9375,7 +9375,7 @@ var APP_accelerator_home_ui = (function () {
 
     activateAutoPairing() {
       return new Promise((resolve, reject) => {
-        thunder$a.call('org.rdk.RemoteControl', 'startPairing', {
+        thunder$e.call('org.rdk.RemoteControl', 'startPairing', {
           "netType": '1',
           "timeout": '30'
         }).then(result => {
@@ -10240,8 +10240,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage.set("ipAddress", null);
   });
-  let appApi$7 = new AppApi();
-  appApi$7.getIP().then(ip => {
+  let appApi$a = new AppApi();
+  appApi$a.getIP().then(ip => {
     IpAddress2 = ip;
   });
   /**
@@ -10371,7 +10371,7 @@ var APP_accelerator_home_ui = (function () {
 
     getMovieSubscriptions(id) {
       return new Promise((resolve, reject) => {
-        appApi$7.fetchApiKey().then(res => {
+        appApi$a.fetchApiKey().then(res => {
           // console.log("Key is: ", res);
           // console.log("tmsID is :", id);
           try {
@@ -10387,7 +10387,7 @@ var APP_accelerator_home_ui = (function () {
 
     getAPIKey() {
       return new Promise((resolve, reject) => {
-        appApi$7.fetchApiKey().then(res => {
+        appApi$a.fetchApiKey().then(res => {
           let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
           month += 1;
           day = day.toString();
@@ -10645,21 +10645,21 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$9 = {
+  const config$c = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  const thunder$9 = thunderJS(config$9);
-  const systemcCallsign$1 = "DTV";
+  const thunder$d = thunderJS(config$c);
+  const systemcCallsign$2 = "DTV";
   let playerID = -1; //set to -1 to indicate nothing is currently playing
   //plugin is activated by default, no need to call explicitly
 
   class DTVApi {
     activate() {
       return new Promise((resolve, reject) => {
-        thunder$9.Controller.activate({
-          callsign: systemcCallsign$1
+        thunder$d.Controller.activate({
+          callsign: systemcCallsign$2
         }).then(() => {
           resolve(true);
         }).catch(err => {
@@ -10671,8 +10671,8 @@ var APP_accelerator_home_ui = (function () {
 
     deactivate() {
       return new Promise((resolve, reject) => {
-        thunder$9.Controller.deactivate({
-          callsign: systemcCallsign$1
+        thunder$d.Controller.deactivate({
+          callsign: systemcCallsign$2
         }).then(() => {
           resolve(true);
         }).catch(err => {
@@ -10685,7 +10685,7 @@ var APP_accelerator_home_ui = (function () {
 
     noOfCountries() {
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "numberOfCountries").then(result => {
+        thunder$d.call(systemcCallsign$2, "numberOfCountries").then(result => {
           resolve(result);
         }).catch(err => {
           console.log("Error: noOfCountries: ", JSON.stringify(err));
@@ -10697,7 +10697,7 @@ var APP_accelerator_home_ui = (function () {
 
     countryList() {
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "countryList").then(result => {
+        thunder$d.call(systemcCallsign$2, "countryList").then(result => {
           resolve(result);
         }).catch(err => {
           console.log("Error: countryList: ", JSON.stringify(err));
@@ -10722,7 +10722,7 @@ var APP_accelerator_home_ui = (function () {
         lcn: 0
       }];
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "serviceList@dvbs").then(result => {
+        thunder$d.call(systemcCallsign$2, "serviceList@dvbs").then(result => {
           arr = arr.concat(result);
           console.log("serviceListResult: ", JSON.stringify(arr));
           resolve(arr);
@@ -10737,7 +10737,7 @@ var APP_accelerator_home_ui = (function () {
     scheduleEvents(dvburi) {
       let method = 'scheduleEvents@' + dvburi;
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, method).then(result => {
+        thunder$d.call(systemcCallsign$2, method).then(result => {
           console.log("scheduleEventsResult: ", JSON.stringify(result));
 
           for (let show of result) {
@@ -10757,7 +10757,7 @@ var APP_accelerator_home_ui = (function () {
     satelliteList() {
       return new Promise((resolve, reject) => {
         // resolve([{name: "Satellite 1",longitude: 282,lnb: "Universal" },{name: "Satellite 2",longitude: 282,lnb: "Universal" }]) //#forTesting
-        thunder$9.call(systemcCallsign$1, "satelliteList").then(result => {
+        thunder$d.call(systemcCallsign$2, "satelliteList").then(result => {
           if (result.length === 0) {
             result = [{
               "name": "Astra 28.2E",
@@ -10812,7 +10812,7 @@ var APP_accelerator_home_ui = (function () {
 
     startServiceSearch(params) {
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "startServiceSearch", params).then(result => {
+        thunder$d.call(systemcCallsign$2, "startServiceSearch", params).then(result => {
           //console.log("serviceSearchResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10825,7 +10825,7 @@ var APP_accelerator_home_ui = (function () {
 
     noOfServices() {
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "numberOfServices").then(result => {
+        thunder$d.call(systemcCallsign$2, "numberOfServices").then(result => {
           //console.log("numberOfServicesResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10839,7 +10839,7 @@ var APP_accelerator_home_ui = (function () {
     nowNextEvents(dvburi) {
       let method = "nowNextEvents@" + dvburi;
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, method).then(result => {
+        thunder$d.call(systemcCallsign$2, method).then(result => {
           //console.log("nowNextEventsResult: ", JSON.stringify(result));
           resolve(result);
         }).catch(err => {
@@ -10859,7 +10859,7 @@ var APP_accelerator_home_ui = (function () {
       }
 
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "startPlaying", params).then(result => {
+        thunder$d.call(systemcCallsign$2, "startPlaying", params).then(result => {
           console.log("RESULT: startPlaying: ", JSON.stringify(result));
 
           if (result === -1) {
@@ -10878,7 +10878,7 @@ var APP_accelerator_home_ui = (function () {
 
     stopPlaying() {
       return new Promise((resolve, reject) => {
-        thunder$9.call(systemcCallsign$1, "stopPlaying", playerID).then(result => {
+        thunder$d.call(systemcCallsign$2, "stopPlaying", playerID).then(result => {
           //playerID is retuned from startPlaying method
           console.log("RESULT: stopPlaying: ", JSON.stringify(result)); //result is always null
 
@@ -10989,12 +10989,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$8 = {
+  const config$b = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  var thunder$8 = thunderJS(config$8);
+  var thunder$c = thunderJS(config$b);
   /**
    * Class for settings screen.
    */
@@ -11372,7 +11372,7 @@ var APP_accelerator_home_ui = (function () {
           let self = this;
 
           if (Storage.get("NFRStatus")) {
-            thunder$8.call("Netflix.1", "nfrstatus", {
+            thunder$c.call("Netflix.1", "nfrstatus", {
               "params": "disable"
             }).then(nr => {
               self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
@@ -11383,7 +11383,7 @@ var APP_accelerator_home_ui = (function () {
               console.error(nerr);
             });
           } else {
-            thunder$8.call("Netflix.1", "nfrstatus", {
+            thunder$c.call("Netflix.1", "nfrstatus", {
               "params": "enable"
             }).then(nr => {
               self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png";
@@ -11688,7 +11688,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$7 = {
+  const config$a = {
     host: '127.0.0.1',
     port: 9998,
     versions: {
@@ -11697,7 +11697,7 @@ var APP_accelerator_home_ui = (function () {
       UsbAccess: 2
     }
   };
-  var thunder$7 = thunderJS(config$7);
+  var thunder$b = thunderJS(config$a);
   /**
    * Class that contains functions which commuicates with thunder API's
    */
@@ -11709,7 +11709,7 @@ var APP_accelerator_home_ui = (function () {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$7.Controller.activate({
+        thunder$b.Controller.activate({
           callsign: systemcCallsign
         }).then(res => {
           resolve(res);
@@ -11727,7 +11727,7 @@ var APP_accelerator_home_ui = (function () {
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$7.Controller.deactivate({
+        thunder$b.Controller.deactivate({
           callsign: systemcCallsign
         }).then(res => {
           resolve(res);
@@ -11745,7 +11745,7 @@ var APP_accelerator_home_ui = (function () {
     clearLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$7.call(systemcCallsign, 'clearLink').then(result => {
+        thunder$b.call(systemcCallsign, 'clearLink').then(result => {
           resolve(result);
         }).catch(err => {
           resolve(false);
@@ -11760,7 +11760,7 @@ var APP_accelerator_home_ui = (function () {
     createLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
-        thunder$7.call(systemcCallsign, 'createLink').then(result => {
+        thunder$b.call(systemcCallsign, 'createLink').then(result => {
           resolve(result);
         }).catch(err => {
           resolve(false);
@@ -11776,7 +11776,7 @@ var APP_accelerator_home_ui = (function () {
       if (arguments.length === 0) {
         return new Promise((resolve, reject) => {
           const systemcCallsign = 'org.rdk.UsbAccess';
-          thunder$7.call(systemcCallsign, 'getFileList').then(result => {
+          thunder$b.call(systemcCallsign, 'getFileList').then(result => {
             resolve(result.contents);
           }).catch(err => {
             resolve(false);
@@ -11785,7 +11785,7 @@ var APP_accelerator_home_ui = (function () {
       } else {
         return new Promise((resolve, reject) => {
           const systemcCallsign = 'org.rdk.UsbAccess';
-          thunder$7.call(systemcCallsign, 'getFileList', {
+          thunder$b.call(systemcCallsign, 'getFileList', {
             "path": arguments[0]
           }).then(result => {
             resolve(result.contents);
@@ -11841,7 +11841,7 @@ var APP_accelerator_home_ui = (function () {
     getMountedDevices() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
-        thunder$7.call(systemcCallsign, 'getMounted').then(result => {
+        thunder$b.call(systemcCallsign, 'getMounted').then(result => {
           resolve(result);
         }).catch(err => {
           reject(err);
@@ -13173,27 +13173,6 @@ var APP_accelerator_home_ui = (function () {
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
   };
-  const defineProperties = (component, props) => {
-    props.forEach(prop => {
-      Object.defineProperty(component, prop, {
-        set: function (value) {
-          component["_".concat(prop)] = value;
-        },
-        get: function () {
-          return component["_".concat(prop)];
-        }
-      });
-    });
-  };
-  const findIndexOfObject = (array, search, targetProp) => {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][targetProp] === search) {
-        return i;
-      }
-    }
-
-    return -1;
-  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -13246,11 +13225,6 @@ var APP_accelerator_home_ui = (function () {
 
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
-      this._previous = {
-        mainIndex,
-        crossIndex,
-        realIndex: previousIndex
-      };
       this._index = targetIndex;
 
       this._indexChanged({
@@ -14874,904 +14848,6 @@ var APP_accelerator_home_ui = (function () {
     right: 1
   };
 
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  const calcCarouselNavigation = (dir, current, min, max) => {
-    let target = current + dir;
-
-    if (target < min) {
-      target = max;
-    }
-
-    if (target > max) {
-      target = min;
-    }
-
-    return target;
-  };
-
-  class Stepper extends lng$1.Component {
-    static _template() {
-      return {
-        h: 80,
-        w: 574,
-        Focus: {
-          alpha: 0,
-          w: w => w,
-          h: h => h,
-          rect: true
-        },
-        Label: {
-          x: 30,
-          y: h => h * 0.5,
-          mountY: 0.5,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        },
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 30;
-      this._max = 100;
-      this._min = 0;
-      this._value = 50;
-      this._options = undefined;
-      this._label = 'label';
-      this._focusAnimation = null;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'Label',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this._update();
-    }
-
-    _navigate(dir) {
-      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
-      const event = {
-        value: this._value
-      };
-
-      if (this._options) {
-        event.options = this._options;
-      }
-
-      this.fireAncestors('$onValueChanged', event);
-      this.signal('onValueChanged', event);
-    }
-
-    _handleLeft() {
-      this._navigate(-1);
-    }
-
-    _handleRight() {
-      this._navigate(1);
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set label(str) {
-      this._label = str;
-
-      if (this.active) {
-        this.tag('Label').text.text = str;
-      }
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    set value(str) {
-      this._value = str;
-
-      if (this.active) {
-        this.tag('Value').text.text = this.optionValue || this._value;
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    get optionValue() {
-      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
-    }
-
-    set options(arr) {
-      const refactor = arr.map(option => {
-        if (typeof option === 'string') {
-          return {
-            label: option
-          };
-        }
-
-        return option;
-      });
-      this._value = 0;
-      this._options = refactor;
-      this._max = refactor.length - 1;
-
-      this._update();
-    }
-
-    get options() {
-      return this._options;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ArrowStepper extends Stepper {
-    static _template() {
-      return { ...super._template(),
-        ValueWrapper: {
-          x: w => w - 30,
-          w: 200,
-          h: h => h,
-          mountX: 1,
-          ArrowLeft: {
-            y: h => h * 0.5,
-            mountY: 0.5
-          },
-          Value: {
-            x: w => w * 0.5,
-            y: h => h * 0.5,
-            mountX: 0.5,
-            mountY: 0.5,
-            text: {
-              text: '',
-              fontSize: 22
-            }
-          },
-          ArrowRight: {
-            y: h => h * 0.5,
-            x: w => w,
-            mountY: 0.5,
-            mountX: 1
-          }
-        }
-      };
-    }
-
-    _update() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          x: this._padding,
-          color: this._labelColor,
-          text: {
-            text: this._label
-          }
-        },
-        ValueWrapper: {
-          x: w => w - this._padding,
-          ArrowLeft: {
-            color: this._labelColor
-          },
-          Value: {
-            color: this._labelColor,
-            text: {
-              text: this.optionValue || this.value
-            }
-          },
-          ArrowRight: {
-            color: this._labelColor
-          }
-        }
-      });
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Focus',
-          p: 'alpha',
-          v: {
-            0: 0,
-            1: 1
-          }
-        }, {
-          t: 'ValueWrapper.ArrowLeft',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.Value',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }, {
-          t: 'ValueWrapper.ArrowRight',
-          p: 'color',
-          v: {
-            0: this._labelColor,
-            1: this._labelColorFocused
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      const arrowLeft = this.tag('ArrowLeft');
-      const arrowRight = this.tag('ArrowRight');
-
-      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
-        arrowLeft.text = {
-          text: '\u25c0',
-          fontSize: 18
-        };
-      }
-
-      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
-        arrowRight.text = {
-          text: '\u25b6',
-          fontSize: 18
-        };
-      }
-
-      this._update();
-    }
-
-  }
-
-  class ColorShift extends lng$1.Component {
-    static _template() {
-      return {
-        w: 574,
-        h: 240,
-        List: {
-          type: List,
-          w: w => w,
-          h: h => h,
-          forceLoad: true,
-          spacing: 0,
-          direction: 'column'
-        }
-      };
-    }
-
-    _construct() {
-      this._autoColorShift = true;
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._options = [{
-        type: 'neutral',
-        label: 'normal'
-      }, {
-        type: 'protanopia',
-        label: 'Protanopia'
-      }, {
-        type: 'deuteranopia',
-        label: 'Deuteranopia'
-      }, {
-        type: 'tritanopia',
-        label: 'Tritanopia'
-      }, {
-        type: 'monochromacy',
-        label: 'Achromatopsia'
-      }];
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
-    }
-
-    _getFocused() {
-      return this.tag('List');
-    }
-
-    _shiftColors() {
-      if (this._autoColorShift && this.application && this.application.colorshift) {
-        this.application.colorshift(this._settings.correction, this._settings);
-      }
-    }
-
-    $onValueChanged() {
-      const listItems = this.tag('List').items;
-      const correction = listItems[0];
-      this._settings = {
-        correction: correction.options[correction.value].type,
-        brightness: listItems[1].value,
-        contrast: listItems[2].value,
-        gamma: listItems[3].value
-      };
-
-      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
-        const steppers = listItems.slice(1);
-        steppers.forEach(stepper => {
-          stepper.value = 50;
-        });
-      }
-
-      this._currentCorrection = this._settings.correction;
-
-      this._shiftColors();
-
-      this.signal('onColorShift', this._settings);
-    }
-
-    _update() {
-      const list = this.tag('List');
-      const steppers = ['Brightness', 'Contrast', 'Gamma'];
-      const options = this._options;
-      const settings = this._settings;
-      const colors = {
-        focusColor: this._focusColor,
-        labelColor: this._labelColor,
-        labelColorFocused: this._labelColorFocused
-      };
-
-      this._shiftColors();
-
-      const settingItems = steppers.map(stepper => {
-        const lowerC = stepper.toLocaleLowerCase();
-        return {
-          type: this["".concat(lowerC, "Component")],
-          label: stepper,
-          value: settings[lowerC],
-          w: this.finalW,
-          h: 80,
-          ...colors
-        };
-      });
-      settingItems.unshift({
-        type: this.correctionComponent,
-        options,
-        value: findIndexOfObject(options, settings.correction, 'type'),
-        label: 'Color adjustment',
-        w: this.finalW,
-        h: 80,
-        ...colors
-      });
-      list.clear();
-      list.add(settingItems);
-    }
-
-    _firstActive() {
-      if (!this._settings) {
-        this._settings = {
-          correction: 'neutral',
-          brightness: 50,
-          contrast: 50,
-          gamma: 50
-        };
-      }
-
-      this._update();
-    }
-
-    set settings(obj) {
-      this._settings = obj;
-
-      if (this.active) {
-        const listItems = this.tag('List').items;
-        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
-        listItems[1] = obj.brightness || 50;
-        listItems[2] = obj.contrast || 50;
-        listItems[3] = obj.gamma || 50;
-      }
-    }
-
-    get settings() {
-      return this._settings;
-    }
-
-    get correctionTag() {
-      return this.tag('List').items[0];
-    }
-
-    get brightnessTag() {
-      return this.tag('List').items[1];
-    }
-
-    get contrastTag() {
-      return this.tag('List').items[2];
-    }
-
-    get gammaTag() {
-      return this.tag('List').items[3];
-    }
-
-    get adjustmentTags() {
-      return this.tag('List').items;
-    }
-
-    set stepperComponent(component) {
-      this._stepperComponent = component;
-    }
-
-    get stepperComponent() {
-      return this._stepperComponent || ArrowStepper;
-    }
-
-    set correctionComponent(component) {
-      this._correctionComponent = component;
-    }
-
-    get correctionComponent() {
-      return this._correctionComponent || this.stepperComponent;
-    }
-
-    set brightnessComponent(component) {
-      this._brightnessComponent = component;
-    }
-
-    get brightnessComponent() {
-      return this._brightnessComponent || this.stepperComponent;
-    }
-
-    set contrastComponent(component) {
-      this._contrastComponent = component;
-    }
-
-    get contrastComponent() {
-      return this._contrastComponent || this.stepperComponent;
-    }
-
-    set gammaComponent(component) {
-      this._gammaComponent = component;
-    }
-
-    get gammaComponent() {
-      return this._gammaComponent || this.stepperComponent;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-
-  class CarouselItem extends lng$1.Component {
-    static _template() {
-      return {
-        Focus: {
-          alpha: 0,
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          w: 120,
-          h: 50,
-          rect: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 25
-          }
-        },
-        Label: {
-          x: w => w * 0.5,
-          y: h => h * 0.5,
-          mount: 0.5,
-          renderOffscreen: true,
-          text: {
-            text: '',
-            fontSize: 22
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._focusColor = 0xff009245;
-      this._labelColor = 0xff9d9d9d;
-      this._labelColorFocused = 0xffffffff;
-      this._padding = 40;
-      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
-    }
-
-    set label(str) {
-      this.tag('Label').text.text = str;
-      this._label = str;
-    }
-
-    get label() {
-      return this._label;
-    }
-
-    _init() {
-      const label = this.tag('Label');
-      label.on('txLoaded', () => {
-        this.patch({
-          w: label.renderWidth,
-          Focus: {
-            w: label.renderWidth + this._padding * 2
-          }
-        });
-
-        if (this.collectionWrapper) {
-          this.collectionWrapper.reposition();
-        }
-      });
-    }
-
-    _focus() {
-      this.patch({
-        Focus: {
-          smooth: {
-            alpha: 1
-          }
-        },
-        Label: {
-          smooth: {
-            color: this._labelColorFocused
-          }
-        }
-      });
-    }
-
-    _unfocus(target) {
-      if (target.isCarouselItem === true) {
-        this.patch({
-          Focus: {
-            smooth: {
-              alpha: 0
-            }
-          },
-          Label: {
-            smooth: {
-              color: this._labelColor
-            }
-          }
-        });
-      }
-    }
-
-    _firstActive() {
-      this.patch({
-        Focus: {
-          color: this._focusColor
-        },
-        Label: {
-          color: this._labelColor
-        }
-      });
-
-      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
-        this._focus();
-      }
-    }
-
-    get isCarouselItem() {
-      return true;
-    }
-
-    static get width() {
-      return 120;
-    }
-
-    static get height() {
-      return 50;
-    }
-
-  }
-
-  /*
-   * If not stated otherwise in this file or this component's LICENSE file the
-   * following copyright and licenses apply:
-   *
-   * Copyright 2021 Metrological
-   *
-   * Licensed under the Apache License, Version 2.0 (the License);
-   * you may not use this file except in compliance with the License.
-   * You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software
-   * distributed under the License is distributed on an "AS IS" BASIS,
-   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   * See the License for the specific language governing permissions and
-   * limitations under the License.
-   */
-  class ProgressBar$1 extends lng$1.Component {
-    static _template() {
-      return {
-        w: 300,
-        h: 10,
-        Background: {
-          w: w => w,
-          h: h => h,
-          rect: true,
-          rtt: true,
-          shader: {
-            type: lng$1.shaders.RoundedRectangle,
-            radius: 5
-          },
-          Progress: {
-            h: h => h,
-            w: 10,
-            rect: true,
-            shader: {
-              type: lng$1.shaders.RoundedRectangle,
-              radius: 0
-            }
-          }
-        }
-      };
-    }
-
-    _construct() {
-      this._progressColor = 0xff009245;
-      this._progressColorFocused = undefined;
-      this._backgroundColor = 0xff9d9d9d;
-      this._backgroundColorFocused = undefined;
-      this._backgroundRadius = 5;
-      this._progressRadius = 0;
-      this.value = 0.5;
-      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
-    }
-
-    progress(p) {
-      if (p > 1) {
-        p = p / 100;
-      }
-
-      this._value = p;
-      this.tag('Progress').w = this.w * p;
-    }
-
-    _createFocusAnimation() {
-      this._focusAnimation = this.animation({
-        duration: 0.2,
-        stopMethod: 'reverse',
-        actions: [{
-          t: 'Background',
-          p: 'color',
-          v: {
-            0: this._backgroundColor,
-            1: this._backgroundColorFocused || this._backgroundColor
-          }
-        }, {
-          t: 'Background.Progress',
-          p: 'color',
-          v: {
-            0: this._progressColor,
-            1: this._progressColorFocused || this._progressColor
-          }
-        }]
-      });
-    }
-
-    _firstActive() {
-      if (!this._focusAnimation) {
-        this._createFocusAnimation();
-      }
-
-      this.patch({
-        Background: {
-          color: this._backgroundColor,
-          shader: {
-            radius: this._backgroundRadius
-          },
-          Progress: {
-            color: this._progressColor,
-            shader: {
-              radius: this._progressRadius
-            }
-          }
-        }
-      });
-      this.progress(this._value);
-
-      if (this.hasFocus()) {
-        this._focus();
-      }
-    }
-
-    _focus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.start();
-      }
-    }
-
-    _unfocus() {
-      if (this._focusAnimation) {
-        this._focusAnimation.stop();
-      }
-    }
-
-    set value(p) {
-      this._value = p;
-
-      if (this.active) {
-        this.progress(p);
-      }
-    }
-
-    get value() {
-      return this._value;
-    }
-
-    set backgroundRadius(num) {
-      this._backgroundRadius = num;
-
-      if (this.active) {
-        this.tag('Background').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    set progressRadius(num) {
-      this._progressRadius = num;
-
-      if (this.active) {
-        this.tag('Progress').shader.radius = num;
-      }
-    }
-
-    get progressRadius() {
-      return this._progressRadius;
-    }
-
-    get backgroundTag() {
-      return this.tag('Background');
-    }
-
-    get progressTag() {
-      return this.tag('Progress');
-    }
-
-  }
-
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -16932,13 +16008,13 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
 
-  let _item;
+  let _item$1;
   /**
    * Class for pairing screen for the Bluetooth.
    */
 
 
-  class BluetoothPairingScreen extends lng$1.Component {
+  class BluetoothPairingScreen$1 extends lng$1.Component {
     set params(args) {
       if (args.bluetoothItem) {
         this.item(args.bluetoothItem);
@@ -17060,7 +16136,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     item(item) {
-      _item = item;
+      _item$1 = item;
 
       this._setState('ConnectDisconnect');
 
@@ -17085,7 +16161,7 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           // this.tag('Pairing').text = "Someting is wrong " + _item.name
-          if (_item.connected) {
+          if (_item$1.connected) {
             // this.tag('Pairing').text = "Connecting to " + _item.name
             //this.fireAncestors('$pressEnter', 'Disconnect')
             Router.navigate('settings/bluetooth', {
@@ -17878,7 +16954,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Bluetooth screen.
    */
 
-  class BluetoothScreen$1 extends lng$1.Component {
+  class BluetoothScreen$2 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Bluetooth On/Off'));
     }
@@ -17901,7 +16977,7 @@ var APP_accelerator_home_ui = (function () {
           PairingScreen: {
             x: 780,
             y: 100,
-            type: BluetoothPairingScreen,
+            type: BluetoothPairingScreen$1,
             zIndex: 100,
             visible: false
           },
@@ -21569,8 +20645,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const wifi$3 = new Wifi();
-  class JoinAnotherNetworkComponent extends lng$1.Component {
+  const wifi$5 = new Wifi();
+  class JoinAnotherNetworkComponent$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -21603,13 +20679,13 @@ var APP_accelerator_home_ui = (function () {
 
 
     startConnectForAnotherNetwork(device, passphrase) {
-      wifi$3.connect({
+      wifi$5.connect({
         ssid: device.ssid,
         security: device.security
       }, passphrase).then(() => {
-        wifi$3.saveSSID(device.ssid, passphrase, device.security).then(response => {
+        wifi$5.saveSSID(device.ssid, passphrase, device.security).then(response => {
           if (response.result === 0) ; else if (response.result !== 0) {
-            wifi$3.clearSSID().then(response => {// console.log(response)
+            wifi$5.clearSSID().then(response => {// console.log(response)
               // Router.back()
             });
           }
@@ -22012,7 +21088,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Network Config Screen.
     */
 
-  class NetworkConfigurationScreen extends lng$1.Component {
+  class NetworkConfigurationScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -22312,10 +21388,10 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$6 = new AppApi();
-  var defaultInterface = "";
-  var currentInterface = [];
-  class NetworkInfo extends lng$1.Component {
+  var appApi$9 = new AppApi();
+  var defaultInterface$1 = "";
+  var currentInterface$1 = [];
+  class NetworkInfo$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -22556,7 +21632,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     getIPSetting(interfaceName) {
-      appApi$6.getIPSetting(interfaceName).then(result => {
+      appApi$9.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
@@ -22564,15 +21640,15 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.widgets.menu.setPanelsVisibility(); //Getting the default interface
 
-      appApi$6.getDefaultInterface().then(result => {
-        defaultInterface = result.interface;
-        this.getIPSetting(defaultInterface);
+      appApi$9.getDefaultInterface().then(result => {
+        defaultInterface$1 = result.interface;
+        this.getIPSetting(defaultInterface$1);
 
-        if (defaultInterface === "WIFI") {
+        if (defaultInterface$1 === "WIFI") {
           this.tag("ConnectionType.Value").text.text = "Wireless";
           this.tag("SSID").alpha = 1;
           this.tag("SignalStrength").alpha = 1;
-        } else if (defaultInterface === "ETHERNET") {
+        } else if (defaultInterface$1 === "ETHERNET") {
           this.tag("ConnectionType.Value").text.text = "Ethernet";
           this.tag("SSID").alpha = 0;
           this.tag("SignalStrength").alpha = 0;
@@ -22585,12 +21661,12 @@ var APP_accelerator_home_ui = (function () {
         } //Filtering the current interface
 
 
-        appApi$6.getInterfaces().then(result => {
-          currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
+        appApi$9.getInterfaces().then(result => {
+          currentInterface$1 = result.interfaces.filter(data => data.interface === defaultInterface$1); //console.log(currentInterface);
 
-          if (currentInterface[0].connected) {
+          if (currentInterface$1[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
-            appApi$6.getConnectedSSID().then(result => {
+            appApi$9.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -22603,7 +21679,7 @@ var APP_accelerator_home_ui = (function () {
 
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
-            appApi$6.getIPSetting(defaultInterface).then(result => {
+            appApi$9.getIPSetting(defaultInterface$1).then(result => {
               this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
               this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
@@ -22611,7 +21687,7 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Status.Value').text.text = "Disconnected";
           }
 
-          this.tag('MACAddress.Value').text.text = "".concat(currentInterface[0].macAddress);
+          this.tag('MACAddress.Value').text.text = "".concat(currentInterface$1[0].macAddress);
         }).catch(error => console.log(error));
       }).catch(error => console.log(error));
     }
@@ -22646,8 +21722,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const wifi$2 = new Wifi();
-  class NetworkInterfaceScreen extends lng$1.Component {
+  const wifi$4 = new Wifi();
+  class NetworkInterfaceScreen$1 extends lng$1.Component {
     _construct() {
       this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
     }
@@ -22780,12 +21856,12 @@ var APP_accelerator_home_ui = (function () {
     }
 
     setEthernetInterface() {
-      wifi$2.getInterfaces().then(res => {
+      wifi$4.getInterfaces().then(res => {
         res.interfaces.forEach(element => {
           if (element.interface === "ETHERNET" && element.connected) {
-            wifi$2.setInterface('ETHERNET', true).then(result => {
+            wifi$4.setInterface('ETHERNET', true).then(result => {
               if (result.success) {
-                wifi$2.setDefaultInterface('ETHERNET', true);
+                wifi$4.setDefaultInterface('ETHERNET', true);
                 this.tag('Ethernet.Title').text.text = 'Ethernet';
                 this.tag('Ethernet.Loader').visible = true;
                 this.loadingAnimation.start();
@@ -22838,7 +21914,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          wifi$2.getDefaultInterface().then(res => {
+          wifi$4.getDefaultInterface().then(res => {
             if (res.success) {
               if (res.interface !== "ETHERNET") {
                 this.setEthernetInterface();
@@ -23023,7 +22099,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  class WifiPairingScreen extends lng$1.Component {
+  class WifiPairingScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -23542,7 +22618,7 @@ var APP_accelerator_home_ui = (function () {
   * Class for WiFi screen.
   */
 
-  class WiFiScreen extends lng$1.Component {
+  class WiFiScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -24102,35 +23178,35 @@ var APP_accelerator_home_ui = (function () {
    **/
   const networkRoutes = [{
     path: 'settings/network',
-    component: NetworkConfigurationScreen,
+    component: NetworkConfigurationScreen$1,
     widgets: ['Menu', 'Volume']
   }, {
     path: 'settings/network/info',
-    component: NetworkInfo,
+    component: NetworkInfo$1,
     widgets: ['Menu', 'Volume']
   }, {
     path: 'settings/network/interface',
-    component: NetworkInterfaceScreen,
+    component: NetworkInterfaceScreen$1,
     widgets: ['Menu', 'Volume']
   }, {
     path: 'settings/network/interface/wifi',
-    component: WiFiScreen,
+    component: WiFiScreen$1,
     widgets: ['Menu', 'Fail', 'Volume']
   }, {
     path: 'settings/network/interface/wifi/connect',
-    component: WifiPairingScreen,
+    component: WifiPairingScreen$1,
     widgets: ['Volume']
   }, {
     path: 'settings/network/interface/wifi/another',
-    component: JoinAnotherNetworkComponent,
+    component: JoinAnotherNetworkComponent$1,
     widgets: ['Volume']
   }, {
     path: 'settings/bluetooth',
-    component: BluetoothScreen$1,
+    component: BluetoothScreen$2,
     widgets: ['Menu', 'Fail', 'Volume']
   }, {
     path: 'settings/bluetooth/pairing',
-    component: BluetoothPairingScreen,
+    component: BluetoothPairingScreen$1,
     widgets: ['Volume']
   }];
   var route$1 = {
@@ -25388,7 +24464,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Other Settings Screen.
    */
 
-  class OtherSettingsScreen extends lng$1.Component {
+  class OtherSettingsScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -25794,7 +24870,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  class SleepTimerScreen extends lng$1.Component {
+  class SleepTimerScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Sleep Timer'));
     }
@@ -26057,7 +25133,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  class EnergySavingsScreen extends lng$1.Component {
+  class EnergySavingsScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Energy Saver'));
     }
@@ -26311,14 +25387,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$5 = new AppApi();
-  const thunder$6 = thunderJS({
+  const appApi$8 = new AppApi();
+  const thunder$a = thunderJS({
     host: '127.0.0.1',
     port: 9998,
     default: 1
   });
-  const loader$1 = 'Loader';
-  class LanguageScreen$1 extends lng$1.Component {
+  const loader$2 = 'Loader';
+  class LanguageScreen$2 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Language'));
     }
@@ -26368,14 +25444,14 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      appApi$5.deactivateResidentApp(loader$1);
-      appApi$5.setVisibility('ResidentApp', true);
-      thunder$6.call('org.rdk.RDKShell', 'moveToFront', {
+      appApi$8.deactivateResidentApp(loader$2);
+      appApi$8.setVisibility('ResidentApp', true);
+      thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
         client: 'ResidentApp'
       }).then(result => {
         console.log('ResidentApp moveToFront Success');
       });
-      thunder$6.call('org.rdk.RDKShell', 'setFocus', {
+      thunder$a.call('org.rdk.RDKShell', 'setFocus', {
         client: 'ResidentApp'
       }).then(result => {
         console.log('ResidentApp moveToFront Success');
@@ -26415,8 +25491,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$5.launchResident(notification_url, loader$1).catch(err => {});
-            appApi$5.setVisibility('ResidentApp', false);
+            appApi$8.launchResident(notification_url, loader$2).catch(err => {});
+            appApi$8.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -26458,8 +25534,8 @@ var APP_accelerator_home_ui = (function () {
    * Class for Privacy Screen.
    */
 
-  const xcastApi = new XcastApi();
-  class PrivacyScreen extends lng$1.Component {
+  const xcastApi$1 = new XcastApi();
+  class PrivacyScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy'));
     }
@@ -26623,7 +25699,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     checkLocalDeviceStatus() {
-      xcastApi.getEnabled().then(res => {
+      xcastApi$1.getEnabled().then(res => {
         if (res.enabled) {
           this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         } else {
@@ -26635,15 +25711,15 @@ var APP_accelerator_home_ui = (function () {
     }
 
     toggleLocalDeviceDiscovery() {
-      xcastApi.getEnabled().then(res => {
+      xcastApi$1.getEnabled().then(res => {
         if (!res.enabled) {
-          xcastApi.activate().then(res => {
+          xcastApi$1.activate().then(res => {
             if (res) {
               this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             }
           });
         } else {
-          xcastApi.deactivate().then(res => {
+          xcastApi$1.deactivate().then(res => {
             if (res) {
               this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
             }
@@ -26803,8 +25879,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const _privacyPolicy = "Privacy\n Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (\u201CRDK Management,\u201D \u201Cwe,\u201D or \u201Cus\u201D). This privacy policy discloses the privacy practices for this website only, including an explanation of:\n \n the categories of personally identifiable information about you that may be collected and how that information is used;\n how we collect and use non-personally identifiable information about your use of the website;\n the categories of persons or entities with whom the information may be shared;\n the choices that are available to you regarding collection, use, and distribution of the information;\n how you can opt out of RDK-related promotional e-mail;\n the kind of security procedures that are in place to protect the loss, misuse or alteration of information;\n how you can review and request changes to the information; and\n how we notify users of this website of changes to this privacy policy.\n Questions regarding this policy should be directed to \u201CRDK Management \u2013 Privacy Feedback\u201D and can be submitted via e-mail to info@rdkcentral.com.\n \n \n What categories of information do we collect?\n The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.\n \n To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you\u2019ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.\n \n The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you\u2019re still free to take advantage of the publicly available content on our website without registration.\n \n Does RDK Management analyze my interaction with this website?\n Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.\n \n We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a \u201CDo Not Track\u201D Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to \u201CDo Not Track\u201D signals sent from browsers.\n \n You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.\n \n What categories of persons or entities do we share personally identifiable information with?\n We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.\n \n What do we do to personalize your use of this website?\n We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.\n \n To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a \u201Ccookie.\u201D We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you\u2019ve made so you don\u2019t have to re-enter them.\n \n RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.\n \n The cookies we use don\u2019t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user\u2019s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user\u2019s account information over our website, for example.\n \n In connection with the standard operation of RDK Management\u2019s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users\u2019 experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.\n \n We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management\u2019s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.\n \n Your Access to and Control over your information?\n You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.\n \n Request to see all the information stored in the system\n Accuracy of your data can be checked or corrected.\n Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com\n Express any concern you have about our use of your data\n Opt out from receiving emails by clicking unsubscribe.\n How do users opt out of RDK-related promotional e-mail?\n You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of \u201CRDK Management \u2013 E-mail Opt Out\u201D via e-mail to info@rdkcentral.com.\n \n Other Websites\n \n To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don\u2019t control. Once you leave our website by linking to another one (you can tell where you are by checking the address \u2013 known as a URL \u2013 in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you\u2019re visiting. That policy may differ from ours. If you can\u2019t find the privacy policy of any of these websites via a link from the site\u2019s homepage, you should contact the website directly for more information.\n \n Security\n \n All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won\u2019t be intercepted while being transmitted to us over the Internet. If you don\u2019t want us to know any particular information about you, don\u2019t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.\n \n Changes to this Privacy Policy\n \n We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we\u2019ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.\n \n A Special Note About Children\n \n This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.\n \n Contacting us:\n \n If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.\n \n Data Protection Officer:  Herman-Jan Smith\n \n Email us at: hj.smith@rdkcentral.com\n \n Contacting the appropriate authority:\n \n Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner\u2019s Office.\n \n Email: compliance_team@rdkcentral.com\n \n Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A";
-  class PrivacyPolicyScreen extends lng$1.Component {
+  const _privacyPolicy$1 = "Privacy\n Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (\u201CRDK Management,\u201D \u201Cwe,\u201D or \u201Cus\u201D). This privacy policy discloses the privacy practices for this website only, including an explanation of:\n \n the categories of personally identifiable information about you that may be collected and how that information is used;\n how we collect and use non-personally identifiable information about your use of the website;\n the categories of persons or entities with whom the information may be shared;\n the choices that are available to you regarding collection, use, and distribution of the information;\n how you can opt out of RDK-related promotional e-mail;\n the kind of security procedures that are in place to protect the loss, misuse or alteration of information;\n how you can review and request changes to the information; and\n how we notify users of this website of changes to this privacy policy.\n Questions regarding this policy should be directed to \u201CRDK Management \u2013 Privacy Feedback\u201D and can be submitted via e-mail to info@rdkcentral.com.\n \n \n What categories of information do we collect?\n The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.\n \n To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you\u2019ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.\n \n The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you\u2019re still free to take advantage of the publicly available content on our website without registration.\n \n Does RDK Management analyze my interaction with this website?\n Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.\n \n We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a \u201CDo Not Track\u201D Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to \u201CDo Not Track\u201D signals sent from browsers.\n \n You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.\n \n What categories of persons or entities do we share personally identifiable information with?\n We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.\n \n What do we do to personalize your use of this website?\n We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.\n \n To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a \u201Ccookie.\u201D We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you\u2019ve made so you don\u2019t have to re-enter them.\n \n RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.\n \n The cookies we use don\u2019t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user\u2019s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user\u2019s account information over our website, for example.\n \n In connection with the standard operation of RDK Management\u2019s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users\u2019 experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.\n \n We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management\u2019s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.\n \n Your Access to and Control over your information?\n You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.\n \n Request to see all the information stored in the system\n Accuracy of your data can be checked or corrected.\n Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com\n Express any concern you have about our use of your data\n Opt out from receiving emails by clicking unsubscribe.\n How do users opt out of RDK-related promotional e-mail?\n You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of \u201CRDK Management \u2013 E-mail Opt Out\u201D via e-mail to info@rdkcentral.com.\n \n Other Websites\n \n To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don\u2019t control. Once you leave our website by linking to another one (you can tell where you are by checking the address \u2013 known as a URL \u2013 in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you\u2019re visiting. That policy may differ from ours. If you can\u2019t find the privacy policy of any of these websites via a link from the site\u2019s homepage, you should contact the website directly for more information.\n \n Security\n \n All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won\u2019t be intercepted while being transmitted to us over the Internet. If you don\u2019t want us to know any particular information about you, don\u2019t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.\n \n Changes to this Privacy Policy\n \n We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we\u2019ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.\n \n A Special Note About Children\n \n This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.\n \n Contacting us:\n \n If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.\n \n Data Protection Officer:  Herman-Jan Smith\n \n Email us at: hj.smith@rdkcentral.com\n \n Contacting the appropriate authority:\n \n Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner\u2019s Office.\n \n Email: compliance_team@rdkcentral.com\n \n Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A";
+  class PrivacyPolicyScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy  Policy'));
     }
@@ -26839,7 +25915,7 @@ var APP_accelerator_home_ui = (function () {
             x: 10,
             y: 100,
             text: {
-              text: _privacyPolicy,
+              text: _privacyPolicy$1,
               textColor: COLORS.titleColor,
               fontFace: CONFIG.language.font,
               fontSize: 20,
@@ -26887,17 +25963,17 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$6 = {
+  const config$9 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$5 = thunderJS(config$6);
+  const thunder$9 = thunderJS(config$9);
   class CECApi {
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdmiCec_2';
-        thunder$5.Controller.activate({
+        thunder$9.Controller.activate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -26910,7 +25986,7 @@ var APP_accelerator_home_ui = (function () {
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdmiCec_2';
-        thunder$5.Controller.deactivate({
+        thunder$9.Controller.deactivate({
           callsign: systemcCallsign
         }).then(() => {
           resolve(true);
@@ -26922,7 +25998,7 @@ var APP_accelerator_home_ui = (function () {
 
     getEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$5.call('org.rdk.HdmiCec_2', 'getEnabled').then(result => {
+        thunder$9.call('org.rdk.HdmiCec_2', 'getEnabled').then(result => {
           resolve(result);
         }).catch(err => {
           resolve({
@@ -26934,7 +26010,7 @@ var APP_accelerator_home_ui = (function () {
 
     setEnabled() {
       return new Promise((resolve, reject) => {
-        thunder$5.call('org.rdk.HdmiCec_2', 'setEnabled', {
+        thunder$9.call('org.rdk.HdmiCec_2', 'setEnabled', {
           enabled: true
         }).then(result => {
           resolve(result);
@@ -26949,7 +26025,7 @@ var APP_accelerator_home_ui = (function () {
 
     performOTP() {
       return new Promise((resolve, reject) => {
-        thunder$5.call('org.rdk.HdmiCec_2', 'performOTPAction').then(result => {
+        thunder$9.call('org.rdk.HdmiCec_2', 'performOTPAction').then(result => {
           resolve(result);
         }).catch(err => {
           console.error('CEC Otp Error', err);
@@ -26980,17 +26056,17 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$5 = {
+  const config$8 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  thunderJS(config$5);
+  thunderJS(config$8);
   /**
    * Class for AdvancedSettings screen.
    */
 
-  class AdvanceSettingsScreen extends lng$1.Component {
+  class AdvanceSettingsScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings'));
     }
@@ -27320,7 +26396,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Video and Audio screen.
    */
 
-  class DeviceScreen extends lng$1.Component {
+  class DeviceScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device'));
     }
@@ -27598,7 +26674,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Video and Audio screen.
    */
 
-  class DeviceInformationScreen extends lng$1.Component {
+  class DeviceInformationScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Info'));
     }
@@ -27973,7 +27049,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Firmware screen.
    */
 
-  class FirmwareScreen extends lng$1.Component {
+  class FirmwareScreen$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Firmware Update'));
     }
@@ -28186,7 +27262,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$4 = new AppApi();
+  const appApi$7 = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -28331,7 +27407,7 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          appApi$4.reboot().then(result => {
+          appApi$7.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
 
             this._setState('Rebooting');
@@ -28560,7 +27636,7 @@ var APP_accelerator_home_ui = (function () {
 
   }
 
-  class TimeZone extends lng$1.Component {
+  class TimeZone$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Time'));
     }
@@ -28929,43 +28005,43 @@ var APP_accelerator_home_ui = (function () {
   var otherSettingsRoutes = {
     otherSettingsRoutes: [{
       path: 'settings/other',
-      component: OtherSettingsScreen,
+      component: OtherSettingsScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/other/timer',
-      component: SleepTimerScreen,
+      component: SleepTimerScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/other/energy',
-      component: EnergySavingsScreen,
+      component: EnergySavingsScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/other/language',
-      component: LanguageScreen$1,
+      component: LanguageScreen$2,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/other/privacy',
-      component: PrivacyScreen,
+      component: PrivacyScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/other/privacyPolicy',
-      component: PrivacyPolicyScreen,
+      component: PrivacyPolicyScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced',
-      component: AdvanceSettingsScreen,
+      component: AdvanceSettingsScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device',
-      component: DeviceScreen,
+      component: DeviceScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device/info',
-      component: DeviceInformationScreen,
+      component: DeviceInformationScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device/timezone',
-      component: TimeZone,
+      component: TimeZone$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device/timezone/item',
@@ -28973,7 +28049,7 @@ var APP_accelerator_home_ui = (function () {
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device/firmware',
-      component: FirmwareScreen,
+      component: FirmwareScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/advanced/device/reboot',
@@ -29003,7 +28079,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Audio screen.
    */
 
-  class AudioScreen extends lng$1.Component {
+  class AudioScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -29491,8 +28567,8 @@ var APP_accelerator_home_ui = (function () {
    * Class for HDMI Output Screen.
    */
 
-  var appApi$3 = new AppApi();
-  class HdmiOutputScreen extends lng$1.Component {
+  var appApi$6 = new AppApi();
+  class HdmiOutputScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -29567,8 +28643,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$3.getSoundMode().then(result => {
-        appApi$3.getSupportedAudioModes().then(res => {
+      appApi$6.getSoundMode().then(result => {
+        appApi$6.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -29636,7 +28712,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const thunder$4 = thunderJS({
+  const thunder$8 = thunderJS({
     host: '127.0.0.1',
     port: 9998,
     default: 1
@@ -29645,7 +28721,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Resolution Screen.
    */
 
-  class ResolutionScreen extends lng$1.Component {
+  class ResolutionScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -29703,7 +28779,7 @@ var APP_accelerator_home_ui = (function () {
           }
         }]
       });
-      thunder$4.on('org.rdk.DisplaySettings', 'resolutionChanged', notification => {
+      thunder$8.on('org.rdk.DisplaySettings', 'resolutionChanged', notification => {
         const items = this.tag('List').items;
         items.forEach(element => {
           element.tag('Item.Tick').visible = false;
@@ -29804,7 +28880,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Video screen.
    */
 
-  class VideoScreen extends lng$1.Component {
+  class VideoScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
@@ -30135,19 +29211,19 @@ var APP_accelerator_home_ui = (function () {
   var audioScreenRoutes = {
     audioScreenRoutes: [{
       path: 'settings/audio',
-      component: AudioScreen,
+      component: AudioScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/audio/output',
-      component: HdmiOutputScreen,
+      component: HdmiOutputScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/video',
-      component: VideoScreen,
+      component: VideoScreen$1,
       widgets: ['Menu', 'Volume']
     }, {
       path: 'settings/video/resolution',
-      component: ResolutionScreen,
+      component: ResolutionScreen$1,
       widgets: ['Menu', 'Volume']
     }]
   };
@@ -31339,17 +30415,17 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  var appApi$2 = new AppApi();
+  var appApi$5 = new AppApi();
   var bluetoothApi = new BluetoothApi();
-  const config$4 = {
+  const config$7 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
 
-  const _thunder = thunderJS(config$4);
+  const _thunder = thunderJS(config$7);
 
-  class BluetoothScreen extends lng$1.Component {
+  class BluetoothScreen$1 extends lng$1.Component {
     static _template() {
       return {
         w: 1920,
@@ -31501,15 +30577,15 @@ var APP_accelerator_home_ui = (function () {
 
     _firstEnable() {
       console.log("checking");
-      appApi$2.getPluginStatus('org.rdk.RemoteControl').then(result => {
-        appApi$2.activateAutoPairing().then(result => {
+      appApi$5.getPluginStatus('org.rdk.RemoteControl').then(result => {
+        appApi$5.activateAutoPairing().then(result => {
           console.log("paired devices result", result); //this.initTimer();
 
           Router.navigate('splash/language');
         });
       }).catch(err => {
         console.log(' remote autoPair plugin error:', JSON.stringify(err));
-        appApi$2.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
+        appApi$5.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
           console.log("status", pluginresult[1]);
 
           if (pluginresult[1] === 'deactivated') {
@@ -31639,9 +30715,9 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$1 = new AppApi();
-  const loader = 'Loader';
-  class LanguageScreen extends lng$1.Component {
+  const appApi$4 = new AppApi();
+  const loader$1 = 'Loader';
+  class LanguageScreen$1 extends lng$1.Component {
     static _template() {
       return {
         w: 1920,
@@ -31777,8 +30853,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$1.launchResident(notification_url, loader).catch(err => {});
-            appApi$1.setVisibility('ResidentApp', false);
+            appApi$4.launchResident(notification_url, loader$1).catch(err => {});
+            appApi$4.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -31855,7 +30931,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const wifi$1 = new Wifi();
+  const wifi$3 = new Wifi();
   const network = new Network();
   class NetworkScreen extends lng$1.Component {
     static _template() {
@@ -31984,9 +31060,9 @@ var APP_accelerator_home_ui = (function () {
 
         _handleEnter() {
           // this._setState('WiFiScreen')
-          wifi$1.setInterface('WIFI', true).then(res => {
+          wifi$3.setInterface('WIFI', true).then(res => {
             if (res.success) {
-              wifi$1.setDefaultInterface('WIFI', true).then(() => {
+              wifi$3.setDefaultInterface('WIFI', true).then(() => {
                 Router.navigate('splash/networkList');
               });
             }
@@ -32004,9 +31080,9 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          wifi$1.setInterface('ETHERNET', true).then(res => {
+          wifi$3.setInterface('ETHERNET', true).then(res => {
             if (res.success) {
-              wifi$1.setDefaultInterface('ETHERNET', true).then(() => {
+              wifi$3.setDefaultInterface('ETHERNET', true).then(() => {
                 network.getInterfaces().then(res => {
                   let eth = res.filter(item => item.interface == 'ETHERNET');
 
@@ -32254,7 +31330,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const wifi = new Wifi();
+  const wifi$2 = new Wifi();
   class NetworkList extends lng$1.Component {
     static _template() {
       return {
@@ -32603,7 +31679,7 @@ var APP_accelerator_home_ui = (function () {
 
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
-          wifi.discoverSSIDs();
+          wifi$2.discoverSSIDs();
 
           this._setState('JoinAnotherNetwork');
 
@@ -32727,11 +31803,11 @@ var APP_accelerator_home_ui = (function () {
       widgets: ['Volume']
     }, {
       path: 'splash/bluetooth',
-      component: BluetoothScreen,
+      component: BluetoothScreen$1,
       widgets: ['Volume']
     }, {
       path: 'splash/language',
-      component: LanguageScreen,
+      component: LanguageScreen$1,
       widgets: ['Volume']
     }, {
       path: 'splash/network',
@@ -35331,19 +34407,19 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const dtvApi$1 = new DTVApi();
-  const config$3 = {
+  const dtvApi$2 = new DTVApi();
+  const config$6 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  const thunder$3 = thunderJS(config$3);
-  const systemcCallsign = "DTV";
+  const thunder$7 = thunderJS(config$6);
+  const systemcCallsign$1 = "DTV";
   /**
    * Class for DVB Scan screen.
    */
 
-  class DvbSScan extends lng$1.Component {
+  class DvbSScan$1 extends lng$1.Component {
     _onChanged() {
       this.tag("Scroller").y = 2; //to reset the position when this route is hit
 
@@ -35770,7 +34846,7 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _firstActive() {
-      thunder$3.on(systemcCallsign, "searchstatus", notification => {
+      thunder$7.on(systemcCallsign$1, "searchstatus", notification => {
         console.log("SearchStatus Notification: ", JSON.stringify(notification));
 
         if (notification.finished) {
@@ -35780,33 +34856,33 @@ var APP_accelerator_home_ui = (function () {
       }); ///////////////satellite
 
       this.satelliteList = [];
-      dtvApi$1.satelliteList().then(res => {
+      dtvApi$2.satelliteList().then(res => {
         this.satelliteList = res;
       }); ///////////////////polarity
 
       this.polarityList = [];
-      dtvApi$1.polarityList().then(res => {
+      dtvApi$2.polarityList().then(res => {
         this.polarityList = res;
       }); ///////////////////symbolRate
       //symbol rate has some predefined values additional to custom imput
 
       this.symbolRateList = [];
-      dtvApi$1.symbolRateList().then(res => {
+      dtvApi$2.symbolRateList().then(res => {
         this.symbolRateList = res;
       }); ////////////////////FEC
 
       this.fecList = [];
-      dtvApi$1.fecList().then(res => {
+      dtvApi$2.fecList().then(res => {
         this.fecList = res;
       }); ///////////////////modulation
 
       this.modulationList = [];
-      dtvApi$1.modulationList().then(res => {
+      dtvApi$2.modulationList().then(res => {
         this.modulationList = res;
       }); ///////////////////searchtype
 
       this.searchtypeList = [];
-      dtvApi$1.searchtypeList().then(res => {
+      dtvApi$2.searchtypeList().then(res => {
         this.searchtypeList = res;
       });
     }
@@ -35966,7 +35042,7 @@ var APP_accelerator_home_ui = (function () {
           if (this.satelliteList.length > 0) {
             this._setState("Satellite.SelectSatellite");
           } else {
-            dtvApi$1.satelliteList().then(res => {
+            dtvApi$2.satelliteList().then(res => {
               this.satelliteList = res;
             });
           }
@@ -36392,7 +35468,7 @@ var APP_accelerator_home_ui = (function () {
               }
             };
             console.log(JSON.stringify(serviceSearchParams));
-            dtvApi$1.startServiceSearch(serviceSearchParams).then(res => {
+            dtvApi$2.startServiceSearch(serviceSearchParams).then(res => {
               this.setScanInProgress();
               console.log(res);
               setTimeout(() => {
@@ -36432,7 +35508,7 @@ var APP_accelerator_home_ui = (function () {
    * Class for Live TV Scan screen.
    */
 
-  class LiveTVScan extends lng$1.Component {
+  class LiveTVScan$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings / Live TV / Scan'));
     }
@@ -36615,13 +35691,13 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  let active = true; //expecting dtv plugin is active by default
+  let active$1 = true; //expecting dtv plugin is active by default
 
   /**
    * Class for Live TV settings screen.
    */
 
-  class LiveTVSettings extends lng$1.Component {
+  class LiveTVSettings$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV"));
     }
@@ -36701,7 +35777,7 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this._setState(this.state);
 
-      if (active) {
+      if (active$1) {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
@@ -36727,16 +35803,16 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleEnter() {
-          if (active) {
+          if (active$1) {
             this.dtvApi.deactivate().then(res => {
               console.log(res);
-              active = false;
+              active$1 = false;
               this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
             });
           } else {
             this.dtvApi.activate().then(res => {
               console.log(res);
-              active = true;
+              active$1 = true;
               this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
             });
           }
@@ -36784,15 +35860,15 @@ var APP_accelerator_home_ui = (function () {
    **/
   const liveTvRoutes = [{
     path: 'settings/livetv',
-    component: LiveTVSettings,
+    component: LiveTVSettings$1,
     widgets: ['Menu', 'Volume']
   }, {
     path: 'settings/livetv/scan',
-    component: LiveTVScan,
+    component: LiveTVScan$1,
     widgets: ['Menu', 'Volume']
   }, {
     path: 'settings/livetv/scan/dvb-s-scan',
-    component: DvbSScan,
+    component: DvbSScan$1,
     widgets: ['Menu', 'Volume']
   }];
 
@@ -37963,12 +37039,12 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$2 = {
+  const config$5 = {
     host: "127.0.0.1",
     port: 9998,
     default: 1
   };
-  var thunder$2 = thunderJS(config$2);
+  var thunder$6 = thunderJS(config$5);
   class TvOverlayScreen extends lng$1.Component {
     set params(args) {
       this._type = args.type;
@@ -38075,11 +37151,11 @@ var APP_accelerator_home_ui = (function () {
       setTimeout(() => {
         if (currentApp !== "") {
           this.appApi.setVisibility("ResidentApp", false);
-          thunder$2.call("org.rdk.RDKShell", "moveToFront", {
+          thunder$6.call("org.rdk.RDKShell", "moveToFront", {
             client: currentApp
           }).then(result => {
             console.log(currentApp, " moveToFront Success");
-            thunder$2.call("org.rdk.RDKShell", "setFocus", {
+            thunder$6.call("org.rdk.RDKShell", "setFocus", {
               client: currentApp
             }).then(result => {
               console.log(currentApp, " setFocus Success");
@@ -40285,29 +39361,29 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const config$1 = {
+  const config$4 = {
     host: '127.0.0.1',
     port: 9998,
     default: 1
   };
-  const thunder$1 = thunderJS(config$1);
+  const thunder$5 = thunderJS(config$4);
   new AppApi();
   function keyIntercept() {
     const rdkshellCallsign = 'org.rdk.RDKShell';
-    thunder$1.Controller.activate({
+    thunder$5.Controller.activate({
       callsign: rdkshellCallsign
     }).then(result => {
       console.log('Successfully activated RDK Shell');
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call('org.rdk.RDKShell', 'setFocus', {
+      thunder$5.call('org.rdk.RDKShell', 'setFocus', {
         client: 'ResidentApp'
       });
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.AudioVolumeMute,
         modifiers: []
@@ -40319,7 +39395,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.on(rdkshellCallsign, 'onSuspended', notification => {
+      thunder$5.on(rdkshellCallsign, 'onSuspended', notification => {
         if (notification) {
           console.log('onSuspended notification from KeyIntercept: ' + notification.client);
         }
@@ -40327,7 +39403,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Escape,
         modifiers: []
@@ -40337,7 +39413,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.F1,
         modifiers: []
@@ -40347,7 +39423,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Inputs_Shortcut,
         modifiers: []
@@ -40357,7 +39433,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Picture_Setting_Shortcut,
         modifiers: []
@@ -40367,7 +39443,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Power,
         modifiers: []
@@ -40377,7 +39453,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Settings_Shortcut,
         modifiers: []
@@ -40387,7 +39463,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Youtube,
         modifiers: []
@@ -40397,7 +39473,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Amazon,
         modifiers: []
@@ -40407,7 +39483,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Netflix,
         modifiers: []
@@ -40417,7 +39493,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.F7,
         modifiers: []
@@ -40427,7 +39503,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.AudioVolumeUp,
         modifiers: []
@@ -40437,7 +39513,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.AudioVolumeDown,
         modifiers: []
@@ -40447,7 +39523,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'foreground',
         keyCode: keyMap.AudioVolumeDown,
         modifiers: []
@@ -40457,7 +39533,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'foreground',
         keyCode: keyMap.AudioVolumeUp,
         modifiers: []
@@ -40467,7 +39543,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'foreground',
         keyCode: keyMap.AudioVolumeMute,
         modifiers: []
@@ -40477,7 +39553,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.MediaFastForward,
         modifiers: []
@@ -40487,7 +39563,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: 142,
         modifiers: []
@@ -40497,7 +39573,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Home,
         modifiers: []
@@ -40507,7 +39583,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.MediaRewind,
         modifiers: []
@@ -40517,7 +39593,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'ResidentApp',
         keyCode: keyMap.Pause,
         modifiers: []
@@ -40527,7 +39603,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Cobalt',
         keyCode: keyMap.Escape,
         modifiers: []
@@ -40537,7 +39613,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Amazon',
         keyCode: keyMap.Escape,
         modifiers: []
@@ -40547,7 +39623,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Cobalt',
         keyCode: keyMap.Home,
         modifiers: []
@@ -40557,7 +39633,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Amazon',
         keyCode: keyMap.Home,
         modifiers: []
@@ -40567,7 +39643,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Cobalt',
         keyCode: keyMap.Backspace,
         modifiers: []
@@ -40577,7 +39653,7 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     }).then(result => {
-      thunder$1.call(rdkshellCallsign, 'addKeyIntercept', {
+      thunder$5.call(rdkshellCallsign, 'addKeyIntercept', {
         client: 'Amazon',
         keyCode: keyMap.Backspace,
         modifiers: []
@@ -40607,6 +39683,8772 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  /**
+   * Class for HDMI Output Screen.
+   */
+
+  var appApi$3 = new AppApi();
+  class HdmiOutputScreen extends lng$1.Component {
+    static _template() {
+      return {
+        HdmiOutputScreenContents: {
+          x: 200,
+          y: 275,
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true
+          },
+          Loader: {
+            x: 740,
+            y: 340,
+            w: 90,
+            h: 90,
+            mount: 0.5,
+            zIndex: 4,
+            src: Utils.asset("images/settings/Loading.gif"),
+            visible: true
+          }
+        }
+      };
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    }
+
+    _unfocus() {
+      if (this.loadingAnimation.isPlaying()) {
+        this.loadingAnimation.stop();
+      }
+    }
+
+    _init() {
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+
+    _focus() {
+      this.loadingAnimation.start();
+      var options = [];
+      appApi$3.getSoundMode().then(result => {
+        appApi$3.getSupportedAudioModes().then(res => {
+          options = [...res.supportedAudioModes];
+          this.tag('HdmiOutputScreenContents').h = options.length * 90;
+          this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
+          this.tag('HdmiOutputScreenContents.List').items = options.map((item, index) => {
+            return {
+              ref: 'Option' + index,
+              w: 1920 - 300,
+              h: 90,
+              type: VideoAndAudioItem,
+              isTicked: result.soundMode === item ? true : false,
+              item: item,
+              videoElement: false
+            };
+          });
+          this.loadingAnimation.stop();
+          this.tag('Loader').visible = false;
+
+          this._setState("Options");
+        }).catch(err => {
+          console.log('error', err);
+        });
+      }).catch(err => {
+        console.log('error', JSON.stringify(err));
+      });
+    } //  _handleBack(){
+    //     console.log("outpumode")
+    //     this.fireAncestors('$changeStateAudio',"OutputMode")
+    //   }
+
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          console.log('focusedHDMI');
+          return this.tag('HdmiOutputScreenContents.List').element;
+        }
+
+        _handleDown() {
+          this.tag('HdmiOutputScreenContents.List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('HdmiOutputScreenContents.List').setPrevious();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**s
+   * Class for Audio screen.
+   */
+
+  class AudioScreen extends lng$1.Component {
+    static _template() {
+      return {
+        AudioScreenOverlay: {
+          x: 200,
+          y: 275,
+          AudioOutput: {
+            alpha: 0.3,
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Audio Output: ') + " HDMI",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          OutputMode: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Output Mode: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          DynamicRange: {
+            alpha: 0.3,
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Full Dynamic Range'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          AudioLanguage: {
+            y: 270,
+            alpha: 0.3,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Audio Language: ') + "Auto",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          NavigationFeedback: {
+            y: 360,
+            alpha: 0.3,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Navigation Feedback'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 66,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOnWhite.png')
+            }
+          },
+          Bluetooth: {
+            alpha: 0.3,
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Bluetooth: ') + "None",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        HdmiOutputScreen: {
+          type: HdmiOutputScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this.appApi = new AppApi();
+
+      this._setState('OutputMode');
+    }
+
+    _focus() {
+      this._setState(this.state);
+
+      this.appApi.getSoundMode().then(result => {
+        this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode;
+      });
+    }
+
+    hide() {
+      this.tag('AudioScreenOverlay').visible = false;
+    }
+
+    show() {
+      this.tag('AudioScreenOverlay').visible = true;
+    }
+
+    $changeStateAudio(state) {
+      this._setState(state);
+    }
+
+    static _states() {
+      return [class AudioOutput extends this {
+        $enter() {
+          this.tag('AudioOutput')._focus();
+        }
+
+        $exit() {
+          this.tag('AudioOutput')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('OutputMode');
+        }
+
+        _handleEnter() {
+          this._setState('HdmiOutputScreen'); //Router.navigate('settings/audio/output')
+
+        } //  _handleBack(){
+        //   this.fireAncestors('$changeState',"Audio")
+        // }
+
+
+      }, class OutputMode extends this {
+        $enter() {
+          this.tag('OutputMode')._focus();
+        }
+
+        $exit() {
+          this.tag('OutputMode')._unfocus();
+        }
+
+        _handleUp() {// this._setState('AudioOutput')
+        }
+
+        _handleDown() {// this._setState('DynamicRange');
+        }
+
+        _handleEnter() {
+          console.log("hdmioutputscreen");
+
+          this._setState('HdmiOutputScreen'); //Router.navigate('settings/audio/output')
+
+        } //  _handleBack(){
+        //   console.log("hdmioutputscreenback")
+        //   this.fireAncestors('$changeState',"Audio")
+        // }
+
+
+      }, class DynamicRange extends this {
+        $enter() {
+          this.tag('DynamicRange')._focus();
+        }
+
+        $exit() {
+          this.tag('DynamicRange')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OutputMode');
+        }
+
+        _handleDown() {
+          this._setState('Bluetooth');
+        }
+
+        _handleEnter() {
+          /**
+           * This handle Enter has api calls -
+           * 1 - get DRC Mode which doesnot return a drc mode and the success value is mostly false
+           * 2- set Volume - able to set the value to 100
+           * 3- get Volume - able to get the volume successfully as well
+           * 4- 
+           * 
+           */
+          //console.log(`Enter input was given to dynamic range ... `);
+          // gets the drc mode
+          this.appApi.getDRCMode().then(res => {}).catch(err => {
+            console.log(err);
+          });
+          this.appApi.setVolumeLevel("HDMI0", 100).then(res => {
+            this.appApi.getVolumeLevel().catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          });
+          this.appApi.getConnectedAudioPorts().then(res => {}).catch(err => {
+            console.log(err);
+          }); // gets the enabled Audio Port
+
+          this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
+            console.log(err);
+          });
+          this.appApi.getSupportedAudioPorts().catch(err => {
+            console.log("Error while getting the supported Audio ports ie. ".concat(err));
+          }); // set enable Audio POrt
+
+          this.appApi.setEnableAudioPort("HDMI0").then(res => {
+            this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          }); // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
+
+          this.appApi.setZoomSetting("FULL").then(res => {
+            this.appApi.getZoomSetting().then(res => {}).catch(err => {
+              console.log(err);
+            });
+          }).catch(err => {
+            console.log(err);
+          });
+        }
+
+      }, class NavigationFeedback extends this {
+        $enter() {
+          this.tag('NavigationFeedback')._focus();
+        }
+
+        $exit() {
+          this.tag('NavigationFeedback')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DynamicRange');
+        }
+
+        _handleDown() {
+          this._setState('Bluetooth');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class Bluetooth extends this {
+        $enter() {
+          this.tag('Bluetooth')._focus();
+        }
+
+        $exit() {
+          this.tag('Bluetooth')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('DynamicRange');
+        }
+
+      }, class HdmiOutputScreen extends this {
+        $enter() {
+          this.hide();
+          console.log("hdmioutputscreenEnter");
+          this.tag('HdmiOutputScreen').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings  Audio  Output Mode');
+        }
+
+        $exit() {
+          this.tag("HdmiOutputScreen").visible = false;
+          this.show();
+          this.fireAncestors('$updatePageTitle', 'Settings  Audio');
+        }
+
+        _getFocused() {
+          console.log("hdmioutputscreenfocused");
+          return this.tag('HdmiOutputScreen');
+        }
+
+        _handleBack() {
+          console.log("hdmioutputscreenbackHDMI");
+
+          this._setState("OutputMode"); //this.$changeStateAudio("OutputMode")
+
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const thunder$4 = thunderJS({
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  });
+  /**
+   * Class for Resolution Screen.
+   */
+
+  class ResolutionScreen extends lng$1.Component {
+    static _template() {
+      return {
+        ResolutionScreenContents: {
+          x: 200,
+          y: 275,
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6
+          },
+          Loader: {
+            x: 740,
+            y: 340,
+            w: 90,
+            h: 90,
+            mount: 0.5,
+            zIndex: 4,
+            src: Utils.asset("images/settings/Loading.gif")
+          }
+        }
+      };
+    }
+
+    _firstEnable() {
+      this.appApi = new AppApi();
+      this.appApi.activateDisplaySettings();
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      thunder$4.on('org.rdk.DisplaySettings', 'resolutionChanged', notification => {
+        const items = this.tag('List').items;
+        items.forEach(element => {
+          element.tag('Item.Tick').visible = false;
+
+          if (element._item === notification.resolution) {
+            element.tag('Item.Tick').visible = true;
+          }
+        });
+      });
+    }
+
+    _unfocus() {
+      if (this.loadingAnimation.isPlaying()) {
+        this.loadingAnimation.stop();
+      }
+    } //  _handleBack() {
+    //      Router.navigate('settings/video')
+    //  }
+
+
+    _focus() {
+      this.loadingAnimation.start();
+      var options = [];
+      var sIndex = 0;
+      this.appApi.getResolution().then(resolution => {
+        this.appApi.getSupportedResolutions().then(res => {
+          options = [...res];
+          this.tag('ResolutionScreenContents').h = options.length * 90;
+          this.tag('ResolutionScreenContents.List').h = options.length * 90;
+          this.tag('List').items = options.map((item, index) => {
+            var bool = false;
+
+            if (resolution === item) {
+              bool = true;
+              sIndex = index;
+            }
+
+            return {
+              ref: 'Option' + index,
+              w: 1920 - 300,
+              h: 90,
+              type: VideoAndAudioItem,
+              isTicked: bool,
+              item: item,
+              videoElement: true
+            };
+          });
+          this.loadingAnimation.stop();
+          this.tag('Loader').visible = false;
+          this.tag('List').setIndex(sIndex);
+
+          this._setState("Options");
+        }).catch(err => {
+          console.log("error while fetching the supported resolution ".concat(err));
+        });
+      });
+    }
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleBack() {
+          this.fireAncestors('$changeStateVideo', "Resolution");
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video screen.
+   */
+
+  class VideoScreen extends lng$1.Component {
+    static _template() {
+      return {
+        VideoScreenContents: {
+          x: 200,
+          y: 275,
+          Resolution: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Resolution: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          HDR: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('High Dynamic Range: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          MatchContent: {
+            alpha: 0.3,
+            // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Match Content: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          OutputFormat: {
+            alpha: 0.3,
+            // disabled
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Output Format:'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Chroma: {
+            alpha: 0.3,
+            // disabled
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Chroma:'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          HDCP: {
+            y: 450,
+            h: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('HDCP Status: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        },
+        ResolutionOverlay: {
+          type: ResolutionScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+
+      this._setState('Resolution');
+    }
+
+    $changeStateVideo(state) {
+      this._setState(state);
+    }
+
+    _focus() {
+      this._appApi.getResolution().then(resolution => {
+        this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
+      }).catch(err => {
+        console.log("Error fetching the Resolution");
+      });
+
+      this._appApi.getHDCPStatus().then(result => {
+        if (result.isHDCPCompliant && result.isHDCPEnabled) {
+          this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Enabled, Version: ").concat(result.currentHDCPVersion);
+        } else {
+          this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Not Supported ");
+        }
+      });
+
+      this._appApi.getHDRSetting().then(result => {
+        const availableHDROptions = {
+          "HdrOff": "Off",
+          "Hdr10": "HDR 10",
+          "Hdr10Plus": "HDR 10+",
+          "HdrHlg": "HLG",
+          "HdrDolbyvision": "Dolby Vision",
+          "HdrTechnicolor": "Technicolor HDR"
+        };
+        this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
+      });
+
+      this._setState(this.state);
+    }
+
+    hide() {
+      this.tag('VideoScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('VideoScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class Resolution extends this {
+        $enter() {
+          this.tag('Resolution')._focus();
+        }
+
+        $exit() {
+          this.tag('Resolution')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('HDR');
+        }
+
+        _handleEnter() {
+          this._setState("ResolutionOverlay"); //Router.navigate('settings/video/resolution')
+
+        }
+
+      }, class HDR extends this {
+        $enter() {
+          this.tag('HDR')._focus();
+        }
+
+        $exit() {
+          this.tag('HDR')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Resolution');
+        }
+
+        _handleDown() {
+          this._setState('HDCP');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class MatchContent extends this {
+        $enter() {
+          this.tag('MatchContent')._focus();
+        }
+
+        $exit() {
+          this.tag('MatchContent')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('HDR');
+        }
+
+        _handleDown() {
+          this._setState('OutputFormat');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class OutputFormat extends this {
+        $enter() {
+          this.tag('OutputFormat')._focus();
+        }
+
+        $exit() {
+          this.tag('OutputFormat')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('MatchContent');
+        }
+
+        _handleDown() {
+          this._setState('Chroma');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class Chroma extends this {
+        $enter() {
+          this.tag('Chroma')._focus();
+        }
+
+        $exit() {
+          this.tag('Chroma')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OutputFormat');
+        }
+
+        _handleDown() {// this._setState('HDCP') 
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class HDCP extends this {
+        // class not required
+        $enter() {
+          this.tag('HDCP')._focus();
+        }
+
+        $exit() {
+          this.tag('HDCP')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('HDR');
+        }
+
+        _handleEnter() {//
+        }
+
+      }, class ResolutionOverlay extends this {
+        $enter() {
+          this.hide();
+          this.tag('ResolutionOverlay').visible = true;
+          this.fireAncestors('$updatePageTitle', "Settings  Video  Resolution");
+        }
+
+        $exit() {
+          this.tag('ResolutionOverlay').visible = false;
+          this.show();
+          this.fireAncestors('$updatePageTitle', "Settings  Video");
+        }
+
+        _getFocused() {
+          return this.tag('ResolutionOverlay');
+        }
+
+        _handleBack() {
+          this._setState('Resolution');
+        } // $updateResolution(value) {
+        //   this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
+        // }
+
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+    * Class for Other Settings Screen.
+    */
+
+  var appApi$2 = new AppApi();
+  var defaultInterface = "";
+  var currentInterface = [];
+  class NetworkInfo extends lng$1.Component {
+    static _template() {
+      return {
+        NetworkInfoScreenContents: {
+          x: 200,
+          y: 275,
+          Status: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Status: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          ConnectionType: {
+            //alpha: 0.3, // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Connection Type: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          IPAddress: {
+            //alpha: 0.3, // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('IP Address: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Gateway: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Gateway: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          MACAddress: {
+            //alpha: 0.3, // disabled
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('MAC Address: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          InternetProtocol: {
+            //alpha: 0.3, // disabled
+            y: 450,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Internet Protocol: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          SSID: {
+            //alpha: 0.3, // disabled
+            y: 540,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('SSID: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          SignalStrength: {
+            //alpha: 0.3, // disabled
+            y: 630,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Signal Strength: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 500,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: '',
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          }
+        }
+      };
+    }
+
+    getIPSetting(interfaceName) {
+      appApi$2.getIPSetting(interfaceName).then(result => {
+        this.tag('InternetProtocol.Value').text.text = result.ipversion;
+      }).catch(err => console.log(err));
+    }
+
+    _focus() {
+      //this.widgets.menu.setPanelsVisibility()
+      //Getting the default interface
+      appApi$2.getDefaultInterface().then(result => {
+        defaultInterface = result.interface;
+        this.getIPSetting(defaultInterface);
+
+        if (defaultInterface === "WIFI") {
+          this.tag("ConnectionType.Value").text.text = "Wireless";
+          this.tag("SSID").alpha = 1;
+          this.tag("SignalStrength").alpha = 1;
+        } else if (defaultInterface === "ETHERNET") {
+          this.tag("ConnectionType.Value").text.text = "Ethernet";
+          this.tag("SSID").alpha = 0;
+          this.tag("SignalStrength").alpha = 0;
+        } else {
+          this.tag("ConnectionType.Value").text.text = "NA";
+          this.tag("Status.Value").text.text = "Disconnected";
+          this.tag("IPAddress.Value").text.text = "NA";
+          this.tag("Gateway.Value").text.text = "NA";
+          this.tag("MACAddress.Value").text.text = "NA";
+        } //Filtering the current interface
+
+
+        appApi$2.getInterfaces().then(result => {
+          currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
+
+          if (currentInterface[0].connected) {
+            this.tag("Status.Value").text.text = "Connected";
+            appApi$2.getConnectedSSID().then(result => {
+              if (parseInt(result.signalStrength) >= -50) {
+                this.tag("SignalStrength.Value").text.text = "Excellent";
+              } else if (parseInt(result.signalStrength) >= -60) {
+                this.tag("SignalStrength.Value").text.text = "Good";
+              } else if (parseInt(result.signalStrength) >= -67) {
+                this.tag("SignalStrength.Value").text.text = "Fair";
+              } else {
+                this.tag("SignalStrength.Value").text.text = "Poor";
+              }
+
+              this.tag("SSID.Value").text.text = "".concat(result.ssid);
+            }).catch(error => console.log(error));
+            appApi$2.getIPSetting(defaultInterface).then(result => {
+              this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
+              this.tag("Gateway.Value").text.text = "".concat(result.gateway);
+            }).catch(error => console.log(error));
+          } else {
+            this.tag('Status.Value').text.text = "Disconnected";
+          }
+
+          this.tag('MACAddress.Value').text.text = "".concat(currentInterface[0].macAddress);
+        }).catch(error => console.log(error));
+      }).catch(error => console.log(error));
+    }
+
+    _unfocus() {
+      this.tag('SSID.Value').text.text = 'NA';
+      this.tag('SignalStrength.Value').text.text = 'NA';
+      this.tag('MACAddress.Value').text.text = 'NA';
+      this.tag('Gateway.Value').text.text = 'NA';
+      this.tag('IPAddress.Value').text.text = 'NA';
+      this.tag('ConnectionType.Value').text.text = 'NA';
+      this.tag('InternetProtocol.Value').text.text = 'NA';
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const wifi$1 = new Wifi();
+  class JoinAnotherNetworkComponent extends lng$1.Component {
+    handleDone() {
+      var securityCode = this.securityCodes[this.securityCodeIndex].value;
+
+      if (!this.textCollection['EnterSSID']) {
+        this._setState("EnterSSID");
+      } else if (securityCode < 0 || securityCode > 14) {
+        this._setState("EnterSecurity");
+      } else if (securityCode !== 0 && !this.textCollection['EnterPassword']) {
+        this._setState("EnterPassword");
+      } else {
+        if (this.textCollection['EnterSecurity'] === "0") {
+          this.textCollection['EnterPassword'] = "";
+          this.tag("Pwd").text.text = "";
+        }
+
+        var self = this;
+        this.startConnectForAnotherNetwork({
+          ssid: self.textCollection['EnterSSID'],
+          security: securityCode
+        }, self.textCollection['EnterPassword']);
+      }
+    } // startConnectForAnotherNetwork(device, passphrase) {
+    //   wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
+    //   Router.back()
+    // }
+
+
+    startConnectForAnotherNetwork(device, passphrase) {
+      wifi$1.connect({
+        ssid: device.ssid,
+        security: device.security
+      }, passphrase).then(() => {
+        wifi$1.saveSSID(device.ssid, passphrase, device.security).then(response => {
+          if (response.result === 0) ; else if (response.result !== 0) {
+            wifi$1.clearSSID().then(response => {// console.log(response)
+              // Router.back()
+            });
+          }
+        });
+      });
+
+      this._handleBack(); //Router.back();
+
+    }
+
+    static _template() {
+      return {
+        Text: {
+          x: 758,
+          y: 70,
+          text: {
+            text: "Find and join a WiFi network",
+            fontFace: CONFIG.language.font,
+            fontSize: 35,
+            textColor: CONFIG.theme.hex
+          }
+        },
+        BorderTop: {
+          x: 190,
+          y: 130,
+          w: 1488,
+          h: 2,
+          rect: true
+        },
+        Network: {
+          x: 190,
+          y: 176,
+          text: {
+            text: "Network Name: ",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        NetworkBox: {
+          x: 400,
+          y: 160,
+          texture: lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
+        },
+        NetworkText: {
+          x: 420,
+          y: 170,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        NetworkType: {
+          x: 190,
+          y: 246,
+          text: {
+            text: "Security: ",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        TypeBox: {
+          x: 400,
+          y: 230,
+          texture: lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false),
+          ArrowForward: {
+            h: 30,
+            w: 45,
+            y: 15,
+            x: 1220,
+            src: Utils.asset('images/settings/Arrow.png')
+          },
+          ArrowBackward: {
+            h: 30,
+            w: 45,
+            x: 10,
+            scaleX: -1,
+            y: 15,
+            src: Utils.asset('images/settings/Arrow.png')
+          }
+        },
+        TypeText: {
+          x: 470,
+          y: 263,
+          mountY: 0.5,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        Password: {
+          x: 190,
+          y: 316,
+          text: {
+            text: "Password:",
+            fontFace: CONFIG.language.font,
+            fontSize: 25
+          }
+        },
+        PasswordBox: {
+          x: 400,
+          y: 300,
+          texture: lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false)
+        },
+        Pwd: {
+          x: 420,
+          y: 310,
+          zIndex: 2,
+          text: {
+            text: '',
+            fontSize: 25,
+            fontFace: CONFIG.language.font,
+            textColor: 0xffffffff,
+            wordWrapWidth: 1300,
+            wordWrap: false,
+            textOverflow: 'ellipsis'
+          }
+        },
+        BorderBottom: {
+          x: 190,
+          y: 396,
+          w: 1488,
+          h: 2,
+          rect: true
+        },
+        Keyboard: {
+          y: 437,
+          x: 400,
+          type: Keyboard,
+          visible: true,
+          zIndex: 2,
+          formats: KEYBOARD_FORMATS.qwerty
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('EnterSSID');
+
+      this.textCollection = {
+        'EnterSSID': '',
+        'EnterPassword': '',
+        'EnterSecurity': ''
+      };
+      this.tag('Pwd').text.text = "";
+      this.tag("NetworkText").text.text = "";
+      this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
+
+      if (this.securityCodes[this.securityCodeIndex].value === 0) {
+        this.pwdUnReachable = true;
+        this.tag("PasswordBox").alpha = 0.5;
+        this.tag("Password").alpha = 0.5;
+      } else {
+        this.pwdUnReachable = false;
+        this.tag("PasswordBox").alpha = 1;
+        this.tag("Password").alpha = 1;
+      }
+    }
+
+    static _states() {
+      return [class EnterSSID extends this {
+        $enter() {
+          this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
+        }
+
+        _handleDown() {
+          this._setState("EnterSecurity");
+        }
+
+        _handleEnter() {
+          this._setState('Keyboard');
+        }
+
+        $exit() {
+          this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
+        }
+
+      }, class EnterSecurity extends this {
+        $enter() {
+          this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
+        }
+
+        _handleUp() {
+          this._setState("EnterSSID");
+        }
+
+        isPasswordUnReachable(secCode) {
+          if (secCode === 0) {
+            this.tag("PasswordBox").alpha = 0.5;
+            this.tag("Password").alpha = 0.5;
+            return true;
+          } else {
+            this.tag("PasswordBox").alpha = 1;
+            this.tag("Password").alpha = 1;
+            return false;
+          }
+        }
+
+        _handleLeft() {
+          this.securityCodeIndex = (15 + --this.securityCodeIndex) % 15;
+          this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
+          this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
+        }
+
+        _handleEnter() {
+          this.handleDone();
+        }
+
+        _handleRight() {
+          this.securityCodeIndex = (15 + ++this.securityCodeIndex) % 15;
+          this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
+          this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
+        }
+
+        _handleDown() {
+          if (!this.pwdUnReachable) {
+            this._setState("EnterPassword");
+          }
+        }
+
+        $exit() {
+          this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
+        }
+
+      }, class EnterPassword extends this {
+        $enter() {
+          if (this.pwdUnReachable) {
+            this._setState("EnterSecurity");
+          }
+
+          this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
+        }
+
+        _handleUp() {
+          this._setState("EnterSecurity");
+        }
+
+        _handleDown() {
+          this._setState("EnterSSID");
+        }
+
+        _handleEnter() {
+          this._setState('Keyboard');
+        }
+
+        $exit() {
+          this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
+        }
+
+      }, class Keyboard extends this {
+        $enter(state) {
+          this.prevState = state.prevState;
+
+          if (this.prevState === 'EnterSSID') {
+            this.element = 'NetworkText';
+          }
+
+          if (this.prevState === 'EnterPassword') {
+            this.element = 'Pwd';
+          }
+
+          if (this.prevState === 'EnterSecurity') {
+            this.element = 'TypeText';
+          }
+        }
+
+        _getFocused() {
+          return this.tag('Keyboard');
+        }
+
+        $onSoftKey(_ref) {
+          let {
+            key
+          } = _ref;
+
+          if (key === 'Done') {
+            this.handleDone();
+          } else if (key === 'Clear') {
+            this.textCollection[this.prevState] = this.textCollection[this.prevState].substring(0, this.textCollection[this.prevState].length - 1);
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else if (key === '#@!' || key === 'abc' || key === 'áöû' || key === 'shift') {
+            console.log('no saving');
+          } else if (key === 'Space') {
+            this.textCollection[this.prevState] += ' ';
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else if (key === 'Delete') {
+            this.textCollection[this.prevState] = '';
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          } else {
+            this.textCollection[this.prevState] += key;
+            this.tag(this.element).text.text = this.textCollection[this.prevState];
+          }
+        }
+
+        _handleBack() {
+          this._setState(this.prevState);
+        }
+
+      }];
+    }
+
+    _init() {
+      this.securityCodeIndex = 0;
+      this.pwdUnReachable = true;
+      this.textCollection = {
+        'EnterSSID': '',
+        'EnterPassword': '',
+        'EnterSecurity': '0'
+      };
+      this.securityCodes = [{
+        name: "Open/None (Unsecure)",
+        value: 0
+      }, {
+        name: "WEP - Deprecated, not needed",
+        value: 1
+      }, {
+        name: "WEP",
+        value: 2
+      }, {
+        name: "WPA Personal TKIP",
+        value: 3
+      }, {
+        name: "WPA Personal AES",
+        value: 4
+      }, {
+        name: "WPA2 Personal TKIP",
+        value: 5
+      }, {
+        name: "WPA2 Personal AES",
+        value: 6
+      }, {
+        name: "WPA Enterprise TKIP",
+        value: 7
+      }, {
+        name: "WPA Enterprise AES",
+        value: 8
+      }, {
+        name: "WPA2 Enterprise TKIP",
+        value: 9
+      }, {
+        name: "WPA2 Enterprise AES",
+        value: 10
+      }, {
+        name: "Mixed Personal",
+        value: 11
+      }, {
+        name: "Mixed Enterprise",
+        value: 12
+      }, {
+        name: "WPA3 Personal AES",
+        value: 13
+      }, {
+        name: "WPA3 Personal SAE",
+        value: 14
+      }];
+      this.tag("Pwd").text.text = this.textCollection['EnterPassword'];
+      this.tag("NetworkText").text.text = this.textCollection['EnterSSID'];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class WifiPairingScreen extends lng$1.Component {
+    static _template() {
+      return {
+        w: 1920,
+        h: 1080,
+        rect: true,
+        color: 0xCC000000,
+        PairingScreen: {
+          Title: {
+            x: 960,
+            y: 95,
+            mountX: 0.5,
+            zIndex: 2,
+            text: {
+              text: '',
+              fontSize: 40,
+              textColor: CONFIG.theme.hex
+            }
+          },
+          RectangleWithColor: {
+            x: 180,
+            y: 164,
+            w: 1515,
+            h: 2,
+            rect: true,
+            color: 0xFFFFFFFF,
+            zIndex: 2
+          },
+          PasswordLabel: {
+            x: 180,
+            y: 240,
+            w: 300,
+            h: 75,
+            zIndex: 2,
+            text: {
+              text: 'Password: ',
+              fontSize: 25,
+              fontFace: CONFIG.language.font,
+              textColor: 0xffffffff,
+              textAlign: 'left'
+            }
+          },
+          Pwd: {
+            x: 437,
+            y: 240,
+            zIndex: 2,
+            text: {
+              text: '',
+              fontSize: 25,
+              fontFace: CONFIG.language.font,
+              textColor: 0xffffffff,
+              wordWrapWidth: 1000,
+              wordWrap: false,
+              textOverflow: 'ellipsis'
+            }
+          },
+          PasswordBox: {
+            x: 417,
+            y: 208,
+            zIndex: 2,
+            texture: lng$1.Tools.getRoundRect(1279, 88, 0, 3, 0xffffffff, false)
+          },
+          PasswrdSwitch: {
+            h: 45,
+            w: 66.9,
+            x: 1656,
+            y: 255,
+            zIndex: 2,
+            type: PasswordSwitch,
+            mount: 0.5
+          },
+          ShowPassword: {
+            x: 1398,
+            y: 240,
+            w: 300,
+            h: 75,
+            zIndex: 2,
+            text: {
+              text: 'Show Password',
+              fontSize: 25,
+              fontFace: CONFIG.language.font,
+              textColor: 0xffffffff,
+              textAlign: 'left'
+            }
+          },
+          List: {
+            x: 417,
+            y: 331,
+            type: lng$1.components.ListComponent,
+            w: 1080,
+            h: 400,
+            itemSize: 28,
+            horizontal: true,
+            invertDirection: false,
+            roll: true,
+            zIndex: 2
+          },
+          RectangleWithColor2: {
+            x: 180,
+            y: 451,
+            w: 1515,
+            h: 2,
+            rect: true,
+            color: 0xFFFFFFFF,
+            zIndex: 2
+          },
+          KeyBoard: {
+            y: 501,
+            x: 420,
+            type: Keyboard,
+            visible: true,
+            zIndex: 2,
+            formats: KEYBOARD_FORMATS.qwerty
+          }
+        }
+      };
+    }
+
+    _updateText(txt) {
+      this.tag("Pwd").text.text = txt;
+    } //  _handleBack() {
+    //    Router.back()
+    //  }
+
+    /**
+     * @param {{ item: Wifi Response Object; }} args
+     */
+    //  set params(args) {
+    //    if (args.wifiItem) {
+    //      this.item(args.wifiItem)
+    //    } else {
+    //    this._handleBack()
+    //      //Router.navigate('settings/network/interface/wifi')
+    //    }
+    //  }
+
+
+    item(item) {
+      this.star = "";
+      this.passwd = "";
+      this.tag("Pwd").text.text = "";
+      this.tag('Title').text = item.ssid;
+      var options = [];
+      this._item = item;
+
+      if (item.connected) {
+        options = ['Disconnect', 'Cancel'];
+      } else {
+        options = ['Connect', 'Cancel'];
+      }
+
+      this.tag('List').items = options.map((item, index) => {
+        return {
+          ref: item,
+          x: index === 0 ? 0 : 325 * index,
+          w: 325,
+          h: 85,
+          type: ConfirmAndCancel,
+          item: item
+        };
+      });
+
+      this._setState('Pair');
+    }
+
+    _focus() {
+      this.hidePasswd = true;
+
+      this._setState('Pair');
+
+      this.item(this.fireAncestors("$PairingnetworkParams"));
+    }
+
+    _unfocus() {}
+
+    _init() {
+      this.star = "";
+      this.passwd = "";
+      this.isOn = false;
+      this._wifi = new Wifi();
+    }
+
+    pressEnter(option) {
+      if (option === 'Cancel') {
+        this._handleBack();
+      } else if (option === 'Connect') {
+        if (this._item) {
+          console.log('trying to connect wifi');
+
+          this._wifi.connect(this._item, '').then(() => {}).catch(err => {
+            console.log('Not able to connect to wifi', JSON.stringify(err));
+          });
+        }
+
+        this._handleBack();
+      } else if (option === 'Disconnect') {
+        this._wifi.disconnect().then(() => {
+          this._handleBack();
+        });
+      }
+    } // startConnect(password) {
+    //   this._wifi.connect(this._item, password).then(() => {
+    //     Router.back()
+    //   })
+    // }
+
+
+    startConnect(password) {
+      this._wifi.connect(this._item, password).then(() => {
+        this._wifi.saveSSID(this._item.ssid, password, this._item.security).then(response => {
+          if (response.result === 0) ; else if (response.result !== 0) {
+            this._wifi.clearSSID().then(response => {// console.log(response)
+              // Router.back()
+            });
+          }
+        });
+
+        this._handleBack();
+      });
+    }
+
+    static _states() {
+      return [class Password extends this {
+        $enter() {
+          this.shifter = false;
+          this.capsLock = false;
+        }
+
+        _getFocused() {
+          return this.tag("KeyBoard");
+        }
+
+        $onSoftKey(_ref) {
+          let {
+            key
+          } = _ref;
+
+          if (key === 'Done') {
+            this.startConnect(this.passwd);
+          } else if (key === 'Clear') {
+            this.passwd = this.passwd.substring(0, this.passwd.length - 1);
+            this.star = this.star.substring(0, this.star.length - 1);
+
+            this._updateText(this.hidePasswd ? this.star : this.passwd);
+          } else if (key === '#@!' || key === 'abc' || key === 'áöû' || key === 'shift') {
+            console.log('no saving');
+          } else if (key === 'Space') {
+            this.star += '\u25CF';
+            this.passwd += ' ';
+
+            this._updateText(this.hidePasswd ? this.star : this.passwd);
+          } else if (key === 'Delete') {
+            this.star = '';
+            this.passwd = '';
+
+            this._updateText(this.hidePasswd ? this.star : this.passwd);
+          } else {
+            this.star += '\u25CF';
+            this.passwd += key;
+
+            this._updateText(this.hidePasswd ? this.star : this.passwd);
+          }
+        }
+
+        _handleUp() {
+          this._setState("Pair");
+        }
+
+      }, class Pair extends this {
+        $enter() {}
+
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleRight() {
+          this.tag('List').setNext();
+        }
+
+        _handleLeft() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleUp() {
+          this._setState("PasswordSwitchState");
+        }
+
+        _handleDown() {
+          this._setState("Password");
+        }
+
+        _handleEnter() {
+          if (this.tag('List').element.ref == 'Connect' && this._item.security != 0) {
+            if (this.star === '') {
+              this._setState('Password');
+            } else {
+              this.startConnect(this.passwd);
+            }
+          } else {
+            this.pressEnter(this.tag('List').element.ref);
+          }
+        }
+
+      }, class PasswordSwitchState extends this {
+        $enter() {
+          this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, CONFIG.theme.hex, false);
+        }
+
+        _handleDown() {
+          this._setState("Pair");
+        }
+
+        _getFocused() {
+          return this.tag('PasswrdSwitch');
+        }
+
+        $handleEnter(bool) {
+          if (bool) {
+            this._updateText(this.passwd);
+
+            this.hidePasswd = false;
+          } else {
+            this._updateText(this.star);
+
+            this.hidePasswd = true;
+          }
+
+          this.isOn = bool;
+        }
+
+        $exit() {
+          this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, 0xffffffff, false);
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+  * Class for WiFi screen.
+  */
+
+  class WiFiScreen extends lng$1.Component {
+    static _template() {
+      return {
+        WifiContents: {
+          x: 200,
+          y: 275,
+          Switch: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('WiFi On/Off'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              visible: false,
+              h: 45,
+              w: 45,
+              x: 1500,
+              // x: 320,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif')
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          Networks: {
+            y: 180,
+            flex: {
+              direction: 'column'
+            },
+            PairedNetworks: {
+              flexItem: {
+                margin: 0
+              },
+              List: {
+                type: lng$1.components.ListComponent,
+                w: 1920 - 300,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -4
+              }
+            },
+            AvailableNetworks: {
+              flexItem: {
+                margin: 0
+              },
+              List: {
+                w: 1920 - 300,
+                type: lng$1.components.ListComponent,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -4
+              }
+            },
+            visible: false
+          },
+          JoinAnotherNetwork: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Join Another Network'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            visible: false
+          }
+        },
+        JoinAnotherNetworkOverlay: {
+          type: JoinAnotherNetworkComponent,
+          visible: false
+        },
+        WifiPairingScreen: {
+          type: WifiPairingScreen,
+          visible: false
+        }
+      };
+    }
+
+    _active() {
+      this._setState('Switch');
+    }
+
+    _focus() {
+      this._setState('Switch');
+
+      this._enable();
+    }
+
+    changeStateBack(state) {
+      this._setState(state);
+    }
+
+    _firstEnable() {
+      this.wifiLoading = this.tag('Switch.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: Math.PI * 2
+          }
+        }]
+      });
+      this.onError = {
+        0: 'SSID_CHANGED - The SSID of the network changed',
+        1: 'CONNECTION_LOST - The connection to the network was lost',
+        2: 'CONNECTION_FAILED - The connection failed for an unknown reason',
+        3: 'CONNECTION_INTERRUPTED - The connection was interrupted',
+        4: 'INVALID_CREDENTIALS - The connection failed due to invalid credentials',
+        5: 'NO_SSID - The SSID does not exist',
+        6: 'UNKNOWN - Any other error.'
+      };
+      this._wifi = new Wifi();
+      this._network = new Network();
+      this.wifiStatus = false;
+      this._wifiIcon = true;
+
+      this._activateWiFi();
+
+      this._setState('Switch');
+
+      if (this.wiFiStatus) {
+        this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
+      }
+
+      this._pairedNetworks = this.tag('Networks.PairedNetworks');
+      this._availableNetworks = this.tag('Networks.AvailableNetworks');
+
+      this._network.activate().then(result => {
+        if (result) {
+          this.wifiStatus = true;
+
+          this._network.registerEvent('onIPAddressStatusChanged', notification => {
+            console.log(JSON.stringify(notification));
+
+            if (notification.status == 'LOST') {
+              if (notification.interface === 'WIFI') {
+                this._wifi.setInterface('ETHERNET', true).then(res => {
+                  if (res.success) {
+                    this._wifi.setDefaultInterface('ETHERNET', true);
+                  }
+                });
+              }
+            }
+          });
+
+          this._network.registerEvent('onDefaultInterfaceChanged', notification => {
+            if (notification.newInterfaceName === 'ETHERNET') {
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true);
+                }
+              });
+            }
+
+            if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
+              this._wifi.disconnect();
+
+              this.wifiStatus = false;
+              this.tag('Networks').visible = false;
+              this.tag('JoinAnotherNetwork').visible = false;
+              this.tag('Switch.Loader').visible = false;
+              this.wifiLoading.stop();
+              this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+
+              this._setState('Switch');
+
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                    if (result1.success) {
+                      console.log('set default success', result1);
+                    }
+                  });
+                }
+              });
+            }
+
+            if (notification.newInterfaceName == '' && notification.oldInterfaceName == 'WIFI') {
+              this._wifi.setInterface('ETHERNET', true).then(result => {
+                if (result.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
+                    if (result1.success) {
+                      console.log('set default success', result1);
+                    }
+                  });
+                }
+              });
+            }
+          });
+
+          this._network.registerEvent('onConnectionStatusChanged', notification => {
+            if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
+              this._wifi.setInterface('ETHERNET', true).then(res => {
+                if (res.success) {
+                  this._wifi.setDefaultInterface('ETHERNET', true);
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+    /**
+     * Function to be executed when the Wi-Fi screen is enabled.
+     */
+
+
+    _enable() {
+      if (this.wifiStatus) {
+        this._wifi.discoverSSIDs();
+      }
+    }
+    /**
+     * Function to be executed when the Wi-Fi screen is disabled.
+     */
+
+
+    _disable() {
+      this._wifi.stopScan();
+    }
+    /**
+     * Function to render list of Wi-Fi networks.
+     */
+
+
+    renderDeviceList(ssids) {
+      this._wifi.getConnectedSSID().then(result => {
+        if (result.ssid != '') {
+          this._pairedList = [result];
+        } else {
+          this._pairedList = [];
+        }
+
+        this._pairedNetworks.h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+          item.connected = true;
+          return {
+            ref: 'Paired' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: WiFiItem,
+            item: item
+          };
+        });
+        this._otherList = ssids.filter(device => {
+          result = this._pairedList.map(a => a.ssid);
+
+          if (result.includes(device.ssid)) {
+            return false;
+          } else return device;
+        });
+        this._availableNetworks.h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
+          item.connected = false;
+          return {
+            ref: 'Other' + index,
+            w: 1620,
+            h: 90,
+            type: WiFiItem,
+            item: item
+          };
+        });
+      });
+    }
+
+    hide() {
+      this.tag('WifiContents').visible = false;
+    }
+
+    show() {
+      this.tag('WifiContents').visible = true;
+    }
+
+    $PairingnetworkParams() {
+      console.log("state", this.state);
+      return this.ListItem;
+    }
+
+    static _states() {
+      return [class Switch extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+            this.tag('Switch.Button').scaleX = 1;
+          }
+
+          this.tag('Switch')._focus();
+        }
+
+        $exit() {
+          this.tag('Switch')._unfocus();
+        }
+
+        _handleDown() {
+          if (this.wifiStatus === true) {
+            this._setState('JoinAnotherNetwork');
+          }
+        }
+
+        _handleEnter() {
+          this.switch();
+        }
+
+      }, class PairedDevices extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').scaleX = -1;
+          }
+        }
+
+        _getFocused() {
+          return this._pairedNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('MyDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('MyDevices', 'up');
+        }
+
+        _handleEnter() {
+          this.ListItem = this._pairedNetworks.tag('List').element._item;
+
+          this._setState("WifiPairingScreen"); //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._pairedNetworks.tag('List').element._item })
+
+        }
+
+      }, class AvailableDevices extends this {
+        $enter() {
+          if (this.wifiStatus === true) {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            this.tag('Switch.Button').scaleX = -1;
+          }
+        }
+
+        _getFocused() {
+          return this._availableNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('AvailableDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('AvailableDevices', 'up');
+        }
+
+        _handleEnter() {
+          this.ListItem = this._availableNetworks.tag('List').element._item;
+
+          this._setState("WifiPairingScreen"); //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
+
+        }
+
+      }, class JoinAnotherNetwork extends this {
+        $enter() {
+          this.tag('JoinAnotherNetwork')._focus();
+        }
+
+        _handleUp() {
+          this._setState('Switch');
+        }
+
+        _handleEnter() {
+          this._setState("JoinAnotherNetworkOverlay"); //  if (this.wifiStatus) {
+          //    Router.navigate('settings/network/interface/wifi/another')
+          //  }
+
+        }
+
+        _handleDown() {
+          if (this.wifiStatus) {
+            if (this._pairedNetworks.tag('List').length > 0) {
+              this._setState('PairedDevices');
+            } else if (this._availableNetworks.tag('List').length > 0) {
+              this._setState('AvailableDevices');
+            }
+          }
+        }
+
+        $exit() {
+          this.tag('JoinAnotherNetwork')._unfocus();
+        }
+
+      }, class JoinAnotherNetworkOverlay extends this {
+        $enter() {
+          console.log("wifiscreen");
+          this.hide();
+          this.fireAncestors('$hideBreadCrum');
+          this.tag('JoinAnotherNetworkOverlay').visible = true;
+        }
+
+        $exit() {
+          this.show();
+          this.fireAncestors('$showBreadCrum');
+          this.tag('JoinAnotherNetworkOverlay').visible = false;
+        }
+
+        _getFocused() {
+          return this.tag('JoinAnotherNetworkOverlay');
+        }
+
+        _handleBack() {
+          this._setState('Switch');
+        }
+
+      }, //WifiPairingScreen
+      class WifiPairingScreen extends this {
+        $enter() {
+          console.log("wifiscreen");
+          this.hide();
+          this.fireAncestors('$hideBreadCrum');
+          this.tag('WifiPairingScreen').visible = true;
+        }
+
+        $exit() {
+          this.show();
+          this.fireAncestors('$showBreadCrum');
+          this.tag('WifiPairingScreen').visible = false;
+        }
+
+        _getFocused() {
+          return this.tag('WifiPairingScreen');
+        }
+
+        _handleBack() {
+          this._setState('Switch');
+        }
+
+      }];
+    }
+    /**
+     * Function to navigate through the lists in the screen.
+     * @param {string} listname
+     * @param {string} dir
+     */
+
+
+    _navigate(listname, dir) {
+      let list;
+      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
+
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
+          this._wifi.discoverSSIDs();
+
+          this._setState('JoinAnotherNetwork');
+
+          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
+            this._setState('AvailableDevices');
+          }
+        }
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();else if (list.index == 0) {
+          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
+            this._setState('PairedDevices');
+          } else {
+            this._setState('JoinAnotherNetwork');
+          }
+        }
+      }
+    }
+    /**
+     * Function to turn on and off Wi-Fi.
+     */
+
+
+    switch() {
+      if (this.wifiStatus) {
+        this._wifi.disconnect();
+
+        console.log('turning off wifi');
+
+        this._wifi.setInterface('ETHERNET', true).then(result => {
+          if (result.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                this._wifi.disconnect();
+
+                this.wifiStatus = false;
+                this.tag('Networks').visible = false;
+                this.tag('JoinAnotherNetwork').visible = false;
+                this.tag('Switch.Loader').visible = false;
+                this.wifiLoading.stop();
+                this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+              }
+            });
+          }
+        });
+      } else {
+        console.log('turning on wifi');
+        this.wifiStatus = true;
+        this.tag('Networks').visible = true;
+        this.tag('JoinAnotherNetwork').visible = true;
+        this.wifiLoading.play();
+        this.tag('Switch.Loader').visible = true;
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+
+        this._wifi.discoverSSIDs();
+      }
+    }
+    /**
+     * Function to activate Wi-Fi plugin.
+     */
+
+
+    _activateWiFi() {
+      this._wifi.activate().then(() => {
+        this.switch();
+      });
+
+      this._wifi.registerEvent('onWIFIStateChanged', notification => {
+        console.log(JSON.stringify(notification));
+
+        if (notification.state === 2 || notification.state === 5) {
+          this._wifi.discoverSSIDs();
+        }
+      });
+
+      this._wifi.registerEvent('onError', notification => {
+        console.log('on errro');
+
+        this._wifi.discoverSSIDs();
+
+        this._wifi.setInterface('ETHERNET', true).then(res => {
+          if (res.success) {
+            this._wifi.setDefaultInterface('ETHERNET', true);
+          }
+        });
+
+        if (this.widgets) {
+          this.widgets.fail.notify({
+            title: 'WiFi Error',
+            msg: this.onError[notification.code]
+          });
+          Router.focusWidget('Fail');
+        }
+      });
+
+      this._wifi.registerEvent('onAvailableSSIDs', notification => {
+        this.renderDeviceList(notification.ssids);
+
+        if (!notification.moreData) {
+          setTimeout(() => {
+            this.tag('Switch.Loader').visible = false;
+            this.wifiLoading.stop();
+          }, 1000);
+        }
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const wifi = new Wifi();
+  class NetworkInterfaceScreen extends lng$1.Component {
+    _construct() {
+      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
+    }
+
+    static _template() {
+      return {
+        NetworkInterfaceScreenContents: {
+          x: 200,
+          y: 275,
+          WiFi: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('WiFi'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Ethernet: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Ethernet'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              x: 175,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif'),
+              visible: false
+            }
+          }
+        },
+        WifiScreen: {
+          type: WiFiScreen,
+          visible: false
+        }
+      };
+    }
+
+    _focus() {
+      this._setState('WiFi');
+    }
+
+    _init() {
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      this._thunder = thunderJS(config);
+      const systemcCallsign = 'org.rdk.Network';
+      const eventName = 'onDefaultInterfaceChanged';
+
+      this._thunder.on(systemcCallsign, eventName, notification => {
+        console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification);
+
+        if (notification.newInterfaceName === "ETHERNET") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet: Connected';
+        } else if (notification.newInterfaceName === "" && notification.oldInterfaceName === "WIFI") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet: Error, Retry!';
+        } else if (notification.newInterfaceName === "WIFI") {
+          this.loadingAnimation.stop();
+          this.tag('Ethernet.Loader').visible = false;
+          this.tag('Ethernet.Title').text.text = 'Ethernet';
+        }
+      });
+
+      this.loadingAnimation = this.tag('Ethernet.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      this.tag('Ethernet.Loader').src = this.LoadingIcon;
+    }
+
+    _firstActive() {
+      this.tag('Ethernet.Loader').on('txError', () => {
+        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
+        this.tag('Ethernet.Loader').src = url;
+      });
+    }
+
+    hide() {
+      this.tag('NetworkInterfaceScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('NetworkInterfaceScreenContents').visible = true;
+    }
+
+    setEthernetInterface() {
+      wifi.getInterfaces().then(res => {
+        res.interfaces.forEach(element => {
+          if (element.interface === "ETHERNET" && element.connected) {
+            wifi.setInterface('ETHERNET', true).then(result => {
+              if (result.success) {
+                wifi.setDefaultInterface('ETHERNET', true);
+                this.tag('Ethernet.Title').text.text = 'Ethernet';
+                this.tag('Ethernet.Loader').visible = true;
+                this.loadingAnimation.start();
+              }
+            });
+          }
+        });
+      });
+    }
+
+    static _states() {
+      return [class WiFi extends this {
+        $enter() {
+          this.tag('WiFi')._focus();
+        }
+
+        $exit() {
+          this.tag('WiFi')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('Ethernet');
+        }
+
+        _getFocused() {
+          return this.tag('WiFi');
+        }
+
+        _handleEnter() {
+          this._setState("WifiScreen"); //  if (!Router.isNavigating()) {
+          //      Router.navigate('settings/network/interface/wifi')
+          //  }
+
+        }
+
+      }, class Ethernet extends this {
+        $enter() {
+          this.tag('Ethernet')._focus();
+        }
+
+        $exit() {
+          this.tag('Ethernet')._unfocus();
+        }
+
+        _handleEnter() {
+          wifi.getDefaultInterface().then(res => {
+            if (res.success) {
+              if (res.interface !== "ETHERNET") {
+                this.setEthernetInterface();
+              }
+            }
+          });
+        }
+
+        _handleDown() {
+          this._setState('WiFi');
+        }
+
+        _handleUp() {
+          this._setState('WiFi');
+        }
+
+      }, class WifiScreen extends this {
+        $enter() {
+          console.log("wifiscreen");
+          this.hide();
+          this.tag('WifiScreen').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface  WiFi');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('WifiScreen').visible = false;
+          this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface');
+        }
+
+        _getFocused() {
+          return this.tag('WifiScreen');
+        }
+
+        _handleBack() {
+          this._setState('WiFi');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+    * Class for Other Network Config Screen.
+    */
+
+  class NetworkConfigurationScreen extends lng$1.Component {
+    static _template() {
+      return {
+        rect: true,
+        color: 0x00000000,
+        w: 1920,
+        h: 1080,
+        NetworkConfigurationScreenContents: {
+          x: 200,
+          y: 275,
+          NetworkInfo: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Network Info'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          NetworkInterface: {
+            //alpha: 0.3, // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Network Interface: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          TestInternetAccess: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Test Internet Access: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              x: 420,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif'),
+              visible: false
+            }
+          },
+          StaticMode: {
+            alpha: 0,
+            // disabled
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Static Mode'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        NetworkInfoScreen: {
+          type: NetworkInfo,
+          visible: false
+        },
+        NetworkInterfaceOverlay: {
+          type: NetworkInterfaceScreen,
+          visible: false
+        }
+      };
+    }
+
+    _firstEnable() {
+      console.log("first trigger");
+
+      this._setState('NetworkInfo');
+
+      let _currentIPSettings = {};
+      let _newIPSettings = {};
+      this._network = new Network();
+
+      this._network.getDefaultInterface().then(interfaceName => {
+      });
+
+      _newIPSettings = _currentIPSettings;
+      _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
+      // loader animation for testing internet
+
+      this.loadingAnimation = this.tag('TestInternetAccess.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+
+    _focus() {
+      console.log("2"); //this.widgets.menu.setPanelsVisibility()
+
+      this._setState(this.state); //can be used on init as well
+
+
+      new Network().getDefaultInterface().then(interfaceName => {
+        this.$NetworkInterfaceText(interfaceName);
+      });
+    }
+
+    _unfocus() {
+      this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ');
+    }
+
+    $NetworkInterfaceText(text) {
+      this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text;
+    }
+
+    hide() {
+      this.tag('NetworkConfigurationScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('NetworkConfigurationScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class NetworkInfo extends this {
+        $enter() {
+          this.tag('NetworkInfo')._focus();
+        }
+
+        $exit() {
+          this.tag('NetworkInfo')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('NetworkInterface');
+        }
+
+        _handleEnter() {
+          this._setState("NetworkInfoScreen");
+        }
+
+      }, class NetworkInterface extends this {
+        $enter() {
+          this.tag('NetworkInterface')._focus();
+        }
+
+        $exit() {
+          this.tag('NetworkInterface')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleDown() {
+          this._setState('TestInternetAccess');
+        }
+
+        _handleEnter() {
+          this._setState("NetworkInterfaceOverlay"); //  if (!Router.isNavigating()) {
+          //  }
+
+        }
+
+      }, class TestInternetAccess extends this {
+        $enter() {
+          this.tag('TestInternetAccess')._focus();
+        }
+
+        $exit() {
+          this.tag('TestInternetAccess')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('NetworkInterface');
+        }
+
+        _handleDown() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleEnter() {
+          this.loadingAnimation.start();
+          this.tag('TestInternetAccess.Loader').visible = true;
+
+          this._network.isConnectedToInternet().then(result => {
+            var connectionStatus = Language.translate("Internet Access: ");
+
+            if (result) {
+              connectionStatus += Language.translate("Connected");
+            } else {
+              connectionStatus += Language.translate("Not Connected");
+            }
+
+            setTimeout(() => {
+              this.tag('TestInternetAccess.Loader').visible = false;
+              this.tag('TestInternetAccess.Title').text.text = connectionStatus;
+              this.loadingAnimation.stop();
+            }, 2000);
+          });
+        }
+
+      }, class StaticMode extends this {
+        $enter() {
+          this.tag('StaticMode')._focus();
+        }
+
+        $exit() {
+          this.tag('StaticMode')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('TestInternetAccess');
+        }
+
+        _handleDown() {
+          this._setState('NetworkInfo');
+        }
+
+        _handleEnter() {}
+
+      }, class NetworkInfoScreen extends this {
+        $enter() {
+          this.hide();
+          this.tag('NetworkInfoScreen').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Info');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('NetworkInfoScreen').visible = false;
+          this.fireAncestors('$updatePageTitle', 'Settings / Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('NetworkInfoScreen');
+        }
+
+        _handleBack() {
+          this._setState('NetworkInfo');
+        }
+
+      }, class NetworkInterfaceOverlay extends this {
+        $enter() {
+          this.hide();
+          this.tag('NetworkInterfaceOverlay').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('NetworkInterfaceOverlay').visible = false;
+          this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration');
+        }
+
+        _getFocused() {
+          return this.tag('NetworkInterfaceOverlay');
+        }
+
+        _handleBack() {
+          this._setState('NetworkInterface');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  let _item;
+  /**
+   * Class for pairing screen for the Bluetooth.
+   */
+
+
+  class BluetoothPairingScreen extends lng$1.Component {
+    static _template() {
+      return {
+        w: 1920,
+        h: 2000,
+        rect: true,
+        color: 0x00000000,
+        BluetoothPair: {
+          x: 960,
+          y: 300,
+          Title: {
+            mountX: 0.5,
+            text: {
+              text: "",
+              fontFace: CONFIG.language.font,
+              fontSize: 40,
+              textColor: CONFIG.theme.hex
+            }
+          },
+          BorderTop: {
+            x: 0,
+            y: 75,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Pairing: {
+            x: 0,
+            y: 125,
+            mountX: 0.5,
+            text: {
+              text: "",
+              fontFace: CONFIG.language.font,
+              fontSize: 25
+            }
+          },
+          Buttons: {
+            x: 0,
+            y: 200,
+            w: 440,
+            mountX: 0.5,
+            h: 50,
+            ConnectDisconnect: {
+              x: 0,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 0xFFFFFFFF,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: "",
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 0xFF000000
+                }
+              }
+            },
+            Unpair: {
+              x: 0 + 220,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 0xFFFFFFFF,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language.translate("Unpair"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 0xFF000000
+                }
+              }
+            },
+            Cancel: {
+              x: 0 + 220 + 220,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 0xFF7D7D7D,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language.translate("Cancel"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 0xFF000000
+                }
+              }
+            }
+          },
+          BorderBottom: {
+            x: 0,
+            y: 300,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          }
+        }
+      };
+    }
+
+    item(item) {
+      _item = item;
+
+      this._setState('ConnectDisconnect');
+
+      this.tag('Title').text = item.name;
+
+      if (item.connected) {
+        this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Disconnect';
+      } else {
+        this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Connect';
+      }
+    }
+
+    _init() {
+      this._setState('ConnectDisconnect');
+    }
+
+    _focus() {
+      this.item(this.fireAncestors("$BluetoothParams"));
+    }
+
+    static _states() {
+      return [class ConnectDisconnect extends this {
+        $enter() {
+          this._focus();
+        }
+
+        _handleEnter() {
+          // this.tag('Pairing').text = "Someting is wrong " + _item.name
+          if (_item.connected) {
+            // this.tag('Pairing').text = "Connecting to " + _item.name
+            //this.fireAncestors('$pressEnter', 'Disconnect')
+            Router.navigate('settings/bluetooth', {
+              action: 'Disconnect'
+            });
+          } else {
+            // this.tag('Pairing').text = "Disconnecting from " + _item.name
+            // this.fireAncestors('$pressEnter', 'Connect')
+            Router.navigate('settings/bluetooth', {
+              action: 'Connect'
+            });
+          }
+        }
+
+        _handleRight() {
+          this._setState('Unpair');
+        }
+
+        _focus() {
+          this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').patch({
+            text: {
+              textColor: 0xFFFFFFFF
+            }
+          });
+        }
+
+        _unfocus() {
+          this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
+            color: 0xFFFFFFFF
+          });
+          this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').patch({
+            text: {
+              textColor: 0xFF000000
+            }
+          });
+        }
+
+        $exit() {
+          this._unfocus();
+        }
+
+      }, class Unpair extends this {
+        $enter() {
+          this._focus();
+        }
+
+        _handleEnter() {
+          //this.fireAncestors('$pressEnter', 'Unpair')
+          Router.navigate('settings/bluetooth', {
+            action: 'Unpair'
+          });
+        }
+
+        _handleRight() {
+          this._setState('Cancel');
+        }
+
+        _handleLeft() {
+          this._setState('ConnectDisconnect');
+        }
+
+        _focus() {
+          this.tag('Unpair').patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag('Unpair.Title').patch({
+            text: {
+              textColor: 0xFFFFFFFF
+            }
+          });
+        }
+
+        _unfocus() {
+          this.tag('Unpair').patch({
+            color: 0xFFFFFFFF
+          });
+          this.tag('Unpair.Title').patch({
+            text: {
+              textColor: 0xFF000000
+            }
+          });
+        }
+
+        $exit() {
+          this._unfocus();
+        }
+
+      }, class Cancel extends this {
+        $enter() {
+          this._focus();
+        }
+
+        _handleEnter() {
+          //this.fireAncestors('$pressEnter', 'Cancel')
+          Router.navigate('settings/bluetooth', {
+            action: 'Cancel'
+          });
+        }
+
+        _handleLeft() {
+          this._setState('Unpair');
+        }
+
+        _focus() {
+          this.tag('Cancel').patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag('Cancel.Title').patch({
+            text: {
+              textColor: 0xFFFFFFFF
+            }
+          });
+        }
+
+        _unfocus() {
+          this.tag('Cancel').patch({
+            color: 0xFF7D7D7D
+          });
+          this.tag('Cancel.Title').patch({
+            text: {
+              textColor: 0xFF000000
+            }
+          });
+        }
+
+        $exit() {
+          this._unfocus();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Bluetooth screen.
+   */
+
+  class BluetoothScreen extends lng$1.Component {
+    static _template() {
+      return {
+        Bluetooth: {
+          y: 275,
+          x: 200,
+          Confirmation: {
+            x: 780,
+            y: 100,
+            type: BluetoothConfirmation,
+            visible: false
+          },
+          PairingScreen: {
+            x: 780,
+            y: 100,
+            type: BluetoothPairingScreen,
+            zIndex: 100,
+            visible: false
+          },
+          Switch: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Bluetooth On/Off'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          Searching: {
+            visible: false,
+            h: 90,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Searching for Devices'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              // x: 1600,
+              x: 320,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Loading.gif')
+            }
+          },
+          Networks: {
+            PairedNetworks: {
+              y: 180,
+              List: {
+                type: lng$1.components.ListComponent,
+                w: 1920 - 300,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -6
+              }
+            },
+            AvailableNetworks: {
+              y: 90,
+              visible: false,
+              List: {
+                w: 1920 - 300,
+                type: lng$1.components.ListComponent,
+                itemSize: 90,
+                horizontal: false,
+                invertDirection: true,
+                roll: true,
+                rollMax: 900,
+                itemScrollOffset: -6
+              }
+            },
+            visible: false
+          },
+          AddADevice: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Add A Device'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            visible: false
+          }
+        },
+        BluetoothPairingScreen: {
+          type: BluetoothPairingScreen,
+          visible: false
+        }
+      };
+    }
+    /**
+     * @param {{ action: String; }} args
+     */
+
+
+    set params(args) {
+      if (args.action) {
+        this.pressEnter(args.action);
+      }
+    }
+
+    _unfocus() {
+      this._disable();
+    }
+
+    pageTransition() {
+      return 'left';
+    }
+
+    _firstEnable() {
+      this._bt = new BluetoothApi();
+      this._bluetooth = false;
+
+      this._activateBluetooth();
+
+      this._setState('Switch'); //this.switch()
+      //this._bluetooth = false
+
+
+      this._pairedNetworks = this.tag('Networks.PairedNetworks');
+      this._availableNetworks = this.tag('Networks.AvailableNetworks');
+      this.renderDeviceList();
+      this.loadingAnimation = this.tag('Searching.Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+
+    _focus() {
+      //this.widgets.menu.setPanelsVisibility()
+      this._setState('AddADevice');
+
+      this._enable();
+
+      if (this._bluetooth) {
+        this.tag('Networks').visible = true;
+        this.tag('AddADevice').visible = true;
+        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        this.renderDeviceList(); //this._bt.startScan()
+      }
+    } //  _handleBack() {
+    //   this.fireAncestors('$changeState',"Bluetooth")
+    //  }
+
+    /**
+     * Function to be excuted when the Bluetooth screen is enabled.
+     */
+
+
+    _enable() {
+      if (this._bluetooth) {
+        this._bt.startScan();
+      }
+
+      this.scanTimer = Registry.setInterval(() => {
+        if (this._bluetooth) {
+          this._bt.startScan();
+        }
+      }, 5000);
+    }
+    /**
+     * Function to be executed when the Bluetooth screen is disabled from the screen.
+     */
+
+
+    _disable() {
+      Registry.clearInterval(this.scanTimer);
+
+      this._bt.stopScan();
+    }
+    /**
+     * Function to be executed when add a device is pressed
+     */
+
+
+    showAvailableDevices() {
+      this.tag('Switch').patch({
+        alpha: 0
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 0
+      });
+      this.tag('AddADevice').patch({
+        alpha: 0
+      });
+      this.tag('Searching').patch({
+        visible: true
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: true
+      }); //  this.loadingAnimation.stop()
+      // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    hideAvailableDevices() {
+      this.tag('Switch').patch({
+        alpha: 1
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 1
+      });
+      this.tag('AddADevice').patch({
+        alpha: 1
+      });
+      this.tag('Searching').patch({
+        visible: false
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: false
+      });
+      this.tag('Confirmation').patch({
+        visible: false
+      }); //  this.loadingAnimation.start()
+      // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    showPairingScreen() {
+      this.tag('Switch').patch({
+        alpha: 0
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 0
+      });
+      this.tag('AddADevice').patch({
+        alpha: 0
+      });
+      this.tag('Searching').patch({
+        visible: false
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: false
+      });
+      this.tag('Confirmation').patch({
+        visible: false
+      });
+      this.tag('PairingScreen').patch({
+        visible: true
+      });
+      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    hidePairingScreen() {
+      this.tag('Switch').patch({
+        alpha: 1
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 1
+      });
+      this.tag('AddADevice').patch({
+        alpha: 1
+      });
+      this.tag('Searching').patch({
+        visible: false
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: false
+      });
+      this.tag('Confirmation').patch({
+        visible: false
+      });
+      this.tag('PairingScreen').patch({
+        visible: false
+      });
+      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    showConfirmation() {
+      this.tag('Switch').patch({
+        alpha: 0
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 0
+      });
+      this.tag('AddADevice').patch({
+        alpha: 0
+      });
+      this.tag('Searching').patch({
+        visible: false
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: false
+      });
+      this.tag('PairingScreen').patch({
+        visible: false
+      });
+      this.tag('Confirmation').patch({
+        visible: true
+      });
+      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+
+    hideConfirmation() {
+      this.tag('Switch').patch({
+        alpha: 1
+      });
+      this.tag('PairedNetworks').patch({
+        alpha: 1
+      });
+      this.tag('AddADevice').patch({
+        alpha: 1
+      });
+      this.tag('Searching').patch({
+        visible: false
+      });
+      this.tag('AvailableNetworks').patch({
+        visible: false
+      });
+      this.tag('PairingScreen').patch({
+        visible: false
+      });
+      this.tag('Confirmation').patch({
+        visible: false
+      });
+      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      // this.tag('SidePanel').patch({ alpha: 0 });
+    }
+    /**
+     * Function to render list of Bluetooth devices
+     */
+
+
+    renderDeviceList() {
+      this._bt.getPairedDevices().then(result => {
+        this._pairedList = result;
+        this._pairedNetworks.h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
+        this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+          item.paired = true;
+          return {
+            ref: 'Paired' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: BluetoothItem,
+            item: item
+          };
+        });
+      });
+
+      this._bt.getDiscoveredDevices().then(result => {
+        this._discoveredList = result;
+        this._otherList = this._discoveredList.filter(device => {
+          if (!device.paired) {
+            result = this._pairedList.map(a => a.deviceID);
+
+            if (result.includes(device.deviceID)) {
+              return false;
+            } else return device;
+          }
+        });
+        this._availableNetworks.h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').h = this._otherList.length * 90;
+        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
+          return {
+            ref: 'Other' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: BluetoothItem,
+            item: item
+          };
+        });
+      });
+    }
+
+    pressEnter(option) {
+      if (option === 'Cancel') {
+        this._setState('Switch');
+      } else if (option === 'Pair') {
+        this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
+          let btName = this._availableNetworks.tag('List').element._item.name;
+
+          if (result.success) {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Pairing Succesful'
+            });
+            Router.focusWidget('Fail');
+          } else {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Pairing Failed'
+            });
+            Router.focusWidget('Fail');
+          }
+
+          this.hideAvailableDevices();
+        });
+      } else if (option === 'Connect') {
+        this._bt.connect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
+          let btName = this._pairedNetworks.tag('List').element._item.name;
+
+          if (!result) {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Connection Failed'
+            });
+            Router.focusWidget('Fail');
+          } else {
+            this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID);
+
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Connection Successful'
+            });
+            Router.focusWidget('Fail');
+          }
+        });
+      } else if (option === 'Disconnect') {
+        this._bt.disconnect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
+          let btName = this._pairedNetworks.tag('List').element._item.name;
+
+          if (!result) {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Failed to Disconnect'
+            });
+            Router.focusWidget('Fail');
+          } else {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Disconnected'
+            });
+            Router.focusWidget('Fail');
+          }
+        });
+      } else if (option === 'Unpair') {
+        this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
+          let btName = this._pairedNetworks.tag('List').element._item.name;
+
+          if (result) {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Unpaired'
+            });
+            Router.focusWidget('Fail');
+          } else {
+            this.widgets.fail.notify({
+              title: btName,
+              msg: 'Unpairing Failed'
+            });
+            Router.focusWidget('Fail');
+          }
+        });
+      }
+    } //, { bluetoothItem: this._pairedNetworks.tag('List').element._item }
+
+
+    $BluetoothParams() {
+      return this._pairedNetworks.tag('List').element._item;
+    }
+
+    static _states() {
+      return [class Switch extends this {
+        $enter() {
+          this.hideAvailableDevices();
+          this.hidePairingScreen();
+
+          this.tag('Switch')._focus();
+        }
+
+        $exit() {
+          this.tag('Switch')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('AddADevice');
+        }
+
+        _handleEnter() {
+          this.switch();
+        }
+
+      }, class Confirmation extends this {
+        $enter() {
+          this.showConfirmation();
+        }
+
+        _getFocused() {
+          return this.tag('Confirmation');
+        }
+
+        $pressOK() {
+          this._setState('Switch');
+
+          this.hideConfirmation();
+        }
+
+      }, class PairedDevices extends this {
+        $enter() {
+          this.hideAvailableDevices();
+        }
+
+        _getFocused() {
+          return this._pairedNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('MyDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('MyDevices', 'up');
+        }
+
+        _handleEnter() {
+          //this.showPairingScreen()
+          //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
+          this._setState('BluetoothPairingScreen'); //this._setState('PairingScreen')
+
+        }
+
+      }, class AvailableDevices extends this {
+        _getFocused() {
+          return this._availableNetworks.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('AvailableDevices', 'down');
+        }
+
+        _handleUp() {
+          this._navigate('AvailableDevices', 'up');
+        }
+
+        _handleEnter() {
+          this.pressEnter('Pair'); //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+        }
+
+        _handleBack() {
+          this.hideAvailableDevices();
+
+          this._setState('Switch');
+        }
+
+      }, class AddADevice extends this {
+        $enter() {
+          this.tag('AddADevice')._focus();
+
+          this.hideAvailableDevices();
+        }
+
+        _handleUp() {
+          this._setState('Switch');
+        }
+
+        _handleDown() {
+          if (this._bluetooth) {
+            if (this._pairedNetworks.tag('List').length > 0) {
+              this._setState('PairedDevices');
+            } else if (this._availableNetworks.tag('List').length > 0) {
+              this._setState('AvailableDevices');
+            }
+          }
+        }
+
+        $exit() {
+          this.tag('AddADevice')._unfocus();
+        }
+
+        _handleEnter() {
+          if (this._bluetooth) {
+            this.showAvailableDevices();
+
+            this._setState('AvailableDevices');
+          }
+        }
+
+      }, class PairingScreen extends this {
+        $enter() {
+          this._disable();
+
+          this._bt.stopScan();
+
+          return this.tag('PairingScreen');
+        }
+
+        _getFocused() {
+          return this.tag('PairingScreen');
+        }
+
+        $exit() {
+          this.tag('PairingScreen').visible = false;
+
+          this._enable();
+        }
+
+      }, class BluetoothPairingScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.fireAncestors('$hideBreadCrum');
+          this.tag('BluetoothPairingScreen').visible = true;
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('BluetoothPairingScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.fireAncestors(' $showBreadCrum');
+          this.tag('LiveTvSettings').visible = false;
+        }
+
+        _handleBack() {
+          this._setState('Switch');
+        }
+
+      }];
+    }
+    /**
+     * Function to navigate through the lists in the screen.
+     * @param {string} listname
+     * @param {string} dir
+     */
+
+
+    _navigate(listname, dir) {
+      let list;
+      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
+
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
+          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) ;
+        }
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();else if (list.index == 0) {
+          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) ; else if (listname === 'MyDevices') {
+            this._setState('AddADevice');
+          }
+        }
+      }
+    }
+    /**
+     * Function to turn on and off Bluetooth.
+     */
+
+
+    switch() {
+      if (this._bluetooth) {
+        this._bt.disable().then(result => {
+          if (result.success) {
+            this._bluetooth = false;
+            this.tag('Networks').visible = false;
+            this.tag('AddADevice').visible = false;
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+          }
+        }).catch(() => {
+          console.log('Cannot turn off Bluetooth');
+        });
+      } else {
+        this._bt.enable().then(result => {
+          if (result.success) {
+            this._bluetooth = true;
+            this.tag('Networks').visible = true;
+            this.tag('AddADevice').visible = true;
+            this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+            this.renderDeviceList();
+
+            this._bt.startScan();
+          }
+        }).catch(() => {
+          console.log('Cannot turn on Bluetooth');
+        });
+      }
+    }
+    /**
+     * Function to activate Bluetooth plugin.
+     */
+
+
+    _activateBluetooth() {
+      this._bt.activate().then(res => {
+        console.log(res);
+        this._bluetooth = true;
+
+        this._bt.registerEvent('onDiscoveredDevice', () => {
+          this.renderDeviceList();
+        });
+
+        this._bt.registerEvent('onPairingRequest', notification => {
+          this.respondToPairingRequest(notification.deviceID, 'ACCEPTED');
+        });
+
+        this._bt.registerEvent('onConnectionChange', notification => {
+          this._bt.startScan();
+
+          this.renderDeviceList();
+          let btName = notification.name;
+
+          if (notification.connected) {
+            if (this.widgets.fail) {
+              this.widgets.fail.notify({
+                title: btName,
+                msg: 'CONNECTION SUCCESS'
+              });
+              Router.focusWidget('Fail');
+            }
+          } else {
+            if (this.widgets.fail) {
+              this.widgets.fail.notify({
+                title: btName,
+                msg: 'CONNECTION FAILED'
+              });
+              Router.focusWidget('Fail');
+            }
+          }
+        });
+
+        this._bt.registerEvent('onDiscoveryCompleted', () => {
+          this.tag('Searching.Loader').visible = false;
+          this.loadingAnimation.stop();
+          this.renderDeviceList();
+        });
+
+        this._bt.registerEvent('onDiscoveryStarted', () => {
+          this.loadingAnimation.start();
+          this.tag('Searching.Loader').visible = true;
+        });
+
+        this._bt.registerEvent('onRequestFailed', notification => {
+          this._bt.startScan();
+
+          this.renderDeviceList();
+
+          if (this.widgets.fail) {
+            this.widgets.fail.notify({
+              title: notification.name,
+              msg: notification.newStatus
+            });
+            Router.focusWidget('Fail');
+          }
+        });
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+    /**
+     * Function to respond to Bluetooth client.
+     * @param {number} deviceID
+     * @param {string} responseValue
+     */
+
+
+    respondToPairingRequest(deviceID, responseValue) {
+      this._bt.respondToEvent(deviceID, 'onPairingRequest', responseValue);
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const dtvApi$1 = new DTVApi();
+  const config$3 = {
+    host: "127.0.0.1",
+    port: 9998,
+    default: 1
+  };
+  const thunder$3 = thunderJS(config$3);
+  const systemcCallsign = "DTV";
+  /**
+   * Class for DVB Scan screen.
+   */
+
+  class DvbSScan extends lng$1.Component {
+    static _template() {
+      return {
+        rect: true,
+        //color: 0xff000000,
+        w: 1920,
+        h: 1080,
+        DvbSScanScreenContents: {
+          x: 200,
+          y: 275,
+          Wrapper: {
+            y: -3,
+            h: 635,
+            w: 1700,
+            clipping: true,
+            Scroller: {
+              y: 2,
+              Satellite: {
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Satellite"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              Frequency: {
+                y: 90,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Frequency"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              Polarity: {
+                y: 180,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Polarity"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              SymbolRate: {
+                y: 270,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Symbol Rate"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              FEC: {
+                y: 360,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("FEC"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              DVBS2: {
+                y: 450,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("DVB-S2"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 67,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
+                }
+              },
+              Modulation: {
+                y: 540,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Modulation"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              SearchType: {
+                y: 630,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Search Mode"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 45,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/Arrow.png")
+                }
+              },
+              Retune: {
+                y: 720,
+                type: SettingsMainItem,
+                Title: {
+                  x: 10,
+                  y: 45,
+                  mountY: 0.5,
+                  text: {
+                    text: Language.translate("Clear existing service list"),
+                    textColor: COLORS.titleColor,
+                    fontFace: CONFIG.language.font,
+                    fontSize: 25
+                  }
+                },
+                Button: {
+                  h: 45,
+                  w: 67,
+                  x: 1600,
+                  mountX: 1,
+                  y: 45,
+                  mountY: 0.5,
+                  src: Utils.asset("images/settings/ToggleOffWhite.png")
+                }
+              }
+            }
+          },
+          StartScan: {
+            zIndex: 3,
+            x: 10,
+            y: 670,
+            h: 50,
+            w: 200,
+            rect: true,
+            color: 0xffffffff,
+            Title: {
+              x: 100,
+              y: 27,
+              mount: 0.5,
+              text: {
+                text: Language.translate("Start Scan"),
+                textColor: 0xff000000,
+                fontFace: CONFIG.language.font,
+                fontSize: 24
+              }
+            }
+          },
+          ErrorNotification: {
+            x: 250,
+            y: 670,
+            h: 50,
+            visible: false,
+            Content: {
+              x: 10,
+              y: 25,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Error!"),
+                textColor: CONFIG.theme.hex,
+                fontFace: CONFIG.language.font,
+                fontSize: 21
+              }
+            }
+          },
+          ScanProgress: {
+            x: 270,
+            y: 670,
+            h: 50,
+            visible: false,
+            Title: {
+              visible: false,
+              x: 40,
+              y: 25,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Please wait scan in progress") + "...",
+                textColor: CONFIG.theme.hex,
+                fontFace: CONFIG.language.font,
+                fontSize: 21
+              }
+            },
+            Loader: {
+              h: 45,
+              w: 45,
+              x: 10,
+              mountX: 1,
+              y: 25,
+              mountY: 0.5,
+              src: Utils.asset("images/settings/Loading.gif")
+            }
+          }
+        },
+        SelectSatellite: {
+          type: Satellite,
+          visible: false
+        },
+        SelectFrequency: {
+          type: IntegerInput,
+          visible: false
+        },
+        SelectPolarity: {
+          type: Polarity,
+          visible: false
+        },
+        SelectSymbolRate: {
+          type: IntegerInput,
+          visible: false
+        },
+        SelectFEC: {
+          type: FEC,
+          visible: false
+        },
+        SelectModulation: {
+          type: Modulation,
+          visible: false
+        },
+        SelectSearchType: {
+          type: SearchType,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._setState("Satellite");
+
+      this.preventExit = false;
+      this.selectedSatellite = {};
+      this.selectedFrequency = "";
+      this.selectedPolarity = "";
+      this.selectedSymbolRate = "";
+      this.selectedFEC = "";
+      this.selectedDVBS2 = false; //default value is false
+
+      this.selectedModulation = "";
+      this.selectedSearchType = "";
+      this.selectedRetune = false; //default value is set to false
+
+      this.loadingAnimation = this.tag("ScanProgress.Loader").animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: "immediate",
+        actions: [{
+          p: "rotation",
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      this.inProgressAnimation = this.tag("ScanProgress.Title").animation({
+        duration: 0.6,
+        repeat: 0,
+        stopMethod: "immediate",
+        actions: [{
+          p: "text.text",
+          v: {
+            0: Language.translate("Please wait scan in progress"),
+            0.3: Language.translate("Please wait scan in progress") + ".",
+            0.6: Language.translate("Please wait scan in progress") + "..",
+            0.9: Language.translate("Please wait scan in progress") + "..."
+          }
+        }]
+      });
+    }
+
+    setScanInProgress() {
+      this.preventExit = true;
+      this.loadingAnimation.start();
+      this.inProgressAnimation.start();
+      this.tag("ScanProgress").visible = true;
+    }
+
+    setScanFinished() {
+      this.preventExit = false;
+      this.loadingAnimation.stop();
+      this.inProgressAnimation.stop();
+      this.tag("ScanProgress").visible = false;
+      this.tag("ScanProgress.Title").visible = false;
+    }
+
+    _captureKey() {
+      if (this.preventExit) {
+        this.tag("ScanProgress.Title").visible = true;
+        this.inProgressAnimation.start();
+      } else {
+        return false;
+      }
+    }
+
+    consoleLog() {
+      //log it everywhere
+      console.log("selectedSatellite: ", JSON.stringify(this.selectedSatellite), " selectedFrequency: ", this.selectedFrequency, " selectedPolarity: ", this.selectedPolarity, " selectedSymbolRate: ", this.selectedSymbolRate, " selectedFEC: ", this.selectedFEC, " selectedDVBS2: ", this.selectedDVBS2, " selectedModulation: ", this.selectedModulation, " selectedSearchType: ", this.selectedSearchType, " selectedRetune: ", this.selectedRetune);
+    }
+
+    _focus() {
+      // console.log("dvbscan screen in focus");
+      this.resetForm();
+
+      this._setState("Satellite");
+
+      this.consoleLog(); // console.log(this.satelliteList);
+      // console.log(this.polarityList);
+      // console.log(this.fecList);
+      // console.log(this.modulationList);
+      // console.log(this.searchtypeList);
+    }
+
+    _firstActive() {
+      thunder$3.on(systemcCallsign, "searchstatus", notification => {
+        console.log("SearchStatus Notification: ", JSON.stringify(notification));
+
+        if (notification.finished) {
+          console.log("notification.finished: ", notification.finished);
+          this.setScanFinished();
+        }
+      }); ///////////////satellite
+
+      this.satelliteList = [];
+      dtvApi$1.satelliteList().then(res => {
+        this.satelliteList = res;
+      }); ///////////////////polarity
+
+      this.polarityList = [];
+      dtvApi$1.polarityList().then(res => {
+        this.polarityList = res;
+      }); ///////////////////symbolRate
+      //symbol rate has some predefined values additional to custom imput
+
+      this.symbolRateList = [];
+      dtvApi$1.symbolRateList().then(res => {
+        this.symbolRateList = res;
+      }); ////////////////////FEC
+
+      this.fecList = [];
+      dtvApi$1.fecList().then(res => {
+        this.fecList = res;
+      }); ///////////////////modulation
+
+      this.modulationList = [];
+      dtvApi$1.modulationList().then(res => {
+        this.modulationList = res;
+      }); ///////////////////searchtype
+
+      this.searchtypeList = [];
+      dtvApi$1.searchtypeList().then(res => {
+        this.searchtypeList = res;
+      });
+    }
+
+    _handleBack() {
+      this.resetForm();
+      Router.navigate("settings/livetv/scan");
+    }
+
+    $getSatelliteList() {
+      return this.satelliteList;
+    }
+
+    $setSatellite(satellite) {
+      this.selectedSatellite = satellite; //this.consoleLog();
+    }
+
+    $getSelectedSatellite() {
+      return this.selectedSatellite;
+    }
+
+    $getPolarityList() {
+      return this.polarityList;
+    }
+
+    $setPolarity(polarity) {
+      this.selectedPolarity = polarity; //this.consoleLog();
+    }
+
+    $getSelectedPolarity() {
+      return this.selectedPolarity;
+    }
+
+    $getFECList() {
+      return this.fecList;
+    }
+
+    $setFEC(fec) {
+      this.selectedFEC = fec; //this.consoleLog();
+    }
+
+    $getSelectedFEC() {
+      return this.selectedFEC;
+    }
+
+    $getModulationList() {
+      return this.modulationList;
+    }
+
+    $setModulation(modulation) {
+      this.selectedModulation = modulation; //this.consoleLog();
+    }
+
+    $getSelectedModulation() {
+      return this.selectedModulation;
+    }
+
+    $getSearchTypeList() {
+      return this.searchtypeList;
+    }
+
+    $setSearchType(searchtype) {
+      this.selectedSearchType = searchtype; //this.consoleLog();
+    }
+
+    $getSelectedSearchType() {
+      return this.selectedSearchType;
+    }
+
+    setFrequency(frequency) {
+      this._setState("Frequency");
+
+      this.selectedFrequency = frequency;
+      this.tag("Frequency.Title").text.text = Language.translate("Frequency") + ": " + (this.selectedFrequency !== "" ? this.selectedFrequency : Language.translate("Select a") + " " + Language.translate("Frequency"));
+    }
+
+    setSymbolRate(symbolrate) {
+      this._setState("SymbolRate");
+
+      this.selectedSymbolRate = symbolrate;
+      this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate") + ": " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : Language.translate("Select a") + " " + Language.translate("Symbol Rate"));
+    }
+
+    resetForm() {
+      this.setScanFinished(); //reset the form variables to initial state on exit from this form
+
+      this.selectedSatellite = {};
+      this.tag("Satellite.Title").text.text = Language.translate("Satellite");
+      this.selectedFrequency = "";
+      this.tag("Frequency.Title").text.text = Language.translate("Frequency");
+      this.selectedPolarity = "";
+      this.tag("Polarity.Title").text.text = Language.translate("Polarity");
+      this.selectedSymbolRate = "";
+      this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate");
+      this.selectedFEC = "";
+      this.tag("FEC.Title").text.text = Language.translate("FEC");
+      this.selectedDVBS2 = false;
+      this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+      this.selectedModulation = "";
+      this.tag("Modulation.Title").text.text = Language.translate("Modulation");
+      this.selectedSearchType = "";
+      this.tag("SearchType.Title").text.text = Language.translate("Search Mode");
+      this.selectedRetune = false;
+      this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+      this.tag("ErrorNotification").visible = false;
+    }
+
+    verifyInputs() {
+      let errorString = "";
+
+      if (Object.keys(this.selectedSatellite).length === 0) {
+        errorString += "| " + Language.translate("Satellite") + " ";
+      }
+
+      if (this.selectedFrequency === "") {
+        errorString += "| " + Language.translate("Frequency") + " ";
+      }
+
+      if (this.selectedPolarity === "") {
+        errorString += "| " + Language.translate("Polarity") + " ";
+      }
+
+      if (this.selectedSymbolRate === "") {
+        errorString += "| " + Language.translate("Symbol Rate") + " ";
+      }
+
+      if (this.selectedFEC === "") {
+        errorString += "| " + Language.translate("FEC") + " ";
+      }
+
+      if (this.selectedModulation === "") {
+        errorString += "| " + Language.translate("Modulation") + " ";
+      }
+
+      if (this.selectedSearchType === "") {
+        errorString += "| " + Language.translate("Search Mode") + " ";
+      }
+
+      return errorString;
+    }
+
+    static _states() {
+      return [class Satellite extends this {
+        $enter() {
+          this.tag("Satellite")._focus();
+        }
+
+        $exit() {
+          this.tag("Satellite")._unfocus();
+        }
+
+        _handleDown() {
+          this._setState("Frequency");
+        }
+
+        _handleEnter() {
+          if (this.satelliteList.length > 0) {
+            this._setState("Satellite.SelectSatellite");
+          } else {
+            dtvApi$1.satelliteList().then(res => {
+              this.satelliteList = res;
+            });
+          }
+        }
+
+        static _states() {
+          return [class SelectSatellite extends Satellite {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSatellite").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Satellite"));
+            }
+
+            $exit() {
+              this.tag("SelectSatellite").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Satellite.Title").text.text = Language.translate("Satellite") + ": " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : Language.translate("Select a") + " " + Language.translate("Satellite"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectSatellite");
+            }
+
+            _handleBack() {
+              this._setState("Satellite");
+            }
+
+          }];
+        }
+
+      }, class Frequency extends this {
+        $enter() {
+          this.tag("Frequency")._focus();
+        }
+
+        $exit() {
+          this.tag("Frequency")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Satellite");
+        }
+
+        _handleDown() {
+          this._setState("Polarity");
+        }
+
+        _handleEnter() {
+          this.tag("SelectFrequency").patch({
+            prevVal: this.selectedFrequency,
+            //previous value is passed to retain the previously entered value
+            onHandleDone: this.setFrequency.bind(this) //pass a function that will be executed when done is clicked on the keyboard
+
+          });
+
+          this._setState("Frequency.SelectFrequency");
+        }
+
+        static _states() {
+          return [class SelectFrequency extends Frequency {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectFrequency").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Frequency"));
+            }
+
+            $exit() {
+              this.tag("SelectFrequency").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectFrequency");
+            }
+
+            _handleBack() {
+              this.setFrequency(this.selectedFrequency);
+            }
+
+          }];
+        }
+
+      }, class Polarity extends this {
+        $enter() {
+          this.tag("Polarity")._focus();
+        }
+
+        $exit() {
+          this.tag("Polarity")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Frequency");
+        }
+
+        _handleDown() {
+          this._setState("SymbolRate");
+        }
+
+        _handleEnter() {
+          this._setState("Polarity.SelectPolarity");
+        }
+
+        static _states() {
+          return [class SelectPolarity extends Polarity {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectPolarity").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Polarity"));
+            }
+
+            $exit() {
+              this.tag("SelectPolarity").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Polarity.Title").text.text = Language.translate("Polarity") + ": " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : Language.translate("Select a") + " " + Language.translate("Polarity"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectPolarity");
+            }
+
+            _handleBack() {
+              this._setState("Polarity");
+            }
+
+          }];
+        }
+
+      }, class SymbolRate extends this {
+        $enter() {
+          this.tag("SymbolRate")._focus();
+        }
+
+        $exit() {
+          this.tag("SymbolRate")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Polarity");
+        }
+
+        _handleDown() {
+          this._setState("FEC");
+        }
+
+        _handleEnter() {
+          this.tag("SelectSymbolRate").patch({
+            prevVal: this.selectedSymbolRate,
+            //previous value is passed to retain the previously entered value
+            onHandleDone: this.setSymbolRate.bind(this),
+            //pass a function that will be executed when done is clicked on the keyboard
+            presetValues: this.symbolRateList //can handle a list of predefined values that can be selected using arrow keys
+
+          });
+
+          this._setState("SymbolRate.SelectSymbolRate");
+        }
+
+        static _states() {
+          return [class SelectSymbolRate extends SymbolRate {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSymbolRate").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Symbol Rate"));
+            }
+
+            $exit() {
+              this.tag("SelectSymbolRate").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectSymbolRate");
+            }
+
+            _handleBack() {
+              this.setSymbolRate(this.selectedSymbolRate);
+            }
+
+          }];
+        }
+
+      }, class FEC extends this {
+        $enter() {
+          this.tag("FEC")._focus();
+        }
+
+        $exit() {
+          this.tag("FEC")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("SymbolRate");
+        }
+
+        _handleDown() {
+          this._setState("DVBS2");
+        }
+
+        _handleEnter() {
+          this._setState("FEC.SelectFEC");
+        }
+
+        static _states() {
+          return [class SelectFEC extends FEC {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectFEC").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("FEC"));
+            }
+
+            $exit() {
+              this.tag("SelectFEC").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("FEC.Title").text.text = Language.translate("FEC") + ": " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : Language.translate("Select a") + " " + Language.translate("FEC"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectFEC");
+            }
+
+            _handleBack() {
+              this._setState("FEC");
+            }
+
+          }];
+        }
+
+      }, class DVBS2 extends this {
+        $enter() {
+          this.tag("DVBS2")._focus();
+        }
+
+        $exit() {
+          this.tag("DVBS2")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("FEC");
+        }
+
+        _handleDown() {
+          this._setState("Modulation");
+        }
+
+        _handleEnter() {
+          if (!this.selectedDVBS2) {
+            this.selectedDVBS2 = true;
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
+          } else {
+            this.selectedDVBS2 = false;
+            this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+          }
+        }
+
+      }, class Modulation extends this {
+        $enter() {
+          this.tag("Modulation")._focus();
+        }
+
+        $exit() {
+          this.tag("Modulation")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("DVBS2");
+        }
+
+        _handleDown() {
+          this.tag("Scroller").y = -88;
+
+          this._setState("SearchType");
+        }
+
+        _handleEnter() {
+          this._setState("Modulation.SelectModulation");
+        }
+
+        static _states() {
+          return [class SelectModulation extends Modulation {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectModulation").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Modulation"));
+            }
+
+            $exit() {
+              this.tag("SelectModulation").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("Modulation.Title").text.text = Language.translate("Modulation") + ": " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : Language.translate("Select a") + " " + Language.translate("Modulation"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectModulation");
+            }
+
+            _handleBack() {
+              this._setState("Modulation");
+            }
+
+          }];
+        }
+
+      }, class SearchType extends this {
+        $enter() {
+          this.tag("SearchType")._focus();
+        }
+
+        $exit() {
+          this.tag("SearchType")._unfocus();
+        }
+
+        _handleUp() {
+          this.tag("Scroller").y = 2;
+
+          this._setState("Modulation");
+        }
+
+        _handleDown() {
+          this.tag("Scroller").y = -178;
+
+          this._setState("Retune");
+        }
+
+        _handleEnter() {
+          this._setState("SearchType.SelectSearchType");
+        }
+
+        static _states() {
+          return [class SelectSearchType extends SearchType {
+            $enter() {
+              this.tag("DvbSScanScreenContents").visible = false;
+              this.tag("SelectSearchType").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Search Mode"));
+            }
+
+            $exit() {
+              this.tag("SelectSearchType").visible = false;
+              this.tag("DvbSScanScreenContents").visible = true;
+              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.tag("SearchType.Title").text.text = Language.translate("Search Mode") + ": " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : Language.translate("Select a") + " " + Language.translate("Search Mode"));
+            }
+
+            _getFocused() {
+              return this.tag("SelectSearchType");
+            }
+
+            _handleBack() {
+              this._setState("SearchType");
+            }
+
+          }];
+        }
+
+      }, class Retune extends this {
+        $enter() {
+          this.tag("Retune")._focus();
+        }
+
+        $exit() {
+          this.tag("Retune")._unfocus();
+        }
+
+        _handleUp() {
+          this.tag("Scroller").y = -88;
+
+          this._setState("SearchType");
+        }
+
+        _handleDown() {
+          this._setState("StartScan");
+        }
+
+        _handleEnter() {
+          if (!this.selectedRetune) {
+            this.selectedRetune = true;
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
+          } else {
+            this.selectedRetune = false;
+            this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+          }
+        }
+
+      }, class StartScan extends this {
+        $enter() {
+          this.tag("StartScan").color = CONFIG.theme.hex;
+          this.tag("StartScan.Title").text.textColor = 0xffffffff;
+        }
+
+        $exit() {
+          this.tag("StartScan").color = 0xffffffff;
+          this.tag("StartScan.Title").text.textColor = 0xff000000;
+        }
+
+        _handleUp() {
+          this._setState("Retune");
+        }
+
+        _handleEnter() {
+          let errorString = this.verifyInputs();
+
+          if (errorString === "") {
+            this.tag("ErrorNotification").visible = false;
+            let serviceSearchParams = {
+              tunertype: "dvbs",
+              searchtype: this.selectedSearchType,
+              retune: this.selectedRetune,
+              usetuningparams: true,
+              dvbstuningparams: {
+                satellite: this.selectedSatellite.name,
+                frequency: parseInt(this.selectedFrequency),
+                polarity: this.selectedPolarity,
+                symbolrate: parseInt(this.selectedSymbolRate),
+                fec: this.selectedFEC,
+                modulation: this.selectedModulation,
+                dvbs2: this.selectedDVBS2
+              }
+            };
+            console.log(JSON.stringify(serviceSearchParams));
+            dtvApi$1.startServiceSearch(serviceSearchParams).then(res => {
+              this.setScanInProgress();
+              console.log(res);
+              setTimeout(() => {
+                this.setScanFinished(); //to give back controls after 30 sec in case searchstatus event fails
+              }, 30000);
+            });
+          } else {
+            this.tag("ErrorNotification.Content").text.text = Language.translate("Please enter the values for the following ") + errorString;
+            this.tag("ErrorNotification").visible = true;
+          }
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Live TV Scan screen.
+   */
+
+  class LiveTVScan extends lng$1.Component {
+    static _template() {
+      return {
+        rect: true,
+        //color: 0xff000000,
+        w: 1920,
+        h: 1080,
+        LiveTVScanScreenContents: {
+          x: 200,
+          y: 275,
+          TScan: {
+            alpha: 0.3,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('DVB-T Scan'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          CScan: {
+            alpha: 0.3,
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('DVB-C Scan'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          SScan: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('DVB-S Scan'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        DvbSScan: {
+          type: DvbSScan,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._setState('SScan');
+    }
+
+    _focus() {
+      this._setState('SScan');
+    }
+
+    static _states() {
+      return [class TScan extends this {
+        $enter() {
+          this.tag('TScan')._focus();
+        }
+
+        $exit() {
+          this.tag('TScan')._unfocus();
+        }
+
+        _handleDown() {
+          this._setState('CScan');
+        }
+
+        _handleEnter() {//Router.navigate()
+        }
+
+      }, class CScan extends this {
+        $enter() {
+          this.tag('CScan')._focus();
+        }
+
+        $exit() {
+          this.tag('CScan')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('TScan');
+        }
+
+        _handleDown() {
+          this._setState('SScan');
+        }
+
+        _handleEnter() {// Router.navigate()
+        }
+
+      }, class SScan extends this {
+        $enter() {
+          this.tag('SScan')._focus();
+        }
+
+        $exit() {
+          this.tag('SScan')._unfocus();
+        }
+
+        _handleUp() {// this._setState('CScan')
+        }
+
+        _handleEnter() {
+          this._setState("DvbSScan"); //Router.navigate('settings/livetv/scan/dvb-s-scan')
+
+        }
+
+      }, class DvbSScan extends this {
+        $enter() {
+          this.hide();
+          this.tag('DvbSScan').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan / DVB-S Scan');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('DvbSScan').visible = false;
+          this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan /');
+        }
+
+        _getFocused() {
+          return this.tag('DvbSScan');
+        }
+
+        _handleBack() {
+          this._setState('SScan');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  let active = true; //expecting dtv plugin is active by default
+
+  /**
+   * Class for Live TV settings screen.
+   */
+
+  class LiveTVSettings extends lng$1.Component {
+    static _template() {
+      return {
+        rect: true,
+        // color: 0x00000000,
+        w: 1920,
+        h: 1080,
+        LiveTVSettingsScreenContents: {
+          x: 200,
+          y: 275,
+          Activate: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Activate / Deactivate"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset("images/settings/ToggleOnOrange.png")
+            }
+          },
+          Scan: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Scan"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset("images/settings/Arrow.png")
+            }
+          }
+        },
+        LiveTvScanOverlay: {
+          type: LiveTVScan,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._setState("Activate");
+    }
+
+    _firstActive() {
+      this.dtvApi = new DTVApi();
+    }
+
+    _focus() {
+      this._setState(this.state);
+
+      if (active) {
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
+      } else {
+        this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+      }
+    }
+
+    _handleBack() {
+      Router.navigate("settings");
+    }
+
+    static _states() {
+      return [class Activate extends this {
+        $enter() {
+          this.tag("Activate")._focus();
+        }
+
+        $exit() {
+          this.tag("Activate")._unfocus();
+        }
+
+        _handleDown() {
+          this._setState("Scan");
+        }
+
+        _handleEnter() {
+          if (active) {
+            this.dtvApi.deactivate().then(res => {
+              console.log(res);
+              active = false;
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
+            });
+          } else {
+            this.dtvApi.activate().then(res => {
+              console.log(res);
+              active = true;
+              this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
+            });
+          }
+        }
+
+      }, class Scan extends this {
+        $enter() {
+          this.tag("Scan")._focus();
+        }
+
+        $exit() {
+          this.tag("Scan")._unfocus();
+        }
+
+        _handleUp() {
+          this._setState("Activate");
+        }
+
+        _handleEnter() {
+          this._setState("LiveTvScanOverlay"); //Router.navigate("settings/livetv/scan");
+
+        }
+
+      }, class LiveTvScanOverlay extends this {
+        $enter() {
+          this.hide();
+          this.tag('LiveTvScanOverlay').visible = true;
+          this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('LiveTvScanOverlay').visible = false;
+          this.fireAncestors('$updatePageTitle', 'Settings / Live TV ');
+        }
+
+        _getFocused() {
+          return this.tag('LiveTvScanOverlay');
+        }
+
+        _handleBack() {
+          this._setState('Scan');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class SleepTimerScreen extends lng$1.Component {
+    static _template() {
+      return {
+        SleepTimer: {
+          y: 275,
+          x: 200,
+          List: {
+            w: 1920 - 300,
+            type: lng$1.components.ListComponent,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -5
+          }
+        }
+      };
+    }
+
+    _firstEnable() {
+      this.lastElement = false;
+      this.options = [{
+        value: 'Off',
+        tick: true
+      }, {
+        value: '15 Minutes',
+        tick: false
+      }, {
+        value: '1 Hour',
+        tick: false
+      }, {
+        value: '1.5 Hours',
+        tick: false
+      }, {
+        value: '2 Hours',
+        tick: false
+      }, {
+        value: '3 Hours',
+        tick: false
+      }];
+      this.tag('List').h = this.options.length * 90;
+      let timeoutInterval = Storage.get('TimeoutInterval');
+
+      if (!timeoutInterval) {
+        timeoutInterval = 'Off';
+      }
+
+      let index = 0;
+      this.tag('List').items = this.options.map((item, id) => {
+        if (timeoutInterval === item.value) {
+          index = id;
+        }
+
+        return {
+          w: 1920 - 300,
+          h: 90,
+          type: SettingsItem,
+          item: item.value
+        };
+      });
+      this.tag('List').getElement(index).tag('Tick').visible = true;
+      this.fireAncestors('$registerInactivityMonitoringEvents').then(res => {
+        this.fireAncestors('$resetSleepTimer', timeoutInterval);
+      }).catch(err => {
+        console.error("error while registering the inactivity monitoring event");
+      });
+
+      this._setState('Options');
+    } //  _handleBack() {
+    //      Router.navigate('settings/other')
+    //  }
+
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          this.options.forEach((element, idx) => {
+            //if (element.tick) {
+            this.tag('List').getElement(idx).tag('Tick').visible = false; //this.options[idx].tick = false
+            //}
+          });
+          this.tag('List').element.tag('Tick').visible = true; //this.options[this.tag('List').index].tick = true
+
+          this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
+          this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  class EnergySavingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        EnerygySavingContents: {
+          x: 200,
+          y: 275,
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6
+          },
+          Loader: {
+            x: 740,
+            y: 340,
+            w: 90,
+            h: 90,
+            mount: 0.5,
+            zIndex: 4,
+            src: Utils.asset("images/settings/Loading.gif"),
+            visible: true
+          }
+        }
+      };
+    }
+
+    $resetPrevTickObject(prevTicObject) {
+      if (!this.prevTicOb) {
+        this.prevTicOb = prevTicObject;
+      } else {
+        this.prevTicOb.tag("Item.Tick").visible = false;
+        this.prevTicOb = prevTicObject;
+      }
+    } //  _handleBack() {
+    //      Router.navigate('settings/other')
+    //  }
+
+
+    static _states() {
+      return [class Options extends this {
+        _getFocused() {
+          return this.tag('List').element;
+        }
+
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+
+        _handleEnter() {
+          // this.tag("List").element.patch({ "Item.Tick.visible": true });
+          this.tag("List").element.tag("Tick").visible = true; // enable the tick mark in VideoAudioItem.js
+          //to update the resolution value on Video Screen
+        }
+
+      }];
+    }
+
+    _firstEnable() {
+      this._appApi = new AppApi();
+      this.options = [Language.translate("Deep Sleep"), Language.translate("Light Sleep")];
+      this.tag('EnerygySavingContents').h = this.options.length * 90;
+      this.tag('EnerygySavingContents.List').h = this.options.length * 90;
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+
+    _unfocus() {
+      if (this.loadingAnimation.isPlaying()) {
+        this.loadingAnimation.stop();
+      }
+    }
+
+    _focus() {
+      this.loadingAnimation.start();
+      var standbyMode = "";
+
+      this._appApi.getPreferredStandbyMode().then(result => {
+        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
+          standbyMode = Language.translate("Light Sleep");
+        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
+          standbyMode = Language.translate("Deep Sleep");
+        }
+
+        this.tag('List').items = this.options.map((item, index) => {
+          return {
+            ref: 'Option' + index,
+            w: 1920 - 300,
+            h: 90,
+            type: EnergySavingsItem,
+            isTicked: standbyMode === item ? true : false,
+            item: item,
+            energyItem: true
+          };
+        });
+        this.loadingAnimation.stop();
+        this.tag('Loader').visible = false;
+
+        this._setState("Options");
+      });
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const appApi$1 = new AppApi();
+  const thunder$2 = thunderJS({
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  });
+  const loader = 'Loader';
+  class LanguageScreen extends lng$1.Component {
+    static _template() {
+      return {
+        LanguageScreenContents: {
+          x: 200,
+          y: 275,
+          Languages: {
+            flexItem: {
+              margin: 0
+            },
+            List: {
+              type: lng$1.components.ListComponent,
+              w: 1920 - 300,
+              itemSize: 90,
+              horizontal: false,
+              invertDirection: true,
+              roll: true,
+              rollMax: 900,
+              itemScrollOffset: -4
+            }
+          }
+        }
+      };
+    }
+
+    _init() {
+      this._Languages = this.tag('LanguageScreenContents.Languages');
+      this._Languages.h = availableLanguages.length * 90;
+      this._Languages.tag('List').h = availableLanguages.length * 90;
+      this._Languages.tag('List').items = availableLanguages.map((item, index) => {
+        return {
+          ref: 'Lng' + index,
+          w: 1620,
+          h: 90,
+          type: LanguageItem,
+          item: item
+        };
+      });
+      appApi$1.deactivateResidentApp(loader);
+      appApi$1.setVisibility('ResidentApp', true);
+      thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
+        client: 'ResidentApp'
+      }).then(result => {
+        console.log('ResidentApp moveToFront Success');
+      });
+      thunder$2.call('org.rdk.RDKShell', 'setFocus', {
+        client: 'ResidentApp'
+      }).then(result => {
+        console.log('ResidentApp moveToFront Success');
+      }).catch(err => {
+        console.log('Error', err);
+      });
+    }
+
+    _focus() {
+      this._setState('Languages');
+    } //    _handleBack() {
+    //      Router.navigate('settings/other')
+    //    }
+
+
+    static _states() {
+      return [class Languages extends this {
+        $enter() {}
+
+        _getFocused() {
+          return this._Languages.tag('List').element;
+        }
+
+        _handleDown() {
+          this._navigate('down');
+        }
+
+        _handleUp() {
+          this._navigate('up');
+        }
+
+        _handleEnter() {
+          if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
+            localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
+            let path = location.pathname.split('index.html')[0];
+            let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
+            let notification_url = location.origin + path + url;
+            console.log(notification_url);
+            appApi$1.launchResident(notification_url, loader).catch(err => {});
+            appApi$1.setVisibility('ResidentApp', false);
+            location.reload();
+          }
+        }
+
+      }];
+    }
+
+    _navigate(dir) {
+      let list = this._Languages.tag('List');
+
+      if (dir === 'down') {
+        if (list.index < list.length - 1) list.setNext();
+      } else if (dir === 'up') {
+        if (list.index > 0) list.setPrevious();
+      }
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const _privacyPolicy = "Privacy\n  Welcome to RDKCentral.com, a website owned and operated by RDK Management, LLC (\u201CRDK Management,\u201D \u201Cwe,\u201D or \u201Cus\u201D). This privacy policy discloses the privacy practices for this website only, including an explanation of:\n  \n  the categories of personally identifiable information about you that may be collected and how that information is used;\n  how we collect and use non-personally identifiable information about your use of the website;\n  the categories of persons or entities with whom the information may be shared;\n  the choices that are available to you regarding collection, use, and distribution of the information;\n  how you can opt out of RDK-related promotional e-mail;\n  the kind of security procedures that are in place to protect the loss, misuse or alteration of information;\n  how you can review and request changes to the information; and\n  how we notify users of this website of changes to this privacy policy.\n  Questions regarding this policy should be directed to \u201CRDK Management \u2013 Privacy Feedback\u201D and can be submitted via e-mail to info@rdkcentral.com.\n  \n  \n  What categories of information do we collect?\n  The information collected by RDK Management falls into two categories: (1) information voluntarily supplied by users of the website and (2) tracking information recorded as users navigate through the website. Some of this information is personally identifiable information (i.e., information that identifies a particular person, such as e-mail address), but much of it is not.\n  \n  To make use of some features on our website, like the RDK Wiki, users need to register and provide certain information as part of the registration process. We may ask, for example, for your name, e-mail address, street address, and zip code. We might also request information about your employer and the type of work that you do, in order to determine whether your employer is a member of the RDK program, to help us ensure that you are given access to the correct portions of the website, and to tailor our website content and e-mail (if you\u2019ve registered to receive e-mail) to your interests to make it more useful to you. If you are a registered user, our systems will remember some of this information the next time you log in and use our website, but you can always review and change your information by logging in and editing your profile here.\n  \n  The more you tell us about yourself, the more value we can offer you. Supplying this information is entirely voluntary. But if you choose not to supply the information, we may be unable to provide you with access to all of the features of this website. There are certain features of this website, including the Wiki and requesting to receive RDK-related promotional e-mail, that you will not be able to use unless you provide certain personally identifiable information about yourself. When you submit any personally identifiable information over this website, RDK Management (i) will use the information for the purposes described at the time you submit it and (ii) may use the information to contact you, subject to the contact preferences in your profile. If you want to remain completely anonymous, you\u2019re still free to take advantage of the publicly available content on our website without registration.\n  \n  Does RDK Management analyze my interaction with this website?\n  Some of the third-party service providers that RDK Management uses to deliver services, like analytics providers, may collect information on this website as disclosed in this privacy policy. This information may include personally identifiable information or may be used to contact you online.\n  \n  We and our service providers may use cookies to provide these services. The World Wide Web Consortium (W3C) has started a process to develop a \u201CDo Not Track\u201D Standard. Since the definitions and rules for such a standard have not yet been defined, RDK Management does not yet respond to \u201CDo Not Track\u201D signals sent from browsers.\n  \n  You may opt out of receiving cookies from the companies that provide services on this website by going to www.networkadvertising.org/consumer/opt_out.asp or http://www.aboutads.info/choices.\n  \n  What categories of persons or entities do we share personally identifiable information with?\n  We consider the personally identifiable information contained in our business records to be confidential. We may sometimes disclose personally identifiable information about you to our affiliates or to others who work for us. We may also disclose personally identifiable information about you to service providers and vendors, and to others who provide products and services to us. For example, when you use certain functions on this website you may notice that the website actually collecting or processing the information may be other than an RDK Management website. We may be required by law or legal process to disclose certain personally identifiable information about you to lawyers and parties in connection with litigation and to law enforcement personnel. For example, we may be required by law to disclose personally identifiable information about you without your consent and without notice in order to comply with a valid legal process such as a subpoena, court order, or search warrant.\n  \n  What do we do to personalize your use of this website?\n  We, or our service providers, may customize this website based on non-personal information including: (i) the IP address associated with your computer for purposes of determining your approximate geographic location; (ii) the type of web page that is being displayed; or (iii) the content on the page that is shown. Because this activity automatically applies to all users and it is purely contextual, this type of content delivery cannot be customized or controlled by individual users. We may also personalize this website based on the information that you provided us during registration. You may modify this information as further described in this Privacy Policy.\n  \n  To help make our website more responsive to the needs of our users, we use a standard feature of browser software called a \u201Ccookie.\u201D We use cookies to help us tailor our website to your needs, to deliver a better, more personalized service, and to remember certain choices you\u2019ve made so you don\u2019t have to re-enter them.\n  \n  RDK Management uses cookies, among other things, to remember your username and password, if you choose to store them, as well as to remember some of your personalization preferences and website features. RDK Management does not store your name or other personal information in cookies. You may read about enabling, disabling, and deleting cookies here. Of course, if you set your browser not to accept cookies or you delete them, you may not be able to take advantage of the personalized features enjoyed by other users of our website.\n  \n  The cookies we use don\u2019t directly identify users of our website as particular persons. Rather, they contain information sufficient to simplify and improve a user\u2019s experience on our website. For example, we may use session-based cookies to track the pages on our website visited by our users. We can build a better website if we know which pages our users are visiting and how often. Or, we may use persistent cookies to simplify access to a user\u2019s account information over our website, for example.\n  \n  In connection with the standard operation of RDK Management\u2019s systems, certain non-personally identifiable information about users of this website is recorded. This information is used primarily to tailor and enhance users\u2019 experience using the website. We may use this information in an aggregate, non-personally identifiable form to, among other things, measure the use of our website and determine which pages are the most popular with website users.\n  \n  We may also use one or more audience segmenting technology providers to help present content on this website. These providers uses cookies, web beacons, or similar technologies on your computer or mobile or other device to serve you advertisements or content tailored to interests you have shown by browsing on this and other websites you have visited. It also helps determine whether you have seen a particular piece of content before and in order to avoid sending you duplicates. In doing so, these providers collect non-personally identifiable information such as your browser type, your operating system, web pages visited, time of visits, content viewed, ads viewed, and other click stream data. When you visit this website, these providers may use cookies or web beacons to note which product and service descriptions your browser visited. The use of cookies, web beacons, or similar technologies by these providers is subject to their own privacy policies, not RDK Management\u2019s privacy policy for this website. If you do not want the benefits of the cookies used by these providers, you may opt-out of them by visiting http://www.networkadvertising.org/consumer/opt_out.asp or by visiting their opt-out pages.\n  \n  Your Access to and Control over your information?\n  You may opt out of any future contacts from us at any time. You can do the following at any time via email to support@rdkcentral.com or info@rdkcentral.com or unsubscribe to emails.\n  \n  Request to see all the information stored in the system\n  Accuracy of your data can be checked or corrected.\n  Personal data will be archived, in case user does not access our system for 90 days. However, user can request for deletion by writing to us at support@rdkcentral.com\n  Express any concern you have about our use of your data\n  Opt out from receiving emails by clicking unsubscribe.\n  How do users opt out of RDK-related promotional e-mail?\n  You can opt out of receiving RDK-related promotional e-mail from RDK Management using the opt-out link found in the footer of any of these e-mails. You can also e-mail the request to the attention of \u201CRDK Management \u2013 E-mail Opt Out\u201D via e-mail to info@rdkcentral.com.\n  \n  Other Websites\n  \n  To make our website more valuable to our users, we may offer some features in conjunction with other providers. Our website may also include links to other websites whose privacy policies and practices we don\u2019t control. Once you leave our website by linking to another one (you can tell where you are by checking the address \u2013 known as a URL \u2013 in the location bar on your browser), use of any information you provide is governed by the privacy policy of the operator of the website you\u2019re visiting. That policy may differ from ours. If you can\u2019t find the privacy policy of any of these websites via a link from the site\u2019s homepage, you should contact the website directly for more information.\n  \n  Security\n  \n  All information gathered on our website is stored within a database accessible only to RDK Management, its affiliates, and their specifically-authorized contractors and vendors. However, as effective as any security measure implemented by RDK Management may be, no security system is impenetrable. We cannot guarantee the complete security of our database, nor can we guarantee that information you supply won\u2019t be intercepted while being transmitted to us over the Internet. If you don\u2019t want us to know any particular information about you, don\u2019t include it in anything that you submit or post to this website or send to us in e-mail. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our policies.\n  \n  Changes to this Privacy Policy\n  \n  We may change this privacy policy from time to time. If we change this privacy policy at some point in the future, we\u2019ll post the changes on our website and by continuing to use the website after we post any changes, you accept and agree to this privacy statement, as modified.\n  \n  A Special Note About Children\n  \n  This website is not directed to children under the age of 13, and RDK Management does not knowingly collect personally identifiable information from anyone under the age of 18 on this website.\n  \n  Contacting us:\n  \n  If you have any questions about RDK Management, LLC privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please do not hesitate to contact us.\n  \n  Data Protection Officer:  Herman-Jan Smith\n  \n  Email us at: hj.smith@rdkcentral.com\n  \n  Contacting the appropriate authority:\n  \n  Should you wish to report a complaint or if you feel that Our Company has not addressed your concern in a satisfactory manner, you may contact the Information Commissioner\u2019s Office.\n  \n  Email: compliance_team@rdkcentral.com\n  \n  Address:  1701 JFK Boulevard, Philadelphia, PA 19103 U.S.A";
+  class PrivacyPolicyScreen extends lng$1.Component {
+    static _template() {
+      return {
+        rect: true,
+        color: 0x00000000,
+        w: 1920,
+        h: 1080,
+        clipping: true,
+        PrivacyPolicy: {
+          x: 200,
+          y: 270,
+          Title: {
+            x: 10,
+            y: 45,
+            mountY: 0.5,
+            text: {
+              text: "Privacy Policy",
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontStyle: "bold",
+              fontSize: 40
+            }
+          },
+          Content: {
+            x: 10,
+            y: 100,
+            text: {
+              text: _privacyPolicy,
+              textColor: COLORS.titleColor,
+              fontFace: CONFIG.language.font,
+              fontSize: 20,
+              wordWrapWidth: 1500,
+              wordWrap: true
+            }
+          }
+        }
+      };
+    }
+
+    _handleDown() {
+      if (this.tag("PrivacyPolicy").y > -2400) {
+        this.tag("PrivacyPolicy").y -= 35;
+      }
+    } //  _handleBack() {
+    //      Router.navigate('settings/other/privacy')
+    //  }
+
+
+    _handleUp() {
+      if (this.tag("PrivacyPolicy").y <= 235) {
+        this.tag("PrivacyPolicy").y += 35;
+      }
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Privacy Screen.
+   */
+
+  const xcastApi = new XcastApi();
+  class PrivacyScreen extends lng$1.Component {
+    static _template() {
+      return {
+        PrivacyScreenContents: {
+          x: 200,
+          y: 275,
+          LocalDeviceDiscovery: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Local Device Discovery'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          UsbMediaDevices: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('USB Media Devices'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          AudioInput: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Audio Input'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          ClearCookies: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Clear Cookies and App Data'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          PrivacyPolicy: {
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Privacy Policy and License'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        PrivacyPolicyScreen: {
+          type: PrivacyPolicyScreen,
+          visible: false
+        }
+      };
+    }
+
+    _firstEnable() {
+      this._setState('LocalDeviceDiscovery');
+
+      this.checkLocalDeviceStatus();
+      this.USBApi = new UsbApi();
+      this.AppApi = new AppApi();
+    }
+
+    _focus() {
+      this._setState(this.state);
+
+      this.checkLocalDeviceStatus();
+      this.checkUSBDeviceStatus();
+    }
+
+    checkUSBDeviceStatus() {
+      if (!Storage.get('UsbMedia')) {
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        Storage.set('UsbMedia', 'ON');
+      } else if (Storage.get('UsbMedia') === 'ON') {
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+      } else if (Storage.get('UsbMedia') === 'OFF') {
+        this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+      }
+    }
+
+    checkLocalDeviceStatus() {
+      xcastApi.getEnabled().then(res => {
+        if (res.enabled) {
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        } else {
+          this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+        }
+      }).catch(err => {
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+      });
+    }
+
+    toggleLocalDeviceDiscovery() {
+      xcastApi.getEnabled().then(res => {
+        if (!res.enabled) {
+          xcastApi.activate().then(res => {
+            if (res) {
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+            }
+          });
+        } else {
+          xcastApi.deactivate().then(res => {
+            if (res) {
+              this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+            }
+          });
+        }
+      }).catch(err => {
+        console.log('Service not active');
+        this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+      });
+    }
+
+    hide() {
+      this.tag('PrivacyScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('PrivacyScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class LocalDeviceDiscovery extends this {
+        $enter() {
+          this.tag('LocalDeviceDiscovery')._focus();
+        }
+
+        $exit() {
+          this.tag('LocalDeviceDiscovery')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('PrivacyPolicy');
+        }
+
+        _handleDown() {
+          this._setState('UsbMediaDevices');
+        }
+
+        _handleEnter() {
+          this.toggleLocalDeviceDiscovery();
+        }
+
+      }, class UsbMediaDevices extends this {
+        $enter() {
+          this.tag('UsbMediaDevices')._focus();
+        }
+
+        $exit() {
+          this.tag('UsbMediaDevices')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('LocalDeviceDiscovery');
+        }
+
+        _handleDown() {
+          this._setState('AudioInput');
+        }
+
+        _handleEnter() {
+          let _UsbMedia = Storage.get('UsbMedia');
+
+          if (_UsbMedia === 'ON') {
+            this.fireAncestors('$deRegisterUsbMount');
+            this.USBApi.deactivate().then(res => {
+              Storage.set('UsbMedia', 'OFF');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+              this.widgets.menu.refreshMainView();
+            }).catch(err => {
+              console.error("error while disabling the usb plugin = ".concat(err));
+              this.fireAncestors('$registerUsbMount');
+            });
+          } else if (_UsbMedia === 'OFF') {
+            this.USBApi.activate().then(res => {
+              Storage.set('UsbMedia', 'ON');
+              this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+              this.fireAncestors('$registerUsbMount');
+              this.widgets.menu.refreshMainView();
+            });
+          }
+        }
+
+      }, class AudioInput extends this {
+        $enter() {
+          this.tag('AudioInput')._focus();
+        }
+
+        $exit() {
+          this.tag('AudioInput')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('UsbMediaDevices');
+        }
+
+        _handleDown() {
+          this._setState('ClearCookies');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class ClearCookies extends this {
+        $enter() {
+          this.tag('ClearCookies')._focus();
+        }
+
+        $exit() {
+          this.tag('ClearCookies')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('AudioInput');
+        }
+
+        _handleDown() {
+          this._setState('PrivacyPolicy');
+        }
+
+        _handleEnter() {
+          this.AppApi.clearCache().then(() => {//location.reload(true)
+          });
+        }
+
+      }, class PrivacyPolicy extends this {
+        $enter() {
+          this.tag('PrivacyPolicy')._focus();
+        }
+
+        $exit() {
+          this.tag('PrivacyPolicy')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('ClearCookies');
+        }
+
+        _handleDown() {
+          this._setState('LocalDeviceDiscovery');
+        }
+
+        _handleEnter() {
+          this._setState("PrivacyPolicyScreen"); //Router.navigate('settings/other/privacyPolicy')
+
+        }
+
+      }, class PrivacyPolicyScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('PrivacyPolicyScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Privacy  Policy');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('PrivacyPolicyScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('PrivacyPolicyScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('PrivacyPolicy');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class DeviceInformationScreen extends lng$1.Component {
+    static _template() {
+      return {
+        DeviceInfoContents: {
+          x: 200,
+          y: 275,
+          Line1: {
+            y: 0,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          ChipSet: {
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Chipset"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: "N/A",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line2: {
+            y: 90,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          SerialNumber: {
+            Title: {
+              x: 10,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Serial Number"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: "N/A",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line3: {
+            y: 180,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          Location: {
+            Title: {
+              x: 10,
+              y: 225,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Location"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 225,
+              mountY: 0.5,
+              text: {
+                text: "City: N/A , Country: N/A ",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line4: {
+            y: 270,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          SupportedDRM: {
+            Title: {
+              x: 10,
+              y: 360,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Supported DRM & Key-System"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                wordWrapWidth: 1600,
+                wordWrap: true,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 360,
+              mountY: 0.5,
+              text: {
+                text: "N/A",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                wordWrapWidth: 1200,
+                wordWrap: true,
+                fontSize: 25
+              }
+            }
+          },
+          Line5: {
+            y: 450,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          FirmwareVersions: {
+            Title: {
+              x: 10,
+              y: 540,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Firmware version"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 540,
+              mountY: 0.5,
+              text: {
+                text: "UI Version: ".concat(Settings.get('platform', 'version'), ", Build Version: , Timestamp: "),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line6: {
+            y: 630,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          },
+          AppVersions: {
+            Title: {
+              x: 10,
+              y: 720,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("App Info"),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Value: {
+              x: 400,
+              y: 720,
+              mountY: 0.5,
+              text: {
+                text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Line7: {
+            y: 810,
+            mountY: 0.5,
+            w: 1600,
+            h: 3,
+            rect: true,
+            color: 0xFFFFFFFF
+          }
+        }
+      };
+    }
+
+    _init() {
+      this._network = new Network();
+      this.appApi = new AppApi();
+    }
+
+    _focus() {
+      this._setState('DeviceInformationScreen');
+
+      this.appApi.getSerialNumber().then(result => {
+        this.tag("SerialNumber.Value").text.text = "".concat(result.serialNumber);
+      });
+      this.appApi.getSystemVersions().then(res => {
+        this.tag('FirmwareVersions.Value').text.text = "UI Version - ".concat(Settings.get('platform', 'version'), " \nBuild Version - ").concat(res.stbVersion, " \nTime Stamp - ").concat(res.stbTimestamp, " ");
+      }).catch(err => {
+        console.error("error while getting the system versions");
+      });
+      this.appApi.getDRMS().then(result => {
+        console.log('from device info supported drms ' + JSON.stringify(result));
+        var drms = "";
+        result.forEach(element => {
+          drms += "".concat(element.name, " :");
+
+          if (element.keysystems) {
+            drms += "\t";
+            element.keysystems.forEach(keySystem => {
+              drms += "".concat(keySystem, ", ");
+            });
+            drms += "\n";
+          } else {
+            drms += "\n";
+          }
+        });
+        this.tag('SupportedDRM.Value').text.text = "".concat(drms.substring(0, drms.length - 1));
+      });
+
+      this._network.isConnectedToInternet().then(result => {
+        if (result.connectedToInternet === true) {
+          this.appApi.getLocation().then(result => {
+            console.log("getLocation from device info " + JSON.stringify(result));
+            var locationInfo = "";
+
+            if (result.city.length !== 0) {
+              locationInfo = "City: " + result.city;
+            } else {
+              locationInfo = "City: N/A ";
+            }
+
+            if (result.country.length !== 0) {
+              locationInfo += ", Country: " + result.country;
+            } else {
+              locationInfo += ", Country: N/A ";
+            }
+
+            this.tag('Location.Value').text.text = "".concat(locationInfo);
+          });
+        } else {
+          this.tag('Location.Value').text.text = "City: N/A, Country: N/A";
+        }
+      });
+
+      this.appApi.getDeviceIdentification().then(result => {
+        console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
+        this.tag('ChipSet.Value').text.text = "".concat(result.chipset); // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+      });
+      let self = this;
+
+      if (Storage.get('Netflix_ESN')) {
+        self.tag('AppVersions.Value').text.text = "Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ".concat(Storage.get('Netflix_ESN'));
+      } else {
+        self.appApi.getPluginStatus('Netflix').then(result => {
+          let sel = self;
+          console.log("Netflix : plugin status : ", JSON.stringify(result));
+
+          if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
+            sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
+              console.log("Netflix : netflix launch for esn value in suspend mode returns : ", JSON.stringify(res));
+              let se = sel;
+              se.appApi.getNetflixESN().then(res => {
+                Storage.set('Netflix_ESN', res);
+                console.log("Netflix : netflix esn call returns : ", JSON.stringify(res));
+                se.netflixESN = "Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ".concat(res);
+              }).catch(err => {
+                console.error("Netflix : error while getting netflix esn : ", JSON.stringify(err));
+              });
+            }).catch(err => {
+              console.error("Netflix : error while launching netflix in suspendMode : ", JSON.stringify(err));
+            });
+          } else {
+            self.appApi.getNetflixESN().then(res => {
+              Storage.set('Netflix_ESN', res);
+              console.log("Netflix : netflix esn call returns : ", JSON.stringify(res));
+              self.netflixESN = "Youtube: NA \nAmazon Prime: NA \nNetflix ESN: ".concat(res);
+            }).catch(err => {
+              console.error("Netflix : error while getting netflix esn : ", JSON.stringify(err));
+            });
+          }
+        }).catch(err => {
+          console.error("Netflix : error while getting netflix plugin status ie. ", JSON.stringify(err));
+        });
+      }
+
+      this.appApi.registerChangeLocation();
+    }
+
+    set netflixESN(v) {
+      console.log("setting netflix ESN value to ".concat(v));
+      this.tag('AppVersions.Value').text.text = v;
+    } //  _handleBack() {
+    //      Router.navigate('settings/advanced/device')
+    //  }
+
+
+    _handleDown() {
+      if (this.tag("DeviceInfoContents").y > 215) {
+        this.tag("DeviceInfoContents").y -= 20;
+      }
+    }
+
+    _handleUp() {
+      if (this.tag("DeviceInfoContents").y < 275) {
+        this.tag("DeviceInfoContents").y += 20;
+      }
+    }
+
+  }
+
+  class TimeZone extends lng$1.Component {
+    /**
+     * @param {object} args
+     */
+    set params(args) {
+      if (args.refresh) {
+        this._firstEnable();
+      }
+    }
+
+    static _template() {
+      return {
+        rect: true,
+        h: 1080,
+        w: 1920,
+        color: CONFIG.theme.background,
+        TimeZone: {
+          x: 200,
+          y: 275,
+          List: {
+            type: lng$1.components.ListComponent,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -1
+          },
+          Error: {
+            alpha: 0,
+            x: 560,
+            y: 340,
+            mountX: 0.5,
+            MSG: {
+              text: {
+                text: 'TimeZone API not present',
+                fontFace: CONFIG.language.font,
+                fontSize: 40,
+                textColor: 0xffffffff
+              }
+            }
+          },
+          Loader: {
+            x: 740,
+            y: 340,
+            w: 90,
+            h: 90,
+            mount: 0.5,
+            zIndex: 4,
+            src: Utils.asset("images/settings/Loading.gif")
+          }
+        }
+      };
+    }
+
+    async _firstEnable() {
+      this.loadingAnimation = this.tag('Loader').animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: 'immediate',
+        stopDelay: 0.2,
+        actions: [{
+          p: 'rotation',
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+      this.loadingAnimation.start();
+      this.tag('Loader').visible = true;
+      this.appApi = new AppApi();
+      this.resp = await this.appApi.fetchTimeZone();
+      let data = [];
+      this.zone = await this.appApi.getZone();
+
+      try {
+        console.log(this.resp, this.zone);
+        delete this.resp.Etc;
+
+        for (const i in this.resp) {
+          if (typeof this.resp[i] === 'object') {
+            data.push([i, this.resp[i], this.zone !== undefined ? this.zone.split('/')[0] === i : false]);
+          }
+        }
+      } catch (error) {
+        console.log('no api present', error);
+      }
+
+      console.log(data);
+
+      if (data.length > 1) {
+        this.tag('List').h = data.length * 90;
+        this.tag('List').items = data.map((item, idx) => {
+          return {
+            ref: 'Time' + idx,
+            w: 1620,
+            h: 90,
+            type: TimeZoneItem,
+            item: item,
+            zone: this.zone !== undefined ? this.zone.split('/')[1] : ''
+          };
+        });
+      } else {
+        this.tag('Error').alpha = 1;
+      }
+
+      this.loadingAnimation.stop();
+      this.tag('Loader').visible = false;
+    }
+
+    _getFocused() {
+      return this.tag('List').element;
+    }
+
+    _unfocus() {
+      if (this.loadingAnimation.isPlaying()) {
+        this.loadingAnimation.stop();
+        this.tag('Loader').visible = false;
+      }
+    }
+
+    _handleDown() {
+      this.tag('List').setNext();
+    }
+
+    _handleUp() {
+      this.tag('List').setPrevious();
+    } // _handleBack() {
+    //     Router.navigate('settings/advanced/device')
+    // }
+
+
+    static _states() {
+      return [];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Firmware screen.
+   */
+
+  class FirmwareScreen extends lng$1.Component {
+    static _template() {
+      return {
+        FirmwareContents: {
+          x: 200,
+          y: 270,
+          State: {
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Firmware State: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          Version: {
+            Title: {
+              x: 10,
+              y: 90,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Firmware Versions: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          DownloadedVersion: {
+            Title: {
+              x: 10,
+              y: 135,
+              mountY: 0.5,
+              text: {
+                text: Language.translate("Downloaded Firmware Version: "),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          DownloadedPercent: {
+            Title: {
+              x: 10,
+              y: 180,
+              mountY: 0.5,
+              text: {
+                text: "",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          FirmwareUpdate: {
+            RectangleDefault: {
+              x: 110,
+              y: 200,
+              w: 300,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: CONFIG.theme.hex,
+              Update: {
+                x: 170,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language.translate("Check for Update"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 24
+                }
+              }
+            }
+          }
+        }
+      };
+    }
+
+    _firstEnable() {
+      let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      const thunder = thunderJS(config);
+      const systemcCallsign = "org.rdk.System.1";
+      thunder.Controller.activate({
+        callsign: systemcCallsign
+      }).then(res => {
+        thunder.on(callsign, "onFirmwareUpdateStateChange", notification => {
+          console.log("Tanjirou's notification : on Firmware update state changed notifcation = ".concat(JSON.stringify(notification)));
+
+          if (state[notification.firmwareUpdateStateChange] == "Downloading") {
+            this.downloadInterval = setInterval(() => {
+              console.log("Downloading...");
+              this.getDownloadPercent();
+            }, 1000);
+          } else if (state[notification.firmwareUpdateStateChange] != "Downloading" && this.downloadInterval) {
+            clearInterval(this.downloadInterval);
+            this.downloadInterval = null;
+          }
+        }, err => {
+          console.error("error while fetching notification ie. ".concat(err));
+        });
+      }).catch(err => {
+        console.error("error while activating the system plugin");
+      });
+    }
+
+    _unfocus() {
+      if (this.downloadInterval) {
+        clearInterval(this.downloadInterval);
+        this.downloadInterval = null;
+      }
+    }
+
+    _focus() {
+      this.downloadInterval = null;
+      this._appApi = new AppApi();
+      const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
+
+      this._appApi.getFirmwareUpdateState().then(res => {
+        console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res));
+        this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState];
+      });
+
+      this._appApi.getDownloadFirmwareInfo().then(res => {
+        console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res));
+        this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion;
+      });
+
+      this._setState('FirmwareUpdate');
+    }
+
+    getDownloadPercent() {
+      this._appApi.getFirmwareDownloadPercent().then(res => {
+        console.log("getFirmwareDownloadPercent : ".concat(JSON.stringify(res)));
+
+        if (res.downloadPercent < 0) {
+          this.tag('DownloadedPercent.Title').text.text = "";
+        } else {
+          this.tag('DownloadedPercent.Title').text.text = Language.translate("Download Progress: ") + res.downloadPercent + "%";
+        }
+      }).catch(err => {
+        console.error(err);
+      });
+    }
+
+    getDownloadFirmwareInfo() {
+      this._appApi.updateFirmware().then(res => {
+        this._appApi.getDownloadFirmwareInfo().then(result => {
+          console.log("getDownloadFirmwareInfo : ".concat(JSON.stringify(result.downloadFWVersion)));
+          this.tag('DownloadedVersion.Title').text.text = Language.translate('Downloaded Firmware Version: ') + "".concat(result.downloadFWVersion ? result.downloadFWVersion : 'NA');
+        }).catch(err => {
+          console.error(err);
+        });
+      }).catch(err => {
+        console.error(err);
+      });
+    } //  _handleBack() {
+    //      Router.navigate('settings/advanced/device')
+    //  }
+
+
+    static _states() {
+      return [class FirmwareUpdate extends this {
+        _handleEnter() {
+          this.getDownloadFirmwareInfo();
+          this.getDownloadPercent();
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Video and Audio screen.
+   */
+
+  class DeviceScreen extends lng$1.Component {
+    static _template() {
+      return {
+        DeviceScreenContents: {
+          x: 200,
+          y: 275,
+          Info: {
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Info'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          TimeZone: {
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Time Zone'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Firmware: {
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Check for Firmware Update'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Reboot: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Reboot'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            }
+          },
+          Reset: {
+            y: 360,
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Factory Reset'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        DeviceInformationScreen: {
+          type: DeviceInformationScreen,
+          visible: false
+        },
+        TimeZoneOverlay: {
+          type: TimeZone,
+          visible: false
+        },
+        FirmwareScreen: {
+          type: FirmwareScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+      this._network = new Network();
+
+      this._setState('Info');
+    }
+
+    _focus() {
+      this._setState(this.state);
+    } //  _handleBack() {
+    //      Router.navigate('settings/advanced')
+    //  }
+
+
+    hide() {
+      this.tag('DeviceScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('DeviceScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class Info extends this {
+        $enter() {
+          this.tag('Info')._focus();
+        }
+
+        $exit() {
+          this.tag('Info')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Reboot');
+        }
+
+        _handleDown() {
+          this._setState('TimeZone');
+        }
+
+        _handleEnter() {
+          this._setState("DeviceInformationScreen"); //Router.navigate('settings/advanced/device/info')
+
+        }
+
+      }, class TimeZone extends this {
+        $enter() {
+          this.tag('TimeZone')._focus();
+        }
+
+        $exit() {
+          this.tag('TimeZone')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Info');
+        }
+
+        _handleDown() {
+          this._setState('Firmware');
+        }
+
+        _handleEnter() {
+          this._setState("TimeZoneOverlay"); //Router.navigate('settings/advanced/device/timezone')
+
+        }
+
+      }, class Firmware extends this {
+        $enter() {
+          this.tag('Firmware')._focus();
+        }
+
+        $exit() {
+          this.tag('Firmware')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Info');
+        }
+
+        _handleDown() {
+          this._setState('Reboot');
+        }
+
+        _handleEnter() {
+          this._setState("FirmwareScreen"); //Router.navigate('settings/advanced/device/firmware')
+
+        }
+
+      }, class Reboot extends this {
+        $enter() {
+          this.tag('Reboot')._focus();
+        }
+
+        $exit() {
+          this.tag('Reboot')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Firmware');
+        }
+
+        _handleDown() {
+          this._setState('Info');
+        }
+
+        _handleEnter() {
+          Router.navigate('settings/advanced/device/reboot');
+        }
+
+      }, class Reset extends this {
+        $enter() {
+          this.tag('Reset')._focus();
+        }
+
+        $exit() {
+          this.tag('Reset')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Reboot');
+        }
+
+        _handleDown() {//this._setState('Info')
+        }
+
+        _handleEnter() {}
+
+      }, class DeviceInformationScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('DeviceInformationScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Info');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('DeviceInformationScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('DeviceInformationScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Device ');
+        }
+
+        _handleBack() {
+          this._setState('Info');
+        }
+
+      }, //TimeZoneOverlay
+      class TimeZoneOverlay extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('TimeZoneOverlay').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Time');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('TimeZoneOverlay');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('TimeZoneOverlay').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device ');
+        }
+
+        _handleBack() {
+          this._setState('TimeZone');
+        }
+
+      }, class FirmwareScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('FirmwareScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Firmware Update');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('FirmwareScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('FirmwareScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device ');
+        }
+
+        _handleBack() {
+          this._setState('Firmware');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const config$2 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+  thunderJS(config$2);
+  /**
+   * Class for AdvancedSettings screen.
+   */
+
+  class AdvanceSettingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        AdvanceScreenContents: {
+          x: 200,
+          y: 275,
+          TTSOptions: {
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('TTS Options'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          CECControl: {
+            y: 90,
+            // alpha: 0.3, // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('CEC Control'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 67,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/ToggleOffWhite.png')
+            }
+          },
+          Bug: {
+            y: 180,
+            alpha: 0.3,
+            // disabled
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Bug Report'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Contact: {
+            alpha: 0.3,
+            // disabled
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Contact Support'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Device: {
+            y: 360,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Device'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        DeviceScreen: {
+          type: DeviceScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this.cecApi = new CECApi();
+      this.cecApi.activate().then(() => {
+        this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+        this.performOTPAction();
+      });
+
+      this._setState('CECControl');
+    }
+
+    _focus() {
+      this._setState(this.state);
+    }
+
+    performOTPAction() {
+      this.cecApi.setEnabled().then(res => {
+        if (res.success) {
+          this.cecApi.performOTP().then(otpRes => {
+            if (otpRes.success) {
+              console.log('Otp Action success full');
+            }
+          });
+        }
+      });
+    }
+
+    toggleCEC() {
+      this.cecApi.getEnabled().then(res => {
+        console.log(res);
+
+        if (res.enabled) {
+          this.cecApi.deactivate().then(() => {
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
+          });
+        } else {
+          this.cecApi.activate().then(() => {
+            this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
+          });
+        }
+      });
+    }
+
+    hide() {
+      this.tag('AdvanceScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('AdvanceScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class UIVoice extends this {
+        $enter() {
+          this.tag('UIVoice')._focus();
+        }
+
+        $exit() {
+          this.tag('UIVoice')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Reset');
+        }
+
+        _handleDown() {//this._setState('TTSOptions')
+        }
+
+        _handleEnter() {}
+
+      }, class TTSOptions extends this {
+        $enter() {
+          this.tag('TTSOptions')._focus();
+        }
+
+        $exit() {
+          this.tag('TTSOptions')._unfocus();
+        }
+
+        _handleUp() {//this._setState('UIVoice');
+        }
+
+        _handleDown() {//this._setState('CECControl')
+        }
+
+        _handleEnter() {}
+
+      }, class CECControl extends this {
+        $enter() {
+          this.tag('CECControl')._focus();
+        }
+
+        $exit() {
+          this.tag('CECControl')._unfocus();
+        }
+
+        _handleUp() {//this._setState('TTSOptions');
+        }
+
+        _handleDown() {
+          this._setState('Device');
+        }
+
+        _handleEnter() {
+          this.toggleCEC();
+        }
+
+      }, class Bug extends this {
+        $enter() {
+          this.tag('Bug')._focus();
+        }
+
+        $exit() {
+          this.tag('Bug')._unfocus();
+        }
+
+        _handleUp() {//this._setState('CECControl');
+        }
+
+        _handleDown() {//this._setState('Contact')
+        }
+
+        _handleEnter() {}
+
+      }, class Contact extends this {
+        $enter() {
+          this.tag('Contact')._focus();
+        }
+
+        $exit() {
+          this.tag('Contact')._unfocus();
+        }
+
+        _handleUp() {//this._setState('Bug');
+        }
+
+        _handleDown() {//this._setState('Device')
+        }
+
+        _handleEnter() {}
+
+      }, class Device extends this {
+        $enter() {
+          this.tag('Device')._focus();
+        }
+
+        $exit() {
+          this.tag('Device')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('CECControl');
+        }
+
+        _handleDown() {//this._setState('UI Voice')
+        }
+
+        _handleEnter() {
+          this._setState("DeviceScreen"); // Router.navigate('settings/advanced/device')
+
+        }
+
+      }, class DeviceScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('DeviceScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('DeviceScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('DeviceScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('Device');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for Other Settings Screen.
+   */
+
+  class OtherSettingsScreen extends lng$1.Component {
+    static _template() {
+      return {
+        OtherSettingsScreenContents: {
+          x: 200,
+          y: 275,
+          SleepTimer: {
+            y: 0,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Sleep Timer: Off'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          RemoteControl: {
+            alpha: 0.3,
+            // disabled
+            y: 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Remote Control'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          ScreenSaver: {
+            alpha: 0.3,
+            // disabled
+            y: 180,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Screen-Saver: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          EnergySaver: {
+            y: 270,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Energy Saver: '),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Language: {
+            //alpha: 0.3, // disabled
+            y: 450 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Language'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          Privacy: {
+            //alpha: 0.3, // disabled
+            y: 540 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Privacy'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          },
+          AdvancedSettings: {
+            y: 630 - 90,
+            type: SettingsMainItem,
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: Language.translate('Advanced Settings'),
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 25
+              }
+            },
+            Button: {
+              h: 45,
+              w: 45,
+              x: 1600,
+              mountX: 1,
+              y: 45,
+              mountY: 0.5,
+              src: Utils.asset('images/settings/Arrow.png')
+            }
+          }
+        },
+        SleepTimerScreen: {
+          type: SleepTimerScreen,
+          visible: false
+        },
+        EnergySavingsScreen: {
+          type: EnergySavingsScreen,
+          visible: false
+        },
+        LanguageScreen: {
+          type: LanguageScreen,
+          visible: false
+        },
+        PrivacyScreen: {
+          type: PrivacyScreen,
+          visible: false
+        },
+        AdvanceSettingsScreen: {
+          type: AdvanceSettingsScreen,
+          visible: false
+        }
+      };
+    }
+
+    _init() {
+      this._appApi = new AppApi();
+
+      this._setState('SleepTimer');
+    }
+
+    $updateStandbyMode(standbyMode) {
+      this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode;
+    }
+
+    $sleepTimerText(text) {
+      this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text;
+    }
+
+    _focus() {
+      this._setState(this.state);
+
+      if (Storage.get('TimeoutInterval')) {
+        this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval');
+      } else {
+        this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + 'Off';
+      }
+
+      this._appApi.getPreferredStandbyMode().then(result => {
+        var currentStandbyMode = "";
+
+        if (result.preferredStandbyMode == "LIGHT_SLEEP") {
+          currentStandbyMode = "Light Sleep";
+        } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
+          currentStandbyMode = "Deep Sleep";
+        }
+
+        this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode;
+      });
+    } //  _handleBack() {
+    //      Router.navigate('settings')
+    //  }
+
+
+    hide() {
+      this.tag('OtherSettingsScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('OtherSettingsScreenContents').visible = true;
+    }
+
+    static _states() {
+      return [class SleepTimer extends this {
+        $enter() {
+          this.tag('SleepTimer')._focus();
+        }
+
+        $exit() {
+          this.tag('SleepTimer')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('AdvancedSettings');
+        }
+
+        _handleDown() {
+          // this._setState('RemoteControl')
+          this._setState('EnergySaver');
+        }
+
+        _handleEnter() {
+          this._setState("SleepTimerScreen"); //Router.navigate('settings/other/timer')
+
+        }
+
+      }, class RemoteControl extends this {
+        $enter() {
+          this.tag('RemoteControl')._focus();
+        }
+
+        $exit() {
+          this.tag('RemoteControl')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('SleepTimer');
+        }
+
+        _handleDown() {
+          this._setState('ScreenSaver');
+        }
+
+        _handleEnter() {}
+
+      }, class ScreenSaver extends this {
+        $enter() {
+          this.tag('ScreenSaver')._focus();
+        }
+
+        $exit() {
+          this.tag('ScreenSaver')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('RemoteControl');
+        }
+
+        _handleDown() {
+          this._setState('EnergySaver');
+        }
+
+        _handleEnter() {// 
+        }
+
+      }, class EnergySaver extends this {
+        $enter() {
+          this.tag('EnergySaver')._focus();
+        }
+
+        $exit() {
+          this.tag('EnergySaver')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('SleepTimer');
+        }
+
+        _handleDown() {
+          // this._setState('Theme')
+          this._setState('Language');
+        }
+
+        _handleEnter() {
+          this._setState("EnergySavingsScreen"); // Router.navigate('settings/other/energy')
+
+        }
+
+      }, class Language extends this {
+        $enter() {
+          this.tag('Language')._focus();
+        }
+
+        $exit() {
+          this.tag('Language')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('EnergySaver');
+        }
+
+        _handleDown() {
+          this._setState('Privacy');
+        }
+
+        _handleEnter() {
+          this._setState("LanguageScreen"); //Router.navigate('settings/other/language')
+
+        }
+
+      }, class Privacy extends this {
+        $enter() {
+          this.tag('Privacy')._focus();
+        }
+
+        $exit() {
+          this.tag('Privacy')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Language');
+        }
+
+        _handleDown() {
+          this._setState('AdvancedSettings');
+        }
+
+        _handleEnter() {
+          this._setState("PrivacyScreen"); //Router.navigate('settings/other/privacy')
+
+        }
+
+      }, class AdvancedSettings extends this {
+        $enter() {
+          this.tag('AdvancedSettings')._focus();
+        }
+
+        $exit() {
+          this.tag('AdvancedSettings')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('Privacy');
+        }
+
+        _handleDown() {
+          this._setState('SleepTimer');
+        }
+
+        _handleEnter() {
+          this._setState("AdvanceSettingsScreen"); //Router.navigate('settings/advanced')
+
+        }
+
+      }, class SleepTimerScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('SleepTimerScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Sleep Timer');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('SleepTimerScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('SleepTimerScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('SleepTimer');
+        }
+
+      }, class EnergySavingsScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('EnergySavingsScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Energy Saver');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('EnergySavingsScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('EnergySavingsScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('EnergySaver');
+        }
+
+      }, //LanguageScreen
+      class LanguageScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('LanguageScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Language');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('LanguageScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('LanguageScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('Language');
+        }
+
+      }, //PrivacyScreen
+      class PrivacyScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('PrivacyScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Privacy');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('PrivacyScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('PrivacyScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('Privacy');
+        }
+
+      }, class AdvanceSettingsScreen extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('AdvanceSettingsScreen').visible = true;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('AdvanceSettingsScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('AdvanceSettingsScreen').visible = false;
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+        }
+
+        _handleBack() {
+          this._setState('AdvancedSettings');
+        }
+
+      }];
+    }
+
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const config$1 = {
+    host: '127.0.0.1',
+    port: 9998,
+    default: 1
+  };
+  var thunder$1 = thunderJS(config$1);
   /**
    * Class for settings screen.
    */
@@ -40755,9 +48597,33 @@ var APP_accelerator_home_ui = (function () {
                 src: Utils.asset("images/settings/Arrow.png")
               }
             },
+            NFRStatus: {
+              y: 450,
+              type: SettingsMainItem,
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate('Native Frame Rate'),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Button: {
+                h: 45,
+                w: 67,
+                x: 1600,
+                mountX: 1,
+                y: 45,
+                mountY: 0.5,
+                src: Utils.asset('images/settings/ToggleOffWhite.png')
+              }
+            },
             DTVSettings: {
               alpha: 0.3,
-              y: 450,
+              y: 540,
               type: SettingsMainItem,
               Title: {
                 x: 10,
@@ -40780,6 +48646,30 @@ var APP_accelerator_home_ui = (function () {
                 src: Utils.asset("images/settings/Arrow.png")
               }
             }
+          },
+          AudioScreenOverlay: {
+            type: AudioScreen,
+            visible: false
+          },
+          NetworkConfigurationOverlay: {
+            type: NetworkConfigurationScreen,
+            visible: false
+          },
+          BluetoothScreenOverlay: {
+            type: BluetoothScreen,
+            visible: false
+          },
+          LiveTvSettings: {
+            type: LiveTVSettings,
+            visible: false
+          },
+          VideoScreenOverlay: {
+            type: VideoScreen,
+            visible: false
+          },
+          OtherSettingsScreen: {
+            type: OtherSettingsScreen,
+            visible: false
           }
         }
       };
@@ -40798,6 +48688,14 @@ var APP_accelerator_home_ui = (function () {
     }
 
     _firstActive() {
+      if (Storage.get("NFRStatus")) {
+        console.log("Netflix : NFRStatus is found to be enabled");
+        this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png";
+      } else {
+        console.log("Netflix : NFRStatus is found to be disabled");
+        this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
+      }
+
       this.appApi = new AppApi();
       this.dtvApi = new DTVApi();
       this.dtvPlugin = false; //plugin availability
@@ -40807,6 +48705,12 @@ var APP_accelerator_home_ui = (function () {
         this.dtvPlugin = true;
         this.tag("DTVSettings").alpha = 1; // }
       });
+    }
+
+    $changeState(state) {
+      console.log("check", state);
+
+      this._setState(state);
     }
 
     _handleBack() {
@@ -40839,7 +48743,25 @@ var APP_accelerator_home_ui = (function () {
     }
 
     $updatePageTitle(title) {
+      console.log("title", title);
       this.tag("BreadCrumbs").text.text = Language.translate(title);
+    }
+
+    hide() {
+      this.tag('SettingsScreenContents').visible = false;
+    }
+
+    show() {
+      this.tag('SettingsScreenContents').visible = true;
+    }
+
+    $hideBreadCrum() {
+      console.log("hide breadcrum");
+      this.tag("BreadCrumbs").visible = false;
+    }
+
+    $showBreadCrum() {
+      this.tag("BreadCrumbs").visible = true;
     }
 
     static _states() {
@@ -40856,7 +48778,11 @@ var APP_accelerator_home_ui = (function () {
           this._setState("Bluetooth");
         }
 
-        _handleEnter() {//Router.navigate("settings/network"); //change to state based implementation
+        _handleEnter() {
+          console.log("n/w");
+
+          this._setState('NetworkConfigurationOverlay'); //Router.navigate("settings/network"); //change to state based implementation
+
         }
 
       }, class Bluetooth extends this {
@@ -40878,7 +48804,9 @@ var APP_accelerator_home_ui = (function () {
 
         _handleLeft() {}
 
-        _handleEnter() {//    Router.navigate("settings/bluetooth"); ////change to state based implementation
+        _handleEnter() {
+          this._setState("BluetoothScreenOverlay"); //    Router.navigate("settings/bluetooth"); ////change to state based implementation
+
         }
 
       }, class Video extends this {
@@ -40898,7 +48826,9 @@ var APP_accelerator_home_ui = (function () {
           this._setState("Audio");
         }
 
-        _handleEnter() {//    Router.navigate("settings/video"); //change to state based implementation
+        _handleEnter() {
+          this._setState('VideoScreenOverlay'); //    Router.navigate("settings/video"); //change to state based implementation
+
         }
 
       }, class Audio extends this {
@@ -40914,7 +48844,9 @@ var APP_accelerator_home_ui = (function () {
           this._setState("Video");
         }
 
-        _handleEnter() {//    Router.navigate("settings/audio"); //change to state based implementation
+        _handleEnter() {
+          this._setState('AudioScreenOverlay'); //    Router.navigate("settings/audio"); //change to state based implementation
+
         }
 
         _handleDown() {
@@ -40934,12 +48866,60 @@ var APP_accelerator_home_ui = (function () {
           this._setState("Audio");
         }
 
-        _handleEnter() {//    Router.navigate("settings/other"); //change to state based implementation
+        _handleEnter() {
+          this._setState("OtherSettingsScreen"); //    Router.navigate("settings/other"); //change to state based implementation
+
+        }
+
+        _handleDown() {
+          this._setState("NFRStatus");
+        }
+
+      }, class NFRStatus extends this {
+        $enter() {
+          this.tag('NFRStatus')._focus();
+        }
+
+        $exit() {
+          this.tag('NFRStatus')._unfocus();
+        }
+
+        _handleUp() {
+          this._setState('OtherSettings');
         }
 
         _handleDown() {
           if (this.dtvPlugin) {
-            this._setState("DTVSettings");
+            this._setState('DTVSettings');
+          }
+        }
+
+        _handleEnter() {
+          //handle Switch
+          let self = this;
+
+          if (Storage.get("NFRStatus")) {
+            thunder$1.call("Netflix.1", "nfrstatus", {
+              "params": "disable"
+            }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
+              Storage.set("NFRStatus", false);
+              console.log("Netflix : nfr disable updation results in ".concat(nr));
+            }).catch(nerr => {
+              console.error("Netflix : error while updating nfrstatus");
+              console.error(nerr);
+            });
+          } else {
+            thunder$1.call("Netflix.1", "nfrstatus", {
+              "params": "enable"
+            }).then(nr => {
+              self.tag("NFRStatus.Button").src = "static/images/settings/ToggleOnOrange.png";
+              Storage.set("NFRStatus", true);
+              console.log("Netflix : nfr enable results in ".concat(nr));
+            }).catch(nerr => {
+              console.error("Netflix : error while updating nfrstatus ");
+              console.error(nerr);
+            });
           }
         }
 
@@ -40953,16 +48933,155 @@ var APP_accelerator_home_ui = (function () {
         }
 
         _handleUp() {
-          this._setState("OtherSettings");
+          this._setState('NFRStatus');
         }
 
-        _handleEnter() {//change to state based implementation
+        _handleEnter() {
+          this._setState("LiveTvSettings"); //change to state based implementation
           //    if (this.dtvPlugin) {
           //      Router.navigate("settings/livetv");
           //    }
           // dtvApi.activate().then(res =>{
           //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
           // })
+
+        }
+
+      }, class AudioScreenOverlay extends this {
+        $enter() {
+          this.hide();
+          this.tag('AudioScreenOverlay').visible = true;
+          this.$updatePageTitle('Settings  Audio');
+        }
+
+        _getFocused() {
+          return this.tag('AudioScreenOverlay');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('AudioScreenOverlay').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          console.log("1");
+
+          this._setState("Audio");
+        }
+
+      }, class VideoScreenOverlay extends this {
+        $enter() {
+          this.hide();
+          this.tag('VideoScreenOverlay').visible = true;
+          this.$updatePageTitle('Settings  Video');
+        }
+
+        _getFocused() {
+          return this.tag('VideoScreenOverlay');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('VideoScreenOverlay').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          console.log("videopage");
+
+          this._setState('Video');
+        }
+
+      }, class NetworkConfigurationOverlay extends this {
+        $enter() {
+          console.log("n/w enter");
+          this.hide();
+          this.tag('NetworkConfigurationOverlay').visible = true;
+          this.$updatePageTitle("Settings  Network Configuration");
+        }
+
+        _getFocused() {
+          return this.tag('NetworkConfigurationOverlay');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('NetworkConfigurationOverlay').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          this._setState("NetworkConfiguration");
+        }
+
+      }, class BluetoothScreenOverlay extends this {
+        $enter() {
+          console.log("bpscreen");
+          this.hide();
+          this.tag('BluetoothScreenOverlay').visible = true;
+          this.$updatePageTitle('Settings  Bluetooth On/Off');
+        }
+
+        _getFocused() {
+          console.log("getfocusedbp");
+          return this.tag('BluetoothScreenOverlay');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('BluetoothScreenOverlay').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          this._setState('Bluetooth');
+        }
+
+      }, class OtherSettingsScreen extends this {
+        $enter() {
+          console.log("bpscreen");
+          this.hide();
+          this.tag('OtherSettingsScreen').visible = true;
+          this.$updatePageTitle('Settings  Other Settings');
+        }
+
+        _getFocused() {
+          console.log("getfocusedbp");
+          return this.tag('OtherSettingsScreen');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('OtherSettingsScreen').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          this._setState('OtherSettings');
+        }
+
+      }, class LiveTvSettings extends this {
+        $enter() {
+          ////console.log("bpscreen")
+          this.hide();
+          this.tag('LiveTvSettings').visible = true;
+          this.$updatePageTitle('Settings  Pair Remote Control');
+        }
+
+        _getFocused() {
+          //console.log("getfocusedbp")
+          return this.tag('LiveTvSettings');
+        }
+
+        $exit() {
+          this.show();
+          this.tag('LiveTvSettings').visible = false;
+          this.$updatePageTitle('Settings');
+        }
+
+        _handleBack() {
+          this._setState('DTVSettings');
         }
 
       }];
