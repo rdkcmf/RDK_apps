@@ -216,9 +216,6 @@
    show() {
      this.tag('AudioScreenOverlay').visible = true
    }
-   $changeStateAudio(state){
-    this._setState(state)
-   }
  
    static _states() {
      return [
@@ -236,10 +233,6 @@
           this._setState('HdmiOutputScreen')
            //Router.navigate('settings/audio/output')
          }
-        //  _handleBack(){
-
-        //   this.fireAncestors('$changeState',"Audio")
-        // }
  
        },
        class OutputMode extends this{
@@ -260,10 +253,6 @@
           this._setState('HdmiOutputScreen')
            //Router.navigate('settings/audio/output')
          }
-        //  _handleBack(){
-        //   console.log("hdmioutputscreenback")
-        //   this.fireAncestors('$changeState',"Audio")
-        // }
          
        },
        class DynamicRange extends this{
@@ -387,7 +376,6 @@
         _handleBack(){
           console.log("hdmioutputscreenbackHDMI")
           this._setState("OutputMode")
-          //this.$changeStateAudio("OutputMode")
         }
        
       }

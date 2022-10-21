@@ -112,7 +112,7 @@ export default class App extends Router.App {
         appApi.exitApp(Storage.get('applicationType')).catch(err => {
           console.log(err)
         });
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) {
           Router.navigate('menu');
         }
       } else {
@@ -205,47 +205,42 @@ export default class App extends Router.App {
     if (key.keyCode == Keymap.Settings_Shortcut) {
       console.log(`settings shortcut`)
 
-      if (Storage.get("applicationType") === "" && Router.getActiveHash() === "player") { //launch settings overlay as widget for videoplayer
-        if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") { //currently focused on settings overlay, so hide it
-          Router.focusPage();
+      if (Storage.get("applicationType") === "") { //launch settings overlay/page depending on the current route.
+        if(Router.getActiveHash() === "player" || Router.getActiveHash() === "dtvplayer" || Router.getActiveHash() === "usb/player"){ //player supports settings overlay, so launch it as overlay
+          if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") { //currently focused on settings overlay, so hide it
+            Router.focusPage();
+          }
+          else { //launch the settings overlay
+            Router.focusWidget('SettingsOverlay');
+          }
+        } else { //navigate to settings page for all other routes
+          Router.navigate("settings")
         }
-        else { //launch the settings overlay
+      } else { //currently on some application
+        if(Router.getActiveHash() === "applauncher"){ //if route is applauncher just focus the overlay widget
+          if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") { //currently focused on settings overlay, so hide it
+            Router.focusPage();
+            let currentApp = Storage.get("applicationType")
+            appApi.zorder(currentApp)
+            appApi.setFocus(currentApp)
+            appApi.setVisibility(currentApp, true)
+          }
+          else { //launch the settings overlay
+            appApi.zorder("ResidentApp")
+            appApi.setFocus("ResidentApp")
+            appApi.setVisibility("ResidentApp", true)
+            Router.focusWidget('SettingsOverlay');
+          }
+        } else { //if on some other route while on an application, route to applauncher before launching the settings overlay
+          appApi.zorder("ResidentApp")
+          appApi.setFocus("ResidentApp")
+          appApi.setVisibility("ResidentApp", true)
+          Router.navigate("applauncher");
           Router.focusWidget('SettingsOverlay');
         }
-        return true;
-      }
 
-      Router.navigate('settings')
-      thunder.call("org.rdk.RDKShell", "getZOrder").then(res => {
-        if (res.clients[0] == "residentapp") {
-          if (Storage.get("applicationType") !== "") {
-            console.log(`found resident app to be on top ,but it shouldn't have been on top, therefore changing its zorder`)
-            let c_app = Storage.get("applicationType")
-            appApi.zorder(c_app)
-            appApi.setFocus(c_app)
-            appApi.setVisibility(c_app, true)
-          }
-          else {
-            console.log(`found resident app to be on top ,therefore just routing the application to the settings page`)
-          }
-        }
-        else {
-          console.log(`found a non resident app to be on top`)
-          appApi.zorder('ResidentApp')
-          appApi.setFocus("ResidentApp")
-          if (Router.isNavigating()) {
-            appApi.setVisibility("ResidentApp", true)
-          }
-          else {
-            appApi.setVisibility("ResidentApp", true)
-            appApi.setFocus("ResidentApp")
-            appApi.zorder('residentApp')
-          }
-        }
-      }).catch(err => {
-        console.error(err)
-      })
-      return true
+      }
+      return true;
     }
     if (key.keyCode == Keymap.Guide_Shortcut) {
       Router.navigate('epg')
@@ -367,9 +362,6 @@ export default class App extends Router.App {
     appApi.zorder('residentApp')
   }
 
-  $registerHide(h) {
-    this.setPanelsVisibility = h;
-  }
 
   _init() {
     if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
@@ -404,7 +396,7 @@ export default class App extends Router.App {
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
         console.log(`${notification.callsign} status = ${notification.state}`)
         console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) { //navigate to homescreen if route is tv-overlay when exiting from any app
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) { //navigate to homescreen if route is tv-overlay when exiting from any app
           console.log("navigating to homescreen")
           Router.navigate("menu")
         }

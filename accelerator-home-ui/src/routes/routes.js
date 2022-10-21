@@ -38,6 +38,7 @@ import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
 import Volume from '../tvOverlay/components/Volume'
 import EPGScreen from "../screens/EpgScreens/Epg"
 import DTVPlayer from '../MediaPlayer/DTVPlayer'
+import AppLauncherScreen from '../screens/AppLauncherScreen'
 
 let api = null
 
@@ -93,7 +94,7 @@ export default {
     {
       path: 'usb/player',
       component: AAMPVideoPlayer,
-      widgets: ['Volume']
+      widgets: ['Volume',"SettingsOverlay"]
     },
     {
       path: 'usb/image',
@@ -136,6 +137,11 @@ export default {
       component: Volume
     },
     {
+      path: 'applauncher',
+      component: AppLauncherScreen,
+      widgets: ['SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
+    },
+    {
       path: 'player',
       component: AAMPVideoPlayer,
       widgets: ['Volume',"SettingsOverlay"]
@@ -143,7 +149,7 @@ export default {
     {
       path:'dtvplayer',
       component: DTVPlayer,
-      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay']
+      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay',"SettingsOverlay"]
     },
     {
       path: '!',

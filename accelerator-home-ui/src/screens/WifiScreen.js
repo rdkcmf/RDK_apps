@@ -134,7 +134,6 @@ export default class WiFiScreen extends Lightning.Component {
   }
 
   _focus() {
-    this.widgets.menu.setPanelsVisibility()
     this._setState('Switch')
     this._enable()
   }

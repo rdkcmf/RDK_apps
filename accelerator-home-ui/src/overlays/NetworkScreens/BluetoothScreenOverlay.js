@@ -187,7 +187,6 @@
    }
  
    _focus() {
-     //this.widgets.menu.setPanelsVisibility()
  
      this._setState('AddADevice')
      this._enable()
@@ -200,9 +199,6 @@
      }
    }
  
-  //  _handleBack() {
-  //   this.fireAncestors('$changeState',"Bluetooth")
-  //  }
    /**
     * Function to be excuted when the Bluetooth screen is enabled.
     */

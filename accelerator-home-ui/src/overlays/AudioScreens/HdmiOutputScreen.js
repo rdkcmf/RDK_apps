@@ -113,10 +113,6 @@
              })
      }
 
-    //  _handleBack(){
-    //     console.log("outpumode")
-    //     this.fireAncestors('$changeStateAudio',"OutputMode")
-    //   }
 
 
      static _states() {

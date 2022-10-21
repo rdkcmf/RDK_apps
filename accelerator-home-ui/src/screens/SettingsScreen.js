@@ -240,14 +240,8 @@ export default class SettingsScreen extends Lightning.Component {
     let self = this;
     this.appApi = new AppApi();
     this._setState('NetworkConfiguration')
-    this.fireAncestors("$registerHide", function () {
-      self.widgets.menu.setPanelsVisibility()
-    })
   }
   _focus() {
-
-
-    this.widgets.menu.setPanelsVisibility()
     this._setState(this.state)
   }
   _firstActive() {
@@ -286,7 +280,6 @@ export default class SettingsScreen extends Lightning.Component {
       }
       this.appApi.setFocus(appType)
       this.appApi.zorder(appType)
-      this.widgets.menu.setPanelsVisibility()
     }
   }
 

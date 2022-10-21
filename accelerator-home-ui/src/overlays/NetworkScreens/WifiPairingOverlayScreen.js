@@ -27,10 +27,6 @@
  export default class WifiPairingScreen extends Lightning.Component {
    static _template() {
      return {
-       w: 1920,
-       h: 1080,
-       rect: true,
-       color: 0xCC000000,
        PairingScreen: {
          Title: {
            x: 960,

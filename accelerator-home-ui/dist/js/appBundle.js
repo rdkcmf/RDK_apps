@@ -1,9 +1,9 @@
 /**
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
- * CLI version: 2.8.1
+ * CLI version: 2.9.1
  * 
- * Generated: Wed, 19 Oct 2022 06:06:38 GMT
+ * Generated: Wed, 26 Oct 2022 17:33:34 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -27,6 +27,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   const settings = {};
   const subscribers = {};
   const initSettings = (appSettings, platformSettings) => {
@@ -34,45 +35,36 @@ var APP_accelerator_home_ui = (function () {
     settings['platform'] = platformSettings;
     settings['user'] = {};
   };
-
   const publish = (key, value) => {
     subscribers[key] && subscribers[key].forEach(subscriber => subscriber(value));
   };
-
   const dotGrab = function () {
     let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     let key = arguments.length > 1 ? arguments[1] : undefined;
     if (obj === null) return undefined;
     const keys = key.split('.');
-
     for (let i = 0; i < keys.length; i++) {
       obj = obj[keys[i]] = obj[keys[i]] !== undefined ? obj[keys[i]] : {};
     }
-
     return typeof obj === 'object' && obj !== null ? Object.keys(obj).length ? obj : undefined : obj;
   };
-
   var Settings = {
     get(type, key) {
       let fallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
       const val = dotGrab(settings[type], key);
       return val !== undefined ? val : fallback;
     },
-
     has(type, key) {
       return !!this.get(type, key);
     },
-
     set(key, value) {
       settings['user'][key] = value;
       publish(key, value);
     },
-
     subscribe(key, callback) {
       subscribers[key] = subscribers[key] || [];
       subscribers[key].push(callback);
     },
-
     unsubscribe(key, callback) {
       if (callback) {
         const index = subscribers[key] && subscribers[key].findIndex(cb => cb === callback);
@@ -83,13 +75,11 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     },
-
     clearSubscribers() {
       for (const key of Object.getOwnPropertyNames(subscribers)) {
         delete subscribers[key];
       }
     }
-
   };
 
   /*
@@ -110,7 +100,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-
   const prepLog = (type, args) => {
     const colors = {
       Info: 'green',
@@ -121,31 +110,25 @@ var APP_accelerator_home_ui = (function () {
     args = Array.from(args);
     return ['%c' + (args.length > 1 && typeof args[0] === 'string' ? args.shift() : type), 'background-color: ' + colors[type] + '; color: white; padding: 2px 4px; border-radius: 2px', args];
   };
-
   var Log = {
     info() {
       Settings.get('platform', 'log') && console.log.apply(console, prepLog('Info', arguments));
     },
-
     debug() {
       Settings.get('platform', 'log') && console.debug.apply(console, prepLog('Debug', arguments));
     },
-
     error() {
       Settings.get('platform', 'log') && console.error.apply(console, prepLog('Error', arguments));
     },
-
     warn() {
       Settings.get('platform', 'log') && console.warn.apply(console, prepLog('Warn', arguments));
     }
-
   };
 
   var executeAsPromise = (function (method) {
     let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     let context = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     let result;
-
     if (method && typeof method === 'function') {
       try {
         result = method.apply(context, args);
@@ -154,12 +137,13 @@ var APP_accelerator_home_ui = (function () {
       }
     } else {
       result = method;
-    } // if it looks like a duck .. ehm ... promise and talks like a promise, let's assume it's a promise
+    }
 
-
+    // if it looks like a duck .. ehm ... promise and talks like a promise, let's assume it's a promise
     if (result !== null && typeof result === 'object' && result.then && typeof result.then === 'function') {
       return result;
-    } // otherwise make it into a promise
+    }
+    // otherwise make it into a promise
     else {
       return new Promise((resolve, reject) => {
         if (result instanceof Error) {
@@ -189,24 +173,25 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-
   let sendMetric = (type, event, params) => {
     Log.info('Sending metric', type, event, params);
   };
-
   const initMetrics = config => {
     sendMetric = config.sendMetric;
-  }; // available metric per category
+  };
 
+  // available metric per category
   const metrics$1 = {
     app: ['launch', 'loaded', 'ready', 'close'],
     page: ['view', 'leave'],
     user: ['click', 'input'],
-    media: ['abort', 'canplay', 'ended', 'pause', 'play', // with some videos there occur almost constant suspend events ... should investigate
+    media: ['abort', 'canplay', 'ended', 'pause', 'play',
+    // with some videos there occur almost constant suspend events ... should investigate
     // 'suspend',
     'volumechange', 'waiting', 'seeking', 'seeked']
-  }; // error metric function (added to each category)
+  };
 
+  // error metric function (added to each category)
   const errorMetric = function (type, message, code, visible) {
     let params = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
     params = {
@@ -219,13 +204,13 @@ var APP_accelerator_home_ui = (function () {
     };
     sendMetric(type, 'error', params);
   };
-
   const Metric = function (type, events) {
     let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return events.reduce((obj, event) => {
       obj[event] = function (name) {
         let params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        params = { ...options,
+        params = {
+          ...options,
           ...(name ? {
             name
           } : {}),
@@ -233,20 +218,16 @@ var APP_accelerator_home_ui = (function () {
         };
         sendMetric(type, event, params);
       };
-
       return obj;
     }, {
       error(message, code, params) {
         errorMetric(type, message, code, params);
       },
-
       event(name, params) {
         sendMetric(type, name, params);
       }
-
     });
   };
-
   const Metrics = types => {
     return Object.keys(types).reduce((obj, type) => {
       // media metric works a bit different!
@@ -261,7 +242,6 @@ var APP_accelerator_home_ui = (function () {
       event: sendMetric
     });
   };
-
   var Metrics$1 = Metrics(metrics$1);
 
   /*
@@ -282,6 +262,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   var events$1 = {
     abort: 'Abort',
     canplay: 'CanPlay',
@@ -328,17 +309,16 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   var autoSetupMixin = (function (sourceObject) {
     let setup = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : () => {};
     let ready = false;
-
     const doSetup = () => {
       if (ready === false) {
         setup();
         ready = true;
       }
     };
-
     return Object.keys(sourceObject).reduce((obj, key) => {
       if (typeof sourceObject[key] === 'function') {
         obj[key] = function () {
@@ -358,7 +338,6 @@ var APP_accelerator_home_ui = (function () {
       } else {
         obj[key] = sourceObject[key];
       }
-
       return obj;
     }, {});
   });
@@ -381,6 +360,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   let timeout$1 = null;
   var easeExecution = ((cb, delay) => {
     clearTimeout(timeout$1);
@@ -407,11 +387,11 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   let basePath;
   let proxyUrl;
   const initUtils = config => {
     basePath = ensureUrlWithProtocol(makeFullStaticPath(window.location.pathname, config.path || '/'));
-
     if (config.proxyUrl) {
       proxyUrl = ensureUrlWithProtocol(config.proxyUrl);
     }
@@ -420,51 +400,46 @@ var APP_accelerator_home_ui = (function () {
     asset(relPath) {
       return basePath + relPath;
     },
-
     proxyUrl(url) {
       let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       return proxyUrl ? proxyUrl + '?' + makeQueryString(url, options) : url;
     },
-
     makeQueryString() {
       return makeQueryString(...arguments);
     },
-
     // since imageworkers don't work without protocol
     ensureUrlWithProtocol() {
       return ensureUrlWithProtocol(...arguments);
     }
-
   };
   const ensureUrlWithProtocol = url => {
     if (/^\/\//.test(url)) {
       return window.location.protocol + url;
     }
-
     if (!/^(?:https?:)/i.test(url)) {
       return window.location.origin + url;
     }
-
     return url;
   };
   const makeFullStaticPath = function () {
     let pathname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '/';
     let path = arguments.length > 1 ? arguments[1] : undefined;
     // ensure path has traling slash
-    path = path.charAt(path.length - 1) !== '/' ? path + '/' : path; // if path is URL, we assume it's already the full static path, so we just return it
+    path = path.charAt(path.length - 1) !== '/' ? path + '/' : path;
 
+    // if path is URL, we assume it's already the full static path, so we just return it
     if (/^(?:https?:)?(?:\/\/)/.test(path)) {
       return path;
     }
-
     if (path.charAt(0) === '/') {
       return path;
     } else {
       // cleanup the pathname (i.e. remove possible index.html)
-      pathname = cleanUpPathName(pathname); // remove possible leading dot from path
+      pathname = cleanUpPathName(pathname);
 
-      path = path.charAt(0) === '.' ? path.substr(1) : path; // ensure path has leading slash
-
+      // remove possible leading dot from path
+      path = path.charAt(0) === '.' ? path.substr(1) : path;
+      // ensure path has leading slash
       path = path.charAt(0) !== '/' ? '/' + path : path;
       return pathname + path;
     }
@@ -475,14 +450,12 @@ var APP_accelerator_home_ui = (function () {
     if (parts[parts.length - 1].indexOf('.') > -1) parts.pop();
     return parts.join('/');
   };
-
   const makeQueryString = function (url) {
     let options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     let type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'url';
     // add operator as an option
     options.operator = 'metrological'; // Todo: make this configurable (via url?)
     // add type (= url or qr) as an option, with url as the value
-
     options[type] = url;
     return Object.keys(options).map(key => {
       return encodeURIComponent(key) + '=' + encodeURIComponent('' + options[key]);
@@ -507,7 +480,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-
   const initProfile = config => {
     config.getInfo;
     config.setInfo;
@@ -531,6 +503,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   var lng$1 = window.lng;
 
   /*
@@ -571,9 +544,7 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   const events = ['timeupdate', 'error', 'ended', 'loadeddata', 'canplay', 'play', 'playing', 'pause', 'loadstart', 'seeking', 'seeked', 'encrypted'];
-
   let mediaUrl$1 = url => url;
-
   const initMediaPlayer = config => {
     if (config.mediaUrl) {
       mediaUrl$1 = config.mediaUrl;
@@ -587,7 +558,6 @@ var APP_accelerator_home_ui = (function () {
       Log.info('Texture mode: ' + this._textureMode);
       console.warn(["The 'MediaPlayer'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'VideoPlayer'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/videoplayer'].join('\n\n'));
     }
-
     static _template() {
       return {
         Video: {
@@ -604,19 +574,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set skipRenderToTexture(v) {
       this._skipRenderToTexture = v;
     }
-
     get textureMode() {
       return this._textureMode;
     }
-
     get videoView() {
       return this.tag('Video');
     }
-
     _init() {
       //re-use videotag if already there
       const videoEls = document.getElementsByTagName('video');
@@ -631,14 +597,11 @@ var APP_accelerator_home_ui = (function () {
         this.videoEl.style.visibility = this.textureMode ? 'hidden' : 'visible';
         document.body.appendChild(this.videoEl);
       }
-
       if (this.textureMode && !this._skipRenderToTexture) {
         this._createVideoTexture();
       }
-
       this.eventHandlers = [];
     }
-
     _registerListeners() {
       events.forEach(event => {
         const handler = e => {
@@ -647,18 +610,15 @@ var APP_accelerator_home_ui = (function () {
               currentTime: this.videoEl.currentTime
             });
           }
-
           this.fire(event, {
             videoElement: this.videoEl,
             event: e
           });
         };
-
         this.eventHandlers.push(handler);
         this.videoEl.addEventListener(event, handler);
       });
     }
-
     _deregisterListeners() {
       Log.info('Deregistering event listeners MediaPlayer');
       events.forEach((event, index) => {
@@ -666,17 +626,13 @@ var APP_accelerator_home_ui = (function () {
       });
       this.eventHandlers = [];
     }
-
     _attach() {
       this._registerListeners();
     }
-
     _detach() {
       this._deregisterListeners();
-
       this.close();
     }
-
     _createVideoTexture() {
       const stage = this.stage;
       const gl = stage.gl;
@@ -692,25 +648,22 @@ var APP_accelerator_home_ui = (function () {
         h: this.videoEl.height
       };
     }
-
     _startUpdatingVideoTexture() {
       if (this.textureMode && !this._skipRenderToTexture) {
         const stage = this.stage;
-
         if (!this._updateVideoTexture) {
           this._updateVideoTexture = () => {
             if (this.videoTexture.options.source && this.videoEl.videoWidth && this.active) {
               const gl = stage.gl;
-              const currentTime = new Date().getTime(); // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
-              // We'll fallback to fixed 30fps in this case.
+              const currentTime = new Date().getTime();
 
+              // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
+              // We'll fallback to fixed 30fps in this case.
               const frameCount = this.videoEl.webkitDecodedFrameCount;
               const mustUpdate = frameCount ? this._lastFrame !== frameCount : this._lastTime < currentTime - 30;
-
               if (mustUpdate) {
                 this._lastTime = currentTime;
                 this._lastFrame = frameCount;
-
                 try {
                   gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
                   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -721,7 +674,6 @@ var APP_accelerator_home_ui = (function () {
                   this.videoTexture.options.h = this.videoEl.videoHeight;
                   const expectedAspectRatio = this.videoTextureView.w / this.videoTextureView.h;
                   const realAspectRatio = this.videoEl.videoWidth / this.videoEl.videoHeight;
-
                   if (expectedAspectRatio > realAspectRatio) {
                     this.videoTextureView.scaleX = realAspectRatio / expectedAspectRatio;
                     this.videoTextureView.scaleY = 1;
@@ -731,32 +683,26 @@ var APP_accelerator_home_ui = (function () {
                   }
                 } catch (e) {
                   Log.error('texImage2d video', e);
-
                   this._stopUpdatingVideoTexture();
-
                   this.videoTextureView.visible = false;
                 }
-
                 this.videoTexture.source.forceRenderUpdate();
               }
             }
           };
         }
-
         if (!this._updatingVideoTexture) {
           stage.on('frameStart', this._updateVideoTexture);
           this._updatingVideoTexture = true;
         }
       }
     }
-
     _stopUpdatingVideoTexture() {
       if (this.textureMode) {
         const stage = this.stage;
         stage.removeListener('frameStart', this._updateVideoTexture);
         this._updatingVideoTexture = false;
         this.videoTextureView.visible = false;
-
         if (this.videoTexture.options.source) {
           const gl = stage.gl;
           gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
@@ -765,17 +711,14 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     updateSettings() {
       let settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       // The Component that 'consumes' the media player.
       this._consumer = settings.consumer;
-
       if (this._consumer && this._consumer.getMediaplayerSettings) {
         // Allow consumer to add settings.
         settings = Object.assign(settings, this._consumer.getMediaplayerSettings());
       }
-
       if (!lng$1.Utils.equalValues(this._stream, settings.stream)) {
         if (settings.stream && settings.stream.keySystem) {
           navigator.requestMediaKeySystemAccess(settings.stream.keySystem.id, settings.stream.keySystem.config).then(keySystemAccess => {
@@ -797,19 +740,14 @@ var APP_accelerator_home_ui = (function () {
                   console.warn('hls-light not included');
                   return false;
                 }
-
               };
             }
-
             if (window.Hls.isSupported()) {
               if (!this._hls) this._hls = new window.Hls({
                 liveDurationInfinity: true
               });
-
               this._hls.loadSource(settings.stream.src);
-
               this._hls.attachMedia(this.videoEl);
-
               this.videoEl.style.display = 'block';
             }
           } else {
@@ -818,15 +756,11 @@ var APP_accelerator_home_ui = (function () {
         } else {
           this.close();
         }
-
         this._stream = settings.stream;
       }
-
       this._setHide(settings.hide);
-
       this._setVideoArea(settings.videoPos);
     }
-
     _setHide(hide) {
       if (this.textureMode) {
         this.tag('Video').setSmooth('alpha', hide ? 0 : 1);
@@ -834,7 +768,6 @@ var APP_accelerator_home_ui = (function () {
         this.videoEl.style.visibility = hide ? 'hidden' : 'visible';
       }
     }
-
     open(url) {
       let settings = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
         hide: false,
@@ -844,44 +777,37 @@ var APP_accelerator_home_ui = (function () {
       url = mediaUrl$1(url);
       this._metrics = Metrics$1.media(url);
       Log.info('Playing stream', url);
-
       if (this.application.noVideo) {
         Log.info('noVideo option set, so ignoring: ' + url);
         return;
-      } // close the video when opening same url as current (effectively reloading)
-
-
+      }
+      // close the video when opening same url as current (effectively reloading)
       if (this.videoEl.getAttribute('src') === url) {
         this.close();
       }
+      this.videoEl.setAttribute('src', url);
 
-      this.videoEl.setAttribute('src', url); // force hide, then force show (in next tick!)
+      // force hide, then force show (in next tick!)
       // (fixes comcast playback rollover issue)
-
       this.videoEl.style.visibility = 'hidden';
       this.videoEl.style.display = 'none';
       setTimeout(() => {
         this.videoEl.style.display = 'block';
         this.videoEl.style.visibility = 'visible';
       });
-
       this._setHide(settings.hide);
-
       this._setVideoArea(settings.videoPosition || [0, 0, 1920, 1080]);
     }
-
     close() {
       // We need to pause first in order to stop sound.
       this.videoEl.pause();
-      this.videoEl.removeAttribute('src'); // force load to reset everything without errors
+      this.videoEl.removeAttribute('src');
 
+      // force load to reset everything without errors
       this.videoEl.load();
-
       this._clearSrc();
-
       this.videoEl.style.display = 'none';
     }
-
     playPause() {
       if (this.isPlaying()) {
         this.doPause();
@@ -889,78 +815,60 @@ var APP_accelerator_home_ui = (function () {
         this.doPlay();
       }
     }
-
     get muted() {
       return this.videoEl.muted;
     }
-
     set muted(v) {
       this.videoEl.muted = v;
     }
-
     get loop() {
       return this.videoEl.loop;
     }
-
     set loop(v) {
       this.videoEl.loop = v;
     }
-
     isPlaying() {
       return this._getState() === 'Playing';
     }
-
     doPlay() {
       this.videoEl.play();
     }
-
     doPause() {
       this.videoEl.pause();
     }
-
     reload() {
       var url = this.videoEl.getAttribute('src');
       this.close();
       this.videoEl.src = url;
     }
-
     getPosition() {
       return Promise.resolve(this.videoEl.currentTime);
     }
-
     setPosition(pos) {
       this.videoEl.currentTime = pos;
     }
-
     getDuration() {
       return Promise.resolve(this.videoEl.duration);
     }
-
     seek(time) {
       let absolute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
       if (absolute) {
         this.videoEl.currentTime = time;
       } else {
         this.videoEl.currentTime += time;
       }
     }
-
     get videoTextureView() {
       return this.tag('Video').tag('VideoTexture');
     }
-
     get videoTexture() {
       return this.videoTextureView.texture;
     }
-
     _setVideoArea(videoPos) {
       if (lng$1.Utils.equalValues(this._videoPos, videoPos)) {
         return;
       }
-
       this._videoPos = videoPos;
-
       if (this.textureMode) {
         this.videoTextureView.patch({
           smooth: {
@@ -978,127 +886,96 @@ var APP_accelerator_home_ui = (function () {
         this.videoEl.style.height = Math.round((videoPos[3] - videoPos[1]) * precision) + 'px';
       }
     }
-
     _fireConsumer(event, args) {
       if (this._consumer) {
         this._consumer.fire(event, args);
       }
     }
-
     _equalInitData(buf1, buf2) {
       if (!buf1 || !buf2) return false;
       if (buf1.byteLength != buf2.byteLength) return false;
       const dv1 = new Int8Array(buf1);
       const dv2 = new Int8Array(buf2);
-
       for (let i = 0; i != buf1.byteLength; i++) if (dv1[i] != dv2[i]) return false;
-
       return true;
     }
-
     error(args) {
       this._fireConsumer('$mediaplayerError', args);
-
       this._setState('');
-
       return '';
     }
-
     loadeddata(args) {
       this._fireConsumer('$mediaplayerLoadedData', args);
     }
-
     play(args) {
       this._fireConsumer('$mediaplayerPlay', args);
     }
-
     playing(args) {
       this._fireConsumer('$mediaplayerPlaying', args);
-
       this._setState('Playing');
     }
-
     canplay(args) {
       this.videoEl.play();
-
       this._fireConsumer('$mediaplayerStart', args);
     }
-
     loadstart(args) {
       this._fireConsumer('$mediaplayerLoad', args);
     }
-
     seeked() {
       this._fireConsumer('$mediaplayerSeeked', {
         currentTime: this.videoEl.currentTime,
         duration: this.videoEl.duration || 1
       });
     }
-
     seeking() {
       this._fireConsumer('$mediaplayerSeeking', {
         currentTime: this.videoEl.currentTime,
         duration: this.videoEl.duration || 1
       });
     }
-
     durationchange(args) {
       this._fireConsumer('$mediaplayerDurationChange', args);
     }
-
     encrypted(args) {
       const video = args.videoElement;
-      const event = args.event; // FIXME: Double encrypted events need to be properly filtered by Gstreamer
-
+      const event = args.event;
+      // FIXME: Double encrypted events need to be properly filtered by Gstreamer
       if (video.mediaKeys && !this._equalInitData(this._previousInitData, event.initData)) {
         this._previousInitData = event.initData;
-
         this._fireConsumer('$mediaplayerEncrypted', args);
       }
     }
-
     static _states() {
       return [class Playing extends this {
         $enter() {
           this._startUpdatingVideoTexture();
         }
-
         $exit() {
           this._stopUpdatingVideoTexture();
         }
-
         timeupdate() {
           this._fireConsumer('$mediaplayerProgress', {
             currentTime: this.videoEl.currentTime,
             duration: this.videoEl.duration || 1
           });
         }
-
         ended(args) {
           this._fireConsumer('$mediaplayerEnded', args);
-
           this._setState('');
         }
-
         pause(args) {
           this._fireConsumer('$mediaplayerPause', args);
-
           this._setState('Playing.Paused');
         }
-
         _clearSrc() {
           this._fireConsumer('$mediaplayerStop', {});
-
           this._setState('');
         }
-
         static _states() {
           return [class Paused extends this {}];
         }
-
       }];
     }
-
   }
 
   class localCookie {
@@ -1117,64 +994,51 @@ var APP_accelerator_home_ui = (function () {
         keys: this._getCookieKeys
       };
     }
-
     _checkIfLocalStorageWorks() {
       if ("undefined" == typeof localStorage) return !1;
-
       try {
         return localStorage.setItem("feature_test", "yes"), "yes" === localStorage.getItem("feature_test") && (localStorage.removeItem("feature_test"), !0);
       } catch (e) {
         return !1;
       }
     }
-
     _getItemLocalStorage(e) {
       return window.localStorage.getItem(e);
     }
-
     _setItemLocalStorage(e, t) {
       return window.localStorage.setItem(e, t);
     }
-
     _removeItemLocalStorage(e) {
       return window.localStorage.removeItem(e);
     }
-
     _clearLocalStorage() {
       return window.localStorage.clear();
     }
-
     _getLocalStorageKeys() {
       return Object.keys(window.localStorage);
     }
-
     _getItemCookie(e) {
       var t = document.cookie.match(RegExp("(?:^|;\\s*)" + function (e) {
         return e.replace(/([.*+?\^${}()|\[\]\/\\])/g, "\\$1");
       }(e) + "=([^;]*)"));
       return t && "" === t[1] && (t[1] = null), t ? t[1] : null;
     }
-
     _setItemCookie(e, t) {
       var o = new Date(),
-          r = new Date(o.getTime() + 15768e7);
+        r = new Date(o.getTime() + 15768e7);
       document.cookie = "".concat(e, "=").concat(t, "; expires=").concat(r.toUTCString(), ";");
     }
-
     _removeItemCookie(e) {
       document.cookie = "".concat(e, "=;Max-Age=-99999999;");
     }
-
     _clearCookies() {
       document.cookie.split(";").forEach(e => {
         document.cookie = e.replace(/^ +/, "").replace(/=.*/, "=;expires=Max-Age=-99999999");
       });
     }
-
     _getCookieKeys() {
       return document.cookie.split(";").map(e => e.split("=")[0]);
     }
-
   }
 
   /*
@@ -1198,13 +1062,11 @@ var APP_accelerator_home_ui = (function () {
   let namespace;
   let lc;
   const initStorage = () => {
-    namespace = Settings.get('platform', 'id'); // todo: pass options (for example to force the use of cookies)
-
+    namespace = Settings.get('platform', 'id');
+    // todo: pass options (for example to force the use of cookies)
     lc = new localCookie();
   };
-
   const namespacedKey = key => namespace ? [namespace, key].join('.') : key;
-
   var Storage = {
     get(key) {
       try {
@@ -1213,7 +1075,6 @@ var APP_accelerator_home_ui = (function () {
         return null;
       }
     },
-
     set(key, value) {
       try {
         lc.setItem(namespacedKey(key), JSON.stringify(value));
@@ -1222,11 +1083,9 @@ var APP_accelerator_home_ui = (function () {
         return false;
       }
     },
-
     remove(key) {
       lc.removeItem(namespacedKey(key));
     },
-
     clear() {
       if (namespace) {
         lc.keys().forEach(key => {
@@ -1237,7 +1096,6 @@ var APP_accelerator_home_ui = (function () {
         lc.clear();
       }
     }
-
   };
 
   /*
@@ -1258,27 +1116,26 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   const hasRegex = /\{\/(.*?)\/([igm]{0,3})\}/g;
   const isWildcard = /^[!*$]$/;
   const hasLookupId = /\/:\w+?@@([0-9]+?)@@/;
   const isNamedGroup = /^\/:/;
+
   /**
    * Test if a route is part regular expressed
    * and replace it for a simple character
    * @param route
    * @returns {*}
    */
-
   const stripRegex = function (route) {
     let char = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'R';
-
     // if route is part regular expressed we replace
     // the regular expression for a character to
     // simplify floor calculation and backtracking
     if (hasRegex.test(route)) {
       route = route.replace(hasRegex, char);
     }
-
     return route;
   };
 
@@ -1307,7 +1164,8 @@ var APP_accelerator_home_ui = (function () {
    * @returns {Map<any, any>}
    */
   const createRegister = flags => {
-    const reg = new Map() // store user defined and router
+    const reg = new Map()
+    // store user defined and router
     // defined flags in register
     ;
     [...Object.keys(flags), ...Object.getOwnPropertySymbols(flags)].forEach(key => {
@@ -1339,60 +1197,60 @@ var APP_accelerator_home_ui = (function () {
       let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       let navArgs = arguments.length > 1 ? arguments[1] : undefined;
       let storeCaller = arguments.length > 2 ? arguments[2] : undefined;
-
       /**
        * Hash we navigate to
        * @type {string}
        * @private
        */
       this._hash = hash;
+
       /**
        * Do we store previous hash in history
        * @type {boolean}
        * @private
        */
-
       this._storeCaller = storeCaller;
+
       /**
        * Request and navigate data
        * @type {Map}
        * @private
        */
-
       this._register = new Map();
+
       /**
        * Flag if the instance is created due to
        * this request
        * @type {boolean}
        * @private
        */
-
       this._isCreated = false;
+
       /**
        * Flag if the instance is shared between
        * previous and current request
        * @type {boolean}
        * @private
        */
-
       this._isSharedInstance = false;
+
       /**
        * Flag if the request has been cancelled
        * @type {boolean}
        * @private
        */
-
       this._cancelled = false;
+
       /**
        * if instance is shared between requests we copy state object
        * from instance before the new request overrides state
        * @type {null}
        * @private
        */
+      this._copiedHistoryState = null;
 
-      this._copiedHistoryState = null; // if there are arguments attached to navigate()
+      // if there are arguments attached to navigate()
       // we store them in new request
-
       if (isObject(navArgs)) {
         this._register = createRegister(navArgs);
       } else if (isBoolean(navArgs)) {
@@ -1400,94 +1258,72 @@ var APP_accelerator_home_ui = (function () {
         // set to false we prevent the calling page
         // from ending up in history
         this._storeCaller = navArgs;
-      } // @todo: remove because we can simply check
+      }
+      // @todo: remove because we can simply check
       // ._storeCaller property
-
-
       this._register.set(symbols.store, this._storeCaller);
     }
-
     cancel() {
       Log.debug('[router]:', "cancelled ".concat(this._hash));
       this._cancelled = true;
     }
-
     get url() {
       return this._hash;
     }
-
     get register() {
       return this._register;
     }
-
     get hash() {
       return this._hash;
     }
-
     set hash(args) {
       this._hash = args;
     }
-
     get route() {
       return this._route;
     }
-
     set route(args) {
       this._route = args;
     }
-
     get provider() {
       return this._provider;
     }
-
     set provider(args) {
       this._provider = args;
     }
-
     get providerType() {
       return this._providerType;
     }
-
     set providerType(args) {
       this._providerType = args;
     }
-
     set page(args) {
       this._page = args;
     }
-
     get page() {
       return this._page;
     }
-
     set isCreated(args) {
       this._isCreated = args;
     }
-
     get isCreated() {
       return this._isCreated;
     }
-
     get isSharedInstance() {
       return this._isSharedInstance;
     }
-
     set isSharedInstance(args) {
       this._isSharedInstance = args;
     }
-
     get isCancelled() {
       return this._cancelled;
     }
-
     set copiedHistoryState(v) {
       this._copiedHistoryState = v;
     }
-
     get copiedHistoryState() {
       return this._copiedHistoryState;
     }
-
   }
 
   /*
@@ -1516,7 +1352,6 @@ var APP_accelerator_home_ui = (function () {
         return isFunction(config[type]) ? type : acc;
       }, undefined);
       this._cfg = config;
-
       if (type) {
         this._provider = {
           type,
@@ -1524,39 +1359,30 @@ var APP_accelerator_home_ui = (function () {
         };
       }
     }
-
     get path() {
       return this._cfg.path;
     }
-
     get component() {
       return this._cfg.component;
     }
-
     get options() {
       return this._cfg.options;
     }
-
     get widgets() {
       return this._cfg.widgets;
     }
-
     get cache() {
       return this._cfg.cache;
     }
-
     get hook() {
       return this._cfg.hook;
     }
-
     get beforeNavigate() {
       return this._cfg.beforeNavigate;
     }
-
     get provider() {
       return this._provider;
     }
-
   }
 
   /*
@@ -1577,32 +1403,32 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /**
    * Simple route length calculation
    * @param route {string}
    * @returns {number} - floor
    */
-
   const getFloor = route => {
     return stripRegex(route).split('/').length;
   };
+
   /**
    * return all stored routes that live on the same floor
    * @param floor
    * @returns {Array}
    */
-
   const getRoutesByFloor = floor => {
-    const matches = []; // simple filter of level candidates
-
+    const matches = [];
+    // simple filter of level candidates
     for (let [route] of routes$1.entries()) {
       if (getFloor(route) === floor) {
         matches.push(route);
       }
     }
-
     return matches;
   };
+
   /**
    * return a matching route by provided hash
    * hash: home/browse/12 will match:
@@ -1610,27 +1436,25 @@ var APP_accelerator_home_ui = (function () {
    * @param hash {string}
    * @returns {boolean|{}} - route
    */
-
-
   const getRouteByHash = hash => {
     // @todo: clean up on handleHash
     hash = hash.replace(/^#/, '');
-    const getUrlParts = /(\/?:?[^/]+)/g; // grab possible candidates from stored routes
+    const getUrlParts = /(\/?:?[^/]+)/g;
+    // grab possible candidates from stored routes
+    const candidates = getRoutesByFloor(getFloor(hash));
+    // break hash down in chunks
+    const hashParts = hash.match(getUrlParts) || [];
 
-    const candidates = getRoutesByFloor(getFloor(hash)); // break hash down in chunks
-
-    const hashParts = hash.match(getUrlParts) || []; // to simplify the route matching and prevent look around
+    // to simplify the route matching and prevent look around
     // in our getUrlParts regex we get the regex part from
     // route candidate and store them so that we can reference
     // them when we perform the actual regex against hash
-
     let regexStore = [];
     let matches = candidates.filter(route => {
-      let isMatching = true; // replace regex in route with lookup id => @@{storeId}@@
-
+      let isMatching = true;
+      // replace regex in route with lookup id => @@{storeId}@@
       if (hasRegex.test(route)) {
         const regMatches = route.match(hasRegex);
-
         if (regMatches && regMatches.length) {
           route = regMatches.reduce((fullRoute, regex) => {
             const lookupId = regexStore.length;
@@ -1640,29 +1464,27 @@ var APP_accelerator_home_ui = (function () {
           }, route);
         }
       }
-
       const routeParts = route.match(getUrlParts) || [];
-
       for (let i = 0, j = routeParts.length; i < j; i++) {
         const routePart = routeParts[i];
-        const hashPart = hashParts[i]; // Since we support catch-all and regex driven name groups
+        const hashPart = hashParts[i];
+
+        // Since we support catch-all and regex driven name groups
         // we first test for regex lookup id and see if the regex
         // matches the value from the hash
-
         if (hasLookupId.test(routePart)) {
           const routeMatches = hasLookupId.exec(routePart);
           const storeId = routeMatches[1];
-          const routeRegex = regexStore[storeId]; // split regex and modifiers so we can use both
+          const routeRegex = regexStore[storeId];
+
+          // split regex and modifiers so we can use both
           // to create a new RegExp
           // eslint-disable-next-line
-
           const regMatches = /\/([^\/]+)\/([igm]{0,3})/.exec(routeRegex);
-
           if (regMatches && regMatches.length) {
             const expression = regMatches[1];
             const modifiers = regMatches[2];
             const regex = new RegExp("^/".concat(expression, "$"), modifiers);
-
             if (!regex.test(hashPart)) {
               isMatching = false;
             }
@@ -1675,10 +1497,8 @@ var APP_accelerator_home_ui = (function () {
           isMatching = false;
         }
       }
-
       return isMatching;
     });
-
     if (matches.length) {
       if (matches.indexOf(hash) !== -1) {
         const match = matches[matches.indexOf(hash)];
@@ -1687,15 +1507,14 @@ var APP_accelerator_home_ui = (function () {
         // we give prio to static routes over dynamic
         matches = matches.sort(a => {
           return isNamedGroup.test(a) ? -1 : 1;
-        }); // would be strange if this fails
+        });
+        // would be strange if this fails
         // but still we test
-
         if (routeExists(matches[0])) {
           return routes$1.get(matches[0]);
         }
       }
     }
-
     return false;
   };
   const getValuesFromHash = function () {
@@ -1710,11 +1529,9 @@ var APP_accelerator_home_ui = (function () {
     const getNamedGroup = /^\/:([\w-]+)\/?/;
     return routeParts.reduce((storage, value, index) => {
       const match = getNamedGroup.exec(value);
-
       if (match && match.length) {
         storage.set(match[1], decodeURIComponent(hashParts[index].replace(/^\//, '')));
       }
-
       return storage;
     }, new Map());
   };
@@ -1722,15 +1539,15 @@ var APP_accelerator_home_ui = (function () {
     // eslint-disable-next-line
     if (stack && stack.hasOwnProperty(prop)) {
       return stack[prop];
-    } // we explicitly return undefined since we're testing
+    }
+    // we explicitly return undefined since we're testing
     // for explicit test values
-
   };
+
   /**
    * create and return new Route instance
    * @param config
    */
-
   const createRoute = config => {
     // we need to provide a bit of additional logic
     // for the bootComponent
@@ -1738,23 +1555,22 @@ var APP_accelerator_home_ui = (function () {
       let options = {
         preventStorage: true
       };
-
       if (isObject(config.options)) {
-        options = { ...config.options,
+        options = {
+          ...config.options,
           ...options
         };
       }
-
-      config.options = options; // if configured add reference to bootRequest
+      config.options = options;
+      // if configured add reference to bootRequest
       // as router after provider
-
       if (bootRequest) {
         config.after = bootRequest;
       }
     }
-
     return new Route(config);
   };
+
   /**
    * Create a new Router request object
    * @param url
@@ -1762,7 +1578,6 @@ var APP_accelerator_home_ui = (function () {
    * @param store
    * @returns {*}
    */
-
   const createRequest = (url, args, store) => {
     return new Request(url, args, store);
   };
@@ -1770,12 +1585,12 @@ var APP_accelerator_home_ui = (function () {
     if (!obj.to && !obj.name) {
       return false;
     }
-
     const route = getRouteByName(obj.to || obj.name);
     const hasDynamicGroup = /\/:([\w-]+)\/?/;
-    let hash = route; // if route contains dynamic group
-    // we replace them with the provided params
+    let hash = route;
 
+    // if route contains dynamic group
+    // we replace them with the provided params
     if (hasDynamicGroup.test(route)) {
       if (obj.params) {
         const keys = Object.keys(obj.params);
@@ -1783,45 +1598,36 @@ var APP_accelerator_home_ui = (function () {
           return acc.replace(":".concat(key), obj.params[key]);
         }, route);
       }
-
       if (obj.query) {
         return "".concat(hash).concat(objectToQueryString(obj.query));
       }
     }
-
     return hash;
   };
-
   const getRouteByName = name => {
     for (let [path, route] of routes$1.entries()) {
       if (route.name === name) {
         return path;
       }
     }
-
     return false;
   };
-
   const keepActivePageAlive = (route, request) => {
     if (isString(route)) {
       const routes = getRoutes();
-
       if (routes.has(route)) {
         route = routes.get(route);
       } else {
         return false;
       }
     }
-
     const register = request.register;
     const routeOptions = route.options;
-
     if (register.has('keepAlive')) {
       return register.get('keepAlive');
     } else if (routeOptions && routeOptions.keepAlive) {
       return routeOptions.keepAlive;
     }
-
     return false;
   };
 
@@ -1846,14 +1652,11 @@ var APP_accelerator_home_ui = (function () {
   var emit$1 = (function (page) {
     let events = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
     let params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
     if (!isArray(events)) {
       events = [events];
     }
-
     events.forEach(e => {
       const event = "_on".concat(ucfirst(e));
-
       if (isFunction(page[event])) {
         page[event](params);
       }
@@ -1883,54 +1686,49 @@ var APP_accelerator_home_ui = (function () {
     if (!widgetsHost) {
       return;
     }
-
     return widgetsHost.get().reduce((storage, widget) => {
       const key = widget.ref.toLowerCase();
       storage[key] = widget;
       return storage;
     }, {});
   };
+
   /**
    * update the visibility of the available widgets
    * for the current page / route
    * @param page
    */
-
   const updateWidgets = (widgets, page) => {
     // force lowercase lookup
     const configured = (widgets || []).map(ref => ref.toLowerCase());
     widgetsHost.forEach(widget => {
       widget.visible = configured.indexOf(widget.ref.toLowerCase()) !== -1;
-
       if (widget.visible) {
         emit$1(widget, ['activated'], page);
       }
     });
-
     if (app.state === 'Widgets' && activeWidget && !activeWidget.visible) {
       app._setState('');
     }
   };
-
   const getWidgetByName = name => {
     name = ucfirst(name);
     return widgetsHost.getByRef(name) || false;
   };
+
   /**
    * delegate app focus to a on-screen widget
    * @param name - {string}
    */
-
-
   const focusWidget = name => {
     const widget = getWidgetByName(name);
-
     if (widget) {
-      setActiveWidget(widget); // if app is already in 'Widgets' state we can assume that
+      setActiveWidget(widget);
+
+      // if app is already in 'Widgets' state we can assume that
       // focus has been delegated from one widget to another so
       // we need to set the new widget reference and trigger a
       // new focus calculation of Lightning's focuspath
-
       if (app.state === 'Widgets') {
         app.reload(activeWidget);
       } else {
@@ -1940,7 +1738,6 @@ var APP_accelerator_home_ui = (function () {
   };
   const restoreFocus = () => {
     activeWidget = null;
-
     app._setState('');
   };
   const getActiveWidget = () => {
@@ -1994,36 +1791,37 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /**
    * Simple flat array that holds the visited hashes + state Object
    * so the router can navigate back to them
    * @type {Array}
    */
-
   let history = [];
   const updateHistory = request => {
     const hash = getActiveHash();
-
     if (!hash) {
       return;
-    } // navigate storage flag
+    }
 
-
+    // navigate storage flag
     const register = request.register;
-    const forceNavigateStore = register.get(symbols.store); // test preventStorage on route configuration
+    const forceNavigateStore = register.get(symbols.store);
 
+    // test preventStorage on route configuration
     const activeRoute = getRouteByHash(hash);
-    const preventStorage = getOption(activeRoute.options, 'preventStorage'); // we give prio to navigate storage flag
+    const preventStorage = getOption(activeRoute.options, 'preventStorage');
 
+    // we give prio to navigate storage flag
     let store = isBoolean(forceNavigateStore) ? forceNavigateStore : !preventStorage;
-
     if (store) {
       const toStore = hash.replace(/^\//, '');
       const location = locationInHistory(toStore);
       const stateObject = getStateObject(getActivePage(), request);
-      const routerConfig = getRouterConfig(); // store hash if it's not a part of history or flag for
-      // storage of same hash is true
+      const routerConfig = getRouterConfig();
 
+      // store hash if it's not a part of history or flag for
+      // storage of same hash is true
       if (location === -1 || routerConfig.get('storeSameHash')) {
         history.push({
           hash: toStore,
@@ -2039,26 +1837,22 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
-
   const locationInHistory = hash => {
     for (let i = 0; i < history.length; i++) {
       if (history[i].hash === hash) {
         return i;
       }
     }
-
     return -1;
   };
-
   const getHistoryState = hash => {
     let state = null;
-
     if (history.length) {
       // if no hash is provided we get the last
       // pushed history record
       if (!hash) {
-        const record = history[history.length - 1]; // could be null
-
+        const record = history[history.length - 1];
+        // could be null
         state = record.state;
       } else {
         if (locationInHistory(hash) !== -1) {
@@ -2067,24 +1861,19 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     return state;
   };
   const replaceHistoryState = function () {
     let state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     let hash = arguments.length > 1 ? arguments[1] : undefined;
-
     if (!history.length) {
       return;
     }
-
     const location = hash ? locationInHistory(hash) : history.length - 1;
-
     if (location !== -1 && isObject(state)) {
       history[location].state = state;
     }
   };
-
   const getStateObject = (page, request) => {
     // if the new request shared instance with the
     // previous request we used the copied state object
@@ -2095,16 +1884,13 @@ var APP_accelerator_home_ui = (function () {
     } else if (page && isFunction(page.historyState)) {
       return page.historyState();
     }
-
     return null;
   };
-
   const getHistory = () => {
     return history.slice(0);
   };
   const setHistory = function () {
     let arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
     if (isArray(arr)) {
       history = arr;
     }
@@ -2115,66 +1901,55 @@ var APP_accelerator_home_ui = (function () {
   var isMergeableObject = function isMergeableObject(value) {
     return isNonNullObject(value) && !isSpecial(value);
   };
-
   function isNonNullObject(value) {
     return !!value && typeof value === 'object';
   }
-
   function isSpecial(value) {
     var stringValue = Object.prototype.toString.call(value);
     return stringValue === '[object RegExp]' || stringValue === '[object Date]' || isReactElement(value);
-  } // see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+  }
 
-
+  // see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
   var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
   var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
-
   function isReactElement(value) {
     return value.$$typeof === REACT_ELEMENT_TYPE;
   }
-
   function emptyTarget(val) {
     return Array.isArray(val) ? [] : {};
   }
-
   function cloneUnlessOtherwiseSpecified(value, options) {
     return options.clone !== false && options.isMergeableObject(value) ? deepmerge(emptyTarget(value), value, options) : value;
   }
-
   function defaultArrayMerge(target, source, options) {
     return target.concat(source).map(function (element) {
       return cloneUnlessOtherwiseSpecified(element, options);
     });
   }
-
   function getMergeFunction(key, options) {
     if (!options.customMerge) {
       return deepmerge;
     }
-
     var customMerge = options.customMerge(key);
     return typeof customMerge === 'function' ? customMerge : deepmerge;
   }
-
   function getEnumerableOwnPropertySymbols(target) {
     return Object.getOwnPropertySymbols ? Object.getOwnPropertySymbols(target).filter(function (symbol) {
       return target.propertyIsEnumerable(symbol);
     }) : [];
   }
-
   function getKeys(target) {
     return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target));
   }
-
   function propertyIsOnObject(object, property) {
     try {
       return property in object;
     } catch (_) {
       return false;
     }
-  } // Protects from prototype poisoning and unexpected merging up the prototype chain.
+  }
 
-
+  // Protects from prototype poisoning and unexpected merging up the prototype chain.
   function propertyIsUnsafe(target, key) {
     return propertyIsOnObject(target, key) // Properties are safe to merge if they don't exist in the target yet,
     && !(Object.hasOwnProperty.call(target, key) // unsafe if they exist up the prototype chain,
@@ -2183,18 +1958,15 @@ var APP_accelerator_home_ui = (function () {
 
   function mergeObject(target, source, options) {
     var destination = {};
-
     if (options.isMergeableObject(target)) {
       getKeys(target).forEach(function (key) {
         destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
       });
     }
-
     getKeys(source).forEach(function (key) {
       if (propertyIsUnsafe(target, key)) {
         return;
       }
-
       if (propertyIsOnObject(target, key) && options.isMergeableObject(source[key])) {
         destination[key] = getMergeFunction(key, options)(target[key], source[key], options);
       } else {
@@ -2203,18 +1975,16 @@ var APP_accelerator_home_ui = (function () {
     });
     return destination;
   }
-
   function deepmerge(target, source, options) {
     options = options || {};
     options.arrayMerge = options.arrayMerge || defaultArrayMerge;
-    options.isMergeableObject = options.isMergeableObject || isMergeableObject; // cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
+    options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+    // cloneUnlessOtherwiseSpecified is added to `options` so that custom arrayMerge()
     // implementations can use it. The caller may not replace it.
-
     options.cloneUnlessOtherwiseSpecified = cloneUnlessOtherwiseSpecified;
     var sourceIsArray = Array.isArray(source);
     var targetIsArray = Array.isArray(target);
     var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
-
     if (!sourceAndTargetTypesMatch) {
       return cloneUnlessOtherwiseSpecified(source, options);
     } else if (sourceIsArray) {
@@ -2223,17 +1993,14 @@ var APP_accelerator_home_ui = (function () {
       return mergeObject(target, source, options);
     }
   }
-
   deepmerge.all = function deepmergeAll(array, options) {
     if (!Array.isArray(array)) {
       throw new Error('first argument should be an array');
     }
-
     return array.reduce(function (prev, next) {
       return deepmerge(prev, next, options);
     }, {});
   };
-
   var deepmerge_1 = deepmerge;
   var cjs = deepmerge_1;
 
@@ -2256,75 +2023,64 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let warned = false;
-
   const deprecated = function () {
     let force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
     if (force === true || warned === false) {
       console.warn(["The 'Locale'-plugin in the Lightning-SDK is deprecated and will be removed in future releases.", "Please consider using the new 'Language'-plugin instead.", 'https://rdkcentral.github.io/Lightning-SDK/#/plugins/language'].join('\n\n'));
     }
-
     warned = true;
   };
-
   class Locale {
     constructor() {
       this.__enabled = false;
     }
+
     /**
      * Loads translation object from external json file.
      *
      * @param {String} path Path to resource.
      * @return {Promise}
      */
-
-
     async load(path) {
       if (!this.__enabled) {
         return;
       }
-
       await fetch(path).then(resp => resp.json()).then(resp => {
         this.loadFromObject(resp);
       });
     }
+
     /**
      * Sets language used by module.
      *
      * @param {String} lang
      */
-
-
     setLanguage(lang) {
       deprecated();
       this.__enabled = true;
       this.language = lang;
     }
+
     /**
      * Returns reference to translation object for current language.
      *
      * @return {Object}
      */
-
-
     get tr() {
       deprecated(true);
       return this.__trObj[this.language];
     }
+
     /**
      * Loads translation object from existing object (binds existing object).
      *
      * @param {Object} trObj
      */
-
-
     loadFromObject(trObj) {
       deprecated();
       const fallbackLanguage = 'en';
-
       if (Object.keys(trObj).indexOf(this.language) === -1) {
         Log.warn('No translations found for: ' + this.language);
-
         if (Object.keys(trObj).indexOf(fallbackLanguage) > -1) {
           Log.warn('Using fallback language: ' + fallbackLanguage);
           this.language = fallbackLanguage;
@@ -2334,22 +2090,18 @@ var APP_accelerator_home_ui = (function () {
           throw Error(error);
         }
       }
-
       this.__trObj = trObj;
-
       for (const lang of Object.values(this.__trObj)) {
         for (const str of Object.keys(lang)) {
           lang[str] = new LocalizedString(lang[str]);
         }
       }
     }
-
   }
+
   /**
    * Extended string class used for localization.
    */
-
-
   class LocalizedString extends String {
     /**
      * Returns formatted LocalizedString.
@@ -2365,13 +2117,10 @@ var APP_accelerator_home_ui = (function () {
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
-
       const sub = args.reduce((string, arg, index) => string.split("{".concat(index, "}")).join(arg), this);
       return new LocalizedString(sub);
     }
-
   }
-
   var Locale$1 = new Locale();
 
   /*
@@ -2414,14 +2163,12 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstActive() {
       this.tag('Text').text = "APP - v".concat(this.version, "\nSDK - v").concat(this.sdkVersion);
       this.tag('Text').loadTexture();
       this.w = this.tag('Text').renderWidth + 40;
       this.h = this.tag('Text').renderHeight + 5;
     }
-
   }
 
   /*
@@ -2480,9 +2227,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _setup() {
-      this.config = { ...{
+      this.config = {
+        ...{
           log: false,
           interval: 500,
           threshold: 1
@@ -2491,37 +2238,32 @@ var APP_accelerator_home_ui = (function () {
       };
       this.fps = 0;
       this.lastFps = this.fps - this.config.threshold;
-
       const fpsCalculator = () => {
         this.fps = ~~(1 / this.stage.dt);
       };
-
       this.stage.on('frameStart', fpsCalculator);
       this.stage.off('framestart', fpsCalculator);
       this.interval = setInterval(this.showFps.bind(this), this.config.interval);
     }
-
     _firstActive() {
       this.showFps();
     }
-
     _detach() {
       clearInterval(this.interval);
     }
-
     showFps() {
       if (Math.abs(this.lastFps - this.fps) <= this.config.threshold) return;
-      this.lastFps = this.fps; // green
-
-      let bgColor = 0xff008000; // orange
-
-      if (this.fps <= 40 && this.fps > 20) bgColor = 0xffffa500; // red
+      this.lastFps = this.fps;
+      // green
+      let bgColor = 0xff008000;
+      // orange
+      if (this.fps <= 40 && this.fps > 20) bgColor = 0xffffa500;
+      // red
       else if (this.fps <= 20) bgColor = 0xffff0000;
       this.tag('Background').setSmooth('color', bgColor);
       this.tag('Counter').text = "".concat(this.fps);
       this.config.log && Log.info('FPS', this.fps);
     }
-
   }
 
   /*
@@ -2550,8 +2292,8 @@ var APP_accelerator_home_ui = (function () {
     let language = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     return new Promise((resolve, reject) => {
       fetch(file).then(response => response.json()).then(json => {
-        setTranslations(json); // set language (directly or in a promise)
-
+        setTranslations(json);
+        // set language (directly or in a promise)
         typeof language === 'object' && 'then' in language && typeof language.then === 'function' ? language.then(lang => setLanguage(lang).then(resolve).catch(reject)).catch(e => {
           Log.error(e);
           reject(e);
@@ -2563,21 +2305,18 @@ var APP_accelerator_home_ui = (function () {
       });
     });
   };
-
   const setTranslations = obj => {
     if ('meta' in obj) {
-      meta = { ...obj.meta
+      meta = {
+        ...obj.meta
       };
       delete obj.meta;
     }
-
     translations = obj;
   };
-
   const getLanguage = () => {
     return language$1;
   };
-
   const setLanguage = lng => {
     language$1 = null;
     dictionary = null;
@@ -2597,11 +2336,9 @@ var APP_accelerator_home_ui = (function () {
           reject(error);
         }
       }
-
       if (language$1) {
         Log.info('Setting language to', language$1);
         const translationsObj = translations[language$1];
-
         if (typeof translationsObj === 'object') {
           dictionary = translationsObj;
           resolve();
@@ -2621,37 +2358,33 @@ var APP_accelerator_home_ui = (function () {
       }
     });
   };
-
   var Language = {
     translate(key) {
-      let replacements = [...arguments].slice(1); // no replacements so just translated string
+      let replacements = [...arguments].slice(1);
 
+      // no replacements so just translated string
       if (replacements.length === 0) {
         return dictionary && dictionary[key] || key;
       } else {
         if (replacements.length === 1 && typeof replacements[0] === 'object') {
           replacements = replacements.pop();
         }
-
-        return Object.keys( // maps array input to an object {0: 'item1', 1: 'item2'}
+        return Object.keys(
+        // maps array input to an object {0: 'item1', 1: 'item2'}
         Array.isArray(replacements) ? Object.assign({}, replacements) : replacements).reduce((text, replacementKey) => {
           return text.replace(new RegExp('{\\s?' + replacementKey + '\\s?}', 'g'), replacements[replacementKey]);
         }, dictionary && dictionary[key] || key);
       }
     },
-
     translations(obj) {
       setTranslations(obj);
     },
-
     set(language) {
       return setLanguage(language);
     },
-
     get() {
       return getLanguage();
     },
-
     available() {
       const languageKeys = Object.keys(translations);
       return languageKeys.map(key => ({
@@ -2659,7 +2392,6 @@ var APP_accelerator_home_ui = (function () {
         name: meta.names && meta.names[key] || key
       }));
     }
-
   };
 
   /*
@@ -2692,7 +2424,6 @@ var APP_accelerator_home_ui = (function () {
       for (var _len = arguments.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         params[_key - 2] = arguments[_key];
       }
-
       const timeoutId = setTimeout(() => {
         registry.timeouts = registry.timeouts.filter(id => id !== timeoutId);
         cb.apply(null, params);
@@ -2701,7 +2432,6 @@ var APP_accelerator_home_ui = (function () {
       registry.timeouts.push(timeoutId);
       return timeoutId;
     },
-
     clearTimeout(timeoutId) {
       if (registry.timeouts.indexOf(timeoutId) > -1) {
         registry.timeouts = registry.timeouts.filter(id => id !== timeoutId);
@@ -2711,19 +2441,16 @@ var APP_accelerator_home_ui = (function () {
         Log.error('Clear Timeout', 'ID ' + timeoutId + ' not found');
       }
     },
-
     clearTimeouts() {
       registry.timeouts.forEach(timeoutId => {
         this.clearTimeout(timeoutId);
       });
     },
-
     // Intervals
     setInterval(cb, interval) {
       for (var _len2 = arguments.length, params = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
         params[_key2 - 2] = arguments[_key2];
       }
-
       const intervalId = setInterval(() => {
         registry.intervals.filter(id => id !== intervalId);
         cb.apply(null, params);
@@ -2732,7 +2459,6 @@ var APP_accelerator_home_ui = (function () {
       registry.intervals.push(intervalId);
       return intervalId;
     },
-
     clearInterval(intervalId) {
       if (registry.intervals.indexOf(intervalId) > -1) {
         registry.intervals = registry.intervals.filter(id => id !== intervalId);
@@ -2742,13 +2468,11 @@ var APP_accelerator_home_ui = (function () {
         Log.error('Clear Interval', 'ID ' + intervalId + ' not found');
       }
     },
-
     clearIntervals() {
       registry.intervals.forEach(intervalId => {
         this.clearInterval(intervalId);
       });
     },
-
     // Event listeners
     addEventListener(target, event, handler) {
       target.addEventListener(event, handler);
@@ -2758,10 +2482,8 @@ var APP_accelerator_home_ui = (function () {
       registry.eventListeners[targetIndex][event].push(handler);
       Log.info('Add eventListener', 'Target:', target, 'Event: ' + event, 'Handler:', handler.toString());
     },
-
     removeEventListener(target, event, handler) {
       const targetIndex = registry.targets.indexOf(target);
-
       if (targetIndex > -1 && registry.eventListeners[targetIndex] && registry.eventListeners[targetIndex][event] && registry.eventListeners[targetIndex][event].indexOf(handler) > -1) {
         registry.eventListeners[targetIndex][event] = registry.eventListeners[targetIndex][event].filter(fn => fn !== handler);
         Log.info('Remove eventListener', 'Target:', target, 'Event: ' + event, 'Handler:', handler.toString());
@@ -2770,13 +2492,11 @@ var APP_accelerator_home_ui = (function () {
         Log.error('Remove eventListener', 'Not found', 'Target', target, 'Event: ' + event, 'Handler', handler.toString());
       }
     },
-
     // if `event` is omitted, removes all registered event listeners for target
     // if `target` is also omitted, removes all registered event listeners
     removeEventListeners(target, event) {
       if (target && event) {
         const targetIndex = registry.targets.indexOf(target);
-
         if (targetIndex > -1) {
           registry.eventListeners[targetIndex][event].forEach(handler => {
             this.removeEventListener(target, event, handler);
@@ -2784,7 +2504,6 @@ var APP_accelerator_home_ui = (function () {
         }
       } else if (target) {
         const targetIndex = registry.targets.indexOf(target);
-
         if (targetIndex > -1) {
           Object.keys(registry.eventListeners[targetIndex]).forEach(_event => {
             this.removeEventListeners(target, _event);
@@ -2796,7 +2515,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     },
-
     // Clear everything (to be called upon app close for proper cleanup)
     clear() {
       this.clearTimeouts();
@@ -2807,7 +2525,6 @@ var APP_accelerator_home_ui = (function () {
       registry.intervals = [];
       registry.targets = [];
     }
-
   };
 
   /*
@@ -2828,6 +2545,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   const isObject$1 = v => {
     return typeof v === 'object' && v !== null;
   };
@@ -2863,9 +2581,9 @@ var APP_accelerator_home_ui = (function () {
     cyan: '#00feff',
     magenta: '#ff00ff'
   };
-  const normalizedColors = {//store for normalized colors
+  const normalizedColors = {
+    //store for normalized colors
   };
-
   const addColors = (colorsToAdd, value) => {
     if (isObject$1(colorsToAdd)) {
       // clean up normalizedColors if they exist in the to be added colors
@@ -2876,7 +2594,6 @@ var APP_accelerator_home_ui = (function () {
       colors[colorsToAdd] = value;
     }
   };
-
   const cleanUpNormalizedColors = color => {
     for (let c in normalizedColors) {
       if (c.indexOf(color) > -1) {
@@ -2884,14 +2601,12 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
-
   const initColors = file => {
     return new Promise((resolve, reject) => {
       if (typeof file === 'object') {
         addColors(file);
         return resolve();
       }
-
       fetch(file).then(response => response.json()).then(json => {
         addColors(json);
         return resolve();
@@ -3014,7 +2729,6 @@ var APP_accelerator_home_ui = (function () {
     }
   };
   const customFontFaces = [];
-
   const fontLoader = (fonts, store) => new Promise((resolve, reject) => {
     fonts.map(_ref => {
       let {
@@ -3037,47 +2751,42 @@ var APP_accelerator_home_ui = (function () {
       return promise.then(() => method());
     }, Promise.resolve(null)).then(resolve).catch(reject);
   });
-
   function Application (App, appData, platformSettings) {
     const {
       width,
       height
     } = platformSettings;
-
     if (width && height) {
       defaultOptions$1.stage['w'] = width;
       defaultOptions$1.stage['h'] = height;
       defaultOptions$1.stage['precision'] = width / 1920;
-    } // support for 720p browser
+    }
 
-
+    // support for 720p browser
     if (!width && !height && window.innerHeight === 720) {
       defaultOptions$1.stage['w'] = 1280;
       defaultOptions$1.stage['h'] = 720;
       defaultOptions$1.stage['precision'] = 1280 / 1920;
     }
-
     return class Application extends lng$1.Application {
       constructor(options) {
-        const config = cjs(defaultOptions$1, options); // Deepmerge breaks HTMLCanvasElement, so restore the passed in canvas.
-
+        const config = cjs(defaultOptions$1, options);
+        // Deepmerge breaks HTMLCanvasElement, so restore the passed in canvas.
         if (options.stage.canvas) {
           config.stage.canvas = options.stage.canvas;
         }
-
         super(config);
         this.config = config;
       }
-
       static _template() {
         return {
           w: 1920,
           h: 1080
         };
       }
-
       _setup() {
-        Promise.all([this.loadFonts(App.config && App.config.fonts || App.getFonts && App.getFonts() || []), // to be deprecated
+        Promise.all([this.loadFonts(App.config && App.config.fonts || App.getFonts && App.getFonts() || []),
+        // to be deprecated
         Locale$1.load(App.config && App.config.locale || App.getLocale && App.getLocale()), App.language && this.loadLanguage(App.language()), App.colors && this.loadColors(App.colors())]).then(() => {
           Metrics$1.app.loaded();
           AppInstance = this.stage.c({
@@ -3087,12 +2796,9 @@ var APP_accelerator_home_ui = (function () {
             forceZIndexContext: !!platformSettings.showVersion || !!platformSettings.showFps
           });
           this.childList.a(AppInstance);
-
           this._refocus();
-
           Log.info('App version', this.config.version);
           Log.info('SDK version', packageInfo.version);
-
           if (platformSettings.showVersion) {
             this.childList.a({
               ref: 'VersionLabel',
@@ -3102,7 +2808,6 @@ var APP_accelerator_home_ui = (function () {
               zIndex: 1
             });
           }
-
           if (platformSettings.showFps) {
             this.childList.a({
               ref: 'FpsCounter',
@@ -3110,44 +2815,36 @@ var APP_accelerator_home_ui = (function () {
               zIndex: 1
             });
           }
-
           super._setup();
         }).catch(console.error);
       }
-
       _handleBack() {
         this.closeApp();
       }
-
       _handleExit() {
         this.closeApp();
       }
-
       closeApp() {
         Log.info('Signaling App Close');
-
         if (platformSettings.onClose && typeof platformSettings.onClose === 'function') {
           platformSettings.onClose(...arguments);
         } else {
           this.close();
         }
       }
-
       close() {
         Log.info('Closing App');
         Settings.clearSubscribers();
         Registry.clear();
         this.childList.remove(this.tag('App'));
-        this.cleanupFonts(); // force texture garbage collect
-
+        this.cleanupFonts();
+        // force texture garbage collect
         this.stage.gc();
         this.destroy();
       }
-
       loadFonts(fonts) {
         return platformSettings.fontLoader && typeof platformSettings.fontLoader === 'function' ? platformSettings.fontLoader(fonts, customFontFaces) : fontLoader(fonts, customFontFaces);
       }
-
       cleanupFonts() {
         if ('delete' in document.fonts) {
           customFontFaces.forEach(fontFace => {
@@ -3158,39 +2855,29 @@ var APP_accelerator_home_ui = (function () {
           Log.info('No support for removing manually-added fonts');
         }
       }
-
       loadLanguage(config) {
         let file = Utils.asset('translations.json');
         let language = config;
-
         if (typeof language === 'object') {
           language = config.language || null;
           file = config.file || file;
         }
-
         return initLanguage(file, language);
       }
-
       loadColors(config) {
         let file = Utils.asset('colors.json');
-
         if (config && (typeof config === 'string' || typeof config === 'object')) {
           file = config;
         }
-
         return initColors(file);
       }
-
       set focus(v) {
         this._focussed = v;
-
         this._refocus();
       }
-
       _getFocused() {
         return this._focussed || this.tag('App');
       }
-
     };
   }
 
@@ -3212,61 +2899,62 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /**
    * @type {Lightning.Application}
    */
-
   let application;
+
   /**
    * Actual instance of the app
    * @type {Lightning.Component}
    */
-
   let app;
+
   /**
    * Component that hosts all routed pages
    * @type {Lightning.Component}
    */
-
   let pagesHost;
+
   /**
    * @type {Lightning.Stage}
    */
-
   let stage;
+
   /**
    * Platform driven Router configuration
    * @type {Map<string>}
    */
-
   let routerConfig;
+
   /**
    * Component that hosts all attached widgets
    * @type {Lightning.Component}
    */
-
   let widgetsHost;
+
   /**
    * Hash we point the browser to when we boot the app
    * and there is no deep-link provided
    * @type {string|Function}
    */
-
   let rootHash;
+
   /**
    * Boot request will fire before app start
    * can be used to execute some global logic
    * and can be configured
    */
-
   let bootRequest;
+
   /**
    * Flag if we need to update the browser location hash.
    * Router can work without.
    * @type {boolean}
    */
-
   let updateHash = true;
+
   /**
    * Will be called before a route starts, can be overridden
    * via routes config
@@ -3275,99 +2963,92 @@ var APP_accelerator_home_ui = (function () {
    * @returns {Promise<*>}
    */
   // eslint-disable-next-line
-
   let beforeEachRoute = async (from, to) => {
     return true;
   };
+
   /**
    *  * Will be called after a navigate successfully resolved,
    * can be overridden via routes config
    */
-
   let afterEachRoute = () => {};
+
   /**
    * All configured routes
    * @type {Map<string, object>}
    */
-
   let routes$1 = new Map();
+
   /**
    * Store all page components per route
    * @type {Map<string, object>}
    */
-
   let components = new Map();
+
   /**
    * Flag if router has been initialised
    * @type {boolean}
    */
-
   let initialised = false;
+
   /**
    * Current page being rendered on screen
    * @type {null}
    */
-
   let activePage = null;
   let activeHash;
   let activeRoute;
+
   /**
    *  During the process of a navigation request a new
    *  request can start, to prevent unwanted behaviour
    *  the navigate()-method stores the last accepted hash
    *  so we can invalidate any prior requests
    */
-
   let lastAcceptedHash;
+
   /**
    * With on()-data providing behaviour the Router forced the App
    * in a Loading state. When the data-provider resolves we want to
    * change the state back to where we came from
    */
-
   let previousState;
-
   const mixin = app => {
     // by default the Router Baseclass provides the component
     // reference in which we store our pages
     if (app.pages) {
       pagesHost = app.pages.childList;
-    } // if the app is using widgets we grab refs
+    }
+    // if the app is using widgets we grab refs
     // and hide all the widgets
-
-
     if (app.widgets && app.widgets.children) {
-      widgetsHost = app.widgets.childList; // hide all widgets on boot
-
+      widgetsHost = app.widgets.childList;
+      // hide all widgets on boot
       widgetsHost.forEach(w => w.visible = false);
     }
-
     app._handleBack = e => {
       step(-1);
       e.preventDefault();
     };
   };
-
   const bootRouter = (config, instance) => {
     let {
       appInstance,
       routes
-    } = config; // if instance is provided and it's and Lightning Component instance
+    } = config;
 
+    // if instance is provided and it's and Lightning Component instance
     if (instance && isPage(instance)) {
       app = instance;
     }
-
     if (!app) {
       app = appInstance || AppInstance;
     }
-
     application = app.application;
     pagesHost = application.childList;
     stage = app.stage;
     routerConfig = getConfigMap();
     mixin(app);
-
     if (isArray(routes)) {
       setup(config);
     } else if (isFunction(routes)) {
@@ -3375,31 +3056,26 @@ var APP_accelerator_home_ui = (function () {
       console.warn('Use object config: https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration');
     }
   };
-
   const setup = config => {
     if (!initialised) {
       init(config);
     }
-
     config.routes.forEach(r => {
       const path = cleanHash(r.path);
-
       if (!routeExists(path)) {
         const route = createRoute(r);
-        routes$1.set(path, route); // if route has a configured component property
+        routes$1.set(path, route);
+        // if route has a configured component property
         // we store it in a different map to simplify
         // the creating and destroying per route
-
         if (route.component) {
           let type = route.component;
-
           if (isComponentConstructor(type)) {
             if (!routerConfig.get('lazyCreate')) {
               type = createComponent(stage, type);
               pagesHost.a(type);
             }
           }
-
           components.set(path, type);
         }
       } else {
@@ -3407,30 +3083,23 @@ var APP_accelerator_home_ui = (function () {
       }
     });
   };
-
   const init = config => {
     rootHash = config.root;
-
     if (isFunction(config.boot)) {
       bootRequest = config.boot;
     }
-
     if (isBoolean(config.updateHash)) {
       updateHash = config.updateHash;
     }
-
     if (isFunction(config.beforeEachRoute)) {
       beforeEachRoute = config.beforeEachRoute;
     }
-
     if (isFunction(config.afterEachRoute)) {
       afterEachRoute = config.afterEachRoute;
     }
-
     if (config.bootComponent) {
       console.warn('[Router]: Boot Component is now available as a special router: https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration?id=special-routes');
       console.warn('[Router]: setting { bootComponent } property will be deprecated in a future release');
-
       if (isPage(config.bootComponent)) {
         config.routes.push({
           path: '$',
@@ -3446,10 +3115,8 @@ var APP_accelerator_home_ui = (function () {
         console.error("[Router]: ".concat(config.bootComponent, " is not a valid boot component"));
       }
     }
-
     initialised = true;
   };
-
   const storeComponent = (route, type) => {
     if (components.has(route)) {
       components.set(route, type);
@@ -3459,84 +3126,79 @@ var APP_accelerator_home_ui = (function () {
     if (components.has(route)) {
       return components.get(route);
     }
-
     return null;
   };
   /**
    * Test if router needs to update browser location hash
    * @returns {boolean}
    */
-
   const mustUpdateLocationHash = () => {
     if (!routerConfig || !routerConfig.size) {
       return false;
-    } // we need support to either turn change hash off
+    }
+    // we need support to either turn change hash off
     // per platform or per app
-
-
     const updateConfig = routerConfig.get('updateHash');
     return !(isBoolean(updateConfig) && !updateConfig || isBoolean(updateHash) && !updateHash);
   };
+
   /**
    * Will be called when a new navigate() request has completed
    * and has not been expired due to it's async nature
    * @param request
    */
-
   const onRequestResolved = request => {
     const hash = request.hash;
     const route = request.route;
     const register = request.register;
-    const page = request.page; // clean up history if modifier is set
+    const page = request.page;
 
+    // clean up history if modifier is set
     if (getOption(route.options, 'clearHistory')) {
       setHistory([]);
     } else if (hash && !isWildcard.test(route.path)) {
       updateHistory(request);
-    } // we only update the stackLocation if a route
+    }
+
+    // we only update the stackLocation if a route
     // is not expired before it resolves
-
-
     storeComponent(route.path, page);
-
     if (request.isSharedInstance || !request.isCreated) {
       emit$1(page, 'changed');
     } else if (request.isCreated) {
       emit$1(page, 'mounted');
-    } // only update widgets if we have a host
+    }
 
-
+    // only update widgets if we have a host
     if (widgetsHost) {
       updateWidgets(route.widgets, page);
-    } // we want to clean up if there is an
+    }
+
+    // we want to clean up if there is an
     // active page that is not being shared
     // between current and previous route
-
-
     if (getActivePage() && !request.isSharedInstance) {
       cleanUp(activePage, request);
-    } // provide history object to active page
+    }
 
-
+    // provide history object to active page
     if (register.get(symbols.historyState) && isFunction(page.historyState)) {
       page.historyState(register.get(symbols.historyState));
     }
-
     setActivePage(page);
     activeHash = request.hash;
-    activeRoute = route.path; // cleanup all cancelled requests
+    activeRoute = route.path;
 
+    // cleanup all cancelled requests
     for (let request of navigateQueue.values()) {
       if (request.isCancelled && request.hash) {
         navigateQueue.delete(request.hash);
       }
     }
-
     afterEachRoute(request);
     Log.info('[route]:', route.path);
     Log.info('[hash]:', hash);
   };
-
   const cleanUp = (page, request) => {
     const route = activeRoute;
     const register = request.register;
@@ -3544,33 +3206,35 @@ var APP_accelerator_home_ui = (function () {
     const destroyOnBack = routerConfig.get('destroyOnHistoryBack');
     const keepAlive = register.get('keepAlive');
     const isFromHistory = register.get(symbols.backtrack);
-    let doCleanup = false; // if this request is executed due to a step back in history
+    let doCleanup = false;
+
+    // if this request is executed due to a step back in history
     // and we have configured to destroy active page when we go back
     // in history or lazyDestory is enabled
-
     if (isFromHistory && (destroyOnBack || lazyDestroy)) {
-      doCleanup = true;
-    } // clean up if lazyDestroy is enabled and the keepAlive flag
-    // in navigation register is false
-
-
-    if (lazyDestroy && !keepAlive) {
-      doCleanup = true;
-    } // if the current and new request share the same route blueprint
-
-
-    if (activeRoute === request.route.path) {
       doCleanup = true;
     }
 
+    // clean up if lazyDestroy is enabled and the keepAlive flag
+    // in navigation register is false
+    if (lazyDestroy && !keepAlive) {
+      doCleanup = true;
+    }
+
+    // if the current and new request share the same route blueprint
+    if (activeRoute === request.route.path) {
+      doCleanup = true;
+    }
     if (doCleanup) {
       // grab original class constructor if
       // statemachine routed else store constructor
-      storeComponent(route, page._routedType || page.constructor); // actual remove of page from memory
+      storeComponent(route, page._routedType || page.constructor);
 
-      pagesHost.remove(page); // force texture gc() if configured
+      // actual remove of page from memory
+      pagesHost.remove(page);
+
+      // force texture gc() if configured
       // so we can cleanup textures in the same tick
-
       if (routerConfig.get('gcOnUnload')) {
         stage.gc();
       }
@@ -3586,7 +3250,6 @@ var APP_accelerator_home_ui = (function () {
       });
     }
   };
-
   const getActiveHash = () => {
     return activeHash;
   };
@@ -3655,7 +3318,6 @@ var APP_accelerator_home_ui = (function () {
     if (v instanceof lng$1.Element || isComponentConstructor(v)) {
       return true;
     }
-
     return false;
   };
   const isComponentConstructor = type => {
@@ -3672,7 +3334,6 @@ var APP_accelerator_home_ui = (function () {
   };
   const isPromise = method => {
     let result;
-
     if (isFunction(method)) {
       try {
         result = method.apply(null);
@@ -3682,7 +3343,6 @@ var APP_accelerator_home_ui = (function () {
     } else {
       result = method;
     }
-
     return isObject(result) && isFunction(result.then);
   };
   const cleanHash = function () {
@@ -3700,45 +3360,37 @@ var APP_accelerator_home_ui = (function () {
   const getQueryStringParams = function () {
     let hash = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getActiveHash();
     const resumeHash = getResumeHash();
-
     if ((hash === '$' || !hash) && resumeHash) {
       if (isString(resumeHash)) {
         hash = resumeHash;
       }
     }
-
     let parse = '';
     const getQuery = /([?&].*)/;
     const matches = getQuery.exec(hash);
     const params = {};
-
     if (document.location && document.location.search) {
       parse = document.location.search;
     }
-
     if (matches && matches.length) {
       let hashParams = matches[1];
-
       if (parse) {
         // if location.search is not empty we
         // remove the leading ? to create a
         // valid string
-        hashParams = hashParams.replace(/^\?/, ''); // we parse hash params last so they we can always
+        hashParams = hashParams.replace(/^\?/, '');
+        // we parse hash params last so they we can always
         // override search params with hash params
-
         parse = "".concat(parse, "&").concat(hashParams);
       } else {
         parse = hashParams;
       }
     }
-
     if (parse) {
       const urlParams = new URLSearchParams(parse);
-
       for (const [key, value] of urlParams.entries()) {
         params[key] = value;
       }
-
       return params;
     } else {
       return false;
@@ -3748,7 +3400,6 @@ var APP_accelerator_home_ui = (function () {
     if (!isObject(obj)) {
       return '';
     }
-
     return '?' + Object.keys(obj).map(key => {
       return "".concat(key, "=").concat(obj[key]);
     }).join('&');
@@ -3786,9 +3437,7 @@ var APP_accelerator_home_ui = (function () {
   const dataHooks = {
     on: request => {
       app.state || '';
-
       app._setState('Loading');
-
       return execProvider(request);
     },
     before: request => {
@@ -3797,22 +3446,21 @@ var APP_accelerator_home_ui = (function () {
     after: request => {
       try {
         execProvider(request, true);
-      } catch (e) {// for now we fail silently
+      } catch (e) {
+        // for now we fail silently
       }
-
       return Promise.resolve();
     }
   };
-
   const execProvider = (request, emitProvided) => {
     const route = request.route;
     const provider = route.provider;
     const expires = route.cache ? route.cache * 1000 : 0;
     const params = addPersistData(request);
-    return provider.request(request.page, { ...params
+    return provider.request(request.page, {
+      ...params
     }).then(() => {
       request.page[symbols.expires] = Date.now() + expires;
-
       if (emitProvided) {
         emit$1(request.page, 'dataProvided');
       }
@@ -3821,7 +3469,6 @@ var APP_accelerator_home_ui = (function () {
       throw e;
     });
   };
-
   const addPersistData = _ref => {
     let {
       page,
@@ -3832,45 +3479,42 @@ var APP_accelerator_home_ui = (function () {
     const urlValues = getValuesFromHash(hash, route.path);
     const queryParams = getQueryStringParams(hash);
     const pageData = new Map([...urlValues, ...register]);
-    const params = {}; // make dynamic url data available to the page
-    // as instance properties
+    const params = {};
 
+    // make dynamic url data available to the page
+    // as instance properties
     for (let [name, value] of pageData) {
       params[name] = value;
     }
-
     if (queryParams) {
       params[symbols.queryParams] = queryParams;
-    } // check navigation register for persistent data
+    }
 
-
+    // check navigation register for persistent data
     if (register.size) {
       const obj = {};
-
       for (let [k, v] of register) {
         obj[k] = v;
       }
-
       page.persist = obj;
-    } // make url data and persist data available
+    }
+
+    // make url data and persist data available
     // via params property
-
-
     page.params = params;
     emit$1(page, ['urlParams'], params);
     return params;
   };
+
   /**
    * Test if page passed cache-time
    * @param page
    * @returns {boolean}
    */
-
   const isPageExpired = page => {
     if (!page[symbols.expires]) {
       return false;
     }
-
     const expires = page[symbols.expires];
     const now = Date.now();
     return now >= expires;
@@ -3880,7 +3524,6 @@ var APP_accelerator_home_ui = (function () {
       const record = routes$1.get(path);
       return !!record.provider;
     }
-
     return false;
   };
   const getProvider = route => {
@@ -3914,6 +3557,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   const fade = (i, o) => {
     return new Promise(resolve => {
       i.patch({
@@ -3925,18 +3569,16 @@ var APP_accelerator_home_ui = (function () {
             delay: 0.1
           }]
         }
-      }); // resolve on y finish
-
+      });
+      // resolve on y finish
       i.transition('alpha').on('finish', () => {
         if (o) {
           o.visible = false;
         }
-
         resolve();
       });
     });
   };
-
   const crossFade = (i, o) => {
     return new Promise(resolve => {
       i.patch({
@@ -3949,7 +3591,6 @@ var APP_accelerator_home_ui = (function () {
           }]
         }
       });
-
       if (o) {
         o.patch({
           smooth: {
@@ -3959,15 +3600,13 @@ var APP_accelerator_home_ui = (function () {
             }]
           }
         });
-      } // resolve on y finish
-
-
+      }
+      // resolve on y finish
       i.transition('alpha').on('finish', () => {
         resolve();
       });
     });
   };
-
   const moveOnAxes = (axis, direction, i, o) => {
     const bounds = axis === 'x' ? 1920 : 1080;
     return new Promise(resolve => {
@@ -3980,8 +3619,8 @@ var APP_accelerator_home_ui = (function () {
             delay: 0.2
           }]
         }
-      }); // out is optional
-
+      });
+      // out is optional
       if (o) {
         o.patch({
           ["".concat(axis)]: 0,
@@ -3992,31 +3631,25 @@ var APP_accelerator_home_ui = (function () {
             }]
           }
         });
-      } // resolve on y finish
-
-
+      }
+      // resolve on y finish
       i.transition(axis).on('finish', () => {
         resolve();
       });
     });
   };
-
   const up = (i, o) => {
     return moveOnAxes('y', 0, i, o);
   };
-
   const down = (i, o) => {
     return moveOnAxes('y', 1, i, o);
   };
-
   const left = (i, o) => {
     return moveOnAxes('x', 0, i, o);
   };
-
   const right = (i, o) => {
     return moveOnAxes('x', 1, i, o);
   };
-
   var Transitions = {
     fade,
     crossFade,
@@ -4044,6 +3677,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /**
    * execute transition between new / old page and
    * toggle the defined widgets
@@ -4051,50 +3685,41 @@ var APP_accelerator_home_ui = (function () {
    * @param pageIn
    * @param pageOut
    */
-
   const executeTransition = function (pageIn) {
     let pageOut = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     const transition = pageIn.pageTransition || pageIn.easing;
     const hasCustomTransitions = !!(pageIn.smoothIn || pageIn.smoothInOut || transition);
     const transitionsDisabled = getRouterConfig().get('disableTransitions');
-
     if (pageIn.easing) {
       console.warn('easing() method is deprecated and will be removed. Use pageTransition()');
-    } // default behaviour is a visibility toggle
+    }
 
-
+    // default behaviour is a visibility toggle
     if (!hasCustomTransitions || transitionsDisabled) {
       pageIn.visible = true;
-
       if (pageOut) {
         pageOut.visible = false;
       }
-
       return Promise.resolve();
     }
-
     if (transition) {
       let type;
-
       try {
         type = transition.call(pageIn, pageIn, pageOut);
       } catch (e) {
         type = 'crossFade';
       }
-
       if (isPromise(type)) {
         return type;
       }
-
       if (isString(type)) {
         const fn = Transitions[type];
-
         if (fn) {
           return fn(pageIn, pageOut);
         }
-      } // keep backwards compatible for now
+      }
 
-
+      // keep backwards compatible for now
       if (pageIn.smoothIn) {
         // provide a smooth function that resolves itself
         // on transition finish
@@ -4108,14 +3733,12 @@ var APP_accelerator_home_ui = (function () {
             });
           });
         };
-
         return pageIn.smoothIn({
           pageIn,
           smooth
         });
       }
     }
-
     return Transitions.crossFade(pageIn, pageOut);
   };
 
@@ -4137,16 +3760,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /**
    * The actual loading of the component
    * */
-
   const load = async request => {
     let expired = false;
-
     try {
       request = await loader$4(request);
-
       if (request && !request.isCancelled) {
         // in case of on() providing we need to reset
         // app state;
@@ -4154,28 +3775,25 @@ var APP_accelerator_home_ui = (function () {
           if (getPreviousState() === 'Widgets') ; else {
             app._setState('');
           }
-        } // Do page transition if instance
+        }
+        // Do page transition if instance
         // is not shared between the routes
-
-
         if (!request.isSharedInstance && !request.isCancelled) {
           await executeTransition(request.page, getActivePage());
         }
       } else {
         expired = true;
-      } // on expired we only cleanup
-
-
+      }
+      // on expired we only cleanup
       if (expired || request.isCancelled) {
         Log.debug('[router]:', "Rejected ".concat(request.hash, " because route to ").concat(getLastHash(), " started"));
-
         if (request.isCreated && !request.isSharedInstance) {
           // remove from render-tree
           pagesHost.remove(request.page);
         }
       } else {
-        onRequestResolved(request); // resolve promise
-
+        onRequestResolved(request);
+        // resolve promise
         return request.page;
       }
     } catch (request) {
@@ -4185,81 +3803,77 @@ var APP_accelerator_home_ui = (function () {
         // @todo: revisit
         const {
           route
-        } = request; // clean up history if modifier is set
-
+        } = request;
+        // clean up history if modifier is set
         if (getOption(route.options, 'clearHistory')) {
           setHistory([]);
         } else if (!isWildcard.test(route.path)) {
           updateHistory(request);
         }
-
         if (request.isCreated && !request.isSharedInstance) {
           // remove from render-tree
           pagesHost.remove(request.page);
         }
-
         handleError(request);
       }
     }
   };
-
   const loader$4 = async request => {
     const route = request.route;
     const hash = request.hash;
-    const register = request.register; // todo: grab from Route instance
+    const register = request.register;
 
+    // todo: grab from Route instance
     let type = getComponent(route.path);
     let isConstruct = isComponentConstructor(type);
-    let provide = false; // if it's an instance bt we're not coming back from
-    // history we test if we can re-use this instance
+    let provide = false;
 
+    // if it's an instance bt we're not coming back from
+    // history we test if we can re-use this instance
     if (!isConstruct && !register.get(symbols.backtrack)) {
       if (!mustReuse(route)) {
         type = type.constructor;
         isConstruct = true;
       }
-    } // If page is Lightning Component instance
+    }
 
-
+    // If page is Lightning Component instance
     if (!isConstruct) {
-      request.page = type; // if we have have a data route for current page
-
+      request.page = type;
+      // if we have have a data route for current page
       if (hasProvider(route.path)) {
         if (isPageExpired(type) || type[symbols.hash] !== hash) {
           provide = true;
         }
       }
-
-      let currentRoute = getActivePage() && getActivePage()[symbols.route]; // if the new route is equal to the current route it means that both
+      let currentRoute = getActivePage() && getActivePage()[symbols.route];
+      // if the new route is equal to the current route it means that both
       // route share the Component instance and stack location / since this case
       // is conflicting with the way before() and after() loading works we flag it,
       // and check platform settings in we want to re-use instance
-
       if (route.path === currentRoute) {
-        request.isSharedInstance = true; // since we're re-using the instance we must attach
+        request.isSharedInstance = true;
+        // since we're re-using the instance we must attach
         // historyState to the request to prevent it from
         // being overridden.
-
         if (isFunction(request.page.historyState)) {
           request.copiedHistoryState = request.page.historyState();
         }
       }
     } else {
       request.page = createComponent(stage, type);
-      pagesHost.a(request.page); // test if need to request data provider
-
+      pagesHost.a(request.page);
+      // test if need to request data provider
       if (hasProvider(route.path)) {
         provide = true;
       }
-
       request.isCreated = true;
-    } // we store hash and route as properties on the page instance
+    }
+
+    // we store hash and route as properties on the page instance
     // that way we can easily calculate new behaviour on page reload
-
-
     request.page[symbols.hash] = hash;
     request.page[symbols.route] = route.path;
-
     try {
       if (provide) {
         // extract attached data-provider for route
@@ -4267,20 +3881,21 @@ var APP_accelerator_home_ui = (function () {
         const {
           type: loadType,
           provider
-        } = getProvider(route); // update running request
+        } = getProvider(route);
 
+        // update running request
         request.provider = provider;
         request.providerType = loadType;
-        await dataHooks[loadType](request); // we early exit if the current request is expired
+        await dataHooks[loadType](request);
 
+        // we early exit if the current request is expired
         if (hash !== getLastHash()) {
           return false;
         } else {
           if (request.providerType !== 'after') {
             emit$1(request.page, 'dataProvided');
-          } // resolve promise
-
-
+          }
+          // resolve promise
           return request;
         }
       } else {
@@ -4292,29 +3907,26 @@ var APP_accelerator_home_ui = (function () {
       return Promise.reject(request);
     }
   };
-
   const handleError = request => {
     if (request && request.error) {
       console.error(request.error);
     } else if (request) {
       Log.error(request);
     }
-
     if (request.page && routeExists('!')) {
       navigate('!', {
         request
       }, false);
     }
   };
-
   const mustReuse = route => {
     const opt = getOption(route.options, 'reuseInstance');
-    const config = routerConfig.get('reuseInstance'); // route always has final decision
+    const config = routerConfig.get('reuseInstance');
 
+    // route always has final decision
     if (isBoolean(opt)) {
       return opt;
     }
-
     return !(isBoolean(config) && config === false);
   };
 
@@ -4342,7 +3954,6 @@ var APP_accelerator_home_ui = (function () {
         Pages: {
           forceZIndexContext: true
         },
-
         /**
          * This is a default Loading page that will be made visible
          * during data-provider on() you CAN override in child-class
@@ -4365,40 +3976,35 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     static _states() {
       return [class Loading extends this {
         $enter() {
           this.tag('Loading').visible = true;
         }
-
         $exit() {
           this.tag('Loading').visible = false;
         }
-
       }, class Widgets extends this {
         $enter(args, widget) {
           // store widget reference
-          this._widget = widget; // since it's possible that this behaviour
+          this._widget = widget;
+
+          // since it's possible that this behaviour
           // is non-remote driven we force a recalculation
           // of the focuspath
-
           this._refocus();
         }
-
         _getFocused() {
           // we delegate focus to selected widget
           // so it can consume remotecontrol presses
           return this._widget;
-        } // if we want to widget to widget focus delegation
-
-
-        reload(widget) {
-          this._widget = widget;
-
-          this._refocus();
         }
 
+        // if we want to widget to widget focus delegation
+        reload(widget) {
+          this._widget = widget;
+          this._refocus();
+        }
         _handleKey() {
           const restoreFocus = routerConfig.get('autoRestoreRemote');
           /**
@@ -4407,48 +4013,41 @@ var APP_accelerator_home_ui = (function () {
            * so for now we offer the option to explicity turn that behaviour off
            * so we don't don't introduce a breaking change.
            */
-
           if (!isBoolean(restoreFocus) || restoreFocus === true) {
             Router.focusPage();
           }
         }
-
       }];
     }
+
     /**
      * Return location where pages need to be stored
      */
-
-
     get pages() {
       return this.tag('Pages');
     }
+
     /**
      * Tell router where widgets are stored
      */
-
-
     get widgets() {
       return this.tag('Widgets');
     }
+
     /**
      * we MUST register _handleBack method so the Router
      * can override it
      * @private
      */
-
-
     _handleBack() {}
+
     /**
      * We MUST return Router.activePage() so the new Page
      * can listen to the remote-control.
      */
-
-
     _getFocused() {
       return Router.getActivePage();
     }
-
   }
 
   /*
@@ -4469,42 +4068,42 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
+
   /*
   rouThor ==[x]
    */
-
   let navigateQueue = new Map();
   let forcedHash = '';
   let resumeHash = '';
+
   /**
    * Start routing the app
    * @param config - route config object
    * @param instance - instance of the app
    */
-
   const startRouter = (config, instance) => {
     bootRouter(config, instance);
     registerListener();
     start();
-  }; // start translating url
+  };
 
-
+  // start translating url
   const start = () => {
     let hash = (getHash() || '').replace(/^#/, '');
     const bootKey = '$';
     const params = getQueryStringParams(hash);
     const bootRequest = getBootRequest();
     const rootHash = getRootHash();
-    const isDirectLoad = hash.indexOf(bootKey) !== -1; // prevent direct reload of wildcard routes
-    // expect bootComponent
+    const isDirectLoad = hash.indexOf(bootKey) !== -1;
 
+    // prevent direct reload of wildcard routes
+    // expect bootComponent
     if (isWildcard.test(hash) && hash !== bootKey) {
       hash = '';
-    } // store resume point for manual resume
+    }
 
-
+    // store resume point for manual resume
     resumeHash = isDirectLoad ? rootHash : hash || rootHash;
-
     const ready = () => {
       if (!hash && rootHash) {
         if (isString(rootHash)) {
@@ -4527,7 +4126,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     };
-
     if (routeExists(bootKey)) {
       if (hash && !isDirectLoad) {
         if (!getRouteByHash(hash)) {
@@ -4537,7 +4135,6 @@ var APP_accelerator_home_ui = (function () {
           return;
         }
       }
-
       navigate(bootKey, {
         resume: resumeHash,
         reload: bootKey === hash
@@ -4552,7 +4149,6 @@ var APP_accelerator_home_ui = (function () {
       ready();
     }
   };
-
   const handleBootError = e => {
     if (routeExists('!')) {
       navigate('!', {
@@ -4564,37 +4160,30 @@ var APP_accelerator_home_ui = (function () {
       console.error(e);
     }
   };
+
   /**
    * start a new request
    * @param url
    * @param args
    * @param store
    */
-
-
   const navigate = function (url) {
     let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     let store = arguments.length > 2 ? arguments[2] : undefined;
-
     if (isObject(url)) {
       url = getHashByName(url);
-
       if (!url) {
         return;
       }
     }
-
     let hash = getHash();
-
     if (!mustUpdateLocationHash() && forcedHash) {
       hash = forcedHash;
     }
-
     if (hash.replace(/^#/, '') !== url) {
       // push request in the queue
       queue(url, args, store);
       setHash(url);
-
       if (!mustUpdateLocationHash()) {
         forcedHash = url;
         handleHashChange(url).then(() => {
@@ -4613,42 +4202,36 @@ var APP_accelerator_home_ui = (function () {
       });
     }
   };
-
   const queue = function (hash) {
     let args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     let store = arguments.length > 2 ? arguments[2] : undefined;
     hash = cleanHash(hash);
-
     if (!navigateQueue.has(hash)) {
       for (let request of navigateQueue.values()) {
         request.cancel();
       }
-
       const request = createRequest(hash, args, store);
       navigateQueue.set(decodeURIComponent(hash), request);
       return request;
     }
-
     return false;
   };
+
   /**
    * Handle change of hash
    * @param override
    * @returns {Promise<void>}
    */
-
-
   const handleHashChange = async override => {
     const hash = cleanHash(override || getHash());
     const queueId = decodeURIComponent(hash);
-    let request = navigateQueue.get(queueId); // handle hash updated manually
+    let request = navigateQueue.get(queueId);
 
+    // handle hash updated manually
     if (!request && !navigateQueue.size) {
       request = queue(hash);
     }
-
     const route = getRouteByHash(hash);
-
     if (!route) {
       if (routeExists('*')) {
         navigate('*', {
@@ -4657,19 +4240,18 @@ var APP_accelerator_home_ui = (function () {
       } else {
         console.error("Unable to navigate to: ".concat(hash));
       }
-
       return;
-    } // update current processed request
+    }
 
-
+    // update current processed request
     request.hash = hash;
     request.route = route;
-    let result = await beforeEachRoute(getActiveHash(), request); // test if a local hook is configured for the route
+    let result = await beforeEachRoute(getActiveHash(), request);
 
+    // test if a local hook is configured for the route
     if (result && route.beforeNavigate) {
       result = await route.beforeNavigate(getActiveHash(), request);
     }
-
     if (isBoolean(result)) {
       // only if resolve value is explicitly true
       // we continue the current route request
@@ -4681,68 +4263,57 @@ var APP_accelerator_home_ui = (function () {
       // we cancel the current request
       request.cancel();
       navigateQueue.delete(queueId);
-
       if (isString(result)) {
         navigate(result);
       } else if (isObject(result)) {
         let store = true;
-
         if (isBoolean(result.store)) {
           store = result.store;
         }
-
         navigate(result.path, result.params, store);
       }
     }
   };
+
   /**
    * Continue processing the hash change if not blocked
    * by global or local hook
    * @param request - {}
    */
-
-
   const resolveHashChange = request => {
     const hash = request.hash;
     const route = request.route;
-    const queueId = decodeURIComponent(hash); // store last requested hash so we can
+    const queueId = decodeURIComponent(hash);
+    // store last requested hash so we can
     // prevent a route that resolved later
     // from displaying itself
-
     setLastHash(hash);
-
     if (route.path) {
-      const component = getComponent(route.path); // if a hook is provided for the current route
-
+      const component = getComponent(route.path);
+      // if a hook is provided for the current route
       if (isFunction(route.hook)) {
         const urlParams = getValuesFromHash(hash, route.path);
         const params = {};
-
         for (const key of urlParams.keys()) {
           params[key] = urlParams.get(key);
         }
-
-        route.hook(app, { ...params
+        route.hook(app, {
+          ...params
         });
-      } // if there is a component attached to the route
-
-
+      }
+      // if there is a component attached to the route
       if (component) {
         // force page to root state to prevent shared state issues
         const activePage = getActivePage();
-
         if (activePage) {
           const keepAlive = keepActivePageAlive(getActiveRoute(), request);
-
           if (activePage && route.path === getActiveRoute() && !keepAlive) {
             activePage._setState('');
           }
         }
-
         if (isPage(component)) {
           load(request).then(() => {
             app._refocus();
-
             navigateQueue.delete(queueId);
           });
         } else {
@@ -4756,7 +4327,6 @@ var APP_accelerator_home_ui = (function () {
             return load(request);
           }).then(() => {
             app._refocus();
-
             navigateQueue.delete(queueId);
           });
         }
@@ -4765,34 +4335,31 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
+
   /**
    * Directional step in history
    * @param level
    */
-
-
   const step = function () {
     let level = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
     if (!level || isNaN(level)) {
       return false;
     }
+    const history = getHistory();
+    // for now we only support negative numbers
+    level = Math.abs(level);
 
-    const history = getHistory(); // for now we only support negative numbers
-
-    level = Math.abs(level); // we can't step back past the amount
+    // we can't step back past the amount
     // of history entries
-
     if (level > history.length) {
       if (isFunction(app._handleAppClose)) {
         return app._handleAppClose();
       }
-
       return app.application.closeApp();
     } else if (history.length) {
       // for now we only support history back
-      const route = history.splice(history.length - level, level)[0]; // store changed history
-
+      const route = history.splice(history.length - level, level)[0];
+      // store changed history
       setHistory(history);
       return navigate(route.hash, {
         [symbols.backtrack]: true,
@@ -4801,14 +4368,15 @@ var APP_accelerator_home_ui = (function () {
     } else if (routerConfig.get('backtrack')) {
       const hashLastPart = /(\/:?[\w%\s-]+)$/;
       let hash = stripRegex(getHash());
-      let floor = getFloor(hash); // test if we got deep-linked
+      let floor = getFloor(hash);
 
+      // test if we got deep-linked
       if (floor > 1) {
         while (floor--) {
           // strip of last part
-          hash = hash.replace(hashLastPart, ''); // if we have a configured route
+          hash = hash.replace(hashLastPart, '');
+          // if we have a configured route
           // we navigate to it
-
           if (getRouteByHash(hash)) {
             return navigate(hash, {
               [symbols.backtrack]: true
@@ -4817,14 +4385,13 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     return false;
   };
+
   /**
    * Resume Router's page loading process after
    * the BootComponent became visible;
    */
-
   const resume = () => {
     if (isString(resumeHash)) {
       navigate(resumeHash, false);
@@ -4832,7 +4399,6 @@ var APP_accelerator_home_ui = (function () {
     } else if (isFunction(resumeHash)) {
       resumeHash().then(res => {
         resumeHash = '';
-
         if (isObject(res)) {
           navigate(res.path, res.params);
         } else {
@@ -4843,11 +4409,10 @@ var APP_accelerator_home_ui = (function () {
       console.warn('[Router]: resume() called but no hash found');
     }
   };
+
   /**
    * Force reload active hash
    */
-
-
   const reload = () => {
     if (!isNavigating()) {
       const hash = getActiveHash();
@@ -4856,68 +4421,60 @@ var APP_accelerator_home_ui = (function () {
       }, false);
     }
   };
+
   /**
    * Query if the Router is still processing a Request
    * @returns {boolean}
    */
-
-
   const isNavigating = () => {
     if (navigateQueue.size) {
       let isProcessing = false;
-
       for (let request of navigateQueue.values()) {
         if (!request.isCancelled) {
           isProcessing = true;
         }
       }
-
       return isProcessing;
     }
-
     return false;
   };
-
   const getResumeHash = () => {
     return resumeHash;
   };
+
   /**
    * By default we return the location hash
    * @returns {string}
    */
-
   let getHash = () => {
     return document.location.hash;
   };
+
   /**
    * Update location hash
    * @param url
    */
-
-
   let setHash = url => {
     document.location.hash = url;
   };
+
   /**
    * This can be called from the platform / bootstrapper to override
    * the default getting and setting of the hash
    * @param config
    */
-
-
   const initRouter = config => {
     if (config.getHash) {
       getHash = config.getHash;
     }
-
     if (config.setHash) {
       setHash = config.setHash;
     }
   };
+
   /**
    * On hash change we start processing
    */
-
   const registerListener = () => {
     Registry.addEventListener(window, 'hashchange', async () => {
       if (mustUpdateLocationHash()) {
@@ -4929,14 +4486,12 @@ var APP_accelerator_home_ui = (function () {
       }
     });
   };
+
   /**
    * Navigate to root hash
    */
-
-
   const root = () => {
     const rootHash = getRootHash();
-
     if (isString(rootHash)) {
       navigate(rootHash);
     } else if (isFunction(rootHash)) {
@@ -4948,9 +4503,9 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-  }; // export API
+  };
 
-
+  // export API
   var Router = {
     startRouter,
     navigate,
@@ -4959,12 +4514,10 @@ var APP_accelerator_home_ui = (function () {
     go: step,
     back: step.bind(null, -1),
     activePage: getActivePage,
-
     getActivePage() {
       // warning
       return getActivePage();
     },
-
     getActiveRoute,
     getActiveHash,
     focusWidget,
@@ -4982,7 +4535,6 @@ var APP_accelerator_home_ui = (function () {
     // keep backwards compatible
     focusPage: restoreFocus,
     root: root,
-
     /**
      * Deprecated api methods
      */
@@ -4990,22 +4542,18 @@ var APP_accelerator_home_ui = (function () {
       console.warn('Router: setupRoutes is deprecated, consolidate your configuration');
       console.warn('https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration');
     },
-
     on() {
       console.warn('Router.on() is deprecated, consolidate your configuration');
       console.warn('https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration');
     },
-
     before() {
       console.warn('Router.before() is deprecated, consolidate your configuration');
       console.warn('https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration');
     },
-
     after() {
       console.warn('Router.after() is deprecated, consolidate your configuration');
       console.warn('https://rdkcentral.github.io/Lightning-SDK/#/plugins/router/configuration');
     }
-
   };
 
   /*
@@ -5092,24 +4640,23 @@ var APP_accelerator_home_ui = (function () {
    */
   let currentChannel;
   const callbacks = {};
-
   const emit = function (event) {
     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
-
     callbacks[event] && callbacks[event].forEach(cb => {
       cb.apply(null, args);
     });
-  }; // local mock methods
+  };
 
-
+  // local mock methods
   let methods = {
     getChannel() {
       if (!currentChannel) currentChannel = randomChannel();
       return new Promise((resolve, reject) => {
         if (currentChannel) {
-          const channel = { ...currentChannel
+          const channel = {
+            ...currentChannel
           };
           delete channel.program;
           resolve(channel);
@@ -5118,22 +4665,20 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     },
-
     getProgram() {
       if (!currentChannel) currentChannel = randomChannel();
       return new Promise((resolve, reject) => {
         currentChannel.program ? resolve(currentChannel.program) : reject('No program found');
       });
     },
-
     setChannel(number) {
       return new Promise((resolve, reject) => {
         if (number) {
           const newChannel = channels().find(c => c.number === number);
-
           if (newChannel) {
             currentChannel = newChannel;
-            const channel = { ...currentChannel
+            const channel = {
+              ...currentChannel
             };
             delete channel.program;
             emit('channelChange', channel);
@@ -5146,27 +4691,22 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   };
   const initTV = config => {
     methods = {};
-
     if (config.getChannel && typeof config.getChannel === 'function') {
       methods.getChannel = config.getChannel;
     }
-
     if (config.getProgram && typeof config.getProgram === 'function') {
       methods.getProgram = config.getProgram;
     }
-
     if (config.setChannel && typeof config.setChannel === 'function') {
       methods.setChannel = config.setChannel;
     }
-
     if (config.emit && typeof config.emit === 'function') {
       config.emit(emit);
     }
-  }; // public API
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -5208,7 +4748,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-
   class PinInput extends lng$1.Component {
     static _template() {
       return {
@@ -5234,27 +4773,22 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set index(v) {
       this.x = v * (120 + 24);
     }
-
     set nr(v) {
       this._timeout && clearTimeout(this._timeout);
-
       if (v) {
         this.setSmooth('alpha', 1);
       } else {
         this.setSmooth('alpha', 0.5);
       }
-
       this.tag('Nr').patch({
         text: {
           text: v && v.toString() || '',
           fontSize: v === '*' ? 120 : 80
         }
       });
-
       if (v && v !== '*') {
         this._timeout = setTimeout(() => {
           this._timeout = null;
@@ -5262,9 +4796,7 @@ var APP_accelerator_home_ui = (function () {
         }, 750);
       }
     }
-
   }
-
   class PinDialog extends lng$1.Component {
     static _template() {
       return {
@@ -5309,47 +4841,37 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       const children = [];
-
       for (let i = 0; i < 4; i++) {
         children.push({
           type: PinInput,
           index: i
         });
       }
-
       this.tag('Code').children = children;
     }
-
     get pin() {
       if (!this._pin) this._pin = '';
       return this._pin;
     }
-
     set pin(v) {
       if (v.length <= 4) {
         const maskedPin = new Array(Math.max(v.length - 1, 0)).fill('*', 0, v.length - 1);
         v.length && maskedPin.push(v.length > this._pin.length ? v.slice(-1) : '*');
-
         for (let i = 0; i < 4; i++) {
           this.tag('Code').children[i].nr = maskedPin[i] || '';
         }
-
         this._pin = v;
       }
     }
-
     get msg() {
       if (!this._msg) this._msg = '';
       return this._msg;
     }
-
     set msg(v) {
       this._timeout && clearTimeout(this._timeout);
       this._msg = v;
-
       if (this._msg) {
         this.tag('Msg').text = this._msg;
         this.tag('Info').setSmooth('alpha', 0.5);
@@ -5359,28 +4881,23 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Info').setSmooth('alpha', 1);
         this.tag('Code').setSmooth('alpha', 1);
       }
-
       this._timeout = setTimeout(() => {
         this.msg = '';
       }, 2000);
     }
-
     _firstActive() {
       this.setSmooth('alpha', 1);
     }
-
     _handleKey(event) {
       if (this.msg) {
         this.msg = false;
       } else {
         const val = parseInt(event.key);
-
         if (val > -1) {
           this.pin += val;
         }
       }
     }
-
     _handleBack() {
       if (this.msg) {
         this.msg = false;
@@ -5393,7 +4910,6 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     _handleEnter() {
       if (this.msg) {
         this.msg = false;
@@ -5410,7 +4926,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
   }
 
   /*
@@ -5432,9 +4947,9 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
 
+  // only used during local development
   let unlocked = false;
   const contextItems = ['purchase', 'parental'];
-
   let submit = (pin, context) => {
     return new Promise((resolve, reject) => {
       if (pin.toString() === Settings.get('platform', 'pin', '0000').toString()) {
@@ -5445,24 +4960,20 @@ var APP_accelerator_home_ui = (function () {
       }
     });
   };
-
   let check = context => {
     return new Promise(resolve => {
       resolve(unlocked);
     });
   };
-
   const initPin = config => {
     if (config.submit && typeof config.submit === 'function') {
       submit = config.submit;
     }
-
     if (config.check && typeof config.check === 'function') {
       check = config.check;
     }
   };
   let pinDialog = null;
-
   const contextCheck = context => {
     if (context === undefined) {
       Log.info('Please provide context explicitly');
@@ -5471,11 +4982,10 @@ var APP_accelerator_home_ui = (function () {
       Log.warn('Incorrect context provided');
       return false;
     }
-
     return context;
-  }; // Public API
+  };
 
-
+  // Public API
   var Pin = {
     show() {
       return new Promise((resolve, reject) => {
@@ -5489,18 +4999,15 @@ var APP_accelerator_home_ui = (function () {
         ApplicationInstance.focus = pinDialog;
       });
     },
-
     hide() {
       ApplicationInstance.focus = null;
       ApplicationInstance.children = ApplicationInstance.children.map(child => child !== pinDialog && child);
       pinDialog = null;
     },
-
     submit(pin, context) {
       return new Promise((resolve, reject) => {
         try {
           context = contextCheck(context);
-
           if (context) {
             submit(pin, context).then(resolve).catch(reject);
           } else {
@@ -5511,12 +5018,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     },
-
     unlocked(context) {
       return new Promise((resolve, reject) => {
         try {
           context = contextCheck(context);
-
           if (context) {
             check(context).then(resolve).catch(reject);
           } else {
@@ -5527,12 +5032,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     },
-
     locked(context) {
       return new Promise((resolve, reject) => {
         try {
           context = contextCheck(context);
-
           if (context) {
             check(context).then(unlocked => resolve(!!!unlocked)).catch(reject);
           } else {
@@ -5543,7 +5046,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   };
 
   /*
@@ -5568,8 +5070,8 @@ var APP_accelerator_home_ui = (function () {
   var Launch = ((App, appSettings, platformSettings, appData) => {
     initSettings(appSettings, platformSettings);
     initUtils(platformSettings);
-    initStorage(); // Initialize plugins
-
+    initStorage();
+    // Initialize plugins
     if (platformSettings.plugins) {
       platformSettings.plugins.profile && initProfile(platformSettings.plugins.profile);
       platformSettings.plugins.metrics && initMetrics(platformSettings.plugins.metrics);
@@ -5581,7 +5083,6 @@ var APP_accelerator_home_ui = (function () {
       platformSettings.plugins.purchase && initPurchase(platformSettings.plugins.purchase);
       platformSettings.plugins.pin && initPin(platformSettings.plugins.pin);
     }
-
     const app = Application(App, appData, platformSettings);
     ApplicationInstance = new app(appSettings);
     return ApplicationInstance;
@@ -5619,31 +5120,24 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set videoEl(v) {
       this._videoEl = v;
     }
-
     get videoEl() {
       return this._videoEl;
     }
-
     get videoView() {
       return this.tag('Video');
     }
-
     get videoTexture() {
       return this.videoView.texture;
     }
-
     get isVisible() {
       return this.videoView.alpha === 1 && this.videoView.visible === true;
     }
-
     _init() {
       this._createVideoTexture();
     }
-
     _createVideoTexture() {
       const stage = this.stage;
       const gl = stage.gl;
@@ -5661,27 +5155,24 @@ var APP_accelerator_home_ui = (function () {
       this.videoView.w = this.videoEl.width / this.stage.getRenderPrecision();
       this.videoView.h = this.videoEl.height / this.stage.getRenderPrecision();
     }
-
     start() {
       const stage = this.stage;
       this._lastTime = 0;
-
       if (!this._updateVideoTexture) {
         this._updateVideoTexture = () => {
           if (this.videoTexture.options.source && this.videoEl.videoWidth && this.active) {
             const gl = stage.gl;
             const currentTime = new Date().getTime();
-            const getVideoPlaybackQuality = this.videoEl.getVideoPlaybackQuality(); // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
+            const getVideoPlaybackQuality = this.videoEl.getVideoPlaybackQuality();
+
+            // When BR2_PACKAGE_GST1_PLUGINS_BAD_PLUGIN_DEBUGUTILS is not set in WPE, webkitDecodedFrameCount will not be available.
             // We'll fallback to fixed 30fps in this case.
             // As 'webkitDecodedFrameCount' is about to deprecate, check for the 'totalVideoFrames'
-
             const frameCount = getVideoPlaybackQuality ? getVideoPlaybackQuality.totalVideoFrames : this.videoEl.webkitDecodedFrameCount;
             const mustUpdate = frameCount ? this._lastFrame !== frameCount : this._lastTime < currentTime - 30;
-
             if (mustUpdate) {
               this._lastTime = currentTime;
               this._lastFrame = frameCount;
-
               try {
                 gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -5692,7 +5183,6 @@ var APP_accelerator_home_ui = (function () {
                 this.videoTexture.options.h = this.videoEl.height;
                 const expectedAspectRatio = this.videoView.w / this.videoView.h;
                 const realAspectRatio = this.videoEl.width / this.videoEl.height;
-
                 if (expectedAspectRatio > realAspectRatio) {
                   this.videoView.scaleX = realAspectRatio / expectedAspectRatio;
                   this.videoView.scaleY = 1;
@@ -5704,25 +5194,21 @@ var APP_accelerator_home_ui = (function () {
                 Log.error('texImage2d video', e);
                 this.stop();
               }
-
               this.videoTexture.source.forceRenderUpdate();
             }
           }
         };
       }
-
       if (!this._updatingVideoTexture) {
         stage.on('frameStart', this._updateVideoTexture);
         this._updatingVideoTexture = true;
       }
     }
-
     stop() {
       const stage = this.stage;
       stage.removeListener('frameStart', this._updateVideoTexture);
       this._updatingVideoTexture = false;
       this.videoView.visible = false;
-
       if (this.videoTexture.options.source) {
         const gl = stage.gl;
         gl.bindTexture(gl.TEXTURE_2D, this.videoTexture.options.source);
@@ -5730,7 +5216,6 @@ var APP_accelerator_home_ui = (function () {
         gl.clear(gl.COLOR_BUFFER_BIT);
       }
     }
-
     position(top, left) {
       this.videoView.patch({
         smooth: {
@@ -5739,7 +5224,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     size(width, height) {
       this.videoView.patch({
         smooth: {
@@ -5748,15 +5232,12 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     show() {
       this.videoView.setSmooth('alpha', 1);
     }
-
     hide() {
       this.videoView.setSmooth('alpha', 0);
     }
-
   }
 
   /*
@@ -5788,26 +5269,24 @@ var APP_accelerator_home_ui = (function () {
     if (config.mediaUrl) {
       mediaUrl = config.mediaUrl;
     }
-  }; // todo: add this in a 'Registry' plugin
-  // to be able to always clean this up on app close
+  };
 
+  // todo: add this in a 'Registry' plugin
+  // to be able to always clean this up on app close
   let eventHandlers = {};
   const state$1 = {
     adsEnabled: false,
     playing: false,
     _playingAds: false,
-
     get playingAds() {
       return this._playingAds;
     },
-
     set playingAds(val) {
       if (this._playingAds !== val) {
         this._playingAds = val;
         fireOnConsumer$1(val === true ? 'AdStart' : 'AdEnd');
       }
     },
-
     skipTime: false,
     playAfterSeek: null
   };
@@ -5815,38 +5294,29 @@ var APP_accelerator_home_ui = (function () {
     play() {
       state$1.playing = true;
     },
-
     pause() {
       state$1.playing = false;
     },
-
     seeked() {
       state$1.playAfterSeek === true && videoPlayerPlugin.play();
       state$1.playAfterSeek = null;
     },
-
     abort() {
       deregisterEventListeners();
     }
-
   };
-
   const withPrecision = val => Math.round(precision * val) + 'px';
-
   const fireOnConsumer$1 = (event, args) => {
     if (consumer$1) {
       consumer$1.fire('$videoPlayer' + event, args, videoEl.currentTime);
       consumer$1.fire('$videoPlayerEvent', event, args, videoEl.currentTime);
     }
   };
-
   const fireHook = (event, args) => {
     hooks[event] && typeof hooks[event] === 'function' && hooks[event].call(null, event, args);
   };
-
   let customLoader = null;
   let customUnloader = null;
-
   const loader$3 = (url, videoEl, config) => {
     return customLoader && typeof customLoader === 'function' ? customLoader(url, videoEl, config) : new Promise(resolve => {
       url = mediaUrl(url);
@@ -5855,7 +5325,6 @@ var APP_accelerator_home_ui = (function () {
       resolve();
     });
   };
-
   const unloader = videoEl => {
     return customUnloader && typeof customUnloader === 'function' ? customUnloader(videoEl) : new Promise(resolve => {
       videoEl.removeAttribute('src');
@@ -5863,10 +5332,8 @@ var APP_accelerator_home_ui = (function () {
       resolve();
     });
   };
-
   const setupVideoTag = () => {
     const videoEls = document.getElementsByTagName('video');
-
     if (videoEls && videoEls.length) {
       return videoEls[0];
     } else {
@@ -5898,10 +5365,8 @@ var APP_accelerator_home_ui = (function () {
       });
       ApplicationInstance.childList.addAt(el, 0);
     }
-
     return ApplicationInstance.tag('VideoTexture');
   };
-
   const registerEventListeners = () => {
     Log.info('VideoPlayer', 'Registering event listeners');
     Object.keys(events$1).forEach(event => {
@@ -5911,25 +5376,23 @@ var APP_accelerator_home_ui = (function () {
           metrics[event]({
             currentTime: videoEl.currentTime
           });
-        } // fire an internal hook
-
-
+        }
+        // fire an internal hook
         fireHook(event, {
           videoElement: videoEl,
           event: e
-        }); // fire the event (with human friendly event name) to the consumer of the VideoPlayer
+        });
 
+        // fire the event (with human friendly event name) to the consumer of the VideoPlayer
         fireOnConsumer$1(events$1[event], {
           videoElement: videoEl,
           event: e
         });
       };
-
       eventHandlers[event] = handler;
       videoEl.addEventListener(event, handler);
     });
   };
-
   const deregisterEventListeners = () => {
     Log.info('VideoPlayer', 'Deregistering event listeners');
     Object.keys(eventHandlers).forEach(event => {
@@ -5937,31 +5400,25 @@ var APP_accelerator_home_ui = (function () {
     });
     eventHandlers = {};
   };
-
   const videoPlayerPlugin = {
     consumer(component) {
       consumer$1 = component;
     },
-
     loader(loaderFn) {
       customLoader = loaderFn;
     },
-
     unloader(unloaderFn) {
       customUnloader = unloaderFn;
     },
-
     position() {
       let top = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       let left = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       videoEl.style.left = withPrecision(left);
       videoEl.style.top = withPrecision(top);
-
       if (textureMode === true) {
         videoTexture.position(top, left);
       }
     },
-
     size() {
       let width = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1920;
       let height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1080;
@@ -5969,12 +5426,10 @@ var APP_accelerator_home_ui = (function () {
       videoEl.style.height = withPrecision(height);
       videoEl.width = parseFloat(videoEl.style.width);
       videoEl.height = parseFloat(videoEl.style.height);
-
       if (textureMode === true) {
         videoTexture.size(width, height);
       }
     },
-
     area() {
       let top = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       let right = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1920;
@@ -5983,14 +5438,12 @@ var APP_accelerator_home_ui = (function () {
       this.position(top, left);
       this.size(right - left, bottom - top);
     },
-
     open(url) {
       let config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       if (!this.canInteract) return;
       metrics = Metrics$1.media(url);
       this.hide();
       deregisterEventListeners();
-
       if (this.src == url) {
         this.clear().then(this.open(url, config));
       } else {
@@ -5998,11 +5451,9 @@ var APP_accelerator_home_ui = (function () {
           enabled: state$1.adsEnabled,
           duration: 300
         };
-
         if (config.videoId) {
           adConfig.caid = config.videoId;
         }
-
         Ads.get(adConfig, consumer$1).then(ads => {
           state$1.playingAds = true;
           ads.prerolls().then(() => {
@@ -6021,35 +5472,30 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     },
-
     reload() {
       if (!this.canInteract) return;
       const url = videoEl.getAttribute('src');
       this.close();
       this.open(url);
     },
-
     close() {
       Ads.cancel();
-
       if (state$1.playingAds) {
         state$1.playingAds = false;
-        Ads.stop(); // call self in next tick
-
+        Ads.stop();
+        // call self in next tick
         setTimeout(() => {
           this.close();
         });
       }
-
       if (!this.canInteract) return;
       this.clear();
       this.hide();
       deregisterEventListeners();
     },
-
     clear() {
-      if (!this.canInteract) return; // pause the video first to disable sound
-
+      if (!this.canInteract) return;
+      // pause the video first to disable sound
       this.pause();
       if (textureMode === true) videoTexture.stop();
       return unloader(videoEl).then(() => {
@@ -6058,7 +5504,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     },
-
     play() {
       if (!this.canInteract) return;
       if (textureMode === true) videoTexture.start();
@@ -6069,42 +5514,35 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     },
-
     pause() {
       if (!this.canInteract) return;
       videoEl.pause();
     },
-
     playPause() {
       if (!this.canInteract) return;
       this.playing === true ? this.pause() : this.play();
     },
-
     mute() {
       let muted = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       if (!this.canInteract) return;
       videoEl.muted = muted;
     },
-
     loop() {
       let looped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       videoEl.loop = looped;
     },
-
     seek(time) {
       if (!this.canInteract) return;
-      if (!this.src) return; // define whether should continue to play after seek is complete (in seeked hook)
-
+      if (!this.src) return;
+      // define whether should continue to play after seek is complete (in seeked hook)
       if (state$1.playAfterSeek === null) {
         state$1.playAfterSeek = !!state$1.playing;
-      } // pause before actually seeking
-
-
-      this.pause(); // currentTime always between 0 and the duration of the video (minus 0.1s to not set to the final frame and stall the video)
-
+      }
+      // pause before actually seeking
+      this.pause();
+      // currentTime always between 0 and the duration of the video (minus 0.1s to not set to the final frame and stall the video)
       videoEl.currentTime = Math.max(0, Math.min(time, this.duration - 0.1));
     },
-
     skip(seconds) {
       if (!this.canInteract) return;
       if (!this.src) return;
@@ -6114,10 +5552,8 @@ var APP_accelerator_home_ui = (function () {
         state$1.skipTime = false;
       }, 300);
     },
-
     show() {
       if (!this.canInteract) return;
-
       if (textureMode === true) {
         videoTexture.show();
       } else {
@@ -6125,10 +5561,8 @@ var APP_accelerator_home_ui = (function () {
         videoEl.style.visibility = 'visible';
       }
     },
-
     hide() {
       if (!this.canInteract) return;
-
       if (textureMode === true) {
         videoTexture.hide();
       } else {
@@ -6136,70 +5570,54 @@ var APP_accelerator_home_ui = (function () {
         videoEl.style.visibility = 'hidden';
       }
     },
-
     enableAds() {
       let enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
       state$1.adsEnabled = enabled;
     },
-
     /* Public getters */
     get duration() {
       return videoEl && (isNaN(videoEl.duration) ? Infinity : videoEl.duration);
     },
-
     get currentTime() {
       return videoEl && videoEl.currentTime;
     },
-
     get muted() {
       return videoEl && videoEl.muted;
     },
-
     get looped() {
       return videoEl && videoEl.loop;
     },
-
     get src() {
       return videoEl && videoEl.getAttribute('src');
     },
-
     get playing() {
       return state$1.playing;
     },
-
     get playingAds() {
       return state$1.playingAds;
     },
-
     get canInteract() {
       // todo: perhaps add an extra flag wether we allow interactions (i.e. pauze, mute, etc.) during ad playback
       return state$1.playingAds === false;
     },
-
     get top() {
       return videoEl && parseFloat(videoEl.style.top);
     },
-
     get left() {
       return videoEl && parseFloat(videoEl.style.left);
     },
-
     get bottom() {
       return videoEl && parseFloat(videoEl.style.top - videoEl.style.height);
     },
-
     get right() {
       return videoEl && parseFloat(videoEl.style.left - videoEl.style.width);
     },
-
     get width() {
       return videoEl && parseFloat(videoEl.style.width);
     },
-
     get height() {
       return videoEl && parseFloat(videoEl.style.height);
     },
-
     get visible() {
       if (textureMode === true) {
         return videoTexture.isVisible;
@@ -6207,27 +5625,22 @@ var APP_accelerator_home_ui = (function () {
         return videoEl && videoEl.style.display === 'block';
       }
     },
-
     get adsEnabled() {
       return state$1.adsEnabled;
     },
-
     // prefixed with underscore to indicate 'semi-private'
     // because it's not recommended to interact directly with the video element
     get _videoEl() {
       return videoEl;
     },
-
     get _consumer() {
       return consumer$1;
     }
-
   };
   autoSetupMixin(videoPlayerPlugin, () => {
     precision = ApplicationInstance && ApplicationInstance.stage && ApplicationInstance.stage.getRenderPrecision() || precision;
     videoEl = setupVideoTag();
     textureMode = Settings.get('platform', 'textureMode', false);
-
     if (textureMode === true) {
       videoEl.setAttribute('crossorigin', 'anonymous');
       videoTexture = setUpVideoTexture();
@@ -6253,7 +5666,6 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    */
   let consumer;
-
   let getAds = () => {
     // todo: enable some default ads during development, maybe from the settings.json
     return Promise.resolve({
@@ -6262,7 +5674,6 @@ var APP_accelerator_home_ui = (function () {
       postrolls: []
     });
   };
-
   const initAds = config => {
     if (config.getAds) {
       getAds = config.getAds;
@@ -6271,7 +5682,6 @@ var APP_accelerator_home_ui = (function () {
   const state = {
     active: false
   };
-
   const playSlot = function () {
     let slot = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     return slot.reduce((promise, ad) => {
@@ -6280,15 +5690,13 @@ var APP_accelerator_home_ui = (function () {
       });
     }, Promise.resolve(null));
   };
-
   const playAd = ad => {
     return new Promise(resolve => {
       if (state.active === false) {
         Log.info('Ad', 'Skipping add due to inactive state');
         return resolve();
-      } // is it safe to rely on videoplayer plugin already created the video tag?
-
-
+      }
+      // is it safe to rely on videoplayer plugin already created the video tag?
       const videoEl = document.getElementsByTagName('video')[0];
       videoEl.style.display = 'block';
       videoEl.style.visibility = 'visible';
@@ -6296,26 +5704,22 @@ var APP_accelerator_home_ui = (function () {
       videoEl.load();
       let timeEvents = null;
       let timeout;
-
       const cleanup = () => {
         // remove all listeners
         Object.keys(handlers).forEach(handler => videoEl.removeEventListener(handler, handlers[handler]));
         resolve();
       };
-
       const handlers = {
         play() {
           Log.info('Ad', 'Play ad', ad.url);
           fireOnConsumer('Play', ad);
           sendBeacon(ad.callbacks, 'defaultImpression');
         },
-
         ended() {
           fireOnConsumer('Ended', ad);
           sendBeacon(ad.callbacks, 'complete');
           cleanup();
         },
-
         timeupdate() {
           if (!timeEvents && videoEl.duration) {
             // calculate when to fire the time based events (now that duration is known)
@@ -6328,26 +5732,22 @@ var APP_accelerator_home_ui = (function () {
               timeEvents
             });
           }
-
           if (timeEvents && timeEvents.firstQuartile && videoEl.currentTime >= timeEvents.firstQuartile) {
             fireOnConsumer('FirstQuartile', ad);
             delete timeEvents.firstQuartile;
             sendBeacon(ad.callbacks, 'firstQuartile');
           }
-
           if (timeEvents && timeEvents.midPoint && videoEl.currentTime >= timeEvents.midPoint) {
             fireOnConsumer('MidPoint', ad);
             delete timeEvents.midPoint;
             sendBeacon(ad.callbacks, 'midPoint');
           }
-
           if (timeEvents && timeEvents.thirdQuartile && videoEl.currentTime >= timeEvents.thirdQuartile) {
             fireOnConsumer('ThirdQuartile', ad);
             delete timeEvents.thirdQuartile;
             sendBeacon(ad.callbacks, 'thirdQuartile');
           }
         },
-
         stalled() {
           fireOnConsumer('Stalled', ad);
           timeout = setTimeout(() => {
@@ -6358,12 +5758,10 @@ var APP_accelerator_home_ui = (function () {
         canplay() {
           timeout && clearTimeout(timeout);
         },
-
         error() {
           fireOnConsumer('Error', ad);
           cleanup();
         },
-
         // this doesn't work reliably on sky box, moved logic to timeUpdate event
         // loadedmetadata() {
         //   // calculate when to fire the time based events (now that duration is known)
@@ -6375,21 +5773,20 @@ var APP_accelerator_home_ui = (function () {
         // },
         abort() {
           cleanup();
-        } // todo: pause, resume, mute, unmute beacons
-
-
-      }; // add all listeners
-
+        }
+        // todo: pause, resume, mute, unmute beacons
+      };
+      // add all listeners
       Object.keys(handlers).forEach(handler => videoEl.addEventListener(handler, handlers[handler]));
       videoEl.play();
     });
   };
-
   const sendBeacon = (callbacks, event) => {
     if (callbacks && callbacks[event]) {
       Log.info('Ad', 'Sending beacon', event, callbacks[event]);
       return callbacks[event].reduce((promise, url) => {
-        return promise.then(() => fetch(url) // always resolve, also in case of a fetch error (so we don't block firing the rest of the beacons for this event)
+        return promise.then(() => fetch(url)
+        // always resolve, also in case of a fetch error (so we don't block firing the rest of the beacons for this event)
         // note: for fetch failed http responses don't throw an Error :)
         .then(response => {
           if (response.status === 200) {
@@ -6397,7 +5794,6 @@ var APP_accelerator_home_ui = (function () {
           } else {
             fireOnConsumer('Beacon' + event + 'Failed' + response.status);
           }
-
           Promise.resolve(null);
         }).catch(() => {
           Promise.resolve(null);
@@ -6407,14 +5803,12 @@ var APP_accelerator_home_ui = (function () {
       Log.info('Ad', 'No callback found for ' + event);
     }
   };
-
   const fireOnConsumer = (event, args) => {
     if (consumer) {
       consumer.fire('$ad' + event, args);
       consumer.fire('$adEvent', event, args);
     }
   };
-
   var Ads = {
     get(config, videoPlayerConsumer) {
       if (config.enabled === false) {
@@ -6422,10 +5816,8 @@ var APP_accelerator_home_ui = (function () {
           prerolls() {
             return Promise.resolve();
           }
-
         });
       }
-
       consumer = videoPlayerConsumer;
       return new Promise(resolve => {
         Log.info('Ad', 'Starting session');
@@ -6443,37 +5835,30 @@ var APP_accelerator_home_ui = (function () {
                   state.active = false;
                 });
               }
-
               return Promise.resolve();
             },
-
             midrolls() {
               return Promise.resolve();
             },
-
             postrolls() {
               return Promise.resolve();
             }
-
           });
         });
       });
     },
-
     cancel() {
       Log.info('Ad', 'Cancel Ad');
       state.active = false;
     },
-
     stop() {
       Log.info('Ad', 'Stop Ad');
-      state.active = false; // fixme: duplication
-
+      state.active = false;
+      // fixme: duplication
       const videoEl = document.getElementsByTagName('video')[0];
       videoEl.pause();
       videoEl.removeAttribute('src');
     }
-
   };
 
   /*
@@ -6499,25 +5884,19 @@ var APP_accelerator_home_ui = (function () {
       super(stage);
       this._scalingOptions = undefined;
     }
-
     set options(options) {
       this.resizeMode = this._scalingOptions = options;
     }
-
     _getLookupId() {
       return "".concat(this._src, "-").concat(this._scalingOptions.type, "-").concat(this._scalingOptions.w, "-").concat(this._scalingOptions.h);
     }
-
     getNonDefaults() {
       const obj = super.getNonDefaults();
-
       if (this._src) {
         obj.src = this._src;
       }
-
       return obj;
     }
-
   }
 
   /**
@@ -6538,16 +5917,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    */
-  let ws = null;
 
+  let ws = null;
   if (typeof WebSocket !== 'undefined') {
     ws = WebSocket;
   }
-
   var ws_1 = ws;
   const requestsQueue = {};
   const listeners = {};
-
   var requestQueueResolver = data => {
     if (typeof data === 'string') {
       let regex1 = /\\\\x([0-9A-Fa-f]{2})/g;
@@ -6556,10 +5933,8 @@ var APP_accelerator_home_ui = (function () {
       data = data.normalize().replace(regex2, '');
       data = JSON.parse(data);
     }
-
     if (data.id) {
       const request = requestsQueue[data.id];
-
       if (request) {
         if ('result' in data) request.resolve(data.result);else request.reject(data.error);
         delete requestsQueue[data.id];
@@ -6568,7 +5943,6 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
-
   var notificationListener = data => {
     if (typeof data === 'string') {
       let regex1 = /\\\\x([0-9A-Fa-f]{2})/g;
@@ -6577,10 +5951,8 @@ var APP_accelerator_home_ui = (function () {
       data = data.normalize().replace(regex2, '');
       data = JSON.parse(data);
     }
-
     if (!data.id && data.method) {
       const callbacks = listeners[data.method];
-
       if (callbacks && Array.isArray(callbacks) && callbacks.length) {
         callbacks.forEach(callback => {
           callback(data.params);
@@ -6588,38 +5960,30 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
-
   const protocol = 'ws://';
   const host = 'localhost';
   const endpoint = '/jsonrpc';
   const port = 80;
-
   var makeWebsocketAddress = options => {
     return [options && options.protocol || protocol, options && options.host || host, ':' + (options && options.port || port), options && options.endpoint || endpoint, options && options.token ? '?token=' + options.token : null].join('');
   };
-
   const sockets = {};
-
   var connect = options => {
     return new Promise((resolve, reject) => {
       const socketAddress = makeWebsocketAddress(options);
       let socket = sockets[socketAddress];
       if (socket && socket.readyState === 1) return resolve(socket);
-
       if (socket && socket.readyState === 0) {
         const waitForOpen = () => {
           socket.removeEventListener('open', waitForOpen);
           resolve(socket);
         };
-
         return socket.addEventListener('open', waitForOpen);
       }
-
       if (socket == null) {
         if (options.debug) {
           console.log('Opening socket to ' + socketAddress);
         }
-
         socket = new ws_1(socketAddress, options && options.subprotocols || 'notification');
         sockets[socketAddress] = socket;
         socket.addEventListener('message', message => {
@@ -6629,7 +5993,6 @@ var APP_accelerator_home_ui = (function () {
             console.log(JSON.stringify(message.data, null, 2));
             console.log(' ');
           }
-
           requestQueueResolver(message.data);
         });
         socket.addEventListener('message', message => {
@@ -6641,12 +6004,10 @@ var APP_accelerator_home_ui = (function () {
           });
           sockets[socketAddress] = null;
         });
-
         const handleConnectClosure = event => {
           sockets[socketAddress] = null;
           reject(event);
         };
-
         socket.addEventListener('close', handleConnectClosure);
         socket.addEventListener('open', () => {
           notificationListener({
@@ -6667,17 +6028,14 @@ var APP_accelerator_home_ui = (function () {
       }
     });
   };
-
   var makeBody = (requestId, plugin, method, params, version) => {
     if (params) {
       delete params.version;
-
       if (params.versionAsParameter) {
         params.version = params.versionAsParameter;
         delete params.versionAsParameter;
       }
     }
-
     const body = {
       jsonrpc: '2.0',
       id: requestId,
@@ -6686,31 +6044,24 @@ var APP_accelerator_home_ui = (function () {
     params || params === false ? typeof params === 'object' && Object.keys(params).length === 0 ? null : body.params = params : null;
     return body;
   };
-
   var getVersion = (versionsConfig, plugin, params) => {
     const defaultVersion = 1;
     let version;
-
     if (version = params && params.version) {
       return version;
     }
-
     return versionsConfig ? versionsConfig[plugin] || versionsConfig.default || defaultVersion : defaultVersion;
   };
-
   let id = 0;
-
   var makeId = () => {
     id = id + 1;
     return id;
   };
-
   var execRequest = (options, body) => {
     return connect(options).then(connection => {
       connection.send(JSON.stringify(body));
     });
   };
-
   var API = options => {
     return {
       request(plugin, method, params) {
@@ -6718,14 +6069,12 @@ var APP_accelerator_home_ui = (function () {
           const requestId = makeId();
           const version = getVersion(options.versions, plugin, params);
           const body = makeBody(requestId, plugin, method, params, version);
-
           if (options.debug) {
             console.log(' ');
             console.log('API REQUEST:');
             console.log(JSON.stringify(body, null, 2));
             console.log(' ');
           }
-
           requestsQueue[requestId] = {
             body,
             resolve,
@@ -6736,28 +6085,23 @@ var APP_accelerator_home_ui = (function () {
           });
         });
       }
-
     };
   };
-
   var DeviceInfo = {
     freeRam(params) {
       return this.call('systeminfo', params).then(res => {
         return res.freeram;
       });
     },
-
     version(params) {
       return this.call('systeminfo', params).then(res => {
         return res.version;
       });
     }
-
   };
   var plugins = {
     DeviceInfo
   };
-
   function listener(plugin, event, callback, errorCallback) {
     const thunder = this;
     const index = register.call(this, plugin, event, callback, errorCallback);
@@ -6766,25 +6110,19 @@ var APP_accelerator_home_ui = (function () {
         const listener_id = makeListenerId(plugin, event);
         if (listeners[listener_id] === undefined) return;
         listeners[listener_id].splice(index, 1);
-
         if (listeners[listener_id].length === 0) {
           unregister.call(thunder, plugin, event, errorCallback);
         }
       }
-
     };
   }
-
   const makeListenerId = (plugin, event) => {
     return ['client', plugin, 'events', event].join('.');
   };
-
   const register = function (plugin, event, callback, errorCallback) {
     const listener_id = makeListenerId(plugin, event);
-
     if (!listeners[listener_id]) {
       listeners[listener_id] = [];
-
       if (plugin !== 'ThunderJS') {
         const method = 'register';
         const request_id = listener_id.split('.').slice(0, -1).join('.');
@@ -6797,15 +6135,12 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     listeners[listener_id].push(callback);
     return listeners[listener_id].length - 1;
   };
-
   const unregister = function (plugin, event, errorCallback) {
     const listener_id = makeListenerId(plugin, event);
     delete listeners[listener_id];
-
     if (plugin !== 'ThunderJS') {
       const method = 'unregister';
       const request_id = listener_id.split('.').slice(0, -1).join('.');
@@ -6818,68 +6153,54 @@ var APP_accelerator_home_ui = (function () {
       });
     }
   };
-
   var thunderJS = options => {
     if (options.token === undefined && typeof window !== 'undefined' && window.thunder && typeof window.thunder.token === 'function') {
       options.token = window.thunder.token();
     }
-
-    return wrapper({ ...thunder$f(options),
+    return wrapper({
+      ...thunder$f(options),
       ...plugins
     });
   };
-
   const resolve = (result, args) => {
     if (typeof result !== 'object' || typeof result === 'object' && (!result.then || typeof result.then !== 'function')) {
       result = new Promise((resolve, reject) => {
         result instanceof Error === false ? resolve(result) : reject(result);
       });
     }
-
     const cb = typeof args[args.length - 1] === 'function' ? args[args.length - 1] : null;
-
     if (cb) {
       result.then(res => cb(null, res)).catch(err => cb(err));
     } else {
       return result;
     }
   };
-
   const thunder$f = options => ({
     options,
     api: API(options),
     plugin: false,
-
     call() {
       const args = [...arguments];
-
       if (this.plugin) {
         if (args[0] !== this.plugin) {
           args.unshift(this.plugin);
         }
       }
-
       const plugin = args[0];
       const method = args[1];
-
       if (typeof this[plugin][method] == 'function') {
         return this[plugin][method](args[2]);
       }
-
       return this.api.request.apply(this, args);
     },
-
     registerPlugin(name, plugin) {
       this[name] = wrapper(Object.assign(Object.create(thunder$f), plugin, {
         plugin: name
       }));
     },
-
     subscribe() {},
-
     on() {
       const args = [...arguments];
-
       if (['connect', 'disconnect', 'error'].indexOf(args[0]) !== -1) {
         args.unshift('ThunderJS');
       } else {
@@ -6889,25 +6210,19 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
       return listener.apply(this, args);
     },
-
     once() {
       console.log('todo ...');
     }
-
   });
-
   const wrapper = obj => {
     return new Proxy(obj, {
       get(target, propKey) {
         const prop = target[propKey];
-
         if (propKey === 'api') {
           return target.api;
         }
-
         if (typeof prop !== 'undefined') {
           if (typeof prop === 'function') {
             if (['on', 'once', 'subscribe'].indexOf(propKey) > -1) {
@@ -6915,26 +6230,21 @@ var APP_accelerator_home_ui = (function () {
                 for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
                   args[_key] = arguments[_key];
                 }
-
                 return prop.apply(this, args);
               };
             }
-
             return function () {
               for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 args[_key2] = arguments[_key2];
               }
-
               return resolve(prop.apply(this, args), args);
             };
           }
-
           if (typeof prop === 'object') {
             return wrapper(Object.assign(Object.create(thunder$f(target.options)), prop, {
               plugin: propKey
             }));
           }
-
           return prop;
         } else {
           if (target.plugin === false) {
@@ -6942,18 +6252,15 @@ var APP_accelerator_home_ui = (function () {
               plugin: propKey
             }));
           }
-
           return function () {
             for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
               args[_key3] = arguments[_key3];
             }
-
             args.unshift(propKey);
             return target.call.apply(this, args);
           };
         }
       }
-
     });
   };
 
@@ -6975,8 +6282,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**Color constants */
+
   const themeOptions = {
     partnerOne: {
       hex: 0xfff58233,
@@ -7061,16 +6368,17 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _handleEnter() {
       Router.navigate('menu');
     }
-
     _focus() {
       console.log('focus error page');
-    } //   set error(obj) {
+    }
+
+    //   set error(obj) {
     //     const { page, error } = obj
     //     console.log(page, error)
+
     //     const errorMessage = `
     // error while loading page: ${page.constructor.name}
     // press enter to navigate to home
@@ -7079,14 +6387,13 @@ var APP_accelerator_home_ui = (function () {
     // resulted in route: ${page[Symbol.for('route')]}
     // --
     // ${error.toString()}`
+
     //     this.tag('Label').text = errorMessage
     //   }
-
 
     pageTransition() {
       return 'up';
     }
-
   }
 
   /**
@@ -7118,11 +6425,10 @@ var APP_accelerator_home_ui = (function () {
       this._thunder = thunderJS(config);
       this.callsign = 'org.rdk.Network';
     }
+
     /**
      * Function to activate network plugin
      */
-
-
     activate() {
       return new Promise((resolve, reject) => {
         this._thunder.call('Controller', 'activate', {
@@ -7133,47 +6439,41 @@ var APP_accelerator_home_ui = (function () {
               this._events.get('onIPAddressStatusChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onDefaultInterfaceChanged', notification => {
             if (this._events.has('onDefaultInterfaceChanged')) {
               this._events.get('onDefaultInterfaceChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onConnectionStatusChanged', notification => {
             if (this._events.has('onConnectionStatusChanged')) {
               this._events.get('onConnectionStatusChanged')(notification);
             }
           });
-
           console.log('Activation success');
           resolve(true);
         });
       });
     }
+
     /**
      *Register events and event listeners.
      * @param {string} eventId
      * @param {function} callback
      *
      */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
+
     /**
      * Function to return the IP of the default interface.
      */
-
-
     getIP() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getStbIp').then(result => {
           if (result.success) {
             resolve(result.ip);
           }
-
           reject(false);
         }).catch(err => {
           reject(err);
@@ -7183,8 +6483,6 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to return available interfaces.
      */
-
-
     getInterfaces() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getInterfaces').then(result => {
@@ -7197,11 +6495,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to return default interfaces.
      */
-
-
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getDefaultInterface').then(result => {
@@ -7214,7 +6511,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setDefaultInterface(interfaceName) {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'setDefaultInterface', {
@@ -7228,17 +6524,17 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSTBIPFamily() {
       return new Promise((resolve, reject) => {
-        this._thunder.call(this.callsign, 'getSTBIPFamily').then(result => {//need to check
+        this._thunder.call(this.callsign, 'getSTBIPFamily').then(result => {
+          //need to check
         });
       });
     }
+
     /**
      * Function to return IP Settings.
      */
-
 
     getIPSettings(currentInterface) {
       return new Promise((resolve, reject) => {
@@ -7252,10 +6548,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to set IP Settings.
      */
-
 
     setIPSettings(IPSettings) {
       return new Promise((resolve, reject) => {
@@ -7267,7 +6563,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     isConnectedToInternet() {
       return new Promise((resolve, reject) => {
         let header = new Headers();
@@ -7290,7 +6585,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -7314,7 +6608,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for HDMI thunder plugin apis.
    */
-
   class HDMIApi {
     constructor() {
       const config = {
@@ -7338,7 +6631,6 @@ var APP_accelerator_home_ui = (function () {
         Resolution2160P60: [3840, 2160]
       };
     }
-
     activate() {
       return new Promise((resolve, reject) => {
         // resolve(true)//#forTesting
@@ -7346,31 +6638,26 @@ var APP_accelerator_home_ui = (function () {
           callsign: this.callsign
         }).then(result => {
           console.log('Activated HdmiInput plugin');
-
           this._thunder.on(this.callsign, 'onInputStatusChanged', notification => {
             if (this._events.has('onInputStatusChanged')) {
               this._events.get('onInputStatusChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onDevicesChanged', notification => {
             if (this._events.has('onDevicesChanged')) {
               this._events.get('onDevicesChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onSignalChanged', notification => {
             if (this._events.has('onSignalChanged')) {
               this._events.get('onSignalChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'videoStreamInfoUpdate', notification => {
             if (this._events.has('videoStreamInfoUpdate')) {
               this._events.get('videoStreamInfoUpdate')(notification);
             }
           });
-
           if (result === null) resolve(true);else resolve(false);
         }).catch(err => {
           console.log('Failed to activate HdmiInput plugin', JSON.stringify(err));
@@ -7378,7 +6665,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getHDMIDevices() {
       return new Promise((resolve, reject) => {
         // resolve([{id: 0,locator: "hdmiin://localhost/deviceid/0",connected: true,},{id: 1,locator: "hdmiin://localhost/deviceid/1",connected: false,},{id: 2,locator: "hdmiin://localhost/deviceid/2",connected: true,}]) //#forTesting
@@ -7391,7 +6677,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     checkStatus(plugin) {
       return new Promise((resolve, reject) => {
         this._thunder.call('Controller.1', 'status@' + plugin).then(res => {
@@ -7399,7 +6684,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getDimensions() {
       return new Promise(resolve => {
         // resolve([1920, 1080])//#forTesting
@@ -7411,7 +6695,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setHDMIInput(portDetails) {
       return new Promise(async (resolve, reject) => {
         // resolve(true)//#forTesting
@@ -7420,14 +6703,12 @@ var APP_accelerator_home_ui = (function () {
             portId: portDetails.id
           }).then(async result => {
             const dimension = await this.getDimensions();
-
             this._thunder.call(this.callsign, 'setVideoRectangle', {
               x: 0,
               y: 0,
               w: dimension[0],
               h: dimension[1]
             });
-
             resolve(result);
           }).catch(err => {
             reject(err);
@@ -7437,7 +6718,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     stopHDMIInput() {
       return new Promise((resolve, reject) => {
         // resolve(true)//#forTesting
@@ -7446,18 +6726,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
     *Register events and event listeners.
     * @param {string} eventId
     * @param {function} callback
     *
     */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
-
   }
 
   var App_launched_via_Netflix_Button = {
@@ -7545,24 +6823,21 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class that contains functions which commuicates with thunder API's
    */
-
   class AppApi {
     constructor() {
       this.activatedForeground = false;
       this._events = new Map();
     }
+
     /**
      *
      * @param {string} eventId
      * @param {function} callback
      * Function to register the events for the Bluetooth plugin.
      */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
-
     fetchTimeZone() {
       return new Promise(resolve => {
         thunder$e.call('org.rdk.System', 'getTimeZones').then(result => {
@@ -7573,11 +6848,9 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     checkForInternet() {
       return new Promise((resolve, reject) => {
         let i = 0;
-
         var poll = () => {
           i++;
           this.getIP().then(result => {
@@ -7586,11 +6859,9 @@ var APP_accelerator_home_ui = (function () {
             } else if (i < 10) poll();else resolve(false);
           });
         };
-
         poll();
       });
     }
-
     isConnectedToInternet() {
       return new Promise((resolve, reject) => {
         let header = new Headers();
@@ -7626,12 +6897,11 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to launch Html app.
      * @param {String} url url of app.
      */
-
-
     getIP() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
@@ -7651,8 +6921,6 @@ var APP_accelerator_home_ui = (function () {
     /**
     *  Function to get timeZone
     */
-
-
     getZone() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.System';
@@ -7664,7 +6932,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setZone(zone) {
       console.log(zone);
       return new Promise((resolve, reject) => {
@@ -7677,7 +6944,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }).catch(err => {});
     }
-
     getPluginStatus(plugin) {
       return new Promise((resolve, reject) => {
         thunder$e.call('Controller', "status@".concat(plugin)).then(result => {
@@ -7687,11 +6953,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get resolution of the display screen.
      */
-
-
     getResolution() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getCurrentResolution', {
@@ -7703,7 +6968,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     activateDisplaySettings() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.DisplaySettings";
@@ -7714,7 +6978,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSupportedResolutions() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
@@ -7733,11 +6996,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to set the display resolution.
      */
-
-
     setResolution(res) {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
@@ -7758,11 +7020,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get HDCP Status.
      */
-
-
     getHDCPStatus() {
       console.log("checking hdcp status");
       return new Promise((resolve, reject) => {
@@ -7781,11 +7042,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get TV HDR Support.
      */
-
-
     getTvHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
@@ -7803,11 +7063,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get settop box HDR Support.
      */
-
-
     getSettopHDRSupport() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.DisplaySettings';
@@ -7825,11 +7084,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get HDR Format in use.
      */
-
-
     getHDRSetting() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'DisplayInfo';
@@ -7847,11 +7105,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get DRMs.
      */
-
-
     getDRMS() {
       console.log("calling getDDRMS");
       return new Promise((resolve, reject) => {
@@ -7870,11 +7127,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to clear cache.
      */
-
-
     clearCache() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'ResidentApp';
@@ -7887,6 +7143,7 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to launch All types of apps. Accepts 2 params.
      * @param {String} callsign String required callsign of the particular app.
@@ -7897,18 +7154,15 @@ var APP_accelerator_home_ui = (function () {
      *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
      */
 
-
     async launchApp(callsign, args) {
       console.log("launchApp called with: ", callsign, args);
       let url, preventInternetCheck, preventCurrentExit, launchLocation;
-
       if (args) {
         url = args.url;
         preventInternetCheck = args.preventInternetCheck;
         preventCurrentExit = args.preventCurrentExit;
         launchLocation = args.launchLocation;
       }
-
       const launchLocationKeyMapping = {
         //currently supported launch locations by the UI and mapping to corresponding reason/keys for IID
         "mainView": {
@@ -7936,22 +7190,17 @@ var APP_accelerator_home_ui = (function () {
           "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
         }
       };
-
       if (launchLocation && launchLocationKeyMapping[launchLocation]) {
         if (callsign === "Netflix" || callsign === "Cobalt") {
           launchLocation = launchLocationKeyMapping[launchLocation][callsign];
         }
       }
-
       console.log("launchApp getting executed with callsign: " + callsign + " | url: " + url + " | preventInternetCheck: " + preventInternetCheck + " | preventCurrentExit: " + preventCurrentExit + " | launchLocation: " + launchLocation);
       let IIDqueryString = "";
-
       if (callsign === "Netflix") {
         let netflixIids = await this.getNetflixIIDs();
-
         if (launchLocation) {
           IIDqueryString = "source_type=".concat(netflixIids[launchLocation].source_type, "&iid=").concat(netflixIids[launchLocation].iid);
-
           if (url) {
             IIDqueryString = "&" + IIDqueryString; //so that IIDqueryString can be appended with url later.
           }
@@ -7959,25 +7208,19 @@ var APP_accelerator_home_ui = (function () {
           console.log("launchLocation(IID) not specified while launching netflix");
         }
       }
-
       const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
-
       if (!availableCallsigns.includes(callsign)) {
         return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
       }
-
       if (!preventInternetCheck) {
         let internet = await this.isConnectedToInternet();
-
         if (!internet) {
           return Promise.reject("No Internet Available, can't launchApp.");
         }
       }
-
       const currentApp = Storage.get("applicationType"); //get it from stack if required. | current app ==="" means residentApp
 
       let pluginStatus, pluginState; // to check if the plugin is active, resumed, deactivated etc
-
       try {
         pluginStatus = await this.getPluginStatus(callsign);
         pluginState = pluginStatus[0].state;
@@ -7985,9 +7228,7 @@ var APP_accelerator_home_ui = (function () {
         console.log(err);
         return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
       }
-
       console.log(callsign + " : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
-
       if (callsign === "Netflix") {
         if (pluginState === "deactivated" || pluginState === "deactivation") {
           //netflix cold launch scenario
@@ -7995,7 +7236,6 @@ var APP_accelerator_home_ui = (function () {
           Router.navigate('image', {
             src: Utils.asset('images/apps/App_Netflix_Splash.png')
           }); //to show the splash screen for netflix
-
           if (url) {
             try {
               console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ", url, IIDqueryString);
@@ -8014,7 +7254,6 @@ var APP_accelerator_home_ui = (function () {
         } else {
           //netflix hot launch scenario
           console.log("Netflix : HotLaunch");
-
           if (url) {
             try {
               console.log("Netflix HotLaunch passing netflix url & IIDqueryString using systemcommand method: ", url, IIDqueryString);
@@ -8036,23 +7275,19 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
       let params = {
         "callsign": callsign,
         "type": callsign
       };
-
       if (url && (callsign === "LightningApp" || callsign === "HtmlApp")) {
         //for lightning/htmlapp url is passed via rdkshell.launch method
         params.uri = url;
       } else if (callsign === "Cobalt") {
         let language = localStorage.getItem("Language");
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"; //default to english US if language is not available.
-
         url = url ? url : "https://www.youtube.com/tv?";
         url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url;
         url = launchLocation === "gracenote" ? url : url + "&launch=" + launchLocation; //skipping to append launch reason to url if launchLocation is gracenote
-
         if ((pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote") {
           //for youtube cold launch | currently only urls from dial can be passed via configuration
           params.configuration = {
@@ -8063,7 +7298,6 @@ var APP_accelerator_home_ui = (function () {
           };
         }
       }
-
       if (!preventCurrentExit && currentApp !== "") {
         //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
         try {
@@ -8073,7 +7307,6 @@ var APP_accelerator_home_ui = (function () {
           console.log("currentApp exit failed!: launching new app...");
         }
       }
-
       if (currentApp === "" && callsign !== "Netflix") {
         //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack | for netflix keep the splash screen visible till it launches
         thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
@@ -8081,12 +7314,10 @@ var APP_accelerator_home_ui = (function () {
           "visible": false
         });
       }
-
       console.log("Calling launchApp with params: ", params);
       return new Promise((resolve, reject) => {
         thunder$e.call("org.rdk.RDKShell", "launch", params).then(res => {
           console.log("".concat(callsign, " : Launch results in ").concat(JSON.stringify(res)));
-
           if (res.success) {
             thunder$e.call("org.rdk.RDKShell", "moveToFront", {
               "client": callsign,
@@ -8106,7 +7337,6 @@ var APP_accelerator_home_ui = (function () {
             }).catch(err => {
               console.error("failed to setVisibility : ", callsign, " ERROR: ", JSON.stringify(err));
             });
-
             if (callsign === "Netflix") {
               console.log("Netflix launched: hiding residentApp");
               thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
@@ -8120,7 +7350,6 @@ var APP_accelerator_home_ui = (function () {
               console.log("Calling deeplink for cobalt with url: " + url);
               thunder$e.call(callsign, 'deeplink', url);
             }
-
             Storage.set("applicationType", callsign);
             resolve(res);
           } else {
@@ -8128,8 +7357,9 @@ var APP_accelerator_home_ui = (function () {
             reject(res);
           }
         }).catch(err => {
-          console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back"); //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
+          console.error("failed to launchApp: ", callsign, " ERROR: ", JSON.stringify(err), " | Launching residentApp back");
 
+          //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
           thunder$e.call('org.rdk.RDKShell', 'destroy', {
             "callsign": callsign
           });
@@ -8138,33 +7368,32 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to launch Exit types of apps.
      * @param {String} callsign callsign of the particular app.
      * @param {boolean} exitInBackground to make the app not bring up residentApp on exit
      * @param {boolean} forceDestroy to force the app to do rdkshell.destroy instead of suspend
      */
+
     // exit method does not need to launch the previous app.
-
-
     async exitApp(callsign, exitInBackground, forceDestroy) {
       //test the new exit app method
+
       if (callsign === "") {
         //previousApp==="" means it's residentApp | change it to residentApp in cache and here
         return Promise.reject("Can't exit from ResidentApp");
       }
-
       if (callsign === "HDMI") {
         console.log("exit method called for hdmi");
         new HDMIApi().stopHDMIInput();
         Storage.set("_currentInputMode", {});
-
         if (!exitInBackground) {
           //means resident App needs to be launched
           this.launchResidentApp();
         }
-
-        return Promise.resolve(true); //check for hdmi scenario
+        return Promise.resolve(true);
+        //check for hdmi scenario
       }
 
       if (callsign === "LightningApp" || callsign === "HtmlApp") {
@@ -8172,10 +7401,8 @@ var APP_accelerator_home_ui = (function () {
       }
 
       let pluginStatus, pluginState; // to check if the plugin is active, resumed, deactivated etc
-
       try {
         pluginStatus = await this.getPluginStatus(callsign);
-
         if (pluginStatus !== undefined) {
           pluginState = pluginStatus[0].state;
           console.log("pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
@@ -8185,13 +7412,12 @@ var APP_accelerator_home_ui = (function () {
       } catch (err) {
         return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
       }
-
       if (!exitInBackground) {
         //means resident App needs to be launched
         this.launchResidentApp();
-      } //to hide the current app
+      }
 
-
+      //to hide the current app
       console.log("setting visibility of " + callsign + " to false");
       await thunder$e.call("org.rdk.RDKShell", "setVisibility", {
         "client": callsign,
@@ -8199,7 +7425,6 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.error("failed to setVisibility : " + callsign + " ERROR: ", JSON.stringify(err));
       });
-
       if (forceDestroy) {
         console.log("Force Destroying the app: ", callsign);
         await thunder$e.call('org.rdk.RDKShell', 'destroy', {
@@ -8207,8 +7432,8 @@ var APP_accelerator_home_ui = (function () {
         });
         return Promise.resolve(true);
       } else {
-        console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended")); //enableAppSuspended = true means apps will be suspended by default
-
+        console.log("Exiting from App: ", callsign, " depending on platform settings enableAppSuspended: ", Settings.get("platform", "enableAppSuspended"));
+        //enableAppSuspended = true means apps will be suspended by default
         if (Settings.get("platform", "enableAppSuspended")) {
           await thunder$e.call('org.rdk.RDKShell', 'suspend', {
             "callsign": callsign
@@ -8227,11 +7452,11 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
+
     /**
      * Function to launch ResidentApp explicitly(incase of special scenarios)
      * Prefer using launchApp and exitApp for ALL app launch and exit scenarios.
      */
-
 
     async launchResidentApp() {
       console.log("launchResidentApp got Called: setting visibility, focus and moving to front the ResidentApp");
@@ -8259,16 +7484,12 @@ var APP_accelerator_home_ui = (function () {
     async getNetflixIIDs() {
       let defaultIIDs = NetflixIIDs;
       let data = new HomeApi().getPartnerAppsInfo();
-
       if (!data) {
         return defaultIIDs;
       }
-
       console.log("homedata: ", data);
-
       try {
         data = await JSON.parse(data);
-
         if (data != null && data.hasOwnProperty("netflix-iid-file-path")) {
           let url = data["netflix-iid-file-path"];
           console.log("Netflix : requested to fetch iids from ", url);
@@ -8288,12 +7509,9 @@ var APP_accelerator_home_ui = (function () {
      * Function to launch Html app.
      * @param {String} url url of app.
      */
-
-
     launchWeb(url) {
       return new Promise(resolve => {
         const childCallsign = 'HtmlApp';
-
         if (webUrl != url) {
           thunder$e.call('org.rdk.RDKShell', 'launch', {
             callsign: childCallsign,
@@ -8319,21 +7537,18 @@ var APP_accelerator_home_ui = (function () {
           });
           resolve(true);
         }
-
         webUrl = url;
         activatedWeb = true;
       });
     }
+
     /**
      * Function to launch Lightning app.
      * @param {String} url url of app.
      */
-
-
     launchLightning(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'LightningApp';
-
         if (lightningUrl != url) {
           thunder$e.call('org.rdk.RDKShell', 'launch', {
             callsign: 'Lightning',
@@ -8355,17 +7570,15 @@ var APP_accelerator_home_ui = (function () {
           });
           resolve(true);
         }
-
         lightningUrl = url;
         activatedLightning = true;
       });
     }
+
     /**
      * Function to launch Cobalt app.
      * @param {String} url url of app.
      */
-
-
     launchCobalt(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'Cobalt';
@@ -8376,7 +7589,6 @@ var APP_accelerator_home_ui = (function () {
           if (url) {
             thunder$e.call('Cobalt', 'deeplink', url);
           }
-
           this.setVisibility("ResidentApp", false);
           thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
             client: "Cobalt"
@@ -8398,11 +7610,10 @@ var APP_accelerator_home_ui = (function () {
         activatedCobalt = true;
       });
     }
+
     /*  
      *Function to launch apps in hidden mode
      */
-
-
     launchPremiumAppInSuspendMode(childCallsign) {
       return new Promise((resolve, reject) => {
         thunder$e.call("org.rdk.RDKShell", "launch", {
@@ -8417,7 +7628,6 @@ var APP_accelerator_home_ui = (function () {
           } else {
             console.log("Amazon : launch amazon results in :", res);
           }
-
           resolve(true);
         }).catch(err => {
           if (childCallsign == "Netflix") {
@@ -8425,16 +7635,14 @@ var APP_accelerator_home_ui = (function () {
           } else {
             console.log("Amazon : error while launching amazon :", err);
           }
-
           reject(false);
         });
       });
     }
+
     /**
      * Function to launch Netflix/Amazon Prime app.
      */
-
-
     launchPremiumApp(childCallsign) {
       return new Promise((resolve, reject) => {
         thunder$e.call("org.rdk.RDKShell", "launch", {
@@ -8448,7 +7656,6 @@ var APP_accelerator_home_ui = (function () {
           } else {
             console.log("Amazon : launch amazon results in :", res);
           }
-
           this.setVisibility(childCallsign, true);
           this.zorder(childCallsign);
           Storage.set("applicationType", childCallsign);
@@ -8460,13 +7667,11 @@ var APP_accelerator_home_ui = (function () {
           } else {
             console.log("Amazon : error while launching amazon :", err);
           }
-
           reject(false);
         });
         childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
       });
     }
-
     launchPremiumAppURL(childCallsign, url) {
       thunder$e.call("org.rdk.RDKShell", "launch", {
         callsign: childCallsign,
@@ -8482,12 +7687,11 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {});
       childCallsign === 'Amazon' ? activatedAmazon = true : activatedNetflix = true;
     }
+
     /**
      * Function to launch Resident app.
      * @param {String} url url of app.
      */
-
-
     launchResident(url, client) {
       return new Promise((resolve, reject) => {
         const childCallsign = client;
@@ -8504,7 +7708,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     launchOverlay(url, client) {
       return new Promise(resolve => {
         const childCallsign = client;
@@ -8524,33 +7727,30 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to suspend html app.
      */
-
-
     suspendWeb() {
       webUrl = '';
       thunder$e.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'HtmlApp'
       });
     }
+
     /**
      * Function to suspend lightning app.
      */
-
-
     suspendLightning() {
       lightningUrl = '';
       thunder$e.call('org.rdk.RDKShell', 'suspend', {
         callsign: 'Lightning'
       });
     }
+
     /**
      * Function to suspend Netflix/Amazon Prime app.
      */
-
-
     suspendPremiumApp(appName) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'suspend', {
@@ -8562,11 +7762,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to deactivate html app.
      */
-
-
     deactivateWeb() {
       thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'HtmlApp'
@@ -8574,18 +7773,16 @@ var APP_accelerator_home_ui = (function () {
       activatedWeb = false;
       webUrl = '';
     }
+
     /**
      * Function to deactivate cobalt app.
      */
-
-
     deactivateCobalt() {
       thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Cobalt'
       });
       activatedCobalt = false;
     }
-
     cobaltStateChangeEvent() {
       try {
         thunder$e.on('Controller', 'statechange', notification => {
@@ -8600,19 +7797,16 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to deactivate Netflix/Amazon Prime app.
      */
-
-
     deactivateNativeApp(appName) {
       thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: appName
       });
       appName === 'Amazon' ? activatedAmazon = false : activatedNetflix = false;
     }
+
     /**
      * Function to deactivate lightning app.
      */
-
-
     deactivateLightning() {
       thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: 'Lightning'
@@ -8620,30 +7814,27 @@ var APP_accelerator_home_ui = (function () {
       activatedLightning = false;
       lightningUrl = '';
     }
+
     /**
      * Function to deactivate resident app.
      */
-
-
     deactivateResidentApp(client) {
       thunder$e.call('org.rdk.RDKShell', 'destroy', {
         callsign: client
       });
     }
+
     /**
      * Function to set visibility to client apps.
      * @param {client} client client app.
      * @param {visible} visible value of visibility.
      */
-
-
     setVisibility(client, visible) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
           visible: visible
         });
-
         if (visible) {
           thunder$e.call('org.rdk.RDKShell', 'setFocus', {
             client: client
@@ -8656,7 +7847,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     visibile(client, visible) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
@@ -8665,7 +7855,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     enabledisableinactivityReporting(bool) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'enableInactivityReporting', {
@@ -8678,7 +7867,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setInactivityInterval(t) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'setInactivityInterval', {
@@ -8690,31 +7878,28 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     zorder(cli) {
       thunder$e.call('org.rdk.RDKShell', 'moveToFront', {
         client: cli,
         callsign: cli
       });
     }
-
     setFocus(cli) {
       thunder$e.call('org.rdk.RDKShell', 'setFocus', {
         client: cli
       });
     }
-
     moveToBack(cli) {
       thunder$e.call('org.rdk.RDKShell', 'moveToBack', {
         client: cli
       });
     }
+
     /**
     * Function to set the configuration of premium apps.
     * @param {appName} Name of the application
     * @param {config_data} config_data configuration data
     */
-
 
     configureApplication(appName, config_data) {
       let plugin = 'Controller';
@@ -8737,8 +7922,6 @@ var APP_accelerator_home_ui = (function () {
      * Function to launch Native app.
      * @param {String} url url of app.
      */
-
-
     launchNative(url) {
       return new Promise((resolve, reject) => {
         const childCallsign = 'testApp';
@@ -8755,36 +7938,29 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
        * Function to kill native app.
        */
-
-
     killNative() {
       thunder$e.call('org.rdk.RDKShell', 'kill', {
         callsign: 'testApp'
       });
     }
-
     static pluginStatus(plugin) {
       switch (plugin) {
         case 'WebApp':
           return activatedWeb;
-
         case 'Cobalt':
           return activatedCobalt;
-
         case 'Lightning':
           return activatedLightning;
-
         case 'Amazon':
           return activatedAmazon;
-
         case 'Netflix':
           return activatedNetflix;
       }
     }
-
     standby(value) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'setPowerState', {
@@ -8797,7 +7973,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     enableDisplaySettings() {
       return new Promise((resolve, reject) => {
         thunder$e.call('Controller', 'activate', {
@@ -8811,7 +7986,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSoundMode() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getSoundMode', {
@@ -8824,7 +7998,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setSoundMode(mode) {
       mode = mode.startsWith("AUTO") ? "AUTO" : mode;
       console.log("mode", mode);
@@ -8841,7 +8014,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSupportedAudioModes() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getSupportedAudioModes', {
@@ -8853,9 +8025,9 @@ var APP_accelerator_home_ui = (function () {
           reject(false);
         });
       });
-    } //Enable or disable the specified audio port based on the input audio port ID. 
+    }
 
-
+    //Enable or disable the specified audio port based on the input audio port ID. 
     setEnableAudioPort(port) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'setEnableAudioPort', {
@@ -8869,7 +8041,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getDRCMode() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getDRCMode', {
@@ -8882,7 +8053,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setDRCMode(DRCNum) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'setDRCMode', {
@@ -8895,7 +8065,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getZoomSetting() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getZoomSetting').then(result => {
@@ -8906,7 +8075,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setZoomSetting(zoom) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'setZoomSetting', {
@@ -8919,7 +8087,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getEnableAudioPort(audioPort) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getEnableAudioPort', {
@@ -8932,7 +8099,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSupportedAudioPorts() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getSupportedAudioPorts').then(result => {
@@ -8942,12 +8108,15 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //________________________________________________________________________________________________________________________
+    }
+
+    //________________________________________________________________________________________________________________________
+
     //OTHER SETTINGS PAGE API
+
     //1. UI VOICE
+
     //Start a speech
-
-
     speak() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.TextToSpeech', 'speak', {
@@ -8959,9 +8128,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //Resume a speech
+    }
 
-
+    //Resume a speech
     resume() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.TextToSpeech', 'resume', {
@@ -8973,9 +8142,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //Pause a speech
+    }
 
-
+    //Pause a speech
     pause() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.TextToSpeech', 'pause', {
@@ -8987,9 +8156,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // 2. TTS Options
+    }
 
-
+    // 2. TTS Options
     getlistVoices() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.TextToSpeech', 'listvoices', {
@@ -9001,9 +8170,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // 3. Sync Location
+    }
 
-
+    // 3. Sync Location
     syncLocation() {
       return new Promise((resolve, reject) => {
         thunder$e.call('LocationSync', 'sync').then(result => {
@@ -9014,7 +8183,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getLocation() {
       return new Promise((resolve, reject) => {
         thunder$e.call('LocationSync', 'location').then(result => {
@@ -9024,10 +8192,10 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // 4. Check for Firmware Update
+    }
+    // 4. Check for Firmware Update
+
     //Get Firmware Update Info
-
-
     getFirmwareUpdateInfo() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getFirmwareUpdateInfo').then(result => {
@@ -9037,9 +8205,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // Get Firmware Update State
+    }
 
-
+    // Get Firmware Update State
     getFirmwareUpdateState() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getFirmwareUpdateState').then(result => {
@@ -9049,9 +8217,8 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // Get Firmware download info
-
-
+    }
+    // Get Firmware download info
     getDownloadFirmwareInfo() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getDownloadedFirmwareInfo').then(result => {
@@ -9061,9 +8228,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //Get serial number
+    }
 
-
+    //Get serial number
     getSerialNumber() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getSerialNumber').then(result => {
@@ -9073,9 +8240,9 @@ var APP_accelerator_home_ui = (function () {
           resolve('N/A');
         });
       });
-    } //Get system versions
+    }
 
-
+    //Get system versions
     getSystemVersions() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getSystemVersions').then(result => {
@@ -9086,9 +8253,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //Update firmware
+    }
 
-
+    //Update firmware
     updateFirmware() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'updateFirmware').then(result => {
@@ -9098,9 +8265,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //Get download percentage
+    }
 
-
+    //Get download percentage
     getFirmwareDownloadPercent() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'getFirmwareDownloadPercent').then(result => {
@@ -9110,9 +8277,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // device Identification
+    }
 
-
+    // device Identification
     getDeviceIdentification() {
       return new Promise((resolve, reject) => {
         thunder$e.call('DeviceIdentification', 'deviceidentification').then(result => {
@@ -9122,9 +8289,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // 5. Device Info
+    }
 
-
+    // 5. Device Info
     systeminfo() {
       return new Promise((resolve, reject) => {
         thunder$e.call('DeviceInfo', 'systeminfo').then(result => {
@@ -9134,9 +8301,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // 6. Reboot
+    }
 
-
+    // 6. Reboot
     reboot() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'reboot', {
@@ -9149,15 +8316,15 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getNetflixESN() {
       return new Promise(resolve => {
         thunder$e.call('Netflix', 'esn').then(res => {
           resolve(res);
         });
       });
-    } // get prefered standby mode
+    }
 
+    // get prefered standby mode
 
     getPreferredStandbyMode() {
       return new Promise((resolve, reject) => {
@@ -9169,7 +8336,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setPreferredStandbyMode(standbyMode) {
       console.log("setPreferredStandbyMode called : " + standbyMode);
       return new Promise((resolve, reject) => {
@@ -9183,7 +8349,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     registerChangeLocation() {
       var callsign = "LocationSync";
       thunder$e.call('Controller', 'activate', {
@@ -9196,7 +8361,6 @@ var APP_accelerator_home_ui = (function () {
         console.log(err);
       });
     }
-
     async sendAppState(value) {
       const state = await thunder$e.call('org.rdk.RDKShell', 'getState', {}).then(result => result.state);
       this.state = state;
@@ -9204,7 +8368,6 @@ var APP_accelerator_home_ui = (function () {
         applicationName: value,
         state: 'stopped'
       };
-
       for (var i = 0; i < state.length; i++) {
         if (state[i].callsign == value) {
           if (state[i].state == 'resumed') {
@@ -9217,16 +8380,14 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
       if (params.state === 'stopped') {
         activatedCobalt = false;
       }
-
       await thunder$e.call('org.rdk.Xcast', 'onApplicationStateChanged', params).then(result => result.success);
-    } //NETWORK INFO APIS
+    }
+    //NETWORK INFO APIS
+
     //1. Get IP Setting
-
-
     getIPSetting(defaultInterface) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.Network', 'getIPSettings', {
@@ -9238,9 +8399,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //2. Get default interface
+    }
 
-
+    //2. Get default interface
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.Network', 'getDefaultInterface').then(result => {
@@ -9250,9 +8411,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //3. Is interface enabled
+    }
 
-
+    //3. Is interface enabled
     isInterfaceEnabled() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.Network', 'isInterfaceEnabled', {
@@ -9264,9 +8425,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //4. Get interfaces
+    }
 
-
+    //4. Get interfaces
     getInterfaces() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.Network', 'getInterfaces').then(result => {
@@ -9276,9 +8437,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //5. getConnectedSSID
+    }
 
-
+    //5. getConnectedSSID
     getConnectedSSID() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.Wifi', 'getConnectedSSID').then(result => {
@@ -9288,8 +8449,9 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } // Volume Apis
+    }
 
+    // Volume Apis
 
     getConnectedAudioPorts() {
       return new Promise((resolve, reject) => {
@@ -9301,7 +8463,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getVolumeLevel(port) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getVolumeLevel', {
@@ -9314,7 +8475,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     muteStatus(port) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'getMuted', {
@@ -9327,7 +8487,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setVolumeLevel(port, volume) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'setVolumeLevel', {
@@ -9343,7 +8502,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     audio_mute(audio_source, value) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.DisplaySettings', 'setMuted', {
@@ -9356,9 +8514,8 @@ var APP_accelerator_home_ui = (function () {
           resolve(false);
         });
       });
-    } //created only to get the required params
-
-
+    }
+    //created only to get the required params
     getPluginStatusParams(plugin) {
       return new Promise((resolve, reject) => {
         thunder$e.call('Controller', "status@".concat(plugin)).then(result => {
@@ -9370,9 +8527,8 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //activate autopairing for stack
-
-
+    }
+    //activate autopairing for stack
     activateAutoPairing() {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RemoteControl', 'startPairing', {
@@ -9386,7 +8542,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -9407,7 +8562,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -9416,7 +8570,8 @@ var APP_accelerator_home_ui = (function () {
     applicationType: '',
     uri: 'USB',
     url: '/images/usb/USB_Featured_Item.jpg'
-  }, //the first item should be usb
+  },
+  //the first item should be usb
   {
     displayName: 'Netflix',
     applicationType: 'Netflix',
@@ -9462,7 +8617,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -9471,7 +8625,8 @@ var APP_accelerator_home_ui = (function () {
     applicationType: '',
     uri: 'USB',
     url: '/images/usb/USB_Featured_Item.jpg'
-  }, //the first item should be usb
+  },
+  //the first item should be usb
   {
     displayName: 'Netflix',
     applicationType: 'Netflix',
@@ -9492,7 +8647,6 @@ var APP_accelerator_home_ui = (function () {
     applicationType: 'LightningApp',
     uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
     url: '/images/apps/App_Peacock_454x255.png' //replace with online url
-
   }, {
     displayName: 'Xumo',
     applicationType: 'HtmlApp',
@@ -9518,7 +8672,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for tv shows listings.
    */
@@ -9557,7 +8710,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for settings listings.
    */
@@ -9587,7 +8739,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for listings in side panel.
    */
@@ -9623,7 +8774,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -9653,7 +8803,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -9683,7 +8832,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for UI selection.
    */
@@ -9727,7 +8875,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for metro app listings.
    */
@@ -9851,7 +8998,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for metro app listings.
    */
@@ -9975,6 +9121,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   var showCaseApps = [{
     displayName: "Strike Benchmark",
     applicationType: "LightningApp",
@@ -9993,16 +9140,12 @@ var APP_accelerator_home_ui = (function () {
     __assign = Object.assign || function (t) {
       for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
-
         for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
       }
-
       return t;
     };
-
     return __assign.apply(this, arguments);
   };
-
   Object.defineProperty(lib, "__esModule", {
     value: true
   });
@@ -10014,18 +9157,14 @@ var APP_accelerator_home_ui = (function () {
    * @param xmlStr
    * @param options the options
    */
-
   function xml2json(xmlStr, options) {
     if (options === void 0) {
       options = defaultOptions;
     }
-
     var opt = __assign(__assign({}, defaultOptions), options);
-
     xmlStr = cleanXML(xmlStr, opt.aloneValueName);
     return xml2jsonRecurse(xmlStr, opt);
   }
-
   var _default = lib.default = xml2json;
   /**
    * Recursive function that creates a JSON object with a given XML string.
@@ -10033,31 +9172,25 @@ var APP_accelerator_home_ui = (function () {
    * @param xmlStr
    * @param options the options
    */
-
-
   function xml2jsonRecurse(xmlStr, options) {
     var obj = {};
     var startTagMatch;
-
     while (startTagMatch = xmlStr.match(/<[^\/][^>]*>/)) {
       var openingTag = startTagMatch[0];
       var tagName = openingTag.substring(1, openingTag.length - 1);
-      var indexClosingTag = xmlStr.indexOf(openingTag.replace('<', '</')); // account for case where additional information in the opening tag
-
+      var indexClosingTag = xmlStr.indexOf(openingTag.replace('<', '</'));
+      // account for case where additional information in the opening tag
       var closingTagMatch = void 0;
-
       if (indexClosingTag == -1 && (closingTagMatch = openingTag.match(/[^<][\S+$]*/))) {
         tagName = closingTagMatch[0];
         indexClosingTag = xmlStr.indexOf('</' + tagName);
-
         if (indexClosingTag == -1) {
           indexClosingTag = xmlStr.indexOf('<\\/' + tagName);
         }
       }
-
       var inner_substring = xmlStr.substring(openingTag.length, indexClosingTag);
-      var tempVal = inner_substring.match(/<[^\/][^>]*>/) ? xml2json(inner_substring, options) : inner_substring; // account for array or obj
-
+      var tempVal = inner_substring.match(/<[^\/][^>]*>/) ? xml2json(inner_substring, options) : inner_substring;
+      // account for array or obj
       if (obj[tagName] === undefined) {
         obj[tagName] = tempVal;
       } else if (Array.isArray(obj[tagName])) {
@@ -10065,10 +9198,8 @@ var APP_accelerator_home_ui = (function () {
       } else {
         obj[tagName] = [obj[tagName], tempVal];
       }
-
       xmlStr = xmlStr.substring(openingTag.length * 2 + 1 + inner_substring.length);
     }
-
     return obj;
   }
   /**
@@ -10078,23 +9209,14 @@ var APP_accelerator_home_ui = (function () {
    * @param aloneValueName
    * @returns {string}
    */
-
-
   function cleanXML(xmlStr, aloneValueName) {
     xmlStr = xmlStr.replace(/<!--[\s\S]*?-->/g, ''); // remove commented lines
-
     xmlStr = xmlStr.replace(/[\n\t\r]/g, ''); // replace special characters
-
     xmlStr = xmlStr.replace(/>[ \t]+</g, '><'); // replace leading spaces and tabs betweet elements
-
     xmlStr = xmlStr.replace(/<\?[^>]*\?>/g, ''); // delete docType tags
-
     xmlStr = replaceSelfClosingTags(xmlStr); // replace self closing tags
-
     xmlStr = replaceAloneValues(xmlStr, aloneValueName); // replace the alone tags values
-
     xmlStr = replaceAttributes(xmlStr); // replace attributes
-
     return xmlStr;
   }
   /**
@@ -10105,19 +9227,14 @@ var APP_accelerator_home_ui = (function () {
    * @param xmlStr
    * @returns {*}
    */
-
-
   function replaceSelfClosingTags(xmlStr) {
     var selfClosingTags = xmlStr.match(/<[^/][^>]*\/>/g);
-
     if (!selfClosingTags) {
       return xmlStr;
     }
-
     for (var i = 0; i < selfClosingTags.length; i++) {
       var oldTag = selfClosingTags[i];
       var match = oldTag.match(/[^<][\S+$]*/);
-
       if (match) {
         var tagName = match[0];
         var closingTag = "</" + tagName + ">";
@@ -10125,7 +9242,6 @@ var APP_accelerator_home_ui = (function () {
         xmlStr = xmlStr.replace(oldTag, newTag);
       }
     }
-
     return xmlStr;
   }
   /**
@@ -10138,15 +9254,11 @@ var APP_accelerator_home_ui = (function () {
    * @param aloneValueName
    * @returns {string}
    */
-
-
   function replaceAloneValues(xmlStr, aloneValueName) {
     var tagsWithAttributesAndValue = xmlStr.match(/<[^\/][^>][^<]+\s+.[^<]+[=][^<]+>([^<]+)/g);
-
     if (!tagsWithAttributesAndValue) {
       return xmlStr;
     }
-
     for (var i = 0; i < tagsWithAttributesAndValue.length; i++) {
       var oldTag = tagsWithAttributesAndValue[i];
       var oldTagName = oldTag.substring(0, oldTag.indexOf(">") + 1);
@@ -10154,18 +9266,14 @@ var APP_accelerator_home_ui = (function () {
       var newTag = oldTagName + "<" + aloneValueName + ">" + oldTagValue + "</" + aloneValueName + ">";
       xmlStr = xmlStr.replace(oldTag, newTag);
     }
-
     return xmlStr;
   }
-
   function extractAttributeValue(tagName, oldTag) {
     var newTag = "<" + tagName + ">";
     var attrs = oldTag.match(/(\S+)\s?=\s?((?:"[^"]+")|(?:'[^']+'))/g);
-
     if (!attrs) {
       return newTag;
     }
-
     for (var j = 0; j < attrs.length; j++) {
       var attr = attrs[j];
       var attrName = attr.substring(0, attr.indexOf('=')).trim();
@@ -10173,7 +9281,6 @@ var APP_accelerator_home_ui = (function () {
       var attrValue = attr.substring(attr.indexOf(quote) + 1, attr.lastIndexOf(quote));
       newTag += "<" + attrName + ">" + attrValue + "</" + attrName + ">";
     }
-
     return newTag;
   }
   /**
@@ -10185,26 +9292,20 @@ var APP_accelerator_home_ui = (function () {
    * @param xmlStr
    * @returns {*}
    */
-
-
   function replaceAttributes(xmlStr) {
     var tagsWithAttributes = xmlStr.match(/<[^\/><]\S+\s+[^<]+[=][^<]+>/g);
-
     if (!tagsWithAttributes) {
       return xmlStr;
     }
-
     for (var i = 0; i < tagsWithAttributes.length; i++) {
       var oldTag = tagsWithAttributes[i];
       var match = oldTag.match(/[^<]\S*/);
-
       if (match) {
         var tagName = match[0];
         var newTag = extractAttributeValue(tagName, oldTag);
         xmlStr = xmlStr.replace(oldTag, newTag);
       }
     }
-
     return xmlStr;
   }
 
@@ -10227,10 +9328,10 @@ var APP_accelerator_home_ui = (function () {
    * limitations under the License.
    **/
   let partnerApps = [];
+
   /**
    * Get the ip address.
    */
-
   let IpAddress1 = "";
   let IpAddress2 = "";
   let networkApi = new Network();
@@ -10244,131 +9345,111 @@ var APP_accelerator_home_ui = (function () {
   appApi$a.getIP().then(ip => {
     IpAddress2 = ip;
   });
+
   /**
    * Class that returns the data required for home screen.
    */
-
   class HomeApi {
     /**
      * Function to get details for app listing.
      */
     getAppListInfo() {
       let appsMetaData;
-
       if (IpAddress1 || IpAddress2) {
         appsMetaData = appListInfo;
       } else {
         appsMetaData = appListInfoOffline;
       }
-
       return appsMetaData;
     }
+
     /**
      * Function to get details for tv shows listings.
      */
-
-
     getTVShowsInfo() {
       return tvShowsInfo;
     }
+
     /**
      * Function to get details for settings listings.
      */
-
-
     getSettingsInfo() {
       return settingsInfo;
     }
+
     /**
      * Function to get details for lightning showcase apps.
      */
-
-
     getShowCaseApps() {
       return showCaseApps;
     }
+
     /**
      * Function to get details for all apps.
      */
-
-
     getAllApps() {
       return [...this.getAppListInfo(), ...this.getMetroInfo(), ...this.getShowCaseApps()];
     }
+
     /**
      * Function to get details for side panel.
      */
-
-
     getSidePanelInfo() {
       return sidePanelInfo;
     }
+
     /**
      * Function to get details of different UI
      */
-
-
     getUIInfo() {
       return uiInfo;
     }
+
     /**
      * Function to details of metro apps
      */
-
-
     getMetroInfo() {
       let metroAppsMetaData;
-
       if (IpAddress1 || IpAddress2) {
         metroAppsMetaData = metroAppsInfo;
       } else {
         metroAppsMetaData = metroAppsInfoOffline;
       }
-
       return metroAppsMetaData;
     }
-
     getOfflineMetroApps() {
       return metroAppsInfoOffline;
     }
-
     getOnlineMetroApps() {
       return metroAppsInfo;
     }
+
     /**
      * Function to store partner app details.
      * @param {obj} data Partner app details.
      */
-
-
     setPartnerAppsInfo(data) {
       partnerApps = data;
     }
+
     /**
      *Function to return partner app details.
      */
-
-
     getPartnerAppsInfo() {
       return partnerApps;
     }
     /**
      * Function to details of right arrow
      */
-
-
     getRightArrowInfo() {
       return rightArrowInfo;
     }
     /**
      * Function to details of left arrow
      */
-
-
     getLeftArrowInfo() {
       return leftArrowInfo;
     }
-
     getMovieSubscriptions(id) {
       return new Promise((resolve, reject) => {
         appApi$a.fetchApiKey().then(res => {
@@ -10384,15 +9465,14 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getAPIKey() {
       return new Promise((resolve, reject) => {
         appApi$a.fetchApiKey().then(res => {
           let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
           month += 1;
           day = day.toString();
-          month = month.toString(); //fetch date time from the thunder plugins and pass it to the url
-
+          month = month.toString();
+          //fetch date time from the thunder plugins and pass it to the url
           try {
             fetch("http://data.tmsapi.com/v1.1/movies/airings?lineupId=USA-TX42500-X&startDateTime=" + year + "-" + month + "-" + day + "T08%3A00Z&includeAdult=false&imageSize=Lg&imageAspectTV=16x9&imageText=true&api_key=" + res).then(response => response.json()).then(response => {
               const ids = response.map(id => id.program.rootId);
@@ -10423,7 +9503,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -10444,7 +9523,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**Color constants */
   var COLORS = {
     textColor: 0xffffffff,
@@ -10474,12 +9552,10 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for rendering items in Settings screen.
    */
-
   class SettingsItem extends lng$1.Component {
     _construct() {
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -10505,11 +9581,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in settings screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.tag('Item').patch({
@@ -10533,7 +9608,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _focus() {
       this.tag('TopLine').color = CONFIG.theme.hex;
       this.tag('BottomLine').color = CONFIG.theme.hex;
@@ -10543,7 +9617,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -10553,7 +9626,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -10602,9 +9674,7 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {}
-
     _focus() {
       this.tag('TopLine').color = CONFIG.theme.hex;
       this.tag('BottomLine').color = CONFIG.theme.hex;
@@ -10614,7 +9684,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -10624,7 +9693,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -10653,8 +9721,8 @@ var APP_accelerator_home_ui = (function () {
   const thunder$d = thunderJS(config$c);
   const systemcCallsign$2 = "DTV";
   let playerID = -1; //set to -1 to indicate nothing is currently playing
-  //plugin is activated by default, no need to call explicitly
 
+  //plugin is activated by default, no need to call explicitly
   class DTVApi {
     activate() {
       return new Promise((resolve, reject) => {
@@ -10668,7 +9736,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     deactivate() {
       return new Promise((resolve, reject) => {
         thunder$d.Controller.deactivate({
@@ -10680,9 +9747,8 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //gets the number of available countries
-
-
+    }
+    //gets the number of available countries
     noOfCountries() {
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "numberOfCountries").then(result => {
@@ -10692,9 +9758,8 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //returns the list of the available countries
-
-
+    }
+    //returns the list of the available countries
     countryList() {
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "countryList").then(result => {
@@ -10704,9 +9769,9 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //returns the list of services(channels with name, uri and other details)
+    }
 
-
+    //returns the list of services(channels with name, uri and other details)
     serviceList() {
       let arr = [{
         shortname: 'Amazon Prime',
@@ -10731,29 +9796,27 @@ var APP_accelerator_home_ui = (function () {
           resolve(arr);
         });
       });
-    } //returns the schedule for the given channel with provided dvburi
+    }
 
-
+    //returns the schedule for the given channel with provided dvburi
     scheduleEvents(dvburi) {
       let method = 'scheduleEvents@' + dvburi;
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, method).then(result => {
           console.log("scheduleEventsResult: ", JSON.stringify(result));
-
           for (let show of result) {
             show.starttime *= 1000;
             show.duration *= 1000;
           }
-
           resolve(result);
         }).catch(err => {
           console.log("Error: scheduleEvents: ", JSON.stringify(err));
           reject(err);
         });
       });
-    } //lists the satellites available
+    }
 
-
+    //lists the satellites available
     satelliteList() {
       return new Promise((resolve, reject) => {
         // resolve([{name: "Satellite 1",longitude: 282,lnb: "Universal" },{name: "Satellite 2",longitude: 282,lnb: "Universal" }]) //#forTesting
@@ -10765,51 +9828,45 @@ var APP_accelerator_home_ui = (function () {
               "lnb": "Universal"
             }];
           }
-
           resolve(result);
         }).catch(err => {
           console.log("Error: satelliteList: ", JSON.stringify(err));
           reject(err);
         });
       });
-    } //returns the available polarity options for dvb-s scan, returns a list of static values
-
-
+    }
+    //returns the available polarity options for dvb-s scan, returns a list of static values
     polarityList() {
       return new Promise((resolve, reject) => {
         resolve(["horizontal", "vertical", "left", "right"]);
       });
-    } //returns the available symbolRate options for dvb-s scan, returns a list of static values
+    }
 
-
+    //returns the available symbolRate options for dvb-s scan, returns a list of static values
     symbolRateList() {
       return new Promise((resolve, reject) => {
         resolve(["22000", "23000", "27500", "29500"]); //values can be edited/entered custom from UI, no need to mention custom here
       });
-    } //returns the available FEC options for dvb-s scan, returns a list of static values
-
-
+    }
+    //returns the available FEC options for dvb-s scan, returns a list of static values
     fecList() {
       return new Promise((resolve, reject) => {
         resolve(["fecauto", "fec1_2", "fec2_3", "fec3_4", "fec5_6", "fec7_8", "fec1_4", "fec1_3", "fec2_5", "fec8_9", "fec9_10", "fec3_5", "fec4_5"]);
       });
-    } //returns the available modulation options for dvb-s scan, returns a list of static values
-
-
+    }
+    //returns the available modulation options for dvb-s scan, returns a list of static values
     modulationList() {
       return new Promise((resolve, reject) => {
         resolve(["auto", "qpsk", "8psk", "16qam"]);
       });
-    } //returns the available searchtype(searchmode) options for dvb-s scan, returns a list of static values
-
-
+    }
+    //returns the available searchtype(searchmode) options for dvb-s scan, returns a list of static values
     searchtypeList() {
       return new Promise((resolve, reject) => {
         resolve(["frequency", "network"]);
       });
-    } //initiates a service search for the provided params
-
-
+    }
+    //initiates a service search for the provided params
     startServiceSearch(params) {
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "startServiceSearch", params).then(result => {
@@ -10820,9 +9877,8 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //returns the number of available services(channels)
-
-
+    }
+    //returns the number of available services(channels)
     noOfServices() {
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "numberOfServices").then(result => {
@@ -10833,9 +9889,9 @@ var APP_accelerator_home_ui = (function () {
           reject(err);
         });
       });
-    } //returns the current and next event details for the given channel with provided dvburi
+    }
 
-
+    //returns the current and next event details for the given channel with provided dvburi
     nowNextEvents(dvburi) {
       let method = "nowNextEvents@" + dvburi;
       return new Promise((resolve, reject) => {
@@ -10848,25 +9904,20 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     startPlaying(params) {
       //params contains dvburi and lcn
       console.log("PARAMS: startPlaying: ", JSON.stringify(params));
-
       if (playerID !== -1) {
         this.stopPlaying();
         return Promise.reject("something is still playing Please retry");
       }
-
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "startPlaying", params).then(result => {
           console.log("RESULT: startPlaying: ", JSON.stringify(result));
-
           if (result === -1) {
             reject("Can't be played");
           } else {
             playerID = result; //to be used in stopPlaying method
-
             resolve(result);
           }
         }).catch(err => {
@@ -10875,15 +9926,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     stopPlaying() {
       return new Promise((resolve, reject) => {
         thunder$d.call(systemcCallsign$2, "stopPlaying", playerID).then(result => {
           //playerID is retuned from startPlaying method
           console.log("RESULT: stopPlaying: ", JSON.stringify(result)); //result is always null
-
           playerID = -1; //to set that nothing is being played currently
-
           resolve(true);
         }).catch(err => {
           console.log("ERROR: stopPlaying: ", JSON.stringify(err));
@@ -10891,21 +9939,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     launchChannel(dvburi) {
       console.log("PARAMS: launchChannel: ", JSON.stringify(dvburi));
-
       if (playerID !== -1) {
         this.exitChannel();
         console.log("launchChannel: FAIL: something is still playing, trying to call exitChannel");
         return Promise.reject("Fail: something is still playing");
       }
-
       return new Promise((resolve, reject) => {
         let port = "8080"; //try to fetch it later
-
         let cmd = "open"; //add other methods also
-
         let url = "http://127.0.0.1:" + port + "/vldms/sessionmgr/" + cmd;
         let data = {
           "openRequest": {
@@ -10937,13 +9980,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     exitChannel() {
       return new Promise((resolve, reject) => {
         let port = "8080"; //try to fetch it later
-
         let cmd = "close"; //add other methods also
-
         let url = "http://127.0.0.1:" + port + "/vldms/sessionmgr/" + cmd;
         let data = {
           "closeRequest": {
@@ -10968,7 +10008,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -10995,19 +10034,17 @@ var APP_accelerator_home_ui = (function () {
     default: 1
   };
   var thunder$c = thunderJS(config$b);
+
   /**
    * Class for settings screen.
    */
-
   class SettingsScreen extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -11188,24 +10225,13 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
-      let self = this;
       this.appApi = new AppApi();
-
       this._setState('NetworkConfiguration');
-
-      this.fireAncestors("$registerHide", function () {
-        self.widgets.menu.setPanelsVisibility();
-      });
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility();
-
       this._setState(this.state);
     }
-
     _firstActive() {
       if (Storage.get("NFRStatus")) {
         console.log("Netflix : NFRStatus is found to be enabled");
@@ -11214,163 +10240,127 @@ var APP_accelerator_home_ui = (function () {
         console.log("Netflix : NFRStatus is found to be disabled");
         this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
       }
-
       this.dtvApi = new DTVApi();
       this.dtvPlugin = false; //plugin availability
-
       this.dtvApi.activate().then(res => {
         // if (res){
         this.dtvPlugin = true;
-        this.tag("DTVSettings").alpha = 1; // }
+        this.tag("DTVSettings").alpha = 1;
+        // }
       });
     }
 
     _handleBack() {
       console.log("application Type = ", Storage.get("applicationType"));
-
       if (Storage.get("applicationType") == "") {
         Router.navigate('menu');
       } else {
         this.appApi.visibile("ResidentApp", false);
         let appType = Storage.get("applicationType");
-
         if (appType === "WebApp") {
           appType = "HtmlApp";
         }
-
         this.appApi.setFocus(appType);
         this.appApi.zorder(appType);
-        this.widgets.menu.setPanelsVisibility();
       }
     }
-
     static _states() {
       return [class NetworkConfiguration extends this {
         $enter() {
           this.tag('NetworkConfiguration')._focus();
         }
-
         $exit() {
           this.tag('NetworkConfiguration')._unfocus();
         }
-
         _handleDown() {
           this._setState('Bluetooth');
         }
-
         _handleEnter() {
           Router.navigate('settings/network');
         }
-
       }, class Bluetooth extends this {
         $enter() {
           this.tag('Bluetooth')._focus();
         }
-
         $exit() {
           this.tag('Bluetooth')._unfocus();
         }
-
         _handleUp() {
           this._setState('NetworkConfiguration');
         }
-
         _handleDown() {
           this._setState('Video');
         }
-
         _handleLeft() {}
-
         _handleEnter() {
           Router.navigate('settings/bluetooth');
         }
-
       }, class Video extends this {
         $enter() {
           this.tag('Video')._focus();
         }
-
         $exit() {
           this.tag('Video')._unfocus();
         }
-
         _handleUp() {
           this._setState('Bluetooth');
         }
-
         _handleDown() {
           this._setState('Audio');
         }
-
         _handleEnter() {
           Router.navigate('settings/video');
         }
-
       }, class Audio extends this {
         $enter() {
           this.tag('Audio')._focus();
         }
-
         $exit() {
           this.tag('Audio')._unfocus();
         }
-
         _handleUp() {
           this._setState('Video');
         }
-
         _handleEnter() {
           Router.navigate('settings/audio');
         }
-
         _handleDown() {
           this._setState('OtherSettings');
         }
-
       }, class OtherSettings extends this {
         $enter() {
           this.tag('OtherSettings')._focus();
         }
-
         $exit() {
           this.tag('OtherSettings')._unfocus();
         }
-
         _handleUp() {
           this._setState('Audio');
         }
-
         _handleEnter() {
           Router.navigate('settings/other');
         }
-
         _handleDown() {
           this._setState("NFRStatus");
         }
-
       }, class NFRStatus extends this {
         $enter() {
           this.tag('NFRStatus')._focus();
         }
-
         $exit() {
           this.tag('NFRStatus')._unfocus();
         }
-
         _handleUp() {
           this._setState('OtherSettings');
         }
-
         _handleDown() {
           if (this.dtvPlugin) {
             this._setState('DTVSettings');
           }
         }
-
         _handleEnter() {
           //handle Switch
           let self = this;
-
           if (Storage.get("NFRStatus")) {
             thunder$c.call("Netflix.1", "nfrstatus", {
               "params": "disable"
@@ -11395,32 +10385,26 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class DTVSettings extends this {
         $enter() {
           this.tag('DTVSettings')._focus();
         }
-
         $exit() {
           this.tag('DTVSettings')._unfocus();
         }
-
         _handleUp() {
           this._setState('NFRStatus');
         }
-
         _handleEnter() {
           if (this.dtvPlugin) {
             Router.navigate('settings/livetv');
-          } // dtvApi.activate().then(res =>{
+          }
+          // dtvApi.activate().then(res =>{
           //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
           // })
-
         }
-
       }];
     }
-
   }
 
   /**
@@ -11441,10 +10425,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class to render items in main view.
    */
-
   class ListItem extends lng$1.Component {
     /**
      * Function to render various elements in the main view item.
@@ -11461,7 +10445,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.tag('Shadow').patch({
         color: CONFIG.theme.hex,
@@ -11471,7 +10454,6 @@ var APP_accelerator_home_ui = (function () {
         x: this.x,
         y: this.y - this.bar
       });
-
       if (this.data.url.startsWith('/images')) {
         this.tag('Image').patch({
           rtt: true,
@@ -11492,10 +10474,9 @@ var APP_accelerator_home_ui = (function () {
           src: this.data.url
         });
       }
+
       /* Used static data for develpment purpose ,
       it wil replaced with Dynamic data once implimetation is completed.*/
-
-
       this.tag('Info').patch({
         x: this.x - 20,
         y: this.y + this.h + 10,
@@ -11517,11 +10498,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to change properties of item during focus.
      */
-
-
     _focus() {
       this.tag('Image').patch({
         x: this.x,
@@ -11545,11 +10525,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to change properties of item during unfocus.
      */
-
-
     _unfocus() {
       this.tag('Image').patch({
         w: this.w,
@@ -11571,7 +10550,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -11592,7 +10570,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -11616,7 +10593,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -11640,7 +10616,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -11664,7 +10639,6 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   /**
    * Class which contains data for app listings.
    */
@@ -11706,6 +10680,7 @@ var APP_accelerator_home_ui = (function () {
     /**
     *  Function to activate USB Access Plugin
     */
+
     activate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
@@ -11719,10 +10694,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
     *  Function to deactivate USB Access Plugin
     */
-
 
     deactivate() {
       return new Promise((resolve, reject) => {
@@ -11737,11 +10712,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
     *  Function to create link for USB content
     */
-
-
     clearLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
@@ -11752,11 +10726,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
     *  Function to create link for USB content
     */
-
-
     createLink() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.UsbAccess';
@@ -11767,11 +10740,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
     *  Function to get getUsbList
     */
-
-
     getUsbFileList() {
       if (arguments.length === 0) {
         return new Promise((resolve, reject) => {
@@ -11795,7 +10767,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     retrieUsb() {
       this.usbLink = "";
       var self = this;
@@ -11819,14 +10790,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     destroy() {
       imageListInfo.length = 0;
       videoListInfo.length = 0;
       musicListInfo.length = 0;
       UsbInnerFolderListInfo.length = 0;
     }
-
     cd(dname) {
       return new Promise((resolve, reject) => {
         this.getUsbFileList(dname).then(result1 => {
@@ -11837,7 +10806,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getMountedDevices() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = "org.rdk.UsbAccess";
@@ -11849,20 +10817,18 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getUsbContentList(result) {
       this.destroy();
       let cwd = this.usbLink;
-
       if (arguments[1]) {
         cwd = cwd + '/' + arguments[1];
-      } // to add support for more formats, extension can be added same as below 
-
-
+      }
+      // to add support for more formats, extension can be added same as below 
       var extensionForImage = ['.png', '.jpg', '.PNG', '.jpeg', '.JPEG', '.jpg', '.JPG'];
       var extensionForVideo = ['.mp4', '.MP4', '.mov', '.MOV', '.avi', '.AVI', '.m3u8', '.M3U8', '.mpeg2', '.MPEG2'];
       var extensionForAudio = ['.mp3', '.mpeg', '.MP3', '.MPEG'];
-      this._discoveredC = result; //   console.log("Discovered result :: " + JSON.stringify(result));
+      this._discoveredC = result;
+      //   console.log("Discovered result :: " + JSON.stringify(result));
 
       this._discoveredC.filter(device => {
         for (let i in extensionForImage) {
@@ -11870,17 +10836,17 @@ var APP_accelerator_home_ui = (function () {
             var obj1 = {
               displayName: device.name,
               uri: cwd + '/' + device.name,
-              url: cwd + '/' + device.name // url: '/images/usb/picture-default-tile.jpg',
+              url: cwd + '/' + device.name
+              // url: '/images/usb/picture-default-tile.jpg',
               // url: '/images/usb/USB_Photo_Placeholder.jpg',
               // uri: this.usbLink + '/' + device.name,
-
             };
+
             imageListInfo.push(obj1);
             return device;
           }
         }
       });
-
       this._discoveredC.filter(device => {
         for (let i in extensionForVideo) {
           if (device.name.indexOf(extensionForVideo[i]) !== -1) {
@@ -11895,7 +10861,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       });
-
       this._discoveredC.filter(device => {
         for (let i in extensionForAudio) {
           if (device.name.indexOf(extensionForAudio[i]) !== -1) {
@@ -11910,7 +10875,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       });
-
       this._discoveredC.filter(device => {
         if (device.t === 'd') {
           if (!(device.name === '.' || device.name === "..")) {
@@ -11925,7 +10889,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -11949,7 +10912,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for Xcast thunder plugin apis.
    */
-
   class XcastApi {
     constructor() {
       const config = {
@@ -11961,65 +10923,52 @@ var APP_accelerator_home_ui = (function () {
       console.log('Xcast constructor');
       this._events = new Map();
     }
+
     /**
      * Function to activate the Xcast plugin
      */
-
-
     activate() {
       return new Promise((resolve, reject) => {
         this.callsign = 'org.rdk.Xcast';
-
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
         }).then(result => {
           console.log('Xcast activation success ' + result);
-
           this._thunder.call('org.rdk.Xcast', 'setEnabled', {
             enabled: true
           }).then(result => {
             if (result.success) {
               console.log('Xcast enabled');
-
               this._thunder.on(this.callsign, 'onApplicationLaunchRequest', notification => {
                 console.log('onApplicationLaunchRequest ' + JSON.stringify(notification));
-
                 if (this._events.has('onApplicationLaunchRequest')) {
                   this._events.get('onApplicationLaunchRequest')(notification);
                 }
               });
-
               this._thunder.on(this.callsign, 'onApplicationHideRequest', notification => {
                 console.log('onApplicationHideRequest ' + JSON.stringify(notification));
-
                 if (this._events.has('onApplicationHideRequest')) {
                   this._events.get('onApplicationHideRequest')(notification);
                 }
               });
-
               this._thunder.on(this.callsign, 'onApplicationResumeRequest', notification => {
                 console.log('onApplicationResumeRequest ' + JSON.stringify(notification));
-
                 if (this._events.has('onApplicationResumeRequest')) {
                   this._events.get('onApplicationResumeRequest')(notification);
                 }
               });
-
               this._thunder.on(this.callsign, 'onApplicationStopRequest', notification => {
                 console.log('onApplicationStopRequest ' + JSON.stringify(notification));
-
                 if (this._events.has('onApplicationStopRequest')) {
                   this._events.get('onApplicationStopRequest')(notification);
                 }
               });
-
               this._thunder.on(this.callsign, 'onApplicationStateRequest', notification => {
                 // console.log('onApplicationStateRequest ' + JSON.stringify(notification));
                 if (this._events.has('onApplicationStateRequest')) {
                   this._events.get('onApplicationStateRequest')(notification);
                 }
               });
-
               resolve(true);
             } else {
               console.log('Xcast enabled failed');
@@ -12034,7 +10983,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getEnabled() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Xcast', 'getEnabled').then(res => {
@@ -12045,22 +10993,20 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      *
      * @param {string} eventId
      * @param {function} callback
      * Function to register the events for the Xcast plugin.
      */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
+
     /**
      * Function to deactivate the Xcast plugin.
      */
-
-
     deactivate() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Xcast', 'setEnabled', {
@@ -12072,15 +11018,13 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to notify the state of the app.
      */
-
-
     onApplicationStateChanged(params) {
       return new Promise((resolve, reject) => {
         console.log('Notifying back');
-
         this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
           resolve(result);
         }).catch(err => {
@@ -12089,7 +11033,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     static supportedApps() {
       var xcastApps = {
         AmazonInstantVideo: 'Amazon',
@@ -12098,7 +11041,6 @@ var APP_accelerator_home_ui = (function () {
       };
       return xcastApps;
     }
-
   }
 
   /**
@@ -12119,10 +11061,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class to render items in main view.
    */
-
   class GracenoteItem extends lng$1.Component {
     /**
      * Function to render various elements in the main view item.
@@ -12139,7 +11081,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       let imgUrl = this.data.program.preferredImage.uri.replace("w=1280&", "w=480&").replace("&h=720", "&h=270");
       this.tag('Shadow').patch({
@@ -12159,9 +11100,9 @@ var APP_accelerator_home_ui = (function () {
         src: Utils.proxyUrl('http://developer.tmsimg.com/' + imgUrl + '&api_key=' + this.key),
         scale: this.unfocus
       });
+
       /* Used static data for develpment purpose ,
       it wil replaced with Dynamic data once implimetation is completed.*/
-
       this.tag('Info').patch({
         x: this.x - 20,
         y: this.y + this.h + 20,
@@ -12183,11 +11124,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to change properties of item during focus.
      */
-
-
     _focus() {
       this.tag('Image').patch({
         x: this.x,
@@ -12211,11 +11151,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to change properties of item during unfocus.
      */
-
-
     _unfocus() {
       this.tag('Image').patch({
         w: this.w,
@@ -12236,7 +11175,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /*
@@ -12263,7 +11201,6 @@ var APP_accelerator_home_ui = (function () {
         Wrapper: {}
       };
     }
-
     _construct() {
       this._direction = CollectionWrapper.DIRECTION.row;
       this._scrollTransitionSettings = this.stage.transitions.createSettings({});
@@ -12277,17 +11214,14 @@ var APP_accelerator_home_ui = (function () {
       this._forceLoad = false;
       this.clear();
     }
-
     _setup() {
       this._updateScrollTransition();
     }
-
     _updateScrollTransition() {
       const axis = this._direction === 1 ? 'y' : 'x';
       this.wrapper.transition(axis, this._scrollTransitionSettings);
       this._scrollTransition = this.wrapper.transition(axis);
     }
-
     _indexChanged(obj) {
       let {
         previousIndex: previous,
@@ -12297,61 +11231,48 @@ var APP_accelerator_home_ui = (function () {
         previousMainIndex,
         lines
       } = obj;
-
       if (!isNaN(previousMainIndex) && !isNaN(mainIndex) && !isNaN(lines)) {
         previous = previousMainIndex;
         target = mainIndex;
         max = lines;
       }
-
       if (this._requestsEnabled && !this._requestingItems) {
         if (previous < target && target + this._requestThreshold >= max) {
           this._requestingItems = true;
           this.signal('onRequestItems', obj).then(response => {
             const type = typeof response;
-
             if (Array.isArray(response) || type === 'object' || type === 'string' || type === 'number') {
               this.add(response);
             }
-
             if (response === false) {
               this.enableRequests = false;
             }
-
             this._requestingItems = false;
           });
         }
       }
-
       this._refocus();
-
       this.scrollCollectionWrapper(obj);
       this.signal('onIndexChanged', obj);
     }
-
     setIndex(index) {
       const targetIndex = limitWithinRange(index, 0, this._items.length - 1);
       const previousIndex = this._index;
       this._index = targetIndex;
-
       this._indexChanged({
         previousIndex,
         index: targetIndex,
         dataLength: this._items.length
       });
-
       return previousIndex !== targetIndex;
     }
-
     clear() {
       this._uids = [];
       this._items = [];
       this._index = 0;
-
       if (this._scrollTransition) {
         this._scrollTransition.reset(0, 1);
       }
-
       if (this.wrapper) {
         const hadChildren = this.wrapper.children > 0;
         this.wrapper.patch({
@@ -12359,36 +11280,28 @@ var APP_accelerator_home_ui = (function () {
           y: 0,
           children: []
         });
-
         if (hadChildren) {
           this._collectGarbage(true);
         }
       }
     }
-
     add(item) {
       this.addAt(item);
     }
-
     addAt(item) {
       let index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._items.length;
-
       if (index >= 0 && index <= this._items.length) {
         if (!Array.isArray(item)) {
           item = [item];
         }
-
         const items = this._normalizeDataItems(item);
-
         this._items.splice(index, 0, ...items);
-
         this.plotItems();
         this.setIndex(this._index);
       } else {
         throw new Error('addAt: The index ' + index + ' is out of bounds ' + this._items.length);
       }
     }
-
     remove(item) {
       if (this.hasItems && item.assignedID) {
         for (let i = 0; i < this.wrapper.children.length; i++) {
@@ -12400,97 +11313,73 @@ var APP_accelerator_home_ui = (function () {
         throw new Error('remove: item not found');
       }
     }
-
     removeAt(index) {
       let amount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-
       if (index < 0 && index >= this._items.length) {
         throw new Error('removeAt: The index ' + index + ' is out of bounds ' + this._items.length);
       }
-
       const item = this._items[index];
-
       this._items.splice(index, amount);
-
       this.plotItems();
       return item;
     }
-
     reload(item) {
       this.clear();
       this.add(item);
     }
-
-    plotItems(items, options) {//placeholder
+    plotItems(items, options) {
+      //placeholder
     }
-
     reposition() {
       let time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 70;
-
       if (this._repositionDebounce) {
         clearTimeout(this._repositionDebounce);
       }
-
       this._repositionDebounce = setTimeout(() => {
         this.repositionItems();
       }, time);
     }
-
     repositionItems() {
       //placeHolder
       this.signal('onItemsRepositioned');
     }
-
     up() {
       return this._attemptNavigation(-1, 1);
     }
-
     down() {
       return this._attemptNavigation(1, 1);
     }
-
     left() {
       return this._attemptNavigation(-1, 0);
     }
-
     right() {
       return this._attemptNavigation(1, 0);
     }
-
     first() {
       return this.setIndex(0);
     }
-
     last() {
       return this.setIndex(this._items.length - 1);
     }
-
     next() {
       return this.setIndex(this._index + 1);
     }
-
     previous() {
       return this.setIndex(this._index - 1);
     }
-
     _attemptNavigation(shift, direction) {
       if (this.hasItems) {
         return this.navigate(shift, direction);
       }
-
       return false;
     }
-
     navigate(shift) {
       let direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._direction;
-
       if (direction !== this._direction) {
         return false;
       }
-
       return this.setIndex(this._index + shift);
     }
-
     scrollCollectionWrapper(obj) {
       let {
         previousIndex: previous,
@@ -12500,13 +11389,11 @@ var APP_accelerator_home_ui = (function () {
         previousMainIndex,
         lines
       } = obj;
-
       if (!isNaN(previousMainIndex) && !isNaN(mainIndex) && !isNaN(lines)) {
         previous = previousMainIndex;
         target = mainIndex;
         max = lines;
       }
-
       const {
         directionIsRow,
         main,
@@ -12514,22 +11401,16 @@ var APP_accelerator_home_ui = (function () {
         mainMarginFrom,
         mainMarginTo
       } = this._getPlotProperties(this._direction);
-
       const cw = this.currentItemWrapper;
       let bound = this[mainDim];
-
       if (bound === 0) {
         bound = directionIsRow ? 1920 : 1080;
       }
-
       const offset = Math.min(this.wrapper[main], this._scrollTransition && this._scrollTransition.targetValue || 0);
-
       const sizes = this._getItemSizes(cw);
-
       const marginFrom = sizes[mainMarginFrom] || sizes.margin || 0;
       const marginTo = sizes[mainMarginTo] || sizes.margin || 0;
       let scroll = this._scroll;
-
       if (!isNaN(scroll)) {
         if (scroll >= 0 && scroll <= 1) {
           scroll = bound * scroll - (cw[main] + cw[mainDim] * scroll);
@@ -12545,30 +11426,24 @@ var APP_accelerator_home_ui = (function () {
           backward = 0.0,
           forward = 1.0
         } = scroll;
-
         if (jump) {
           let mod = target % jump;
-
           if (mod === 0) {
             scroll = marginFrom - cw[main];
           }
-
           if (mod === jump - 1) {
             const actualSize = marginFrom + cw[mainDim] + marginTo;
             scroll = mod * actualSize + marginFrom - cw[main];
           }
         } else if (after) {
           scroll = 0;
-
           if (target >= after - 1) {
             const actualSize = marginFrom + cw[mainDim] + marginTo;
             scroll = (after - 1) * actualSize + marginFrom - cw[main];
           }
         } else {
           const backwardBound = bound * this._normalizePixelToPercentage(backward, bound);
-
           const forwardBound = bound * this._normalizePixelToPercentage(forward, bound);
-
           if (target < max - 1 && previous < target && offset + cw[main] + cw[mainDim] > forwardBound) {
             scroll = forwardBound - (cw[main] + cw[mainDim]);
           } else if (target > 0 && target < previous && offset + cw[main] < backwardBound) {
@@ -12586,7 +11461,6 @@ var APP_accelerator_home_ui = (function () {
           scroll = marginFrom - cw[main];
         }
       }
-
       if (this.active && !isNaN(scroll) && this._scrollTransition) {
         if (this._scrollTransition.isRunning()) {
           this._scrollTransition.reset(scroll, 0.05);
@@ -12597,67 +11471,53 @@ var APP_accelerator_home_ui = (function () {
         this.wrapper[main] = scroll;
       }
     }
-
     $childInactive(_ref) {
       let {
         child
       } = _ref;
-
       if (typeof child === 'object') {
         const index = child.componentIndex;
-
         for (let key in this._items[index]) {
           if (child.component[key] !== undefined) {
             this._items[index][key] = child.component[key];
           }
         }
       }
-
       this._collectGarbage();
     }
-
     $getChildComponent(_ref2) {
       let {
         index
       } = _ref2;
       return this._items[index];
     }
-
     _resizeWrapper(crossSize) {
       let obj = crossSize;
-
       if (!isNaN(crossSize)) {
         const {
           main,
           mainDim,
           crossDim
         } = this._getPlotProperties(this._direction);
-
         const lastItem = this.wrapper.childList.last;
         obj = {
           [mainDim]: lastItem[main] + lastItem[mainDim],
           [crossDim]: crossSize
         };
       }
-
       this.wrapper.patch(obj);
-
       if (this._autoResize) {
         this.patch(obj);
       }
     }
-
     _generateUniqueID() {
       let id = '';
-
       while (this._uids[id] || id === '') {
         id = Math.random().toString(36).substr(2, 9);
       }
-
       this._uids[id] = true;
       return id;
     }
-
     _getPlotProperties(direction) {
       const directionIsRow = direction === 0;
       return {
@@ -12674,14 +11534,11 @@ var APP_accelerator_home_ui = (function () {
         crossMarginFrom: directionIsRow ? 'marginUp' : 'marginLeft'
       };
     }
-
     _getItemSizes(item) {
       const itemType = item.type;
-
       if (item.component && item.component.__attached) {
         item = item.component;
       }
-
       return {
         w: item.w || itemType && itemType['width'],
         h: item.h || itemType && itemType['height'],
@@ -12692,16 +11549,13 @@ var APP_accelerator_home_ui = (function () {
         marginBottom: item.marginBottom || itemType && itemType['marginBottom']
       };
     }
-
     _collectGarbage(immediate) {
       this._gcIncrement++;
-
       if (immediate || this.active && this._gcThreshold !== 0 && this._gcIncrement >= this._gcThreshold) {
         this._gcIncrement = 0;
         this.stage.gc();
       }
     }
-
     _normalizeDataItems(array) {
       return array.map((item, index) => {
         return this._normalizeDataItem(item) || index;
@@ -12710,21 +11564,17 @@ var APP_accelerator_home_ui = (function () {
           console.warn("Item at index: ".concat(item, ", is not a valid item. Removing it from dataset"));
           return false;
         }
-
         return true;
       });
     }
-
     _normalizeDataItem(item, index) {
       if (typeof item === 'string' || typeof item === 'number') {
         item = {
           label: item.toString()
         };
       }
-
       if (typeof item === 'object') {
         let id = this._generateUniqueID();
-
         return {
           assignedID: id,
           type: this.itemType,
@@ -12733,182 +11583,138 @@ var APP_accelerator_home_ui = (function () {
           ...item
         };
       }
-
       return index;
     }
-
     _normalizePixelToPercentage(value, max) {
       if (value && value > 1) {
         return value / max;
       }
-
       return value || 0;
     }
-
     _getFocused() {
       if (this.hasItems) {
         return this.currentItemWrapper;
       }
-
       return this;
     }
-
     _handleRight() {
       return this.right();
     }
-
     _handleLeft() {
       return this.left();
     }
-
     _handleUp() {
       return this.up();
     }
-
     _handleDown() {
       return this.down();
     }
-
     _inactive() {
       if (this._repositionDebounce) {
         clearTimeout(this._repositionDebounce);
       }
-
       this._collectGarbage(true);
     }
-
     static get itemType() {
       return undefined;
     }
-
     set forceLoad(bool) {
       this._forceLoad = bool;
     }
-
     get forceLoad() {
       return this._forceLoad;
     }
-
     get requestingItems() {
       return this._requestingItems;
     }
-
     set requestThreshold(num) {
       this._requestThreshold = num;
     }
-
     get requestThreshold() {
       return this._requestThreshold;
     }
-
     set enableRequests(bool) {
       this._requestsEnabled = bool;
     }
-
     get enableRequests() {
       return this._requestsEnabled;
     }
-
     set gcThreshold(num) {
       this._gcThreshold = num;
     }
-
     get gcThreshold() {
       return this._gcThreshold;
     }
-
     get wrapper() {
       return this.tag('Wrapper');
     }
-
     get hasItems() {
       return this.wrapper && this.wrapper.children && this.wrapper.children.length > 0;
     }
-
     get currentItemWrapper() {
       return this.wrapper.children[this._index];
     }
-
     get currentItem() {
       return this.currentItemWrapper.component;
     }
-
     set direction(string) {
       this._direction = CollectionWrapper.DIRECTION[string] || CollectionWrapper.DIRECTION.row;
     }
-
     get direction() {
       return Object.keys(CollectionWrapper.DIRECTION)[this._direction];
     }
-
     set items(array) {
       this.clear();
       this.add(array);
     }
-
     get items() {
       const itemWrappers = this.itemWrappers;
       return this._items.map((item, index) => {
         if (itemWrappers[index] && itemWrappers[index].component.isAlive) {
           return itemWrappers[index].component;
         }
-
         return item;
       });
     }
-
     get length() {
       return this._items.length;
     }
-
     set index(index) {
       this.setIndex(index);
     }
-
     get itemWrappers() {
       return this.wrapper.children;
     }
-
     get index() {
       return this._index;
     }
-
     set scrollTransition(obj) {
       this._scrollTransitionSettings.patch(obj);
-
       if (this.active) {
         this._updateScrollTransition();
       }
     }
-
     get scrollTransition() {
       return this._scrollTransition;
     }
-
     set scroll(value) {
       this._scroll = value;
     }
-
     get scrollTo() {
       return this._scroll;
     }
-
     set autoResize(bool) {
       this._autoResize = bool;
     }
-
     get autoResize() {
       return this._autoResize;
     }
-
     set spacing(num) {
       this._spacing = num;
     }
-
     get spacing() {
       return this._spacing;
     }
-
   }
   CollectionWrapper.DIRECTION = {
     row: 0,
@@ -12939,11 +11745,9 @@ var APP_accelerator_home_ui = (function () {
         alpha: 0
       };
     }
-
     _construct() {
       this._blink = true;
     }
-
     _init() {
       this._blinkAnimation = this.animation({
         duration: 1,
@@ -12958,7 +11762,6 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     show() {
       if (this._blink) {
         this._blinkAnimation.start();
@@ -12966,7 +11769,6 @@ var APP_accelerator_home_ui = (function () {
         this.alpha = 1;
       }
     }
-
     hide() {
       if (this._blink) {
         this._blinkAnimation.stop();
@@ -12974,10 +11776,8 @@ var APP_accelerator_home_ui = (function () {
         this.alpha = 0;
       }
     }
-
     set blink(bool) {
       this._blink = bool;
-
       if (this.active) {
         if (bool) {
           this.show();
@@ -12986,11 +11786,9 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     get blink() {
       return this._blink;
     }
-
   }
 
   /*
@@ -13017,12 +11815,10 @@ var APP_accelerator_home_ui = (function () {
         clipbox: true
       };
     }
-
     create() {
       if (this.children.length > 0) {
         return;
       }
-
       const component = this.fireAncestors('$getChildComponent', {
         index: this.componentIndex
       });
@@ -13036,7 +11832,8 @@ var APP_accelerator_home_ui = (function () {
         marginRight,
         marginLeft
       } = this;
-      this.children = [{ ...component,
+      this.children = [{
+        ...component,
         w,
         h,
         margin,
@@ -13045,28 +11842,23 @@ var APP_accelerator_home_ui = (function () {
         marginLeft,
         marginBottom
       }];
-
       if (this.hasFocus()) {
         this._refocus();
       }
     }
-
     get component() {
       return this.children[0] || this.fireAncestors('$getChildComponent', {
         index: this.componentIndex
       });
     }
-
     _setup() {
       if (this.forceLoad) {
         this.create();
       }
     }
-
     _active() {
       this.create();
     }
-
     _inactive() {
       if (!this.forceLoad) {
         this.children[0].isAlive = false;
@@ -13076,11 +11868,9 @@ var APP_accelerator_home_ui = (function () {
         this.childList.clear();
       }
     }
-
     _getFocused() {
       return this.children && this.children[0] || this;
     }
-
   }
 
   /*
@@ -13107,12 +11897,11 @@ var APP_accelerator_home_ui = (function () {
         clipbox: true
       };
     }
-
     _update() {
       let currentKey = this.children && this.children[0];
-
       if (currentKey && currentKey.action === this._key.data.action) {
-        currentKey.patch({ ...this._key
+        currentKey.patch({
+          ...this._key
         });
       } else {
         this.children = [{
@@ -13120,36 +11909,28 @@ var APP_accelerator_home_ui = (function () {
           ...this._key
         }];
       }
-
       if (this.hasFocus()) {
         this._refocus();
       }
     }
-
     set key(obj) {
       this._key = obj;
-
       if (this.active) {
         this._update();
       }
     }
-
     get key() {
       return this._key;
     }
-
     _active() {
       this._update();
     }
-
     _inactive() {
       this.childList.clear();
     }
-
     _getFocused() {
       return this.children && this.children[0] || this;
     }
-
   }
 
   /*
@@ -13172,6 +11953,26 @@ var APP_accelerator_home_ui = (function () {
    */
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
+  };
+  const defineProperties = (component, props) => {
+    props.forEach(prop => {
+      Object.defineProperty(component, prop, {
+        set: function (value) {
+          component["_".concat(prop)] = value;
+        },
+        get: function () {
+          return component["_".concat(prop)];
+        }
+      });
+    });
+  };
+  const findIndexOfObject = (array, search, targetProp) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][targetProp] === search) {
+        return i;
+      }
+    }
+    return -1;
   };
 
   /*
@@ -13198,35 +11999,33 @@ var APP_accelerator_home_ui = (function () {
       this._mainSpacing = 5;
       this._rows = 0;
       this._columns = 0;
-
       super._construct();
     }
-
     clear() {
       super.clear();
       this._mainIndex = 0;
       this._crossIndex = 0;
       this._previous = undefined;
     }
-
     setIndex(index) {
       const targetIndex = limitWithinRange(index, 0, this._items.length - 1);
       const previousIndex = this._index;
-
       const {
         mainIndex: previousMainIndex,
         crossIndex: previousCrossIndex
       } = this._findLocationOfIndex(this._index);
-
       const {
         mainIndex,
         crossIndex
       } = this._findLocationOfIndex(targetIndex);
-
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
+      this._previous = {
+        mainIndex,
+        crossIndex,
+        realIndex: previousIndex
+      };
       this._index = targetIndex;
-
       this._indexChanged({
         previousIndex,
         index: targetIndex,
@@ -13238,7 +12037,6 @@ var APP_accelerator_home_ui = (function () {
         dataLength: this._items.length
       });
     }
-
     _findLocationOfIndex(index) {
       for (let i = 0; i < this._lines.length; i++) {
         if (this._lines[i].includes(index)) {
@@ -13248,17 +12046,14 @@ var APP_accelerator_home_ui = (function () {
           };
         }
       }
-
       return {
         mainIndex: -1,
         crossIndex: -1
       };
     }
-
     plotItems() {
       const items = this._items;
       const wrapper = this.wrapper;
-
       const {
         directionIsRow,
         mainDirection,
@@ -13271,52 +12066,42 @@ var APP_accelerator_home_ui = (function () {
         crossMarginTo,
         crossMarginFrom
       } = this._getPlotProperties(this._direction);
-
       const crossSize = this[crossDim];
       let mainPos = 0,
-          crossPos = 0,
-          lineIndex = 0;
+        crossPos = 0,
+        lineIndex = 0;
       const animateItems = [];
       const viewboundMain = directionIsRow ? 1920 : 1080;
       const viewboundCross = directionIsRow ? 1080 : 1920;
       const renderContext = this.core.renderContext;
-      this._lines = [[]]; //create empty line array
-
+      this._lines = [[]];
+      //create empty line array
       let cl = [];
       const newChildren = items.map((item, index) => {
         const sizes = this._getItemSizes(item);
-
         const targetCrossFromMargin = sizes[crossMarginFrom] || sizes.margin || 0;
-
         if (index === 0) {
           mainPos += sizes[mainMarginFrom] || sizes.margin || 0;
         }
-
         if (cl.length > 0 && (this[mainDirection] > 0 && this[mainDirection] === cl.length || this[mainDirection] === 0 && crossPos + targetCrossFromMargin + sizes[crossDim] > crossSize)) {
           const bil = this._getBiggestInLine(cl);
-
           mainPos = bil[main] + bil[mainDim] + (bil[mainMarginTo] || bil.margin || this._mainSpacing);
           crossPos = targetCrossFromMargin;
-
           this._lines.push([]);
-
           cl = [];
           lineIndex++;
         } else {
           crossPos += targetCrossFromMargin;
         }
-
         const ref = "IW-".concat(item.assignedID);
         let tmp = mainPos;
         let tcp = crossPos;
         const existingItemWrapper = wrapper.tag(ref);
-
         if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext["p".concat(main)] + wrapper[main] + mainPos <= viewboundMain || renderContext["p".concat(cross)] + wrapper[cross] + crossPos <= viewboundCross))) {
           tmp = existingItemWrapper[main];
           tcp = existingItemWrapper[cross];
           animateItems.push(index);
         }
-
         const newItem = {
           ref,
           type: ItemWrapper,
@@ -13329,9 +12114,7 @@ var APP_accelerator_home_ui = (function () {
           [cross]: tcp
         };
         crossPos += sizes[crossDim] + (sizes[crossMarginTo] || sizes.margin || this._crossSpacing);
-
         this._lines[lineIndex].push(index);
-
         cl.push(newItem);
         return newItem;
       });
@@ -13345,22 +12128,17 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       });
-
       const biggestInLastLine = this._getBiggestInLine(cl);
-
       this._resizeWrapper({
         [mainDim]: biggestInLastLine[main] + biggestInLastLine[mainDim],
         [crossDim]: crossSize
       });
     }
-
     repositionItems() {
       const wrapper = this.wrapper;
-
       if (!wrapper && wrapper.children.length) {
         return true;
       }
-
       const {
         main,
         mainDim,
@@ -13371,37 +12149,30 @@ var APP_accelerator_home_ui = (function () {
         crossMarginTo,
         crossMarginFrom
       } = this._getPlotProperties(this._direction);
-
       const crossSize = this[crossDim];
       let mainPos = 0,
-          crossPos = 0,
-          lineIndex = 0; //create empty line array
+        crossPos = 0,
+        lineIndex = 0;
 
+      //create empty line array
       let cl = [];
       this.lines = [[]];
       wrapper.children.forEach((item, index) => {
         const sizes = this._getItemSizes(item);
-
         const targetCrossFromMargin = sizes[crossMarginFrom] || sizes.margin || 0;
-
         if (index === 0) {
           mainPos += sizes[mainMarginFrom] || sizes.margin || 0;
         }
-
         if (cl.length > 0 && (this[mainDirection] > 0 && this[mainDirection] === cl.length || this[mainDirection] === 0 && crossPos + targetCrossFromMargin + sizes[crossDim] > crossSize)) {
           const bil = this._getBiggestInLine(cl);
-
           mainPos = bil[main] + bil[mainDim] + (bil[mainMarginTo] || bil.margin || this._mainSpacing);
           crossPos = targetCrossFromMargin;
-
           this._lines.push([]);
-
           cl = [];
           lineIndex++;
         } else {
           crossPos += targetCrossFromMargin;
         }
-
         item.patch({
           ["assigned".concat(main.toUpperCase())]: mainPos,
           ["assigned".concat(cross.toUpperCase())]: crossPos,
@@ -13409,48 +12180,37 @@ var APP_accelerator_home_ui = (function () {
           [cross]: crossPos
         });
         crossPos += sizes[crossDim] + (sizes[crossMarginTo] || sizes.margin || this._crossSpacing);
-
         this._lines[lineIndex].push(index);
-
         cl.push(newItem);
       });
-
       const biggestInLastLine = this._getBiggestInLine(cl);
-
       this._resizeWrapper({
         [mainDim]: biggestInLastLine[main] + biggestInLastLine[mainDim],
         [crossDim]: crossSize
       });
-
       super.repositionItems();
     }
-
     _getBiggestInLine(line) {
       const {
         mainDim
       } = this._getPlotProperties(this._direction);
-
       return line.reduce((biggestItem, newItem) => {
         if (newItem[mainDim] > biggestItem[mainDim]) {
           return newItem;
         }
-
         return biggestItem;
       });
     }
-
     navigate(shift, direction) {
       const {
         directionIsRow,
         cross,
         crossDim
       } = this._getPlotProperties(this._direction);
-
       const overCross = directionIsRow && direction === CollectionWrapper.DIRECTION.column || !directionIsRow && direction === CollectionWrapper.DIRECTION.row;
       let targetMainIndex = this._mainIndex + !!!overCross * shift;
       let targetCrossIndex = this._crossIndex + !!overCross * shift;
       let targetIndex = this._index;
-
       if (overCross && targetCrossIndex > -1 && targetCrossIndex <= this._lines[targetMainIndex].length) {
         if (this._lines[targetMainIndex][targetCrossIndex] !== undefined) {
           targetIndex = this._lines[targetMainIndex][targetCrossIndex];
@@ -13458,7 +12218,6 @@ var APP_accelerator_home_ui = (function () {
         }
       } else if (!overCross && targetMainIndex < this._lines.length && targetMainIndex > -1) {
         const targetLine = this._lines[targetMainIndex];
-
         if (this._previous && this._previous.mainIndex === targetMainIndex) {
           targetIndex = this._previous.realIndex;
           targetCrossIndex = this._previous.crossIndex;
@@ -13466,92 +12225,73 @@ var APP_accelerator_home_ui = (function () {
           const currentItem = this.currentItemWrapper;
           const m = targetLine.map(item => {
             const targetItem = this.wrapper.children[item];
-
             if (targetItem[cross] <= currentItem[cross] && currentItem[cross] <= targetItem[cross] + targetItem[crossDim]) {
               return targetItem[cross] + targetItem[crossDim] - currentItem[cross];
             }
-
             if (targetItem[cross] >= currentItem[cross] && targetItem[cross] <= currentItem[cross] + currentItem[crossDim]) {
               return currentItem[cross] + currentItem[crossDim] - targetItem[cross];
             }
-
             return -1;
           });
           let acc = -1;
           let t = -1;
-
           for (let i = 0; i < m.length; i++) {
             if (m[i] === -1 && acc > -1) {
               break;
             }
-
             if (m[i] > acc) {
               acc = m[i];
               t = i;
             }
           }
-
           if (t > -1) {
             targetCrossIndex = t;
             targetIndex = targetLine[t];
           }
         }
-
         this._previous = {
           mainIndex: this._mainIndex,
           crossIndex: this._crossIndex,
           realIndex: this._index
         };
       }
-
       if (this._index !== targetIndex) {
         this.setIndex(targetIndex);
         return true;
       }
-
       return false;
     }
-
     set rows(num) {
       this._rows = num;
       this.direction = 'row';
     }
-
     get rows() {
       return this._rows;
     }
-
     set columns(num) {
       this._columns = num;
       this.direction = 'column';
     }
-
     get columns() {
       return this._columns;
     }
-
     set crossSpacing(num) {
       this._crossSpacing = num;
     }
-
     get crossSpacing() {
       return this._crossSpacing;
     }
-
     set mainSpacing(num) {
       this._mainSpacing = num;
     }
-
     get mainSpacing() {
       return this._mainSpacing;
     }
-
     set spacing(num) {
       this._spacing = num;
       this._mainSpacing = num;
       this._crossSpacing = num;
     }
-
   }
 
   /*
@@ -13591,7 +12331,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _construct() {
       this._input = '';
       this._previousInput = '';
@@ -13604,7 +12343,6 @@ var APP_accelerator_home_ui = (function () {
       this._labelPositionStatic = true;
       this._maxLabelWidth = 0;
     }
-
     _init() {
       this.tag('PreLabel').on('txLoaded', () => {
         this._labelTxLoaded();
@@ -13613,23 +12351,19 @@ var APP_accelerator_home_ui = (function () {
         this._labelTxLoaded;
       });
     }
-
     onInputChanged(_ref) {
       let {
         input = ''
       } = _ref;
       let targetIndex = Math.max(input.length - this._input.length + this._cursorIndex, 0);
       this._input = input;
-
       this._update(targetIndex);
     }
-
     toggleCursor() {
       let bool = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : !this._cursorVisible;
       this._cursorVisible = bool;
       this.cursor[bool ? 'show' : 'hide']();
     }
-
     _labelTxLoaded() {
       const preLabel = this.tag('PreLabel');
       const cursor = this.tag('Cursor');
@@ -13638,32 +12372,26 @@ var APP_accelerator_home_ui = (function () {
       cursor.x = preLabel.renderWidth + this._cursorX;
       postLabel.x = cursor.x + cursor.w * (1 - cursor.mountX);
       this.setSmooth('x', this._labelOffset);
-
       if (!this.autoHideCursor) {
         this.toggleCursor(true);
       }
     }
-
     _update() {
       let index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       const hasInput = this._input.length > 0;
       let pre = this._description + '';
       let post = '';
-
       if (hasInput) {
         pre = this._input.substring(0, index);
         post = this._input.substring(index, this._input.length);
-
         if (this._passwordMode) {
           pre = this._passwordMask.repeat(pre.length);
           post = this._passwordMask.repeat(post.length);
         }
-
         this.toggleCursor(true);
       } else if (this._autoHideCursor) {
         this.toggleCursor(false);
       }
-
       this.patch({
         PreLabel: {
           text: {
@@ -13676,41 +12404,31 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       });
-
       if (this.h === 0) {
         this.tag('PreLabel').loadTexture();
         this.h = this.tag('PreLabel').renderHeight;
       }
-
       this._cursorIndex = index;
     }
-
     _handleRight() {
       this._update(Math.min(this._input.length, this._cursorIndex + 1));
     }
-
     _handleLeft() {
       this._update(Math.max(0, this._cursorIndex - 1));
     }
-
     _firstActive() {
       this._labelTxLoaded();
-
       this._update();
     }
-
     get input() {
       return this._input;
     }
-
     get hasInput() {
       return this._input.length > 0;
     }
-
     get cursorIndex() {
       return this._cursorIndex;
     }
-
     set inputText(obj) {
       this._inputText = obj;
       this.tag('PreLabel').patch({
@@ -13720,83 +12438,65 @@ var APP_accelerator_home_ui = (function () {
         text: obj
       });
     }
-
     get inputText() {
       return this._inputText;
     }
-
     set description(str) {
       this._description = str;
     }
-
     get description() {
       return this._description;
     }
-
     set cursor(obj) {
       if (obj.x) {
         this._cursorX = obj.x;
         delete obj.x;
       }
-
       this.tag('Cursor').patch(obj);
     }
-
     get cursor() {
       return this.tag('Cursor');
     }
-
     get cursorVisible() {
       return this._cursorVisible;
     }
-
     set autoHideCursor(bool) {
       this._autoHideCursor = bool;
     }
-
     get autoHideCursor() {
       return this._autoHideCursor;
     }
-
     set passwordMode(val) {
       this._passwordMode = val;
     }
-
     get passwordMode() {
       return this._passwordMode;
     }
-
     set passwordMask(str) {
       this._passwordMask = str;
     }
-
     get passwordmask() {
       return this._passwordMask;
-    } // the width at which the text start scrolling
+    }
 
-
+    // the width at which the text start scrolling
     set maxLabelWidth(val) {
       this._maxLabelWidth = val;
     }
-
     get maxLabelWidth() {
       return this._maxLabelWidth;
     }
-
     set labelPositionStatic(val) {
       this._labelPositionStatic = val;
     }
-
     get labelPositionStatic() {
       return this._labelPositionStatic;
     }
-
     get _labelOffset() {
       if (this._labelPositionStatic) return 0;
       let offset = this.maxLabelWidth - this.tag('Cursor').x;
       return offset < 0 ? offset : 0;
     }
-
   }
 
   /*
@@ -13832,74 +12532,56 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _construct() {
       this._backgroundColors = {};
       this._labelColors = {};
     }
-
     set data(obj) {
       this._data = obj;
-
       this._update();
     }
-
     get data() {
       return this._data;
     }
-
     set labelText(obj) {
       this._labelText = obj;
       this.tag('Label').patch({
         text: obj
       });
     }
-
     get labelText() {
       return this._labelText;
     }
-
     set label(obj) {
       this.tag('Label').patch(obj);
     }
-
     get label() {
       return this.tag('Label');
     }
-
     set labelColors(obj) {
       this._labelColors = obj;
-
       this._update();
     }
-
     get labelColors() {
       return this._labelColors;
     }
-
     set backgroundColors(obj) {
       this._backgroundColors = obj;
-
       this._update();
     }
-
     get backgroundColors() {
       return this._backgroundColors;
     }
-
     set background(obj) {
       this.tag('Background').patch(obj);
     }
-
     get background() {
       return this.tag('Background');
     }
-
     _update() {
       if (!this.active) {
         return;
       }
-
       const {
         label = ''
       } = this._data;
@@ -13924,11 +12606,9 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _firstActive() {
       this._update();
     }
-
     _focus() {
       let {
         focused,
@@ -13951,7 +12631,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _unfocus() {
       let {
         unfocused = 0xff000000
@@ -13972,15 +12651,12 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     static get width() {
       return 80;
     }
-
     static get height() {
       return 80;
     }
-
   }
 
   /*
@@ -14009,7 +12685,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _construct() {
       this._input = '';
       this._inputField = undefined;
@@ -14017,31 +12692,25 @@ var APP_accelerator_home_ui = (function () {
       this.navigationWrapAround = false;
       this.resetFocus();
     }
-
     resetFocus() {
       this._columnIndex = 0;
       this._rowIndex = 0;
       this._previousKey = null;
     }
-
     _setup() {
       this._keys = this.tag('Keys');
-
       this._update();
     }
-
     _update() {
       const {
         layouts,
         buttonTypes = {},
         styling = {}
       } = this._config;
-
       if (!this._layout || this._layout && layouts[this._layout] === undefined) {
         console.error("Configured layout \"".concat(this._layout, "\" does not exist. Picking first available: \"").concat(Object.keys(layouts)[0], "\""));
         this._layout = Object.keys(layouts)[0];
       }
-
       const {
         horizontalSpacing = 0,
         verticalSpacing = 0,
@@ -14050,11 +12719,9 @@ var APP_accelerator_home_ui = (function () {
       let rowPosition = 0;
       const isEvent = /^[A-Z][A-Za-z0-9]{1}/;
       const hasLabel = /\:/;
-
       if (buttonTypes.default === undefined) {
         buttonTypes.default = Key$1;
       }
-
       this._keys.children = layouts[this._layout].map((row, rowIndex) => {
         const {
           x = 0,
@@ -14073,20 +12740,17 @@ var APP_accelerator_home_ui = (function () {
           let keyType = buttonTypes.default;
           let action = 'Input';
           let label = key;
-
           if (isEvent.test(key)) {
             if (hasLabel.test(key)) {
               key = key.split(':');
               label = key[1].toString();
               key = key[0];
             }
-
             if (buttonTypes[key]) {
               keyType = buttonTypes[key];
               action = key.action || key;
             }
           }
-
           const keySpacing = keyType.margin || keyType.type.margin;
           const {
             w = keyType.type.width || 0,
@@ -14119,17 +12783,14 @@ var APP_accelerator_home_ui = (function () {
         });
         let rowOffset = x + (marginLeft || margin);
         let rowMount = 0;
-
         if (this.w && rowAlign === 'center') {
           rowOffset = this.w / 2;
           rowMount = 0.5;
         }
-
         if (this.w && rowAlign === 'right') {
           rowOffset = this.w - (marginRight || margin);
           rowMount = 1;
         }
-
         const currentPosition = rowPosition + (marginTop || margin);
         rowPosition = currentPosition + rowHeight + (marginBottom || margin || verticalSpacing);
         return {
@@ -14141,62 +12802,47 @@ var APP_accelerator_home_ui = (function () {
           children: rowKeys
         };
       });
-
       this._refocus();
     }
-
     _getFocused() {
       return this.currentKeyWrapper || this;
     }
-
     _handleRight() {
       return this.navigate('row', 1);
     }
-
     _handleLeft() {
       return this.navigate('row', -1);
     }
-
     _handleUp() {
       return this.navigate('column', -1);
     }
-
     _handleDown() {
       return this.navigate('column', 1);
     }
-
     _handleKey(_ref) {
       let {
         key,
         code = 'CustomKey'
       } = _ref;
-
       if (code === 'Backspace' && this._input.length === 0) {
         return false;
       }
-
       if (key === ' ') {
         key = 'Space';
       }
-
       const targetFound = this._findKey(key);
-
       if (targetFound) {
         this._handleEnter();
       }
-
       return targetFound;
     }
-
     _findKey(str) {
       const rows = this._config.layouts[this._layout];
       let i = 0,
-          j = 0;
-
+        j = 0;
       for (; i < rows.length; i++) {
         for (j = 0; j < rows[i].length; j++) {
           let key = rows[i][j];
-
           if (str.length > 1 && key.indexOf(str) > -1 || key.toUpperCase() === str.toUpperCase()) {
             this._rowIndex = i;
             this._columnIndex = j;
@@ -14204,10 +12850,8 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
       return false;
     }
-
     _handleEnter() {
       const {
         origin,
@@ -14217,21 +12861,17 @@ var APP_accelerator_home_ui = (function () {
         index: this._input.length,
         key: origin
       };
-
       if (this._inputField && this._inputField.cursorIndex) {
         event.index = this._inputField.cursorIndex;
       }
-
       if (action !== 'Input') {
         const split = event.key.split(':');
         const call = "on".concat(split[0]);
         const eventFunction = this[call];
         event.key = split[1];
-
         if (eventFunction && eventFunction.apply && eventFunction.call) {
           eventFunction.call(this, event);
         }
-
         this.signal(call, {
           input: this._input,
           keyboard: this,
@@ -14241,32 +12881,25 @@ var APP_accelerator_home_ui = (function () {
         this.addAt(event.key, event.index);
       }
     }
-
     _changeInput(input) {
       if (input.length > this._maxCharacters) {
         return;
       }
-
       const eventData = {
         previousInput: this._input,
         input: this._input = input
       };
-
       if (this._inputField && this._inputField.onInputChanged) {
         this._inputField.onInputChanged(eventData);
       }
-
       this.signal('onInputChanged', eventData);
     }
-
     focus(str) {
       this._findKey(str);
     }
-
     add(str) {
       this._changeInput(this._input + str);
     }
-
     addAt(str, index) {
       if (index > this._input.length - 1) {
         this.add(str);
@@ -14274,11 +12907,9 @@ var APP_accelerator_home_ui = (function () {
         this._changeInput(this._input.substring(0, index) + str + this._input.substring(index, this._input.length));
       }
     }
-
     remove() {
       this._changeInput(this._input.substring(0, this._input.length - 1));
     }
-
     removeAt(index) {
       if (index > this._input.length - 1) {
         this.remove();
@@ -14286,25 +12917,19 @@ var APP_accelerator_home_ui = (function () {
         this._changeInput(this._input.substring(0, index - 1) + this._input.substring(index, this._input.length));
       }
     }
-
     clear() {
       this._changeInput('');
     }
-
     layout(key) {
       if (key === this._layout) {
         return;
       }
-
       this._layout = key;
-
       if (this.attached) {
         this.resetFocus();
-
         this._update();
       }
     }
-
     inputField(component) {
       if (component && component.isComponent) {
         this._rowIndex = 0;
@@ -14318,11 +12943,9 @@ var APP_accelerator_home_ui = (function () {
         this._inputField = undefined;
       }
     }
-
     navigate(direction, shift) {
       const targetIndex = (direction === 'row' ? this._columnIndex : this._rowIndex) + shift;
       const currentRow = this.rows[this._rowIndex];
-
       if (direction === 'row' && targetIndex > -1 && targetIndex < currentRow.children.length) {
         this._previous = null;
         return this._columnIndex = targetIndex;
@@ -14331,11 +12954,9 @@ var APP_accelerator_home_ui = (function () {
         let rowLen = currentRow.children.length;
         return this._columnIndex = (targetIndex % rowLen + rowLen) % rowLen;
       }
-
       if (direction === 'column' && targetIndex > -1 && targetIndex < this.rows.length) {
         const currentRowIndex = this._rowIndex;
         const currentColumnIndex = this._columnIndex;
-
         if (this._previous && this._previous.row === targetIndex) {
           const tmp = this._previous.column;
           this._previous.column = this._columnIndex;
@@ -14348,31 +12969,25 @@ var APP_accelerator_home_ui = (function () {
           const currentX = currentRow.x - currentRow.w * currentRow.mountX + currentKey.x;
           const m = targetRow.children.map(key => {
             const keyX = targetRow.x - targetRow.w * targetRow.mountX + key.x;
-
             if (keyX <= currentX && currentX < keyX + key.w) {
               return keyX + key.w - currentX;
             }
-
             if (keyX >= currentX && keyX <= currentX + currentKey.w) {
               return currentX + currentKey.w - keyX;
             }
-
             return -1;
           });
           let acc = -1;
           let t = -1;
-
           for (let i = 0; i < m.length; i++) {
             if (m[i] === -1 && acc > -1) {
               break;
             }
-
             if (m[i] > acc) {
               acc = m[i];
               t = i;
             }
           }
-
           if (t > -1) {
             this._rowIndex = targetIndex;
             this._columnIndex = t;
@@ -14382,7 +12997,6 @@ var APP_accelerator_home_ui = (function () {
             return this._rowIndex = 0;
           }
         }
-
         if (this._rowIndex !== currentRowIndex) {
           this._previous = {
             column: currentColumnIndex,
@@ -14399,83 +13013,65 @@ var APP_accelerator_home_ui = (function () {
         this._rowIndex = (targetIndex % nrRows + nrRows) % nrRows;
         this._columnIndex = Math.min(this.rows[this._rowIndex].children.length - 1, this._columnIndex);
       }
-
       return false;
     }
-
     onSpace(_ref2) {
       let {
         index
       } = _ref2;
       this.addAt(' ', index);
     }
-
     onBackspace(_ref3) {
       let {
         index
       } = _ref3;
       this.removeAt(index);
     }
-
     onClear() {
       this.clear();
     }
-
     onLayout(_ref4) {
       let {
         key
       } = _ref4;
       this.layout(key);
     }
-
     set config(obj) {
       this._config = obj;
-
       if (this.active) {
         this._update();
       }
     }
-
     get config() {
       return this._config;
     }
-
     set currentInputField(component) {
       this.inputField(component);
     }
-
     get currentInputField() {
       return this._inputField;
     }
-
     set currentLayout(str) {
       this.layout(str);
     }
-
     get currentLayout() {
       return this._layout;
     }
-
     set maxCharacters(num) {
       this._maxCharacters = num;
     }
-
     get maxCharacters() {
       return this._maxCharacters;
     }
-
     get rows() {
       return this._keys && this._keys.children;
     }
-
     get currentKeyWrapper() {
       return this.rows && this.rows[this._rowIndex].children[this._columnIndex];
     }
-
     get currentKey() {
       return this.currentKeyWrapper && this.currentKeyWrapper.key;
     }
-
   }
 
   /*
@@ -14500,7 +13096,6 @@ var APP_accelerator_home_ui = (function () {
     plotItems() {
       const items = this._items;
       const wrapper = this.wrapper;
-
       const {
         directionIsRow,
         main,
@@ -14510,36 +13105,30 @@ var APP_accelerator_home_ui = (function () {
         cross,
         crossDim
       } = this._getPlotProperties(this._direction);
-
       let crossPos = 0,
-          crossSize = 0,
-          position = 0;
+        crossSize = 0,
+        position = 0;
       const animateItems = [];
       const viewboundMain = directionIsRow ? 1920 : 1080;
       const viewboundCross = directionIsRow ? 1080 : 1920;
       const renderContext = this.core.renderContext;
       const newChildren = items.map((item, index) => {
         const sizes = this._getItemSizes(item);
-
         position += sizes[mainMarginFrom] || sizes.margin || 0;
-
         if (crossSize < sizes[crossDim]) {
           crossSize = sizes[crossDim];
         }
-
         const ref = "IW-".concat(item.assignedID);
         let mainPos = position;
         crossPos = item[cross] || crossPos;
         let tmp = mainPos;
         let tcp = crossPos;
         const existingItemWrapper = wrapper.tag(ref);
-
         if (existingItemWrapper && (existingItemWrapper.active && (crossPos !== existingItemWrapper[cross] || mainPos !== existingItemWrapper[main]) || !existingItemWrapper.active && (renderContext["p".concat(main)] + wrapper[main] + mainPos <= viewboundMain || renderContext["p".concat(cross)] + wrapper[cross] + crossPos <= viewboundCross))) {
           tmp = existingItemWrapper[main];
           tcp = existingItemWrapper[cross];
           animateItems.push(index);
         }
-
         position += sizes[mainDim] + (sizes[mainMarginTo] || sizes.margin || this._spacing);
         return {
           ref,
@@ -14563,17 +13152,13 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       });
-
       this._resizeWrapper(crossSize);
     }
-
     repositionItems() {
       const wrapper = this.wrapper;
-
       if (!wrapper && wrapper.children.length) {
         return true;
       }
-
       const {
         main,
         mainDim,
@@ -14582,20 +13167,16 @@ var APP_accelerator_home_ui = (function () {
         cross,
         crossDim
       } = this._getPlotProperties(this._direction);
-
       let crossPos = 0,
-          crossSize = 0,
-          position = 0;
+        crossSize = 0,
+        position = 0;
       wrapper.children.forEach(item => {
         const sizes = this._getItemSizes(item.component);
-
         position += sizes[mainMarginFrom] || sizes.margin || 0;
         crossPos = item[cross] || crossPos;
-
         if (crossSize < sizes[crossDim]) {
           crossSize = sizes[crossDim];
         }
-
         const mainPos = position;
         position += sizes[mainDim] + (sizes[mainMarginTo] || sizes.margin || this.spacing);
         item.patch({
@@ -14606,12 +13187,9 @@ var APP_accelerator_home_ui = (function () {
           ...sizes
         });
       });
-
       this._resizeWrapper(crossSize);
-
       super.repositionItems();
     }
-
   }
 
   /*
@@ -14652,7 +13230,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _construct() {
       this._autoStart = true;
       this._scrollAnimation = false;
@@ -14666,30 +13243,24 @@ var APP_accelerator_home_ui = (function () {
         stopMethod: 'immediate'
       };
     }
-
     _init() {
       const label = this.tag('Label');
       label.on('txLoaded', () => {
         this._update(label);
-
         this._updateAnimation(label);
-
         if (this._autoStart) {
           this.start();
         }
       });
     }
-
     _update() {
       let label = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tag('Label');
       const renderWidth = label.renderWidth;
       const noScroll = renderWidth <= this.renderWidth;
       let labelPos = 0;
-
       if (noScroll && this._align !== 'left') {
         labelPos = (this.renderWidth - renderWidth) * ScrollingLabel.ALIGN[this._align];
       }
-
       this.tag('LabelClipper').patch({
         h: label.renderHeight,
         shader: {
@@ -14706,20 +13277,17 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _updateAnimation() {
       let label = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.tag('Label');
-
       if (this._scrollAnimation) {
         this._scrollAnimation.stopNow();
       }
-
       if (label.renderWidth > this.renderWidth) {
         if (!this._animationSettings.duration) {
           this._animationSettings.duration = label.renderWidth / 50;
         }
-
-        this._scrollAnimation = this.animation({ ...this._animationSettings,
+        this._scrollAnimation = this.animation({
+          ...this._animationSettings,
           actions: [{
             t: 'LabelWrapper',
             p: 'x',
@@ -14741,112 +13309,885 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     start() {
       if (this._scrollAnimation) {
         this._scrollAnimation.stopNow();
-
         this.tag('LabelCopy').patch({
           text: this._label
         });
-
         this._scrollAnimation.start();
       }
     }
-
     stop() {
       if (this._scrollAnimation) {
         this._scrollAnimation.stopNow();
-
         this.tag('LabelCopy').text = '';
       }
     }
-
     set label(obj) {
       if (typeof obj === 'string') {
         obj = {
           text: obj
         };
       }
-
-      this._label = { ...this._label,
+      this._label = {
+        ...this._label,
         ...obj
       };
       this.tag('Label').patch({
         text: obj
       });
     }
-
     get label() {
       return this.tag('Label');
     }
-
     set align(pos) {
       this._align = pos;
     }
-
     get align() {
       return this._align;
     }
-
     set autoStart(bool) {
       this._autoStart = bool;
     }
-
     get autoStart() {
       return this._autoStart;
     }
-
     set repeat(num) {
       this.animationSettings = {
         repeat: num
       };
     }
-
     get repeat() {
       return this._animationSettings.repeat;
     }
-
     set delay(num) {
       this.animationSettings = {
         delay: num
       };
     }
-
     get delay() {
       return this._animationSettings.delay;
     }
-
     set duration(num) {
       this.animationSettings = {
         duration: num
       };
     }
-
     get duration() {
       return this._animationSettings.duration;
     }
-
     set animationSettings(obj) {
-      this._animationSettings = { ...this._animationSettings,
+      this._animationSettings = {
+        ...this._animationSettings,
         ...obj
       };
-
       if (this._scrollAnimation) {
         this._updateAnimation();
       }
     }
-
     get animationSettings() {
       return this._animationSettings;
     }
-
   }
   ScrollingLabel.ALIGN = {
     left: 0,
     center: 0.5,
     right: 1
   };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  const calcCarouselNavigation = (dir, current, min, max) => {
+    let target = current + dir;
+    if (target < min) {
+      target = max;
+    }
+    if (target > max) {
+      target = min;
+    }
+    return target;
+  };
+  class Stepper extends lng$1.Component {
+    static _template() {
+      return {
+        h: 80,
+        w: 574,
+        Focus: {
+          alpha: 0,
+          w: w => w,
+          h: h => h,
+          rect: true
+        },
+        Label: {
+          x: 30,
+          y: h => h * 0.5,
+          mountY: 0.5,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        },
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 30;
+      this._max = 100;
+      this._min = 0;
+      this._value = 50;
+      this._options = undefined;
+      this._label = 'label';
+      this._focusAnimation = null;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'Label',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this._update();
+    }
+    _navigate(dir) {
+      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
+      const event = {
+        value: this._value
+      };
+      if (this._options) {
+        event.options = this._options;
+      }
+      this.fireAncestors('$onValueChanged', event);
+      this.signal('onValueChanged', event);
+    }
+    _handleLeft() {
+      this._navigate(-1);
+    }
+    _handleRight() {
+      this._navigate(1);
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set label(str) {
+      this._label = str;
+      if (this.active) {
+        this.tag('Label').text.text = str;
+      }
+    }
+    get label() {
+      return this._label;
+    }
+    set value(str) {
+      this._value = str;
+      if (this.active) {
+        this.tag('Value').text.text = this.optionValue || this._value;
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    get optionValue() {
+      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
+    }
+    set options(arr) {
+      const refactor = arr.map(option => {
+        if (typeof option === 'string') {
+          return {
+            label: option
+          };
+        }
+        return option;
+      });
+      this._value = 0;
+      this._options = refactor;
+      this._max = refactor.length - 1;
+      this._update();
+    }
+    get options() {
+      return this._options;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ArrowStepper extends Stepper {
+    static _template() {
+      return {
+        ...super._template(),
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          ArrowLeft: {
+            y: h => h * 0.5,
+            mountY: 0.5
+          },
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          },
+          ArrowRight: {
+            y: h => h * 0.5,
+            x: w => w,
+            mountY: 0.5,
+            mountX: 1
+          }
+        }
+      };
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          ArrowLeft: {
+            color: this._labelColor
+          },
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          },
+          ArrowRight: {
+            color: this._labelColor
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'ValueWrapper.ArrowLeft',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.ArrowRight',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      const arrowLeft = this.tag('ArrowLeft');
+      const arrowRight = this.tag('ArrowRight');
+      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
+        arrowLeft.text = {
+          text: '\u25c0',
+          fontSize: 18
+        };
+      }
+      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
+        arrowRight.text = {
+          text: '\u25b6',
+          fontSize: 18
+        };
+      }
+      this._update();
+    }
+  }
+
+  class ColorShift extends lng$1.Component {
+    static _template() {
+      return {
+        w: 574,
+        h: 240,
+        List: {
+          type: List,
+          w: w => w,
+          h: h => h,
+          forceLoad: true,
+          spacing: 0,
+          direction: 'column'
+        }
+      };
+    }
+    _construct() {
+      this._autoColorShift = true;
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._options = [{
+        type: 'neutral',
+        label: 'normal'
+      }, {
+        type: 'protanopia',
+        label: 'Protanopia'
+      }, {
+        type: 'deuteranopia',
+        label: 'Deuteranopia'
+      }, {
+        type: 'tritanopia',
+        label: 'Tritanopia'
+      }, {
+        type: 'monochromacy',
+        label: 'Achromatopsia'
+      }];
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
+    }
+    _getFocused() {
+      return this.tag('List');
+    }
+    _shiftColors() {
+      if (this._autoColorShift && this.application && this.application.colorshift) {
+        this.application.colorshift(this._settings.correction, this._settings);
+      }
+    }
+    $onValueChanged() {
+      const listItems = this.tag('List').items;
+      const correction = listItems[0];
+      this._settings = {
+        correction: correction.options[correction.value].type,
+        brightness: listItems[1].value,
+        contrast: listItems[2].value,
+        gamma: listItems[3].value
+      };
+      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
+        const steppers = listItems.slice(1);
+        steppers.forEach(stepper => {
+          stepper.value = 50;
+        });
+      }
+      this._currentCorrection = this._settings.correction;
+      this._shiftColors();
+      this.signal('onColorShift', this._settings);
+    }
+    _update() {
+      const list = this.tag('List');
+      const steppers = ['Brightness', 'Contrast', 'Gamma'];
+      const options = this._options;
+      const settings = this._settings;
+      const colors = {
+        focusColor: this._focusColor,
+        labelColor: this._labelColor,
+        labelColorFocused: this._labelColorFocused
+      };
+      this._shiftColors();
+      const settingItems = steppers.map(stepper => {
+        const lowerC = stepper.toLocaleLowerCase();
+        return {
+          type: this["".concat(lowerC, "Component")],
+          label: stepper,
+          value: settings[lowerC],
+          w: this.finalW,
+          h: 80,
+          ...colors
+        };
+      });
+      settingItems.unshift({
+        type: this.correctionComponent,
+        options,
+        value: findIndexOfObject(options, settings.correction, 'type'),
+        label: 'Color adjustment',
+        w: this.finalW,
+        h: 80,
+        ...colors
+      });
+      list.clear();
+      list.add(settingItems);
+    }
+    _firstActive() {
+      if (!this._settings) {
+        this._settings = {
+          correction: 'neutral',
+          brightness: 50,
+          contrast: 50,
+          gamma: 50
+        };
+      }
+      this._update();
+    }
+    set settings(obj) {
+      this._settings = obj;
+      if (this.active) {
+        const listItems = this.tag('List').items;
+        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
+        listItems[1] = obj.brightness || 50;
+        listItems[2] = obj.contrast || 50;
+        listItems[3] = obj.gamma || 50;
+      }
+    }
+    get settings() {
+      return this._settings;
+    }
+    get correctionTag() {
+      return this.tag('List').items[0];
+    }
+    get brightnessTag() {
+      return this.tag('List').items[1];
+    }
+    get contrastTag() {
+      return this.tag('List').items[2];
+    }
+    get gammaTag() {
+      return this.tag('List').items[3];
+    }
+    get adjustmentTags() {
+      return this.tag('List').items;
+    }
+    set stepperComponent(component) {
+      this._stepperComponent = component;
+    }
+    get stepperComponent() {
+      return this._stepperComponent || ArrowStepper;
+    }
+    set correctionComponent(component) {
+      this._correctionComponent = component;
+    }
+    get correctionComponent() {
+      return this._correctionComponent || this.stepperComponent;
+    }
+    set brightnessComponent(component) {
+      this._brightnessComponent = component;
+    }
+    get brightnessComponent() {
+      return this._brightnessComponent || this.stepperComponent;
+    }
+    set contrastComponent(component) {
+      this._contrastComponent = component;
+    }
+    get contrastComponent() {
+      return this._contrastComponent || this.stepperComponent;
+    }
+    set gammaComponent(component) {
+      this._gammaComponent = component;
+    }
+    get gammaComponent() {
+      return this._gammaComponent || this.stepperComponent;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class CarouselItem extends lng$1.Component {
+    static _template() {
+      return {
+        Focus: {
+          alpha: 0,
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          w: 120,
+          h: 50,
+          rect: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 25
+          }
+        },
+        Label: {
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          renderOffscreen: true,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 40;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
+    }
+    set label(str) {
+      this.tag('Label').text.text = str;
+      this._label = str;
+    }
+    get label() {
+      return this._label;
+    }
+    _init() {
+      const label = this.tag('Label');
+      label.on('txLoaded', () => {
+        this.patch({
+          w: label.renderWidth,
+          Focus: {
+            w: label.renderWidth + this._padding * 2
+          }
+        });
+        if (this.collectionWrapper) {
+          this.collectionWrapper.reposition();
+        }
+      });
+    }
+    _focus() {
+      this.patch({
+        Focus: {
+          smooth: {
+            alpha: 1
+          }
+        },
+        Label: {
+          smooth: {
+            color: this._labelColorFocused
+          }
+        }
+      });
+    }
+    _unfocus(target) {
+      if (target.isCarouselItem === true) {
+        this.patch({
+          Focus: {
+            smooth: {
+              alpha: 0
+            }
+          },
+          Label: {
+            smooth: {
+              color: this._labelColor
+            }
+          }
+        });
+      }
+    }
+    _firstActive() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          color: this._labelColor
+        }
+      });
+      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
+        this._focus();
+      }
+    }
+    get isCarouselItem() {
+      return true;
+    }
+    static get width() {
+      return 120;
+    }
+    static get height() {
+      return 50;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ProgressBar$1 extends lng$1.Component {
+    static _template() {
+      return {
+        w: 300,
+        h: 10,
+        Background: {
+          w: w => w,
+          h: h => h,
+          rect: true,
+          rtt: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 5
+          },
+          Progress: {
+            h: h => h,
+            w: 10,
+            rect: true,
+            shader: {
+              type: lng$1.shaders.RoundedRectangle,
+              radius: 0
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._progressColor = 0xff009245;
+      this._progressColorFocused = undefined;
+      this._backgroundColor = 0xff9d9d9d;
+      this._backgroundColorFocused = undefined;
+      this._backgroundRadius = 5;
+      this._progressRadius = 0;
+      this.value = 0.5;
+      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
+    }
+    progress(p) {
+      if (p > 1) {
+        p = p / 100;
+      }
+      this._value = p;
+      this.tag('Progress').w = this.w * p;
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Background',
+          p: 'color',
+          v: {
+            0: this._backgroundColor,
+            1: this._backgroundColorFocused || this._backgroundColor
+          }
+        }, {
+          t: 'Background.Progress',
+          p: 'color',
+          v: {
+            0: this._progressColor,
+            1: this._progressColorFocused || this._progressColor
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this.patch({
+        Background: {
+          color: this._backgroundColor,
+          shader: {
+            radius: this._backgroundRadius
+          },
+          Progress: {
+            color: this._progressColor,
+            shader: {
+              radius: this._progressRadius
+            }
+          }
+        }
+      });
+      this.progress(this._value);
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set value(p) {
+      this._value = p;
+      if (this.active) {
+        this.progress(p);
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    set backgroundRadius(num) {
+      this._backgroundRadius = num;
+      if (this.active) {
+        this.tag('Background').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    set progressRadius(num) {
+      this._progressRadius = num;
+      if (this.active) {
+        this.tag('Progress').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    get backgroundTag() {
+      return this.tag('Background');
+    }
+    get progressTag() {
+      return this.tag('Progress');
+    }
+  }
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -14866,8 +14207,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /** Class for main view component in home UI */
 
+  /** Class for main view component in home UI */
   class MainView extends lng$1.Component {
     /**
      * Function to render various elements in main view.
@@ -14875,7 +14216,6 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('home'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -15100,18 +14440,14 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     pageTransition() {
       return 'up';
     }
-
     moveDownContent() {
       let inputSelectOffset = 0;
-
       if (this.inputSelect) {
         inputSelectOffset = 275;
       }
-
       this.tag('Text0').alpha = 1;
       this.tag("Inputs").y = 440;
       this.tag('Text1').y = 440 + inputSelectOffset;
@@ -15125,15 +14461,12 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Text5").y = 1516 + inputSelectOffset;
       this.tag("UsbApps").y = 1556 + inputSelectOffset;
     }
-
     showInputSelect() {
       this.tag("Inputs").visible = true;
       let gracenoteOffset = 0;
-
       if (!this.gracenote) {
         gracenoteOffset = 440;
       }
-
       this.tag("Inputs").y = this.gracenote ? 440 : 0;
       this.tag('Text1').y = 440 + 275 - gracenoteOffset;
       this.tag('AppList').y = 477 + 275 - gracenoteOffset;
@@ -15146,11 +14479,10 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Text5").y = 1516 + 275 - gracenoteOffset;
       this.tag("UsbApps").y = 1556 + 275 - gracenoteOffset;
     }
+
     /**
      * @param {any} data
      */
-
-
     setGracenoteData(data) {
       if (!this.gracenote) {
         this.gracenote = true;
@@ -15159,13 +14491,10 @@ var APP_accelerator_home_ui = (function () {
         this.appItems = this.currentItems;
       }
     }
-
     _handleBack() {}
-
     _init() {
       this.gracenote = false;
       this.inputSelect = false; //false by default
-
       this.settingsScreen = false;
       this.indexVal = 0;
       const config = {
@@ -15178,7 +14507,9 @@ var APP_accelerator_home_ui = (function () {
       this.xcastApi = new XcastApi();
       this.hdmiApi = new HDMIApi();
       this.appApi = new AppApi();
-      let thunder = thunderJS(config); // for initially showing/hiding usb icon
+      let thunder = thunderJS(config);
+
+      // for initially showing/hiding usb icon
 
       var appItems = this.homeApi.getAppListInfo();
       var data = this.homeApi.getPartnerAppsInfo();
@@ -15199,18 +14530,15 @@ var APP_accelerator_home_ui = (function () {
       var appdetails_format = [];
       var usbAppsArr = [];
       var usbApps = 0;
-
       try {
         if (data != null && JSON.parse(data).hasOwnProperty(prop_apps)) {
           appdetails = JSON.parse(data).applications;
-
           for (var i = 0; i < appdetails.length; i++) {
             if (appdetails[i].hasOwnProperty(prop_displayname) && appdetails[i].hasOwnProperty(prop_uri) && appdetails[i].hasOwnProperty(prop_apptype)) {
               usbAppsArr.push(appdetails[i]);
               usbApps++;
             }
           }
-
           for (var i = 0; i < appItems.length; i++) {
             appdetails_format.push(appItems[i]);
           }
@@ -15221,14 +14549,11 @@ var APP_accelerator_home_ui = (function () {
         appdetails_format = appItems;
         console.log('Query data is not proper: ' + e);
       }
-
       this.firstRowItems = appdetails_format;
       this.tempRow = JSON.parse(JSON.stringify(this.firstRowItems));
-
       if (this.firstRowItems[0].uri === 'USB') {
         this.tempRow.shift();
       }
-
       this.appItems = this.tempRow;
       this.usbApps = usbAppsArr;
       this.hdmiApi.activate().then(() => {
@@ -15240,7 +14565,6 @@ var APP_accelerator_home_ui = (function () {
         });
         this.hdmiApi.registerEvent('onSignalChanged', notification => {
           console.log('onSignalChanged ', JSON.stringify(notification));
-
           if (notification.signalStatus !== 'stableSignal') {
             this.appApi.setVisibility('ResidentApp', true);
             this.widgets.fail.notify({
@@ -15254,41 +14578,35 @@ var APP_accelerator_home_ui = (function () {
           console.log('videoStreamInfoUpdate ', JSON.stringify(notification));
         });
         this.inputSelect = true; //set the inputSelect to true if the device is tv, here considering hdmiApi is only available on tv
-
         this.appItems = this.tempRow;
         this.hdmiApi.getHDMIDevices().then(res => {
           if (res.length > 0) this.inputItems = res;
         });
       }).catch(err => {
         console.log('HDMIInput Plugin not activated', err);
-      }); //get the available input methods from the api
-      // for USB event
+      });
+      //get the available input methods from the api
 
+      // for USB event
       const registerListener = () => {
         let listener;
         listener = thunder.on('org.rdk.UsbAccess', 'onUSBMountChanged', notification => {
           console.log('onUsbMountChanged notification: ', JSON.stringify(notification));
           Storage.set('UsbMountedStatus', notification.mounted ? 'mounted' : 'unmounted');
           const currentPage = window.location.href.split('#').slice(-1)[0];
-
           if (Storage.get('UsbMedia') === 'ON') {
             if (notification.mounted) {
               this.appItems = this.firstRowItems;
-
               this._setState('AppList.0');
             } else if (!notification.mounted) {
               this.appItems = this.tempRow;
-
               this._setState('AppList.0');
             }
-
             console.log("app items = ".concat(this.appItems, " ; "));
-
             if (currentPage === 'menu') {
               //refresh page to hide or show usb icon
               console.log('page refreshed on unplug/plug');
             }
-
             if (!notification.mounted) {
               //if mounted is false
               if (currentPage === 'usb' || currentPage === 'usb/image' || currentPage === 'usb/player') {
@@ -15298,24 +14616,24 @@ var APP_accelerator_home_ui = (function () {
               }
             }
           }
-
           console.log("usb event successfully registered");
         });
         return listener;
       };
-
       thunder.on('org.rdk.Network.1', 'onIPAddressStatusChanged', notification => {
         console.log('IP ADDRESS changed', JSON.stringify(notification));
-
         if (notification.status === 'ACQUIRED') {
           Storage.set('ipAddress', notification.ip4Address);
           this.metroApps = this.homeApi.getOnlineMetroApps();
         } else {
-          Storage.set('ipAddress', null); //this.metroApps = this.homeApi.getMetroInfo()
+          Storage.set('ipAddress', null);
+          //this.metroApps = this.homeApi.getMetroInfo()
         }
       });
+
       this.fireAncestors("$mountEventConstructor", registerListener.bind(this));
-      this.refreshFirstRow(); // this._setState('AppList.0')
+      this.refreshFirstRow();
+      // this._setState('AppList.0')
     }
 
     _firstActive() {
@@ -15336,7 +14654,6 @@ var APP_accelerator_home_ui = (function () {
           console.error("error while disabling the usb plugin = ".concat(err));
         });
       }
-
       if (this.gracenote) {
         this._setState("Gracenote");
       } else if (this.inputSelect) {
@@ -15345,20 +14662,15 @@ var APP_accelerator_home_ui = (function () {
         this._setState("AppList.0");
       }
     }
-
     _focus() {
       this._setState(this.state);
-
-      this.widgets.menu.setPanelsVisibility();
     }
-
     _firstEnable() {
       console.timeEnd('PerformanceTest');
       console.log('Mainview Screen timer end - ', new Date().toUTCString());
       this.networkApi = new Network();
       this.internetConnectivity = false;
     }
-
     scroll(val) {
       this.tag('MainView').patch({
         smooth: {
@@ -15369,7 +14681,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     refreshFirstRow() {
       if (Storage.get('UsbMedia') === 'ON') {
         this.usbApi.activate().then(res => {
@@ -15396,11 +14707,10 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
+
     /**
      * Function to set details of items in gracenote list.
      */
-
-
     set graceNoteItems(items) {
       this.moveDownContent();
       this.tag('Gracenote').items = items.map((info, idx) => {
@@ -15416,10 +14726,8 @@ var APP_accelerator_home_ui = (function () {
           bar: 10
         };
       });
-
       this._setState('Gracenote');
     }
-
     set inputItems(items) {
       this.showInputSelect();
       this.tag("Inputs.Slider").items = items.map((info, idx) => {
@@ -15427,7 +14735,8 @@ var APP_accelerator_home_ui = (function () {
           w: 268,
           h: 151,
           type: ListItem,
-          data: { ...info,
+          data: {
+            ...info,
             displayName: "Port ".concat(info.id),
             url: "/images/inputs/HDMI.jpg"
           },
@@ -15437,10 +14746,8 @@ var APP_accelerator_home_ui = (function () {
           bar: 12
         };
       });
-
       this._setState("Inputs.0");
     }
-
     set showcaseApps(items) {
       this.tag('ShowcaseApps').items = items.map((info, idx) => {
         return {
@@ -15455,11 +14762,10 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
+
     /**
      * Function to set details of items in app list.
      */
-
-
     set appItems(items) {
       this.currentItems = items;
       this.tag('AppList').clear();
@@ -15476,7 +14782,6 @@ var APP_accelerator_home_ui = (function () {
         };
       }));
     }
-
     set metroApps(items) {
       this.tag('MetroApps').items = items.map((info, index) => {
         return {
@@ -15491,11 +14796,10 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
+
     /**
      * Function to set details of items in tv shows list.
      */
-
-
     set tvShowItems(items) {
       this.tag('TVShows').items = items.map((info, idx) => {
         return {
@@ -15510,12 +14814,10 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
-
     set usbApps(items) {
       if (items.length > 0) {
         this.tag('Text5').alpha = 1;
       }
-
       this.tag('UsbApps').items = items.map((info, index) => {
         return {
           w: 257,
@@ -15532,8 +14834,6 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to set the state in main view.
      */
-
-
     index(index) {
       if (index == 0) {
         this._setState('AppList');
@@ -15552,27 +14852,21 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to define various states needed for main view.
      */
-
-
     static _states() {
       return [class Gracenote extends this {
         $enter() {
           this.indexVal = 0;
           this.scroll(270);
         }
-
         $exit() {
           this.tag('Text0').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Text0').text.fontStyle = 'bold';
-
           if (this.tag('Gracenote').length) {
             return this.tag('Gracenote').element;
           }
         }
-
         _handleDown() {
           if (this.inputSelect) {
             this._setState('Inputs');
@@ -15580,21 +14874,17 @@ var APP_accelerator_home_ui = (function () {
             this._setState('AppList');
           }
         }
-
         _handleRight() {
           if (this.tag('Gracenote').length - 1 != this.tag('Gracenote').index) {
             this.tag('Gracenote').setNext();
             return this.tag('Gracenote').element;
           }
         }
-
         _handleUp() {
           this.widgets.menu.notify('TopPanel');
         }
-
         _handleLeft() {
           this.tag('Text0').text.fontStyle = 'normal';
-
           if (0 != this.tag('Gracenote').index) {
             this.tag('Gracenote').setPrevious();
             return this.tag('Gracenote').element;
@@ -15602,37 +14892,30 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         _handleEnter() {
           Router.navigate('menu/details', {
             gracenoteItem: this.tag('Gracenote').element.data,
             key: this.key
           });
         }
-
       }, class Inputs extends this {
         $enter() {
           this.tag('Inputs.Title').text.fontStyle = 'bold';
           this.indexVal = 0;
           this.scroll(270);
         }
-
         $exit() {
           this.tag('Inputs.Title').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Inputs.Title').text.fontStyle = 'bold';
-
           if (this.tag("Inputs.Slider").length) {
             return this.tag("Inputs.Slider").element;
           }
         }
-
         _handleDown() {
           this._setState('AppList');
         }
-
         _handleUp() {
           if (this.gracenote) {
             this._setState('Gracenote');
@@ -15640,7 +14923,6 @@ var APP_accelerator_home_ui = (function () {
             this.widgets.menu.notify('TopPanel');
           }
         }
-
         _handleLeft() {
           if (0 != this.tag('Inputs.Slider').index) {
             this.tag('Inputs.Slider').setPrevious();
@@ -15650,14 +14932,12 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         _handleRight() {
           if (this.tag('Inputs.Slider').length - 1 != this.tag('Inputs.Slider').index) {
             this.tag('Inputs.Slider').setNext();
             return this.tag('Inputs.Slider').element;
           }
         }
-
         _handleEnter() {
           console.log(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data);
           this.hdmiApi.setHDMIInput(this.tag('Inputs.Slider').items[this.tag('Inputs.Slider').index].data).then(res => {
@@ -15678,34 +14958,27 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Fail');
           });
         }
-
       }, class AppList extends this {
         $enter() {
           this.indexVal = 0;
-
           if (this.inputSelect && this.gracenote) {
             this.scroll(-100);
           } else {
             this.scroll(270);
           }
         }
-
         $exit() {
           this.tag('Text1').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Text1').text.fontStyle = 'bold';
-
           if (this.tag('AppList').length) {
             return this.tag('AppList');
           }
         }
-
         _handleDown() {
           this._setState('MetroApps');
         }
-
         _handleUp() {
           if (this.inputSelect) {
             this._setState('Inputs');
@@ -15715,16 +14988,13 @@ var APP_accelerator_home_ui = (function () {
             this.widgets.menu.notify('TopPanel');
           }
         }
-
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal';
           Router.focusWidget('Menu');
         }
-
         async _handleEnter() {
           let applicationType = this.tag('AppList').items[this.tag('AppList').index].data.applicationType;
           let uri = this.tag('AppList').items[this.tag('AppList').index].data.uri;
-
           if (uri === 'USB') {
             this.usbApi.getMountedDevices().then(result => {
               if (result.mounted.length === 1) {
@@ -15741,7 +15011,6 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class MetroApps extends this {
         $enter() {
           if (this.inputSelect && this.gracenote) {
@@ -15749,40 +15018,31 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.scroll(-100);
           }
-
           this.indexVal = 1;
         }
-
         $exit() {
           this.tag('Text2').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Text2').text.fontStyle = 'bold';
-
           if (this.tag('MetroApps').length) {
             return this.tag('MetroApps').element;
           }
         }
-
         _handleUp() {
           this._setState('AppList');
         }
-
         _handleDown() {
           this._setState('TVShows');
         }
-
         _handleRight() {
           if (this.tag('MetroApps').length - 1 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setNext();
             return this.tag('MetroApps').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text2').text.fontStyle = 'normal';
-
           if (0 != this.tag('MetroApps').index) {
             this.tag('MetroApps').setPrevious();
             return this.tag('MetroApps').element;
@@ -15790,7 +15050,6 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         async _handleEnter() {
           let applicationType = this.tag('MetroApps').items[this.tag('MetroApps').index].data.applicationType;
           let params = {
@@ -15801,42 +15060,33 @@ var APP_accelerator_home_ui = (function () {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
-
       }, class TVShows extends this {
         $enter() {
           this.indexVal = 2;
-
           if (this.inputSelect && this.gracenote) {
             this.scroll(-600);
           } else {
             this.scroll(-400);
           }
         }
-
         _handleUp() {
           this.scroll(270);
-
           this._setState('MetroApps');
         }
-
         _getFocused() {
           this.tag('Text3').text.fontStyle = 'bold';
-
           if (this.tag('TVShows').length) {
             return this.tag('TVShows').element;
           }
         }
-
         _handleRight() {
           if (this.tag('TVShows').length - 1 != this.tag('TVShows').index) {
             this.tag('TVShows').setNext();
             return this.tag('TVShows').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text3').text.fontStyle = 'normal';
-
           if (0 != this.tag('TVShows').index) {
             this.tag('TVShows').setPrevious();
             return this.tag('TVShows').element;
@@ -15844,11 +15094,10 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         _handleDown() {
           // if (this.tag('UsbApps').length) {
-          this._setState("ShowcaseApps"); //}
-
+          this._setState("ShowcaseApps");
+          //}
         }
 
         async _handleEnter() {
@@ -15857,17 +15106,14 @@ var APP_accelerator_home_ui = (function () {
           } catch {
             this.internetConnectivity = false;
           }
-
           if (this.internetConnectivity) {
             //this.fireAncestors('$goToPlayer')
             Router.navigate('player');
           }
         }
-
         $exit() {
           this.tag('Text3').text.fontStyle = 'normal';
         }
-
       }, class ShowcaseApps extends this {
         $enter() {
           if (this.inputSelect && this.gracenote) {
@@ -15876,39 +15122,31 @@ var APP_accelerator_home_ui = (function () {
             this.scroll(-550);
           }
         }
-
         $exit() {
           this.tag('Text4').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Text4').text.fontStyle = 'bold';
-
           if (this.tag('ShowcaseApps').length) {
             return this.tag('ShowcaseApps').element;
           }
         }
-
         _handleUp() {
           this._setState('TVShows');
         }
-
         _handleRight() {
           if (this.tag('ShowcaseApps').length - 1 != this.tag('ShowcaseApps').index) {
             this.tag('ShowcaseApps').setNext();
             return this.tag('ShowcaseApps').element;
           }
         }
-
         _handleDown() {
           if (this.tag('UsbApps').length) {
             this._setState("UsbApps");
           }
         }
-
         _handleLeft() {
           this.tag('Text4').text.fontStyle = 'normal';
-
           if (0 != this.tag('ShowcaseApps').index) {
             this.tag('ShowcaseApps').setPrevious();
             return this.tag('ShowcaseApps').element;
@@ -15916,7 +15154,6 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         async _handleEnter() {
           let applicationType = this.tag('ShowcaseApps').items[this.tag('ShowcaseApps').index].data.applicationType;
           let params = {
@@ -15927,7 +15164,6 @@ var APP_accelerator_home_ui = (function () {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
-
       }, class UsbApps extends this {
         $enter() {
           if (this.inputSelect && this.gracenote) {
@@ -15936,33 +15172,26 @@ var APP_accelerator_home_ui = (function () {
             this.scroll(-750);
           }
         }
-
         $exit() {
           this.tag('Text5').text.fontStyle = 'normal';
         }
-
         _getFocused() {
           this.tag('Text5').text.fontStyle = 'bold';
-
           if (this.tag('UsbApps').length) {
             return this.tag('UsbApps').element;
           }
         }
-
         _handleUp() {
           this._setState('ShowcaseApps');
         }
-
         _handleRight() {
           if (this.tag('UsbApps').length - 1 != this.tag('MetroApps').index) {
             this.tag('UsbApps').setNext();
             return this.tag('UsbApps').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text5').text.fontStyle = 'normal';
-
           if (0 != this.tag('UsbApps').index) {
             this.tag('UsbApps').setPrevious();
             return this.tag('UsbApps').element;
@@ -15970,7 +15199,6 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Menu');
           }
         }
-
         async _handleEnter() {
           let applicationType = this.tag('UsbApps').items[this.tag('UsbApps').index].data.applicationType;
           let params = {
@@ -15981,12 +15209,12 @@ var APP_accelerator_home_ui = (function () {
             console.log("ApplaunchError: ", JSON.stringify(err), err);
           });
         }
-
-      }, class RightArrow extends this {//TODO
-      }, class LeftArrow extends this {//TODO
+      }, class RightArrow extends this {
+        //TODO
+      }, class LeftArrow extends this {
+        //TODO
       }];
     }
-
   }
 
   /**
@@ -16007,13 +15235,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   let _item$1;
   /**
    * Class for pairing screen for the Bluetooth.
    */
-
-
   class BluetoothPairingScreen$1 extends lng$1.Component {
     set params(args) {
       if (args.bluetoothItem) {
@@ -16022,7 +15247,6 @@ var APP_accelerator_home_ui = (function () {
         Router.navigate('settings/bluetooth');
       }
     }
-
     static _template() {
       return {
         w: 1920,
@@ -16134,31 +15358,24 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     item(item) {
       _item$1 = item;
-
       this._setState('ConnectDisconnect');
-
       this.tag('Title').text = item.name;
-
       if (item.connected) {
         this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Disconnect';
       } else {
         this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Connect';
       }
     }
-
     _init() {
       this._setState('ConnectDisconnect');
     }
-
     static _states() {
       return [class ConnectDisconnect extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           // this.tag('Pairing').text = "Someting is wrong " + _item.name
           if (_item$1.connected) {
@@ -16175,11 +15392,9 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
         _handleRight() {
           this._setState('Unpair');
         }
-
         _focus() {
           this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
             color: CONFIG.theme.hex
@@ -16190,7 +15405,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
             color: 0xFFFFFFFF
@@ -16201,31 +15415,25 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Unpair extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Unpair')
           Router.navigate('settings/bluetooth', {
             action: 'Unpair'
           });
         }
-
         _handleRight() {
           this._setState('Cancel');
         }
-
         _handleLeft() {
           this._setState('ConnectDisconnect');
         }
-
         _focus() {
           this.tag('Unpair').patch({
             color: CONFIG.theme.hex
@@ -16236,7 +15444,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Unpair').patch({
             color: 0xFFFFFFFF
@@ -16247,27 +15454,22 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Cancel extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Cancel')
           Router.navigate('settings/bluetooth', {
             action: 'Cancel'
           });
         }
-
         _handleLeft() {
           this._setState('Unpair');
         }
-
         _focus() {
           this.tag('Cancel').patch({
             color: CONFIG.theme.hex
@@ -16278,7 +15480,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Cancel').patch({
             color: 0xFF7D7D7D
@@ -16289,14 +15490,11 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }];
     }
-
   }
 
   /**
@@ -16317,10 +15515,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for the item in the Bluetooth screen.
    */
-
   class BluetoothItem extends SettingsItem {
     static _template() {
       return {
@@ -16346,11 +15544,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents of an item in the Bluetooth screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.connected = item.connected ? 'Connected' : 'Not Connected';
@@ -16380,14 +15577,14 @@ var APP_accelerator_home_ui = (function () {
               verticalAlign: "middle"
             }
           }
-        } //  Debug:{
+        }
+        //  Debug:{
         //    x: 300,
         //    y:5,
         //    mountY: 0.5,
         //    mountX:1,
         //    Text: { text: { text: `item: ${JSON.stringify(item)}`, fontSize: 15,fontFace:CONFIG.language.font,verticalAlign:"middle" } },
         //  }
-
       });
     }
 
@@ -16400,7 +15597,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -16409,7 +15605,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
-    } // _handleEnter() {
+    }
+    // _handleEnter() {
     //   // this.tag("Item").patch(
     //   //   {
     //   //     text: {
@@ -16419,8 +15616,6 @@ var APP_accelerator_home_ui = (function () {
     //   // )
     //   this.fireAncestors('$connectBluetooth', this.tag('List').element.ref)
     // }
-
-
   }
 
   /**
@@ -16459,15 +15654,14 @@ var APP_accelerator_home_ui = (function () {
       };
       this._thunder = thunderJS(config);
     }
+
     /**
      * Function to activate the Bluetooth plugin
      */
 
-
     btactivate() {
       return new Promise((resolve, reject) => {
         this.callsign = 'org.rdk.Bluetooth';
-
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
         }).then(result => {
@@ -16477,11 +15671,9 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     deactivateBluetooth() {
       return new Promise((resolve, reject) => {
         this.callsign = 'org.rdk.Bluetooth';
-
         this._thunder.call('Controller', 'deactivate', {
           callsign: this.callsign
         }).then(result => {
@@ -16491,20 +15683,17 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     activate() {
       return new Promise((resolve, reject) => {
         this.callsign = 'org.rdk.Bluetooth';
-
         this._thunder.call('Controller', 'activate', {
           callsign: this.callsign
         }).then(result => {
           this.btStatus = true;
-
           this._thunder.on(this.callsign, 'onDiscoveredDevice', notification => {
             // this.getDiscoveredDevices().then(() => {
-            this._events.get('onDiscoveredDevice')(notification); // })
-
+            this._events.get('onDiscoveredDevice')(notification);
+            // })
           });
 
           this._thunder.on(this.callsign, 'onStatusChanged', notification => {
@@ -16524,19 +15713,15 @@ var APP_accelerator_home_ui = (function () {
               });
             }
           });
-
           this._thunder.on(this.callsign, 'onPairingRequest', notification => {
             this._events.get('onPairingRequest')(notification);
           });
-
           this._thunder.on(this.callsign, 'onRequestFailed', notification => {
             this._events.get('onRequestFailed')(notification);
           });
-
           this._thunder.on(this.callsign, 'onConnectionRequest', notification => {
             this._events.get('onConnectionRequest')(notification);
           });
-
           resolve('Blutooth activated');
         }).catch(err => {
           console.error('Activation failure', err);
@@ -16544,30 +15729,27 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      *
      * @param {string} eventId
      * @param {function} callback
      * Function to register the events for the Bluetooth plugin.
      */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
+
     /**
      * Function to deactivate the Bluetooth plugin.
      */
-
-
     deactivate() {
       this._events = new Map();
     }
+
     /**
      * Function to disable the Bluetooth stack.
      */
-
-
     disable() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'disable').then(result => {
@@ -16578,11 +15760,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to enable the Bluetooth stack.
      */
-
-
     enable() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'enable').then(result => {
@@ -16594,11 +15775,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to start scanning for the Bluetooth devices.
      */
-
-
     startScan() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'startScan', {
@@ -16612,7 +15792,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     startScanBluetooth() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'startScan', {
@@ -16626,11 +15805,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to stop scanning for the Bluetooth devices.
      */
-
-
     stopScan() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'stopScan', {}).then(result => {
@@ -16641,11 +15819,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function returns the discovered Bluetooth devices.
      */
-
-
     getDiscoveredDevices() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'getDiscoveredDevices').then(result => {
@@ -16656,15 +15833,13 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     get discoveredDevices() {
       return this._devices;
     }
+
     /**
      * Function returns the paired Bluetooth devices.
      */
-
-
     getPairedDevices() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'getPairedDevices').then(result => {
@@ -16676,15 +15851,13 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     get pairedDevices() {
       return this._pairedDevices;
     }
+
     /**
      * Function returns the connected Bluetooth devices.
      */
-
-
     getConnectedDevices() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'getConnectedDevices').then(result => {
@@ -16696,18 +15869,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     get connectedDevices() {
       return this._connectedDevices;
     }
+
     /**
      *
      * Function to connect a Bluetooth device.
      * @param {number} deviceID Device ID of the Bluetoth client.
      * @param {string} deviceType Device type of the Bluetooth client.
      */
-
-
     connect(deviceID, deviceType) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'connect', {
@@ -16722,13 +15893,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to disconnect a Bluetooth device.
      *@param {number} deviceID Device ID of the Bluetoth client.
      *@param {string} deviceType Device type of the Bluetooth client.
      */
-
-
     disconnect(deviceID, deviceType) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'disconnect', {
@@ -16742,12 +15912,11 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to unpair a Bluetooth device.
      * @param {number} deviceId
      */
-
-
     unpair(deviceId) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'unpair', {
@@ -16760,12 +15929,11 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to pair a Bluetooth device.
      * @param {number} deviceId
      */
-
-
     pair(deviceId) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'pair', {
@@ -16778,14 +15946,13 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to respond to client the Bluetooth event.
      * @param {number} deviceID Device ID of the Bluetooth client.
      * @param {string} eventType Name of the event.
      * @param {string} responseValue Response sent to the Bluetooth client.
      */
-
-
     respondToEvent(deviceID, eventType, responseValue) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'respondToEvent', {
@@ -16800,11 +15967,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get the discoverable name of the Bluetooth plugin.
      */
-
-
     getName() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'getName').then(result => {
@@ -16812,7 +15978,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setAudioStream(deviceID) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Bluetooth', 'setAudioStream', {
@@ -16828,7 +15993,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -16852,8 +16016,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for pairing screen for the Bluetooth.
    */
-
-
   class BluetoothConfirmation extends lng$1.Component {
     static _template() {
       return {
@@ -16917,19 +16079,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set item(item) {
       this.tag('Title').text = item.name;
     }
-
     _handleEnter() {
       this.fireAncestors('$pressOK');
     }
-
     _handleBack() {
       this.fireAncestors('$pressOK');
     }
-
   }
 
   /**
@@ -16950,15 +16108,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Bluetooth screen.
    */
-
   class BluetoothScreen$2 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Bluetooth On/Off'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -17078,35 +16235,28 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * @param {{ action: String; }} args
      */
-
-
     set params(args) {
       if (args.action) {
         this.pressEnter(args.action);
       }
     }
-
     _unfocus() {
       this._disable();
     }
-
     pageTransition() {
       return 'left';
     }
-
     _firstEnable() {
       this._bt = new BluetoothApi();
       this._bluetooth = false;
-
       this._activateBluetooth();
-
-      this._setState('Switch'); //this.switch()
+      this._setState('Switch');
+      //this.switch()
       //this._bluetooth = false
-
-
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
       this.renderDeviceList();
@@ -17125,19 +16275,15 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility();
-
       this._setState('AddADevice');
-
       this._enable();
-
       if (this._bluetooth) {
         this.tag('Networks').visible = true;
         this.tag('AddADevice').visible = true;
         this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-        this.renderDeviceList(); //this._bt.startScan()
+        this.renderDeviceList();
+        //this._bt.startScan()
       }
     }
 
@@ -17147,33 +16293,28 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to be excuted when the Bluetooth screen is enabled.
      */
-
-
     _enable() {
       if (this._bluetooth) {
         this._bt.startScan();
       }
-
       this.scanTimer = Registry.setInterval(() => {
         if (this._bluetooth) {
           this._bt.startScan();
         }
       }, 5000);
     }
+
     /**
      * Function to be executed when the Bluetooth screen is disabled from the screen.
      */
-
-
     _disable() {
       Registry.clearInterval(this.scanTimer);
-
       this._bt.stopScan();
     }
+
     /**
      * Function to be executed when add a device is pressed
      */
-
 
     showAvailableDevices() {
       this.tag('Switch').patch({
@@ -17190,7 +16331,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('AvailableNetworks').patch({
         visible: true
-      }); //  this.loadingAnimation.stop()
+      });
+      //  this.loadingAnimation.stop()
       // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
@@ -17213,7 +16355,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Confirmation').patch({
         visible: false
-      }); //  this.loadingAnimation.start()
+      });
+      //  this.loadingAnimation.start()
       // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
@@ -17240,7 +16383,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PairingScreen').patch({
         visible: true
       });
-      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$hideTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -17266,7 +16410,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PairingScreen').patch({
         visible: false
       });
-      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$showTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -17292,7 +16437,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Confirmation').patch({
         visible: true
       });
-      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$hideTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -17318,14 +16464,14 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Confirmation').patch({
         visible: false
       });
-      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$showTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
+
     /**
      * Function to render list of Bluetooth devices
      */
-
-
     renderDeviceList() {
       this._bt.getPairedDevices().then(result => {
         this._pairedList = result;
@@ -17342,13 +16488,11 @@ var APP_accelerator_home_ui = (function () {
           };
         });
       });
-
       this._bt.getDiscoveredDevices().then(result => {
         this._discoveredList = result;
         this._otherList = this._discoveredList.filter(device => {
           if (!device.paired) {
             result = this._pairedList.map(a => a.deviceID);
-
             if (result.includes(device.deviceID)) {
               return false;
             } else return device;
@@ -17367,14 +16511,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     pressEnter(option) {
       if (option === 'Cancel') {
         this._setState('Switch');
       } else if (option === 'Pair') {
         this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._availableNetworks.tag('List').element._item.name;
-
           if (result.success) {
             this.widgets.fail.notify({
               title: btName,
@@ -17388,13 +16530,11 @@ var APP_accelerator_home_ui = (function () {
             });
             Router.focusWidget('Fail');
           }
-
           this.hideAvailableDevices();
         });
       } else if (option === 'Connect') {
         this._bt.connect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (!result) {
             this.widgets.fail.notify({
               title: btName,
@@ -17403,7 +16543,6 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Fail');
           } else {
             this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID);
-
             this.widgets.fail.notify({
               title: btName,
               msg: 'Connection Successful'
@@ -17414,7 +16553,6 @@ var APP_accelerator_home_ui = (function () {
       } else if (option === 'Disconnect') {
         this._bt.disconnect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (!result) {
             this.widgets.fail.notify({
               title: btName,
@@ -17432,7 +16570,6 @@ var APP_accelerator_home_ui = (function () {
       } else if (option === 'Unpair') {
         this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (result) {
             this.widgets.fail.notify({
               title: btName,
@@ -17449,102 +16586,81 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     static _states() {
       return [class Switch extends this {
         $enter() {
           this.hideAvailableDevices();
           this.hidePairingScreen();
-
           this.tag('Switch')._focus();
         }
-
         $exit() {
           this.tag('Switch')._unfocus();
         }
-
         _handleDown() {
           this._setState('AddADevice');
         }
-
         _handleEnter() {
           this.switch();
         }
-
       }, class Confirmation extends this {
         $enter() {
           this.showConfirmation();
         }
-
         _getFocused() {
           return this.tag('Confirmation');
         }
-
         $pressOK() {
           this._setState('Switch');
-
           this.hideConfirmation();
         }
-
       }, class PairedDevices extends this {
         $enter() {
           this.hideAvailableDevices();
         }
-
         _getFocused() {
           return this._pairedNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('MyDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('MyDevices', 'up');
         }
-
         _handleEnter() {
           //this.showPairingScreen()
           //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
           Router.navigate('settings/bluetooth/pairing', {
             bluetoothItem: this._pairedNetworks.tag('List').element._item
-          }); //this._setState('PairingScreen')
+          });
+          //this._setState('PairingScreen')
         }
-
       }, class AvailableDevices extends this {
         _getFocused() {
           return this._availableNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('AvailableDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('AvailableDevices', 'up');
         }
-
         _handleEnter() {
-          this.pressEnter('Pair'); //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+          this.pressEnter('Pair');
+          //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
         }
 
         _handleBack() {
           this.hideAvailableDevices();
-
           this._setState('Switch');
         }
-
       }, class AddADevice extends this {
         $enter() {
           this.tag('AddADevice')._focus();
-
           this.hideAvailableDevices();
         }
-
         _handleUp() {
           this._setState('Switch');
         }
-
         _handleDown() {
           if (this._bluetooth) {
             if (this._pairedNetworks.tag('List').length > 0) {
@@ -17554,51 +16670,39 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
         $exit() {
           this.tag('AddADevice')._unfocus();
         }
-
         _handleEnter() {
           if (this._bluetooth) {
             this.showAvailableDevices();
-
             this._setState('AvailableDevices');
           }
         }
-
       }, class PairingScreen extends this {
         $enter() {
           this._disable();
-
           this._bt.stopScan();
-
           return this.tag('PairingScreen');
         }
-
         _getFocused() {
           return this.tag('PairingScreen');
         }
-
         $exit() {
           this.tag('PairingScreen').visible = false;
-
           this._enable();
         }
-
       }];
     }
+
     /**
      * Function to navigate through the lists in the screen.
      * @param {string} listname
      * @param {string} dir
      */
-
-
     _navigate(listname, dir) {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) ;
@@ -17611,11 +16715,10 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
+
     /**
      * Function to turn on and off Bluetooth.
      */
-
-
     switch() {
       if (this._bluetooth) {
         this._bt.disable().then(result => {
@@ -17636,7 +16739,6 @@ var APP_accelerator_home_ui = (function () {
             this.tag('AddADevice').visible = true;
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.renderDeviceList();
-
             this._bt.startScan();
           }
         }).catch(() => {
@@ -17644,30 +16746,24 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
+
     /**
      * Function to activate Bluetooth plugin.
      */
-
-
     _activateBluetooth() {
       this._bt.activate().then(res => {
         console.log(res);
         this._bluetooth = true;
-
         this._bt.registerEvent('onDiscoveredDevice', () => {
           this.renderDeviceList();
         });
-
         this._bt.registerEvent('onPairingRequest', notification => {
           this.respondToPairingRequest(notification.deviceID, 'ACCEPTED');
         });
-
         this._bt.registerEvent('onConnectionChange', notification => {
           this._bt.startScan();
-
           this.renderDeviceList();
           let btName = notification.name;
-
           if (notification.connected) {
             if (this.widgets.fail) {
               this.widgets.fail.notify({
@@ -17686,23 +16782,18 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         });
-
         this._bt.registerEvent('onDiscoveryCompleted', () => {
           this.tag('Searching.Loader').visible = false;
           this.loadingAnimation.stop();
           this.renderDeviceList();
         });
-
         this._bt.registerEvent('onDiscoveryStarted', () => {
           this.loadingAnimation.start();
           this.tag('Searching.Loader').visible = true;
         });
-
         this._bt.registerEvent('onRequestFailed', notification => {
           this._bt.startScan();
-
           this.renderDeviceList();
-
           if (this.widgets.fail) {
             this.widgets.fail.notify({
               title: notification.name,
@@ -17715,17 +16806,15 @@ var APP_accelerator_home_ui = (function () {
         console.log(err);
       });
     }
+
     /**
      * Function to respond to Bluetooth client.
      * @param {number} deviceID
      * @param {string} responseValue
      */
-
-
     respondToPairingRequest(deviceID, responseValue) {
       this._bt.respondToEvent(deviceID, 'onPairingRequest', responseValue);
     }
-
   }
 
   /**
@@ -17759,19 +16848,17 @@ var APP_accelerator_home_ui = (function () {
    */
   function getHexColor$1(hex) {
     let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
     if (!hex) {
       return 0x00;
     }
-
     let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
     let str = "0x".concat(hexAlpha).concat(hex);
     return parseInt(Number(str), 10);
   }
+
   /**
    * Pair color values with color names in the "Neutral" palette
    */
-
   const COLORS_NEUTRAL = {
     dark1: '000000',
     dark2: '080808',
@@ -17798,7 +16885,6 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
-
   /**
    * Returns a styles object for use by components
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
@@ -17825,10 +16911,10 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
+
   /**
    * Helpers for lng.Tools.getRoundRect
    */
-
   const RoundRect = {
     /**
      * Returns a value that will render as the given width (w)
@@ -17857,7 +16943,6 @@ var APP_accelerator_home_ui = (function () {
       if (!w) return 0;
       return w - (paddingLeft || padding) - (paddingRight || padding) - strokeWidth;
     },
-
     /**
      * Returns a value that will render as the given height (h)
      * when passed to lng.Tools.getRoundRect
@@ -17885,49 +16970,43 @@ var APP_accelerator_home_ui = (function () {
       if (!h) return 0;
       return h - (paddingBottom || padding) - (paddingTop || padding) - strokeWidth;
     }
-
   };
+
   /**
    * Merges two objects together and returns the duplicate.
    *
    * @param {Object} target - object to be cloned
    * @param {Object} [object] - secondary object to merge into clone
    */
-
   function clone$1(target, object) {
-    const _clone = { ...target
+    const _clone = {
+      ...target
     };
     if (!object || target === object) return _clone;
-
     for (let key in object) {
       const value = object[key];
-
       if (target.hasOwnProperty(key)) {
         _clone[key] = getMergeValue$1(key, target, object);
       } else {
         _clone[key] = value;
       }
     }
-
     return _clone;
   }
-
   function getMergeValue$1(key, target, object) {
     const targetVal = target[key];
     const objectVal = object[key];
     const targetValType = typeof targetVal;
     const objectValType = typeof objectVal;
-
     if (targetValType !== objectValType || objectValType === 'function' || Array.isArray(objectVal)) {
       return objectVal;
     }
-
     if (objectVal && objectValType === 'object') {
       return clone$1(targetVal, objectVal);
     }
-
     return objectVal;
   }
+
   /**
    * Returns the rendered width of a given text texture
    * @param {Object} text - text texture properties
@@ -17940,8 +17019,6 @@ var APP_accelerator_home_ui = (function () {
    *
    * @returns {number} text width
    * */
-
-
   function measureTextWidth() {
     let text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     const canvas = document.createElement('canvas');
@@ -17957,25 +17034,24 @@ var APP_accelerator_home_ui = (function () {
     const textMetrics = ctx.measureText(text.text || '');
     return Math.round(textMetrics.width);
   }
+
   /**
    * Returns first argument that is a number. Useful for finding ARGB numbers. Does not convert strings to numbers
    * @param {...*} number - maybe a number
    **/
-
   function getFirstNumber() {
     for (var _len = arguments.length, numbers = new Array(_len), _key = 0; _key < _len; _key++) {
       numbers[_key] = arguments[_key];
     }
-
     return numbers.find(Number.isFinite);
   }
+
   /**
    * Naively looks for dimensional prop (i.e. w, h, x, y, etc.), first searching for
    * a transition target value then defaulting to the current set value
    * @param {string} prop - property key
    * @param {lng.Component} component - Lightning component to operate against
    */
-
   function getDimension$1(prop, component) {
     if (!component) return 0;
     const transition = component.transition(prop);
@@ -18004,7 +17080,6 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
-
   const gradientColor = COLORS_NEUTRAL.light2;
   ({
     duration: 0.6,
@@ -18049,48 +17124,39 @@ var APP_accelerator_home_ui = (function () {
    * @param {Boolean} whether to execute at the beginning (`false`)
    * @api public
    */
-
   function debounce(func, wait, immediate) {
     var timeout, args, context, timestamp, result;
     if (null == wait) wait = 100;
-
     function later() {
       var last = Date.now() - timestamp;
-
       if (last < wait && last >= 0) {
         timeout = setTimeout(later, wait - last);
       } else {
         timeout = null;
-
         if (!immediate) {
           result = func.apply(context, args);
           context = args = null;
         }
       }
     }
-
     var debounced = function () {
       context = this;
       args = arguments;
       timestamp = Date.now();
       var callNow = immediate && !timeout;
       if (!timeout) timeout = setTimeout(later, wait);
-
       if (callNow) {
         result = func.apply(context, args);
         context = args = null;
       }
-
       return result;
     };
-
     debounced.clear = function () {
       if (timeout) {
         clearTimeout(timeout);
         timeout = null;
       }
     };
-
     debounced.flush = function () {
       if (timeout) {
         result = func.apply(context, args);
@@ -18099,10 +17165,10 @@ var APP_accelerator_home_ui = (function () {
         timeout = null;
       }
     };
-
     return debounced;
   }
 
+  // Adds compatibility for ES modules
   debounce.debounce = debounce;
   var debounce_1 = debounce;
 
@@ -18125,22 +17191,17 @@ var APP_accelerator_home_ui = (function () {
   */
   function withStyles$1(Base, styles, theme) {
     const _theme = theme || Base.theme;
-
     const _styles = Base.styles ? clone$1(Base.styles, createStyles$1(styles, _theme)) : createStyles$1(styles, _theme);
-
     return class extends Base {
       static get name() {
         return Base.name;
       }
-
       static get styles() {
         return _styles;
       }
-
       get styles() {
         return _styles;
       }
-
     };
   }
 
@@ -18169,21 +17230,16 @@ var APP_accelerator_home_ui = (function () {
         h: 0
       };
     }
-
     get icon() {
       return this._icon;
     }
-
     set icon(icon) {
       this._icon = icon;
-
       this._update();
     }
-
     _init() {
       this._update();
     }
-
     _update() {
       const {
         icon,
@@ -18193,30 +17249,24 @@ var APP_accelerator_home_ui = (function () {
       const template = getIconTemplate(icon, w, h);
       this.patch(template);
     }
-
   }
   const [isSvgTag, isSvgURI, isImageURI] = [/^<svg.*<\/svg\>$/, /\.svg$/, /\.(a?png|bmp|gif|ico|cur|jpe?g|pjp(eg)?|jfif|tiff?|webp)$/].map(regex => RegExp.prototype.test.bind(regex));
-
   function getIconTemplate(icon, w, h) {
     const template = {
       w,
       h
     };
-
     switch (true) {
       case isSvgTag(icon):
         template.texture = lng$1.Tools.getSvgTexture("data:image/svg+xml,".concat(encodeURIComponent(icon)), w, h);
         break;
-
       case isSvgURI(icon):
         template.texture = lng$1.Tools.getSvgTexture(icon, w, h);
         break;
-
       case isImageURI(icon):
         template.src = icon;
         break;
     }
-
     return template;
   }
 
@@ -18272,7 +17322,6 @@ var APP_accelerator_home_ui = (function () {
       }
     }
   };
-
   class Button extends lng$1.Component {
     static _template() {
       return {
@@ -18305,34 +17354,26 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _construct() {
       this._focused = false;
       this._whenEnabled = new Promise(resolve => this._enable = resolve, console.error);
       this._strokeWeight = 2;
       this._strokeColor = 0x00;
     }
-
     _init() {
       this._update();
     }
-
     _focus() {
       if (this._smooth === undefined) this._smooth = true;
       this._focused = true;
-
       this._update();
     }
-
     _unfocus() {
       this._focused = false;
-
       this._update();
     }
-
     _updateColor() {
       const color = this._focused ? getFirstNumber(this.focusedBackground, this.styles.focused.background.color) : getFirstNumber(this.background, this.styles.background.color);
-
       if (this._smooth) {
         this.smooth = {
           color
@@ -18341,17 +17382,16 @@ var APP_accelerator_home_ui = (function () {
         this.color = color;
       }
     }
-
     _updateTitle() {
       if (this.title) {
-        this._Title.text = { ...this.styles.text,
+        this._Title.text = {
+          ...this.styles.text,
           fontColor: this.styles.text.color,
           fontSize: this.fontSize || this.styles.text.fontSize,
           fontFamily: this.styles.text.fontFace || this.styles.text.fontFamily || this.stage._options.defaultFontFace,
           text: this.title
         };
         const color = this._focused ? getFirstNumber(this.focusedTextColor, this.styles.focused.text.color) : getFirstNumber(this.textColor, this.styles.text.color);
-
         if (this._smooth) {
           this._Title.smooth = {
             color
@@ -18363,7 +17403,6 @@ var APP_accelerator_home_ui = (function () {
         this._Title.texture = false;
       }
     }
-
     _updateIcon() {
       if (this.icon) {
         const {
@@ -18372,7 +17411,6 @@ var APP_accelerator_home_ui = (function () {
           spacing,
           src
         } = this.icon;
-
         this._Icon.patch({
           w: size,
           h: size,
@@ -18381,9 +17419,7 @@ var APP_accelerator_home_ui = (function () {
             marginRight: this.title ? spacing : 0
           }
         });
-
         const iconColor = this._focused ? getFirstNumber(this.focusedIconColor, this.styles.focused.icon.color) : getFirstNumber(color, this.styles.icon.color);
-
         if (this._smooth) {
           this._Icon.smooth = {
             color: iconColor
@@ -18400,7 +17436,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     _updateStroke() {
       if (this.stroke && !this._focused) {
         const radius = this.radius || this.styles.radius;
@@ -18413,13 +17448,11 @@ var APP_accelerator_home_ui = (function () {
         this._Stroke.texture = false;
       }
     }
-
     _updateWidth() {
       if (!this.fixed) {
         const iconSize = this._icon ? this._icon.size + this._icon.spacing : 0;
         const padding = getFirstNumber(this.padding, this.styles.padding, 10);
         const w = measureTextWidth(this._Title.text || {}) + padding * 2 + iconSize;
-
         if (w && w !== this.w) {
           this.w = w > this.styles.w ? w : this.styles.w;
           this.fireAncestors('$itemChanged');
@@ -18429,55 +17462,41 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     _update() {
       this._whenEnabled.then(() => {
         this._updateColor();
-
         this._updateTitle();
-
         this._updateIcon();
-
         this._updateStroke();
-
         this._updateWidth();
       });
     }
-
     _handleEnter() {
       if (typeof this.onEnter === 'function') {
         this.onEnter(this);
       }
     }
-
     get radius() {
       return this._radius;
     }
-
     set radius(radius) {
       if (this._radius !== radius) {
         this._radius = radius;
-
         this._update();
       }
     }
-
     get title() {
       return this._title;
     }
-
     set title(title) {
       if (this._title !== title) {
         this._title = title;
-
         this._update();
       }
     }
-
     get icon() {
       return this._icon;
     }
-
     set icon(_ref) {
       let {
         src,
@@ -18485,7 +17504,6 @@ var APP_accelerator_home_ui = (function () {
         spacing = 5,
         color = 0xffffffff
       } = _ref;
-
       if (src) {
         this._icon = {
           src,
@@ -18496,91 +17514,69 @@ var APP_accelerator_home_ui = (function () {
       } else {
         this._icon = null;
       }
-
       this._update();
     }
-
     get strokeWeight() {
       return this._strokeWeight;
     }
-
     set strokeWeight(strokeWeight) {
       if (this._strokeWeight !== strokeWeight) {
         this._strokeWeight = strokeWeight;
-
         this._update();
       }
     }
-
     get strokeColor() {
       return this._strokeColor;
     }
-
     set strokeColor(strokeColor) {
       if (this._strokeColor !== strokeColor) {
         this._strokeColor = strokeColor;
-
         this._update();
       }
     }
-
     get stroke() {
       return this._stroke;
     }
-
     set stroke(stroke) {
       if (this._stroke !== stroke) {
         this._stroke = stroke;
-
         this._update();
       }
     }
-
     get w() {
       return this._w;
     }
-
     set w(w) {
       if (this._w !== w) {
         this._w = w;
-
         this._update();
       }
     }
-
     set label(label) {
       this._label = label;
     }
-
     get label() {
       return this._label || this._title;
     }
-
     get announce() {
       // TODO - Localization?
       // Do we need a locale file with
       // component translations?
       return this.label + ', Button';
     }
-
     get _Content() {
       return this.tag('Content');
     }
-
     get _Title() {
       return this.tag('Content.Title');
     }
-
     get _Icon() {
       return this.tag('Content.Icon');
     }
-
     get _Stroke() {
       return this.tag('Stroke');
     }
-
   }
-
   var Button$1 = withStyles$1(Button, styles$1);
 
   /**
@@ -18608,15 +17604,12 @@ var APP_accelerator_home_ui = (function () {
       });
       this._direction = this.direction || 'row';
     }
-
     _construct() {
       this._selectedIndex = 0;
     }
-
     get direction() {
       return this._direction;
     }
-
     set direction(direction) {
       this._direction = direction;
       let state = {
@@ -18624,109 +17617,88 @@ var APP_accelerator_home_ui = (function () {
         column: 'Column',
         row: 'Row'
       }[direction];
-
       if (state) {
         this._setState(state);
       }
     }
-
     get Items() {
       return this.tag('Items');
     }
-
     get items() {
       return this.Items.children;
     }
-
     set items(items) {
       this.Items.childList.clear();
       this._selectedIndex = 0;
       this.appendItems(items);
     }
-
     appendItems() {
       let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       this.Items.childList.a(items);
-
       this._refocus();
     }
-
     get selected() {
       return this.Items.children[this.selectedIndex];
     }
-
     get selectedIndex() {
       return this._selectedIndex;
     }
-
     set selectedIndex(index) {
       const prevSelected = this.selected;
-
       if (index !== this._selectedIndex) {
         this._selectedIndex = index;
-      } // Have items update (change height or width) before we render
-
-
+      }
+      // Have items update (change height or width) before we render
       this._refocus();
-
       if (this.selected) {
         this.render(this.selected, prevSelected);
         this.signal('selectedChange', this.selected, prevSelected);
       }
-    } // Override
+    }
 
-
+    // Override
     render() {}
-
     selectPrevious() {
       if (this.selectedIndex > 0) {
         let prevIndex = this.selectedIndex - 1;
         let previous = this.items[prevIndex];
-
         while (prevIndex && previous.skipFocus) {
           this._selectedIndex = prevIndex;
           this.render(previous, this.items[prevIndex + 1]);
           prevIndex -= 1;
           previous = this.items[prevIndex];
         }
-
         this.selectedIndex = prevIndex;
         return true;
       } else if (this.wrapSelected) {
         this.selectedIndex = this.Items.children.length - 1;
         return true;
       }
-
       return false;
     }
-
     selectNext() {
       if (this.selectedIndex < this.Items.children.length - 1) {
         let nextIndex = this.selectedIndex + 1;
         let next = this.items[nextIndex];
-
         while (nextIndex < this.items.length - 1 && next.skipFocus) {
           this._selectedIndex = nextIndex;
           this.render(next, this.items[nextIndex - 1]);
           nextIndex += 1;
           next = this.items[nextIndex];
         }
-
         this.selectedIndex = nextIndex;
         return true;
       } else if (this.wrapSelected) {
         this.selectedIndex = 0;
         return true;
       }
-
       return false;
     }
-
     _getFocused() {
       let {
         selected
-      } = this; // Make sure we're focused on a component
-
+      } = this;
+      // Make sure we're focused on a component
       if (selected) {
         if (selected.focusRef) {
           return selected.tag(selected.focusRef);
@@ -18734,32 +17706,25 @@ var APP_accelerator_home_ui = (function () {
           return selected;
         }
       }
-
       return this;
     }
-
     static _states() {
       return [class None extends this {}, class Row extends this {
         _handleLeft() {
           return this.selectPrevious();
         }
-
         _handleRight() {
           return this.selectNext();
         }
-
       }, class Column extends this {
         _handleUp() {
           return this.selectPrevious();
         }
-
         _handleDown() {
           return this.selectNext();
         }
-
       }];
     }
-
   }
 
   /**
@@ -18785,10 +17750,8 @@ var APP_accelerator_home_ui = (function () {
         direction: 'column'
       };
     }
-
     _construct() {
       super._construct();
-
       this._smooth = false;
       this._itemSpacing = 0;
       this._scrollIndex = 0;
@@ -18798,71 +17761,60 @@ var APP_accelerator_home_ui = (function () {
       this._update = debounce_1.debounce(this._updateLayout, this.debounceDelay);
       this._updateImmediate = debounce_1.debounce(this._updateLayout, this.debounceDelay, true);
     }
-
     get _itemTransition() {
       return this.itemTransition || {
         duration: 0.4,
         timingFunction: 'cubic-bezier(0.20, 1.00, 0.30, 1.00)'
       };
     }
-
     _focus() {
       this.items.forEach(item => item.parentFocus = true);
     }
-
     _unfocus() {
       this.items.forEach(item => item.parentFocus = false);
     }
-
     selectNext() {
       this._smooth = true;
       return super.selectNext();
     }
-
     selectPrevious() {
       this._smooth = true;
       return super.selectPrevious();
-    } // TODO: can be documented in API when lastScrollIndex is made public
+    }
 
-
+    // TODO: can be documented in API when lastScrollIndex is made public
     shouldScrollUp() {
       let shouldScroll = false;
-
       if (this._lastScrollIndex) {
         shouldScroll = this.selectedIndex < this._lastScrollIndex;
-
         if (this._prevLastScrollIndex !== undefined && this._prevLastScrollIndex !== this._lastScrollIndex) {
           shouldScroll = true;
         }
       } else {
         shouldScroll = this.selectedIndex >= this._scrollIndex;
       }
-
       return this._itemsY < 0 && shouldScroll;
-    } // TODO: can be documented in API when lastScrollIndex is made public
-
-
-    shouldScrollDown() {
-      const lastChild = this.Items.childList.last;
-      return this.selectedIndex > this._scrollIndex && // end of Items container < end of last item
-      Math.abs(this._itemsY - this.h) < lastChild.y + this.Items.childList.last.h;
     }
 
+    // TODO: can be documented in API when lastScrollIndex is made public
+    shouldScrollDown() {
+      const lastChild = this.Items.childList.last;
+      return this.selectedIndex > this._scrollIndex &&
+      // end of Items container < end of last item
+      Math.abs(this._itemsY - this.h) < lastChild.y + this.Items.childList.last.h;
+    }
     render(next, prev) {
       this._prevLastScrollIndex = this._lastScrollIndex;
-
       if (this.plinko && prev && (prev.currentItem || prev.selected)) {
         next.selectedIndex = this._getIndexOfItemNear(next, prev);
-      } // Rows are changing height, so we'll render via updateLayout
+      }
 
-
+      // Rows are changing height, so we'll render via updateLayout
       if (this.itemsChangeable) {
         return;
       }
-
       this._performRender();
     }
-
     _performRender() {
       this._whenEnabled.then(() => {
         const scrollOffset = (this.Items.children[this._scrollIndex] || {
@@ -18871,10 +17823,8 @@ var APP_accelerator_home_ui = (function () {
         const firstChild = this.Items.childList.first;
         const lastChild = this.Items.childList.last;
         const shouldScroll = this.alwaysScroll || lastChild && (this.shouldScrollUp() || this.shouldScrollDown());
-
         if (shouldScroll) {
           const scrollItem = this.selectedIndex > this._lastScrollIndex ? this.Items.children[this._lastScrollIndex - this._scrollIndex] : this.selected;
-
           if (this._smooth) {
             this.Items.smooth = {
               y: [-(scrollItem || firstChild).transition('y').targetValue + (scrollItem === this.selected ? scrollOffset : 0), this._itemTransition]
@@ -18885,15 +17835,12 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
         this.onScreenEffect(this.onScreenItems);
       });
     }
-
     get onScreenItems() {
       return this.Items.children.filter(child => this._isOnScreen(child));
     }
-
     _isOnScreen(child) {
       const y = getY(child);
       const {
@@ -18903,16 +17850,14 @@ var APP_accelerator_home_ui = (function () {
       const withinUpperBounds = y + this._itemsY < this.h;
       return withinLowerBounds && withinUpperBounds;
     }
-
     _updateLayout() {
       this._whenEnabled.then(() => {
         let nextY = 0;
-        let nextW = 0; // layout items in row
-
+        let nextW = 0;
+        // layout items in row
         for (let i = 0; i < this.Items.children.length; i++) {
           const child = this.Items.children[i];
           nextW = Math.max(nextW, getW(child));
-
           if (this._smooth) {
             child.smooth = {
               y: [nextY, this._itemTransition]
@@ -18922,23 +17867,19 @@ var APP_accelerator_home_ui = (function () {
               y: nextY
             });
           }
-
           nextY += child.h;
-
           if (i < this.Items.children.length - 1) {
             nextY += this.itemSpacing;
           }
-
           if (child.centerInParent) {
             // if the child is another focus manager, check the width of the item container
-            const childWidth = child.Items && child.Items.w || child.w; // only center the child if it is within the bounds of this focus manager
-
+            const childWidth = child.Items && child.Items.w || child.w;
+            // only center the child if it is within the bounds of this focus manager
             if (childWidth < this.w) {
               child.x = (this.w - childWidth) / 2;
             }
           }
         }
-
         this.Items.patch({
           w: nextW,
           h: nextY
@@ -18947,15 +17888,15 @@ var APP_accelerator_home_ui = (function () {
         const endOfLastChild = lastChild ? getY(lastChild) + lastChild.h : 0;
         const scrollOffset = (this.Items.children[this._scrollIndex] || {
           y: 0
-        }).y; // determine when to stop scrolling down
+        }).y;
 
+        // determine when to stop scrolling down
         if (this.alwaysScroll) {
           this._lastScrollIndex = this.Items.children.length - 1;
         } else if (endOfLastChild > this.h) {
           for (let i = this.Items.children.length - 1; i >= 0; i--) {
             const child = this.Items.children[i];
             const childY = getY(child);
-
             if (childY + this.h - scrollOffset > endOfLastChild) {
               this._lastScrollIndex = i;
             } else {
@@ -18965,32 +17906,31 @@ var APP_accelerator_home_ui = (function () {
         } else if (this._lastScrollIndex > this.items.length) {
           this._lastScrollIndex = this.items.length - 1;
         }
-
         this._performRender();
       });
-    } // finds the index of the item with the closest middle to the previously selected item
+    }
 
-
+    // finds the index of the item with the closest middle to the previously selected item
     _getIndexOfItemNear(selected, prev) {
       // edge case
       if (selected.items.length < 2) return 0;
       let prevItem = prev.selected || prev.currentItem;
       let prevOffset = prev.transition('x').targetValue || 0;
       let [itemX] = prevItem.core.getAbsoluteCoords(-prevOffset, 0);
-      let prevMiddle = itemX + prevItem.w / 2; // set the first item to be closest
+      let prevMiddle = itemX + prevItem.w / 2;
 
+      // set the first item to be closest
       let closest = selected.items[0];
-      let closestMiddle = closest.core.getAbsoluteCoords(0, 0)[0] + closest.w / 2; // start at the 2nd item
+      let closestMiddle = closest.core.getAbsoluteCoords(0, 0)[0] + closest.w / 2;
 
+      // start at the 2nd item
       for (let i = 1; i < selected.items.length; i++) {
         // for some reason here !!/!.. evals returning number
         if (selected.items[i].skipFocus === true) {
           continue;
         }
-
         const item = selected.items[i];
         const middle = item.core.getAbsoluteCoords(0, 0)[0] + item.w / 2;
-
         if (Math.abs(middle - prevMiddle) < Math.abs(closestMiddle - prevMiddle)) {
           // current item is the closest
           closest = item;
@@ -19008,64 +17948,54 @@ var APP_accelerator_home_ui = (function () {
             return this._getIndexofClosestFocusable(prevIndex, selected, prevMiddle);
           }
         }
-      } // if last index is focusable return
-
-
+      }
+      // if last index is focusable return
       return selected.items.length - 1;
     }
-
     _getIndexofClosestFocusable(selectedIndex, selected, prevMiddle) {
       // dont want to mutate the original selected.items using spread for copy
       // get first focusable item before and after the current focused item's index
       const prevIndex = [...selected.items].slice(0, selectedIndex).map(item => !!item.skipFocus).lastIndexOf(false);
       const nextIndex = [...selected.items].slice(selectedIndex + 1).map(item => !!item.skipFocus).indexOf(false) + selectedIndex + 1;
       const prevItem = selected.items[prevIndex];
-      const nextItem = selected.items[nextIndex]; // Check if the items exist if not return the other
+      const nextItem = selected.items[nextIndex];
+
+      // Check if the items exist if not return the other
       // covers case where at 0 idx, previous would not exist
       // and opposite for last index next would not exist
-
       if (prevIndex === -1 || !prevItem) {
         return nextIndex;
       }
-
       if (nextIndex === -1 || !nextItem) {
         return prevIndex;
-      } // If both items compare coordinates to determine which direction of plinko
+      }
 
-
+      // If both items compare coordinates to determine which direction of plinko
       const next = nextItem.core.getAbsoluteCoords(0, 0)[0] + nextItem.w / 2;
       const prev = prevItem.core.getAbsoluteCoords(0, 0)[0] + prevItem.w / 2;
       return Math.abs(prev - prevMiddle) < Math.abs(next - prevMiddle) ? prevIndex : nextIndex;
     }
-
     get itemSpacing() {
       return this._itemSpacing;
     }
-
     set itemSpacing(itemSpacing) {
       if (itemSpacing !== this._itemSpacing) {
         this._itemSpacing = itemSpacing;
-
         this._update();
       }
     }
-
     get scrollIndex() {
       return this._scrollIndex;
     }
-
     set scrollIndex(scrollIndex) {
       if (scrollIndex !== this._scrollIndex) {
         this._scrollIndex = scrollIndex;
-
         this._update();
       }
     }
-
     get _itemsY() {
       return getY(this.Items);
     }
-
     appendItems() {
       let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       let itemWidth = this.renderWidth;
@@ -19075,58 +18005,44 @@ var APP_accelerator_home_ui = (function () {
         item.w = getW(item) || itemWidth;
       });
       this.stage.update();
-
       this._updateLayout();
-
       this._update.clear();
-
       this._refocus();
     }
-
     scrollTo(index) {
       let duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this._itemTransition.duration * 100;
       if (duration === 0) this.selectedIndex = index;
-
       for (let i = 0; i !== Math.abs(this.selectedIndex - index); i++) {
         setTimeout(() => {
           this.selectedIndex > index ? this.selectPrevious() : this.selectNext();
         }, duration * i);
       }
-
       this.Items.transition('y').on('finish', () => this._smooth = false);
     }
-
     $itemChanged() {
       this.itemsChangeable = true;
-
       this._updateImmediate();
     }
-
     $removeItem(item) {
       if (item) {
         let wasSelected = item === this.selected;
         this.Items.childList.remove(item);
-
         this._updateImmediate();
-
         if (wasSelected || this.selectedIndex >= this.items.length) {
           // eslint-disable-next-line no-self-assign
           this.selectedIndex = this._selectedIndex;
         }
-
         if (!this.items.length) {
           this.fireAncestors('$columnEmpty');
         }
       }
     }
-
     $columnChanged() {
       this._updateImmediate();
-    } // can be overridden
+    }
 
-
+    // can be overridden
     onScreenEffect() {}
-
   }
 
   /**
@@ -19154,34 +18070,25 @@ var APP_accelerator_home_ui = (function () {
         right: 0
       };
     }
-
     set positionLeft(v) {
       this._positionLeft = v;
     }
-
     set positionRight(v) {
       this._positionRight = v;
     }
-
     setupUniforms(operation) {
       super.setupUniforms(operation);
       const owner = operation.shaderOwner;
-
       if (this._positionLeft === 0) {
         this._positionLeft = 0.001;
       }
-
       if (this._positionRight === 0) {
         this._positionRight = 0.001;
       }
-
       const renderPrecision = this.ctx.stage.getRenderPrecision();
-
       this._setUniform('margin', [this._positionLeft * renderPrecision, this._positionRight * renderPrecision], this.gl.uniform1fv);
-
       this._setUniform('resolution', new Float32Array([owner._w * renderPrecision, owner._h * renderPrecision]), this.gl.uniform2fv);
     }
-
   }
   FadeShader.fragmentShaderSource = "\n  #ifdef GL_ES\n  precision lowp float;\n  #endif\n\n  #define PI 3.14159265359\n\n  varying vec2 vTextureCoord;\n  varying vec4 vColor;\n\n  uniform sampler2D uSampler;\n  uniform vec2 resolution;\n  uniform float margin[2];\n\n  void main() {\n      vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n      vec2 halfRes = 0.5 * resolution.xy;\n      vec2 point = vTextureCoord.xy * resolution;\n\n\n      vec2 pos1 = vec2(point.x, point.y);\n      vec2 pos2 = pos1;\n      pos2.x += margin[0];\n\n      vec2 d = pos2 - pos1;\n      float t = dot(pos1, d) / dot(d, d);\n      t = smoothstep(0.0, 1.0, clamp(t, 0.0, 1.0));\n\n      vec2 pos3 = vec2(vTextureCoord.x * resolution.x, vTextureCoord.y);\n      pos3.x -= resolution.x - margin[1];\n      vec2 pos4 = vec2(vTextureCoord.x + margin[1], vTextureCoord.y);\n\n      vec2 d2 = pos4 - pos3;\n      float t2 = dot(pos3, d2) / dot(d2, d2);\n      t2 = smoothstep(0.0, 1.0, clamp(t2, 0.0, 1.0));\n\n      color = mix(vec4(0.0), color, t);\n      color = mix(color, vec4(0.0), t2);\n\n      gl_FragColor = color;\n  }\n";
 
@@ -19215,11 +18122,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     get title() {
       return (this._Text && this._Text.text || {}).text;
     }
-
     set title(text) {
       this.patch({
         TextClipper: {
@@ -19228,82 +18133,63 @@ var APP_accelerator_home_ui = (function () {
           TextBox: {
             Text: {
               rtt: true,
-              text: { ...text
+              text: {
+                ...text
               }
             },
             TextLoopTexture: {}
           }
         }
       });
-
       this._Text.on('txLoaded', () => {
         if (this.autoStart) {
           this.startScrolling();
         }
       });
-
       this._Text.loadTexture();
-
       this._updateShader(this.finalW);
-
       this._scrolling && this.startScrolling();
     }
-
     set color(color) {
       this.tag('TextBox.Text').smooth = {
         color
       };
     }
-
     startScrolling() {
       let finalW = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.finalW;
-
       if (this._textRenderedW === 0) {
         this._Text.on('txLoaded', () => {
           this.startScrolling();
         });
       }
-
       if (this._textRenderedW > finalW - this._fadeW) {
         this._scrolling = true;
         this._TextLoopTexture.x = this._textRenderedW + this._offset;
         this._TextLoopTexture.texture = this._Text.getTexture();
-
         this._updateShader(finalW);
-
         this._updateAnimation();
-
         this._scrollAnimation.start();
       } else {
         // in case the metadata width gets larger on focus and the text goes from being clipped to not
         this._TextClipper.shader = null;
-
         if (this._Text.text && this._Text.text.textAlign === 'center') {
           this._centerText(finalW);
         }
-
         this._scrolling = false;
       }
     }
-
     stopScrolling() {
       let finalW = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.finalW;
       this._scrolling = false;
-
       if (this._scrollAnimation) {
         this._scrollAnimation.stopNow();
-
         this._TextLoopTexture.texture = null;
       }
-
       this._updateShader(finalW);
     }
-
     _updateShader(finalW) {
       this.stage.update();
-
       this._Text.loadTexture();
-
       this._TextClipper.patch({
         w: finalW > 0 ? finalW + this._fadeW / 2 : 0,
         shader: {
@@ -19314,7 +18200,6 @@ var APP_accelerator_home_ui = (function () {
         rtt: true
       });
     }
-
     _updateAnimation() {
       this._scrollAnimation && this._scrollAnimation.stopNow();
       this._scrollAnimation = this.animation({
@@ -19354,39 +18239,30 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _centerText(finalW) {
       this._TextBox.x = ((finalW || this.finalW) - this._textRenderedW) / 2;
     }
-
     get _TextClipper() {
       return this.tag('TextClipper');
     }
-
     get _TextBox() {
       return this.tag('TextBox');
     }
-
     get _Text() {
       return this.tag('Text');
     }
-
     get _TextLoopTexture() {
       return this.tag('TextLoopTexture');
     }
-
     get _offset() {
       return 32;
     }
-
     get _fadeW() {
       return 30;
     }
-
     get _textRenderedW() {
       return this._Text.renderWidth;
     }
-
   }
 
   /**
@@ -19412,10 +18288,8 @@ var APP_accelerator_home_ui = (function () {
         direction: 'row'
       };
     }
-
     _construct() {
       super._construct();
-
       this._smooth = false;
       this._itemSpacing = 0;
       this._scrollIndex = 0;
@@ -19424,60 +18298,51 @@ var APP_accelerator_home_ui = (function () {
       this.debounceDelay = Number.isInteger(this.debounceDelay) ? this.debounceDelay : 1;
       this._update = debounce_1.debounce(this._updateLayout, this.debounceDelay);
     }
-
     get _itemTransition() {
       return this.itemTransition || {
         duration: 0.4,
         timingFunction: 'cubic-bezier(0.20, 1.00, 0.30, 1.00)'
       };
     }
-
     _focus() {
       this.items.forEach(item => item.parentFocus = true);
     }
-
     _unfocus() {
       this.items.forEach(item => item.parentFocus = false);
     }
-
     selectNext() {
       this._smooth = true;
       return super.selectNext();
     }
-
     selectPrevious() {
       this._smooth = true;
       return super.selectPrevious();
-    } // TODO: can be documented in API when lastScrollIndex is made public
+    }
 
-
+    // TODO: can be documented in API when lastScrollIndex is made public
     shouldScrollLeft() {
       let shouldScroll = false;
-
       if (this._lastScrollIndex) {
         shouldScroll = this.selectedIndex < this._lastScrollIndex;
-
         if (this._prevLastScrollIndex !== undefined && this._prevLastScrollIndex !== this._lastScrollIndex) {
           shouldScroll = true;
         }
       } else {
         shouldScroll = this.selectedIndex >= this._scrollIndex;
       }
-
       return this._itemsX < 0 && shouldScroll;
-    } // TODO: can be documented in API when lastScrollIndex is made public
-
-
-    shouldScrollRight() {
-      const lastChild = this.Items.childList.last;
-      return this.selectedIndex > this._scrollIndex && // end of Items container < end of last item
-      Math.abs(this._itemsX - this.w) < lastChild.x + this.Items.childList.last.w;
     }
 
+    // TODO: can be documented in API when lastScrollIndex is made public
+    shouldScrollRight() {
+      const lastChild = this.Items.childList.last;
+      return this.selectedIndex > this._scrollIndex &&
+      // end of Items container < end of last item
+      Math.abs(this._itemsX - this.w) < lastChild.x + this.Items.childList.last.w;
+    }
     get onScreenItems() {
       return this.Items.children.filter(child => this._isOnScreen(child));
     }
-
     _isOnScreen(child) {
       const x = getX(child);
       const {
@@ -19487,17 +18352,14 @@ var APP_accelerator_home_ui = (function () {
       const withinUpperBounds = x + this._itemsX < this.w;
       return withinLowerBounds && withinUpperBounds;
     }
-
     _isOnScreenCompletely(child) {
       let itemX = child.core.renderContext.px;
       let rowX = this.core.renderContext.px;
       return itemX >= rowX && itemX + child.w <= rowX + this.w;
     }
-
     _shouldScroll() {
       const lastChild = this.Items.childList.last;
       let shouldScroll = this.alwaysScroll;
-
       if (!shouldScroll) {
         if (this.lazyScroll) {
           shouldScroll = !this._isOnScreenCompletely(this.selected);
@@ -19505,42 +18367,32 @@ var APP_accelerator_home_ui = (function () {
           shouldScroll = lastChild && (this.shouldScrollLeft() || this.shouldScrollRight() || !this._isOnScreenCompletely(this.selected));
         }
       }
-
       return shouldScroll;
     }
-
     _getLazyScrollX(prev) {
       let itemsContainerX;
       const prevIndex = this.Items.childList.getIndex(prev);
-
       if (prevIndex > this.selectedIndex) {
         itemsContainerX = -this.selected.x;
       } else if (prevIndex < this.selectedIndex) {
         itemsContainerX = this.w - this.selected.x - this.selected.w;
       }
-
       return itemsContainerX;
     }
-
     _getScrollX() {
       let itemsContainerX;
       let itemIndex = this.selectedIndex - this.scrollIndex;
       itemIndex = itemIndex < 0 ? 0 : itemIndex;
-
       if (this.Items.children[itemIndex]) {
         itemsContainerX = this.Items.children[itemIndex].transition('x') ? -this.Items.children[itemIndex].transition('x').targetValue : -this.Items.children[itemIndex].x;
       }
-
       return itemsContainerX;
     }
-
     render(next, prev) {
       this._whenEnabled.then(() => {
         this._prevLastScrollIndex = this._lastScrollIndex;
-
         if (this._shouldScroll()) {
           const itemsContainerX = this.lazyScroll && prev ? this._getLazyScrollX(prev) : this._getScrollX();
-
           if (itemsContainerX !== undefined) {
             if (this._smooth) {
               this.Items.smooth = {
@@ -19551,19 +18403,16 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
         this.onScreenEffect(this.onScreenItems);
       });
     }
-
     _updateLayout() {
       let nextX = 0;
-      let nextH = 0; // layout items in row
-
+      let nextH = 0;
+      // layout items in row
       for (let i = 0; i < this.Items.children.length; i++) {
         const child = this.Items.children[i];
         nextH = Math.max(nextH, getH(child));
-
         if (this._smooth) {
           child.smooth = {
             x: [nextX, this._itemTransition]
@@ -19573,23 +18422,19 @@ var APP_accelerator_home_ui = (function () {
             x: nextX
           });
         }
-
         nextX += child.w;
-
         if (i < this.Items.children.length - 1) {
           nextX += this.itemSpacing;
         }
-
         if (child.centerInParent) {
           // if the child is another focus manager, check the height of the item container
-          const childHeight = child.Items && child.Items.h || child.h; // only center the child if it is within the bounds of this focus manager
-
+          const childHeight = child.Items && child.Items.h || child.h;
+          // only center the child if it is within the bounds of this focus manager
           if (childHeight < this.h) {
             child.y = (this.h - childHeight) / 2;
           }
         }
       }
-
       this.Items.patch({
         h: nextH,
         w: nextX
@@ -19598,15 +18443,15 @@ var APP_accelerator_home_ui = (function () {
       const endOfLastChild = lastChild ? getX(lastChild) + lastChild.w : 0;
       const scrollOffset = (this.Items.children[this._scrollIndex] || {
         x: 0
-      }).x; // determine when to stop scrolling right
+      }).x;
 
+      // determine when to stop scrolling right
       if (this.alwaysScroll) {
         this._lastScrollIndex = this.Items.children.length - 1;
       } else if (endOfLastChild > this.w) {
         for (let i = this.Items.children.length - 1; i >= 0; i--) {
           const child = this.Items.children[i];
           const childX = getX(child);
-
           if (childX + this.w - scrollOffset > endOfLastChild) {
             this._lastScrollIndex = i;
           } else {
@@ -19614,39 +18459,30 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
       this.fireAncestors('$itemChanged');
       this.render(this.selected, null);
     }
-
     get itemSpacing() {
       return this._itemSpacing;
     }
-
     set itemSpacing(itemSpacing) {
       if (itemSpacing !== this._itemSpacing) {
         this._itemSpacing = itemSpacing;
-
         this._update();
       }
     }
-
     get scrollIndex() {
       return this._scrollIndex;
     }
-
     set scrollIndex(scrollIndex) {
       if (scrollIndex !== this._scrollIndex) {
         this._scrollIndex = scrollIndex;
-
         this._update();
       }
     }
-
     get _itemsX() {
       return getX(this.Items);
     }
-
     appendItems() {
       let items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       let itemHeight = this.renderHeight;
@@ -19656,21 +18492,16 @@ var APP_accelerator_home_ui = (function () {
         item.h = item.h || itemHeight;
       });
       this.stage.update();
-
       this._updateLayout();
-
       this._update.clear();
-
       this._refocus();
     }
-
     $itemChanged() {
       this._update();
-    } // can be overridden
+    }
 
-
+    // can be overridden
     onScreenEffect() {}
-
   }
 
   /**
@@ -19696,22 +18527,19 @@ var APP_accelerator_home_ui = (function () {
     padding: 0,
     fixed: true
   }; // actualize key values : 60 ,60  ; 90,100
-
   const isUpperCase = string => /^[A-Z]$/.test(string);
-
   class Key extends Button$1 {
     static _template() {
-      return { ...super._template(),
+      return {
+        ...super._template(),
         ...KEY_DIMENSIONS
       };
     }
-
     set config(config) {
       if (config) {
         this.sizes = config.sizes;
       }
     }
-
     set icon(src) {
       if (src) {
         this._Icon.patch({
@@ -19722,37 +18550,30 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     set size(size) {
       this.w = this._sizes[size] || this.h;
     }
-
     set char(char) {
       this.title = char;
     }
-
     set announce(value) {
       this._announce = value;
     }
-
     get announce() {
       if (this._announce) {
         return this._announce;
       }
-
       if (isUpperCase(this.title)) {
         return "Capital ".concat(this.title, ", button");
       }
-
       return this.title + ', button';
     }
-
     set label(label) {
       this.title = label;
     }
-
     get _sizes() {
-      return this.styles.sizes ? { ...this.styles.sizes,
+      return this.styles.sizes ? {
+        ...this.styles.sizes,
         ...this.sizes
       } : {
         small: 50,
@@ -19767,12 +18588,10 @@ var APP_accelerator_home_ui = (function () {
       if (this.toggle) {
         this.fireAncestors('$toggleKeyboard', this.toggle);
       }
-
       this.fireAncestors('$onSoftKey', {
         key: this.title
       });
     }
-
   }
 
   /*
@@ -19800,44 +18619,36 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this._whenEnabled = new Promise(resolve => this._firstEnable = resolve);
     }
-
     get announce() {
       return 'Keyboard' + (this.title ? ", ".concat(this.title) : '');
     }
-
     get announceContext() {
       return ['PAUSE-2', 'Use arrow keys to choose characters, press center to select'];
     }
-
     set formats(formats) {
       if (formats === void 0) {
         formats = {};
       }
-
       this._formats = formats;
-      this._currentFormat = this._defaultFormat; // Ensure formats prop is set last
-
+      this._currentFormat = this._defaultFormat;
+      // Ensure formats prop is set last
       this._whenEnabled.then(() => {
         Object.entries(formats).forEach(_ref => {
           let [key, value] = _ref;
-
           let keyboardData = this._formatKeyboardData(value);
-
           this._createKeyboard(key, this._createRows(keyboardData));
         });
         this.tag(this._currentFormat).alpha = 1;
-
         this._refocus();
       });
     }
-
     _createKeyboard(key) {
       let rows = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
       key = key.charAt(0).toUpperCase() + key.slice(1);
-
       if (rows.length === 1) {
         this.patch({
-          [key]: { ...rows[0],
+          [key]: {
+            ...rows[0],
             alpha: 0
           }
         });
@@ -19853,7 +18664,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     _createRows() {
       let rows = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       return rows.map(keys => {
@@ -19867,7 +18677,6 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
-
     _createKeys() {
       let keys = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       return keys.map(keyProps => {
@@ -19875,53 +18684,46 @@ var APP_accelerator_home_ui = (function () {
           type: this.keyComponent || Key,
           config: this.keysConfig
         };
-
         if (!keyProps) {
-          return { ...KEY_DIMENSIONS,
+          return {
+            ...KEY_DIMENSIONS,
             skipFocus: true
           };
         } else if (typeof keyProps === 'object') {
-          return { ...key,
+          return {
+            ...key,
             ...keyProps
           };
         }
-
-        return { ...key,
+        return {
+          ...key,
           label: keyProps
         };
       });
     }
-
     _formatKeyboardData() {
       let data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
       if (Array.isArray(data) && data.length) {
         if (!Array.isArray(data[0]) && !this.inline) {
           let keyRows = [],
-              idx,
-              counter;
-
+            idx,
+            counter;
           for (idx = 0, counter = -1; idx < data.length; idx++) {
             if (idx % this.columnCount === 0) {
               counter++;
               keyRows[counter] = [];
             }
-
             keyRows[counter].push(data[idx]);
           }
-
           return keyRows;
         } else if (this.inline) {
           return [data];
         }
-
         return data;
       }
     }
-
     $toggleKeyboard(keyboardFormat) {
       keyboardFormat = keyboardFormat.charAt(0).toUpperCase() + keyboardFormat.slice(1);
-
       if (keyboardFormat !== this._currentFormat) {
         this.selectKeyOn(this.tag(keyboardFormat));
         this.tag(this._currentFormat).alpha = 0;
@@ -19929,14 +18731,12 @@ var APP_accelerator_home_ui = (function () {
         this._currentFormat = keyboardFormat;
       }
     }
-
     selectKeyOn(keyboard) {
       let {
         row,
         column
       } = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getSelectedKey();
       let type = keyboard.constructor.name;
-
       if (type === 'Row') {
         keyboard.selectedIndex = column;
       } else {
@@ -19944,12 +18744,10 @@ var APP_accelerator_home_ui = (function () {
         keyboard.Items.children[row].selectedIndex = column;
       }
     }
-
     getSelectedKey() {
       let row, column;
       let keyboard = this.tag(this._currentFormat);
       let type = keyboard.constructor.name;
-
       if (type === 'Row') {
         row = 0;
         column = keyboard.selectedIndex;
@@ -19957,54 +18755,42 @@ var APP_accelerator_home_ui = (function () {
         row = keyboard.selectedIndex;
         column = keyboard.Items.children[row].selectedIndex;
       }
-
       return {
         row,
         column
       };
     }
-
     _getFocused() {
       return this.tag(this._currentFormat) || this;
     }
-
     _focus() {
       this.fireAncestors('$keyboardFocused', true);
     }
-
     _unfocus() {
       this.tag(this._currentFormat).alpha = 0;
       this._currentFormat = this._defaultFormat;
       this.tag(this._currentFormat).alpha = 1;
-
       this._refocus();
-
       this.fireAncestors('$keyboardFocused', false);
     }
-
     set columnCount(columnCount) {
       this._columnCount = columnCount;
     }
-
     set rowCount(rowCount) {
       this._rowCount = rowCount;
     }
-
     get columnCount() {
       if (this._columnCount) return this._columnCount;
       if (this._rowCount) return this._formats[this._defaultFormat.toLowerCase()].length / this._rowCount;
       if (this.inline) return this._formats[this._defaultFormat.toLowerCase()].length;else return 11;
     }
-
     get _spacing() {
       return this.spacing || 8;
     }
-
     get _defaultFormat() {
       let defaultFormat = this.defaultFormat || Object.keys(this._formats)[0];
       return defaultFormat.charAt(0).toUpperCase() + defaultFormat.slice(1);
     }
-
   }
   const KEYBOARD_FORMATS = {
     fullscreen: {
@@ -20327,11 +19113,10 @@ var APP_accelerator_home_ui = (function () {
       this._thunder = thunderJS(config);
       this.callsign = 'org.rdk.Wifi';
     }
+
     /**
      * Function to activate the wifi plugin.
      */
-
-
     activate() {
       return new Promise((resolve, reject) => {
         this._thunder.call('Controller', 'activate', {
@@ -20341,7 +19126,6 @@ var APP_accelerator_home_ui = (function () {
             if (state === WiFiState.DISABLED) {
               this.setEnabled(true);
             }
-
             if (state === WiFiState.CONNECTED) {
               this.setInterface('WIFI', true).then(res => {
                 if (res.success) {
@@ -20350,30 +19134,25 @@ var APP_accelerator_home_ui = (function () {
               });
             }
           });
-
           this._thunder.on(this.callsign, 'onWIFIStateChanged', notification => {
             if (this._events.has('onWIFIStateChanged')) {
               this._events.get('onWIFIStateChanged')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onError', notification => {
             if (this._events.has('onError')) {
               this._events.get('onError')(notification);
             }
           });
-
           this._thunder.on(this.callsign, 'onAvailableSSIDs', notification => {
             if (notification.moreData === false) {
               this.stopScan();
               notification.ssids = notification.ssids.filter((item, pos) => notification.ssids.findIndex(e => e.ssid === item.ssid) === pos);
-
               if (this._events.has('onAvailableSSIDs')) {
                 this._events.get('onAvailableSSIDs')(notification);
               }
             }
           });
-
           resolve(result);
         }).catch(err => {
           console.error("Wifi activation failed: ".concat(err));
@@ -20381,30 +19160,27 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      *Register events and event listeners.
      * @param {string} eventId
      * @param {function} callback
      *
      */
-
-
     registerEvent(eventId, callback) {
       this._events.set(eventId, callback);
     }
+
     /**
      * Deactivates wifi plugin.
      */
-
-
     deactivate() {
       this._events = new Map();
     }
+
     /**
      * Returns connected SSIDs
      */
-
-
     getConnectedSSID() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getConnectedSSID').then(result => {
@@ -20415,11 +19191,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Start scanning for available wifi.
      */
-
-
     discoverSSIDs() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'startScan', {
@@ -20435,11 +19210,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Stops scanning for networks.
      */
-
-
     stopScan() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'stopScan').then(result => {
@@ -20451,18 +19225,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to connect to an SSID
      * @param {object} device
      * @param {string} passphrase
      */
-
-
     connect(device, passphrase) {
       return new Promise((resolve, reject) => {
         this.disconnect().then(() => {
           console.log("connect SSID ".concat(device.ssid));
-
           this._thunder.call(this.callsign, 'connect', {
             ssid: device.ssid,
             passphrase: passphrase,
@@ -20482,11 +19254,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to disconnect from the SSID.
      */
-
-
     disconnect() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'disconnect').then(result => {
@@ -20503,11 +19274,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Returns current state of the Wi-Fi plugin.
      */
-
-
     getCurrentState() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getCurrentState').then(result => {
@@ -20519,12 +19289,11 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Enables/Disables the Wi-Fi.
      * @param {bool} bool
      */
-
-
     setEnabled(bool) {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'setEnabled', {
@@ -20536,11 +19305,10 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to get paired SSID.
      */
-
-
     getPaired() {
       return new Promise((resolve, reject) => {
         this._thunder.call(this.callsign, 'getPairedSSID', {}).then(result => {
@@ -20551,7 +19319,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getDefaultInterface() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Network', 'getDefaultInterface', {}).then(result => {
@@ -20561,7 +19328,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getInterfaces() {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Network', 'getInterfaces').then(result => {
@@ -20571,7 +19337,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setInterface(inter, bool) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Network', 'setInterfaceEnabled', {
@@ -20585,7 +19350,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setDefaultInterface(interfaceName, bool) {
       return new Promise((resolve, reject) => {
         this._thunder.call('org.rdk.Network', 'setDefaultInterface', {
@@ -20598,7 +19362,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     saveSSID(ssid, password, securityMode) {
       console.log("SAVESSID");
       return new Promise((resolve, reject) => {
@@ -20613,7 +19376,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     clearSSID() {
       console.log("CLEARSSID");
       return new Promise((resolve, reject) => {
@@ -20624,7 +19386,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -20650,10 +19411,8 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     handleDone() {
       var securityCode = this.securityCodes[this.securityCodeIndex].value;
-
       if (!this.textCollection['EnterSSID']) {
         this._setState("EnterSSID");
       } else if (securityCode < 0 || securityCode > 14) {
@@ -20665,19 +19424,18 @@ var APP_accelerator_home_ui = (function () {
           this.textCollection['EnterPassword'] = "";
           this.tag("Pwd").text.text = "";
         }
-
         var self = this;
         this.startConnectForAnotherNetwork({
           ssid: self.textCollection['EnterSSID'],
           security: securityCode
         }, self.textCollection['EnterPassword']);
       }
-    } // startConnectForAnotherNetwork(device, passphrase) {
+    }
+
+    // startConnectForAnotherNetwork(device, passphrase) {
     //   wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
     //   Router.back()
     // }
-
-
     startConnectForAnotherNetwork(device, passphrase) {
       wifi$5.connect({
         ssid: device.ssid,
@@ -20685,7 +19443,8 @@ var APP_accelerator_home_ui = (function () {
       }, passphrase).then(() => {
         wifi$5.saveSSID(device.ssid, passphrase, device.security).then(response => {
           if (response.result === 0) ; else if (response.result !== 0) {
-            wifi$5.clearSSID().then(response => {// console.log(response)
+            wifi$5.clearSSID().then(response => {
+              // console.log(response)
               // Router.back()
             });
           }
@@ -20693,7 +19452,6 @@ var APP_accelerator_home_ui = (function () {
       });
       Router.back();
     }
-
     static _template() {
       return {
         Background: {
@@ -20836,10 +19594,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this._setState('EnterSSID');
-
       this.textCollection = {
         'EnterSSID': '',
         'EnterPassword': '',
@@ -20848,7 +19604,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Pwd').text.text = "";
       this.tag("NetworkText").text.text = "";
       this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
-
       if (this.securityCodes[this.securityCodeIndex].value === 0) {
         this.pwdUnReachable = true;
         this.tag("PasswordBox").alpha = 0.5;
@@ -20859,38 +19614,30 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Password").alpha = 1;
       }
     }
-
     _handleBack() {
       Router.back();
     }
-
     static _states() {
       return [class EnterSSID extends this {
         $enter() {
           this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleDown() {
           this._setState("EnterSecurity");
         }
-
         _handleEnter() {
           this._setState('Keyboard');
         }
-
         $exit() {
           this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class EnterSecurity extends this {
         $enter() {
           this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleUp() {
           this._setState("EnterSSID");
         }
-
         isPasswordUnReachable(secCode) {
           if (secCode === 0) {
             this.tag("PasswordBox").alpha = 0.5;
@@ -20902,84 +19649,66 @@ var APP_accelerator_home_ui = (function () {
             return false;
           }
         }
-
         _handleLeft() {
           this.securityCodeIndex = (15 + --this.securityCodeIndex) % 15;
           this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
           this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
         }
-
         _handleEnter() {
           this.handleDone();
         }
-
         _handleRight() {
           this.securityCodeIndex = (15 + ++this.securityCodeIndex) % 15;
           this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
           this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
         }
-
         _handleDown() {
           if (!this.pwdUnReachable) {
             this._setState("EnterPassword");
           }
         }
-
         $exit() {
           this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class EnterPassword extends this {
         $enter() {
           if (this.pwdUnReachable) {
             this._setState("EnterSecurity");
           }
-
           this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleUp() {
           this._setState("EnterSecurity");
         }
-
         _handleDown() {
           this._setState("EnterSSID");
         }
-
         _handleEnter() {
           this._setState('Keyboard');
         }
-
         $exit() {
           this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class Keyboard extends this {
         $enter(state) {
           this.prevState = state.prevState;
-
           if (this.prevState === 'EnterSSID') {
             this.element = 'NetworkText';
           }
-
           if (this.prevState === 'EnterPassword') {
             this.element = 'Pwd';
           }
-
           if (this.prevState === 'EnterSecurity') {
             this.element = 'TypeText';
           }
         }
-
         _getFocused() {
           return this.tag('Keyboard');
         }
-
         $onSoftKey(_ref) {
           let {
             key
           } = _ref;
-
           if (key === 'Done') {
             this.handleDone();
           } else if (key === 'Clear') {
@@ -20998,14 +19727,11 @@ var APP_accelerator_home_ui = (function () {
             this.tag(this.element).text.text = this.textCollection[this.prevState];
           }
         }
-
         _handleBack() {
           this._setState(this.prevState);
         }
-
       }];
     }
-
     _init() {
       this.securityCodeIndex = 0;
       this.pwdUnReachable = true;
@@ -21063,7 +19789,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Pwd").text.text = this.textCollection['EnterPassword'];
       this.tag("NetworkText").text.text = this.textCollection['EnterSSID'];
     }
-
   }
 
   /**
@@ -21092,7 +19817,6 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -21205,21 +19929,17 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this._setState('NetworkInfo');
-
       let _currentIPSettings = {};
       let _newIPSettings = {};
       this._network = new Network();
-
       this._network.getDefaultInterface().then(interfaceName => {
       });
-
       _newIPSettings = _currentIPSettings;
       _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
-      // loader animation for testing internet
 
+      // loader animation for testing internet
       this.loadingAnimation = this.tag('TestInternetAccess.Loader').animation({
         duration: 3,
         repeat: -1,
@@ -21235,105 +19955,80 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility();
-
       this._setState(this.state); //can be used on init as well
-
 
       this._network.getDefaultInterface().then(interfaceName => {
         this.$NetworkInterfaceText(interfaceName);
       });
     }
-
     _unfocus() {
       this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ');
     }
-
     $NetworkInterfaceText(text) {
       this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text;
     }
-
     _handleBack() {
       Router.navigate('settings');
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration'));
     }
-
     static _states() {
       return [class NetworkInfo extends this {
         $enter() {
           this.tag('NetworkInfo')._focus();
         }
-
         $exit() {
           this.tag('NetworkInfo')._unfocus();
         }
-
         _handleDown() {
           this._setState('NetworkInterface');
         }
-
         _handleEnter() {
           Router.navigate('settings/network/info');
         }
-
       }, class NetworkInterface extends this {
         $enter() {
           this.tag('NetworkInterface')._focus();
         }
-
         $exit() {
           this.tag('NetworkInterface')._unfocus();
         }
-
         _handleUp() {
           this._setState('NetworkInfo');
         }
-
         _handleDown() {
           this._setState('TestInternetAccess');
         }
-
         _handleEnter() {
           if (!Router.isNavigating()) {
             Router.navigate('settings/network/interface');
           }
         }
-
       }, class TestInternetAccess extends this {
         $enter() {
           this.tag('TestInternetAccess')._focus();
         }
-
         $exit() {
           this.tag('TestInternetAccess')._unfocus();
         }
-
         _handleUp() {
           this._setState('NetworkInterface');
         }
-
         _handleDown() {
           this._setState('NetworkInfo');
         }
-
         _handleEnter() {
           this.loadingAnimation.start();
           this.tag('TestInternetAccess.Loader').visible = true;
-
           this._network.isConnectedToInternet().then(result => {
             var connectionStatus = Language.translate("Internet Access: ");
-
             if (result) {
               connectionStatus += Language.translate("Connected");
             } else {
               connectionStatus += Language.translate("Not Connected");
             }
-
             setTimeout(() => {
               this.tag('TestInternetAccess.Loader').visible = false;
               this.tag('TestInternetAccess.Title').text.text = connectionStatus;
@@ -21341,29 +20036,22 @@ var APP_accelerator_home_ui = (function () {
             }, 2000);
           });
         }
-
       }, class StaticMode extends this {
         $enter() {
           this.tag('StaticMode')._focus();
         }
-
         $exit() {
           this.tag('StaticMode')._unfocus();
         }
-
         _handleUp() {
           this._setState('TestInternetAccess');
         }
-
         _handleDown() {
           this._setState('NetworkInfo');
         }
-
         _handleEnter() {}
-
       }];
     }
-
   }
 
   /**
@@ -21395,15 +20083,12 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     _handleBack() {
       Router.navigate('settings/network');
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Info'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -21630,20 +20315,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     getIPSetting(interfaceName) {
       appApi$9.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility(); //Getting the default interface
-
+      //Getting the default interface
       appApi$9.getDefaultInterface().then(result => {
         defaultInterface$1 = result.interface;
         this.getIPSetting(defaultInterface$1);
-
         if (defaultInterface$1 === "WIFI") {
           this.tag("ConnectionType.Value").text.text = "Wireless";
           this.tag("SSID").alpha = 1;
@@ -21658,12 +20339,12 @@ var APP_accelerator_home_ui = (function () {
           this.tag("IPAddress.Value").text.text = "NA";
           this.tag("Gateway.Value").text.text = "NA";
           this.tag("MACAddress.Value").text.text = "NA";
-        } //Filtering the current interface
+        }
 
-
+        //Filtering the current interface
         appApi$9.getInterfaces().then(result => {
-          currentInterface$1 = result.interfaces.filter(data => data.interface === defaultInterface$1); //console.log(currentInterface);
-
+          currentInterface$1 = result.interfaces.filter(data => data.interface === defaultInterface$1);
+          //console.log(currentInterface);
           if (currentInterface$1[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
             appApi$9.getConnectedSSID().then(result => {
@@ -21676,7 +20357,6 @@ var APP_accelerator_home_ui = (function () {
               } else {
                 this.tag("SignalStrength.Value").text.text = "Poor";
               }
-
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
             appApi$9.getIPSetting(defaultInterface$1).then(result => {
@@ -21686,12 +20366,10 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.tag('Status.Value').text.text = "Disconnected";
           }
-
           this.tag('MACAddress.Value').text.text = "".concat(currentInterface$1[0].macAddress);
         }).catch(error => console.log(error));
       }).catch(error => console.log(error));
     }
-
     _unfocus() {
       this.tag('SSID.Value').text.text = 'NA';
       this.tag('SignalStrength.Value').text.text = 'NA';
@@ -21701,7 +20379,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('ConnectionType.Value').text.text = 'NA';
       this.tag('InternetProtocol.Value').text.text = 'NA';
     }
-
   }
 
   /**
@@ -21727,7 +20404,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
     }
-
     static _template() {
       return {
         rect: true,
@@ -21788,13 +20464,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility();
-
       this._setState('WiFi');
     }
-
     _init() {
       const config = {
         host: '127.0.0.1',
@@ -21804,10 +20476,8 @@ var APP_accelerator_home_ui = (function () {
       this._thunder = thunderJS(config);
       const systemcCallsign = 'org.rdk.Network';
       const eventName = 'onDefaultInterfaceChanged';
-
       this._thunder.on(systemcCallsign, eventName, notification => {
         console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification);
-
         if (notification.newInterfaceName === "ETHERNET") {
           this.loadingAnimation.stop();
           this.tag('Ethernet.Loader').visible = false;
@@ -21822,7 +20492,6 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Ethernet.Title').text.text = 'Ethernet';
         }
       });
-
       this.loadingAnimation = this.tag('Ethernet.Loader').animation({
         duration: 3,
         repeat: -1,
@@ -21839,22 +20508,18 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Ethernet.Loader').src = this.LoadingIcon;
     }
-
     _firstActive() {
       this.tag('Ethernet.Loader').on('txError', () => {
         const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
         this.tag('Ethernet.Loader').src = url;
       });
     }
-
     hide() {
       this.tag('NetworkInterfaceScreenContents').visible = false;
     }
-
     show() {
       this.tag('NetworkInterfaceScreenContents').visible = true;
     }
-
     setEthernetInterface() {
       wifi$4.getInterfaces().then(res => {
         res.interfaces.forEach(element => {
@@ -21871,48 +20536,38 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     _handleBack() {
       Router.navigate('settings/network');
     }
-
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface'));
     }
-
     static _states() {
       return [class WiFi extends this {
         $enter() {
           this.tag('WiFi')._focus();
         }
-
         $exit() {
           this.tag('WiFi')._unfocus();
         }
-
         _handleDown() {
           this._setState('Ethernet');
         }
-
         _handleEnter() {
           if (!Router.isNavigating()) {
             Router.navigate('settings/network/interface/wifi');
           }
         }
-
       }, class Ethernet extends this {
         $enter() {
           this.tag('Ethernet')._focus();
         }
-
         $exit() {
           this.tag('Ethernet')._unfocus();
         }
-
         _handleEnter() {
           wifi$4.getDefaultInterface().then(res => {
             if (res.success) {
@@ -21922,18 +20577,14 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _handleDown() {
           this._setState('WiFi');
         }
-
         _handleUp() {
           this._setState('WiFi');
         }
-
       }];
     }
-
   }
 
   /**
@@ -21957,7 +20608,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for rendering items in Settings screen.
    */
-
   class ConfirmAndCancel extends lng$1.Component {
     static _template() {
       return {
@@ -21975,11 +20625,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in settings screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.tag('Item').patch({
@@ -21998,31 +20647,26 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Set width of the item.
      */
-
-
     set width(width) {
       this.tag('Item').w = width;
     }
+
     /**
      * Set height of the item.
      */
-
-
     set height(height) {
       this.tag('Item').h = height;
     }
-
     _focus() {
       this.tag('Item').color = CONFIG.theme.hex;
     }
-
     _unfocus() {
       this.tag('Item').color = 0xffffffff;
     }
-
   }
 
   /**
@@ -22049,7 +20693,6 @@ var APP_accelerator_home_ui = (function () {
         src: Utils.asset('images/settings/ToggleOffWhite.png')
       };
     }
-
     _handleEnter() {
       if (this.isOn) {
         this.patch({
@@ -22060,15 +20703,12 @@ var APP_accelerator_home_ui = (function () {
           src: Utils.asset("images/settings/ToggleOnOrange.png")
         });
       }
-
       this.isOn = !this.isOn;
       this.fireAncestors('$handleEnter', this.isOn);
     }
-
     _init() {
       this.isOn = false;
     }
-
     _disable() {
       if (this.isOn) {
         this.isOn = false;
@@ -22078,7 +20718,6 @@ var APP_accelerator_home_ui = (function () {
         this.fireAncestors('$handleEnter', this.isOn);
       }
     }
-
   }
 
   /**
@@ -22103,7 +20742,6 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         w: 1920,
@@ -22220,19 +20858,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _updateText(txt) {
       this.tag("Pwd").text.text = txt;
     }
-
     _handleBack() {
       Router.back();
     }
+
     /**
      * @param {{ item: Wifi Response Object; }} args
      */
-
-
     set params(args) {
       if (args.wifiItem) {
         this.item(args.wifiItem);
@@ -22240,7 +20875,6 @@ var APP_accelerator_home_ui = (function () {
         Router.navigate('settings/network/interface/wifi');
       }
     }
-
     item(item) {
       this.star = "";
       this.passwd = "";
@@ -22248,13 +20882,11 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Title').text = item.ssid;
       var options = [];
       this._item = item;
-
       if (item.connected) {
         options = ['Disconnect', 'Cancel'];
       } else {
         options = ['Connect', 'Cancel'];
       }
-
       this.tag('List').items = options.map((item, index) => {
         return {
           ref: item,
@@ -22265,134 +20897,111 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-
       this._setState('Pair');
     }
-
     _focus() {
       this.hidePasswd = true;
-
       this._setState('Pair');
     }
-
     _unfocus() {}
-
     _init() {
       this.star = "";
       this.passwd = "";
       this.isOn = false;
       this._wifi = new Wifi();
     }
-
     pressEnter(option) {
       if (option === 'Cancel') {
         Router.back();
       } else if (option === 'Connect') {
         if (this._item) {
           console.log('trying to connect wifi');
-
           this._wifi.connect(this._item, '').then(() => {}).catch(err => {
             console.log('Not able to connect to wifi', JSON.stringify(err));
           });
         }
-
         Router.back();
       } else if (option === 'Disconnect') {
         this._wifi.disconnect().then(() => {
           Router.back();
         });
       }
-    } // startConnect(password) {
+    }
+
+    // startConnect(password) {
     //   this._wifi.connect(this._item, password).then(() => {
     //     Router.back()
     //   })
+
     // }
-
-
     startConnect(password) {
       this._wifi.connect(this._item, password).then(() => {
         this._wifi.saveSSID(this._item.ssid, password, this._item.security).then(response => {
           if (response.result === 0) ; else if (response.result !== 0) {
-            this._wifi.clearSSID().then(response => {// console.log(response)
+            this._wifi.clearSSID().then(response => {
+              // console.log(response)
               // Router.back()
             });
           }
         });
-
         Router.back();
       });
     }
-
     static _states() {
       return [class Password extends this {
         $enter() {
           this.shifter = false;
           this.capsLock = false;
         }
-
         _getFocused() {
           return this.tag("KeyBoard");
         }
-
         $onSoftKey(_ref) {
           let {
             key
           } = _ref;
-
           if (key === 'Done') {
             this.startConnect(this.passwd);
           } else if (key === 'Clear') {
             this.passwd = this.passwd.substring(0, this.passwd.length - 1);
             this.star = this.star.substring(0, this.star.length - 1);
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else if (key === '#@!' || key === 'abc' || key === 'áöû' || key === 'shift') {
             console.log('no saving');
           } else if (key === 'Space') {
             this.star += '\u25CF';
             this.passwd += ' ';
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else if (key === 'Delete') {
             this.star = '';
             this.passwd = '';
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else {
             this.star += '\u25CF';
             this.passwd += key;
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           }
         }
-
         _handleUp() {
           this._setState("Pair");
         }
-
       }, class Pair extends this {
         $enter() {}
-
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleRight() {
           this.tag('List').setNext();
         }
-
         _handleLeft() {
           this.tag('List').setPrevious();
         }
-
         _handleUp() {
           this._setState("PasswordSwitchState");
         }
-
         _handleDown() {
           this._setState("Password");
         }
-
         _handleEnter() {
           if (this.tag('List').element.ref == 'Connect' && this._item.security != 0) {
             if (this.star === '') {
@@ -22404,41 +21013,31 @@ var APP_accelerator_home_ui = (function () {
             this.pressEnter(this.tag('List').element.ref);
           }
         }
-
       }, class PasswordSwitchState extends this {
         $enter() {
           this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleDown() {
           this._setState("Pair");
         }
-
         _getFocused() {
           return this.tag('PasswrdSwitch');
         }
-
         $handleEnter(bool) {
           if (bool) {
             this._updateText(this.passwd);
-
             this.hidePasswd = false;
           } else {
             this._updateText(this.star);
-
             this.hidePasswd = true;
           }
-
           this.isOn = bool;
         }
-
         $exit() {
           this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, 0xffffffff, false);
         }
-
       }];
     }
-
   }
 
   /**
@@ -22468,14 +21067,12 @@ var APP_accelerator_home_ui = (function () {
       this.WiFi4 = Utils.asset('/images/settings/WiFi4.png');
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     _init() {
       this.tag('Item.Tick').on('txError', () => {
         const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Tick.png';
         this.tag('Item.Tick').src = url;
       });
     }
-
     static _template() {
       return {
         TopLine: {
@@ -22500,16 +21097,14 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents of an item in the Bluetooth screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.status = item.connected ? 'Connected' : 'Not Connected';
       var wifiicon = "";
-
       if (item.signalStrength >= -50) {
         wifiicon = this.WiFi4;
       } else if (item.signalStrength >= -60) {
@@ -22519,7 +21114,6 @@ var APP_accelerator_home_ui = (function () {
       } else {
         wifiicon = this.WiFi1;
       }
-
       this.tag('Item').patch({
         Tick: {
           x: 10,
@@ -22565,14 +21159,12 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       });
-
       if (item.security == '0' || item.security == '15') {
         this.tag('Item.Right.Lock').visible = false;
       } else {
         this.tag('Item.Right.Lock').visible = true;
       }
     }
-
     _focus() {
       this.tag("Item").color = COLORS.hightlightColor;
       this.tag('TopLine').color = CONFIG.theme.hex;
@@ -22583,7 +21175,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -22593,7 +21184,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -22614,15 +21204,14 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
   * Class for WiFi screen.
   */
-
   class WiFiScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -22722,19 +21311,13 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _active() {
       this._setState('Switch');
     }
-
     _focus() {
-      this.widgets.menu.setPanelsVisibility();
-
       this._setState('Switch');
-
       this._enable();
     }
-
     _firstEnable() {
       this.wifiLoading = this.tag('Switch.Loader').animation({
         duration: 3,
@@ -22763,26 +21346,19 @@ var APP_accelerator_home_ui = (function () {
       this._network = new Network();
       this.wifiStatus = false;
       this._wifiIcon = true;
-
       this._activateWiFi();
-
       this._setState('Switch');
-
       if (this.wiFiStatus) {
         this.tag('Networks').visible = true;
         this.tag('JoinAnotherNetwork').visible = true;
       }
-
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
-
       this._network.activate().then(result => {
         if (result) {
           this.wifiStatus = true;
-
           this._network.registerEvent('onIPAddressStatusChanged', notification => {
             console.log(JSON.stringify(notification));
-
             if (notification.status == 'LOST') {
               if (notification.interface === 'WIFI') {
                 this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -22793,7 +21369,6 @@ var APP_accelerator_home_ui = (function () {
               }
             }
           });
-
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
             if (notification.newInterfaceName === 'ETHERNET') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
@@ -22802,19 +21377,15 @@ var APP_accelerator_home_ui = (function () {
                 }
               });
             }
-
             if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
               this._wifi.disconnect();
-
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-
               this._setState('Switch');
-
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
                   this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
@@ -22825,7 +21396,6 @@ var APP_accelerator_home_ui = (function () {
                 }
               });
             }
-
             if (notification.newInterfaceName == '' && notification.oldInterfaceName == 'WIFI') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
@@ -22838,7 +21408,6 @@ var APP_accelerator_home_ui = (function () {
               });
             }
           });
-
           this._network.registerEvent('onConnectionStatusChanged', notification => {
             if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
               this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -22851,29 +21420,26 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to be executed when the Wi-Fi screen is enabled.
      */
-
-
     _enable() {
       if (this.wifiStatus) {
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
      * Function to be executed when the Wi-Fi screen is disabled.
      */
-
-
     _disable() {
       this._wifi.stopScan();
     }
+
     /**
      * Function to render list of Wi-Fi networks.
      */
-
-
     renderDeviceList(ssids) {
       this._wifi.getConnectedSSID().then(result => {
         if (result.ssid != '') {
@@ -22881,7 +21447,6 @@ var APP_accelerator_home_ui = (function () {
         } else {
           this._pairedList = [];
         }
-
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
@@ -22896,7 +21461,6 @@ var APP_accelerator_home_ui = (function () {
         });
         this._otherList = ssids.filter(device => {
           result = this._pairedList.map(a => a.ssid);
-
           if (result.includes(device.ssid)) {
             return false;
           } else return device;
@@ -22915,15 +21479,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     _handleBack() {
       Router.navigate('settings/network/interface');
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration  Network Interface  WiFi'));
     }
-
     static _states() {
       return [class Switch extends this {
         $enter() {
@@ -22931,24 +21492,19 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.tag('Switch.Button').scaleX = 1;
           }
-
           this.tag('Switch')._focus();
         }
-
         $exit() {
           this.tag('Switch')._unfocus();
         }
-
         _handleDown() {
           if (this.wifiStatus === true) {
             this._setState('JoinAnotherNetwork');
           }
         }
-
         _handleEnter() {
           this.switch();
         }
-
       }, class PairedDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
@@ -22958,25 +21514,20 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').scaleX = -1;
           }
         }
-
         _getFocused() {
           return this._pairedNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('MyDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('MyDevices', 'up');
         }
-
         _handleEnter() {
           Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._pairedNetworks.tag('List').element._item
           });
         }
-
       }, class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
@@ -22986,40 +21537,32 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').scaleX = -1;
           }
         }
-
         _getFocused() {
           return this._availableNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('AvailableDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('AvailableDevices', 'up');
         }
-
         _handleEnter() {
           Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._availableNetworks.tag('List').element._item
           });
         }
-
       }, class JoinAnotherNetwork extends this {
         $enter() {
           this.tag('JoinAnotherNetwork')._focus();
         }
-
         _handleUp() {
           this._setState('Switch');
         }
-
         _handleEnter() {
           if (this.wifiStatus) {
             Router.navigate('settings/network/interface/wifi/another');
           }
         }
-
         _handleDown() {
           if (this.wifiStatus) {
             if (this._pairedNetworks.tag('List').length > 0) {
@@ -23029,30 +21572,25 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
         $exit() {
           this.tag('JoinAnotherNetwork')._unfocus();
         }
-
       }];
     }
+
     /**
      * Function to navigate through the lists in the screen.
      * @param {string} listname
      * @param {string} dir
      */
 
-
     _navigate(listname, dir) {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           this._wifi.discoverSSIDs();
-
           this._setState('JoinAnotherNetwork');
-
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
@@ -23070,20 +21608,15 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to turn on and off Wi-Fi.
      */
-
-
     switch() {
       if (this.wifiStatus) {
         this._wifi.disconnect();
-
         console.log('turning off wifi');
-
         this._wifi.setInterface('ETHERNET', true).then(result => {
           if (result.success) {
             this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
               if (result.success) {
                 this._wifi.disconnect();
-
                 this.wifiStatus = false;
                 this.tag('Networks').visible = false;
                 this.tag('JoinAnotherNetwork').visible = false;
@@ -23102,39 +21635,31 @@ var APP_accelerator_home_ui = (function () {
         this.wifiLoading.play();
         this.tag('Switch.Loader').visible = true;
         this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
      * Function to activate Wi-Fi plugin.
      */
-
-
     _activateWiFi() {
       this._wifi.activate().then(() => {
         this.switch();
       });
-
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
         console.log(JSON.stringify(notification));
-
         if (notification.state === 2 || notification.state === 5) {
           this._wifi.discoverSSIDs();
         }
       });
-
       this._wifi.registerEvent('onError', notification => {
         console.log('on errro');
-
         this._wifi.discoverSSIDs();
-
         this._wifi.setInterface('ETHERNET', true).then(res => {
           if (res.success) {
             this._wifi.setDefaultInterface('ETHERNET', true);
           }
         });
-
         if (this.widgets) {
           this.widgets.fail.notify({
             title: 'WiFi Error',
@@ -23143,10 +21668,8 @@ var APP_accelerator_home_ui = (function () {
           Router.focusWidget('Fail');
         }
       });
-
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
-
         if (!notification.moreData) {
           setTimeout(() => {
             this.tag('Switch.Loader').visible = false;
@@ -23155,7 +21678,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -23231,15 +21753,15 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Variable to store the timer
    */
-
   var timeout;
+
   /**
    * Class to render the UI controls for the video player.
    */
-
   class LightningPlayerControls extends lng$1.Component {
     /**
      * Function to create components for the player controls.
@@ -23258,11 +21780,12 @@ var APP_accelerator_home_ui = (function () {
           h: 35,
           clipping: true,
           ProgressBar: {
-            texture: lng$1.Tools.getRoundRect(1740, 20, 10, 0, 0, true, CONFIG.theme.hex) // x: 90,
+            texture: lng$1.Tools.getRoundRect(1740, 20, 10, 0, 0, true, CONFIG.theme.hex)
+            // x: 90,
             // y: 93.5,
-
           }
         },
+
         Duration: {
           x: 1690,
           y: 125,
@@ -23312,7 +21835,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       /**
        * Variable to store the duration of the video content.
@@ -23326,50 +21848,42 @@ var APP_accelerator_home_ui = (function () {
       });
       this.toggle = false;
     }
+
     /**
      * Function to set focus to player controls when the player controls are shown.
      */
-
-
     _focus() {
       this._index = 1;
-
       this._setState('PlayPause');
     }
+
     /**
      * Function to handle the player controls when they are hidden.
      */
-
-
     _unfocus() {
       this._setState('Hidden');
-
       clearTimeout(timeout);
     }
     /**
      * Function to set the duration of the video.
      * @param {String} duration video duration to be set.
      */
-
-
     set duration(duration) {
       console.log("duration was set = ".concat(duration));
       this.videoDuration = duration;
       this.tag('Duration').text.text = this.SecondsTohhmmss(duration);
     }
+
     /**
      * Function to set the current video time.
      * @param {String} currentTime current time to be set.
      */
-
-
     set currentTime(currentTime) {
       let value = 1740 * currentTime / this.videoDuration;
       this.tag('ProgressWrapper').patch({
         w: value
       });
       this.tag('CurrentTime').text.text = this.SecondsTohhmmss(currentTime);
-
       if (value >= 50 && value <= 1690) {
         // 1740 - 50 = 1690
         this.tag('CurrentTime').x = 90 + value; //90 is padding from left
@@ -23377,12 +21891,11 @@ var APP_accelerator_home_ui = (function () {
         this.tag('CurrentTime').x = 140; //initial position 140 = 90 + 50
       }
     }
+
     /**
      * Function to convert time in seconds to hh:mm:ss format.
      * @param {String} totalSeconds time in seconds.
      */
-
-
     SecondsTohhmmss(totalSeconds) {
       this.hours = Math.floor(totalSeconds / 3600);
       this.minutes = Math.floor((totalSeconds - this.hours * 3600) / 60);
@@ -23393,21 +21906,18 @@ var APP_accelerator_home_ui = (function () {
       this.result += ':' + (this.seconds < 10 ? '0' + this.seconds : this.seconds);
       return this.result;
     }
+
     /**
      * Function to hide player controls.
      */
-
-
     hideLightningPlayerControls() {
       this.signal('hide');
     }
-
     hideNextPrevious() {
       this.isChannel = true;
       this.tag('Buttons').children[0].visible = false;
       this.tag('Buttons').children[2].visible = false;
     }
-
     showNextPrevious() {
       this.isChannel = false;
       this.tag('Buttons').children[0].visible = true;
@@ -23416,17 +21926,14 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Timer function to track the inactivity of the player controls.
      */
-
-
     timer() {
       clearTimeout(timeout);
       timeout = setTimeout(this.hideLightningPlayerControls.bind(this), 5000);
     }
+
     /**
      * Function that defines the different states of the player controls.
      */
-
-
     static _states() {
       return [class PlayPause extends this {
         $enter() {
@@ -23436,14 +21943,12 @@ var APP_accelerator_home_ui = (function () {
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
           });
         }
-
         $exit() {
           this.unfocus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_White_16k.png') : Utils.asset('images/Media Player/Icon_Pause_White_16k.png');
           this.tag('Buttons').children[1].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(this.unfocus, 50, 50)
           });
         }
-
         _handleEnter() {
           if (this.toggle) {
             //this.fireAncestors('$play');
@@ -23452,7 +21957,6 @@ var APP_accelerator_home_ui = (function () {
             //this.fireAncestors('$pause');
             this.signal('pause');
           }
-
           this.toggle = !this.toggle;
           this.focus = this.toggle ? Utils.asset('images/Media Player/Icon_Play_Orange_16k.png') : Utils.asset('images/Media Player/Icon_Pause_Orange_16k.png');
           this.timer();
@@ -23460,23 +21964,19 @@ var APP_accelerator_home_ui = (function () {
             texture: lng$1.Tools.getSvgTexture(this.focus, 50, 50)
           });
         }
-
         _handleRight() {
           if (!this.isChannel) {
             this._setState('Forward');
           }
         }
-
         _handleLeft() {
           if (!this.isChannel) {
             this._setState('Rewind');
           }
         }
-
         _getFocused() {
           this.timer();
         }
-
       }, class Forward extends this {
         $enter() {
           this.timer();
@@ -23484,29 +21984,24 @@ var APP_accelerator_home_ui = (function () {
             texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_Orange_16k.png'), 50, 50)
           });
         }
-
         $exit() {
           this.tag('Buttons').children[2].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Next_White_16k.png'), 50, 50)
           });
         }
-
-        _handleRight() {// this._setState('Extras')
+        _handleRight() {
+          // this._setState('Extras')
         }
-
         _handleLeft() {
           this._setState('PlayPause');
         }
-
         _handleEnter() {
           this.toggle = false;
           this.signal('nextTrack');
         }
-
         _getFocused() {
           this.timer();
         }
-
       }, class Rewind extends this {
         $enter() {
           this.timer();
@@ -23514,35 +22009,28 @@ var APP_accelerator_home_ui = (function () {
             texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_Orange_16k.png'), 50, 50)
           });
         }
-
         $exit() {
           this.tag('Buttons').children[0].tag('ControlIcon').patch({
             texture: lng$1.Tools.getSvgTexture(Utils.asset('images/Media Player/Icon_Back_White_16k.png'), 50, 50)
           });
         }
-
-        _handleLeft() {// this._setState('AudioOptions')
+        _handleLeft() {
+          // this._setState('AudioOptions')
         }
-
         _handleRight() {
           this._setState('PlayPause');
         }
-
         _handleEnter() {
           this.toggle = false;
           this.signal('prevTrack');
         }
-
         _getFocused() {
           this.timer();
         }
-
       }, class Hidden extends this {
         _getFocused() {}
-
       }];
     }
-
   }
 
   /**
@@ -23589,7 +22077,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set item(item) {
       //  this.shows = item.shows;
       this._item = item;
@@ -23608,7 +22095,6 @@ var APP_accelerator_home_ui = (function () {
             maxLines: 1,
             textOverflow: '...'
           } // update the text
-
         }
       });
     }
@@ -23623,7 +22109,6 @@ var APP_accelerator_home_ui = (function () {
         zIndex: 2
       });
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -23634,7 +22119,6 @@ var APP_accelerator_home_ui = (function () {
         zIndex: 1
       });
     }
-
   }
 
   /**
@@ -23682,7 +22166,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.activeChannelIdx = 0; //this must be initialised in init
     }
@@ -23694,7 +22177,6 @@ var APP_accelerator_home_ui = (function () {
       this.timeoutDuration = 10000;
       this.dtvApi.serviceList().then(channels => {
         const [amazon, netflix, youtube, ...others] = channels; //to remove apps from the channel overlay
-
         this.options = others;
         this.tag('Channels').items = this.options.map((item, index) => {
           return {
@@ -23721,34 +22203,27 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
       this.overlayTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, this.timeoutDuration);
       this.$focusChannel(this.activeChannelIdx);
-
       this._overlayAnimation.start();
     }
-
     _unfocus() {
       this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
-
       this._overlayAnimation.stop();
     }
-
     resetTimeout() {
       this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
       this.overlayTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, this.timeoutDuration);
     }
-
     $focusChannel(index) {
       this.activeChannelIdx = index;
       this.tag('Channels').setIndex(this.activeChannelIdx);
     }
-
     _getFocused() {
       return this.tag('Channels').element; // add logic to focus on current channel
     }
@@ -23757,28 +22232,22 @@ var APP_accelerator_home_ui = (function () {
       this.resetTimeout();
       this.tag('Channels').setNext();
     }
-
     _handleUp() {
       this.resetTimeout();
       this.tag('Channels').setPrevious();
     }
-
     _handleBack() {
       Router.focusPage();
     }
-
     _handleLeft() {
       this._handleBack();
     }
-
     _handleRight() {
       this._handleBack();
     }
-
     _handleEnter() {
       this.resetTimeout();
       let focusedChannelIdx = this.tag("Channels").index;
-
       if (focusedChannelIdx !== this.activeChannelIdx) {
         this.dtvApi.exitChannel().then(res => {
           console.log("Current channel exit successful, launching new channel: ", JSON.stringify(res));
@@ -23793,7 +22262,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
   }
 
   /**
@@ -23814,18 +22282,18 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class to render AAMP video player.
    */
-
   class AAMPVideoPlayer extends lng$1.Component {
     /**
      * Function to render player controls.
      */
+
     set params(args) {
       this.currentIndex = args.currentIndex;
       this.data = args.list;
-
       if (args.isUSB) {
         this.isUSB = args.isUSB;
       } else if (args.isChannel) {
@@ -23835,13 +22303,10 @@ var APP_accelerator_home_ui = (function () {
         this.showDescription = args.description;
         this.channelIndex = args.channelIndex;
       }
-
       let url = args.url ? args.url : 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8';
-
       if (args.isAudio) {
         this.tag('Image').alpha = 1;
       }
-
       try {
         this.load({
           title: 'Parkour event',
@@ -23853,7 +22318,6 @@ var APP_accelerator_home_ui = (function () {
         console.error('Playback Failed ' + error);
       }
     }
-
     static _template() {
       return {
         Image: {
@@ -23939,7 +22403,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.x = 0;
       this.y = 0;
@@ -23972,6 +22435,7 @@ var APP_accelerator_home_ui = (function () {
         drmConfig: null
       };
     }
+
     /**
      * Function to set video coordinates.
      * @param {int} x x position of video
@@ -23979,117 +22443,99 @@ var APP_accelerator_home_ui = (function () {
      * @param {int} w width of video
      * @param {int} h height of video
      */
-
-
     setVideoRect(x, y, w, h) {
       this.x = x;
       this.y = y;
       this.w = w;
       this.h = h;
     }
+
     /**
      * Event handler to store the current playback state.
      * @param  event playback state of the video.
      */
-
-
     _playbackStateChanged(event) {
       switch (event.state) {
         case this.player.playerStatesEnum.idle:
           this.playerState = this.player.playerStatesEnum.idle;
           break;
-
         case this.player.playerStatesEnum.initializing:
           this.playerState = this.player.playerStatesEnum.initializing;
           break;
-
         case this.player.playerStatesEnum.playing:
           this.playerState = this.player.playerStatesEnum.playing;
           break;
-
         case this.player.playerStatesEnum.paused:
           this.playerState = this.player.playerStatesEnum.paused;
           break;
-
         case this.player.playerStatesEnum.seeking:
           this.playerState = this.player.playerStatesEnum.seeking;
           break;
       }
     }
+
     /**
      * Event handler to handle the event of completion of a video playback.
      */
-
-
     _mediaEndReached() {
       this.load(this.videoInfo);
       this.setVideoRect(this.x, this.y, this.w, this.h);
     }
+
     /**
      * Event handler to handle the event of changing the playback speed.
      */
-
-
     _mediaSpeedChanged() {}
+
     /**
      * Event handler to handle the event of bit rate change.
      */
-
-
     _bitrateChanged() {}
+
     /**
      * Function to handle the event of playback failure.
      */
-
-
     _mediaPlaybackFailed() {
       this.load(this.videoInfo);
     }
+
     /**
      * Function to handle the event of playback progress.
      * @param event playback event.
      */
-
-
     _mediaProgressUpdate(event) {
       this.position = event.positionMiliseconds / 1000;
       this.tag('PlayerControls').currentTime = this.position;
     }
+
     /**
      * Function to handle the event of starting the playback.
      */
-
-
     _mediaPlaybackStarted() {
       this.tag('PlayerControls').reset();
       this.tag('PlayerControlsWrapper').setSmooth('alpha', 1);
       this.tag('PlayerControlsWrapper').setSmooth('y', 750, {
         duration: 1
       });
-
       if (this.isUSB) {
         this.tag("InfoOverlay").setSmooth('alpha', 1);
       }
-
       this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
     }
+
     /**
      * Function to handle the event of change in the duration of the playback content.
      */
-
-
     _mediaDurationChanged() {}
+
     /**
      * Function to create the video player instance for video playback and its initial settings.
      */
-
-
     createPlayer() {
       if (this.player !== null) {
         this.destroy();
         this.player = null;
       }
-
       try {
         this.player = new AAMPMediaPlayer();
         this.player.addEventListener('playbackStateChanged', this._playbackStateChanged);
@@ -24105,12 +22551,11 @@ var APP_accelerator_home_ui = (function () {
         console.error('AAMPMediaPlayer is not defined');
       }
     }
+
     /**
      * Loads the player with video URL.
      * @param videoInfo the url and the info regarding the video like title.
      */
-
-
     load(videoInfo) {
       this.createPlayer();
       this.videoInfo = videoInfo;
@@ -24124,37 +22569,32 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PlayerControls').currentTime = 0;
       this.play();
     }
+
     /**
      * Starts playback when enough data is buffered at play head.
      */
-
-
     play() {
       this.player.play();
       this.playbackRateIndex = this.playbackSpeeds.indexOf(1);
     }
+
     /**
      * Pauses playback.
      */
-
-
     pause() {
       this.player.pause();
     }
+
     /**
      * Stop playback and free resources.
      */
-
-
     stop() {
       this.player.stop();
       this.hidePlayerControls();
     }
-
     $changeChannel(url, showName, channelName) {
       this.stop();
       this.destroy();
-
       try {
         this.load({
           title: showName,
@@ -24168,13 +22608,11 @@ var APP_accelerator_home_ui = (function () {
         console.error('Playback Failed ' + error);
       }
     }
-
     nextTrack() {
       if (this.data[this.currentIndex + 1]) {
         this.currentIndex += 1;
         this.stop();
         this.destroy();
-
         try {
           this.load({
             title: 'Parkour event',
@@ -24188,13 +22626,11 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     prevTrack() {
       if (this.data[this.currentIndex - 1]) {
         this.currentIndex -= 1;
         this.stop();
         this.destroy();
-
         try {
           this.load({
             title: 'Parkour event',
@@ -24208,51 +22644,44 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
+
     /**
      * Function to perform fast forward of the video content.
      */
-
-
     fastfwd() {
       if (this.playbackRateIndex < this.playbackSpeeds.length - 1) {
         this.playbackRateIndex++;
       }
-
       this.rate = this.playbackSpeeds[this.playbackRateIndex];
       this.player.setPlaybackRate(this.rate);
     }
+
     /**
      * Function to perform fast rewind of the video content.
      */
-
-
     fastrwd() {
       if (this.playbackRateIndex > 0) {
         this.playbackRateIndex--;
       }
-
       this.rate = this.playbackSpeeds[this.playbackRateIndex];
       this.player.setPlaybackRate(this.rate);
     }
+
     /**
      * Function that returns player instance.
      * @returns player instance.
      */
-
-
     getPlayer() {
       return this.player;
     }
+
     /**
      * Function to release the video player instance when not in use.
      */
-
-
     destroy() {
       if (this.player.getCurrentState() !== this.playerStatesEnum.idle) {
         this.player.stop();
       }
-
       this.player.removeEventListener('playbackStateChanged', this._playbackStateChanged);
       this.player.removeEventListener('playbackCompleted', this._mediaEndReached);
       this.player.removeEventListener('playbackSpeedChanged', this._mediaSpeedChanged);
@@ -24265,11 +22694,10 @@ var APP_accelerator_home_ui = (function () {
       this.player = null;
       this.hidePlayerControls();
     }
+
     /**
      * Function to hide the player controls.
      */
-
-
     hidePlayerControls() {
       this.tag('PlayerControlsWrapper').setSmooth('y', 1080, {
         duration: 0.7
@@ -24277,28 +22705,22 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PlayerControlsWrapper').setSmooth('alpha', 0, {
         duration: 0.7
       });
-
       this._setState('HideControls');
-
       this.hideInfo();
     }
+
     /**
      * Function to show the player controls.
      */
-
-
     showPlayerControls() {
       // this.tag('PlayerControls').reset()
       this.tag('PlayerControlsWrapper').setSmooth('alpha', 1);
       this.tag('PlayerControlsWrapper').setSmooth('y', 750, {
         duration: 0.7
       });
-
       this._setState('ShowControls');
-
       this.timeout = setTimeout(this.hidePlayerControls.bind(this), 5000);
     }
-
     showInfo() {
       if (this.isUSB || this.isChannel) {
         this.tag("InfoOverlay").setSmooth('alpha', 1, {
@@ -24307,7 +22729,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     hideInfo() {
       if (this.isUSB || this.isChannel) {
         this.tag("InfoOverlay").setSmooth('alpha', 0, {
@@ -24315,7 +22736,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
     updateInfo() {
       if (this.isUSB) {
         this.tag('ShowName').text.text = this.data[this.currentIndex].data.displayName;
@@ -24332,11 +22752,9 @@ var APP_accelerator_home_ui = (function () {
      *Function to hide player control on up key press.
      */
 
-
     _handleBack() {
       Router.back();
     }
-
     _inactive() {
       this.tag('Image').alpha = 0;
       this.tag('InfoOverlay').alpha = 0;
@@ -24345,12 +22763,9 @@ var APP_accelerator_home_ui = (function () {
       this.stop();
       this.destroy();
     }
-
     _focus() {
       this._setState('HideControls');
-
       this.updateInfo();
-
       if (this.isChannel) {
         this.tag('ChannelOverlay').$focusChannel(this.channelIndex);
         this.tag('InfoOverlay').y = 790;
@@ -24365,28 +22780,21 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to define the different states of the video player.
      */
-
-
     static _states() {
       return [class ShowControls extends this {
         _getFocused() {
           return this.tag('PlayerControls');
         }
-
         _handleDown() {
           this.hidePlayerControls();
-
           this._setState('HideControls');
         }
-
         _handleUp() {
           if (this.isChannel) {
             this.hidePlayerControls();
-
             this._setState('ChannelOverlay');
           }
         }
-
       }, class HideControls extends this {
         // _handleBack(){
         //   console.log('go back from hidecontrol')
@@ -24395,51 +22803,39 @@ var APP_accelerator_home_ui = (function () {
           // this.tag('PlayerControlsWrapper').setSmooth('alpha', 1, { duration: 1 })
           // this.tag('PlayerControlsWrapper').setSmooth('y', 820, { duration: 1 })
           this.showPlayerControls();
-
           this._setState('ShowControls');
-
           this.showInfo();
           clearTimeout(this.timeout);
         }
-
         _handleLeft() {
           if (this.isChannel) {
             this._setState('ChannelOverlay');
           }
         }
-
       }, class ChannelOverlay extends this {
         $enter() {
           this.tag('ChannelWrapper').setSmooth('x', 0, {
             duration: 1
           });
         }
-
         $exit() {
           this.tag('ChannelWrapper').setSmooth('x', -360, {
             duration: 1
           });
         }
-
         _handleLeft() {
           this.hidePlayerControls();
-
           this._setState('HideControls');
         }
-
         _handleRight() {
           this.hidePlayerControls();
-
           this._setState('HideControls');
         }
-
         _getFocused() {
           return this.tag('ChannelOverlay');
         }
-
       }];
     }
-
   }
 
   /**
@@ -24460,6 +22856,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Other Settings Screen.
    */
@@ -24468,11 +22865,9 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -24659,197 +23054,151 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
-
       this._setState('SleepTimer');
     }
-
     $updateStandbyMode(standbyMode) {
       this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode;
     }
-
     $sleepTimerText(text) {
       this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text;
     }
-
     _focus() {
       this._setState(this.state);
-
       if (Storage.get('TimeoutInterval')) {
         this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval');
       } else {
         this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + 'Off';
       }
-
       this._appApi.getPreferredStandbyMode().then(result => {
         var currentStandbyMode = "";
-
         if (result.preferredStandbyMode == "LIGHT_SLEEP") {
           currentStandbyMode = "Light Sleep";
         } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
           currentStandbyMode = "Deep Sleep";
         }
-
         this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode;
       });
     }
-
     _handleBack() {
       Router.navigate('settings');
     }
-
     static _states() {
       return [class SleepTimer extends this {
         $enter() {
           this.tag('SleepTimer')._focus();
         }
-
         $exit() {
           this.tag('SleepTimer')._unfocus();
         }
-
         _handleUp() {
           this._setState('AdvancedSettings');
         }
-
         _handleDown() {
           // this._setState('RemoteControl')
           this._setState('EnergySaver');
         }
-
         _handleEnter() {
           Router.navigate('settings/other/timer');
         }
-
       }, class RemoteControl extends this {
         $enter() {
           this.tag('RemoteControl')._focus();
         }
-
         $exit() {
           this.tag('RemoteControl')._unfocus();
         }
-
         _handleUp() {
           this._setState('SleepTimer');
         }
-
         _handleDown() {
           this._setState('ScreenSaver');
         }
-
         _handleEnter() {}
-
       }, class ScreenSaver extends this {
         $enter() {
           this.tag('ScreenSaver')._focus();
         }
-
         $exit() {
           this.tag('ScreenSaver')._unfocus();
         }
-
         _handleUp() {
           this._setState('RemoteControl');
         }
-
         _handleDown() {
           this._setState('EnergySaver');
         }
-
-        _handleEnter() {// 
+        _handleEnter() {
+          // 
         }
-
       }, class EnergySaver extends this {
         $enter() {
           this.tag('EnergySaver')._focus();
         }
-
         $exit() {
           this.tag('EnergySaver')._unfocus();
         }
-
         _handleUp() {
           this._setState('SleepTimer');
         }
-
         _handleDown() {
           // this._setState('Theme')
           this._setState('Language');
         }
-
         _handleEnter() {
           Router.navigate('settings/other/energy');
         }
-
       }, class Language extends this {
         $enter() {
           this.tag('Language')._focus();
         }
-
         $exit() {
           this.tag('Language')._unfocus();
         }
-
         _handleUp() {
           this._setState('EnergySaver');
         }
-
         _handleDown() {
           this._setState('Privacy');
         }
-
         _handleEnter() {
           Router.navigate('settings/other/language');
         }
-
       }, class Privacy extends this {
         $enter() {
           this.tag('Privacy')._focus();
         }
-
         $exit() {
           this.tag('Privacy')._unfocus();
         }
-
         _handleUp() {
           this._setState('Language');
         }
-
         _handleDown() {
           this._setState('AdvancedSettings');
         }
-
         _handleEnter() {
           Router.navigate('settings/other/privacy');
         }
-
       }, class AdvancedSettings extends this {
         $enter() {
           this.tag('AdvancedSettings')._focus();
         }
-
         $exit() {
           this.tag('AdvancedSettings')._unfocus();
         }
-
         _handleUp() {
           this._setState('Privacy');
         }
-
         _handleDown() {
           this._setState('SleepTimer');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced');
         }
-
       }];
     }
-
   }
 
   /**
@@ -24874,11 +23223,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Sleep Timer'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -24901,7 +23248,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.lastElement = false;
       this.options = [{
@@ -24925,17 +23271,14 @@ var APP_accelerator_home_ui = (function () {
       }];
       this.tag('List').h = this.options.length * 90;
       let timeoutInterval = Storage.get('TimeoutInterval');
-
       if (!timeoutInterval) {
         timeoutInterval = 'Off';
       }
-
       let index = 0;
       this.tag('List').items = this.options.map((item, id) => {
         if (timeoutInterval === item.value) {
           index = id;
         }
-
         return {
           w: 1920 - 300,
           h: 90,
@@ -24949,43 +23292,37 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.error("error while registering the inactivity monitoring event");
       });
-
       this._setState('Options');
     }
-
     _handleBack() {
       Router.navigate('settings/other');
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
         _handleEnter() {
           this.options.forEach((element, idx) => {
             //if (element.tick) {
-            this.tag('List').getElement(idx).tag('Tick').visible = false; //this.options[idx].tick = false
+            this.tag('List').getElement(idx).tag('Tick').visible = false;
+            //this.options[idx].tick = false
             //}
           });
-          this.tag('List').element.tag('Tick').visible = true; //this.options[this.tag('List').index].tick = true
 
+          this.tag('List').element.tag('Tick').visible = true;
+          //this.options[this.tag('List').index].tick = true
           this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
           this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
         }
-
       }];
     }
-
   }
 
   /**
@@ -25010,7 +23347,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -25038,25 +23374,20 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       if (this.isTicked) {
         this.fireAncestors("$resetPrevTickObject", this);
       }
-
       this.appApi = new AppApi();
     }
-
     _handleEnter() {
       var self = this;
       var standbyMode = "";
-
       if (this._item === "Deep Sleep") {
         standbyMode = "DEEP_SLEEP";
       } else if (this._item === "Light Sleep") {
         standbyMode = "LIGHT_SLEEP";
       }
-
       this.appApi.setPreferredStandbyMode(standbyMode).then(result => {
         console.log("setPreferredStandbyMode " + JSON.stringify(result));
         self.fireAncestors("$resetPrevTickObject", self);
@@ -25064,7 +23395,6 @@ var APP_accelerator_home_ui = (function () {
         self.tag("Item.Tick").visible = true;
       });
     }
-
     set item(item) {
       this._item = item;
       var self = this;
@@ -25076,8 +23406,8 @@ var APP_accelerator_home_ui = (function () {
           texture: lng$1.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
           color: 0xffffffff,
           visible: self.isTicked ? true : false //implement the logic to show the tick
-
         },
+
         Left: {
           x: 50,
           y: 45,
@@ -25088,7 +23418,6 @@ var APP_accelerator_home_ui = (function () {
             textColor: 0xffFFFFFF,
             fontFace: CONFIG.language.font
           } // update the text
-
         }
       });
     }
@@ -25102,7 +23431,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -25112,7 +23440,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -25137,11 +23464,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Energy Saver'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -25174,7 +23499,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     $resetPrevTickObject(prevTicObject) {
       if (!this.prevTicOb) {
         this.prevTicOb = prevTicObject;
@@ -25183,31 +23507,26 @@ var APP_accelerator_home_ui = (function () {
         this.prevTicOb = prevTicObject;
       }
     }
-
     _handleBack() {
       Router.navigate('settings/other');
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
         _handleEnter() {
           // this.tag("List").element.patch({ "Item.Tick.visible": true });
-          this.tag("List").element.tag("Tick").visible = true; // enable the tick mark in VideoAudioItem.js
+          this.tag("List").element.tag("Tick").visible = true;
+          // enable the tick mark in VideoAudioItem.js
           //to update the resolution value on Video Screen
         }
-
       }];
     }
 
@@ -25231,24 +23550,20 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
     }
-
     _focus() {
       this.loadingAnimation.start();
       var standbyMode = "";
-
       this._appApi.getPreferredStandbyMode().then(result => {
         if (result.preferredStandbyMode == "LIGHT_SLEEP") {
           standbyMode = Language.translate("Light Sleep");
         } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
           standbyMode = Language.translate("Deep Sleep");
         }
-
         this.tag('List').items = this.options.map((item, index) => {
           return {
             ref: 'Option' + index,
@@ -25262,11 +23577,9 @@ var APP_accelerator_home_ui = (function () {
         });
         this.loadingAnimation.stop();
         this.tag('Loader').visible = false;
-
         this._setState("Options");
       });
     }
-
   }
 
   /**
@@ -25312,13 +23625,11 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {}
+
     /**
      * Function to set contents of an item in the Language screen.
      */
-
-
     set item(item) {
       // console.log(item)
       this.tag('Item').patch({
@@ -25345,7 +23656,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _focus() {
       this.tag("Item").color = COLORS.hightlightColor;
       this.tag('TopLine').color = CONFIG.theme.hex;
@@ -25356,7 +23666,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -25366,7 +23675,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -25398,11 +23706,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Language'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -25430,7 +23736,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._Languages = this.tag('LanguageScreenContents.Languages');
       this._Languages.h = availableLanguages.length * 90;
@@ -25459,31 +23764,24 @@ var APP_accelerator_home_ui = (function () {
         console.log('Error', err);
       });
     }
-
     _focus() {
       this._setState('Languages');
     }
-
     _handleBack() {
       Router.navigate('settings/other');
     }
-
     static _states() {
       return [class Languages extends this {
         $enter() {}
-
         _getFocused() {
           return this._Languages.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('down');
         }
-
         _handleUp() {
           this._navigate('up');
         }
-
         _handleEnter() {
           if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
             localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
@@ -25496,20 +23794,16 @@ var APP_accelerator_home_ui = (function () {
             location.reload();
           }
         }
-
       }];
     }
-
     _navigate(dir) {
       let list = this._Languages.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();
       } else if (dir === 'up') {
         if (list.index > 0) list.setPrevious();
       }
     }
-
   }
 
   /**
@@ -25530,6 +23824,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Privacy Screen.
    */
@@ -25539,11 +23834,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -25667,26 +23960,20 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this._setState('LocalDeviceDiscovery');
-
       this.checkLocalDeviceStatus();
       this.USBApi = new UsbApi();
       this.AppApi = new AppApi();
     }
-
     _focus() {
       this._setState(this.state);
-
       this.checkLocalDeviceStatus();
       this.checkUSBDeviceStatus();
     }
-
     _handleBack() {
       Router.navigate('settings/other');
     }
-
     checkUSBDeviceStatus() {
       if (!Storage.get('UsbMedia')) {
         this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
@@ -25697,7 +23984,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       }
     }
-
     checkLocalDeviceStatus() {
       xcastApi$1.getEnabled().then(res => {
         if (res.enabled) {
@@ -25709,7 +23995,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
-
     toggleLocalDeviceDiscovery() {
       xcastApi$1.getEnabled().then(res => {
         if (!res.enabled) {
@@ -25730,49 +24015,38 @@ var APP_accelerator_home_ui = (function () {
         this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
-
     static _states() {
       return [class LocalDeviceDiscovery extends this {
         $enter() {
           this.tag('LocalDeviceDiscovery')._focus();
         }
-
         $exit() {
           this.tag('LocalDeviceDiscovery')._unfocus();
         }
-
         _handleUp() {
           this._setState('PrivacyPolicy');
         }
-
         _handleDown() {
           this._setState('UsbMediaDevices');
         }
-
         _handleEnter() {
           this.toggleLocalDeviceDiscovery();
         }
-
       }, class UsbMediaDevices extends this {
         $enter() {
           this.tag('UsbMediaDevices')._focus();
         }
-
         $exit() {
           this.tag('UsbMediaDevices')._unfocus();
         }
-
         _handleUp() {
           this._setState('LocalDeviceDiscovery');
         }
-
         _handleDown() {
           this._setState('AudioInput');
         }
-
         _handleEnter() {
           let _UsbMedia = Storage.get('UsbMedia');
-
           if (_UsbMedia === 'ON') {
             this.fireAncestors('$deRegisterUsbMount');
             this.USBApi.deactivate().then(res => {
@@ -25792,73 +24066,58 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class AudioInput extends this {
         $enter() {
           this.tag('AudioInput')._focus();
         }
-
         $exit() {
           this.tag('AudioInput')._unfocus();
         }
-
         _handleUp() {
           this._setState('UsbMediaDevices');
         }
-
         _handleDown() {
           this._setState('ClearCookies');
         }
-
-        _handleEnter() {// 
+        _handleEnter() {
+          // 
         }
-
       }, class ClearCookies extends this {
         $enter() {
           this.tag('ClearCookies')._focus();
         }
-
         $exit() {
           this.tag('ClearCookies')._unfocus();
         }
-
         _handleUp() {
           this._setState('AudioInput');
         }
-
         _handleDown() {
           this._setState('PrivacyPolicy');
         }
-
         _handleEnter() {
-          this.AppApi.clearCache().then(() => {//location.reload(true)
+          this.AppApi.clearCache().then(() => {
+            //location.reload(true)
           });
         }
-
       }, class PrivacyPolicy extends this {
         $enter() {
           this.tag('PrivacyPolicy')._focus();
         }
-
         $exit() {
           this.tag('PrivacyPolicy')._unfocus();
         }
-
         _handleUp() {
           this._setState('ClearCookies');
         }
-
         _handleDown() {
           this._setState('LocalDeviceDiscovery');
         }
-
         _handleEnter() {
           Router.navigate('settings/other/privacyPolicy');
         }
-
       }];
     }
-
   }
 
   /**
@@ -25884,11 +24143,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Privacy  Policy'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -25926,23 +24183,19 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _handleDown() {
       if (this.tag("PrivacyPolicy").y > -2400) {
         this.tag("PrivacyPolicy").y -= 35;
       }
     }
-
     _handleBack() {
       Router.navigate('settings/other/privacy');
     }
-
     _handleUp() {
       if (this.tag("PrivacyPolicy").y <= 235) {
         this.tag("PrivacyPolicy").y += 35;
       }
     }
-
   }
 
   /**
@@ -25982,7 +24235,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     deactivate() {
       return new Promise((resolve, reject) => {
         const systemcCallsign = 'org.rdk.HdmiCec_2';
@@ -25995,7 +24247,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getEnabled() {
       return new Promise((resolve, reject) => {
         thunder$9.call('org.rdk.HdmiCec_2', 'getEnabled').then(result => {
@@ -26007,7 +24258,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setEnabled() {
       return new Promise((resolve, reject) => {
         thunder$9.call('org.rdk.HdmiCec_2', 'setEnabled', {
@@ -26022,7 +24272,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     performOTP() {
       return new Promise((resolve, reject) => {
         thunder$9.call('org.rdk.HdmiCec_2', 'performOTPAction').then(result => {
@@ -26035,7 +24284,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -26070,11 +24318,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -26213,25 +24459,20 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.cecApi = new CECApi();
       this.cecApi.activate().then(() => {
         this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.performOTPAction();
       });
-
       this._setState('CECControl');
     }
-
     _focus() {
       this._setState(this.state);
     }
-
     _handleBack() {
       Router.navigate('settings/other');
     }
-
     performOTPAction() {
       this.cecApi.setEnabled().then(res => {
         if (res.success) {
@@ -26243,11 +24484,9 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     toggleCEC() {
       this.cecApi.getEnabled().then(res => {
         console.log(res);
-
         if (res.enabled) {
           this.cecApi.deactivate().then(() => {
             this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
@@ -26259,119 +24498,97 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     static _states() {
       return [class UIVoice extends this {
         $enter() {
           this.tag('UIVoice')._focus();
         }
-
         $exit() {
           this.tag('UIVoice')._unfocus();
         }
-
-        _handleUp() {//this._setState('Reset');
+        _handleUp() {
+          //this._setState('Reset');
         }
-
-        _handleDown() {//this._setState('TTSOptions')
+        _handleDown() {
+          //this._setState('TTSOptions')
         }
-
         _handleEnter() {}
-
       }, class TTSOptions extends this {
         $enter() {
           this.tag('TTSOptions')._focus();
         }
-
         $exit() {
           this.tag('TTSOptions')._unfocus();
         }
-
-        _handleUp() {//this._setState('UIVoice');
+        _handleUp() {
+          //this._setState('UIVoice');
         }
-
-        _handleDown() {//this._setState('CECControl')
+        _handleDown() {
+          //this._setState('CECControl')
         }
-
         _handleEnter() {}
-
       }, class CECControl extends this {
         $enter() {
           this.tag('CECControl')._focus();
         }
-
         $exit() {
           this.tag('CECControl')._unfocus();
         }
-
-        _handleUp() {//this._setState('TTSOptions');
+        _handleUp() {
+          //this._setState('TTSOptions');
         }
-
         _handleDown() {
           this._setState('Device');
         }
-
         _handleEnter() {
           this.toggleCEC();
         }
-
       }, class Bug extends this {
         $enter() {
           this.tag('Bug')._focus();
         }
-
         $exit() {
           this.tag('Bug')._unfocus();
         }
-
-        _handleUp() {//this._setState('CECControl');
+        _handleUp() {
+          //this._setState('CECControl');
         }
-
-        _handleDown() {//this._setState('Contact')
+        _handleDown() {
+          //this._setState('Contact')
         }
-
         _handleEnter() {}
-
       }, class Contact extends this {
         $enter() {
           this.tag('Contact')._focus();
         }
-
         $exit() {
           this.tag('Contact')._unfocus();
         }
-
-        _handleUp() {//this._setState('Bug');
+        _handleUp() {
+          //this._setState('Bug');
         }
-
-        _handleDown() {//this._setState('Device')
+        _handleDown() {
+          //this._setState('Device')
         }
-
         _handleEnter() {}
-
       }, class Device extends this {
         $enter() {
           this.tag('Device')._focus();
         }
-
         $exit() {
           this.tag('Device')._unfocus();
         }
-
         _handleUp() {
           this._setState('CECControl');
         }
-
-        _handleDown() {//this._setState('UI Voice')
+        _handleDown() {
+          //this._setState('UI Voice')
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device');
         }
-
       }];
     }
-
   }
 
   /**
@@ -26392,6 +24609,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Video and Audio screen.
    */
@@ -26400,11 +24618,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -26529,127 +24745,98 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
       this._network = new Network();
-
       this._setState('Info');
     }
-
     _focus() {
       this._setState(this.state);
     }
-
     _handleBack() {
       Router.navigate('settings/advanced');
     }
-
     static _states() {
       return [class Info extends this {
         $enter() {
           this.tag('Info')._focus();
         }
-
         $exit() {
           this.tag('Info')._unfocus();
         }
-
         _handleUp() {
           this._setState('Reboot');
         }
-
         _handleDown() {
           this._setState('TimeZone');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device/info');
         }
-
       }, class TimeZone extends this {
         $enter() {
           this.tag('TimeZone')._focus();
         }
-
         $exit() {
           this.tag('TimeZone')._unfocus();
         }
-
         _handleUp() {
           this._setState('Info');
         }
-
         _handleDown() {
           this._setState('Firmware');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device/timezone');
         }
-
       }, class Firmware extends this {
         $enter() {
           this.tag('Firmware')._focus();
         }
-
         $exit() {
           this.tag('Firmware')._unfocus();
         }
-
         _handleUp() {
           this._setState('Info');
         }
-
         _handleDown() {
           this._setState('Reboot');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device/firmware');
         }
-
       }, class Reboot extends this {
         $enter() {
           this.tag('Reboot')._focus();
         }
-
         $exit() {
           this.tag('Reboot')._unfocus();
         }
-
         _handleUp() {
           this._setState('Firmware');
         }
-
         _handleDown() {
           this._setState('Info');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device/reboot');
         }
-
       }, class Reset extends this {
         $enter() {
           this.tag('Reset')._focus();
         }
-
         $exit() {
           this.tag('Reset')._unfocus();
         }
-
-        _handleUp() {//this._setState('Reboot');
+        _handleUp() {
+          //this._setState('Reboot');
         }
-
-        _handleDown() {//this._setState('Info')
+        _handleDown() {
+          //this._setState('Info')
         }
-
         _handleEnter() {}
-
       }];
     }
-
   }
 
   /**
@@ -26670,6 +24857,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Video and Audio screen.
    */
@@ -26678,11 +24866,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Info'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -26899,15 +25085,12 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._network = new Network();
       this.appApi = new AppApi();
     }
-
     _focus() {
       this._setState('DeviceInformationScreen');
-
       this.appApi.getSerialNumber().then(result => {
         this.tag("SerialNumber.Value").text.text = "".concat(result.serialNumber);
       });
@@ -26921,7 +25104,6 @@ var APP_accelerator_home_ui = (function () {
         var drms = "";
         result.forEach(element => {
           drms += "".concat(element.name, " :");
-
           if (element.keysystems) {
             drms += "\t";
             element.keysystems.forEach(keySystem => {
@@ -26934,45 +25116,40 @@ var APP_accelerator_home_ui = (function () {
         });
         this.tag('SupportedDRM.Value').text.text = "".concat(drms.substring(0, drms.length - 1));
       });
-
       this._network.isConnectedToInternet().then(result => {
         if (result.connectedToInternet === true) {
           this.appApi.getLocation().then(result => {
             console.log("getLocation from device info " + JSON.stringify(result));
             var locationInfo = "";
-
             if (result.city.length !== 0) {
               locationInfo = "City: " + result.city;
             } else {
               locationInfo = "City: N/A ";
             }
-
             if (result.country.length !== 0) {
               locationInfo += ", Country: " + result.country;
             } else {
               locationInfo += ", Country: N/A ";
             }
-
             this.tag('Location.Value').text.text = "".concat(locationInfo);
           });
         } else {
           this.tag('Location.Value').text.text = "City: N/A, Country: N/A";
         }
       });
-
       this.appApi.getDeviceIdentification().then(result => {
         console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
-        this.tag('ChipSet.Value').text.text = "".concat(result.chipset); // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+        this.tag('ChipSet.Value').text.text = "".concat(result.chipset);
+        // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
       });
-      let self = this;
 
+      let self = this;
       if (Storage.get('Netflix_ESN')) {
         self.tag('AppVersions.Value').text.text = "Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ".concat(Storage.get('Netflix_ESN'));
       } else {
         self.appApi.getPluginStatus('Netflix').then(result => {
           let sel = self;
           console.log("Netflix : plugin status : ", JSON.stringify(result));
-
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
               console.log("Netflix : netflix launch for esn value in suspend mode returns : ", JSON.stringify(res));
@@ -27000,31 +25177,25 @@ var APP_accelerator_home_ui = (function () {
           console.error("Netflix : error while getting netflix plugin status ie. ", JSON.stringify(err));
         });
       }
-
       this.appApi.registerChangeLocation();
     }
-
     set netflixESN(v) {
       console.log("setting netflix ESN value to ".concat(v));
       this.tag('AppVersions.Value').text.text = v;
     }
-
     _handleBack() {
       Router.navigate('settings/advanced/device');
     }
-
     _handleDown() {
       if (this.tag("DeviceInfoContents").y > 215) {
         this.tag("DeviceInfoContents").y -= 20;
       }
     }
-
     _handleUp() {
       if (this.tag("DeviceInfoContents").y < 275) {
         this.tag("DeviceInfoContents").y += 20;
       }
     }
-
   }
 
   /**
@@ -27053,11 +25224,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Firmware Update'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -27143,7 +25312,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
       const config = {
@@ -27158,7 +25326,6 @@ var APP_accelerator_home_ui = (function () {
       }).then(res => {
         thunder.on(callsign, "onFirmwareUpdateStateChange", notification => {
           console.log("Tanjirou's notification : on Firmware update state changed notifcation = ".concat(JSON.stringify(notification)));
-
           if (state[notification.firmwareUpdateStateChange] == "Downloading") {
             this.downloadInterval = setInterval(() => {
               console.log("Downloading...");
@@ -27175,36 +25342,29 @@ var APP_accelerator_home_ui = (function () {
         console.error("error while activating the system plugin");
       });
     }
-
     _unfocus() {
       if (this.downloadInterval) {
         clearInterval(this.downloadInterval);
         this.downloadInterval = null;
       }
     }
-
     _focus() {
       this.downloadInterval = null;
       this._appApi = new AppApi();
       const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
-
       this._appApi.getFirmwareUpdateState().then(res => {
         console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res));
         this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState];
       });
-
       this._appApi.getDownloadFirmwareInfo().then(res => {
         console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res));
         this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion;
       });
-
       this._setState('FirmwareUpdate');
     }
-
     getDownloadPercent() {
       this._appApi.getFirmwareDownloadPercent().then(res => {
         console.log("getFirmwareDownloadPercent : ".concat(JSON.stringify(res)));
-
         if (res.downloadPercent < 0) {
           this.tag('DownloadedPercent.Title').text.text = "";
         } else {
@@ -27214,7 +25374,6 @@ var APP_accelerator_home_ui = (function () {
         console.error(err);
       });
     }
-
     getDownloadFirmwareInfo() {
       this._appApi.updateFirmware().then(res => {
         this._appApi.getDownloadFirmwareInfo().then(result => {
@@ -27227,21 +25386,17 @@ var APP_accelerator_home_ui = (function () {
         console.error(err);
       });
     }
-
     _handleBack() {
       Router.navigate('settings/advanced/device');
     }
-
     static _states() {
       return [class FirmwareUpdate extends this {
         _handleEnter() {
           this.getDownloadFirmwareInfo();
           this.getDownloadPercent();
         }
-
       }];
     }
-
   }
 
   /**
@@ -27266,12 +25421,10 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for Reboot Confirmation Screen.
    */
-
   class RebootConfirmationScreen extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         w: 1920,
@@ -27376,10 +25529,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this._setState('Confirm');
-
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
         repeat: -1,
@@ -27395,29 +25546,23 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _handleBack() {
       Router.navigate('settings/advanced/device');
     }
-
     static _states() {
       return [class Confirm extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           appApi$7.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
-
             this._setState('Rebooting');
           });
         }
-
         _handleRight() {
           this._setState('Cancel');
         }
-
         _focus() {
           this.tag('Confirm').patch({
             color: CONFIG.theme.hex
@@ -27428,7 +25573,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Confirm').patch({
             color: 0xFFFFFFFF
@@ -27439,24 +25583,19 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Cancel extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           Router.back();
         }
-
         _handleLeft() {
           this._setState('Confirm');
         }
-
         _focus() {
           this.tag('Cancel').patch({
             color: CONFIG.theme.hex
@@ -27467,7 +25606,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Cancel').patch({
             color: 0xFF7D7D7D
@@ -27478,11 +25616,9 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Rebooting extends this {
         $enter() {
           this.loadingAnimation.start();
@@ -27491,28 +25627,26 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Buttons').visible = false;
           this.tag('Info').visible = false;
         }
-
-        _handleEnter() {// do nothing
+        _handleEnter() {
+          // do nothing
         }
-
-        _handleLeft() {// do nothing
+        _handleLeft() {
+          // do nothing
         }
-
-        _handleRight() {// do nothing
+        _handleRight() {
+          // do nothing
         }
-
-        _handleBack() {// do nothing
+        _handleBack() {
+          // do nothing
         }
-
-        _handleUp() {// do nothing
+        _handleUp() {
+          // do nothing
         }
-
-        _handleDown() {// do nothing
+        _handleDown() {
+          // do nothing
         }
-
       }];
     }
-
   }
 
   /**
@@ -27536,13 +25670,11 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for rendering items in Settings screen.
    */
-
   class TimeZoneItem extends lng$1.Component {
     _construct() {
       this.Arrow = Utils.asset('/images/settings/Arrow.png');
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -27568,11 +25700,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in settings screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.tag('Item').patch({
@@ -27604,7 +25735,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _handleEnter() {
       console.log('enter', this._item[1]);
       Router.navigate('settings/advanced/device/timezone/item', {
@@ -27613,7 +25743,6 @@ var APP_accelerator_home_ui = (function () {
         isActive: this.zone
       });
     }
-
     _focus() {
       this.tag('TopLine').color = CONFIG.theme.hex;
       this.tag('BottomLine').color = CONFIG.theme.hex;
@@ -27623,7 +25752,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -27633,28 +25761,24 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   class TimeZone$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Other Settings  Advanced Settings  Device  Time'));
     }
+
     /**
      * @param {object} args
      */
-
-
     set params(args) {
       if (args.refresh) {
         this._firstEnable();
       }
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -27700,7 +25824,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     async _firstEnable() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
@@ -27722,11 +25845,9 @@ var APP_accelerator_home_ui = (function () {
       this.resp = await this.appApi.fetchTimeZone();
       let data = [];
       this.zone = await this.appApi.getZone();
-
       try {
         console.log(this.resp, this.zone);
         delete this.resp.Etc;
-
         for (const i in this.resp) {
           if (typeof this.resp[i] === 'object') {
             data.push([i, this.resp[i], this.zone !== undefined ? this.zone.split('/')[0] === i : false]);
@@ -27735,9 +25856,7 @@ var APP_accelerator_home_ui = (function () {
       } catch (error) {
         console.log('no api present', error);
       }
-
       console.log(data);
-
       if (data.length > 1) {
         this.tag('List').h = data.length * 90;
         this.tag('List').items = data.map((item, idx) => {
@@ -27753,38 +25872,30 @@ var APP_accelerator_home_ui = (function () {
       } else {
         this.tag('Error').alpha = 1;
       }
-
       this.loadingAnimation.stop();
       this.tag('Loader').visible = false;
     }
-
     _getFocused() {
       return this.tag('List').element;
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
         this.tag('Loader').visible = false;
       }
     }
-
     _handleDown() {
       this.tag('List').setNext();
     }
-
     _handleUp() {
       this.tag('List').setPrevious();
     }
-
     _handleBack() {
       Router.navigate('settings/advanced/device');
     }
-
     static _states() {
       return [];
     }
-
   }
 
   /**
@@ -27808,12 +25919,10 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for rendering items in Settings screen.
    */
-
   class TimeItem extends lng$1.Component {
     _construct() {
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -27839,11 +25948,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in settings screen.
      */
-
-
     set item(item) {
       this._item = item;
       this.tag('Item').patch({
@@ -27867,7 +25975,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _focus() {
       this.tag('TopLine').color = CONFIG.theme.hex;
       this.tag('BottomLine').color = CONFIG.theme.hex;
@@ -27877,7 +25984,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -27887,7 +25993,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -27911,12 +26016,10 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for rendering items in Settings screen.
    */
-
   class TimeItems extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -27937,11 +26040,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in settings screen.
      */
-
-
     set params(item) {
       console.log(item);
       this._item = item;
@@ -27956,19 +26058,15 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
-
     _init() {
       this.appApi = new AppApi();
     }
-
     _handleDown() {
       this.tag('List').setNext();
     }
-
     _handleUp() {
       this.tag('List').setPrevious();
     }
-
     _handleEnter() {
       console.log("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
       this.widgets.menu.updateTimeZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
@@ -27977,11 +26075,9 @@ var APP_accelerator_home_ui = (function () {
         refresh: true
       });
     }
-
     _getFocused() {
       return this.tag('List').element;
     }
-
   }
 
   /**
@@ -28075,6 +26171,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Audio screen.
    */
@@ -28083,11 +26180,9 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -28249,87 +26344,68 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.appApi = new AppApi();
-
       this._setState('OutputMode');
     }
-
     _focus() {
       this._setState(this.state);
-
       this.appApi.getSoundMode().then(result => {
         this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode;
       });
     }
-
     hide() {
       this.tag('Wrapper').visible = false;
     }
-
     show() {
       this.tag('Wrapper').visible = true;
     }
-
     _handleBack() {
       Router.navigate('settings');
     }
-
     static _states() {
       return [class AudioOutput extends this {
         $enter() {
           this.tag('AudioOutput')._focus();
         }
-
         $exit() {
           this.tag('AudioOutput')._unfocus();
         }
-
         _handleDown() {
           this._setState('OutputMode');
         }
-
         _handleEnter() {
           Router.navigate('settings/audio/output');
         }
-
       }, class OutputMode extends this {
         $enter() {
           this.tag('OutputMode')._focus();
         }
-
         $exit() {
           this.tag('OutputMode')._unfocus();
         }
-
-        _handleUp() {// this._setState('AudioOutput')
+        _handleUp() {
+          // this._setState('AudioOutput')
         }
-
-        _handleDown() {// this._setState('DynamicRange');
+        _handleDown() {
+          // this._setState('DynamicRange');
         }
-
         _handleEnter() {
           Router.navigate('settings/audio/output');
         }
-
       }, class DynamicRange extends this {
         $enter() {
           this.tag('DynamicRange')._focus();
         }
-
         $exit() {
           this.tag('DynamicRange')._unfocus();
         }
-
         _handleUp() {
           this._setState('OutputMode');
         }
-
         _handleDown() {
           this._setState('Bluetooth');
         }
-
         _handleEnter() {
           /**
            * This handle Enter has api calls -
@@ -28353,23 +26429,25 @@ var APP_accelerator_home_ui = (function () {
           });
           this.appApi.getConnectedAudioPorts().then(res => {}).catch(err => {
             console.log(err);
-          }); // gets the enabled Audio Port
-
+          });
+          // gets the enabled Audio Port
           this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
             console.log(err);
           });
           this.appApi.getSupportedAudioPorts().catch(err => {
             console.log("Error while getting the supported Audio ports ie. ".concat(err));
-          }); // set enable Audio POrt
+          });
 
+          // set enable Audio POrt
           this.appApi.setEnableAudioPort("HDMI0").then(res => {
             this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
               console.log(err);
             });
           }).catch(err => {
             console.log(err);
-          }); // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
+          });
 
+          // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
           this.appApi.setZoomSetting("FULL").then(res => {
             this.appApi.getZoomSetting().then(res => {}).catch(err => {
               console.log(err);
@@ -28378,43 +26456,34 @@ var APP_accelerator_home_ui = (function () {
             console.log(err);
           });
         }
-
       }, class NavigationFeedback extends this {
         $enter() {
           this.tag('NavigationFeedback')._focus();
         }
-
         $exit() {
           this.tag('NavigationFeedback')._unfocus();
         }
-
         _handleUp() {
           this._setState('DynamicRange');
         }
-
         _handleDown() {
           this._setState('Bluetooth');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class Bluetooth extends this {
         $enter() {
           this.tag('Bluetooth')._focus();
         }
-
         $exit() {
           this.tag('Bluetooth')._unfocus();
         }
-
         _handleUp() {
           this._setState('DynamicRange');
         }
-
       }];
     }
-
   }
 
   /**
@@ -28439,7 +26508,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.Tick = Utils.asset('/images/settings/Tick.png');
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -28467,15 +26535,12 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       if (this.isTicked) {
         this.fireAncestors("$resetPrevTickObject", this);
       }
-
       this.appApi = new AppApi();
     }
-
     _handleEnter() {
       if (this.videoElement === true) {
         this.appApi.setResolution(this._item).catch(err => {
@@ -28485,17 +26550,16 @@ var APP_accelerator_home_ui = (function () {
         this.appApi.setSoundMode(this._item).then(result => {
           if (result.success === true) {
             this.fireAncestors("$resetPrevTickObject", this);
-            this.tag("Item.Tick").visible = true; // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
-          } //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
-
-
+            this.tag("Item.Tick").visible = true;
+            // this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + soundMode
+          }
+          //this.tag('HdmiAudioOutputStereo.Title').text.text = 'HdmiAudioOutputStereo: ' + result.soundMode
           this.fireAncestors("$updateSoundMode", this._item);
         }).catch(err => {
           console.log('Some error while setting the sound mode ', err);
         });
       }
     }
-
     set item(item) {
       this._item = item;
       this.tag('Item').patch({
@@ -28506,8 +26570,8 @@ var APP_accelerator_home_ui = (function () {
           texture: lng$1.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
           color: 0xffffffff,
           visible: this.isTicked ? true : false //implement the logic to show the tick
-
         },
+
         Left: {
           x: 50,
           y: 45,
@@ -28518,7 +26582,6 @@ var APP_accelerator_home_ui = (function () {
             textColor: 0xffFFFFFF,
             fontFace: CONFIG.language.font
           } // update the text
-
         }
       });
     }
@@ -28532,7 +26595,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 6;
       this.tag('BottomLine').h = 6;
     }
-
     _unfocus() {
       this.tag('TopLine').color = 0xFFFFFFFF;
       this.tag('BottomLine').color = 0xFFFFFFFF;
@@ -28542,7 +26604,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('TopLine').h = 3;
       this.tag('BottomLine').h = 3;
     }
-
   }
 
   /**
@@ -28563,20 +26624,18 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for HDMI Output Screen.
    */
-
   var appApi$6 = new AppApi();
   class HdmiOutputScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Audio  Output Mode'));
     }
-
     static _template() {
       return {
         w: 1920,
@@ -28607,7 +26666,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     $resetPrevTickObject(prevTicObject) {
       if (!this.prevTicOb) {
         this.prevTicOb = prevTicObject;
@@ -28616,13 +26674,11 @@ var APP_accelerator_home_ui = (function () {
         this.prevTicOb = prevTicObject;
       }
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
     }
-
     _init() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
@@ -28639,7 +26695,6 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
       this.loadingAnimation.start();
       var options = [];
@@ -28661,7 +26716,6 @@ var APP_accelerator_home_ui = (function () {
           });
           this.loadingAnimation.stop();
           this.tag('Loader').visible = false;
-
           this._setState("Options");
         }).catch(err => {
           console.log('error', err);
@@ -28670,28 +26724,22 @@ var APP_accelerator_home_ui = (function () {
         console.log('error', JSON.stringify(err));
       });
     }
-
     _handleBack() {
       Router.navigate('settings/audio');
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('HdmiOutputScreenContents.List').element;
         }
-
         _handleDown() {
           this.tag('HdmiOutputScreenContents.List').setNext();
         }
-
         _handleUp() {
           this.tag('HdmiOutputScreenContents.List').setPrevious();
         }
-
       }];
     }
-
   }
 
   /**
@@ -28717,6 +26765,7 @@ var APP_accelerator_home_ui = (function () {
     port: 9998,
     default: 1
   });
+
   /**
    * Class for Resolution Screen.
    */
@@ -28725,11 +26774,9 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video  Resolution'));
     }
-
     static _template() {
       return {
         w: 1920,
@@ -28761,7 +26808,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.appApi = new AppApi();
       this.appApi.activateDisplaySettings();
@@ -28783,24 +26829,20 @@ var APP_accelerator_home_ui = (function () {
         const items = this.tag('List').items;
         items.forEach(element => {
           element.tag('Item.Tick').visible = false;
-
           if (element._item === notification.resolution) {
             element.tag('Item.Tick').visible = true;
           }
         });
       });
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
     }
-
     _handleBack() {
       Router.navigate('settings/video');
     }
-
     _focus() {
       this.loadingAnimation.start();
       var options = [];
@@ -28812,12 +26854,10 @@ var APP_accelerator_home_ui = (function () {
           this.tag('ResolutionScreenContents.List').h = options.length * 90;
           this.tag('List').items = options.map((item, index) => {
             var bool = false;
-
             if (resolution === item) {
               bool = true;
               sIndex = index;
             }
-
             return {
               ref: 'Option' + index,
               w: 1920 - 300,
@@ -28831,31 +26871,25 @@ var APP_accelerator_home_ui = (function () {
           this.loadingAnimation.stop();
           this.tag('Loader').visible = false;
           this.tag('List').setIndex(sIndex);
-
           this._setState("Options");
         }).catch(err => {
           console.log("error while fetching the supported resolution ".concat(err));
         });
       });
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
       }];
     }
-
   }
 
   /**
@@ -28876,6 +26910,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Video screen.
    */
@@ -28884,11 +26919,9 @@ var APP_accelerator_home_ui = (function () {
     pageTransition() {
       return 'left';
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings  Video'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -29033,20 +27066,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
-
       this._setState('Resolution');
     }
-
     _focus() {
       this._appApi.getResolution().then(resolution => {
         this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
       }).catch(err => {
         console.log("Error fetching the Resolution");
       });
-
       this._appApi.getHDCPStatus().then(result => {
         if (result.isHDCPCompliant && result.isHDCPEnabled) {
           this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Enabled, Version: ").concat(result.currentHDCPVersion);
@@ -29054,7 +27083,6 @@ var APP_accelerator_home_ui = (function () {
           this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Not Supported ");
         }
       });
-
       this._appApi.getHDRSetting().then(result => {
         const availableHDROptions = {
           "HdrOff": "Off",
@@ -29066,128 +27094,102 @@ var APP_accelerator_home_ui = (function () {
         };
         this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
       });
-
       this._setState(this.state);
     }
-
     _handleBack() {
       Router.navigate('settings');
     }
-
     static _states() {
       return [class Resolution extends this {
         $enter() {
           this.tag('Resolution')._focus();
         }
-
         $exit() {
           this.tag('Resolution')._unfocus();
         }
-
         _handleDown() {
           this._setState('HDR');
         }
-
         _handleEnter() {
           Router.navigate('settings/video/resolution');
         }
-
       }, class HDR extends this {
         $enter() {
           this.tag('HDR')._focus();
         }
-
         $exit() {
           this.tag('HDR')._unfocus();
         }
-
         _handleUp() {
           this._setState('Resolution');
         }
-
         _handleDown() {
           this._setState('HDCP');
         }
-
       }, class MatchContent extends this {
         $enter() {
           this.tag('MatchContent')._focus();
         }
-
         $exit() {
           this.tag('MatchContent')._unfocus();
         }
-
         _handleUp() {
           this._setState('HDR');
         }
-
         _handleDown() {
           this._setState('OutputFormat');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class OutputFormat extends this {
         $enter() {
           this.tag('OutputFormat')._focus();
         }
-
         $exit() {
           this.tag('OutputFormat')._unfocus();
         }
-
         _handleUp() {
           this._setState('MatchContent');
         }
-
         _handleDown() {
           this._setState('Chroma');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class Chroma extends this {
         $enter() {
           this.tag('Chroma')._focus();
         }
-
         $exit() {
           this.tag('Chroma')._unfocus();
         }
-
         _handleUp() {
           this._setState('OutputFormat');
         }
-
-        _handleDown() {// this._setState('HDCP') 
+        _handleDown() {
+          // this._setState('HDCP') 
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class HDCP extends this {
         // class not required
         $enter() {
           this.tag('HDCP')._focus();
         }
-
         $exit() {
           this.tag('HDCP')._unfocus();
         }
-
         _handleUp() {
           this._setState('HDR');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }];
     }
-
   }
 
   /**
@@ -29251,27 +27253,22 @@ var APP_accelerator_home_ui = (function () {
   class Failscreen extends lng$1.Component {
     notify(args) {
       console.log(args);
-
       if (args.title && args.msg) {
         this.tag('FailScreen.Title').text.text = args.title;
         this.tag('FailScreen.Message').text.text = Language.translate(args.msg);
       }
     }
-
     pageTransition() {
       return 'left';
     }
-
     _focus() {
       this.alpha = 1;
     }
-
     _unfocus() {
       this.alpha = 0;
       this.tag('FailScreen.Title').text.text = errorTitle;
       this.tag('FailScreen.Message').text.text = errorMsg;
     }
-
     static _template() {
       return {
         alpha: 0,
@@ -29339,19 +27336,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set item(error) {
       this.tag('Pairing').text = error;
     }
-
     _handleEnter() {
       Router.focusPage();
     }
-
     _handleBack() {
       Router.focusPage();
     }
-
   }
 
   /**
@@ -29372,10 +27365,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class to render items in main view.
    */
-
   class UsbListItem extends lng$1.Component {
     /**
      * Function to render various elements in the main view item.
@@ -29392,7 +27385,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.tag('Shadow').patch({
         color: CONFIG.theme.hex,
@@ -29402,7 +27394,6 @@ var APP_accelerator_home_ui = (function () {
         x: this.x,
         y: this.y - 12
       });
-
       if (this.data.url.startsWith('/images')) {
         this.tag('Image').patch({
           rtt: true,
@@ -29423,10 +27414,9 @@ var APP_accelerator_home_ui = (function () {
           src: this.data.url
         });
       }
+
       /* Used static data for develpment purpose ,
       it wil replaced with Dynamic data once implimetation is completed.*/
-
-
       this.tag('Info').patch({
         x: this.x - 20,
         y: this.y + this.h + 10,
@@ -29448,11 +27438,10 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to change properties of item during focus.
      */
-
-
     _focus() {
       this.tag('Image').patch({
         x: this.x,
@@ -29471,11 +27460,10 @@ var APP_accelerator_home_ui = (function () {
         alpha: 1
       });
     }
+
     /**
      * Function to change properties of item during unfocus.
      */
-
-
     _unfocus() {
       this.tag('Image').patch({
         w: this.w,
@@ -29490,7 +27478,6 @@ var APP_accelerator_home_ui = (function () {
         alpha: 0
       });
     }
-
   }
 
   /**
@@ -29516,7 +27503,6 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText('USB');
     }
-
     static _template() {
       return {
         UsbAppsScreenContents: {
@@ -29721,7 +27707,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _handleBack() {
       if (!(this.cwd.length === 0)) {
         let clone = [...this.cwd];
@@ -29737,76 +27722,59 @@ var APP_accelerator_home_ui = (function () {
         Router.navigate('menu');
       }
     }
-
     reset() {
       for (let i = this.tag('Row1').index; i > 0; i--) {
         this.tag('Row1').setPrevious();
       }
-
       for (let i = this.tag('Row2').index; i > 0; i--) {
         this.tag('Row2').setPrevious();
       }
-
       for (let i = this.tag("Row3").index; i > 0; i--) {
         this.tag('Row3').setPrevious();
       }
-
       for (let i = this.tag("Row3").index; i > 0; i--) {
         this.tag('Row4').setPrevious();
       }
     }
-
     hide() {
       this.tag('UsbAppsScreenContents').visible = false;
       this.fireAncestors('$hideAllforVideo');
     }
-
     show() {
       this.tag('UsbAppsScreenContents').visible = true;
       this.fireAncestors('$showAllforVideo');
     }
-
     traverseMinus() {
       this.index = (this.traversableRows.length + --this.index) % this.traversableRows.length;
-
       this._setState(this.traversableRows[this.index]);
     }
-
     traversePlus() {
       this.index = ++this.index % this.traversableRows.length;
-
       this._setState(this.traversableRows[this.index]);
     }
-
     static _states() {
       return [class Video extends this {
         $enter() {
           this.scroll(0);
         }
-
         _getFocused() {
           this.tag('Text1').text.fontStyle = 'bold';
-
           if (this.tag('Row1').length) {
             return this.tag('Row1').element;
           }
         }
-
         _handleDown() {
           this.traversePlus();
         }
-
         _handleUp() {
           this.traverseMinus();
         }
-
         _handleRight() {
           if (this.tag('Row1').length - 1 != this.tag('Row1').index) {
             this.tag('Row1').setNext();
             return this.tag('Row1').element;
           }
         }
-
         _handleEnter() {
           Router.navigate('usb/player', {
             url: this.tag('Row1').element.data.uri,
@@ -29815,10 +27783,8 @@ var APP_accelerator_home_ui = (function () {
             isUSB: true
           });
         }
-
         _handleLeft() {
           this.tag('Text1').text.fontStyle = 'normal';
-
           if (0 != this.tag('Row1').index) {
             this.tag('Row1').setPrevious();
             return this.tag('Row1').element;
@@ -29826,28 +27792,22 @@ var APP_accelerator_home_ui = (function () {
             this.reset();
           }
         }
-
       }, class Audio extends this {
         $enter() {
           this.scroll(0);
         }
-
         _getFocused() {
           this.tag('Text2').text.fontStyle = 'bold';
-
           if (this.tag('Row2').length) {
             return this.tag('Row2').element;
           }
         }
-
         _handleDown() {
           this.traversePlus();
         }
-
         _handleUp() {
           this.traverseMinus();
         }
-
         _handleEnter() {
           Router.navigate('usb/player', {
             url: this.tag('Row2').element.data.uri,
@@ -29857,17 +27817,14 @@ var APP_accelerator_home_ui = (function () {
             isUSB: true
           });
         }
-
         _handleRight() {
           if (this.tag('Row2').length - 1 != this.tag('Row2').index) {
             this.tag('Row2').setNext();
             return this.tag('Row2').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text2').text.fontStyle = 'normal';
-
           if (0 != this.tag('Row2').index) {
             this.tag('Row2').setPrevious();
             return this.tag('Row2').element;
@@ -29875,28 +27832,22 @@ var APP_accelerator_home_ui = (function () {
             this.reset();
           }
         }
-
       }, class Picture extends this {
         $enter() {
           this.scroll(0);
         }
-
         _getFocused() {
           this.tag('Text3').text.fontStyle = 'bold';
-
           if (this.tag('Row3').length) {
             return this.tag('Row3').element;
           }
         }
-
         _handleDown() {
           this.traversePlus();
         }
-
         _handleUp() {
           this.traverseMinus();
         }
-
         _handleEnter() {
           // console.log(this.tag('Row3').items)
           Router.navigate('usb/image', {
@@ -29906,17 +27857,14 @@ var APP_accelerator_home_ui = (function () {
             cwd: this.cwd
           });
         }
-
         _handleRight() {
           if (this.tag('Row3').length - 1 != this.tag('Row3').index) {
             this.tag('Row3').setNext();
             return this.tag('Row3').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text3').text.fontStyle = 'normal';
-
           if (0 != this.tag('Row3').index) {
             this.tag('Row3').setPrevious();
             return this.tag('Row3').element;
@@ -29924,57 +27872,53 @@ var APP_accelerator_home_ui = (function () {
             this.reset();
           }
         }
-
       }, class Folder extends this {
         $enter() {
           if (this.traversableRows.length > 3) {
             this.scroll(-243);
           }
         }
-
         _getFocused() {
           this.tag('Text4').text.fontStyle = 'bold';
-
           if (this.tag('Row4').length) {
             return this.tag('Row4').element;
           }
         }
-
         _handleDown() {
           this.traversePlus();
         }
-
         _handleUp() {
           this.traverseMinus();
         }
-
         _handleEnter() {
           //do something after folder click.
           let dname = this.cwd.join("/") + "/" + this.tag('Row4').element.data.displayName;
           usbApi.cd(dname).then(res => {
-            this.cwd.push(this.tag('Row4').element.data.displayName); // console.log(`loading the data from the directory ${this.cwd}
-            // and its data = music:${JSON.stringify(musicListInfo)}
-            // Pictures : ${JSON.stringify(imageListInfo)}
-            // videos : ${JSON.stringify(videoListInfo)}
-            // folders : ${JSON.stringify(UsbInnerFolderListInfo)}
-            // `);
+            this.cwd.push(this.tag('Row4').element.data.displayName);
+            // console.log(`loading the data from the directory ${this.cwd}
 
+            // and its data = music:${JSON.stringify(musicListInfo)}
+
+            // Pictures : ${JSON.stringify(imageListInfo)}
+
+            // videos : ${JSON.stringify(videoListInfo)}
+
+            // folders : ${JSON.stringify(UsbInnerFolderListInfo)}
+
+            // `);
             this.loadData();
           }).catch(err => {
             console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
           });
         }
-
         _handleRight() {
           if (this.tag('Row4').length - 1 != this.tag('Row4').index) {
             this.tag('Row4').setNext();
             return this.tag('Row4').element;
           }
         }
-
         _handleLeft() {
           this.tag('Text4').text.fontStyle = 'normal';
-
           if (0 != this.tag('Row4').index) {
             this.tag('Row4').setPrevious();
             return this.tag('Row4').element;
@@ -29982,15 +27926,12 @@ var APP_accelerator_home_ui = (function () {
             this.reset();
           }
         }
-
       }];
     }
-
     set params(args) {
       this.currentIndex = args.currentIndex;
       this.thisDir = args.cwd;
     }
-
     set Row1Items(items) {
       this.tag('Row1').items = items.map((info, idx) => {
         return {
@@ -30005,7 +27946,6 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Row1').start();
     }
-
     set Row2Items(items) {
       this.tag('Row2').items = items.map((info, idx) => {
         return {
@@ -30020,7 +27960,6 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Row2').start();
     }
-
     set Row3Items(items) {
       this.tag('Row3').items = items.map((info, idx) => {
         return {
@@ -30035,7 +27974,6 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Row3').start();
     }
-
     set Row4Items(items) {
       this.tag('Row4').items = items.map((info, idx) => {
         return {
@@ -30050,13 +27988,11 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Row4').start();
     }
-
     scroll(y) {
       this.tag('Wrapper').setSmooth('y', y, {
         duration: 0.5
       });
     }
-
     loadData() {
       // console.log(`loading data from the directory ${this.cwd}`);
       let sumY = 0;
@@ -30074,7 +28010,6 @@ var APP_accelerator_home_ui = (function () {
       let row3 = this.tag('Row3');
       let text4 = this.tag('Text4');
       let row4 = this.tag('Row4');
-
       if (videoListInfo.length === 0 && musicListInfo.length === 0 && imageListInfo.length === 0 && UsbInnerFolderListInfo.length === 0) {
         this.tag('NoUSB').visible = true;
         text1.visible = false;
@@ -30084,10 +28019,10 @@ var APP_accelerator_home_ui = (function () {
         text3.visible = false;
         row3.visible = false;
         text4.visible = false;
-        row4.visible = false; //either the usb is not mounted or there aren't any videos , images or audio files. 
+        row4.visible = false;
+        //either the usb is not mounted or there aren't any videos , images or audio files. 
       } else {
         this.tag('NoUSB').visible = false;
-
         if (videoListInfo.length === 0) {
           text1.visible = false;
           row1.visible = false;
@@ -30099,7 +28034,6 @@ var APP_accelerator_home_ui = (function () {
           row1.y = sumY + 30;
           sumY += 243;
         }
-
         if (musicListInfo.length === 0) {
           text2.visible = false;
           row2.visible = false;
@@ -30111,7 +28045,6 @@ var APP_accelerator_home_ui = (function () {
           row2.y = sumY + 30;
           sumY += 243;
         }
-
         if (imageListInfo.length === 0) {
           text3.visible = false;
           row3.visible = false;
@@ -30123,7 +28056,6 @@ var APP_accelerator_home_ui = (function () {
           row3.y = sumY + 30;
           sumY += 243;
         }
-
         if (UsbInnerFolderListInfo.length === 0) {
           text4.visible = false;
           row4.visible = false;
@@ -30135,11 +28067,9 @@ var APP_accelerator_home_ui = (function () {
           row4.y = sumY + 30;
           sumY += 243;
         }
-
         this._setState(this.traversableRows[0]);
       }
     }
-
     _focus() {
       if (this.thisDir) {
         if (this.thisDir.length > 0) {
@@ -30147,9 +28077,7 @@ var APP_accelerator_home_ui = (function () {
           let dname = this.cwd.join("/");
           usbApi.cd(dname).then(res => {
             this.loadData();
-
             this._setState(this.traversableRows[this.index] + ".".concat(this.currentIndex)); //focus on first element
-
           }).catch(err => {
             console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
           });
@@ -30160,18 +28088,17 @@ var APP_accelerator_home_ui = (function () {
         this.cwd = [];
         usbApi.retrieUsb().then(res => {
           this.loadData();
-
           this._setState(this.traversableRows[this.index]);
         }).catch(err => {
           console.error("error while getting the usb contents; error = ".concat(JSON.stringify(err)));
         });
-      } // this._setState(this.traversableRows[this.index])
-
+      }
+      // this._setState(this.traversableRows[this.index])
     }
 
-    _unfocus() {//this.exitFunctionality()
+    _unfocus() {
+      //this.exitFunctionality()
     }
-
   }
 
   /**
@@ -30198,32 +28125,27 @@ var APP_accelerator_home_ui = (function () {
       this.currentIndex = args.currentIndex;
       this.data = args.list;
       this.cwd = args.cwd;
-
       if (this.data != undefined && this.data.length > 1) {
         this.tag('Controls').alpha = 1;
       } else {
         this.tag('Controls').alpha = 0;
       }
-
       if (args.src) {
         this.tag('Image').texture.src = args.src;
       }
     }
-
     _handleRight() {
       if (this.data[this.currentIndex + 1]) {
         this.currentIndex += 1;
         this.tag('Image').texture.src = this.data[this.currentIndex].data.uri;
       }
     }
-
     _handleLeft() {
       if (this.data[this.currentIndex - 1]) {
         this.currentIndex -= 1;
         this.tag('Image').texture.src = this.data[this.currentIndex].data.uri;
       }
     }
-
     _handleBack() {
       if (this.cwd) {
         Router.navigate('usb', {
@@ -30234,11 +28156,9 @@ var APP_accelerator_home_ui = (function () {
         Router.back();
       }
     }
-
     _unfocus() {
       this.tag('Image').texture.src = defaultImage;
     }
-
     static _template() {
       return {
         h: 1080,
@@ -30289,7 +28209,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
   }
 
   /**
@@ -30334,28 +28253,22 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     pageTransition() {
       return 'right';
     }
-
     _init() {
       this.btApi = new BluetoothApi();
     }
-
     checkPath(path) {
       if (path === 'ui') {
         return 'ui';
       }
-
       return 'menu';
     }
-
     _firstEnable() {
       console.timeEnd('PerformanceTest');
       console.log('Splash Screen timer end - ', new Date().toUTCString());
     }
-
     _focus() {
       let path = 'splash/bluetooth';
       var map = {
@@ -30364,21 +28277,17 @@ var APP_accelerator_home_ui = (function () {
         39: false,
         40: false
       };
-
       this.handler = e => {
         if (e.keyCode in map) {
           map[e.keyCode] = true;
-
           if (map[37] && map[38] && map[39] && map[40]) {
             path = 'ui';
           }
         }
       };
-
       Registry.addEventListener(document, 'keydown', this.handler);
       this.btApi.getPairedDevices().then(devices => {
         console.log(devices);
-
         if (devices.length > 0 || Storage.get('setup')) {
           path = this.checkPath(path);
         }
@@ -30390,11 +28299,9 @@ var APP_accelerator_home_ui = (function () {
         Router.navigate(path);
       }, 5000);
     }
-
     _unfocus() {
       Registry.removeEventListener(document, 'keydown', this.handler);
     }
-
   }
 
   /**
@@ -30422,9 +28329,7 @@ var APP_accelerator_home_ui = (function () {
     port: 9998,
     default: 1
   };
-
   const _thunder = thunderJS(config$7);
-
   class BluetoothScreen$1 extends lng$1.Component {
     static _template() {
       return {
@@ -30522,7 +28427,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _PairingApis() {
       //bluetoothApi.btactivate().then(enableResult =>{
       //  console.log('1')
@@ -30530,7 +28434,6 @@ var APP_accelerator_home_ui = (function () {
         console.log("1.5 enable result: ", res);
         bluetoothApi.startScanBluetooth().then(startScanresult => {
           console.log('2: ', startScanresult);
-
           var SubscribeEvent = _thunder.on('org.rdk.Bluetooth', 'onDiscoveredDevice', notification => {
             bluetoothApi.getDiscoveredDevices().then(getdocoveredInfo => {
               console.log('onDiscoveredDevice', getdocoveredInfo[0].name);
@@ -30545,9 +28448,9 @@ var APP_accelerator_home_ui = (function () {
                       console.log("getpairedDevices", getpairedDevices);
                       bluetoothApi.stopScan().then(stopScan => {
                         console.log("stopscan", stopScan);
-                        SubscribeEvent.dispose(); //bluetoothApi.disable().then(disable =>{
+                        SubscribeEvent.dispose();
+                        //bluetoothApi.disable().then(disable =>{
                         //console.log("disable")
-
                         bluetoothApi.deactivateBluetooth().then(deactivateBluetooth => {
                           console.log("DeactivatedBluetooth", deactivateBluetooth);
                           Router.navigate('splash/language');
@@ -30567,31 +28470,29 @@ var APP_accelerator_home_ui = (function () {
               }).catch(err => {
                 console.error("Can't connect : ".concat(JSON.stringify(err)));
               });
-            }); // })
+            });
+            // })
           });
         }).catch(err => {
           console.error("Can't scan enable : ".concat(JSON.stringify(err)));
         });
       });
     }
-
     _firstEnable() {
       console.log("checking");
       appApi$5.getPluginStatus('org.rdk.RemoteControl').then(result => {
         appApi$5.activateAutoPairing().then(result => {
-          console.log("paired devices result", result); //this.initTimer();
-
+          console.log("paired devices result", result);
+          //this.initTimer();
           Router.navigate('splash/language');
         });
       }).catch(err => {
         console.log(' remote autoPair plugin error:', JSON.stringify(err));
         appApi$5.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
           console.log("status", pluginresult[1]);
-
           if (pluginresult[1] === 'deactivated') {
             bluetoothApi.btactivate().then(result => {
               console.log("pairing bluetooth");
-
               this._PairingApis();
             });
           } else {
@@ -30600,20 +28501,17 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     _focus() {
       this.initTimer();
     }
-
     pageTransition() {
       return 'left';
     }
-
     _unfocus() {
       if (this.timeInterval) {
         Registry.clearInterval(this.timeInterval);
-      } //this.tag('Timer').text.text = '0:10'
-
+      }
+      //this.tag('Timer').text.text = '0:10'
     }
 
     getTimeRemaining(endtime) {
@@ -30624,77 +28522,63 @@ var APP_accelerator_home_ui = (function () {
         seconds
       };
     }
-
     initTimer() {
       const endTime = new Date(Date.parse(new Date()) + 10000);
       const timerText = this.tag('Timer');
       this.timeInterval = Registry.setInterval(() => {
         const time = this.getTimeRemaining(endTime);
         timerText.text.text = "0:0".concat(time.seconds);
-
         if (time.total <= 0) {
-          Registry.clearInterval(this.timeInterval); // Router.navigate('splash/language')
+          Registry.clearInterval(this.timeInterval);
+          // Router.navigate('splash/language')
         }
       }, 1000);
     }
-
     static _states() {
       return [class RemotePair extends this {
         $enter() {
           this.tag('Timer').visible = true;
           this.tag('Info').text.text = 'Please put the remote in pairing mode, scanning will start in a minute.';
         }
-
         _handleRight() {
           this._setState('Scanning');
         }
-
         $exit() {
           this.tag('Timer').visible = false;
           this.tag('Info').text.text = '';
         }
-
       }, class Scanning extends this {
         $enter() {
           this.tag('Loader').visible = true;
           this.tag('Info').text.text = 'Scanning';
         }
-
         _handleRight() {
           this._setState('PairComplete');
         }
-
         _handleLeft() {
           this._setState('RemotePair');
         }
-
         $exit() {
           this.tag('Loader').visible = false;
           this.tag('Info').text.text = '';
         }
-
       }, class PairComplete extends this {
         $enter() {
           this.tag('Buttons.Continue').visible = true;
           this.tag('Info').text.text = 'Pairing complete';
         }
-
         _handleLeft() {
           this._setState('Scanning');
         }
-
         _handleRight() {
           Router.navigate('splash/language');
         }
-
         $exit() {
           this.tag('Buttons.Continue').visible = false;
           this.tag('Info').text.text = '';
         }
-
       }];
     }
-
   }
 
   /**
@@ -30800,7 +28684,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._Languages = this.tag('LanguageScreenContents.Languages');
       this._Languages.h = availableLanguages.length * 90;
@@ -30815,29 +28698,22 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
-
     pageTransition() {
       return 'left';
     }
-
     _focus() {
       this._setState('Languages');
     }
-
     _handleBack() {}
-
     static _states() {
       return [class Languages extends this {
         $enter() {}
-
         _getFocused() {
           return this._Languages.tag('List').element;
         }
-
         _handleUp() {
           this._navigate('up');
         }
-
         _handleDown() {
           if (this._Languages.tag('List').index < availableLanguages.length - 1) {
             this._navigate('down');
@@ -30845,7 +28721,6 @@ var APP_accelerator_home_ui = (function () {
             this._setState('Continue');
           }
         }
-
         _handleEnter() {
           if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
             localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
@@ -30858,12 +28733,10 @@ var APP_accelerator_home_ui = (function () {
             location.reload();
           }
         }
-
       }, class Continue extends this {
         $enter() {
           this._focus();
         }
-
         _focus() {
           this.tag('Continue').patch({
             color: CONFIG.theme.hex
@@ -30874,7 +28747,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Continue').patch({
             color: 0xFFFFFFFF
@@ -30885,32 +28757,25 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _handleUp() {
           this._setState('Languages');
         }
-
         _handleEnter() {
           Router.navigate('splash/network');
         }
-
         $exit() {
           this._unfocus();
         }
-
       }];
     }
-
     _navigate(dir) {
       let list = this._Languages.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();
       } else if (dir === 'up') {
         if (list.index > 0) list.setPrevious();
       }
     }
-
   }
 
   /**
@@ -31031,33 +28896,25 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {}
-
     pageTransition() {
       return 'left';
     }
-
     _focus() {
       Storage.set('setup', true);
-
       this._setState('WiFi');
     }
-
     static _states() {
       return [class WiFi extends this {
         $enter() {
           this.tag('WiFi')._focus();
         }
-
         $exit() {
           this.tag('WiFi')._unfocus();
         }
-
         _handleDown() {
           this._setState('Ethernet');
         }
-
         _handleEnter() {
           // this._setState('WiFiScreen')
           wifi$3.setInterface('WIFI', true).then(res => {
@@ -31069,23 +28926,19 @@ var APP_accelerator_home_ui = (function () {
           });
           console.log("Wifi");
         }
-
       }, class Ethernet extends this {
         $enter() {
           this.tag('Ethernet')._focus();
         }
-
         $exit() {
           this.tag('Ethernet')._unfocus();
         }
-
         _handleEnter() {
           wifi$3.setInterface('ETHERNET', true).then(res => {
             if (res.success) {
               wifi$3.setDefaultInterface('ETHERNET', true).then(() => {
                 network.getInterfaces().then(res => {
                   let eth = res.filter(item => item.interface == 'ETHERNET');
-
                   if (eth[0].interface == 'ETHERNET' && eth[0].enabled == true && eth[0].connected == true) {
                     Router.navigate('menu');
                   } else if (eth[0].interface == 'ETHERNET' && eth[0].connected == false) {
@@ -31096,20 +28949,16 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _handleDown() {
           this._setState('Skip');
         }
-
         _handleUp() {
           this._setState('WiFi');
         }
-
       }, class Skip extends this {
         $enter() {
           this._focus();
         }
-
         _focus() {
           this.tag('Skip').patch({
             color: CONFIG.theme.hex
@@ -31120,7 +28969,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Skip').patch({
             color: 0xFFFFFFFF
@@ -31131,22 +28979,17 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _handleEnter() {
           Router.navigate('menu');
         }
-
         _handleUp() {
           this._setState('Ethernet');
         }
-
         $exit() {
           this._unfocus();
         }
-
       }];
     }
-
   }
 
   /**
@@ -31171,7 +29014,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for Reboot Confirmation Screen.
    */
-
   class NetworkPromptScreen extends lng$1.Component {
     static _template() {
       return {
@@ -31262,25 +29104,20 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this._setState('TryAgain');
     }
-
     _handleBack() {
       Router.navigate('splash/networkPrompt');
     }
-
     static _states() {
       return [class TryAgain extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           Router.navigate('splash/network');
         }
-
         _focus() {
           this.tag('TryAgain').patch({
             color: CONFIG.theme.hex
@@ -31291,7 +29128,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('TryAgain').patch({
             color: 0xFFFFFFFF
@@ -31302,14 +29138,11 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }];
     }
-
   }
 
   /**
@@ -31439,11 +29272,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     pageTransition() {
       return 'left';
     }
-
     _firstEnable() {
       this.wifiLoading = this.tag('Loader').animation({
         duration: 3,
@@ -31474,21 +29305,16 @@ var APP_accelerator_home_ui = (function () {
       this._network = new Network();
       this.wifiStatus = true;
       this._wifiIcon = true;
-
       this._activateWiFi();
-
       if (this.wiFiStatus) {
         this.tag('Networks').visible = true;
         this.tag('JoinAnotherNetwork').visible = true;
       }
-
       this._setState('JoinAnotherNetwork');
-
       this._network.activate().then(result => {
         if (result) {
           this._network.registerEvent('onIPAddressStatusChanged', notification => {
             console.log(JSON.stringify(notification));
-
             if (notification.status == 'ACQUIRED') ; else if (notification.status == 'LOST') {
               if (notification.interface === 'WIFI') {
                 this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -31499,10 +29325,8 @@ var APP_accelerator_home_ui = (function () {
               }
             }
           });
-
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
             console.log(JSON.stringify(notification));
-
             if (notification.newInterfaceName === 'ETHERNET') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
@@ -31511,16 +29335,13 @@ var APP_accelerator_home_ui = (function () {
               });
             } else if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
               this._wifi.disconnect();
-
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-
               this._setState('Switch');
-
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
                   this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
@@ -31532,11 +29353,9 @@ var APP_accelerator_home_ui = (function () {
               });
             } else if (notification.newInterfaceName === "" && notification.oldInterfaceName === "WIFI") {
               console.log('emplty new old wifi');
-
               this._wifi.setDefaultInterface('ETHERNET', true);
             }
           });
-
           this._network.registerEvent('onConnectionStatusChanged', notification => {
             if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
               this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -31549,29 +29368,26 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
     * Function to be executed when the Wi-Fi screen is enabled.
     */
-
-
     _focus() {
       if (this.wifiStatus) {
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
      * Function to be executed when the Wi-Fi screen is disabled.
      */
-
-
     _unfocus() {
       this._wifi.stopScan();
     }
+
     /**
      * Function to render list of Wi-Fi networks.
      */
-
-
     renderDeviceList(ssids) {
       this._wifi.getConnectedSSID().then(result => {
         if (result.ssid != '') {
@@ -31579,7 +29395,6 @@ var APP_accelerator_home_ui = (function () {
         } else {
           this._pairedList = [];
         }
-
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
@@ -31594,7 +29409,6 @@ var APP_accelerator_home_ui = (function () {
         });
         this._otherList = ssids.filter(device => {
           result = this._pairedList.map(a => a.ssid);
-
           if (result.includes(device.ssid)) {
             return false;
           } else return device;
@@ -31613,7 +29427,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     static _states() {
       return [class AvailableDevices extends this {
         $enter() {
@@ -31622,67 +29435,55 @@ var APP_accelerator_home_ui = (function () {
             this.wifiLoading.stop();
           }
         }
-
         _getFocused() {
           return this._availableNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('AvailableDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('AvailableDevices', 'up');
         }
-
         _handleEnter() {
           console.log(this._availableNetworks.tag('List').element._item);
           Router.navigate('settings/network/interface/wifi/connect', {
             wifiItem: this._availableNetworks.tag('List').element._item
           });
         }
-
       }, class JoinAnotherNetwork extends this {
         $enter() {
           this.tag('JoinAnotherNetwork')._focus();
         }
-
-        _handleUp() {// this._setState('AvailableDevices')
+        _handleUp() {
+          // this._setState('AvailableDevices')
         }
-
         _handleEnter() {
           if (this.wifiStatus) {
             Router.navigate('settings/network/interface/wifi/another');
           }
         }
-
         _handleDown() {
           this._setState('AvailableDevices');
         }
-
         $exit() {
           this.tag('JoinAnotherNetwork')._unfocus();
         }
-
       }];
     }
+
     /**
     * Function to navigate through the lists in the screen.
     * @param {string} listname
     * @param {string} dir
     */
 
-
     _navigate(listname, dir) {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           wifi$2.discoverSSIDs();
-
           this._setState('JoinAnotherNetwork');
-
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
@@ -31697,23 +29498,19 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
+
     /**
     * Function to turn on and off Wi-Fi.
     */
-
-
     switch() {
       if (!this.wifiStatus) {
         this._wifi.disconnect();
-
         console.log('turning off wifi');
-
         this._wifi.setInterface('ETHERNET', true).then(result => {
           if (result.success) {
             this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
               if (result.success) {
                 this._wifi.disconnect();
-
                 this.wifiStatus = false;
                 this.tag('Networks').visible = false;
                 this.tag('JoinAnotherNetwork').visible = false;
@@ -31724,49 +29521,41 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       } else {
-        console.log('turning on wifi'); //this.wifiStatus = true
-
+        console.log('turning on wifi');
+        //this.wifiStatus = true
         this.tag('Networks').visible = true;
         this.tag('JoinAnotherNetwork').visible = true;
         this.wifiLoading.play();
         this.tag('Loader').visible = true;
-
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
     * Function to activate Wi-Fi plugin.
     */
-
-
     _activateWiFi() {
       this._wifi.activate().then(() => {
         this.switch();
       });
-
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
         console.log(JSON.stringify(notification));
-
         if (notification.state === 5 && Router.getActiveRoute().includes('splash')) {
           Registry.setTimeout(() => {
             Router.navigate('menu');
           }, 2000);
         }
       });
-
       this._wifi.registerEvent('onError', notification => {
         this._wifi.discoverSSIDs();
-
         this._wifi.setInterface('ETHERNET', true).then(res => {
           if (res.success) {
             this._wifi.setDefaultInterface('ETHERNET', true);
           }
         });
       });
-
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
-
         if (!notification.moreData) {
           setTimeout(() => {
             this.tag('Loader').visible = false;
@@ -31775,7 +29564,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -31842,10 +29630,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for rendering items in UI list.
    */
-
   class Item extends lng$1.Component {
     static _template() {
       return {
@@ -31870,11 +29658,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * Function to set contents for an item in UI list.
      */
-
-
     set item(item) {
       this._item = item;
       this.tag('OperatorLogo').patch({
@@ -31886,7 +29673,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _focus() {
       this.tag('Item').zIndex = 3;
       this.tag('Item').scale = 1.2;
@@ -31897,7 +29683,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _unfocus() {
       this.tag('Item').zIndex = 1;
       this.tag('Item').scale = 1;
@@ -31908,7 +29693,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -31948,11 +29732,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     pageTransition() {
       return 'right';
     }
-
     _firstEnable() {
       this.tag('UI').add(homeApi$2.getUIInfo().map((element, idx) => {
         return {
@@ -31968,20 +29750,16 @@ var APP_accelerator_home_ui = (function () {
         };
       }));
     }
-
     _getFocused() {
       return this.tag('UI');
     }
-
     _handleEnter() {
       if (this.tag('UI').currentItem._item.title != 'DEFAULT') {
         console.log('Redirect to url');
         return;
       }
-
       Router.navigate('menu');
     }
-
   }
 
   /**
@@ -32016,8 +29794,8 @@ var APP_accelerator_home_ui = (function () {
       horizontal: 80,
       // space between rows
       vertical: 40 // space between columns (items)
-
     },
+
     margin: {
       x: 80,
       y: 112
@@ -32026,14 +29804,15 @@ var APP_accelerator_home_ui = (function () {
     // the grid is built on an 8-point system
     columnWidth: 110
   };
+
   /**
    * Establishes the screen size to be 1080p resolution (1920x1080).
    */
-
   const SCREEN = {
     w: 1920,
     h: 1080
   };
+
   /**
    * Determines the width and height of an item based off the data passed into the item
    * (either all necessary parameters to calculate the dimensions dynamically,
@@ -32044,7 +29823,6 @@ var APP_accelerator_home_ui = (function () {
    *
    * @return { { number, number } }
    */
-
   function getDimensions() {
     let obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     let fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -32057,24 +29835,28 @@ var APP_accelerator_home_ui = (function () {
     } = obj;
     let fallbackW = fallback.w || 0;
     let fallbackH = fallback.h || 0;
-    let dimensions = {}; // hard set width and height values were passed in and should override other params
+    let dimensions = {};
 
+    // hard set width and height values were passed in and should override other params
     if (w && h) {
       dimensions = {
         w,
         h: h
       };
-    } // hard set height and ratio values were passed in, meaning the row has items with mixed ratios,
+    }
+    // hard set height and ratio values were passed in, meaning the row has items with mixed ratios,
     // so the width needs to be calculated
     else if (h && ratioX && ratioY) {
       dimensions = {
         w: Math.round(h * ratioX / ratioY),
         h: h
       };
-    } // calculate dynamic width and height based off item ratios
+    }
+    // calculate dynamic width and height based off item ratios
     else if (ratioX && ratioY && upCount) {
       dimensions = getItemRatioDimensions(ratioX, ratioY, upCount);
-    } // calculate dynamic width based off a row upcount and a given height
+    }
+    // calculate dynamic width based off a row upcount and a given height
     else if (h && upCount) {
       dimensions = {
         w: Math.round(calculateColumnWidth(upCount)),
@@ -32090,21 +29872,23 @@ var APP_accelerator_home_ui = (function () {
         w: w,
         h: fallbackH
       };
-    } // not enough information was provided to properly size the component
+    }
+    // not enough information was provided to properly size the component
     else {
       dimensions = {
         w: fallbackW,
         h: fallbackH
       };
     }
-
-    dimensions = { ...dimensions,
+    dimensions = {
+      ...dimensions,
       ratioX,
       ratioY,
       upCount
     };
     return dimensions;
   }
+
   /**
    * Calculates the width and height of an item based off the given ratios
    * and number of columns across the screen that should be visible before peaking
@@ -32115,10 +29899,8 @@ var APP_accelerator_home_ui = (function () {
    *
    * @return { { number, number } }
    */
-
   function getItemRatioDimensions(ratioX, ratioY, upCount) {
     let w, h;
-
     if (ratioX && ratioY && upCount) {
       w = Math.round(calculateColumnWidth(upCount));
       h = Math.round(w / ratioX * ratioY);
@@ -32126,12 +29908,12 @@ var APP_accelerator_home_ui = (function () {
       w = 0;
       h = 0;
     }
-
     return {
       w,
       h
     };
   }
+
   /**
    * Calculates the width of an item given how many columns are requested
    *
@@ -32139,21 +29921,20 @@ var APP_accelerator_home_ui = (function () {
    *
    * @return { number }
    */
-
   function calculateColumnWidth(upCount) {
     // the screen width, minus the margin x on each side
     let rowWidth = SCREEN.w - GRID.margin.x * 2;
-
     if (upCount) {
       // the total space of column gaps in between items
-      let columnGapTotal = (upCount - 1) * GRID.gutters.vertical; // the remaining amount of space left for all items
+      let columnGapTotal = (upCount - 1) * GRID.gutters.vertical;
 
-      let totalColumnsWidth = rowWidth - columnGapTotal; // the width of each item in that remaining width
+      // the remaining amount of space left for all items
+      let totalColumnsWidth = rowWidth - columnGapTotal;
 
+      // the width of each item in that remaining width
       let itemWidth = totalColumnsWidth / upCount;
       return itemWidth;
     }
-
     return rowWidth;
   }
 
@@ -32188,22 +29969,20 @@ var APP_accelerator_home_ui = (function () {
    */
   function getHexColor(hex) {
     let alpha = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100;
-
     if (!hex) {
       return 0x00;
     }
-
     let hexAlpha = Math.round(alpha / 100 * 255).toString(16);
     let str = "0x".concat(hexAlpha).concat(hex);
     return parseInt(Number(str), 10);
   }
+
   /**
    * Returns valid string of HEX color
    *
    * @param {string} color
    * @param {boolean} fill
    */
-
   function getValidColor(color) {
     if (/^0x[0-9a-fA-F]{8}/g.test(color)) {
       // User enters a valid 0x00000000 hex code
@@ -32221,7 +30000,6 @@ var APP_accelerator_home_ui = (function () {
       let rgba = [...color.replace(/rgb\(|\)/g, '').split(','), '255'];
       return lng.StageUtils.getArgbNumber(rgba);
     }
-
     return null;
   }
 
@@ -32242,7 +30020,6 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
-
   /**
    * Returns a styles object for use by components
    * @param {Object|function} styles - Object or callback that takes theme as an argument, ultimately the returned value
@@ -32269,54 +30046,48 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
+
   /**
    * Merges two objects together and returns the duplicate.
    *
    * @param {Object} target - object to be cloned
    * @param {Object} [object] - secondary object to merge into clone
    */
-
   function clone(target, object) {
-    const _clone = { ...target
+    const _clone = {
+      ...target
     };
     if (!object || target === object) return _clone;
-
     for (const key in object) {
       const value = object[key];
-
       if (target.hasOwnProperty(key)) {
         _clone[key] = getMergeValue(key, target, object);
       } else {
         _clone[key] = value;
       }
     }
-
     return _clone;
   }
-
   function getMergeValue(key, target, object) {
     const targetVal = target[key];
     const objectVal = object[key];
     const targetValType = typeof targetVal;
     const objectValType = typeof objectVal;
-
     if (targetValType !== objectValType || objectValType === 'function' || Array.isArray(objectVal)) {
       return objectVal;
     }
-
     if (objectVal && objectValType === 'object') {
       return clone(targetVal, objectVal);
     }
-
     return objectVal;
   }
+
   /**
    * Naively looks for dimensional prop (i.e. w, h, x, y, etc.), first searching for
    * a transition target value then defaulting to the current set value
    * @param {string} prop - property key
    * @param {lng.Component} component - Lightning component to operate against
    */
-
   function getDimension(prop, component) {
     if (!component) return 0;
     const transition = component.transition(prop);
@@ -32348,22 +30119,17 @@ var APP_accelerator_home_ui = (function () {
    */
   function withStyles(Base, styles, theme) {
     const _theme = theme || Base.theme;
-
     const _styles = Base.styles ? clone(Base.styles, createStyles(styles, _theme)) : createStyles(styles, _theme);
-
     return class extends Base {
       static get name() {
         return Base.name;
       }
-
       static get styles() {
         return _styles;
       }
-
       get styles() {
         return _styles;
       }
-
     };
   }
 
@@ -32384,23 +30150,21 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
+
   function getPropertyDescriptor$1(path) {
     return {
       get() {
         return this.tag(path);
       },
-
       configurable: true,
       enumerable: true
     };
   }
-
   function withTags(Base) {
     return class extends Base {
       static get name() {
         return Base.name;
       }
-
       _construct() {
         const tags = this.constructor.tags || [];
         let name, path;
@@ -32414,14 +30178,12 @@ var APP_accelerator_home_ui = (function () {
             name = tag;
             path = tag;
           }
-
           const key = '_' + name;
           const descriptor = getPropertyDescriptor$1(path);
           Object.defineProperty(Object.getPrototypeOf(this), key, descriptor);
         });
         super._construct && super._construct();
       }
-
     };
   }
 
@@ -32442,57 +30204,44 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
-
   function capital(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-
   function getPropertyDescriptor(name, key) {
     return {
       get() {
         const customGetter = this["_get".concat(capital(name))];
-
         if (customGetter && typeof customGetter === 'function') {
           const value = customGetter.call(this, this[key]);
           this[key] = value;
         }
-
         return this[key];
       },
-
       set(value) {
         const oldValue = this[key];
-
         if (value !== oldValue) {
           const changeHandler = this["_set".concat(capital(name))];
-
           if (changeHandler && typeof changeHandler === 'function') {
             value = changeHandler.call(this, value);
           }
-
           this[key] = value;
-
           this._requestUpdateDebounce();
         }
       },
-
       configurable: true,
       enumerable: true
     };
   }
-
   function withUpdates(Base) {
     return class extends Base {
       static get name() {
         return Base.name;
       }
-
       _construct() {
         let props = this.constructor.properties || [];
         props.forEach(name => {
           const key = '_' + name;
           const descriptor = getPropertyDescriptor(name, key);
-
           if (descriptor !== undefined) {
             Object.defineProperty(Object.getPrototypeOf(this), name, descriptor);
           }
@@ -32503,29 +30252,21 @@ var APP_accelerator_home_ui = (function () {
         this._requestUpdateDebounce = debounce_1.debounce(this._requestUpdate.bind(this), 0);
         super._construct && super._construct();
       }
-
       _firstEnable() {
         this._readyForUpdates = true;
-
         this._whenEnabledResolver();
-
         this._update();
-
         super._firstEnable && super._firstEnable();
       }
-
       _detach() {
         super._detach();
-
         this._requestUpdateDebounce.clear();
       }
-
       _requestUpdate() {
         if (this._readyForUpdates) {
           this._update();
         }
       }
-
     };
   }
 
@@ -32546,39 +30287,33 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
+
   function withHandleKey(Base) {
     return class extends Base {
       static get name() {
         return Base.name;
       }
-
       _handleKey(keyEvent) {
         return this._processEvent(keyEvent);
       }
-
       _handleKeyRelease(keyEvent) {
         return this._processEvent(keyEvent, 'Release');
       }
-
       _processEvent(keyEvent) {
         let suffix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
         let {
           key
         } = keyEvent;
-
         if (!key) {
           const keyMap = this.stage.application.__keymap || {};
           key = keyMap[keyEvent.keyCode];
         }
-
         if (key && typeof this["on".concat(key).concat(suffix)] === 'function') {
           return this["on".concat(key).concat(suffix)].call(this, this, keyEvent) || false;
         }
-
         this.fireAncestors("$on".concat(key).concat(suffix), this, keyEvent);
         return false;
       }
-
     };
   }
 
@@ -32604,16 +30339,15 @@ var APP_accelerator_home_ui = (function () {
       get itemLayout() {
         return this._itemLayout;
       }
-
       set itemLayout(itemLayout) {
         if (!stringifyCompare(this._itemLayout, itemLayout)) {
           this._itemLayout = itemLayout;
           const {
             w,
             h
-          } = getDimensions(itemLayout); // If there is not enough information passed in args to calculate item size
+          } = getDimensions(itemLayout);
+          // If there is not enough information passed in args to calculate item size
           // Do not try to set h/w this will cause issues sizing the focus ring
-
           if (h || w) {
             const {
               w: width,
@@ -32625,7 +30359,6 @@ var APP_accelerator_home_ui = (function () {
           }
         }
       }
-
     };
   }
 
@@ -32646,47 +30379,35 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
-
   const baseStyles = () => ({
-    getUnfocusScale: () => 1 // getFocusScale: theme.getFocusScale
-
+    getUnfocusScale: () => 1
+    // getFocusScale: theme.getFocusScale
   });
 
   class Base extends lng$1.Component {
     _construct() {
       this._whenEnabled = new Promise(resolve => this._whenEnabledResolver = resolve);
-
       this._getFocusScale = this.styles.getFocusScale || function () {};
-
       this._getUnfocusScale = this.styles.getUnfocusScale || function () {};
     }
-
     _firstEnable() {
       this._whenEnabledResolver();
     }
-
     _init() {
       this._update();
     }
-
     _update() {}
-
     _focus() {
       if (this._smooth === undefined) this._smooth = true;
-
       this._update();
     }
-
     _unfocus() {
       this._update();
     }
-
   }
-
   function withMixins(baseComponent) {
     return withLayout(withUpdates(withTags(withHandleKey(baseComponent))));
   }
-
   var Base$1 = withMixins(withStyles(Base, baseStyles));
 
   /**
@@ -32706,6 +30427,7 @@ var APP_accelerator_home_ui = (function () {
    *
    * SPDX-License-Identifier: Apache-2.0
    */
+
   var styles = {
     h: 8,
     w: 410,
@@ -32743,18 +30465,14 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     static get properties() {
       return ['animationDuration', 'barColor', 'progress', 'progressColor', 'radius'];
     }
-
     static get tags() {
       return ['Bar', 'Progress'];
     }
-
     _construct() {
       super._construct();
-
       this._w = this.styles.w;
       this.h = this.styles.h;
       this._progress = 0;
@@ -32763,27 +30481,23 @@ var APP_accelerator_home_ui = (function () {
       this._barColor = this.styles.barColor;
       this._animationDuration = 0;
     }
-
     _init() {
       this._update();
     }
-
     set w(w) {
       if (this._w !== w) {
         this._w = w;
-
         this._update();
       }
     }
-
     get w() {
       return this._w;
     }
-
     _update() {
       const p = this.w * this.progress;
       const w = p <= 0 ? 0 : Math.min(p, this._w);
-      this._Bar.texture = lng$1.Tools.getRoundRect( // getRoundRect adds 2 to the width
+      this._Bar.texture = lng$1.Tools.getRoundRect(
+      // getRoundRect adds 2 to the width
       this.w - 2, this.h, this.radius, 0, 0, true, this.barColor);
       this._Progress.texture = lng$1.Tools.getRoundRect(w + 1, this.h, this.radius, 0, 0, true, this.progressColor);
       this._Progress.smooth = {
@@ -32793,15 +30507,12 @@ var APP_accelerator_home_ui = (function () {
         alpha: Number(w > 0)
       };
     }
-
     _setBarColor(barColor) {
       return getValidColor(barColor);
     }
-
     _setProgressColor(progressColor) {
       return getValidColor(progressColor);
     }
-
   }
 
   class AppStoreItem extends lng$1.Component {
@@ -32858,10 +30569,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set info(data) {
       this.data = data;
-
       if (data.url.startsWith('/images')) {
         this.tag('Image').patch({
           src: Utils.asset(data.url)
@@ -32871,32 +30580,28 @@ var APP_accelerator_home_ui = (function () {
           src: data.url
         });
       }
-
-      this.tag('Text').text.text = data.displayName; // this.tag('Shadow').y = this.tag('Shadow').y - 10
+      this.tag('Text').text.text = data.displayName;
+      // this.tag('Shadow').y = this.tag('Shadow').y - 10
     }
 
     static get width() {
       return 300;
     }
-
     static get height() {
       return 168;
     }
-
     _focus() {
       this.scale = 1.15;
       this.zIndex = 2;
       this.tag("Shadow").alpha = 1;
       this.tag("Text").alpha = 1;
     }
-
     _unfocus() {
       this.scale = 1;
       this.zIndex = 1;
       this.tag("Shadow").alpha = 0;
       this.tag("Text").alpha = 0;
     }
-
   }
 
   class OptionsItem extends lng$1.Component {
@@ -32921,39 +30626,30 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this.tag('Bar').texture = lng$1.Tools.getRoundRect(this.tag('Text').finalW, 5, 0, 0, CONFIG.theme.hex, true, CONFIG.theme.hex);
       this.tag('Text').text.fontStyle = 'bold';
     }
-
     _unfocus() {
       this.tag('Bar').texture = lng$1.Tools.getRoundRect(0, 5, 0, 0, CONFIG.theme.hex, true, CONFIG.theme.hex);
       this.tag('Text').text.fontStyle = '';
     }
-
     static get width() {
       return 250;
     }
-
     _handleEnter() {
       this.fireAncestors('$selectOption', this.idx, this);
-
       this._focus();
     }
-
     _handleDown() {
       this._handleEnter();
     }
-
     set element(item) {
       this.tag('Text').text.text = Language.translate(item);
-
       if (this.tag('Text').text.text.length > 11) {
         this.tag('Text').text.fontSize = 25;
       }
     }
-
   }
 
   const homeApi$1 = new HomeApi();
@@ -32961,7 +30657,6 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Apps'));
     }
-
     static _template() {
       return {
         rect: true,
@@ -32993,7 +30688,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       let apps = homeApi$1.getAllApps();
       apps.shift();
@@ -33031,54 +30725,41 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     $selectOption(option, obj) {
       this.tag('Apps').clear();
-
       obj._focus();
-
       this.options[option]();
-
       if (this.tag('Apps').length) {
         this._setState('Apps');
       }
     }
-
     _handleLeft() {
       Router.focusWidget('Menu');
     }
-
     pageTransition() {
       return 'up';
     }
-
     _handleUp() {
       this.widgets.menu.notify('TopPanel');
     }
-
     _focus() {
       this._setState('Options');
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('Options');
         }
-
         _handleDown() {
           this._setState('Apps');
         }
-
       }, class Apps extends this {
         _getFocused() {
           return this.tag('Apps');
         }
-
         _handleUp() {
           this._setState('Options');
         }
-
         _handleEnter() {
           let appApi = new AppApi();
           let applicationType = this.tag('Apps').currentItem.data.applicationType;
@@ -33091,10 +30772,8 @@ var APP_accelerator_home_ui = (function () {
             console.log(applicationType + ' plugin error: ' + JSON.stringify(err));
           });
         }
-
       }];
     }
-
   }
 
   /**
@@ -33118,7 +30797,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class to render items in Subscription in details screen .
    */
-
   let index$1 = 0;
   class SubscriptionItem extends lng$1.Component {
     static _template() {
@@ -33199,11 +30877,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set item(item) {
       this._item = item;
       this.tag('Title').text.text = this._item.host["_@attribute"];
-
       if (Array.isArray(this._item.viewingOptions.viewingOption)) {
         this.tag('SubscriptionValues').text.text = this.convertPricing(this._item.viewingOptions.viewingOption[0]);
         this.tag('Arrows').visible = true;
@@ -33211,29 +30887,24 @@ var APP_accelerator_home_ui = (function () {
         this.tag('SubscriptionValues').text.text = this.convertPricing(this._item.viewingOptions.viewingOption);
         this._item.viewingOptions.viewingOption = [this._item.viewingOptions.viewingOption];
         this.tag('Arrows').visible = false;
-      } // this.tag('SubscriptionValues').text.text=`${this._item.viewingOptions.viewingOption[0].price["_@attribute"]}-${this._item.viewingOptions.viewingOption[0].license}-${this._item.viewingOptions.viewingOption[0].quality}`;
-
+      }
+      // this.tag('SubscriptionValues').text.text=`${this._item.viewingOptions.viewingOption[0].price["_@attribute"]}-${this._item.viewingOptions.viewingOption[0].license}-${this._item.viewingOptions.viewingOption[0].quality}`;
     }
 
     convertPricing(option) {
       let res = '';
-
       if (option.license !== undefined) {
         let license = option.license.toLowerCase();
         res = res + license.substr(0, 1).toUpperCase() + license.substr(1) + " ";
       }
-
       if (option.price !== undefined) {
         res = res + "$" + option.price["_@attribute"] + " ";
       }
-
       if (option.quality !== undefined) {
         res = res + option.quality;
       }
-
       return res;
     }
-
     _focus() {
       this.tag("TopLine").color = CONFIG.theme.hex;
       this.tag("TopLine").h = 5;
@@ -33242,20 +30913,18 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").zIndex = 10;
       this.tag("BottomLine").zIndex = 10;
       this.tag('Title').text.fontStyle = 'bold';
-      this.tag('SubscriptionValues').text.fontStyle = 'bold'; // console.log(this._item)
+      this.tag('SubscriptionValues').text.fontStyle = 'bold';
+      // console.log(this._item)
     }
 
     _handleLeft() {
       // index = (3 + (--index)) % 3;
       index$1 = index$1 - 1;
-
       if (index$1 < 0) {
         index$1 = this._item.viewingOptions.viewingOption.length - 1;
       }
-
       this.tag('SubscriptionValues').text.text = this.convertPricing(this._item.viewingOptions.viewingOption[index$1]);
     }
-
     _handleEnter() {
       // this.handleDone()
       if (this._item.host["_@attribute"].toLowerCase() === "youtube") {
@@ -33268,18 +30937,14 @@ var APP_accelerator_home_ui = (function () {
         appApi.launchApp("Cobalt", params).catch(err => {});
       }
     }
-
     _handleRight() {
       // index = (3 + (++index)) % 3;
       index$1 = index$1 + 1;
-
       if (index$1 > this._item.viewingOptions.viewingOption.length - 1) {
         index$1 = 0;
       }
-
       this.tag('SubscriptionValues').text.text = this.convertPricing(this._item.viewingOptions.viewingOption[index$1]);
     }
-
     _unfocus() {
       this.tag("TopLine").color = 0xFFFFFFFF;
       this.tag("TopLine").h = 3;
@@ -33290,7 +30955,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Title').text.fontStyle = 'normal';
       this.tag('SubscriptionValues').text.fontStyle = 'normal';
     }
-
   }
 
   /**
@@ -33316,11 +30980,9 @@ var APP_accelerator_home_ui = (function () {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(this.name);
     }
-
     pageTransition() {
       return "left";
     }
-
     static _template() {
       return {
         w: 1920,
@@ -33416,7 +31078,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set params(args) {
       this.rootId = args.gracenoteItem.program.tmsid;
       this.name = args.gracenoteItem.program.title;
@@ -33425,16 +31086,13 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Cast.Title").text.text = "".concat(args.gracenoteItem.program.topCast[0], " \t ").concat(args.gracenoteItem.program.topCast[1], " \t ").concat(args.gracenoteItem.program.topCast[2]);
       this.tag("Description.Title").text.text = args.gracenoteItem.program.longDescription;
       this.tag("Time.Title").text.text = "".concat(args.gracenoteItem.duration, " Minutes");
-
       if (args.gracenoteItem.ratings) {
         this.tag("Rating.Title").text.text = "".concat(args.gracenoteItem.ratings[0].body, " \n").concat(args.gracenoteItem.ratings[0].subRating);
       } else {
         this.tag("Rating.Title").text.text = "";
       }
-
       homeApi.getMovieSubscriptions(args.gracenoteItem.program.tmsId).then(response => {
         let options = response.ovd.movie.videos.video;
-
         if (options) {
           this.tag("Subscriptions.List").items = options.map((item, index) => {
             return {
@@ -33448,67 +31106,50 @@ var APP_accelerator_home_ui = (function () {
         } else {
           this.tag("Subscriptions").visible = false;
         }
-
         this._setState("Subscriptions");
-
         this.tag("Subscriptions.List").setIndex(0);
       }).catch(error => console.log(error));
     }
-
     _init() {}
-
     _focus() {
       this._setState("DetailsScreen");
-
       this.tag("Subscriptions.List").setIndex(0);
     }
-
     _unfocus() {
       this.tag("Subscriptions").visible = false;
     }
-
     _handleBack() {
       Router.navigate("menu");
     }
-
     static _states() {
       return [class DetailsScreen extends this {
         _handleDown() {
           this._setState("Subscriptions");
         }
-
         _handleUp() {
           this._setState("Subscriptions");
         }
-
         _handleLeft() {
           this._setState("Subscriptions");
         }
-
         _handleRight() {
           this._setState("Subscriptions");
         }
-
         _handleEnter() {
           this._setState("Subscriptions");
         }
-
       }, class Subscriptions extends this {
         _getFocused() {
           return this.tag("Subscriptions.List").element;
         }
-
         _handleDown() {
           this.tag("Subscriptions.List").setNext();
         }
-
         _handleUp() {
           this.tag("Subscriptions.List").setPrevious();
         }
-
       }];
     }
-
   }
 
   /**
@@ -33558,15 +31199,14 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class to render items with tick Icon.
    */
-
   class TickMarkItem extends lng$1.Component {
     /**
      * Function to render Tick mark Icon elements in the settings.
      */
+
     _construct() {
       this.Tick = Utils.asset("/images/settings/Tick.png");
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -33592,7 +31232,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set isTicked(isTicked) {
       this.tag("Item").patch({
         Tick: {
@@ -33607,7 +31246,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _init() {
       this.tag("Item").patch({
         Left: {
@@ -33627,7 +31265,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Item.Tick").src = url;
       });
     }
-
     _handleEnter() {
       this.onHandleEnter(this.uniqID); //expecting a function that gets executed on handleEnter
     }
@@ -33642,7 +31279,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").h = 6;
       this.tag("BottomLine").h = 6;
     }
-
     _unfocus() {
       this.tag("TopLine").color = 0xffffffff;
       this.tag("BottomLine").color = 0xffffffff;
@@ -33652,7 +31288,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").h = 3;
       this.tag("BottomLine").h = 3;
     }
-
   }
 
   /**
@@ -33697,19 +31332,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.tag("List").setPrevious();
     }
-
     refreshItems(selected) {
       this.fireAncestors("$setSatellite", selected);
       this.tag("List").items = this.fireAncestors("$getSatelliteList").map((item, index) => {
@@ -33725,7 +31356,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -33733,7 +31363,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.refreshItems(this.fireAncestors("$getSelectedSatellite"));
     }
-
   }
 
   /**
@@ -33778,19 +31407,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.tag("List").setPrevious();
     }
-
     refreshItems(selected) {
       this.fireAncestors("$setPolarity", selected);
       this.tag("List").items = this.fireAncestors("$getPolarityList").map((item, index) => {
@@ -33806,7 +31431,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -33814,7 +31438,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.refreshItems(this.fireAncestors("$getSelectedPolarity"));
     }
-
   }
 
   /**
@@ -33859,19 +31482,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.tag("List").setPrevious();
     }
-
     refreshItems(selected) {
       this.fireAncestors("$setFEC", selected);
       this.tag("List").items = this.fireAncestors("$getFECList").map((item, index) => {
@@ -33887,7 +31506,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -33895,7 +31513,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.refreshItems(this.fireAncestors("$getSelectedFEC"));
     }
-
   }
 
   /**
@@ -33940,19 +31557,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.tag("List").setPrevious();
     }
-
     refreshItems(selected) {
       this.fireAncestors("$setModulation", selected);
       this.tag("List").items = this.fireAncestors("$getModulationList").map((item, index) => {
@@ -33968,7 +31581,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -33976,7 +31588,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.refreshItems(this.fireAncestors("$getSelectedModulation"));
     }
-
   }
 
   /**
@@ -34021,19 +31632,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.tag("List").setPrevious();
     }
-
     refreshItems(selected) {
       this.fireAncestors("$setSearchType", selected);
       this.tag("List").items = this.fireAncestors("$getSearchTypeList").map((item, index) => {
@@ -34049,7 +31656,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -34057,7 +31663,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.refreshItems(this.fireAncestors("$getSelectedSearchType"));
     }
-
   }
 
   /**
@@ -34078,6 +31683,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   const keyMap = {
     "0": 48,
     "1": 49,
@@ -34182,7 +31788,6 @@ var APP_accelerator_home_ui = (function () {
     "Inputs_Shortcut": 113,
     //F2
     "Picture_Setting_Shortcut": 114 //F3
-
   };
 
   /**
@@ -34260,20 +31865,18 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
-      this.numKeyCodes = [keyMap["0"], keyMap["1"], keyMap["2"], keyMap["3"], keyMap["4"], keyMap["5"], keyMap["6"], keyMap["7"], keyMap["8"], keyMap["9"]]; //console.log(this.numKeyCodes) // above array order is importent as index is used as numeric value
+      this.numKeyCodes = [keyMap["0"], keyMap["1"], keyMap["2"], keyMap["3"], keyMap["4"], keyMap["5"], keyMap["6"], keyMap["7"], keyMap["8"], keyMap["9"]];
+      //console.log(this.numKeyCodes) // above array order is importent as index is used as numeric value
     }
 
     _focus() {
       this._setState("InputBox");
-
       this.tag("Content").text.text = this.prevVal === "" ? Language.translate("Enter the value and click Done") : this.prevVal;
       this.inputValue = this.prevVal;
       console.log("presetValues: ", this.presetValues);
       this.presetValuesLength = 0;
       this.presetIdx = -1; //to accomodate previous value of the input field
-
       if (Array.isArray(this.presetValues)) {
         this.presetValuesLength = this.presetValues.length;
         console.log(this.presetValues, this.presetValuesLength);
@@ -34282,15 +31885,12 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Arrows").visible = false;
       }
     }
-
     handleDone() {
       // console.log(this.inputValue);
       this.onHandleDone(this.inputValue);
     }
-
     _handleKey(key) {
       let keyValue = this.numKeyCodes.indexOf(key.keyCode); //index is used as value for numeric keys
-
       if (keyValue >= 0) {
         this.inputValue += String(keyValue);
         this.tag("Content").text.text = this.inputValue;
@@ -34306,21 +31906,17 @@ var APP_accelerator_home_ui = (function () {
           this.tag("RightArrow").color = CONFIG.theme.hex;
           this.tag("LeftArrow").color = CONFIG.theme.hex;
         }
-
         $exit() {
           this.tag("InputBox.Border").texture = lng$1.Tools.getRoundRect(1600, 90, 0, 3, 0xffffffff, false);
           this.tag("RightArrow").color = 0xffffffff;
           this.tag("LeftArrow").color = 0xffffffff;
         }
-
         _handleDown() {
           this._setState("Keyboard");
         }
-
         _handleEnter() {
           this._setState("Keyboard");
         }
-
         _handleLeft() {
           if (this.presetValuesLength > 0) {
             if (this.presetIdx <= 0) {
@@ -34328,12 +31924,10 @@ var APP_accelerator_home_ui = (function () {
             } else {
               this.presetIdx -= 1;
             }
-
             this.inputValue = this.presetValues[this.presetIdx];
             this.tag("Content").text.text = this.inputValue;
           }
         }
-
         _handleRight() {
           if (this.presetValuesLength > 0) {
             if (this.presetIdx === this.presetValuesLength - 1 || this.presetIdx < 0) {
@@ -34341,36 +31935,30 @@ var APP_accelerator_home_ui = (function () {
             } else {
               this.presetIdx += 1;
             }
-
             this.inputValue = this.presetValues[this.presetIdx];
             this.tag("Content").text.text = this.inputValue;
           }
         }
-
-        _handleUp() {// do nothing
+        _handleUp() {
+          // do nothing
         }
-
       }, class Keyboard extends this {
-        _handleDown() {// do nothing
+        _handleDown() {
+          // do nothing
         }
-
         _handleUp() {
           this._setState("InputBox");
         }
-
         _getFocused() {
           return this.tag("Keyboard");
         }
-
         _handleBack() {
           this._setState("InputBox");
         }
-
         $onSoftKey(_ref) {
           let {
             key
           } = _ref;
-
           if (key === "Done") {
             this.handleDone();
           } else if (key === "Clear") {
@@ -34380,13 +31968,10 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.inputValue += key;
           }
-
           this.tag("Content").text.text = this.inputValue;
         }
-
       }];
     }
-
   }
 
   /**
@@ -34407,7 +31992,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const dtvApi$2 = new DTVApi();
+  const dtvApi$3 = new DTVApi();
   const config$6 = {
     host: "127.0.0.1",
     port: 9998,
@@ -34415,21 +32000,18 @@ var APP_accelerator_home_ui = (function () {
   };
   const thunder$7 = thunderJS(config$6);
   const systemcCallsign$1 = "DTV";
+
   /**
    * Class for DVB Scan screen.
    */
-
   class DvbSScan$1 extends lng$1.Component {
     _onChanged() {
       this.tag("Scroller").y = 2; //to reset the position when this route is hit
-
       this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
     }
-
     pageTransition() {
       return "left";
     }
-
     static _template() {
       return {
         rect: true,
@@ -34758,10 +32340,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState("Satellite");
-
       this.preventExit = false;
       this.selectedSatellite = {};
       this.selectedFrequency = "";
@@ -34769,7 +32349,6 @@ var APP_accelerator_home_ui = (function () {
       this.selectedSymbolRate = "";
       this.selectedFEC = "";
       this.selectedDVBS2 = false; //default value is false
-
       this.selectedModulation = "";
       this.selectedSearchType = "";
       this.selectedRetune = false; //default value is set to false
@@ -34802,14 +32381,12 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     setScanInProgress() {
       this.preventExit = true;
       this.loadingAnimation.start();
       this.inProgressAnimation.start();
       this.tag("ScanProgress").visible = true;
     }
-
     setScanFinished() {
       this.preventExit = false;
       this.loadingAnimation.stop();
@@ -34817,7 +32394,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("ScanProgress").visible = false;
       this.tag("ScanProgress.Title").visible = false;
     }
-
     _captureKey() {
       if (this.preventExit) {
         this.tag("ScanProgress.Title").visible = true;
@@ -34826,19 +32402,16 @@ var APP_accelerator_home_ui = (function () {
         return false;
       }
     }
-
     consoleLog() {
       //log it everywhere
       console.log("selectedSatellite: ", JSON.stringify(this.selectedSatellite), " selectedFrequency: ", this.selectedFrequency, " selectedPolarity: ", this.selectedPolarity, " selectedSymbolRate: ", this.selectedSymbolRate, " selectedFEC: ", this.selectedFEC, " selectedDVBS2: ", this.selectedDVBS2, " selectedModulation: ", this.selectedModulation, " selectedSearchType: ", this.selectedSearchType, " selectedRetune: ", this.selectedRetune);
     }
-
     _focus() {
       // console.log("dvbscan screen in focus");
       this.resetForm();
-
       this._setState("Satellite");
-
-      this.consoleLog(); // console.log(this.satelliteList);
+      this.consoleLog();
+      // console.log(this.satelliteList);
       // console.log(this.polarityList);
       // console.log(this.fecList);
       // console.log(this.modulationList);
@@ -34848,127 +32421,130 @@ var APP_accelerator_home_ui = (function () {
     _firstActive() {
       thunder$7.on(systemcCallsign$1, "searchstatus", notification => {
         console.log("SearchStatus Notification: ", JSON.stringify(notification));
-
         if (notification.finished) {
           console.log("notification.finished: ", notification.finished);
           this.setScanFinished();
+          dtvApi$3.noOfServices().then(res => {
+            this.tag("ErrorNotification.Content").text.text = Language.translate("Found ") + res + Language.translate(" services.");
+            this.tag("ErrorNotification").visible = true;
+          });
         }
-      }); ///////////////satellite
+      });
+
+      ///////////////satellite
 
       this.satelliteList = [];
-      dtvApi$2.satelliteList().then(res => {
+      dtvApi$3.satelliteList().then(res => {
         this.satelliteList = res;
-      }); ///////////////////polarity
+      });
+
+      ///////////////////polarity
 
       this.polarityList = [];
-      dtvApi$2.polarityList().then(res => {
+      dtvApi$3.polarityList().then(res => {
         this.polarityList = res;
-      }); ///////////////////symbolRate
-      //symbol rate has some predefined values additional to custom imput
+      });
 
+      ///////////////////symbolRate
+      //symbol rate has some predefined values additional to custom imput
       this.symbolRateList = [];
-      dtvApi$2.symbolRateList().then(res => {
+      dtvApi$3.symbolRateList().then(res => {
         this.symbolRateList = res;
-      }); ////////////////////FEC
+      });
+
+      ////////////////////FEC
 
       this.fecList = [];
-      dtvApi$2.fecList().then(res => {
+      dtvApi$3.fecList().then(res => {
         this.fecList = res;
-      }); ///////////////////modulation
+      });
+
+      ///////////////////modulation
 
       this.modulationList = [];
-      dtvApi$2.modulationList().then(res => {
+      dtvApi$3.modulationList().then(res => {
         this.modulationList = res;
-      }); ///////////////////searchtype
+      });
+
+      ///////////////////searchtype
 
       this.searchtypeList = [];
-      dtvApi$2.searchtypeList().then(res => {
+      dtvApi$3.searchtypeList().then(res => {
         this.searchtypeList = res;
       });
     }
-
     _handleBack() {
       this.resetForm();
       Router.navigate("settings/livetv/scan");
     }
-
     $getSatelliteList() {
       return this.satelliteList;
     }
-
     $setSatellite(satellite) {
-      this.selectedSatellite = satellite; //this.consoleLog();
+      this.selectedSatellite = satellite;
+      //this.consoleLog();
     }
 
     $getSelectedSatellite() {
       return this.selectedSatellite;
     }
-
     $getPolarityList() {
       return this.polarityList;
     }
-
     $setPolarity(polarity) {
-      this.selectedPolarity = polarity; //this.consoleLog();
+      this.selectedPolarity = polarity;
+      //this.consoleLog();
     }
 
     $getSelectedPolarity() {
       return this.selectedPolarity;
     }
-
     $getFECList() {
       return this.fecList;
     }
-
     $setFEC(fec) {
-      this.selectedFEC = fec; //this.consoleLog();
+      this.selectedFEC = fec;
+      //this.consoleLog();
     }
 
     $getSelectedFEC() {
       return this.selectedFEC;
     }
-
     $getModulationList() {
       return this.modulationList;
     }
-
     $setModulation(modulation) {
-      this.selectedModulation = modulation; //this.consoleLog();
+      this.selectedModulation = modulation;
+      //this.consoleLog();
     }
 
     $getSelectedModulation() {
       return this.selectedModulation;
     }
-
     $getSearchTypeList() {
       return this.searchtypeList;
     }
-
     $setSearchType(searchtype) {
-      this.selectedSearchType = searchtype; //this.consoleLog();
+      this.selectedSearchType = searchtype;
+      //this.consoleLog();
     }
 
     $getSelectedSearchType() {
       return this.selectedSearchType;
     }
-
     setFrequency(frequency) {
       this._setState("Frequency");
-
       this.selectedFrequency = frequency;
       this.tag("Frequency.Title").text.text = Language.translate("Frequency") + ": " + (this.selectedFrequency !== "" ? this.selectedFrequency : Language.translate("Select a") + " " + Language.translate("Frequency"));
     }
-
     setSymbolRate(symbolrate) {
       this._setState("SymbolRate");
-
       this.selectedSymbolRate = symbolrate;
       this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate") + ": " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : Language.translate("Select a") + " " + Language.translate("Symbol Rate"));
     }
-
     resetForm() {
-      this.setScanFinished(); //reset the form variables to initial state on exit from this form
-
+      this.setScanFinished();
+      //reset the form variables to initial state on exit from this form
       this.selectedSatellite = {};
       this.tag("Satellite.Title").text.text = Language.translate("Satellite");
       this.selectedFrequency = "";
@@ -34989,65 +32565,51 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       this.tag("ErrorNotification").visible = false;
     }
-
     verifyInputs() {
       let errorString = "";
-
       if (Object.keys(this.selectedSatellite).length === 0) {
         errorString += "| " + Language.translate("Satellite") + " ";
       }
-
       if (this.selectedFrequency === "") {
         errorString += "| " + Language.translate("Frequency") + " ";
       }
-
       if (this.selectedPolarity === "") {
         errorString += "| " + Language.translate("Polarity") + " ";
       }
-
       if (this.selectedSymbolRate === "") {
         errorString += "| " + Language.translate("Symbol Rate") + " ";
       }
-
       if (this.selectedFEC === "") {
         errorString += "| " + Language.translate("FEC") + " ";
       }
-
       if (this.selectedModulation === "") {
         errorString += "| " + Language.translate("Modulation") + " ";
       }
-
       if (this.selectedSearchType === "") {
         errorString += "| " + Language.translate("Search Mode") + " ";
       }
-
       return errorString;
     }
-
     static _states() {
       return [class Satellite extends this {
         $enter() {
           this.tag("Satellite")._focus();
         }
-
         $exit() {
           this.tag("Satellite")._unfocus();
         }
-
         _handleDown() {
           this._setState("Frequency");
         }
-
         _handleEnter() {
           if (this.satelliteList.length > 0) {
             this._setState("Satellite.SelectSatellite");
           } else {
-            dtvApi$2.satelliteList().then(res => {
+            dtvApi$3.satelliteList().then(res => {
               this.satelliteList = res;
             });
           }
         }
-
         static _states() {
           return [class SelectSatellite extends Satellite {
             $enter() {
@@ -35055,53 +32617,42 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectSatellite").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Satellite"));
             }
-
             $exit() {
               this.tag("SelectSatellite").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
               this.tag("Satellite.Title").text.text = Language.translate("Satellite") + ": " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : Language.translate("Select a") + " " + Language.translate("Satellite"));
             }
-
             _getFocused() {
               return this.tag("SelectSatellite");
             }
-
             _handleBack() {
               this._setState("Satellite");
             }
-
           }];
         }
-
       }, class Frequency extends this {
         $enter() {
           this.tag("Frequency")._focus();
         }
-
         $exit() {
           this.tag("Frequency")._unfocus();
         }
-
         _handleUp() {
           this._setState("Satellite");
         }
-
         _handleDown() {
           this._setState("Polarity");
         }
-
         _handleEnter() {
           this.tag("SelectFrequency").patch({
             prevVal: this.selectedFrequency,
             //previous value is passed to retain the previously entered value
             onHandleDone: this.setFrequency.bind(this) //pass a function that will be executed when done is clicked on the keyboard
-
           });
 
           this._setState("Frequency.SelectFrequency");
         }
-
         static _states() {
           return [class SelectFrequency extends Frequency {
             $enter() {
@@ -35109,45 +32660,35 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectFrequency").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Frequency"));
             }
-
             $exit() {
               this.tag("SelectFrequency").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
             }
-
             _getFocused() {
               return this.tag("SelectFrequency");
             }
-
             _handleBack() {
               this.setFrequency(this.selectedFrequency);
             }
-
           }];
         }
-
       }, class Polarity extends this {
         $enter() {
           this.tag("Polarity")._focus();
         }
-
         $exit() {
           this.tag("Polarity")._unfocus();
         }
-
         _handleUp() {
           this._setState("Frequency");
         }
-
         _handleDown() {
           this._setState("SymbolRate");
         }
-
         _handleEnter() {
           this._setState("Polarity.SelectPolarity");
         }
-
         static _states() {
           return [class SelectPolarity extends Polarity {
             $enter() {
@@ -35155,42 +32696,33 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectPolarity").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Polarity"));
             }
-
             $exit() {
               this.tag("SelectPolarity").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
               this.tag("Polarity.Title").text.text = Language.translate("Polarity") + ": " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : Language.translate("Select a") + " " + Language.translate("Polarity"));
             }
-
             _getFocused() {
               return this.tag("SelectPolarity");
             }
-
             _handleBack() {
               this._setState("Polarity");
             }
-
           }];
         }
-
       }, class SymbolRate extends this {
         $enter() {
           this.tag("SymbolRate")._focus();
         }
-
         $exit() {
           this.tag("SymbolRate")._unfocus();
         }
-
         _handleUp() {
           this._setState("Polarity");
         }
-
         _handleDown() {
           this._setState("FEC");
         }
-
         _handleEnter() {
           this.tag("SelectSymbolRate").patch({
             prevVal: this.selectedSymbolRate,
@@ -35198,12 +32730,10 @@ var APP_accelerator_home_ui = (function () {
             onHandleDone: this.setSymbolRate.bind(this),
             //pass a function that will be executed when done is clicked on the keyboard
             presetValues: this.symbolRateList //can handle a list of predefined values that can be selected using arrow keys
-
           });
 
           this._setState("SymbolRate.SelectSymbolRate");
         }
-
         static _states() {
           return [class SelectSymbolRate extends SymbolRate {
             $enter() {
@@ -35211,45 +32741,35 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectSymbolRate").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Symbol Rate"));
             }
-
             $exit() {
               this.tag("SelectSymbolRate").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
             }
-
             _getFocused() {
               return this.tag("SelectSymbolRate");
             }
-
             _handleBack() {
               this.setSymbolRate(this.selectedSymbolRate);
             }
-
           }];
         }
-
       }, class FEC extends this {
         $enter() {
           this.tag("FEC")._focus();
         }
-
         $exit() {
           this.tag("FEC")._unfocus();
         }
-
         _handleUp() {
           this._setState("SymbolRate");
         }
-
         _handleDown() {
           this._setState("DVBS2");
         }
-
         _handleEnter() {
           this._setState("FEC.SelectFEC");
         }
-
         static _states() {
           return [class SelectFEC extends FEC {
             $enter() {
@@ -35257,42 +32777,33 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectFEC").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("FEC"));
             }
-
             $exit() {
               this.tag("SelectFEC").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
               this.tag("FEC.Title").text.text = Language.translate("FEC") + ": " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : Language.translate("Select a") + " " + Language.translate("FEC"));
             }
-
             _getFocused() {
               return this.tag("SelectFEC");
             }
-
             _handleBack() {
               this._setState("FEC");
             }
-
           }];
         }
-
       }, class DVBS2 extends this {
         $enter() {
           this.tag("DVBS2")._focus();
         }
-
         $exit() {
           this.tag("DVBS2")._unfocus();
         }
-
         _handleUp() {
           this._setState("FEC");
         }
-
         _handleDown() {
           this._setState("Modulation");
         }
-
         _handleEnter() {
           if (!this.selectedDVBS2) {
             this.selectedDVBS2 = true;
@@ -35302,30 +32813,23 @@ var APP_accelerator_home_ui = (function () {
             this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
-
       }, class Modulation extends this {
         $enter() {
           this.tag("Modulation")._focus();
         }
-
         $exit() {
           this.tag("Modulation")._unfocus();
         }
-
         _handleUp() {
           this._setState("DVBS2");
         }
-
         _handleDown() {
           this.tag("Scroller").y = -88;
-
           this._setState("SearchType");
         }
-
         _handleEnter() {
           this._setState("Modulation.SelectModulation");
         }
-
         static _states() {
           return [class SelectModulation extends Modulation {
             $enter() {
@@ -35333,50 +32837,38 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectModulation").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Modulation"));
             }
-
             $exit() {
               this.tag("SelectModulation").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
               this.tag("Modulation.Title").text.text = Language.translate("Modulation") + ": " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : Language.translate("Select a") + " " + Language.translate("Modulation"));
             }
-
             _getFocused() {
               return this.tag("SelectModulation");
             }
-
             _handleBack() {
               this._setState("Modulation");
             }
-
           }];
         }
-
       }, class SearchType extends this {
         $enter() {
           this.tag("SearchType")._focus();
         }
-
         $exit() {
           this.tag("SearchType")._unfocus();
         }
-
         _handleUp() {
           this.tag("Scroller").y = 2;
-
           this._setState("Modulation");
         }
-
         _handleDown() {
           this.tag("Scroller").y = -178;
-
           this._setState("Retune");
         }
-
         _handleEnter() {
           this._setState("SearchType.SelectSearchType");
         }
-
         static _states() {
           return [class SelectSearchType extends SearchType {
             $enter() {
@@ -35384,44 +32876,34 @@ var APP_accelerator_home_ui = (function () {
               this.tag("SelectSearchType").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Search Mode"));
             }
-
             $exit() {
               this.tag("SelectSearchType").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
               this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
               this.tag("SearchType.Title").text.text = Language.translate("Search Mode") + ": " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : Language.translate("Select a") + " " + Language.translate("Search Mode"));
             }
-
             _getFocused() {
               return this.tag("SelectSearchType");
             }
-
             _handleBack() {
               this._setState("SearchType");
             }
-
           }];
         }
-
       }, class Retune extends this {
         $enter() {
           this.tag("Retune")._focus();
         }
-
         $exit() {
           this.tag("Retune")._unfocus();
         }
-
         _handleUp() {
           this.tag("Scroller").y = -88;
-
           this._setState("SearchType");
         }
-
         _handleDown() {
           this._setState("StartScan");
         }
-
         _handleEnter() {
           if (!this.selectedRetune) {
             this.selectedRetune = true;
@@ -35431,25 +32913,20 @@ var APP_accelerator_home_ui = (function () {
             this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
-
       }, class StartScan extends this {
         $enter() {
           this.tag("StartScan").color = CONFIG.theme.hex;
           this.tag("StartScan.Title").text.textColor = 0xffffffff;
         }
-
         $exit() {
           this.tag("StartScan").color = 0xffffffff;
           this.tag("StartScan.Title").text.textColor = 0xff000000;
         }
-
         _handleUp() {
           this._setState("Retune");
         }
-
         _handleEnter() {
           let errorString = this.verifyInputs();
-
           if (errorString === "") {
             this.tag("ErrorNotification").visible = false;
             let serviceSearchParams = {
@@ -35468,11 +32945,15 @@ var APP_accelerator_home_ui = (function () {
               }
             };
             console.log(JSON.stringify(serviceSearchParams));
-            dtvApi$2.startServiceSearch(serviceSearchParams).then(res => {
+            dtvApi$3.startServiceSearch(serviceSearchParams).then(res => {
               this.setScanInProgress();
               console.log(res);
               setTimeout(() => {
                 this.setScanFinished(); //to give back controls after 30 sec in case searchstatus event fails
+                dtvApi$3.noOfServices().then(res => {
+                  this.tag("ErrorNotification.Content").text.text = Language.translate("Found ") + res + Language.translate(" services.");
+                  this.tag("ErrorNotification").visible = true;
+                });
               }, 30000);
             });
           } else {
@@ -35480,10 +32961,8 @@ var APP_accelerator_home_ui = (function () {
             this.tag("ErrorNotification").visible = true;
           }
         }
-
       }];
     }
-
   }
 
   /**
@@ -35504,19 +32983,17 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Live TV Scan screen.
    */
-
   class LiveTVScan$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Settings / Live TV / Scan'));
     }
-
     pageTransition() {
       return 'left';
     }
-
     static _template() {
       return {
         rect: true,
@@ -35602,75 +33079,60 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState('SScan');
     }
-
     _focus() {
       this._setState('SScan');
     }
-
     _handleBack() {
       Router.navigate('settings/livetv');
     }
-
     static _states() {
       return [class TScan extends this {
         $enter() {
           this.tag('TScan')._focus();
         }
-
         $exit() {
           this.tag('TScan')._unfocus();
         }
-
         _handleDown() {
           this._setState('CScan');
         }
-
-        _handleEnter() {//Router.navigate()
+        _handleEnter() {
+          //Router.navigate()
         }
-
       }, class CScan extends this {
         $enter() {
           this.tag('CScan')._focus();
         }
-
         $exit() {
           this.tag('CScan')._unfocus();
         }
-
         _handleUp() {
           this._setState('TScan');
         }
-
         _handleDown() {
           this._setState('SScan');
         }
-
-        _handleEnter() {// Router.navigate()
+        _handleEnter() {
+          // Router.navigate()
         }
-
       }, class SScan extends this {
         $enter() {
           this.tag('SScan')._focus();
         }
-
         $exit() {
           this.tag('SScan')._unfocus();
         }
-
-        _handleUp() {// this._setState('CScan')
+        _handleUp() {
+          // this._setState('CScan')
         }
-
         _handleEnter() {
           Router.navigate('settings/livetv/scan/dvb-s-scan');
         }
-
       }];
     }
-
   }
 
   /**
@@ -35696,16 +33158,13 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for Live TV settings screen.
    */
-
   class LiveTVSettings$1 extends lng$1.Component {
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV"));
     }
-
     pageTransition() {
       return "left";
     }
-
     static _template() {
       return {
         rect: true,
@@ -35765,43 +33224,34 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState("Activate");
     }
-
     _firstActive() {
       this.dtvApi = new DTVApi();
     }
-
     _focus() {
       this._setState(this.state);
-
       if (active$1) {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       }
     }
-
     _handleBack() {
       Router.navigate("settings");
     }
-
     static _states() {
       return [class Activate extends this {
         $enter() {
           this.tag("Activate")._focus();
         }
-
         $exit() {
           this.tag("Activate")._unfocus();
         }
-
         _handleDown() {
           this._setState("Scan");
         }
-
         _handleEnter() {
           if (active$1) {
             this.dtvApi.deactivate().then(res => {
@@ -35817,27 +33267,21 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class Scan extends this {
         $enter() {
           this.tag("Scan")._focus();
         }
-
         $exit() {
           this.tag("Scan")._unfocus();
         }
-
         _handleUp() {
           this._setState("Activate");
         }
-
         _handleEnter() {
           Router.navigate("settings/livetv/scan");
         }
-
       }];
     }
-
   }
 
   /**
@@ -35890,6 +33334,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for ControlSettings thunder plugin apis.
    */
@@ -35911,13 +33356,13 @@ var APP_accelerator_home_ui = (function () {
       this.settingsOptions = [{
         id: "_pictureMode",
         name: "Picture Mode",
-        value: ["standard", "vivid", "energysaving", "custom", "theater", "game", "sports"] // value: ["DemoValue(Api Fail)"] //#forTesting
-
+        value: ["standard", "vivid", "energysaving", "custom", "theater", "game", "sports"]
+        // value: ["DemoValue(Api Fail)"] //#forTesting
       }, {
         id: "_colorTemp",
         name: "Color Temperature",
-        value: ["Standard", "Warm", "Cold", "User Defined"] // value: ["DemoValue(Api Fail)"] //#forTesting
-
+        value: ["Standard", "Warm", "Cold", "User Defined"]
+        // value: ["DemoValue(Api Fail)"] //#forTesting
       }, {
         id: "_backlight",
         name: "Backlight",
@@ -35970,7 +33415,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     activate() {
       return new Promise((resolve, reject) => {
         this._thunder.call("Controller", "activate", {
@@ -35984,7 +33428,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSettingsValue(settingsName) {
       console.log("getSettingsValue called for : ", settingsName);
       return new Promise((resolve, reject) => {
@@ -35997,7 +33440,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setSettingsValue(settingsName, value) {
       console.log("setSettingsValue called for : ", settingsName, " and for value: ", value);
       return new Promise((resolve, reject) => {
@@ -36010,19 +33452,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getOptions() {
       console.log("getOptions called: ", JSON.stringify(this.settingsOptions));
       return this.settingsOptions;
     }
-
     getSupportedPictureModes() {
       console.log("getSupportedPictureModes got called");
       return new Promise((resolve, reject) => {
         // resolve(true) //#forTesting
         this._thunder.call(this.callsign, "getSupportedPictureModes").then(result => {
           console.log("getSupportedPictureModes Result: ", JSON.stringify(result));
-
           if (result.success) {
             this.settingsOptions[0].value = result.SupportedPicmodes;
             resolve(true);
@@ -36034,26 +33473,23 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSupportedColorTemps() {
       console.log("getSupportedColorTemps got called");
       return new Promise((resolve, reject) => {
         // resolve(true) //#forTesting
         this._thunder.call(this.callsign, "getColorTemperature").then(result => {
           console.log("Log from getSupportedColorTemps API: ", JSON.stringify(result));
-
           if (result.success) {
             this.settingsOptions[1].value = result.ColorTemperature.Options;
             resolve(true);
           }
         }).catch(err => {
-          console.log("Error from getSupportedColorTemps API: ", JSON.stringify(err)); // this.settingsOptions[1].value=["tempval1", "tempval2"]  //#forTesting
-
+          console.log("Error from getSupportedColorTemps API: ", JSON.stringify(err));
+          // this.settingsOptions[1].value=["tempval1", "tempval2"]  //#forTesting
           reject(err);
         });
       });
     }
-
     getPictureMode() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_pictureMode")) //#forTesting
@@ -36064,7 +33500,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setPictureMode(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_pictureMode",value)) //#forTesting 
@@ -36077,7 +33512,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getColorTemperature() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_colorTemp")) //#forTesting 
@@ -36088,7 +33522,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setColorTemperature(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_colorTemp",value)) //#forTesting 
@@ -36101,7 +33534,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getBrightness() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_brightness")) //#forTesting 
@@ -36112,7 +33544,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setBrightness(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_brightness",`${value}`)) //#forTesting 
@@ -36125,7 +33556,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getContrast() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_contrast")) //#forTesting 
@@ -36136,7 +33566,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setContrast(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_contrast",`${value}`)) //#forTesting 
@@ -36149,7 +33578,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSharpness() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_sharpness")) //#forTesting 
@@ -36160,7 +33588,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setSharpness(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_sharpness",`${value}`)) //#forTesting 
@@ -36173,7 +33600,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getSaturation() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_saturation")) //#forTesting 
@@ -36184,7 +33610,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setSaturation(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_saturation",`${value}`)) //#forTesting 
@@ -36197,7 +33622,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     getBacklight() {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.getItem("_backlight")) //#forTesting 
@@ -36208,7 +33632,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     setBacklight(value) {
       return new Promise((resolve, reject) => {
         // resolve(localStorage.setItem("_backlight",`${value}`)) //#forTesting 
@@ -36221,7 +33644,6 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
   }
 
   /**
@@ -36246,7 +33668,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.pictureApi = new PictureSettingsApi();
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -36306,29 +33727,22 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {}
-
     set item(item) {
       this._item = item;
       this.fetchAndUpdateValues();
     }
-
     fetchAndUpdateValues() {
       console.log("fetchAndUpdateValues got called!!!");
-
       if (Array.isArray(this._item.value)) {
         this.valueIdx = 0;
         this.valueLength = this._item.value.length;
         this.pictureApi.getSettingsValue(this._item.id).then(res => {
           console.log("getSettingsValue Result from fetchAndUpdateValues(array): ", JSON.stringify(res));
-
           let tIdx = this._item.value.indexOf(res);
-
           if (tIdx >= 0) {
             this.valueIdx = tIdx;
           }
-
           this.updateValue(this.formatItemName(this._item.value[this.valueIdx]));
         }).catch(err => {
           console.log("error from getSettingsValue(value is array) in set(item) in settings Item: ", JSON.stringify(err));
@@ -36338,37 +33752,31 @@ var APP_accelerator_home_ui = (function () {
           console.log("getSettingsValue Result from fetchAndUpdateValues(number): ", JSON.stringify(res));
           this._item.value = +res;
           this.currentVal = +res; //to change to int
-
           this.updateValue(this._item.value);
         }).catch(err => {
           console.log("error from getSettingsValue(value is number) in set(item) in settings Item: ", JSON.stringify(err));
         });
       }
     }
-
     updateValue(value) {
       this.tag("Title").text.text = "".concat(Language.translate(this._item.name), ": ").concat(value);
     }
-
     formatItemName(name) {
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
-
     changeValueBy(val) {
       try {
         clearTimeout(this.changeValueTimer);
       } catch {
         console.log("CLEANUP ERROR");
       }
-
       if (this.currentVal + val <= 100 && this.currentVal + val >= 0) {
         this.currentVal += val;
         this.updateValue(this.currentVal);
       }
-
       this.changeValueTimer = setTimeout(() => {
-        console.log("SENDING VALUE:".concat(this.currentVal, " TO API: ").concat(this._item.id)); ///////////////// call set method and update the value in _item
-
+        console.log("SENDING VALUE:".concat(this.currentVal, " TO API: ").concat(this._item.id));
+        ///////////////// call set method and update the value in _item
         this.pictureApi.setSettingsValue(this._item.id, this.currentVal).then(res => {
           console.log(JSON.stringify(res));
           this._item.value = this.currentVal;
@@ -36379,34 +33787,28 @@ var APP_accelerator_home_ui = (function () {
         });
       }, 600);
     }
-
     changePresetValueBy(direction) {
       this.fireAncestors("$moveDownLock", true); //user switching values prevent moving down
-
       try {
         clearTimeout(this.changePresetTimer);
       } catch {
         console.log("CLEANUP ERROR");
       }
-
       if (direction === "left") {
         this.valueIdx -= 1;
-
         if (this.valueIdx < 0) {
           this.valueIdx = this.valueLength - 1;
         }
       } else if (direction === "right") {
         this.valueIdx += 1;
-
         if (this.valueIdx >= this.valueLength) {
           this.valueIdx = 0;
         }
       }
-
       this.updateValue(this.formatItemName(this._item.value[this.valueIdx]));
       this.changePresetTimer = setTimeout(() => {
-        console.log("SENDING VALUE:".concat(this._item.value[this.valueIdx], " TO API: ").concat(this._item.id)); ///////// call set method and update the value in _item
-
+        console.log("SENDING VALUE:".concat(this._item.value[this.valueIdx], " TO API: ").concat(this._item.id));
+        ///////// call set method and update the value in _item
         this.pictureApi.setSettingsValue(this._item.id, this._item.value[this.valueIdx]).then(res => {
           console.log(JSON.stringify(res));
           console.log(this._item.value[this.valueIdx]);
@@ -36417,10 +33819,8 @@ var APP_accelerator_home_ui = (function () {
         });
       }, 600);
     }
-
     _handleLeft() {
       this.fireAncestors('$resetTimeout');
-
       if (this.valueLength > 0) {
         //value is an array
         this.changePresetValueBy("left");
@@ -36430,10 +33830,8 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     _handleRight() {
       this.fireAncestors('$resetTimeout');
-
       if (this.valueLength > 0) {
         //value is an array
         this.changePresetValueBy("right");
@@ -36444,11 +33842,9 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     _handleEnter() {
       this.fireAncestors('$resetTimeout');
     }
-
     _focus() {
       this.tag("TopLine").color = CONFIG.theme.hex;
       this.tag("BottomLine").color = CONFIG.theme.hex;
@@ -36469,7 +33865,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").h = 3;
       this.tag("BottomLine").h = 3;
     }
-
   }
 
   /**
@@ -36524,13 +33919,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.customLock = false; //by default its unlocked | will get locked when user switches any preset value 
-
       this.pictureApi = new PictureSettingsApi();
       this.options = this.pictureApi.getOptions(); //#byDefault //not required //fetches the defaults dummy values //following api calls fetches the actual values from api here after
-
       this.pictureApi.getSupportedPictureModes().then(res => {
         if (res) {
           this.options = this.pictureApi.getOptions();
@@ -36538,8 +33930,8 @@ var APP_accelerator_home_ui = (function () {
         }
       }).catch(err => {
         console.log("ERROR from settings overlay screen firstEnable: getSupportedPictureModes: ", JSON.stringify(err));
-      }); //the getSupportedColorTemps api call has some issue when working on chrome browser
-
+      });
+      //the getSupportedColorTemps api call has some issue when working on chrome browser
       this.pictureApi.getSupportedColorTemps().then(res => {
         if (res) {
           this.options = this.pictureApi.getOptions();
@@ -36549,7 +33941,6 @@ var APP_accelerator_home_ui = (function () {
         console.log("ERROR from settings overlay screen firstEnable: getSupportedColorTemps: ", JSON.stringify(err));
       });
     }
-
     refreshList() {
       console.log("this.refreshList got called");
       this.tag("List").items = this.options.map((item, index) => {
@@ -36561,23 +33952,20 @@ var APP_accelerator_home_ui = (function () {
         };
       });
     }
-
     _focus() {
       this.fireAncestors('$focusOverlay');
-      console.log("index: ", this.tag("List").index); // this.tag("List").setIndex(0);//not necessary
+      console.log("index: ", this.tag("List").index);
+      // this.tag("List").setIndex(0);//not necessary
     }
 
     _unfocus() {
       this.fireAncestors('$unfocusOverlay');
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.fireAncestors('$resetTimeout');
-
       if (this.tag("List").index < this.tag("List").length - 1) {
         //to prevent circular scrolling
         if (this.tag("List").index === 1) {
@@ -36593,28 +33981,24 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     _handleUp() {
       this.fireAncestors('$resetTimeout');
-
       if (this.tag("List").index > 0) {
         //to prevent circular scrolling
         this.tag("List").setPrevious();
       }
     }
-
-    _handleLeft() {// do nothing
+    _handleLeft() {
+      // do nothing
     }
-
-    _handleRight() {// do nothing
+    _handleRight() {
+      // do nothing
     }
-
     async moveDownOnCustom() {
       try {
         const pictureMode = await this.pictureApi.getPictureMode();
         const colorTemp = await this.pictureApi.getColorTemperature();
         console.log("picture mode: ", pictureMode, " color temperature: ", colorTemp);
-
         if (pictureMode === "custom" && colorTemp === "User Defined") {
           this.tag("List").setNext();
         } else {
@@ -36624,11 +34008,9 @@ var APP_accelerator_home_ui = (function () {
         console.log("error occoured in api call");
       }
     }
-
     $moveDownLock(lock) {
       this.customLock = lock; //prevents user from moving down when a preset value change api call is happening
     }
-
   }
 
   /**
@@ -36653,7 +34035,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.Tick = Utils.asset("/images/settings/Tick.png");
     }
-
     static _template() {
       return {
         zIndex: 1,
@@ -36703,7 +34084,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     set isTicked(isTicked) {
       this.tag("Item").patch({
         Tick: {
@@ -36758,10 +34138,8 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Item.Loader").src = url;
       });
     }
-
     _handleEnter() {
       this.fireAncestors('$resetTimeout');
-
       if (!this.tag("Item.Tick").visible) {
         //to start the loader
         this.loadingAnimation.start();
@@ -36769,19 +34147,17 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Item.InputError").visible = false;
         const minLoaderDuration = 1000; //1 sec min duration to show the loader before the tick mark appears in the ui
         /////////////////
-
         this.hdmiApi.getHDMIDevices() //api does not throw error, just consider error condition when result is empty
         .then(res => {
           console.log("getHDMIDevices from input Item: ", JSON.stringify(res));
-
           if (res.length > 0) {
             res.map((item, index) => {
               if (item.id === this.uniqID.id) {
                 if (item.connected === "true") {
                   //to check if the current item is connected
                   this.hdmiApi.setHDMIInput(item).then(res => {
-                    console.log("input set to: ", JSON.stringify(item)); //to stop the loader and show tickmark
-
+                    console.log("input set to: ", JSON.stringify(item));
+                    //to stop the loader and show tickmark
                     setTimeout(() => {
                       this.loadingAnimation.stop();
                       this.tag("Item.Loader").visible = false;
@@ -36792,12 +34168,13 @@ var APP_accelerator_home_ui = (function () {
                       this.fireAncestors("$getInputs"); //getInputs will fetch the inputs from api,
                     }, minLoaderDuration);
                   }).catch(err => {
-                    console.log("Failed to setHDMIInput", JSON.stringify(err)); //to stop the loader
-
+                    console.log("Failed to setHDMIInput", JSON.stringify(err));
+                    //to stop the loader
                     setTimeout(() => {
                       this.loadingAnimation.stop();
                       this.tag("Item.Loader").visible = false;
-                    }, minLoaderDuration); ///////////////////////
+                    }, minLoaderDuration);
+                    ///////////////////////
                     //display the error in the notification
                   });
                 } else {
@@ -36814,15 +34191,14 @@ var APP_accelerator_home_ui = (function () {
             });
           } else {
             console.log("getHDMIDevices returned empty array"); //in case of error, getHDMIDevices api return empty array
-
             setTimeout(() => {
               this.loadingAnimation.stop();
               this.tag("Item.Loader").visible = false;
             }, minLoaderDuration);
           }
         }).catch(err => {
-          console.log("Failed to getHDMIDevices", JSON.stringify(err)); //to stop the loader
-
+          console.log("Failed to getHDMIDevices", JSON.stringify(err));
+          //to stop the loader
           setTimeout(() => {
             this.loadingAnimation.stop();
             this.tag("Item.Loader").visible = false;
@@ -36832,11 +34208,9 @@ var APP_accelerator_home_ui = (function () {
         console.log(Storage.get("_currentInputMode"));
       }
     }
-
     _focus() {
       //  this.tag("Item").color = COLORS.hightlightColor;
       this.refresh = false; //to check if the list needs a refresh // if connection status is false and user presses enter twice, hdmi input list gets refreshed
-
       this.tag("TopLine").color = CONFIG.theme.hex;
       this.tag("BottomLine").color = CONFIG.theme.hex;
       this.patch({
@@ -36845,7 +34219,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").h = 6;
       this.tag("BottomLine").h = 6;
     }
-
     _unfocus() {
       this.tag("TopLine").color = 0xffffffff;
       this.tag("BottomLine").color = 0xffffffff;
@@ -36855,7 +34228,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("TopLine").h = 3;
       this.tag("BottomLine").h = 3;
     }
-
   }
 
   /**
@@ -36938,7 +34310,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     refreshItems(selected) {
       console.log("refreshItems called: rendering the items");
       this.tag("List").items = this.inputItems.map((item, index) => {
@@ -36953,7 +34324,6 @@ var APP_accelerator_home_ui = (function () {
           uniqID: item,
           //pass a uniq id that is to be returned when handle enter is pressed
           onHandleEnter: this.refreshItems.bind(this) //pass this function to refresh the tickmarks
-
         };
       });
     }
@@ -36976,7 +34346,6 @@ var APP_accelerator_home_ui = (function () {
       this.hdmiApi = new HDMIApi();
       this.$getInputs();
     }
-
     $getInputs() {
       console.log("fetching hdmi input options"); //call get inputs and refresh items after an event
 
@@ -36987,7 +34356,6 @@ var APP_accelerator_home_ui = (function () {
         console.log("inputScreen: getHDMIDevices Error: ", JSON.stringify(err));
       });
     }
-
     _focus() {
       this.fireAncestors('$focusOverlay');
       this.$getInputs(); //fetch the input modes and refresh the list, in case input status changes
@@ -36996,29 +34364,26 @@ var APP_accelerator_home_ui = (function () {
     _unfocus() {
       this.fireAncestors('$unfocusOverlay');
     }
-
     _getFocused() {
       return this.tag("List").element;
     }
-
     _handleDown() {
       this.fireAncestors('$resetTimeout');
       this.tag("List").setNext();
     }
-
     _handleUp() {
       this.fireAncestors('$resetTimeout');
       this.tag("List").setPrevious();
     }
-
     _handleLeft() {
-      this.fireAncestors('$resetTimeout'); // do nothing
+      this.fireAncestors('$resetTimeout');
+      // do nothing
     }
 
     _handleRight() {
-      this.fireAncestors('$resetTimeout'); // do nothing
+      this.fireAncestors('$resetTimeout');
+      // do nothing
     }
-
   }
 
   /**
@@ -37056,10 +34421,11 @@ var APP_accelerator_home_ui = (function () {
           this._setState("OverlaySettingsScreen");
         }
       }, 300);
-    } // _onChanged() {
+    }
+
+    // _onChanged() {
     //   this._setState("IdleState");
     // }
-
 
     static _template() {
       return {
@@ -37077,7 +34443,9 @@ var APP_accelerator_home_ui = (function () {
           type: TvOverlayInputScreen
         }
       };
-    } //   _getFocused() {
+    }
+
+    //   _getFocused() {
     //     console.log("getFocused Called")
     //     if (this._type === "inputs") {
     //       this._setState("OverlayInputScreen");
@@ -37085,7 +34453,6 @@ var APP_accelerator_home_ui = (function () {
     //       this._setState("OverlaySettingsScreen");
     //     }
     //   }
-
 
     _firstEnable() {
       this.appApi = new AppApi();
@@ -37118,35 +34485,27 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {}
-
     $focusOverlay() {
       this.overlayTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, this.timeoutDuration);
     }
-
     $unfocusOverlay() {
       this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
     }
-
     $resetTimeout() {
       this.overlayTimeout && Registry.clearTimeout(this.overlayTimeout);
       this.overlayTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, this.timeoutDuration);
     }
-
     $closeOverlay() {
       this._handleBack();
     }
-
     _handleBack() {
       let currentApp = Storage.get("applicationType");
-
       this._setState("IdleState");
-
       console.log("currentApp: ", currentApp);
       setTimeout(() => {
         if (currentApp !== "") {
@@ -37174,54 +34533,40 @@ var APP_accelerator_home_ui = (function () {
         }
       }, 500);
     }
-
     static _states() {
       return [class IdleState extends this {
         $enter() {
           console.log("entering overlay IdleState");
         }
-
         $exit() {
           console.log("exiting overlay IdleState");
         }
-
       }, class OverlaySettingsScreen extends this {
         $enter() {
           this._topPanelAnimation.finish();
-
           this._sidePanelAnimation.start();
-
           console.log("$enter from OverlaySettingsScreen");
         }
-
         $exit() {
           this._sidePanelAnimation.stop();
         }
-
         _getFocused() {
           return this.tag("OverlaySettingsScreen");
         }
-
       }, class OverlayInputScreen extends this {
         $enter() {
           this._sidePanelAnimation.finish();
-
           this._topPanelAnimation.start();
-
           console.log("$enter from OverlayInputScreen");
         }
-
         $exit() {
           this._topPanelAnimation.stop();
         }
-
         _getFocused() {
           return this.tag("OverlayInputScreen");
         }
-
       }];
     }
-
   }
 
   function _defineProperty(obj, key, value) {
@@ -37235,25 +34580,21 @@ var APP_accelerator_home_ui = (function () {
     } else {
       obj[key] = value;
     }
-
     return obj;
   }
 
   class Volume extends lng$1.Component {
     constructor() {
       super(...arguments);
-
       _defineProperty(this, "setVolume", async val => {
         const value = await this.appApi.setVolumeLevel('HDMI0', val);
         return value;
       });
-
       _defineProperty(this, "setMute", async val => {
         const status = await this.appApi.audio_mute('HDMI0', val);
         return status;
       });
     }
-
     static _template() {
       return {
         rect: true,
@@ -37303,7 +34644,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.appApi = new AppApi();
       this.volTimeout = null;
@@ -37314,10 +34654,8 @@ var APP_accelerator_home_ui = (function () {
           this.appApi.muteStatus(res.connectedAudioPorts[0]).then(result => {
             this.mute = result.muted;
           });
-
           if (res1) {
             this.volume = parseInt(res1.volumeLevel);
-
             this._updateText(this.volume);
           }
         });
@@ -37325,48 +34663,39 @@ var APP_accelerator_home_ui = (function () {
         this._updateText(this.volume);
       });
     }
-
     onVolumeKeyDown() {
       this.volTimeout && Registry.clearTimeout(this.volTimeout);
       this.volTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, 2000);
-
       if (this.volume > 0) {
         this.volume -= 5;
         if (this.setVolume(this.volume)) this._updateText(this.volume);
       }
     }
-
     onVolumeKeyUp() {
       this.volTimeout && Registry.clearTimeout(this.volTimeout);
       this.volTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, 2000);
-
       if (this.volume < 100) {
         this.volume += 5;
         if (this.setVolume(this.volume)) this._updateText(this.volume);
       }
     }
-
     onVolumeMute() {
       this.volTimeout && Registry.clearTimeout(this.volTimeout);
       this.volTimeout = Registry.setTimeout(() => {
         this._handleBack();
       }, 2000);
-
       if (this.setMute(!this.mute)) {
         this.mute = !this.mute;
-
         this._updateIcon(this.mute);
       }
     }
-
     _updateText(val) {
       this.tag('Text').text.text = val;
     }
-
     _updateIcon(check) {
       if (check) {
         this.tag('VolumeInfo').src = Utils.asset('images/volume/Volume_Mute.png');
@@ -37374,7 +34703,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('VolumeInfo').src = Utils.asset('/images/volume/Volume.png');
       }
     }
-
     _focus() {
       this.volTimeout = Registry.setTimeout(() => {
         this._handleBack();
@@ -37385,7 +34713,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _unfocus() {
       this.volTimeout && Registry.clearTimeout(this.volTimeout);
       this.patch({
@@ -37394,10 +34721,8 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     _handleBack() {
       console.log(Storage.get('applicationType'));
-
       if (Storage.get('applicationType')) {
         this.appApi.visibile('ResidentApp', false);
         this.appApi.setVisibility(Storage.get('applicationType'), true);
@@ -37405,11 +34730,9 @@ var APP_accelerator_home_ui = (function () {
         Router.focusPage();
       }
     }
-
     static _states() {
       return [];
     }
-
   }
 
   /**
@@ -37454,8 +34777,8 @@ var APP_accelerator_home_ui = (function () {
           w: 236 - 3,
           h: 78,
           color: 0xff272727,
-          rect: true // texture: Lightning.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c),
-
+          rect: true
+          // texture: Lightning.Tools.getRoundRect(236, 81, 0, 1, 0xff000000, true, 0xff1d1c1c),
         }
       };
     }
@@ -37464,24 +34787,19 @@ var APP_accelerator_home_ui = (function () {
       let title = this.tag("Title");
       if (title) title.text.fontStyle = "bold";
     }
-
     unsetBoldText() {
       let title = this.tag("Title");
       if (title) title.text.fontStyle = "normal";
     }
-
     set fontStyle(v) {
       this.tag('Title').text.fontStyle = v;
     }
-
     set title(val) {
       this.tag('Title').text = val;
     }
-
     get title() {
       return this.tag("Title").text;
     }
-
   }
 
   /**
@@ -37506,10 +34824,8 @@ var APP_accelerator_home_ui = (function () {
     static _template() {
       return {
         y: 200
-      };
-      /* this is just an empty component. used like a parent container for Cell containers */
+      }; /* this is just an empty component. used like a parent container for Cell containers */
     }
-
   }
 
   /**
@@ -37536,7 +34852,6 @@ var APP_accelerator_home_ui = (function () {
         zIndex: 2
       };
     }
-
     set txt(ins) {
       /* the text on the Cell */
       this.patch({
@@ -37560,26 +34875,21 @@ var APP_accelerator_home_ui = (function () {
       });
       this.insText = ins ? ins : "No Shows are being aired at the moment";
     }
-
     get txt() {
       return this.insText;
     }
-
     set color(val) {
       let title = this.tag("Title");
       if (title) title.text.textColor = val;
     }
-
     setBoldText() {
       let title = this.tag("Title");
       if (title) title.text.fontStyle = "bold";
     }
-
     unsetBoldText() {
       let title = this.tag("Title");
       if (title) title.text.fontStyle = "normal";
     }
-
     set width(w) {
       /* the horizontal width of the Cell */
       this.patch({
@@ -37588,21 +34898,19 @@ var APP_accelerator_home_ui = (function () {
           w: w - 3,
           h: 78,
           color: 0xff272727,
-          rect: true // texture: Lightning.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727),
-
+          rect: true
+          // texture: Lightning.Tools.getRoundRect(w, 81, 0, 1, 0xff000000, true, 0xff272727),
         }
       });
+
       this.tag('Title').text.wordWrapWidth = w - 20;
     }
-
     getwidth() {
       return this.width;
     }
-
     _init() {
       this.tag('AiringOverlay').w = this.tag('Item').w;
     }
-
   }
 
   /**
@@ -37642,8 +34950,8 @@ var APP_accelerator_home_ui = (function () {
           w: 236,
           h: 2,
           color: CONFIG.theme.hex
-        } // texture:Lightning.Tools.getRoundRect(236 ,81,0,1,0xffFFFFFF,true,0x0000ffff) // if you change this then you may wanna change the part where it patches itself too.
-
+        }
+        // texture:Lightning.Tools.getRoundRect(236 ,81,0,1,0xffFFFFFF,true,0x0000ffff) // if you change this then you may wanna change the part where it patches itself too.
       };
     }
 
@@ -37663,7 +34971,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -37858,7 +35165,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     setChannels(channels) {
       let c = channels.map((c, i) => {
         return {
@@ -37871,11 +35177,9 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Channels').children = c;
       this.channelGridInstance = this.tag('Channels').children;
     }
-
     _firstEnable() {
       this.appApi = new AppApi();
     }
-
     launchApp(appName) {
       const apps = {
         //mapping from channel.shortname to application name
@@ -37889,14 +35193,11 @@ var APP_accelerator_home_ui = (function () {
       };
       this.appApi.launchApp(app, params);
     }
-
     _handleBack() {
       Router.navigate("menu");
     }
-
     _handleEnter() {
       let channel = this.getCurrentChannel();
-
       if (channel.dvburi === "OTT") {
         this.launchApp(channel.shortname); // check mapping in launchApp method
       } else {
@@ -37904,7 +35205,6 @@ var APP_accelerator_home_ui = (function () {
           this.DTV.launchChannel(channel.dvburi).then(res => {
             console.log("launchChannel method successful: ", JSON.stringify(res));
             this.widgets.channeloverlay.$focusChannel(this.D - 11 + this.currentlyFocusedRow); // -11 = -8 + -3(3 to accomodate apps which won't be shown on the overlay)
-
             Router.navigate("dtvplayer");
           }).catch(err => {
             console.log("launchChannel method failed: ", JSON.stringify(err));
@@ -37914,12 +35214,10 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     getCurrentChannel() {
       let currentChannel = this.activeChannels[this.currentlyFocusedRow];
       return currentChannel;
     }
-
     setShows4Channels(channels) {
       let headStart = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       this.strtindexesofrows = [];
@@ -37927,15 +35225,13 @@ var APP_accelerator_home_ui = (function () {
       var rtp = new Date(this.ltp.getTime() + 3 * 60 * 60 * 1000);
       var cells = [];
       var self = this;
-
       function filterShowsBasedOnTimeWindow(shows, index) {
         let inc = headStart < 0 ? -1 : 1;
         let i = Math.abs(headStart);
-
         while (i >= 0) {
           // binary search can optimize this loop.
-          shows[i].endtime = shows[i].duration + shows[i].starttime;
 
+          shows[i].endtime = shows[i].duration + shows[i].starttime;
           if (i >= shows.length) {
             console.warn("Reached the end of data , can't traverse shows any further!");
             break;
@@ -37948,30 +35244,24 @@ var APP_accelerator_home_ui = (function () {
             console.warn('traversed all of the shows and none of them are airing at this time for this channel');
             return;
           }
-
           i += inc;
         }
-
         let x = 0;
         self.strtindexesofrows.push(cells.length);
-
         for (; i < shows.length; i++) {
           if (new Date(shows[i].starttime) >= rtp) {
             break;
           }
-
           let width = shows[i].duration / (1000 * 60) / 30 * 236;
-          shows[i].endtime = shows[i].duration + shows[i].starttime; // the below code trim the left most and right most cells
-
+          shows[i].endtime = shows[i].duration + shows[i].starttime;
+          // the below code trim the left most and right most cells
           if (new Date(shows[i].starttime) < ltp) {
             width -= (ltp - new Date(shows[i].starttime)) / (1000 * 60) / 30 * 236;
           }
-
           if (new Date(shows[i].endtime) > rtp) {
             width -= (new Date(shows[i].endtime) - rtp) / (1000 * 60) / 30 * 236;
-          } //------------ Trimming ends here-----------------
-
-
+          }
+          //------------ Trimming ends here-----------------
           cells.push({
             x: x,
             y: index * 81,
@@ -37987,31 +35277,26 @@ var APP_accelerator_home_ui = (function () {
           });
           shows[i].duration + shows[i].starttime;
           x += width;
-        } // the below code actually sets the shows
-
-
+        }
+        // the below code actually sets the shows
         if (index === channels.length - 1) {
           let shows = self.tag('Shows');
           shows.children = cells;
           self.strtindexesofrows.push(cells.length); // this is added just for calculation.
-
-          self.gridInstance = shows.children; // self.updateCursor()
-
+          self.gridInstance = shows.children;
+          // self.updateCursor()
           self._setState('CellSelector');
         }
       }
-
       channels.map((channel, i) => {
         filterShowsBasedOnTimeWindow(channel.shows, i);
       });
     }
-
     setTimeLabelsBetween() {
       let startTime = this.ltp;
       let endTime = new Date(this.ltp.getTime() + 3 * 60 * 60 * 1000);
       let arr = [];
       let p = this.tag('TimeLabels');
-
       for (let t = startTime, i = 0; t <= endTime; t = new Date(t.getTime() + 30 * 60 * 1000), i++) {
         // the increment can probably be improvised
         let H = t.getHours();
@@ -38034,16 +35319,14 @@ var APP_accelerator_home_ui = (function () {
         p.children = arr;
       }
     }
-
     initialize() {
       this.ltp = new Date();
       let currentDateTime = this.ltp;
       let temp = currentDateTime.getMinutes();
-      let closest30MinRoundOff; //the below round off system only works if the duration of the show is a multiple of 30.
-
+      let closest30MinRoundOff;
+      //the below round off system only works if the duration of the show is a multiple of 30.
       currentDateTime.setMilliseconds(0);
       currentDateTime.setSeconds(0);
-
       if (temp >= 30) {
         currentDateTime.setMinutes(30);
         closest30MinRoundOff = currentDateTime;
@@ -38051,7 +35334,6 @@ var APP_accelerator_home_ui = (function () {
         currentDateTime.setMinutes(0);
         closest30MinRoundOff = currentDateTime;
       }
-
       this.ltp = closest30MinRoundOff;
       this.closest30MinRoundOff = closest30MinRoundOff.getTime();
       this.setTimeLabelsBetween();
@@ -38060,48 +35342,39 @@ var APP_accelerator_home_ui = (function () {
       let self = this;
       this.interval = setInterval(() => {
         let now = new Date();
-
         if (now.getHours() === 0) ;
-
         let t = (now - self.ltp >= 0 ? now - self.ltp : 0) / (1000 * 60 * 30) * 236;
         tBar.w = t;
         dTriangle.x = t + k;
       }, 2000);
     }
-
     setBoldText() {
       let l = this.strtindexesofrows[this.currentlyFocusedRow];
       let r = this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1;
       this.channelGridInstance[this.currentlyFocusedRow].setBoldText();
-
       for (var i = l; i <= r; i++) {
         this.gridInstance[i].setBoldText();
       }
     }
-
     unsetBoldText() {
       let l = this.strtindexesofrows[this.currentlyFocusedRow];
       let r = this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1;
       this.channelGridInstance[this.currentlyFocusedRow].unsetBoldText();
-
       for (var i = l; i <= r; i++) {
         this.gridInstance[i].unsetBoldText();
       }
     }
-
     scrollVertically(n) {
       if (n < 0) {
         this.D--;
       } else {
         this.D++;
       }
-
       console.log("setting vertical scroll from ".concat(this.D - 8, " to ").concat(this.D, " based the value ").concat(n));
       this.activeChannels = this.channels.slice(this.D - 8, this.D);
       this.setChannels(this.activeChannels);
       this.setShows4Channels(this.activeChannels);
     }
-
     onDataProvidedX() {
       console.log("on Data Provided");
       this.initialize();
@@ -38112,15 +35385,12 @@ var APP_accelerator_home_ui = (function () {
       this.updateCursor();
       this.verticallyNonScrollableWindow = Math.min(this.channels.length - 1, 7);
     }
-
     paintCell() {
       this.gridInstance[this.currentCellIndex].color = CONFIG.theme.hex;
     }
-
     unpaintCell() {
       this.gridInstance[this.currentCellIndex].color = 0xffffffff;
     }
-
     _focus() {
       this.D = 7;
       this.DTV = this.DTV ? this.DTV : new DTVApi();
@@ -38130,7 +35400,6 @@ var APP_accelerator_home_ui = (function () {
       loader.visible = true;
       this.loadingAnimation.start();
       let self = this;
-
       function f(page) {
         let d = new Date();
         d.setHours(0);
@@ -38139,12 +35408,10 @@ var APP_accelerator_home_ui = (function () {
         d.setMilliseconds(0);
         d = d.getTime();
         let e = d + 7 * 24 * 60 * 60 * 1000;
-
         function filler(shows) {
           let diff = 0;
           let currentShowETime = d;
           diff = shows[0].starttime - d;
-
           if (diff > 0) {
             shows.unshift({
               name: '',
@@ -38154,18 +35421,14 @@ var APP_accelerator_home_ui = (function () {
               shortdescription: ''
             });
           }
-
           let memLeakAlert = shows.length - 1;
-
           for (let i = 0; i < shows.length - 1; i++) {
             currentShowETime = shows[i].starttime + shows[i].duration;
             diff = shows[i + 1].starttime - currentShowETime;
-
             if (diff > 0) {
               if (memLeakAlert < 0) {
                 console.warn('Memory leak alert; aborting black cell insert');
               }
-
               shows.splice(i + 1, 0, {
                 name: '',
                 starttime: currentShowETime,
@@ -38176,10 +35439,8 @@ var APP_accelerator_home_ui = (function () {
               memLeakAlert--;
             }
           }
-
           currentShowETime = shows[shows.length - 1].starttime + shows[shows.length - 1].duration;
           diff = e - currentShowETime;
-
           if (e > 0) {
             shows.push({
               name: '',
@@ -38190,7 +35451,6 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
         return new Promise((resolve, reject) => {
           self.DTV.serviceList().then(channels => {
             let traversedChannels = 0;
@@ -38204,19 +35464,16 @@ var APP_accelerator_home_ui = (function () {
                   eventid: 0,
                   shortdescription: ''
                 }];
-
                 if (channels.length - 1 === traversedChannels) {
                   console.log("premium apps exclusive resolve");
                   page.channels = channels;
                   resolve(true);
                 }
-
                 return 0;
               }
-
               self.DTV.scheduleEvents(channel.dvburi).then(shows => {
-                traversedChannels++; // for premium apps and empty cell
-
+                traversedChannels++;
+                // for premium apps and empty cell
                 if (!shows || shows.length === 0) {
                   channels[i].shows = [{
                     name: '',
@@ -38229,7 +35486,6 @@ var APP_accelerator_home_ui = (function () {
                   channels[i].shows = shows;
                   filler(channels[i].shows);
                 }
-
                 if (channels.length === traversedChannels) {
                   page.channels = channels;
                   resolve(true);
@@ -38246,7 +35502,6 @@ var APP_accelerator_home_ui = (function () {
           });
         });
       }
-
       f(this).then(res => {
         self.loadingAnimation.stop();
         self.onDataProvidedX();
@@ -38257,7 +35512,6 @@ var APP_accelerator_home_ui = (function () {
         Router.navigate('menu');
       });
     }
-
     _init() {
       this.D = 7;
       this.currentCellIndex = 0;
@@ -38278,7 +35532,6 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _unfocus() {
       //resetting all variables
       this.D = 7;
@@ -38286,11 +35539,10 @@ var APP_accelerator_home_ui = (function () {
       this.currentlyFocusedRow = 0;
       this.strtindexesofrows = [];
     }
-
     scrollHorizontally(n) {
       if (n < 0) {
-        let prevShow = this.channels[this.D - (8 - this.currentlyFocusedRow)].shows[this.gridInstance[this.currentCellIndex].showIndex - 1]; // this.ltp = new Date(Math.max(prevShow.starttime, this.closest30MinRoundOff))
-
+        let prevShow = this.channels[this.D - (8 - this.currentlyFocusedRow)].shows[this.gridInstance[this.currentCellIndex].showIndex - 1];
+        // this.ltp = new Date(Math.max(prevShow.starttime, this.closest30MinRoundOff))
         this.ltp = new Date(Math.max(prevShow.starttime));
         this.setShows4Channels(this.activeChannels);
         this.currentCellIndex = this.strtindexesofrows[this.currentlyFocusedRow];
@@ -38298,47 +35550,37 @@ var APP_accelerator_home_ui = (function () {
         this.updateCursor();
       } else {
         let nextShow = this.channels[this.D - (8 - this.currentlyFocusedRow)].shows[this.gridInstance[this.currentCellIndex].showIndex + 1];
-
         if (nextShow.duration > 3 * 60 * 60 * 1000) {
           this.ltp = new Date(nextShow.starttime);
         } else {
           let l = nextShow.starttime + nextShow.duration - 3 * 60 * 60 * 1000;
           this.ltp = new Date(l);
         }
-
         this.setShows4Channels(this.activeChannels);
         this.currentCellIndex = this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1;
         this.cellTimeTracker = this.gridInstance[this.currentCellIndex].starttime;
         this.updateCursor();
       }
-
       this.setTimeLabelsBetween();
       this.setBoldText();
     }
-
     _onChanged() {
       this.widgets.menu.updateTopPanelText(Language.translate('Guide'));
     }
-
     pageTransition() {
       return 'up';
     }
-
     _handleLeft() {
       Router.focusWidget('Menu');
     }
-
     _handleUp() {
       this.widgets.menu.notify('TopPanel');
     }
-
     static _states() {
       return [class CellSelector extends this {
         $enter() {}
-
         _handleLeft() {
           this.unpaintCell();
-
           if (this.currentCellIndex > this.strtindexesofrows[this.currentlyFocusedRow]) {
             this.currentCellIndex--;
             this.cellTimeTracker = this.gridInstance[this.currentCellIndex].starttime;
@@ -38349,14 +35591,11 @@ var APP_accelerator_home_ui = (function () {
             console.log("can't traverse any left");
             Router.focusWidget('Menu');
           }
-
           this.paintCell();
         }
-
         _handleRight() {
           this.unpaintCell();
           this.channels[this.D - (8 - this.currentlyFocusedRow)].shortname;
-
           if (this.currentCellIndex < this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1) {
             this.currentCellIndex++;
             this.cellTimeTracker = this.gridInstance[this.currentCellIndex].starttime;
@@ -38365,30 +35604,24 @@ var APP_accelerator_home_ui = (function () {
             //current Cell index has to be updated at last
             this.scrollHorizontally(1);
           } else console.log("can't go further right");
-
           this.paintCell();
         }
-
         binarySearch(t, left, right) {
           const lim = left;
           t = new Date(t);
           let mid;
-
           while (left <= right) {
             mid = left + Math.floor((right - left) / 2);
             const sTime = new Date(this.gridInstance[mid].starttime);
             const eTime = new Date(this.gridInstance[mid].endtime);
             if (t >= sTime && t < eTime) return mid;else if (sTime > t) right = mid - 1;else left = mid + 1;
           }
-
           mid = Math.max(lim, left - 1);
           return mid;
         }
-
         _handleDown() {
           this.unpaintCell();
           this.unsetBoldText();
-
           if (this.currentlyFocusedRow < this.verticallyNonScrollableWindow) {
             let t = this.cellTimeTracker;
             this.currentlyFocusedRow++;
@@ -38399,24 +35632,21 @@ var APP_accelerator_home_ui = (function () {
             this.updateCursor();
           } else if (this.D < this.channels.length) {
             let t = this.cellTimeTracker;
-            this.scrollVertically(1); //---------------------------------
-
+            this.scrollVertically(1);
+            //---------------------------------
             let left = this.strtindexesofrows[this.currentlyFocusedRow];
             let right = this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1;
-            let idx = this.binarySearch(t, left, right); //---------------------------------
-
+            let idx = this.binarySearch(t, left, right);
+            //---------------------------------
             this.currentCellIndex = idx;
             this.updateCursor();
           } else console.log("can't go any further ,it's the last row");
-
           this.setBoldText();
           this.paintCell();
         }
-
         _handleUp() {
           this.unpaintCell();
           this.unsetBoldText();
-
           if (this.currentlyFocusedRow > 0) {
             let t = this.cellTimeTracker;
             this.currentlyFocusedRow--;
@@ -38427,20 +35657,18 @@ var APP_accelerator_home_ui = (function () {
             this.updateCursor();
           } else if (this.D > 8) {
             let t = this.cellTimeTracker;
-            this.scrollVertically(-1); //---------------------------------
-
+            this.scrollVertically(-1);
+            //---------------------------------
             let left = this.strtindexesofrows[this.currentlyFocusedRow];
             let right = this.strtindexesofrows[this.currentlyFocusedRow + 1] - 1;
-            let idx = this.binarySearch(t, left, right); //---------------------------------
-
+            let idx = this.binarySearch(t, left, right);
+            //---------------------------------
             this.currentCellIndex = idx;
             this.updateCursor();
           } else console.log("can't go any further , it's the first row");
-
           this.setBoldText();
           this.paintCell();
         }
-
         updateDayLabel(starttime) {
           let daylabel = this.tag('DayLabel');
           setTimeout(function () {
@@ -38452,7 +35680,6 @@ var APP_accelerator_home_ui = (function () {
             let t = today.getTime();
             t = starttime - t;
             let day = 24 * 60 * 60 * 1000;
-
             if (t < day) {
               daylabel.text = 'TODAY';
             } else if (t < 2 * day) {
@@ -38463,7 +35690,6 @@ var APP_accelerator_home_ui = (function () {
             }
           }, 0);
         }
-
         updateInfoLabels() {
           let currentCell = this.gridInstance[this.currentCellIndex];
           this.tag('ChannelName').text.text = this.channelGridInstance[this.currentlyFocusedRow].title.text;
@@ -38474,30 +35700,23 @@ var APP_accelerator_home_ui = (function () {
           let ehours = e.getHours();
           let eminutes = e.getMinutes();
           if (eminutes.toString().length < 2) eminutes = '0' + eminutes;
-
           if (ehours >= 12) {
             eminutes = eminutes + 'p';
-
             if (ehours > 12) {
               ehours -= 12;
             }
           }
-
           let shours = s.getHours();
           let sminutes = s.getMinutes();
-
           if (sminutes.toString().length < 2) {
             sminutes = '0' + sminutes;
           }
-
           if (shours > 12) {
             shours -= 12;
           }
-
           this.tag('ShowTimings').text.text = "".concat(shours, ":").concat(sminutes, " - ").concat(ehours, ":").concat(eminutes);
           this.updateDayLabel(currentCell.starttime);
         }
-
         updateCursor() {
           let x = this.gridInstance[this.currentCellIndex].x;
           let y = this.gridInstance[this.currentCellIndex].y;
@@ -38508,14 +35727,11 @@ var APP_accelerator_home_ui = (function () {
           }, 0);
           this.cursorInstance.patchCursor(x, y, w);
         }
-
         $exit() {
           console.log('exiting from state - CellSelector');
         }
-
       }];
     }
-
   }
 
   /**
@@ -38545,12 +35761,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.dtvApi = new DTVApi();
       this.appApi = new AppApi();
     }
-
     _handleBack() {
       this.dtvApi.exitChannel().then(res => {
         console.log("exit channel: ", JSON.stringify(res));
@@ -38559,11 +35773,56 @@ var APP_accelerator_home_ui = (function () {
       });
       Router.back();
     }
-
     _handleLeft() {
       Router.focusWidget("ChannelOverlay");
     }
+  }
 
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+
+  //applauncher screen "will" be responsible for handling all overlays as widget and splash screens for apps(if required) | currently only handles settings overlay widget
+  class AppLauncherScreen extends lng$1.Component {
+    static _template() {
+      return {
+        Overlay: {
+          w: 1920,
+          h: 1080
+        }
+      };
+    }
+    _firstEnable() {
+      console.log("app-overlay is enabled for firstTime");
+    }
+    _focus() {
+      console.log("app-overlay is focused");
+    }
+    _handleBack() {
+      // this.widgets.settingsoverlay._handleBack();
+      Router.navigate("menu");
+    }
+    _handleLeft() {
+      console.log("Router History: ", Router.getHistory());
+    }
+    _handleRight() {
+      console.log("getActiveWidget: ", Router.getActiveWidget());
+    }
   }
 
   /**
@@ -38623,7 +35882,7 @@ var APP_accelerator_home_ui = (function () {
     }, {
       path: 'usb/player',
       component: AAMPVideoPlayer,
-      widgets: ['Volume']
+      widgets: ['Volume', "SettingsOverlay"]
     }, {
       path: 'usb/image',
       component: ImageViewer,
@@ -38641,12 +35900,11 @@ var APP_accelerator_home_ui = (function () {
       component: MainView,
       before: page => {
         const homeApi = new HomeApi();
-        page.tvShowItems = homeApi.getTVShowsInfo(); // page.usbApps = homeApi.getTVShowsInfo()
-
+        page.tvShowItems = homeApi.getTVShowsInfo();
+        // page.usbApps = homeApi.getTVShowsInfo()
         if (api) {
           page.setGracenoteData(api);
         }
-
         return Promise.resolve();
       },
       widgets: ['Menu', 'Fail', 'Volume']
@@ -38660,13 +35918,17 @@ var APP_accelerator_home_ui = (function () {
       path: 'overlay/volume',
       component: Volume
     }, {
+      path: 'applauncher',
+      component: AppLauncherScreen,
+      widgets: ['SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
+    }, {
       path: 'player',
       component: AAMPVideoPlayer,
       widgets: ['Volume', "SettingsOverlay"]
     }, {
       path: 'dtvplayer',
       component: DTVPlayer,
-      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay']
+      widgets: ['Volume', 'TvOverlays', 'ChannelOverlay', "SettingsOverlay"]
     }, {
       path: '!',
       component: Error$1
@@ -38694,10 +35956,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class to render items in side panel.
    */
-
   class SidePanelItem extends lng$1.Component {
     /**
      * Function to render various elements in the side panel item.
@@ -38720,7 +35982,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.tag('Image').patch({
         src: Utils.asset(this.data.url),
@@ -38729,11 +35990,10 @@ var APP_accelerator_home_ui = (function () {
         scale: this.unfocus
       });
     }
+
     /**
      * Function to change properties of item during focus.
      */
-
-
     _focus() {
       this.tag('Image').patch({
         w: this.w,
@@ -38742,11 +36002,10 @@ var APP_accelerator_home_ui = (function () {
         color: CONFIG.theme.hex
       });
     }
+
     /**
      * Function to change properties of item during unfocus.
      */
-
-
     _unfocus() {
       this.tag('Image').patch({
         w: this.w,
@@ -38755,7 +36014,6 @@ var APP_accelerator_home_ui = (function () {
         color: 0xffffffff
       });
     }
-
     setColor() {
       this.tag('Image').patch({
         w: this.w,
@@ -38764,7 +36022,6 @@ var APP_accelerator_home_ui = (function () {
         color: CONFIG.theme.hex
       });
     }
-
     clearColor() {
       this.tag('Image').patch({
         w: this.w,
@@ -38773,7 +36030,6 @@ var APP_accelerator_home_ui = (function () {
         color: 0xffffffff
       });
     }
-
   }
 
   /**
@@ -38794,8 +36050,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /** Class for side panel in home UI */
 
+  /** Class for side panel in home UI */
   class SidePanel extends lng$1.Component {
     static _template() {
       return {
@@ -38816,22 +36072,18 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.homeApi = new HomeApi();
       this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo();
       this.sidePanelData = this.homeApi.getSidePanelInfo();
-
       this._setState('SidePanel');
-
       this.indexVal = 0;
       this.prevIndex = 0;
     }
+
     /**
      * Function to set items in side panel.
      */
-
-
     set sidePanelItems(items) {
       this.tag('SidePanel').patch({
         x: 105
@@ -38854,11 +36106,10 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('SidePanel').start();
     }
+
     /**
      * Function to reset items in side panel.
      */
-
-
     set resetSidePanelItems(items) {
       this.tag('SidePanel').patch({
         x: 0
@@ -38883,33 +36134,28 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to set scaling to side panel.
      */
-
-
     set scale(scale) {
       this.tag('SidePanel').patch({
         scale: scale
       });
     }
+
     /**
      * Function to set x coordinate of side panel.
      */
-
-
     set x(x) {
       this.tag('SidePanel').patch({
         x: x
       });
     }
+
     /**
      * Function to set index value of side panel.
      */
-
-
     set index(index) {
       this.tag('SidePanel').items[this.prevIndex].clearColor();
       this.indexVal = index;
     }
-
     set deFocus(val) {
       if (val) {
         this.tag('SidePanel').items[this.prevIndex].clearColor();
@@ -38917,11 +36163,9 @@ var APP_accelerator_home_ui = (function () {
         this.tag('SidePanel').items[this.prevIndex].setColor();
       }
     }
-
     set scrollableLastRow(bool) {
       this.isLastRowScrollable = bool;
     }
-
     static _states() {
       return [class SidePanel extends this {
         _getFocused() {
@@ -38929,20 +36173,17 @@ var APP_accelerator_home_ui = (function () {
             return this.tag('SidePanel').items[this.indexVal];
           }
         }
-
         _handleKey(key) {
           if (key.keyCode == keyMap.ArrowRight || key.keyCode == keyMap.Enter) {
             if (this.prevIndex != this.indexVal) {
               this.tag('SidePanel').items[this.prevIndex].clearColor();
             }
-
             this.prevIndex = this.indexVal;
             this.fireAncestors('$goToMainView', this.tag('SidePanel').items[this.indexVal], this.indexVal);
           } else if (key.keyCode == keyMap.ArrowDown) {
             if (this.tag('SidePanel').length - 1 != this.indexVal) {
               this.indexVal = this.indexVal + 1;
             }
-
             return this.tag('SidePanel').items[this.indexVal];
           } else if (key.keyCode == keyMap.ArrowUp) {
             if (0 === this.indexVal) {
@@ -38953,10 +36194,8 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
       }];
     }
-
   }
 
   /**
@@ -38977,8 +36216,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  /** Class for top panel in home UI */
 
+  /** Class for top panel in home UI */
   class TopPanel extends lng$1.Component {
     static _template() {
       return {
@@ -39039,50 +36278,41 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     changeTimeZone(time) {
       this.zone = time;
     }
-
     updateZone(res) {
       this.zone = res;
     }
-
     _construct() {
       this.indexVal = 1;
       this.audiointerval = null;
       this.zone = null; // declaring this variable to keep track of zone changes
-
       this.appApi = new AppApi();
       this.appApi.getZone().then(res => {
         this.updateZone(res);
       });
       this.zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
-
     set index(index) {
       this.indexVal = index;
     }
-
     _focus() {
       this._setState('Setting');
-
       this.tag('Settings').color = CONFIG.theme.hex;
     }
-
     set changeText(text) {
       this.tag('Page').text.text = text;
-
       if (text === 'Home') {
         this.tag('Settings').color = 0xffffffff;
       }
     }
+
     /**
     *
     * @param {boolean} toggle
     * Function to change the mic icon.
     */
-
 
     set changeMic(toggle) {
       if (toggle) {
@@ -39091,11 +36321,9 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Mic').src = Utils.asset('/images/topPanel/microphone.png');
       }
     }
-
     _build() {
       Registry.setInterval(() => {
         let _date = this._updateTime(this.zone);
-
         if (this.zone) {
           this.tag('Time').patch({
             text: {
@@ -39105,27 +36333,26 @@ var APP_accelerator_home_ui = (function () {
         }
       }, 1000);
     }
-
     updateIcon(tagname, url) {
       this.tag(tagname).patch({
         src: Utils.asset(url)
       });
     }
+
     /**
      * Function to update time in home UI.
      */
-
-
     _updateTime(zone) {
       if (zone != null) {
         let date = new Date();
         date = new Date(date.toLocaleString('en-US', {
           timeZone: zone
-        })); // get day
-
+        }));
+        // get day
         let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        let strDay = days[date.getDay()]; // get month
+        let strDay = days[date.getDay()];
 
+        // get month
         let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         let strMonth = month[date.getMonth()];
         let strDate = date.toLocaleDateString('en-US', {
@@ -39147,21 +36374,17 @@ var APP_accelerator_home_ui = (function () {
         return "";
       }
     }
-
     static _states() {
       return [class Mic extends this {
         $enter() {
           this.tag('Mic').color = CONFIG.theme.hex;
         }
-
         _getFocused() {
           this.tag('Mic').color = CONFIG.theme.hex;
         }
-
         $exit() {
           this.tag('Mic').color = 0xffffffff;
         }
-
         _handleKey(key) {
           if (key.keyCode == keyMap.ArrowRight) {
             this._setState('Setting');
@@ -39170,12 +36393,10 @@ var APP_accelerator_home_ui = (function () {
             this.fireAncestors('$goToSidePanel', 0);
           }
         }
-
       }, class Setting extends this {
         $enter() {
           this.tag('Settings').color = CONFIG.theme.hex;
         }
-
         _handleKey(key) {
           if (key.keyCode === keyMap.ArrowDown) {
             Router.focusPage();
@@ -39187,14 +36408,11 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Settings').color = 0xffffffff;
           }
         }
-
         $exit() {
           this.tag('Settings').color = 0xffffffff;
         }
-
       }];
     }
-
   }
 
   /**
@@ -39240,107 +36458,74 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     pageTransition() {
       return 'down';
     }
-
     _init() {
       this.homeApi = new HomeApi();
       this.tag('SidePanel').sidePanelItems = this.homeApi.getSidePanelInfo();
     }
-
     _focus() {
       if (!this.mainView) {
         this.mainView = Router.activePage();
       }
-
       this._setState('SidePanel');
     }
-
     _handleRight() {
       Router.focusPage();
     }
-
     $goToTopPanel() {
       this._setState('TopPanel');
-
       Router.focusWidget('Menu');
     }
-
     $goToSidePanel() {
       this._setState('SidePanel');
     }
-
     $goToMainView(sidePanelInstance, index) {
       if (route[index]) {
         route[index]();
       } else {
         route['default']();
       }
-
       sidePanelInstance.setColor();
       return;
     }
-
     refreshMainView() {
       if (this.mainView) {
         this.mainView.refreshFirstRow();
       }
     }
-
     setIndex(index) {
       this.tag('SidePanel').index = index;
     }
-
     notify(val) {
       if (val === 'TopPanel') {
         Router.focusWidget('Menu');
-
         this._setState('TopPanel');
       }
     }
-
-    setPanelsVisibility() {
-      console.log("Side and Top Panel's Visibility changed!");
-
-      if (Storage.get("applicationType") == '') {
-        this.tag("TopPanel").visible = true;
-        this.tag("SidePanel").visible = true;
-      } else {
-        this.tag("TopPanel").visible = false;
-        this.tag("SidePanel").visible = false;
-      }
-    }
-
     $scroll(val) {
       if (this.mainView) {
         this.mainView.scroll(val);
       }
     }
-
     updateTimeZone(timezone) {
       this.tag('TopPanel').changeTimeZone(timezone);
     }
-
     updateTopPanelText(text) {
       this.tag('TopPanel').changeText = text;
     }
-
     static _states() {
       return [class SidePanel extends this {
         _getFocused() {
           return this.tag('SidePanel');
         }
-
       }, class TopPanel extends this {
         _getFocused() {
           return this.tag('TopPanel');
         }
-
       }];
     }
-
   }
 
   /**
@@ -39683,10 +36868,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for HDMI Output Screen.
    */
-
   var appApi$3 = new AppApi();
   class HdmiOutputScreen extends lng$1.Component {
     static _template() {
@@ -39715,7 +36900,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     $resetPrevTickObject(prevTicObject) {
       if (!this.prevTicOb) {
         this.prevTicOb = prevTicObject;
@@ -39724,13 +36908,11 @@ var APP_accelerator_home_ui = (function () {
         this.prevTicOb = prevTicObject;
       }
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
     }
-
     _init() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
@@ -39747,7 +36929,6 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
       this.loadingAnimation.start();
       var options = [];
@@ -39769,7 +36950,6 @@ var APP_accelerator_home_ui = (function () {
           });
           this.loadingAnimation.stop();
           this.tag('Loader').visible = false;
-
           this._setState("Options");
         }).catch(err => {
           console.log('error', err);
@@ -39777,30 +36957,21 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.log('error', JSON.stringify(err));
       });
-    } //  _handleBack(){
-    //     console.log("outpumode")
-    //     this.fireAncestors('$changeStateAudio',"OutputMode")
-    //   }
-
-
+    }
     static _states() {
       return [class Options extends this {
         _getFocused() {
           console.log('focusedHDMI');
           return this.tag('HdmiOutputScreenContents.List').element;
         }
-
         _handleDown() {
           this.tag('HdmiOutputScreenContents.List').setNext();
         }
-
         _handleUp() {
           this.tag('HdmiOutputScreenContents.List').setPrevious();
         }
-
       }];
     }
-
   }
 
   /**
@@ -39821,6 +36992,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**s
    * Class for Audio screen.
    */
@@ -39987,98 +37159,68 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.appApi = new AppApi();
-
       this._setState('OutputMode');
     }
-
     _focus() {
       this._setState(this.state);
-
       this.appApi.getSoundMode().then(result => {
         this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode;
       });
     }
-
     hide() {
       this.tag('AudioScreenOverlay').visible = false;
     }
-
     show() {
       this.tag('AudioScreenOverlay').visible = true;
     }
-
-    $changeStateAudio(state) {
-      this._setState(state);
-    }
-
     static _states() {
       return [class AudioOutput extends this {
         $enter() {
           this.tag('AudioOutput')._focus();
         }
-
         $exit() {
           this.tag('AudioOutput')._unfocus();
         }
-
         _handleDown() {
           this._setState('OutputMode');
         }
-
         _handleEnter() {
-          this._setState('HdmiOutputScreen'); //Router.navigate('settings/audio/output')
-
-        } //  _handleBack(){
-        //   this.fireAncestors('$changeState',"Audio")
-        // }
-
-
+          this._setState('HdmiOutputScreen');
+          //Router.navigate('settings/audio/output')
+        }
       }, class OutputMode extends this {
         $enter() {
           this.tag('OutputMode')._focus();
         }
-
         $exit() {
           this.tag('OutputMode')._unfocus();
         }
-
-        _handleUp() {// this._setState('AudioOutput')
+        _handleUp() {
+          // this._setState('AudioOutput')
         }
-
-        _handleDown() {// this._setState('DynamicRange');
+        _handleDown() {
+          // this._setState('DynamicRange');
         }
-
         _handleEnter() {
           console.log("hdmioutputscreen");
-
-          this._setState('HdmiOutputScreen'); //Router.navigate('settings/audio/output')
-
-        } //  _handleBack(){
-        //   console.log("hdmioutputscreenback")
-        //   this.fireAncestors('$changeState',"Audio")
-        // }
-
-
+          this._setState('HdmiOutputScreen');
+          //Router.navigate('settings/audio/output')
+        }
       }, class DynamicRange extends this {
         $enter() {
           this.tag('DynamicRange')._focus();
         }
-
         $exit() {
           this.tag('DynamicRange')._unfocus();
         }
-
         _handleUp() {
           this._setState('OutputMode');
         }
-
         _handleDown() {
           this._setState('Bluetooth');
         }
-
         _handleEnter() {
           /**
            * This handle Enter has api calls -
@@ -40102,23 +37244,25 @@ var APP_accelerator_home_ui = (function () {
           });
           this.appApi.getConnectedAudioPorts().then(res => {}).catch(err => {
             console.log(err);
-          }); // gets the enabled Audio Port
-
+          });
+          // gets the enabled Audio Port
           this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
             console.log(err);
           });
           this.appApi.getSupportedAudioPorts().catch(err => {
             console.log("Error while getting the supported Audio ports ie. ".concat(err));
-          }); // set enable Audio POrt
+          });
 
+          // set enable Audio POrt
           this.appApi.setEnableAudioPort("HDMI0").then(res => {
             this.appApi.getEnableAudioPort("HDMI0").then(res => {}).catch(err => {
               console.log(err);
             });
           }).catch(err => {
             console.log(err);
-          }); // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
+          });
 
+          // set zoom setting ,possible values : FULL, NONE, Letterbox 16x9, Letterbox 14x9, CCO, PanScan, Letterbox 2.21 on 4x3, Letterbox 2.21 on 16x9, Platform, Zoom 16x9, Pillarbox 4x3, Widescreen 4x3
           this.appApi.setZoomSetting("FULL").then(res => {
             this.appApi.getZoomSetting().then(res => {}).catch(err => {
               console.log(err);
@@ -40127,40 +37271,32 @@ var APP_accelerator_home_ui = (function () {
             console.log(err);
           });
         }
-
       }, class NavigationFeedback extends this {
         $enter() {
           this.tag('NavigationFeedback')._focus();
         }
-
         $exit() {
           this.tag('NavigationFeedback')._unfocus();
         }
-
         _handleUp() {
           this._setState('DynamicRange');
         }
-
         _handleDown() {
           this._setState('Bluetooth');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class Bluetooth extends this {
         $enter() {
           this.tag('Bluetooth')._focus();
         }
-
         $exit() {
           this.tag('Bluetooth')._unfocus();
         }
-
         _handleUp() {
           this._setState('DynamicRange');
         }
-
       }, class HdmiOutputScreen extends this {
         $enter() {
           this.hide();
@@ -40168,28 +37304,21 @@ var APP_accelerator_home_ui = (function () {
           this.tag('HdmiOutputScreen').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings  Audio  Output Mode');
         }
-
         $exit() {
           this.tag("HdmiOutputScreen").visible = false;
           this.show();
           this.fireAncestors('$updatePageTitle', 'Settings  Audio');
         }
-
         _getFocused() {
           console.log("hdmioutputscreenfocused");
           return this.tag('HdmiOutputScreen');
         }
-
         _handleBack() {
           console.log("hdmioutputscreenbackHDMI");
-
-          this._setState("OutputMode"); //this.$changeStateAudio("OutputMode")
-
+          this._setState("OutputMode");
         }
-
       }];
     }
-
   }
 
   /**
@@ -40215,6 +37344,7 @@ var APP_accelerator_home_ui = (function () {
     port: 9998,
     default: 1
   });
+
   /**
    * Class for Resolution Screen.
    */
@@ -40247,7 +37377,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.appApi = new AppApi();
       this.appApi.activateDisplaySettings();
@@ -40269,22 +37398,21 @@ var APP_accelerator_home_ui = (function () {
         const items = this.tag('List').items;
         items.forEach(element => {
           element.tag('Item.Tick').visible = false;
-
           if (element._item === notification.resolution) {
             element.tag('Item.Tick').visible = true;
           }
         });
       });
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/video')
     //  }
-
 
     _focus() {
       this.loadingAnimation.start();
@@ -40297,12 +37425,10 @@ var APP_accelerator_home_ui = (function () {
           this.tag('ResolutionScreenContents.List').h = options.length * 90;
           this.tag('List').items = options.map((item, index) => {
             var bool = false;
-
             if (resolution === item) {
               bool = true;
               sIndex = index;
             }
-
             return {
               ref: 'Option' + index,
               w: 1920 - 300,
@@ -40316,35 +37442,28 @@ var APP_accelerator_home_ui = (function () {
           this.loadingAnimation.stop();
           this.tag('Loader').visible = false;
           this.tag('List').setIndex(sIndex);
-
           this._setState("Options");
         }).catch(err => {
           console.log("error while fetching the supported resolution ".concat(err));
         });
       });
     }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
-        _handleBack() {
-          this.fireAncestors('$changeStateVideo', "Resolution");
-        }
-
+        //  _handleBack(){
+        //     this.fireAncestors('$changeStateVideo',"Resolution")
+        //   }
       }];
     }
-
   }
 
   /**
@@ -40365,6 +37484,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Video screen.
    */
@@ -40514,24 +37634,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
-
       this._setState('Resolution');
     }
-
-    $changeStateVideo(state) {
-      this._setState(state);
-    }
-
     _focus() {
       this._appApi.getResolution().then(resolution => {
         this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;
       }).catch(err => {
         console.log("Error fetching the Resolution");
       });
-
       this._appApi.getHDCPStatus().then(result => {
         if (result.isHDCPCompliant && result.isHDCPEnabled) {
           this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Enabled, Version: ").concat(result.currentHDCPVersion);
@@ -40539,7 +37651,6 @@ var APP_accelerator_home_ui = (function () {
           this.tag("HDCP.Title").text.text = "".concat(Language.translate('HDCP Status: '), "Not Supported ");
         }
       });
-
       this._appApi.getHDRSetting().then(result => {
         const availableHDROptions = {
           "HdrOff": "Off",
@@ -40551,160 +37662,129 @@ var APP_accelerator_home_ui = (function () {
         };
         this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
       });
-
       this._setState(this.state);
     }
-
     hide() {
       this.tag('VideoScreenContents').visible = false;
     }
-
     show() {
       this.tag('VideoScreenContents').visible = true;
     }
-
     static _states() {
       return [class Resolution extends this {
         $enter() {
           this.tag('Resolution')._focus();
         }
-
         $exit() {
           this.tag('Resolution')._unfocus();
         }
-
         _handleDown() {
           this._setState('HDR');
         }
-
         _handleEnter() {
-          this._setState("ResolutionOverlay"); //Router.navigate('settings/video/resolution')
-
+          this._setState("ResolutionOverlay");
+          //Router.navigate('settings/video/resolution')
         }
-
       }, class HDR extends this {
         $enter() {
           this.tag('HDR')._focus();
         }
-
         $exit() {
           this.tag('HDR')._unfocus();
         }
-
         _handleUp() {
           this._setState('Resolution');
         }
-
         _handleDown() {
           this._setState('HDCP');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class MatchContent extends this {
         $enter() {
           this.tag('MatchContent')._focus();
         }
-
         $exit() {
           this.tag('MatchContent')._unfocus();
         }
-
         _handleUp() {
           this._setState('HDR');
         }
-
         _handleDown() {
           this._setState('OutputFormat');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class OutputFormat extends this {
         $enter() {
           this.tag('OutputFormat')._focus();
         }
-
         $exit() {
           this.tag('OutputFormat')._unfocus();
         }
-
         _handleUp() {
           this._setState('MatchContent');
         }
-
         _handleDown() {
           this._setState('Chroma');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class Chroma extends this {
         $enter() {
           this.tag('Chroma')._focus();
         }
-
         $exit() {
           this.tag('Chroma')._unfocus();
         }
-
         _handleUp() {
           this._setState('OutputFormat');
         }
-
-        _handleDown() {// this._setState('HDCP') 
+        _handleDown() {
+          // this._setState('HDCP') 
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class HDCP extends this {
         // class not required
         $enter() {
           this.tag('HDCP')._focus();
         }
-
         $exit() {
           this.tag('HDCP')._unfocus();
         }
-
         _handleUp() {
           this._setState('HDR');
         }
-
-        _handleEnter() {//
+        _handleEnter() {
+          //
         }
-
       }, class ResolutionOverlay extends this {
         $enter() {
           this.hide();
           this.tag('ResolutionOverlay').visible = true;
           this.fireAncestors('$updatePageTitle', "Settings  Video  Resolution");
         }
-
         $exit() {
           this.tag('ResolutionOverlay').visible = false;
           this.show();
           this.fireAncestors('$updatePageTitle', "Settings  Video");
         }
-
         _getFocused() {
           return this.tag('ResolutionOverlay');
         }
-
         _handleBack() {
           this._setState('Resolution');
-        } // $updateResolution(value) {
+        }
+        // $updateResolution(value) {
         //   this.tag('Resolution.Title').text.text = 'Resolution: ' + value;
         // }
-
-
       }];
     }
-
   }
 
   /**
@@ -40955,20 +38035,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     getIPSetting(interfaceName) {
       appApi$2.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
-
     _focus() {
-      //this.widgets.menu.setPanelsVisibility()
       //Getting the default interface
       appApi$2.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
-
         if (defaultInterface === "WIFI") {
           this.tag("ConnectionType.Value").text.text = "Wireless";
           this.tag("SSID").alpha = 1;
@@ -40983,12 +38059,12 @@ var APP_accelerator_home_ui = (function () {
           this.tag("IPAddress.Value").text.text = "NA";
           this.tag("Gateway.Value").text.text = "NA";
           this.tag("MACAddress.Value").text.text = "NA";
-        } //Filtering the current interface
+        }
 
-
+        //Filtering the current interface
         appApi$2.getInterfaces().then(result => {
-          currentInterface = result.interfaces.filter(data => data.interface === defaultInterface); //console.log(currentInterface);
-
+          currentInterface = result.interfaces.filter(data => data.interface === defaultInterface);
+          //console.log(currentInterface);
           if (currentInterface[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
             appApi$2.getConnectedSSID().then(result => {
@@ -41001,7 +38077,6 @@ var APP_accelerator_home_ui = (function () {
               } else {
                 this.tag("SignalStrength.Value").text.text = "Poor";
               }
-
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
             appApi$2.getIPSetting(defaultInterface).then(result => {
@@ -41011,12 +38086,10 @@ var APP_accelerator_home_ui = (function () {
           } else {
             this.tag('Status.Value').text.text = "Disconnected";
           }
-
           this.tag('MACAddress.Value').text.text = "".concat(currentInterface[0].macAddress);
         }).catch(error => console.log(error));
       }).catch(error => console.log(error));
     }
-
     _unfocus() {
       this.tag('SSID.Value').text.text = 'NA';
       this.tag('SignalStrength.Value').text.text = 'NA';
@@ -41026,7 +38099,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('ConnectionType.Value').text.text = 'NA';
       this.tag('InternetProtocol.Value').text.text = 'NA';
     }
-
   }
 
   /**
@@ -41051,7 +38123,6 @@ var APP_accelerator_home_ui = (function () {
   class JoinAnotherNetworkComponent extends lng$1.Component {
     handleDone() {
       var securityCode = this.securityCodes[this.securityCodeIndex].value;
-
       if (!this.textCollection['EnterSSID']) {
         this._setState("EnterSSID");
       } else if (securityCode < 0 || securityCode > 14) {
@@ -41063,19 +38134,18 @@ var APP_accelerator_home_ui = (function () {
           this.textCollection['EnterPassword'] = "";
           this.tag("Pwd").text.text = "";
         }
-
         var self = this;
         this.startConnectForAnotherNetwork({
           ssid: self.textCollection['EnterSSID'],
           security: securityCode
         }, self.textCollection['EnterPassword']);
       }
-    } // startConnectForAnotherNetwork(device, passphrase) {
+    }
+
+    // startConnectForAnotherNetwork(device, passphrase) {
     //   wifi.connect({ ssid: device.ssid, security: device.security }, passphrase)
     //   Router.back()
     // }
-
-
     startConnectForAnotherNetwork(device, passphrase) {
       wifi$1.connect({
         ssid: device.ssid,
@@ -41083,15 +38153,15 @@ var APP_accelerator_home_ui = (function () {
       }, passphrase).then(() => {
         wifi$1.saveSSID(device.ssid, passphrase, device.security).then(response => {
           if (response.result === 0) ; else if (response.result !== 0) {
-            wifi$1.clearSSID().then(response => {// console.log(response)
+            wifi$1.clearSSID().then(response => {
+              // console.log(response)
               // Router.back()
             });
           }
         });
       });
-
-      this._handleBack(); //Router.back();
-
+      this._handleBack();
+      //Router.back();
     }
 
     static _template() {
@@ -41230,10 +38300,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this._setState('EnterSSID');
-
       this.textCollection = {
         'EnterSSID': '',
         'EnterPassword': '',
@@ -41242,7 +38310,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Pwd').text.text = "";
       this.tag("NetworkText").text.text = "";
       this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
-
       if (this.securityCodes[this.securityCodeIndex].value === 0) {
         this.pwdUnReachable = true;
         this.tag("PasswordBox").alpha = 0.5;
@@ -41253,34 +38320,27 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Password").alpha = 1;
       }
     }
-
     static _states() {
       return [class EnterSSID extends this {
         $enter() {
           this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleDown() {
           this._setState("EnterSecurity");
         }
-
         _handleEnter() {
           this._setState('Keyboard');
         }
-
         $exit() {
           this.tag('NetworkBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class EnterSecurity extends this {
         $enter() {
           this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleUp() {
           this._setState("EnterSSID");
         }
-
         isPasswordUnReachable(secCode) {
           if (secCode === 0) {
             this.tag("PasswordBox").alpha = 0.5;
@@ -41292,84 +38352,66 @@ var APP_accelerator_home_ui = (function () {
             return false;
           }
         }
-
         _handleLeft() {
           this.securityCodeIndex = (15 + --this.securityCodeIndex) % 15;
           this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
           this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
         }
-
         _handleEnter() {
           this.handleDone();
         }
-
         _handleRight() {
           this.securityCodeIndex = (15 + ++this.securityCodeIndex) % 15;
           this.pwdUnReachable = this.isPasswordUnReachable(this.securityCodeIndex);
           this.tag("TypeText").text.text = this.securityCodes[this.securityCodeIndex].name;
         }
-
         _handleDown() {
           if (!this.pwdUnReachable) {
             this._setState("EnterPassword");
           }
         }
-
         $exit() {
           this.tag("TypeBox").texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class EnterPassword extends this {
         $enter() {
           if (this.pwdUnReachable) {
             this._setState("EnterSecurity");
           }
-
           this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleUp() {
           this._setState("EnterSecurity");
         }
-
         _handleDown() {
           this._setState("EnterSSID");
         }
-
         _handleEnter() {
           this._setState('Keyboard');
         }
-
         $exit() {
           this.tag('PasswordBox').texture = lng$1.Tools.getRoundRect(1273, 58, 0, 3, 0xffffffff, false);
         }
-
       }, class Keyboard extends this {
         $enter(state) {
           this.prevState = state.prevState;
-
           if (this.prevState === 'EnterSSID') {
             this.element = 'NetworkText';
           }
-
           if (this.prevState === 'EnterPassword') {
             this.element = 'Pwd';
           }
-
           if (this.prevState === 'EnterSecurity') {
             this.element = 'TypeText';
           }
         }
-
         _getFocused() {
           return this.tag('Keyboard');
         }
-
         $onSoftKey(_ref) {
           let {
             key
           } = _ref;
-
           if (key === 'Done') {
             this.handleDone();
           } else if (key === 'Clear') {
@@ -41388,14 +38430,11 @@ var APP_accelerator_home_ui = (function () {
             this.tag(this.element).text.text = this.textCollection[this.prevState];
           }
         }
-
         _handleBack() {
           this._setState(this.prevState);
         }
-
       }];
     }
-
     _init() {
       this.securityCodeIndex = 0;
       this.pwdUnReachable = true;
@@ -41453,7 +38492,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Pwd").text.text = this.textCollection['EnterPassword'];
       this.tag("NetworkText").text.text = this.textCollection['EnterSSID'];
     }
-
   }
 
   /**
@@ -41477,10 +38515,6 @@ var APP_accelerator_home_ui = (function () {
   class WifiPairingScreen extends lng$1.Component {
     static _template() {
       return {
-        w: 1920,
-        h: 1080,
-        rect: true,
-        color: 0xCC000000,
         PairingScreen: {
           Title: {
             x: 960,
@@ -41591,10 +38625,10 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _updateText(txt) {
       this.tag("Pwd").text.text = txt;
-    } //  _handleBack() {
+    }
+    //  _handleBack() {
     //    Router.back()
     //  }
 
@@ -41608,8 +38642,8 @@ var APP_accelerator_home_ui = (function () {
     //    this._handleBack()
     //      //Router.navigate('settings/network/interface/wifi')
     //    }
-    //  }
 
+    //  }
 
     item(item) {
       this.star = "";
@@ -41618,13 +38652,11 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Title').text = item.ssid;
       var options = [];
       this._item = item;
-
       if (item.connected) {
         options = ['Disconnect', 'Cancel'];
       } else {
         options = ['Connect', 'Cancel'];
       }
-
       this.tag('List').items = options.map((item, index) => {
         return {
           ref: item,
@@ -41635,136 +38667,112 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-
       this._setState('Pair');
     }
-
     _focus() {
       this.hidePasswd = true;
-
       this._setState('Pair');
-
       this.item(this.fireAncestors("$PairingnetworkParams"));
     }
-
     _unfocus() {}
-
     _init() {
       this.star = "";
       this.passwd = "";
       this.isOn = false;
       this._wifi = new Wifi();
     }
-
     pressEnter(option) {
       if (option === 'Cancel') {
         this._handleBack();
       } else if (option === 'Connect') {
         if (this._item) {
           console.log('trying to connect wifi');
-
           this._wifi.connect(this._item, '').then(() => {}).catch(err => {
             console.log('Not able to connect to wifi', JSON.stringify(err));
           });
         }
-
         this._handleBack();
       } else if (option === 'Disconnect') {
         this._wifi.disconnect().then(() => {
           this._handleBack();
         });
       }
-    } // startConnect(password) {
+    }
+
+    // startConnect(password) {
     //   this._wifi.connect(this._item, password).then(() => {
     //     Router.back()
     //   })
+
     // }
-
-
     startConnect(password) {
       this._wifi.connect(this._item, password).then(() => {
         this._wifi.saveSSID(this._item.ssid, password, this._item.security).then(response => {
           if (response.result === 0) ; else if (response.result !== 0) {
-            this._wifi.clearSSID().then(response => {// console.log(response)
+            this._wifi.clearSSID().then(response => {
+              // console.log(response)
               // Router.back()
             });
           }
         });
-
         this._handleBack();
       });
     }
-
     static _states() {
       return [class Password extends this {
         $enter() {
           this.shifter = false;
           this.capsLock = false;
         }
-
         _getFocused() {
           return this.tag("KeyBoard");
         }
-
         $onSoftKey(_ref) {
           let {
             key
           } = _ref;
-
           if (key === 'Done') {
             this.startConnect(this.passwd);
           } else if (key === 'Clear') {
             this.passwd = this.passwd.substring(0, this.passwd.length - 1);
             this.star = this.star.substring(0, this.star.length - 1);
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else if (key === '#@!' || key === 'abc' || key === 'áöû' || key === 'shift') {
             console.log('no saving');
           } else if (key === 'Space') {
             this.star += '\u25CF';
             this.passwd += ' ';
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else if (key === 'Delete') {
             this.star = '';
             this.passwd = '';
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           } else {
             this.star += '\u25CF';
             this.passwd += key;
-
             this._updateText(this.hidePasswd ? this.star : this.passwd);
           }
         }
-
         _handleUp() {
           this._setState("Pair");
         }
-
       }, class Pair extends this {
         $enter() {}
-
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleRight() {
           this.tag('List').setNext();
         }
-
         _handleLeft() {
           this.tag('List').setPrevious();
         }
-
         _handleUp() {
           this._setState("PasswordSwitchState");
         }
-
         _handleDown() {
           this._setState("Password");
         }
-
         _handleEnter() {
           if (this.tag('List').element.ref == 'Connect' && this._item.security != 0) {
             if (this.star === '') {
@@ -41776,41 +38784,31 @@ var APP_accelerator_home_ui = (function () {
             this.pressEnter(this.tag('List').element.ref);
           }
         }
-
       }, class PasswordSwitchState extends this {
         $enter() {
           this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, CONFIG.theme.hex, false);
         }
-
         _handleDown() {
           this._setState("Pair");
         }
-
         _getFocused() {
           return this.tag('PasswrdSwitch');
         }
-
         $handleEnter(bool) {
           if (bool) {
             this._updateText(this.passwd);
-
             this.hidePasswd = false;
           } else {
             this._updateText(this.star);
-
             this.hidePasswd = true;
           }
-
           this.isOn = bool;
         }
-
         $exit() {
           this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, 0xffffffff, false);
         }
-
       }];
     }
-
   }
 
   /**
@@ -41831,10 +38829,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
   * Class for WiFi screen.
   */
-
   class WiFiScreen extends lng$1.Component {
     static _template() {
       return {
@@ -41939,21 +38937,16 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _active() {
       this._setState('Switch');
     }
-
     _focus() {
       this._setState('Switch');
-
       this._enable();
     }
-
     changeStateBack(state) {
       this._setState(state);
     }
-
     _firstEnable() {
       this.wifiLoading = this.tag('Switch.Loader').animation({
         duration: 3,
@@ -41982,26 +38975,19 @@ var APP_accelerator_home_ui = (function () {
       this._network = new Network();
       this.wifiStatus = false;
       this._wifiIcon = true;
-
       this._activateWiFi();
-
       this._setState('Switch');
-
       if (this.wiFiStatus) {
         this.tag('Networks').visible = true;
         this.tag('JoinAnotherNetwork').visible = true;
       }
-
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
-
       this._network.activate().then(result => {
         if (result) {
           this.wifiStatus = true;
-
           this._network.registerEvent('onIPAddressStatusChanged', notification => {
             console.log(JSON.stringify(notification));
-
             if (notification.status == 'LOST') {
               if (notification.interface === 'WIFI') {
                 this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -42012,7 +38998,6 @@ var APP_accelerator_home_ui = (function () {
               }
             }
           });
-
           this._network.registerEvent('onDefaultInterfaceChanged', notification => {
             if (notification.newInterfaceName === 'ETHERNET') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
@@ -42021,19 +39006,15 @@ var APP_accelerator_home_ui = (function () {
                 }
               });
             }
-
             if (notification.newInterfaceName == 'ETHERNET' || notification.oldInterfaceName == 'WIFI') {
               this._wifi.disconnect();
-
               this.wifiStatus = false;
               this.tag('Networks').visible = false;
               this.tag('JoinAnotherNetwork').visible = false;
               this.tag('Switch.Loader').visible = false;
               this.wifiLoading.stop();
               this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
-
               this._setState('Switch');
-
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
                   this._wifi.setDefaultInterface('ETHERNET', true).then(result1 => {
@@ -42044,7 +39025,6 @@ var APP_accelerator_home_ui = (function () {
                 }
               });
             }
-
             if (notification.newInterfaceName == '' && notification.oldInterfaceName == 'WIFI') {
               this._wifi.setInterface('ETHERNET', true).then(result => {
                 if (result.success) {
@@ -42057,7 +39037,6 @@ var APP_accelerator_home_ui = (function () {
               });
             }
           });
-
           this._network.registerEvent('onConnectionStatusChanged', notification => {
             if (notification.interface === 'ETHERNET' && notification.status === 'CONNECTED') {
               this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -42070,29 +39049,26 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to be executed when the Wi-Fi screen is enabled.
      */
-
-
     _enable() {
       if (this.wifiStatus) {
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
      * Function to be executed when the Wi-Fi screen is disabled.
      */
-
-
     _disable() {
       this._wifi.stopScan();
     }
+
     /**
      * Function to render list of Wi-Fi networks.
      */
-
-
     renderDeviceList(ssids) {
       this._wifi.getConnectedSSID().then(result => {
         if (result.ssid != '') {
@@ -42100,7 +39076,6 @@ var APP_accelerator_home_ui = (function () {
         } else {
           this._pairedList = [];
         }
-
         this._pairedNetworks.h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').h = this._pairedList.length * 90;
         this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
@@ -42115,7 +39090,6 @@ var APP_accelerator_home_ui = (function () {
         });
         this._otherList = ssids.filter(device => {
           result = this._pairedList.map(a => a.ssid);
-
           if (result.includes(device.ssid)) {
             return false;
           } else return device;
@@ -42134,20 +39108,16 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     hide() {
       this.tag('WifiContents').visible = false;
     }
-
     show() {
       this.tag('WifiContents').visible = true;
     }
-
     $PairingnetworkParams() {
       console.log("state", this.state);
       return this.ListItem;
     }
-
     static _states() {
       return [class Switch extends this {
         $enter() {
@@ -42155,24 +39125,19 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.tag('Switch.Button').scaleX = 1;
           }
-
           this.tag('Switch')._focus();
         }
-
         $exit() {
           this.tag('Switch')._unfocus();
         }
-
         _handleDown() {
           if (this.wifiStatus === true) {
             this._setState('JoinAnotherNetwork');
           }
         }
-
         _handleEnter() {
           this.switch();
         }
-
       }, class PairedDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
@@ -42182,26 +39147,20 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').scaleX = -1;
           }
         }
-
         _getFocused() {
           return this._pairedNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('MyDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('MyDevices', 'up');
         }
-
         _handleEnter() {
           this.ListItem = this._pairedNetworks.tag('List').element._item;
-
-          this._setState("WifiPairingScreen"); //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._pairedNetworks.tag('List').element._item })
-
+          this._setState("WifiPairingScreen");
+          //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._pairedNetworks.tag('List').element._item })
         }
-
       }, class AvailableDevices extends this {
         $enter() {
           if (this.wifiStatus === true) {
@@ -42211,40 +39170,32 @@ var APP_accelerator_home_ui = (function () {
             this.tag('Switch.Button').scaleX = -1;
           }
         }
-
         _getFocused() {
           return this._availableNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('AvailableDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('AvailableDevices', 'up');
         }
-
         _handleEnter() {
           this.ListItem = this._availableNetworks.tag('List').element._item;
-
-          this._setState("WifiPairingScreen"); //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
-
+          this._setState("WifiPairingScreen");
+          //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
         }
-
       }, class JoinAnotherNetwork extends this {
         $enter() {
           this.tag('JoinAnotherNetwork')._focus();
         }
-
         _handleUp() {
           this._setState('Switch');
         }
-
         _handleEnter() {
-          this._setState("JoinAnotherNetworkOverlay"); //  if (this.wifiStatus) {
+          this._setState("JoinAnotherNetworkOverlay");
+          //  if (this.wifiStatus) {
           //    Router.navigate('settings/network/interface/wifi/another')
           //  }
-
         }
 
         _handleDown() {
@@ -42256,11 +39207,9 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
         $exit() {
           this.tag('JoinAnotherNetwork')._unfocus();
         }
-
       }, class JoinAnotherNetworkOverlay extends this {
         $enter() {
           console.log("wifiscreen");
@@ -42268,22 +39217,19 @@ var APP_accelerator_home_ui = (function () {
           this.fireAncestors('$hideBreadCrum');
           this.tag('JoinAnotherNetworkOverlay').visible = true;
         }
-
         $exit() {
           this.show();
           this.fireAncestors('$showBreadCrum');
           this.tag('JoinAnotherNetworkOverlay').visible = false;
         }
-
         _getFocused() {
           return this.tag('JoinAnotherNetworkOverlay');
         }
-
         _handleBack() {
           this._setState('Switch');
         }
-
-      }, //WifiPairingScreen
+      },
+      //WifiPairingScreen
       class WifiPairingScreen extends this {
         $enter() {
           console.log("wifiscreen");
@@ -42291,40 +39237,33 @@ var APP_accelerator_home_ui = (function () {
           this.fireAncestors('$hideBreadCrum');
           this.tag('WifiPairingScreen').visible = true;
         }
-
         $exit() {
           this.show();
           this.fireAncestors('$showBreadCrum');
           this.tag('WifiPairingScreen').visible = false;
         }
-
         _getFocused() {
           return this.tag('WifiPairingScreen');
         }
-
         _handleBack() {
           this._setState('Switch');
         }
-
       }];
     }
+
     /**
      * Function to navigate through the lists in the screen.
      * @param {string} listname
      * @param {string} dir
      */
 
-
     _navigate(listname, dir) {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           this._wifi.discoverSSIDs();
-
           this._setState('JoinAnotherNetwork');
-
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
@@ -42342,20 +39281,15 @@ var APP_accelerator_home_ui = (function () {
     /**
      * Function to turn on and off Wi-Fi.
      */
-
-
     switch() {
       if (this.wifiStatus) {
         this._wifi.disconnect();
-
         console.log('turning off wifi');
-
         this._wifi.setInterface('ETHERNET', true).then(result => {
           if (result.success) {
             this._wifi.setDefaultInterface('ETHERNET', true).then(result => {
               if (result.success) {
                 this._wifi.disconnect();
-
                 this.wifiStatus = false;
                 this.tag('Networks').visible = false;
                 this.tag('JoinAnotherNetwork').visible = false;
@@ -42374,39 +39308,31 @@ var APP_accelerator_home_ui = (function () {
         this.wifiLoading.play();
         this.tag('Switch.Loader').visible = true;
         this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-
         this._wifi.discoverSSIDs();
       }
     }
+
     /**
      * Function to activate Wi-Fi plugin.
      */
-
-
     _activateWiFi() {
       this._wifi.activate().then(() => {
         this.switch();
       });
-
       this._wifi.registerEvent('onWIFIStateChanged', notification => {
         console.log(JSON.stringify(notification));
-
         if (notification.state === 2 || notification.state === 5) {
           this._wifi.discoverSSIDs();
         }
       });
-
       this._wifi.registerEvent('onError', notification => {
         console.log('on errro');
-
         this._wifi.discoverSSIDs();
-
         this._wifi.setInterface('ETHERNET', true).then(res => {
           if (res.success) {
             this._wifi.setDefaultInterface('ETHERNET', true);
           }
         });
-
         if (this.widgets) {
           this.widgets.fail.notify({
             title: 'WiFi Error',
@@ -42415,10 +39341,8 @@ var APP_accelerator_home_ui = (function () {
           Router.focusWidget('Fail');
         }
       });
-
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
-
         if (!notification.moreData) {
           setTimeout(() => {
             this.tag('Switch.Loader').visible = false;
@@ -42427,7 +39351,6 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
   }
 
   /**
@@ -42453,7 +39376,6 @@ var APP_accelerator_home_ui = (function () {
     _construct() {
       this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
     }
-
     static _template() {
       return {
         NetworkInterfaceScreenContents: {
@@ -42514,11 +39436,9 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this._setState('WiFi');
     }
-
     _init() {
       const config = {
         host: '127.0.0.1',
@@ -42528,10 +39448,8 @@ var APP_accelerator_home_ui = (function () {
       this._thunder = thunderJS(config);
       const systemcCallsign = 'org.rdk.Network';
       const eventName = 'onDefaultInterfaceChanged';
-
       this._thunder.on(systemcCallsign, eventName, notification => {
         console.log('onDefaultInterfaceChanged notification from networkInterfaceScreen: ', notification);
-
         if (notification.newInterfaceName === "ETHERNET") {
           this.loadingAnimation.stop();
           this.tag('Ethernet.Loader').visible = false;
@@ -42546,7 +39464,6 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Ethernet.Title').text.text = 'Ethernet';
         }
       });
-
       this.loadingAnimation = this.tag('Ethernet.Loader').animation({
         duration: 3,
         repeat: -1,
@@ -42563,22 +39480,18 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Ethernet.Loader').src = this.LoadingIcon;
     }
-
     _firstActive() {
       this.tag('Ethernet.Loader').on('txError', () => {
         const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
         this.tag('Ethernet.Loader').src = url;
       });
     }
-
     hide() {
       this.tag('NetworkInterfaceScreenContents').visible = false;
     }
-
     show() {
       this.tag('NetworkInterfaceScreenContents').visible = true;
     }
-
     setEthernetInterface() {
       wifi.getInterfaces().then(res => {
         res.interfaces.forEach(element => {
@@ -42595,41 +39508,33 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     static _states() {
       return [class WiFi extends this {
         $enter() {
           this.tag('WiFi')._focus();
         }
-
         $exit() {
           this.tag('WiFi')._unfocus();
         }
-
         _handleDown() {
           this._setState('Ethernet');
         }
-
         _getFocused() {
           return this.tag('WiFi');
         }
-
         _handleEnter() {
-          this._setState("WifiScreen"); //  if (!Router.isNavigating()) {
+          this._setState("WifiScreen");
+          //  if (!Router.isNavigating()) {
           //      Router.navigate('settings/network/interface/wifi')
           //  }
-
         }
-
       }, class Ethernet extends this {
         $enter() {
           this.tag('Ethernet')._focus();
         }
-
         $exit() {
           this.tag('Ethernet')._unfocus();
         }
-
         _handleEnter() {
           wifi.getDefaultInterface().then(res => {
             if (res.success) {
@@ -42639,15 +39544,12 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _handleDown() {
           this._setState('WiFi');
         }
-
         _handleUp() {
           this._setState('WiFi');
         }
-
       }, class WifiScreen extends this {
         $enter() {
           console.log("wifiscreen");
@@ -42655,24 +39557,19 @@ var APP_accelerator_home_ui = (function () {
           this.tag('WifiScreen').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface  WiFi');
         }
-
         $exit() {
           this.show();
           this.tag('WifiScreen').visible = false;
           this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface');
         }
-
         _getFocused() {
           return this.tag('WifiScreen');
         }
-
         _handleBack() {
           this._setState('WiFi');
         }
-
       }];
     }
-
   }
 
   /**
@@ -42818,23 +39715,18 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       console.log("first trigger");
-
       this._setState('NetworkInfo');
-
       let _currentIPSettings = {};
       let _newIPSettings = {};
       this._network = new Network();
-
       this._network.getDefaultInterface().then(interfaceName => {
       });
-
       _newIPSettings = _currentIPSettings;
       _newIPSettings.ipversion = "IPV6"; // this fails, need to verify how to set proper ip settings
-      // loader animation for testing internet
 
+      // loader animation for testing internet
       this.loadingAnimation = this.tag('TestInternetAccess.Loader').animation({
         duration: 3,
         repeat: -1,
@@ -42850,105 +39742,81 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
-      console.log("2"); //this.widgets.menu.setPanelsVisibility()
-
       this._setState(this.state); //can be used on init as well
-
 
       new Network().getDefaultInterface().then(interfaceName => {
         this.$NetworkInterfaceText(interfaceName);
       });
     }
-
     _unfocus() {
       this.tag('TestInternetAccess.Title').text.text = Language.translate('Test Internet Access: ');
     }
-
     $NetworkInterfaceText(text) {
       this.tag('NetworkInterface.Title').text.text = Language.translate('Network Interface: ') + text;
     }
-
     hide() {
       this.tag('NetworkConfigurationScreenContents').visible = false;
     }
-
     show() {
       this.tag('NetworkConfigurationScreenContents').visible = true;
     }
-
     static _states() {
       return [class NetworkInfo extends this {
         $enter() {
           this.tag('NetworkInfo')._focus();
         }
-
         $exit() {
           this.tag('NetworkInfo')._unfocus();
         }
-
         _handleDown() {
           this._setState('NetworkInterface');
         }
-
         _handleEnter() {
           this._setState("NetworkInfoScreen");
         }
-
       }, class NetworkInterface extends this {
         $enter() {
           this.tag('NetworkInterface')._focus();
         }
-
         $exit() {
           this.tag('NetworkInterface')._unfocus();
         }
-
         _handleUp() {
           this._setState('NetworkInfo');
         }
-
         _handleDown() {
           this._setState('TestInternetAccess');
         }
-
         _handleEnter() {
-          this._setState("NetworkInterfaceOverlay"); //  if (!Router.isNavigating()) {
+          this._setState("NetworkInterfaceOverlay");
+          //  if (!Router.isNavigating()) {
+
           //  }
-
         }
-
       }, class TestInternetAccess extends this {
         $enter() {
           this.tag('TestInternetAccess')._focus();
         }
-
         $exit() {
           this.tag('TestInternetAccess')._unfocus();
         }
-
         _handleUp() {
           this._setState('NetworkInterface');
         }
-
         _handleDown() {
           this._setState('NetworkInfo');
         }
-
         _handleEnter() {
           this.loadingAnimation.start();
           this.tag('TestInternetAccess.Loader').visible = true;
-
           this._network.isConnectedToInternet().then(result => {
             var connectionStatus = Language.translate("Internet Access: ");
-
             if (result) {
               connectionStatus += Language.translate("Connected");
             } else {
               connectionStatus += Language.translate("Not Connected");
             }
-
             setTimeout(() => {
               this.tag('TestInternetAccess.Loader').visible = false;
               this.tag('TestInternetAccess.Title').text.text = connectionStatus;
@@ -42956,71 +39824,56 @@ var APP_accelerator_home_ui = (function () {
             }, 2000);
           });
         }
-
       }, class StaticMode extends this {
         $enter() {
           this.tag('StaticMode')._focus();
         }
-
         $exit() {
           this.tag('StaticMode')._unfocus();
         }
-
         _handleUp() {
           this._setState('TestInternetAccess');
         }
-
         _handleDown() {
           this._setState('NetworkInfo');
         }
-
         _handleEnter() {}
-
       }, class NetworkInfoScreen extends this {
         $enter() {
           this.hide();
           this.tag('NetworkInfoScreen').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Info');
         }
-
         $exit() {
           this.show();
           this.tag('NetworkInfoScreen').visible = false;
           this.fireAncestors('$updatePageTitle', 'Settings / Network Configuration');
         }
-
         _getFocused() {
           return this.tag('NetworkInfoScreen');
         }
-
         _handleBack() {
           this._setState('NetworkInfo');
         }
-
       }, class NetworkInterfaceOverlay extends this {
         $enter() {
           this.hide();
           this.tag('NetworkInterfaceOverlay').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration  Network Interface');
         }
-
         $exit() {
           this.show();
           this.tag('NetworkInterfaceOverlay').visible = false;
           this.fireAncestors('$updatePageTitle', 'Settings  Network Configuration');
         }
-
         _getFocused() {
           return this.tag('NetworkInterfaceOverlay');
         }
-
         _handleBack() {
           this._setState('NetworkInterface');
         }
-
       }];
     }
-
   }
 
   /**
@@ -43041,13 +39894,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-
   let _item;
   /**
    * Class for pairing screen for the Bluetooth.
    */
-
-
   class BluetoothPairingScreen extends lng$1.Component {
     static _template() {
       return {
@@ -43160,35 +40010,27 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     item(item) {
       _item = item;
-
       this._setState('ConnectDisconnect');
-
       this.tag('Title').text = item.name;
-
       if (item.connected) {
         this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Disconnect';
       } else {
         this.tag('BluetoothPair.Buttons.ConnectDisconnect.Title').text = 'Connect';
       }
     }
-
     _init() {
       this._setState('ConnectDisconnect');
     }
-
     _focus() {
       this.item(this.fireAncestors("$BluetoothParams"));
     }
-
     static _states() {
       return [class ConnectDisconnect extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           // this.tag('Pairing').text = "Someting is wrong " + _item.name
           if (_item.connected) {
@@ -43205,11 +40047,9 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
         _handleRight() {
           this._setState('Unpair');
         }
-
         _focus() {
           this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
             color: CONFIG.theme.hex
@@ -43220,7 +40060,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('BluetoothPair.Buttons.ConnectDisconnect').patch({
             color: 0xFFFFFFFF
@@ -43231,31 +40070,25 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Unpair extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Unpair')
           Router.navigate('settings/bluetooth', {
             action: 'Unpair'
           });
         }
-
         _handleRight() {
           this._setState('Cancel');
         }
-
         _handleLeft() {
           this._setState('ConnectDisconnect');
         }
-
         _focus() {
           this.tag('Unpair').patch({
             color: CONFIG.theme.hex
@@ -43266,7 +40099,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Unpair').patch({
             color: 0xFFFFFFFF
@@ -43277,27 +40109,22 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }, class Cancel extends this {
         $enter() {
           this._focus();
         }
-
         _handleEnter() {
           //this.fireAncestors('$pressEnter', 'Cancel')
           Router.navigate('settings/bluetooth', {
             action: 'Cancel'
           });
         }
-
         _handleLeft() {
           this._setState('Unpair');
         }
-
         _focus() {
           this.tag('Cancel').patch({
             color: CONFIG.theme.hex
@@ -43308,7 +40135,6 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         _unfocus() {
           this.tag('Cancel').patch({
             color: 0xFF7D7D7D
@@ -43319,14 +40145,11 @@ var APP_accelerator_home_ui = (function () {
             }
           });
         }
-
         $exit() {
           this._unfocus();
         }
-
       }];
     }
-
   }
 
   /**
@@ -43347,10 +40170,10 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Bluetooth screen.
    */
-
   class BluetoothScreen extends lng$1.Component {
     static _template() {
       return {
@@ -43471,35 +40294,28 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
+
     /**
      * @param {{ action: String; }} args
      */
-
-
     set params(args) {
       if (args.action) {
         this.pressEnter(args.action);
       }
     }
-
     _unfocus() {
       this._disable();
     }
-
     pageTransition() {
       return 'left';
     }
-
     _firstEnable() {
       this._bt = new BluetoothApi();
       this._bluetooth = false;
-
       this._activateBluetooth();
-
-      this._setState('Switch'); //this.switch()
+      this._setState('Switch');
+      //this.switch()
       //this._bluetooth = false
-
-
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
       this.renderDeviceList();
@@ -43518,53 +40334,43 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _focus() {
-      //this.widgets.menu.setPanelsVisibility()
       this._setState('AddADevice');
-
       this._enable();
-
       if (this._bluetooth) {
         this.tag('Networks').visible = true;
         this.tag('AddADevice').visible = true;
         this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
-        this.renderDeviceList(); //this._bt.startScan()
+        this.renderDeviceList();
+        //this._bt.startScan()
       }
-    } //  _handleBack() {
-    //   this.fireAncestors('$changeState',"Bluetooth")
-    //  }
+    }
 
     /**
      * Function to be excuted when the Bluetooth screen is enabled.
      */
-
-
     _enable() {
       if (this._bluetooth) {
         this._bt.startScan();
       }
-
       this.scanTimer = Registry.setInterval(() => {
         if (this._bluetooth) {
           this._bt.startScan();
         }
       }, 5000);
     }
+
     /**
      * Function to be executed when the Bluetooth screen is disabled from the screen.
      */
-
-
     _disable() {
       Registry.clearInterval(this.scanTimer);
-
       this._bt.stopScan();
     }
+
     /**
      * Function to be executed when add a device is pressed
      */
-
 
     showAvailableDevices() {
       this.tag('Switch').patch({
@@ -43581,7 +40387,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('AvailableNetworks').patch({
         visible: true
-      }); //  this.loadingAnimation.stop()
+      });
+      //  this.loadingAnimation.stop()
       // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
@@ -43604,7 +40411,8 @@ var APP_accelerator_home_ui = (function () {
       });
       this.tag('Confirmation').patch({
         visible: false
-      }); //  this.loadingAnimation.start()
+      });
+      //  this.loadingAnimation.start()
       // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
@@ -43631,7 +40439,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PairingScreen').patch({
         visible: true
       });
-      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$hideTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -43657,7 +40466,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('PairingScreen').patch({
         visible: false
       });
-      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$showTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -43683,7 +40493,8 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Confirmation').patch({
         visible: true
       });
-      this.fireAncestors('$hideTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$hideTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
 
@@ -43709,14 +40520,14 @@ var APP_accelerator_home_ui = (function () {
       this.tag('Confirmation').patch({
         visible: false
       });
-      this.fireAncestors('$showTopPanel'); // this.tag('TopPanel').patch({ alpha: 0 });
+      this.fireAncestors('$showTopPanel');
+      // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
+
     /**
      * Function to render list of Bluetooth devices
      */
-
-
     renderDeviceList() {
       this._bt.getPairedDevices().then(result => {
         this._pairedList = result;
@@ -43733,13 +40544,11 @@ var APP_accelerator_home_ui = (function () {
           };
         });
       });
-
       this._bt.getDiscoveredDevices().then(result => {
         this._discoveredList = result;
         this._otherList = this._discoveredList.filter(device => {
           if (!device.paired) {
             result = this._pairedList.map(a => a.deviceID);
-
             if (result.includes(device.deviceID)) {
               return false;
             } else return device;
@@ -43758,14 +40567,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     pressEnter(option) {
       if (option === 'Cancel') {
         this._setState('Switch');
       } else if (option === 'Pair') {
         this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._availableNetworks.tag('List').element._item.name;
-
           if (result.success) {
             this.widgets.fail.notify({
               title: btName,
@@ -43779,13 +40586,11 @@ var APP_accelerator_home_ui = (function () {
             });
             Router.focusWidget('Fail');
           }
-
           this.hideAvailableDevices();
         });
       } else if (option === 'Connect') {
         this._bt.connect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (!result) {
             this.widgets.fail.notify({
               title: btName,
@@ -43794,7 +40599,6 @@ var APP_accelerator_home_ui = (function () {
             Router.focusWidget('Fail');
           } else {
             this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID);
-
             this.widgets.fail.notify({
               title: btName,
               msg: 'Connection Successful'
@@ -43805,7 +40609,6 @@ var APP_accelerator_home_ui = (function () {
       } else if (option === 'Disconnect') {
         this._bt.disconnect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (!result) {
             this.widgets.fail.notify({
               title: btName,
@@ -43823,7 +40626,6 @@ var APP_accelerator_home_ui = (function () {
       } else if (option === 'Unpair') {
         this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
-
           if (result) {
             this.widgets.fail.notify({
               title: btName,
@@ -43839,107 +40641,85 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       }
-    } //, { bluetoothItem: this._pairedNetworks.tag('List').element._item }
+    }
 
-
+    //, { bluetoothItem: this._pairedNetworks.tag('List').element._item }
     $BluetoothParams() {
       return this._pairedNetworks.tag('List').element._item;
     }
-
     static _states() {
       return [class Switch extends this {
         $enter() {
           this.hideAvailableDevices();
           this.hidePairingScreen();
-
           this.tag('Switch')._focus();
         }
-
         $exit() {
           this.tag('Switch')._unfocus();
         }
-
         _handleDown() {
           this._setState('AddADevice');
         }
-
         _handleEnter() {
           this.switch();
         }
-
       }, class Confirmation extends this {
         $enter() {
           this.showConfirmation();
         }
-
         _getFocused() {
           return this.tag('Confirmation');
         }
-
         $pressOK() {
           this._setState('Switch');
-
           this.hideConfirmation();
         }
-
       }, class PairedDevices extends this {
         $enter() {
           this.hideAvailableDevices();
         }
-
         _getFocused() {
           return this._pairedNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('MyDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('MyDevices', 'up');
         }
-
         _handleEnter() {
           //this.showPairingScreen()
           //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
-          this._setState('BluetoothPairingScreen'); //this._setState('PairingScreen')
-
+          this._setState('BluetoothPairingScreen');
+          //this._setState('PairingScreen')
         }
-
       }, class AvailableDevices extends this {
         _getFocused() {
           return this._availableNetworks.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('AvailableDevices', 'down');
         }
-
         _handleUp() {
           this._navigate('AvailableDevices', 'up');
         }
-
         _handleEnter() {
-          this.pressEnter('Pair'); //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
+          this.pressEnter('Pair');
+          //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
         }
 
         _handleBack() {
           this.hideAvailableDevices();
-
           this._setState('Switch');
         }
-
       }, class AddADevice extends this {
         $enter() {
           this.tag('AddADevice')._focus();
-
           this.hideAvailableDevices();
         }
-
         _handleUp() {
           this._setState('Switch');
         }
-
         _handleDown() {
           if (this._bluetooth) {
             if (this._pairedNetworks.tag('List').length > 0) {
@@ -43949,38 +40729,28 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         }
-
         $exit() {
           this.tag('AddADevice')._unfocus();
         }
-
         _handleEnter() {
           if (this._bluetooth) {
             this.showAvailableDevices();
-
             this._setState('AvailableDevices');
           }
         }
-
       }, class PairingScreen extends this {
         $enter() {
           this._disable();
-
           this._bt.stopScan();
-
           return this.tag('PairingScreen');
         }
-
         _getFocused() {
           return this.tag('PairingScreen');
         }
-
         $exit() {
           this.tag('PairingScreen').visible = false;
-
           this._enable();
         }
-
       }, class BluetoothPairingScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -43988,35 +40758,29 @@ var APP_accelerator_home_ui = (function () {
           this.fireAncestors('$hideBreadCrum');
           this.tag('BluetoothPairingScreen').visible = true;
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('BluetoothPairingScreen');
         }
-
         $exit() {
           this.show();
           this.fireAncestors(' $showBreadCrum');
           this.tag('LiveTvSettings').visible = false;
         }
-
         _handleBack() {
           this._setState('Switch');
         }
-
       }];
     }
+
     /**
      * Function to navigate through the lists in the screen.
      * @param {string} listname
      * @param {string} dir
      */
-
-
     _navigate(listname, dir) {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) ;
@@ -44029,11 +40793,10 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
+
     /**
      * Function to turn on and off Bluetooth.
      */
-
-
     switch() {
       if (this._bluetooth) {
         this._bt.disable().then(result => {
@@ -44054,7 +40817,6 @@ var APP_accelerator_home_ui = (function () {
             this.tag('AddADevice').visible = true;
             this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
             this.renderDeviceList();
-
             this._bt.startScan();
           }
         }).catch(() => {
@@ -44062,30 +40824,24 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
+
     /**
      * Function to activate Bluetooth plugin.
      */
-
-
     _activateBluetooth() {
       this._bt.activate().then(res => {
         console.log(res);
         this._bluetooth = true;
-
         this._bt.registerEvent('onDiscoveredDevice', () => {
           this.renderDeviceList();
         });
-
         this._bt.registerEvent('onPairingRequest', notification => {
           this.respondToPairingRequest(notification.deviceID, 'ACCEPTED');
         });
-
         this._bt.registerEvent('onConnectionChange', notification => {
           this._bt.startScan();
-
           this.renderDeviceList();
           let btName = notification.name;
-
           if (notification.connected) {
             if (this.widgets.fail) {
               this.widgets.fail.notify({
@@ -44104,23 +40860,18 @@ var APP_accelerator_home_ui = (function () {
             }
           }
         });
-
         this._bt.registerEvent('onDiscoveryCompleted', () => {
           this.tag('Searching.Loader').visible = false;
           this.loadingAnimation.stop();
           this.renderDeviceList();
         });
-
         this._bt.registerEvent('onDiscoveryStarted', () => {
           this.loadingAnimation.start();
           this.tag('Searching.Loader').visible = true;
         });
-
         this._bt.registerEvent('onRequestFailed', notification => {
           this._bt.startScan();
-
           this.renderDeviceList();
-
           if (this.widgets.fail) {
             this.widgets.fail.notify({
               title: notification.name,
@@ -44133,17 +40884,15 @@ var APP_accelerator_home_ui = (function () {
         console.log(err);
       });
     }
+
     /**
      * Function to respond to Bluetooth client.
      * @param {number} deviceID
      * @param {string} responseValue
      */
-
-
     respondToPairingRequest(deviceID, responseValue) {
       this._bt.respondToEvent(deviceID, 'onPairingRequest', responseValue);
     }
-
   }
 
   /**
@@ -44164,7 +40913,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const dtvApi$1 = new DTVApi();
+  const dtvApi$2 = new DTVApi();
   const config$3 = {
     host: "127.0.0.1",
     port: 9998,
@@ -44172,17 +40921,17 @@ var APP_accelerator_home_ui = (function () {
   };
   const thunder$3 = thunderJS(config$3);
   const systemcCallsign = "DTV";
+
   /**
    * Class for DVB Scan screen.
    */
-
   class DvbSScan extends lng$1.Component {
     static _template() {
       return {
-        rect: true,
-        //color: 0xff000000,
-        w: 1920,
-        h: 1080,
+        //  rect: true,
+        //  //color: 0xff000000,
+        //  w: 1920,
+        //  h: 1080,
         DvbSScanScreenContents: {
           x: 200,
           y: 275,
@@ -44505,10 +41254,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState("Satellite");
-
       this.preventExit = false;
       this.selectedSatellite = {};
       this.selectedFrequency = "";
@@ -44516,7 +41263,6 @@ var APP_accelerator_home_ui = (function () {
       this.selectedSymbolRate = "";
       this.selectedFEC = "";
       this.selectedDVBS2 = false; //default value is false
-
       this.selectedModulation = "";
       this.selectedSearchType = "";
       this.selectedRetune = false; //default value is set to false
@@ -44549,14 +41295,12 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     setScanInProgress() {
       this.preventExit = true;
       this.loadingAnimation.start();
       this.inProgressAnimation.start();
       this.tag("ScanProgress").visible = true;
     }
-
     setScanFinished() {
       this.preventExit = false;
       this.loadingAnimation.stop();
@@ -44564,7 +41308,6 @@ var APP_accelerator_home_ui = (function () {
       this.tag("ScanProgress").visible = false;
       this.tag("ScanProgress.Title").visible = false;
     }
-
     _captureKey() {
       if (this.preventExit) {
         this.tag("ScanProgress.Title").visible = true;
@@ -44573,19 +41316,16 @@ var APP_accelerator_home_ui = (function () {
         return false;
       }
     }
-
     consoleLog() {
       //log it everywhere
       console.log("selectedSatellite: ", JSON.stringify(this.selectedSatellite), " selectedFrequency: ", this.selectedFrequency, " selectedPolarity: ", this.selectedPolarity, " selectedSymbolRate: ", this.selectedSymbolRate, " selectedFEC: ", this.selectedFEC, " selectedDVBS2: ", this.selectedDVBS2, " selectedModulation: ", this.selectedModulation, " selectedSearchType: ", this.selectedSearchType, " selectedRetune: ", this.selectedRetune);
     }
-
     _focus() {
       // console.log("dvbscan screen in focus");
       this.resetForm();
-
       this._setState("Satellite");
-
-      this.consoleLog(); // console.log(this.satelliteList);
+      this.consoleLog();
+      // console.log(this.satelliteList);
       // console.log(this.polarityList);
       // console.log(this.fecList);
       // console.log(this.modulationList);
@@ -44595,127 +41335,127 @@ var APP_accelerator_home_ui = (function () {
     _firstActive() {
       thunder$3.on(systemcCallsign, "searchstatus", notification => {
         console.log("SearchStatus Notification: ", JSON.stringify(notification));
-
         if (notification.finished) {
           console.log("notification.finished: ", notification.finished);
           this.setScanFinished();
         }
-      }); ///////////////satellite
+      });
+
+      ///////////////satellite
 
       this.satelliteList = [];
-      dtvApi$1.satelliteList().then(res => {
+      dtvApi$2.satelliteList().then(res => {
         this.satelliteList = res;
-      }); ///////////////////polarity
+      });
+
+      ///////////////////polarity
 
       this.polarityList = [];
-      dtvApi$1.polarityList().then(res => {
+      dtvApi$2.polarityList().then(res => {
         this.polarityList = res;
-      }); ///////////////////symbolRate
-      //symbol rate has some predefined values additional to custom imput
+      });
 
+      ///////////////////symbolRate
+      //symbol rate has some predefined values additional to custom imput
       this.symbolRateList = [];
-      dtvApi$1.symbolRateList().then(res => {
+      dtvApi$2.symbolRateList().then(res => {
         this.symbolRateList = res;
-      }); ////////////////////FEC
+      });
+
+      ////////////////////FEC
 
       this.fecList = [];
-      dtvApi$1.fecList().then(res => {
+      dtvApi$2.fecList().then(res => {
         this.fecList = res;
-      }); ///////////////////modulation
+      });
+
+      ///////////////////modulation
 
       this.modulationList = [];
-      dtvApi$1.modulationList().then(res => {
+      dtvApi$2.modulationList().then(res => {
         this.modulationList = res;
-      }); ///////////////////searchtype
+      });
+
+      ///////////////////searchtype
 
       this.searchtypeList = [];
-      dtvApi$1.searchtypeList().then(res => {
+      dtvApi$2.searchtypeList().then(res => {
         this.searchtypeList = res;
       });
     }
-
     _handleBack() {
       this.resetForm();
-      Router.navigate("settings/livetv/scan");
+      return false; //so that handleBack of parent is also executed.
     }
 
     $getSatelliteList() {
       return this.satelliteList;
     }
-
     $setSatellite(satellite) {
-      this.selectedSatellite = satellite; //this.consoleLog();
+      this.selectedSatellite = satellite;
+      //this.consoleLog();
     }
 
     $getSelectedSatellite() {
       return this.selectedSatellite;
     }
-
     $getPolarityList() {
       return this.polarityList;
     }
-
     $setPolarity(polarity) {
-      this.selectedPolarity = polarity; //this.consoleLog();
+      this.selectedPolarity = polarity;
+      //this.consoleLog();
     }
 
     $getSelectedPolarity() {
       return this.selectedPolarity;
     }
-
     $getFECList() {
       return this.fecList;
     }
-
     $setFEC(fec) {
-      this.selectedFEC = fec; //this.consoleLog();
+      this.selectedFEC = fec;
+      //this.consoleLog();
     }
 
     $getSelectedFEC() {
       return this.selectedFEC;
     }
-
     $getModulationList() {
       return this.modulationList;
     }
-
     $setModulation(modulation) {
-      this.selectedModulation = modulation; //this.consoleLog();
+      this.selectedModulation = modulation;
+      //this.consoleLog();
     }
 
     $getSelectedModulation() {
       return this.selectedModulation;
     }
-
     $getSearchTypeList() {
       return this.searchtypeList;
     }
-
     $setSearchType(searchtype) {
-      this.selectedSearchType = searchtype; //this.consoleLog();
+      this.selectedSearchType = searchtype;
+      //this.consoleLog();
     }
 
     $getSelectedSearchType() {
       return this.selectedSearchType;
     }
-
     setFrequency(frequency) {
       this._setState("Frequency");
-
       this.selectedFrequency = frequency;
       this.tag("Frequency.Title").text.text = Language.translate("Frequency") + ": " + (this.selectedFrequency !== "" ? this.selectedFrequency : Language.translate("Select a") + " " + Language.translate("Frequency"));
     }
-
     setSymbolRate(symbolrate) {
       this._setState("SymbolRate");
-
       this.selectedSymbolRate = symbolrate;
       this.tag("SymbolRate.Title").text.text = Language.translate("Symbol Rate") + ": " + (this.selectedSymbolRate !== "" ? this.selectedSymbolRate : Language.translate("Select a") + " " + Language.translate("Symbol Rate"));
     }
-
     resetForm() {
-      this.setScanFinished(); //reset the form variables to initial state on exit from this form
-
+      this.setScanFinished();
+      //reset the form variables to initial state on exit from this form
       this.selectedSatellite = {};
       this.tag("Satellite.Title").text.text = Language.translate("Satellite");
       this.selectedFrequency = "";
@@ -44736,208 +41476,166 @@ var APP_accelerator_home_ui = (function () {
       this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       this.tag("ErrorNotification").visible = false;
     }
-
     verifyInputs() {
       let errorString = "";
-
       if (Object.keys(this.selectedSatellite).length === 0) {
         errorString += "| " + Language.translate("Satellite") + " ";
       }
-
       if (this.selectedFrequency === "") {
         errorString += "| " + Language.translate("Frequency") + " ";
       }
-
       if (this.selectedPolarity === "") {
         errorString += "| " + Language.translate("Polarity") + " ";
       }
-
       if (this.selectedSymbolRate === "") {
         errorString += "| " + Language.translate("Symbol Rate") + " ";
       }
-
       if (this.selectedFEC === "") {
         errorString += "| " + Language.translate("FEC") + " ";
       }
-
       if (this.selectedModulation === "") {
         errorString += "| " + Language.translate("Modulation") + " ";
       }
-
       if (this.selectedSearchType === "") {
         errorString += "| " + Language.translate("Search Mode") + " ";
       }
-
       return errorString;
     }
-
     static _states() {
       return [class Satellite extends this {
         $enter() {
           this.tag("Satellite")._focus();
+          this.tag("Scroller").y = 2; //to reset the scroll to show the first item.
         }
 
         $exit() {
           this.tag("Satellite")._unfocus();
         }
-
         _handleDown() {
           this._setState("Frequency");
         }
-
         _handleEnter() {
           if (this.satelliteList.length > 0) {
             this._setState("Satellite.SelectSatellite");
           } else {
-            dtvApi$1.satelliteList().then(res => {
+            dtvApi$2.satelliteList().then(res => {
               this.satelliteList = res;
             });
           }
         }
-
         static _states() {
           return [class SelectSatellite extends Satellite {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSatellite").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Satellite"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Satellite"), true);
             }
-
             $exit() {
               this.tag("SelectSatellite").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
               this.tag("Satellite.Title").text.text = Language.translate("Satellite") + ": " + (Object.keys(this.selectedSatellite).length !== 0 ? this.selectedSatellite.name : Language.translate("Select a") + " " + Language.translate("Satellite"));
             }
-
             _getFocused() {
               return this.tag("SelectSatellite");
             }
-
             _handleBack() {
               this._setState("Satellite");
             }
-
           }];
         }
-
       }, class Frequency extends this {
         $enter() {
           this.tag("Frequency")._focus();
         }
-
         $exit() {
           this.tag("Frequency")._unfocus();
         }
-
         _handleUp() {
           this._setState("Satellite");
         }
-
         _handleDown() {
           this._setState("Polarity");
         }
-
         _handleEnter() {
           this.tag("SelectFrequency").patch({
             prevVal: this.selectedFrequency,
             //previous value is passed to retain the previously entered value
             onHandleDone: this.setFrequency.bind(this) //pass a function that will be executed when done is clicked on the keyboard
-
           });
 
           this._setState("Frequency.SelectFrequency");
         }
-
         static _states() {
           return [class SelectFrequency extends Frequency {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectFrequency").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Frequency"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Frequency"), true);
             }
-
             $exit() {
               this.tag("SelectFrequency").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
             }
-
             _getFocused() {
               return this.tag("SelectFrequency");
             }
-
             _handleBack() {
               this.setFrequency(this.selectedFrequency);
             }
-
           }];
         }
-
       }, class Polarity extends this {
         $enter() {
           this.tag("Polarity")._focus();
         }
-
         $exit() {
           this.tag("Polarity")._unfocus();
         }
-
         _handleUp() {
           this._setState("Frequency");
         }
-
         _handleDown() {
           this._setState("SymbolRate");
         }
-
         _handleEnter() {
           this._setState("Polarity.SelectPolarity");
         }
-
         static _states() {
           return [class SelectPolarity extends Polarity {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectPolarity").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Polarity"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Polarity"), true);
             }
-
             $exit() {
               this.tag("SelectPolarity").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
               this.tag("Polarity.Title").text.text = Language.translate("Polarity") + ": " + (this.selectedPolarity !== "" ? this.selectedPolarity.charAt(0).toUpperCase() + this.selectedPolarity.slice(1) : Language.translate("Select a") + " " + Language.translate("Polarity"));
             }
-
             _getFocused() {
               return this.tag("SelectPolarity");
             }
-
             _handleBack() {
               this._setState("Polarity");
             }
-
           }];
         }
-
       }, class SymbolRate extends this {
         $enter() {
           this.tag("SymbolRate")._focus();
         }
-
         $exit() {
           this.tag("SymbolRate")._unfocus();
         }
-
         _handleUp() {
           this._setState("Polarity");
         }
-
         _handleDown() {
           this._setState("FEC");
         }
-
         _handleEnter() {
           this.tag("SelectSymbolRate").patch({
             prevVal: this.selectedSymbolRate,
@@ -44945,101 +41643,80 @@ var APP_accelerator_home_ui = (function () {
             onHandleDone: this.setSymbolRate.bind(this),
             //pass a function that will be executed when done is clicked on the keyboard
             presetValues: this.symbolRateList //can handle a list of predefined values that can be selected using arrow keys
-
           });
 
           this._setState("SymbolRate.SelectSymbolRate");
         }
-
         static _states() {
           return [class SelectSymbolRate extends SymbolRate {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSymbolRate").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Symbol Rate"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Symbol Rate"), true);
             }
-
             $exit() {
               this.tag("SelectSymbolRate").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
             }
-
             _getFocused() {
               return this.tag("SelectSymbolRate");
             }
-
             _handleBack() {
               this.setSymbolRate(this.selectedSymbolRate);
             }
-
           }];
         }
-
       }, class FEC extends this {
         $enter() {
           this.tag("FEC")._focus();
         }
-
         $exit() {
           this.tag("FEC")._unfocus();
         }
-
         _handleUp() {
           this._setState("SymbolRate");
         }
-
         _handleDown() {
           this._setState("DVBS2");
         }
-
         _handleEnter() {
           this._setState("FEC.SelectFEC");
         }
-
         static _states() {
           return [class SelectFEC extends FEC {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectFEC").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("FEC"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("FEC"), true);
             }
-
             $exit() {
               this.tag("SelectFEC").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
               this.tag("FEC.Title").text.text = Language.translate("FEC") + ": " + (this.selectedFEC !== "" ? this.selectedFEC.replace("fec", "").replace("_", "/").toUpperCase() : Language.translate("Select a") + " " + Language.translate("FEC"));
             }
-
             _getFocused() {
               return this.tag("SelectFEC");
             }
-
             _handleBack() {
               this._setState("FEC");
             }
-
           }];
         }
-
       }, class DVBS2 extends this {
         $enter() {
           this.tag("DVBS2")._focus();
         }
-
         $exit() {
           this.tag("DVBS2")._unfocus();
         }
-
         _handleUp() {
           this._setState("FEC");
         }
-
         _handleDown() {
           this._setState("Modulation");
         }
-
         _handleEnter() {
           if (!this.selectedDVBS2) {
             this.selectedDVBS2 = true;
@@ -45049,126 +41726,97 @@ var APP_accelerator_home_ui = (function () {
             this.tag("DVBS2.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
-
       }, class Modulation extends this {
         $enter() {
           this.tag("Modulation")._focus();
         }
-
         $exit() {
           this.tag("Modulation")._unfocus();
         }
-
         _handleUp() {
           this._setState("DVBS2");
         }
-
         _handleDown() {
           this.tag("Scroller").y = -88;
-
           this._setState("SearchType");
         }
-
         _handleEnter() {
           this._setState("Modulation.SelectModulation");
         }
-
         static _states() {
           return [class SelectModulation extends Modulation {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectModulation").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Modulation"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Modulation"), true);
             }
-
             $exit() {
               this.tag("SelectModulation").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
               this.tag("Modulation.Title").text.text = Language.translate("Modulation") + ": " + (this.selectedModulation !== "" ? this.selectedModulation.toUpperCase() : Language.translate("Select a") + " " + Language.translate("Modulation"));
             }
-
             _getFocused() {
               return this.tag("SelectModulation");
             }
-
             _handleBack() {
               this._setState("Modulation");
             }
-
           }];
         }
-
       }, class SearchType extends this {
         $enter() {
           this.tag("SearchType")._focus();
         }
-
         $exit() {
           this.tag("SearchType")._unfocus();
         }
-
         _handleUp() {
           this.tag("Scroller").y = 2;
-
           this._setState("Modulation");
         }
-
         _handleDown() {
           this.tag("Scroller").y = -178;
-
           this._setState("Retune");
         }
-
         _handleEnter() {
           this._setState("SearchType.SelectSearchType");
         }
-
         static _states() {
           return [class SelectSearchType extends SearchType {
             $enter() {
               this.tag("DvbSScanScreenContents").visible = false;
               this.tag("SelectSearchType").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Search Mode"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan") + " / " + Language.translate("Search Mode"), true);
             }
-
             $exit() {
               this.tag("SelectSearchType").visible = false;
               this.tag("DvbSScanScreenContents").visible = true;
-              this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan"));
+              this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"), true);
               this.tag("SearchType.Title").text.text = Language.translate("Search Mode") + ": " + (this.selectedSearchType !== "" ? this.selectedSearchType.charAt(0).toUpperCase() + this.selectedSearchType.slice(1) : Language.translate("Select a") + " " + Language.translate("Search Mode"));
             }
-
             _getFocused() {
               return this.tag("SelectSearchType");
             }
-
             _handleBack() {
               this._setState("SearchType");
             }
-
           }];
         }
-
       }, class Retune extends this {
         $enter() {
           this.tag("Retune")._focus();
         }
-
         $exit() {
           this.tag("Retune")._unfocus();
         }
-
         _handleUp() {
           this.tag("Scroller").y = -88;
-
           this._setState("SearchType");
         }
-
         _handleDown() {
           this._setState("StartScan");
         }
-
         _handleEnter() {
           if (!this.selectedRetune) {
             this.selectedRetune = true;
@@ -45178,25 +41826,20 @@ var APP_accelerator_home_ui = (function () {
             this.tag("Retune.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
           }
         }
-
       }, class StartScan extends this {
         $enter() {
           this.tag("StartScan").color = CONFIG.theme.hex;
           this.tag("StartScan.Title").text.textColor = 0xffffffff;
         }
-
         $exit() {
           this.tag("StartScan").color = 0xffffffff;
           this.tag("StartScan.Title").text.textColor = 0xff000000;
         }
-
         _handleUp() {
           this._setState("Retune");
         }
-
         _handleEnter() {
           let errorString = this.verifyInputs();
-
           if (errorString === "") {
             this.tag("ErrorNotification").visible = false;
             let serviceSearchParams = {
@@ -45215,7 +41858,7 @@ var APP_accelerator_home_ui = (function () {
               }
             };
             console.log(JSON.stringify(serviceSearchParams));
-            dtvApi$1.startServiceSearch(serviceSearchParams).then(res => {
+            dtvApi$2.startServiceSearch(serviceSearchParams).then(res => {
               this.setScanInProgress();
               console.log(res);
               setTimeout(() => {
@@ -45227,10 +41870,8 @@ var APP_accelerator_home_ui = (function () {
             this.tag("ErrorNotification").visible = true;
           }
         }
-
       }];
     }
-
   }
 
   /**
@@ -45251,17 +41892,17 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Live TV Scan screen.
    */
-
   class LiveTVScan extends lng$1.Component {
     static _template() {
       return {
-        rect: true,
-        //color: 0xff000000,
-        w: 1920,
-        h: 1080,
+        // rect: true,
+        // //color: 0xff000000,
+        // w: 1920,
+        // h: 1080,
         LiveTVScanScreenContents: {
           x: 200,
           y: 275,
@@ -45345,93 +41986,81 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState('SScan');
     }
-
     _focus() {
       this._setState('SScan');
     }
-
+    hide() {
+      this.tag("LiveTVScanScreenContents").visible = false;
+    }
+    show() {
+      this.tag("LiveTVScanScreenContents").visible = true;
+    }
     static _states() {
       return [class TScan extends this {
         $enter() {
           this.tag('TScan')._focus();
         }
-
         $exit() {
           this.tag('TScan')._unfocus();
         }
-
         _handleDown() {
           this._setState('CScan');
         }
-
-        _handleEnter() {//Router.navigate()
+        _handleEnter() {
+          //Router.navigate()
         }
-
       }, class CScan extends this {
         $enter() {
           this.tag('CScan')._focus();
         }
-
         $exit() {
           this.tag('CScan')._unfocus();
         }
-
         _handleUp() {
           this._setState('TScan');
         }
-
         _handleDown() {
           this._setState('SScan');
         }
-
-        _handleEnter() {// Router.navigate()
+        _handleEnter() {
+          // Router.navigate()
         }
-
       }, class SScan extends this {
         $enter() {
           this.tag('SScan')._focus();
         }
-
         $exit() {
           this.tag('SScan')._unfocus();
         }
-
-        _handleUp() {// this._setState('CScan')
+        _handleUp() {
+          // this._setState('CScan')
         }
-
         _handleEnter() {
-          this._setState("DvbSScan"); //Router.navigate('settings/livetv/scan/dvb-s-scan')
-
+          this._setState("DvbSScan");
+          //Router.navigate('settings/livetv/scan/dvb-s-scan')
         }
-
       }, class DvbSScan extends this {
         $enter() {
           this.hide();
           this.tag('DvbSScan').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan / DVB-S Scan');
         }
-
         $exit() {
           this.show();
           this.tag('DvbSScan').visible = false;
-          this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan /');
+          this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan');
         }
-
         _getFocused() {
           return this.tag('DvbSScan');
         }
-
         _handleBack() {
           this._setState('SScan');
         }
-
       }];
     }
-
   }
 
   /**
@@ -45457,14 +42086,13 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for Live TV settings screen.
    */
-
   class LiveTVSettings extends lng$1.Component {
     static _template() {
       return {
-        rect: true,
-        // color: 0x00000000,
-        w: 1920,
-        h: 1080,
+        //  rect: true,
+        // // color: 0x00000000,
+        //  w: 1920,
+        //  h: 1080,
         LiveTVSettingsScreenContents: {
           x: 200,
           y: 275,
@@ -45522,43 +42150,42 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._setState("Activate");
     }
-
     _firstActive() {
       this.dtvApi = new DTVApi();
     }
-
     _focus() {
       this._setState(this.state);
-
       if (active) {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOffWhite.png");
       }
     }
-
-    _handleBack() {
-      Router.navigate("settings");
+    hide() {
+      this.tag("LiveTVSettingsScreenContents").visible = false;
     }
+    show() {
+      this.tag("LiveTVSettingsScreenContents").visible = true;
+    }
+
+    //  _handleBack() {
+    //    Router.navigate("settings");
+    //  }
 
     static _states() {
       return [class Activate extends this {
         $enter() {
           this.tag("Activate")._focus();
         }
-
         $exit() {
           this.tag("Activate")._unfocus();
         }
-
         _handleDown() {
           this._setState("Scan");
         }
-
         _handleEnter() {
           if (active) {
             this.dtvApi.deactivate().then(res => {
@@ -45574,49 +42201,39 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class Scan extends this {
         $enter() {
           this.tag("Scan")._focus();
         }
-
         $exit() {
           this.tag("Scan")._unfocus();
         }
-
         _handleUp() {
           this._setState("Activate");
         }
-
         _handleEnter() {
-          this._setState("LiveTvScanOverlay"); //Router.navigate("settings/livetv/scan");
-
+          this._setState("LiveTvScanOverlay");
+          //Router.navigate("settings/livetv/scan");
         }
-
       }, class LiveTvScanOverlay extends this {
         $enter() {
           this.hide();
           this.tag('LiveTvScanOverlay').visible = true;
           this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan');
         }
-
         $exit() {
           this.show();
           this.tag('LiveTvScanOverlay').visible = false;
           this.fireAncestors('$updatePageTitle', 'Settings / Live TV ');
         }
-
         _getFocused() {
           return this.tag('LiveTvScanOverlay');
         }
-
         _handleBack() {
           this._setState('Scan');
         }
-
       }];
     }
-
   }
 
   /**
@@ -45656,7 +42273,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this.lastElement = false;
       this.options = [{
@@ -45680,17 +42296,14 @@ var APP_accelerator_home_ui = (function () {
       }];
       this.tag('List').h = this.options.length * 90;
       let timeoutInterval = Storage.get('TimeoutInterval');
-
       if (!timeoutInterval) {
         timeoutInterval = 'Off';
       }
-
       let index = 0;
       this.tag('List').items = this.options.map((item, id) => {
         if (timeoutInterval === item.value) {
           index = id;
         }
-
         return {
           w: 1920 - 300,
           h: 90,
@@ -45704,42 +42317,39 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.error("error while registering the inactivity monitoring event");
       });
-
       this._setState('Options');
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/other')
     //  }
-
 
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
         _handleEnter() {
           this.options.forEach((element, idx) => {
             //if (element.tick) {
-            this.tag('List').getElement(idx).tag('Tick').visible = false; //this.options[idx].tick = false
+            this.tag('List').getElement(idx).tag('Tick').visible = false;
+            //this.options[idx].tick = false
             //}
           });
-          this.tag('List').element.tag('Tick').visible = true; //this.options[this.tag('List').index].tick = true
 
+          this.tag('List').element.tag('Tick').visible = true;
+          //this.options[this.tag('List').index].tick = true
           this.fireAncestors('$sleepTimerText', this.options[this.tag('List').index].value);
           this.fireAncestors('$resetSleepTimer', this.options[this.tag('List').index].value);
         }
-
       }];
     }
-
   }
 
   /**
@@ -45789,7 +42399,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     $resetPrevTickObject(prevTicObject) {
       if (!this.prevTicOb) {
         this.prevTicOb = prevTicObject;
@@ -45797,31 +42406,29 @@ var APP_accelerator_home_ui = (function () {
         this.prevTicOb.tag("Item.Tick").visible = false;
         this.prevTicOb = prevTicObject;
       }
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/other')
     //  }
-
 
     static _states() {
       return [class Options extends this {
         _getFocused() {
           return this.tag('List').element;
         }
-
         _handleDown() {
           this.tag('List').setNext();
         }
-
         _handleUp() {
           this.tag('List').setPrevious();
         }
-
         _handleEnter() {
           // this.tag("List").element.patch({ "Item.Tick.visible": true });
-          this.tag("List").element.tag("Tick").visible = true; // enable the tick mark in VideoAudioItem.js
+          this.tag("List").element.tag("Tick").visible = true;
+          // enable the tick mark in VideoAudioItem.js
           //to update the resolution value on Video Screen
         }
-
       }];
     }
 
@@ -45845,24 +42452,20 @@ var APP_accelerator_home_ui = (function () {
         }]
       });
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
       }
     }
-
     _focus() {
       this.loadingAnimation.start();
       var standbyMode = "";
-
       this._appApi.getPreferredStandbyMode().then(result => {
         if (result.preferredStandbyMode == "LIGHT_SLEEP") {
           standbyMode = Language.translate("Light Sleep");
         } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
           standbyMode = Language.translate("Deep Sleep");
         }
-
         this.tag('List').items = this.options.map((item, index) => {
           return {
             ref: 'Option' + index,
@@ -45876,11 +42479,9 @@ var APP_accelerator_home_ui = (function () {
         });
         this.loadingAnimation.stop();
         this.tag('Loader').visible = false;
-
         this._setState("Options");
       });
     }
-
   }
 
   /**
@@ -45932,7 +42533,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._Languages = this.tag('LanguageScreenContents.Languages');
       this._Languages.h = availableLanguages.length * 90;
@@ -45961,30 +42561,26 @@ var APP_accelerator_home_ui = (function () {
         console.log('Error', err);
       });
     }
-
     _focus() {
       this._setState('Languages');
-    } //    _handleBack() {
+    }
+
+    //    _handleBack() {
     //      Router.navigate('settings/other')
     //    }
-
 
     static _states() {
       return [class Languages extends this {
         $enter() {}
-
         _getFocused() {
           return this._Languages.tag('List').element;
         }
-
         _handleDown() {
           this._navigate('down');
         }
-
         _handleUp() {
           this._navigate('up');
         }
-
         _handleEnter() {
           if (localStorage.getItem('Language') !== availableLanguages[this._Languages.tag('List').index]) {
             localStorage.setItem('Language', availableLanguages[this._Languages.tag('List').index]);
@@ -45997,20 +42593,16 @@ var APP_accelerator_home_ui = (function () {
             location.reload();
           }
         }
-
       }];
     }
-
     _navigate(dir) {
       let list = this._Languages.tag('List');
-
       if (dir === 'down') {
         if (list.index < list.length - 1) list.setNext();
       } else if (dir === 'up') {
         if (list.index > 0) list.setPrevious();
       }
     }
-
   }
 
   /**
@@ -46070,22 +42662,21 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _handleDown() {
       if (this.tag("PrivacyPolicy").y > -2400) {
         this.tag("PrivacyPolicy").y -= 35;
       }
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/other/privacy')
     //  }
-
 
     _handleUp() {
       if (this.tag("PrivacyPolicy").y <= 235) {
         this.tag("PrivacyPolicy").y += 35;
       }
     }
-
   }
 
   /**
@@ -46235,22 +42826,17 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       this._setState('LocalDeviceDiscovery');
-
       this.checkLocalDeviceStatus();
       this.USBApi = new UsbApi();
       this.AppApi = new AppApi();
     }
-
     _focus() {
       this._setState(this.state);
-
       this.checkLocalDeviceStatus();
       this.checkUSBDeviceStatus();
     }
-
     checkUSBDeviceStatus() {
       if (!Storage.get('UsbMedia')) {
         this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
@@ -46261,7 +42847,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('UsbMediaDevices.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       }
     }
-
     checkLocalDeviceStatus() {
       xcastApi.getEnabled().then(res => {
         if (res.enabled) {
@@ -46273,7 +42858,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
-
     toggleLocalDeviceDiscovery() {
       xcastApi.getEnabled().then(res => {
         if (!res.enabled) {
@@ -46294,57 +42878,44 @@ var APP_accelerator_home_ui = (function () {
         this.tag('LocalDeviceDiscovery.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
       });
     }
-
     hide() {
       this.tag('PrivacyScreenContents').visible = false;
     }
-
     show() {
       this.tag('PrivacyScreenContents').visible = true;
     }
-
     static _states() {
       return [class LocalDeviceDiscovery extends this {
         $enter() {
           this.tag('LocalDeviceDiscovery')._focus();
         }
-
         $exit() {
           this.tag('LocalDeviceDiscovery')._unfocus();
         }
-
         _handleUp() {
           this._setState('PrivacyPolicy');
         }
-
         _handleDown() {
           this._setState('UsbMediaDevices');
         }
-
         _handleEnter() {
           this.toggleLocalDeviceDiscovery();
         }
-
       }, class UsbMediaDevices extends this {
         $enter() {
           this.tag('UsbMediaDevices')._focus();
         }
-
         $exit() {
           this.tag('UsbMediaDevices')._unfocus();
         }
-
         _handleUp() {
           this._setState('LocalDeviceDiscovery');
         }
-
         _handleDown() {
           this._setState('AudioInput');
         }
-
         _handleEnter() {
           let _UsbMedia = Storage.get('UsbMedia');
-
           if (_UsbMedia === 'ON') {
             this.fireAncestors('$deRegisterUsbMount');
             this.USBApi.deactivate().then(res => {
@@ -46364,71 +42935,57 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class AudioInput extends this {
         $enter() {
           this.tag('AudioInput')._focus();
         }
-
         $exit() {
           this.tag('AudioInput')._unfocus();
         }
-
         _handleUp() {
           this._setState('UsbMediaDevices');
         }
-
         _handleDown() {
           this._setState('ClearCookies');
         }
-
-        _handleEnter() {// 
+        _handleEnter() {
+          // 
         }
-
       }, class ClearCookies extends this {
         $enter() {
           this.tag('ClearCookies')._focus();
         }
-
         $exit() {
           this.tag('ClearCookies')._unfocus();
         }
-
         _handleUp() {
           this._setState('AudioInput');
         }
-
         _handleDown() {
           this._setState('PrivacyPolicy');
         }
-
         _handleEnter() {
-          this.AppApi.clearCache().then(() => {//location.reload(true)
+          this.AppApi.clearCache().then(() => {
+            //location.reload(true)
           });
         }
-
       }, class PrivacyPolicy extends this {
         $enter() {
           this.tag('PrivacyPolicy')._focus();
         }
-
         $exit() {
           this.tag('PrivacyPolicy')._unfocus();
         }
-
         _handleUp() {
           this._setState('ClearCookies');
         }
-
         _handleDown() {
           this._setState('LocalDeviceDiscovery');
         }
-
         _handleEnter() {
-          this._setState("PrivacyPolicyScreen"); //Router.navigate('settings/other/privacyPolicy')
-
+          this._setState("PrivacyPolicyScreen");
+          //Router.navigate('settings/other/privacyPolicy')
         }
-
       }, class PrivacyPolicyScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -46436,25 +42993,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('PrivacyPolicyScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Privacy  Policy');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('PrivacyPolicyScreen');
         }
-
         $exit() {
           this.show();
           this.tag('PrivacyPolicyScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('PrivacyPolicy');
         }
-
       }];
     }
-
   }
 
   /**
@@ -46475,6 +43027,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+
   /**
    * Class for Video and Audio screen.
    */
@@ -46692,15 +43245,12 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._network = new Network();
       this.appApi = new AppApi();
     }
-
     _focus() {
       this._setState('DeviceInformationScreen');
-
       this.appApi.getSerialNumber().then(result => {
         this.tag("SerialNumber.Value").text.text = "".concat(result.serialNumber);
       });
@@ -46714,7 +43264,6 @@ var APP_accelerator_home_ui = (function () {
         var drms = "";
         result.forEach(element => {
           drms += "".concat(element.name, " :");
-
           if (element.keysystems) {
             drms += "\t";
             element.keysystems.forEach(keySystem => {
@@ -46727,45 +43276,40 @@ var APP_accelerator_home_ui = (function () {
         });
         this.tag('SupportedDRM.Value').text.text = "".concat(drms.substring(0, drms.length - 1));
       });
-
       this._network.isConnectedToInternet().then(result => {
         if (result.connectedToInternet === true) {
           this.appApi.getLocation().then(result => {
             console.log("getLocation from device info " + JSON.stringify(result));
             var locationInfo = "";
-
             if (result.city.length !== 0) {
               locationInfo = "City: " + result.city;
             } else {
               locationInfo = "City: N/A ";
             }
-
             if (result.country.length !== 0) {
               locationInfo += ", Country: " + result.country;
             } else {
               locationInfo += ", Country: N/A ";
             }
-
             this.tag('Location.Value').text.text = "".concat(locationInfo);
           });
         } else {
           this.tag('Location.Value').text.text = "City: N/A, Country: N/A";
         }
       });
-
       this.appApi.getDeviceIdentification().then(result => {
         console.log('from device Information screen getDeviceIdentification: ' + JSON.stringify(result));
-        this.tag('ChipSet.Value').text.text = "".concat(result.chipset); // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
+        this.tag('ChipSet.Value').text.text = "".concat(result.chipset);
+        // this.tag('FirmwareVersions.Value').text.text = `${result.firmwareversion}`
       });
-      let self = this;
 
+      let self = this;
       if (Storage.get('Netflix_ESN')) {
         self.tag('AppVersions.Value').text.text = "Youtube: NA\nAmazon Prime: NA\nNetflix ESN: ".concat(Storage.get('Netflix_ESN'));
       } else {
         self.appApi.getPluginStatus('Netflix').then(result => {
           let sel = self;
           console.log("Netflix : plugin status : ", JSON.stringify(result));
-
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             sel.appApi.launchPremiumAppInSuspendMode("Netflix").then(res => {
               console.log("Netflix : netflix launch for esn value in suspend mode returns : ", JSON.stringify(res));
@@ -46793,30 +43337,27 @@ var APP_accelerator_home_ui = (function () {
           console.error("Netflix : error while getting netflix plugin status ie. ", JSON.stringify(err));
         });
       }
-
       this.appApi.registerChangeLocation();
     }
-
     set netflixESN(v) {
       console.log("setting netflix ESN value to ".concat(v));
       this.tag('AppVersions.Value').text.text = v;
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/advanced/device')
     //  }
-
 
     _handleDown() {
       if (this.tag("DeviceInfoContents").y > 215) {
         this.tag("DeviceInfoContents").y -= 20;
       }
     }
-
     _handleUp() {
       if (this.tag("DeviceInfoContents").y < 275) {
         this.tag("DeviceInfoContents").y += 20;
       }
     }
-
   }
 
   class TimeZone extends lng$1.Component {
@@ -46828,7 +43369,6 @@ var APP_accelerator_home_ui = (function () {
         this._firstEnable();
       }
     }
-
     static _template() {
       return {
         rect: true,
@@ -46874,7 +43414,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     async _firstEnable() {
       this.loadingAnimation = this.tag('Loader').animation({
         duration: 3,
@@ -46896,11 +43435,9 @@ var APP_accelerator_home_ui = (function () {
       this.resp = await this.appApi.fetchTimeZone();
       let data = [];
       this.zone = await this.appApi.getZone();
-
       try {
         console.log(this.resp, this.zone);
         delete this.resp.Etc;
-
         for (const i in this.resp) {
           if (typeof this.resp[i] === 'object') {
             data.push([i, this.resp[i], this.zone !== undefined ? this.zone.split('/')[0] === i : false]);
@@ -46909,9 +43446,7 @@ var APP_accelerator_home_ui = (function () {
       } catch (error) {
         console.log('no api present', error);
       }
-
       console.log(data);
-
       if (data.length > 1) {
         this.tag('List').h = data.length * 90;
         this.tag('List').items = data.map((item, idx) => {
@@ -46927,37 +43462,32 @@ var APP_accelerator_home_ui = (function () {
       } else {
         this.tag('Error').alpha = 1;
       }
-
       this.loadingAnimation.stop();
       this.tag('Loader').visible = false;
     }
-
     _getFocused() {
       return this.tag('List').element;
     }
-
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
         this.loadingAnimation.stop();
         this.tag('Loader').visible = false;
       }
     }
-
     _handleDown() {
       this.tag('List').setNext();
     }
-
     _handleUp() {
       this.tag('List').setPrevious();
-    } // _handleBack() {
+    }
+
+    // _handleBack() {
     //     Router.navigate('settings/advanced/device')
     // }
-
 
     static _states() {
       return [];
     }
-
   }
 
   /**
@@ -47064,7 +43594,6 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _firstEnable() {
       let state = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
       const config = {
@@ -47079,7 +43608,6 @@ var APP_accelerator_home_ui = (function () {
       }).then(res => {
         thunder.on(callsign, "onFirmwareUpdateStateChange", notification => {
           console.log("Tanjirou's notification : on Firmware update state changed notifcation = ".concat(JSON.stringify(notification)));
-
           if (state[notification.firmwareUpdateStateChange] == "Downloading") {
             this.downloadInterval = setInterval(() => {
               console.log("Downloading...");
@@ -47096,36 +43624,29 @@ var APP_accelerator_home_ui = (function () {
         console.error("error while activating the system plugin");
       });
     }
-
     _unfocus() {
       if (this.downloadInterval) {
         clearInterval(this.downloadInterval);
         this.downloadInterval = null;
       }
     }
-
     _focus() {
       this.downloadInterval = null;
       this._appApi = new AppApi();
       const downloadState = ['Uninitialized', 'Requesting', 'Downloading', 'Failed', 'DownLoad Complete', 'Validation Complete', 'Preparing to Reboot'];
-
       this._appApi.getFirmwareUpdateState().then(res => {
         console.log("getFirmwareUpdateState from firmware screen " + JSON.stringify(res));
         this.tag('State.Title').text.text = Language.translate("Firmware State: ") + downloadState[res.firmwareUpdateState];
       });
-
       this._appApi.getDownloadFirmwareInfo().then(res => {
         console.log("getDownloadFirmwareInfo from firmware screen " + JSON.stringify(res));
         this.tag('Version.Title').text.text = Language.translate("Firmware Versions: ") + res.currentFWVersion;
       });
-
       this._setState('FirmwareUpdate');
     }
-
     getDownloadPercent() {
       this._appApi.getFirmwareDownloadPercent().then(res => {
         console.log("getFirmwareDownloadPercent : ".concat(JSON.stringify(res)));
-
         if (res.downloadPercent < 0) {
           this.tag('DownloadedPercent.Title').text.text = "";
         } else {
@@ -47135,7 +43656,6 @@ var APP_accelerator_home_ui = (function () {
         console.error(err);
       });
     }
-
     getDownloadFirmwareInfo() {
       this._appApi.updateFirmware().then(res => {
         this._appApi.getDownloadFirmwareInfo().then(result => {
@@ -47147,10 +43667,11 @@ var APP_accelerator_home_ui = (function () {
       }).catch(err => {
         console.error(err);
       });
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/advanced/device')
     //  }
-
 
     static _states() {
       return [class FirmwareUpdate extends this {
@@ -47158,10 +43679,8 @@ var APP_accelerator_home_ui = (function () {
           this.getDownloadFirmwareInfo();
           this.getDownloadPercent();
         }
-
       }];
     }
-
   }
 
   /**
@@ -47319,134 +43838,106 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
       this._network = new Network();
-
       this._setState('Info');
     }
-
     _focus() {
       this._setState(this.state);
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings/advanced')
     //  }
-
-
     hide() {
       this.tag('DeviceScreenContents').visible = false;
     }
-
     show() {
       this.tag('DeviceScreenContents').visible = true;
     }
-
     static _states() {
       return [class Info extends this {
         $enter() {
           this.tag('Info')._focus();
         }
-
         $exit() {
           this.tag('Info')._unfocus();
         }
-
         _handleUp() {
           this._setState('Reboot');
         }
-
         _handleDown() {
           this._setState('TimeZone');
         }
-
         _handleEnter() {
-          this._setState("DeviceInformationScreen"); //Router.navigate('settings/advanced/device/info')
-
+          this._setState("DeviceInformationScreen");
+          //Router.navigate('settings/advanced/device/info')
         }
-
       }, class TimeZone extends this {
         $enter() {
           this.tag('TimeZone')._focus();
         }
-
         $exit() {
           this.tag('TimeZone')._unfocus();
         }
-
         _handleUp() {
           this._setState('Info');
         }
-
         _handleDown() {
           this._setState('Firmware');
         }
-
         _handleEnter() {
-          this._setState("TimeZoneOverlay"); //Router.navigate('settings/advanced/device/timezone')
-
+          this._setState("TimeZoneOverlay");
+          //Router.navigate('settings/advanced/device/timezone')
         }
-
       }, class Firmware extends this {
         $enter() {
           this.tag('Firmware')._focus();
         }
-
         $exit() {
           this.tag('Firmware')._unfocus();
         }
-
         _handleUp() {
           this._setState('Info');
         }
-
         _handleDown() {
           this._setState('Reboot');
         }
-
         _handleEnter() {
-          this._setState("FirmwareScreen"); //Router.navigate('settings/advanced/device/firmware')
-
+          this._setState("FirmwareScreen");
+          //Router.navigate('settings/advanced/device/firmware')
         }
-
       }, class Reboot extends this {
         $enter() {
           this.tag('Reboot')._focus();
         }
-
         $exit() {
           this.tag('Reboot')._unfocus();
         }
-
         _handleUp() {
           this._setState('Firmware');
         }
-
         _handleDown() {
           this._setState('Info');
         }
-
         _handleEnter() {
           Router.navigate('settings/advanced/device/reboot');
         }
-
       }, class Reset extends this {
         $enter() {
           this.tag('Reset')._focus();
         }
-
         $exit() {
           this.tag('Reset')._unfocus();
         }
-
-        _handleUp() {//this._setState('Reboot');
+        _handleUp() {
+          //this._setState('Reboot');
         }
-
-        _handleDown() {//this._setState('Info')
+        _handleDown() {
+          //this._setState('Info')
         }
-
         _handleEnter() {}
-
       }, class DeviceInformationScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -47454,23 +43945,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('DeviceInformationScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Info');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('DeviceInformationScreen');
         }
-
         $exit() {
           this.show();
           this.tag('DeviceInformationScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Device ');
         }
-
         _handleBack() {
           this._setState('Info');
         }
-
-      }, //TimeZoneOverlay
+      },
+      //TimeZoneOverlay
       class TimeZoneOverlay extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -47478,22 +43966,18 @@ var APP_accelerator_home_ui = (function () {
           this.tag('TimeZoneOverlay').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Time');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('TimeZoneOverlay');
         }
-
         $exit() {
           this.show();
           this.tag('TimeZoneOverlay').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device ');
         }
-
         _handleBack() {
           this._setState('TimeZone');
         }
-
       }, class FirmwareScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -47501,25 +43985,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('FirmwareScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Firmware Update');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('FirmwareScreen');
         }
-
         $exit() {
           this.show();
           this.tag('FirmwareScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device ');
         }
-
         _handleBack() {
           this._setState('Firmware');
         }
-
       }];
     }
-
   }
 
   /**
@@ -47689,21 +44168,17 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this.cecApi = new CECApi();
       this.cecApi.activate().then(() => {
         this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOnOrange.png');
         this.performOTPAction();
       });
-
       this._setState('CECControl');
     }
-
     _focus() {
       this._setState(this.state);
     }
-
     performOTPAction() {
       this.cecApi.setEnabled().then(res => {
         if (res.success) {
@@ -47715,11 +44190,9 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     toggleCEC() {
       this.cecApi.getEnabled().then(res => {
         console.log(res);
-
         if (res.enabled) {
           this.cecApi.deactivate().then(() => {
             this.tag('CECControl.Button').src = Utils.asset('images/settings/ToggleOffWhite.png');
@@ -47731,125 +44204,102 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-
     hide() {
       this.tag('AdvanceScreenContents').visible = false;
     }
-
     show() {
       this.tag('AdvanceScreenContents').visible = true;
     }
-
     static _states() {
       return [class UIVoice extends this {
         $enter() {
           this.tag('UIVoice')._focus();
         }
-
         $exit() {
           this.tag('UIVoice')._unfocus();
         }
-
-        _handleUp() {//this._setState('Reset');
+        _handleUp() {
+          //this._setState('Reset');
         }
-
-        _handleDown() {//this._setState('TTSOptions')
+        _handleDown() {
+          //this._setState('TTSOptions')
         }
-
         _handleEnter() {}
-
       }, class TTSOptions extends this {
         $enter() {
           this.tag('TTSOptions')._focus();
         }
-
         $exit() {
           this.tag('TTSOptions')._unfocus();
         }
-
-        _handleUp() {//this._setState('UIVoice');
+        _handleUp() {
+          //this._setState('UIVoice');
         }
-
-        _handleDown() {//this._setState('CECControl')
+        _handleDown() {
+          //this._setState('CECControl')
         }
-
         _handleEnter() {}
-
       }, class CECControl extends this {
         $enter() {
           this.tag('CECControl')._focus();
         }
-
         $exit() {
           this.tag('CECControl')._unfocus();
         }
-
-        _handleUp() {//this._setState('TTSOptions');
+        _handleUp() {
+          //this._setState('TTSOptions');
         }
-
         _handleDown() {
           this._setState('Device');
         }
-
         _handleEnter() {
           this.toggleCEC();
         }
-
       }, class Bug extends this {
         $enter() {
           this.tag('Bug')._focus();
         }
-
         $exit() {
           this.tag('Bug')._unfocus();
         }
-
-        _handleUp() {//this._setState('CECControl');
+        _handleUp() {
+          //this._setState('CECControl');
         }
-
-        _handleDown() {//this._setState('Contact')
+        _handleDown() {
+          //this._setState('Contact')
         }
-
         _handleEnter() {}
-
       }, class Contact extends this {
         $enter() {
           this.tag('Contact')._focus();
         }
-
         $exit() {
           this.tag('Contact')._unfocus();
         }
-
-        _handleUp() {//this._setState('Bug');
+        _handleUp() {
+          //this._setState('Bug');
         }
-
-        _handleDown() {//this._setState('Device')
+        _handleDown() {
+          //this._setState('Device')
         }
-
         _handleEnter() {}
-
       }, class Device extends this {
         $enter() {
           this.tag('Device')._focus();
         }
-
         $exit() {
           this.tag('Device')._unfocus();
         }
-
         _handleUp() {
           this._setState('CECControl');
         }
-
-        _handleDown() {//this._setState('UI Voice')
+        _handleDown() {
+          //this._setState('UI Voice')
         }
-
         _handleEnter() {
-          this._setState("DeviceScreen"); // Router.navigate('settings/advanced/device')
-
+          this._setState("DeviceScreen");
+          // Router.navigate('settings/advanced/device')
         }
-
       }, class DeviceScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -47857,25 +44307,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('DeviceScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('DeviceScreen');
         }
-
         $exit() {
           this.show();
           this.tag('DeviceScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('Device');
         }
-
       }];
     }
-
   }
 
   /**
@@ -48103,206 +44548,162 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _init() {
       this._appApi = new AppApi();
-
       this._setState('SleepTimer');
     }
-
     $updateStandbyMode(standbyMode) {
       this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + standbyMode;
     }
-
     $sleepTimerText(text) {
       this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text;
     }
-
     _focus() {
       this._setState(this.state);
-
       if (Storage.get('TimeoutInterval')) {
         this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval');
       } else {
         this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + 'Off';
       }
-
       this._appApi.getPreferredStandbyMode().then(result => {
         var currentStandbyMode = "";
-
         if (result.preferredStandbyMode == "LIGHT_SLEEP") {
           currentStandbyMode = "Light Sleep";
         } else if (result.preferredStandbyMode == "DEEP_SLEEP") {
           currentStandbyMode = "Deep Sleep";
         }
-
         this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode;
       });
-    } //  _handleBack() {
+    }
+
+    //  _handleBack() {
     //      Router.navigate('settings')
     //  }
-
 
     hide() {
       this.tag('OtherSettingsScreenContents').visible = false;
     }
-
     show() {
       this.tag('OtherSettingsScreenContents').visible = true;
     }
-
     static _states() {
       return [class SleepTimer extends this {
         $enter() {
           this.tag('SleepTimer')._focus();
         }
-
         $exit() {
           this.tag('SleepTimer')._unfocus();
         }
-
         _handleUp() {
           this._setState('AdvancedSettings');
         }
-
         _handleDown() {
           // this._setState('RemoteControl')
           this._setState('EnergySaver');
         }
-
         _handleEnter() {
-          this._setState("SleepTimerScreen"); //Router.navigate('settings/other/timer')
-
+          this._setState("SleepTimerScreen");
+          //Router.navigate('settings/other/timer')
         }
-
       }, class RemoteControl extends this {
         $enter() {
           this.tag('RemoteControl')._focus();
         }
-
         $exit() {
           this.tag('RemoteControl')._unfocus();
         }
-
         _handleUp() {
           this._setState('SleepTimer');
         }
-
         _handleDown() {
           this._setState('ScreenSaver');
         }
-
         _handleEnter() {}
-
       }, class ScreenSaver extends this {
         $enter() {
           this.tag('ScreenSaver')._focus();
         }
-
         $exit() {
           this.tag('ScreenSaver')._unfocus();
         }
-
         _handleUp() {
           this._setState('RemoteControl');
         }
-
         _handleDown() {
           this._setState('EnergySaver');
         }
-
-        _handleEnter() {// 
+        _handleEnter() {
+          // 
         }
-
       }, class EnergySaver extends this {
         $enter() {
           this.tag('EnergySaver')._focus();
         }
-
         $exit() {
           this.tag('EnergySaver')._unfocus();
         }
-
         _handleUp() {
           this._setState('SleepTimer');
         }
-
         _handleDown() {
           // this._setState('Theme')
           this._setState('Language');
         }
-
         _handleEnter() {
-          this._setState("EnergySavingsScreen"); // Router.navigate('settings/other/energy')
-
+          this._setState("EnergySavingsScreen");
+          // Router.navigate('settings/other/energy')
         }
-
       }, class Language extends this {
         $enter() {
           this.tag('Language')._focus();
         }
-
         $exit() {
           this.tag('Language')._unfocus();
         }
-
         _handleUp() {
           this._setState('EnergySaver');
         }
-
         _handleDown() {
           this._setState('Privacy');
         }
-
         _handleEnter() {
-          this._setState("LanguageScreen"); //Router.navigate('settings/other/language')
-
+          this._setState("LanguageScreen");
+          //Router.navigate('settings/other/language')
         }
-
       }, class Privacy extends this {
         $enter() {
           this.tag('Privacy')._focus();
         }
-
         $exit() {
           this.tag('Privacy')._unfocus();
         }
-
         _handleUp() {
           this._setState('Language');
         }
-
         _handleDown() {
           this._setState('AdvancedSettings');
         }
-
         _handleEnter() {
-          this._setState("PrivacyScreen"); //Router.navigate('settings/other/privacy')
-
+          this._setState("PrivacyScreen");
+          //Router.navigate('settings/other/privacy')
         }
-
       }, class AdvancedSettings extends this {
         $enter() {
           this.tag('AdvancedSettings')._focus();
         }
-
         $exit() {
           this.tag('AdvancedSettings')._unfocus();
         }
-
         _handleUp() {
           this._setState('Privacy');
         }
-
         _handleDown() {
           this._setState('SleepTimer');
         }
-
         _handleEnter() {
-          this._setState("AdvanceSettingsScreen"); //Router.navigate('settings/advanced')
-
+          this._setState("AdvanceSettingsScreen");
+          //Router.navigate('settings/advanced')
         }
-
       }, class SleepTimerScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -48310,22 +44711,18 @@ var APP_accelerator_home_ui = (function () {
           this.tag('SleepTimerScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Sleep Timer');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('SleepTimerScreen');
         }
-
         $exit() {
           this.show();
           this.tag('SleepTimerScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('SleepTimer');
         }
-
       }, class EnergySavingsScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -48333,23 +44730,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('EnergySavingsScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Energy Saver');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('EnergySavingsScreen');
         }
-
         $exit() {
           this.show();
           this.tag('EnergySavingsScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('EnergySaver');
         }
-
-      }, //LanguageScreen
+      },
+      //LanguageScreen
       class LanguageScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -48357,23 +44751,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('LanguageScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Language');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('LanguageScreen');
         }
-
         $exit() {
           this.show();
           this.tag('LanguageScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('Language');
         }
-
-      }, //PrivacyScreen
+      },
+      //PrivacyScreen
       class PrivacyScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -48381,22 +44772,18 @@ var APP_accelerator_home_ui = (function () {
           this.tag('PrivacyScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Privacy');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('PrivacyScreen');
         }
-
         $exit() {
           this.show();
           this.tag('PrivacyScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('Privacy');
         }
-
       }, class AdvanceSettingsScreen extends this {
         $enter() {
           ////console.log("bpscreen")
@@ -48404,25 +44791,20 @@ var APP_accelerator_home_ui = (function () {
           this.tag('AdvanceSettingsScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings');
         }
-
         _getFocused() {
           //console.log("getfocusedbp")
           return this.tag('AdvanceSettingsScreen');
         }
-
         $exit() {
           this.show();
           this.tag('AdvanceSettingsScreen').visible = false;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
         }
-
         _handleBack() {
           this._setState('AdvancedSettings');
         }
-
       }];
     }
-
   }
 
   /**
@@ -48452,7 +44834,6 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for settings screen.
    */
-
   class SettingsOverlay extends lng$1.Component {
     static _template() {
       return {
@@ -48674,19 +45055,15 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     _focus() {
       this.tag("Wrapper").visible = true;
-
       this._setState("NetworkConfiguration");
-
       this.$updatePageTitle("settings"); //use this method as fireancestor from child components to change the page title
     }
 
     _unfocus() {
       this.tag("Wrapper").visible = false;
     }
-
     _firstActive() {
       if (Storage.get("NFRStatus")) {
         console.log("Netflix : NFRStatus is found to be enabled");
@@ -48695,29 +45072,21 @@ var APP_accelerator_home_ui = (function () {
         console.log("Netflix : NFRStatus is found to be disabled");
         this.tag("NFRStatus.Button").src = "static/images/settings/ToggleOffWhite.png";
       }
-
       this.appApi = new AppApi();
       this.dtvApi = new DTVApi();
       this.dtvPlugin = false; //plugin availability
-
       this.dtvApi.activate().then(res => {
         // if (res){
         this.dtvPlugin = true;
-        this.tag("DTVSettings").alpha = 1; // }
+        this.tag("DTVSettings").alpha = 1;
+        // }
       });
-    }
-
-    $changeState(state) {
-      console.log("check", state);
-
-      this._setState(state);
     }
 
     _handleBack() {
       console.log("application Type = ", Storage.get("applicationType"));
-
-      if (Storage.get("applicationType") == "") {
-        if (Router.getActiveHash() === "player") {
+      if (Storage.get("applicationType") === "") {
+        if (Router.getActiveHash() === "player" || Router.getActiveHash() === "dtvplayer" || Router.getActiveHash() === "usb/player") {
           Router.focusPage();
         } else {
           Router.focusPage();
@@ -48729,175 +45098,142 @@ var APP_accelerator_home_ui = (function () {
         this.appApi.setFocus(Storage.get("applicationType"));
       }
     }
-
-    _handleLeft() {//do nothing
+    _handleLeft() {
+      //do nothing
     }
-
-    _handleRight() {//do nothing
+    _handleRight() {
+      //do nothing
     }
-
-    _handleUp() {//do nothing
+    _handleUp() {
+      //do nothing
     }
-
-    _handleDown() {//do nothing
+    _handleDown() {
+      //do nothing
     }
-
-    $updatePageTitle(title) {
+    $updatePageTitle(title, alreadyTranslated) {
       console.log("title", title);
-      this.tag("BreadCrumbs").text.text = Language.translate(title);
+      if (alreadyTranslated) {
+        this.tag("BreadCrumbs").text.text = title;
+      } else {
+        this.tag("BreadCrumbs").text.text = Language.translate(title);
+      }
     }
-
     hide() {
       this.tag('SettingsScreenContents').visible = false;
     }
-
     show() {
       this.tag('SettingsScreenContents').visible = true;
     }
-
     $hideBreadCrum() {
-      console.log("hide breadcrum");
       this.tag("BreadCrumbs").visible = false;
     }
-
     $showBreadCrum() {
       this.tag("BreadCrumbs").visible = true;
     }
-
     static _states() {
       return [class NetworkConfiguration extends this {
         $enter() {
           this.tag("NetworkConfiguration")._focus();
         }
-
         $exit() {
           this.tag("NetworkConfiguration")._unfocus();
         }
-
         _handleDown() {
           this._setState("Bluetooth");
         }
-
         _handleEnter() {
-          console.log("n/w");
-
-          this._setState('NetworkConfigurationOverlay'); //Router.navigate("settings/network"); //change to state based implementation
-
+          this._setState('NetworkConfigurationOverlay');
+          //Router.navigate("settings/network"); //change to state based implementation
         }
-
       }, class Bluetooth extends this {
         $enter() {
           this.tag("Bluetooth")._focus();
         }
-
         $exit() {
           this.tag("Bluetooth")._unfocus();
         }
-
         _handleUp() {
           this._setState("NetworkConfiguration");
         }
-
         _handleDown() {
           this._setState("Video");
         }
-
         _handleLeft() {}
-
         _handleEnter() {
-          this._setState("BluetoothScreenOverlay"); //    Router.navigate("settings/bluetooth"); ////change to state based implementation
-
+          this._setState("BluetoothScreenOverlay");
+          //    Router.navigate("settings/bluetooth"); ////change to state based implementation
         }
-
       }, class Video extends this {
         $enter() {
           this.tag("Video")._focus();
         }
-
         $exit() {
           this.tag("Video")._unfocus();
         }
-
         _handleUp() {
           this._setState("Bluetooth");
         }
-
         _handleDown() {
           this._setState("Audio");
         }
-
         _handleEnter() {
-          this._setState('VideoScreenOverlay'); //    Router.navigate("settings/video"); //change to state based implementation
-
+          this._setState('VideoScreenOverlay');
+          //    Router.navigate("settings/video"); //change to state based implementation
         }
-
       }, class Audio extends this {
         $enter() {
           this.tag("Audio")._focus();
         }
-
         $exit() {
           this.tag("Audio")._unfocus();
         }
-
         _handleUp() {
           this._setState("Video");
         }
-
         _handleEnter() {
-          this._setState('AudioScreenOverlay'); //    Router.navigate("settings/audio"); //change to state based implementation
-
+          this._setState('AudioScreenOverlay');
+          //    Router.navigate("settings/audio"); //change to state based implementation
         }
 
         _handleDown() {
           this._setState("OtherSettings");
         }
-
       }, class OtherSettings extends this {
         $enter() {
           this.tag("OtherSettings")._focus();
         }
-
         $exit() {
           this.tag("OtherSettings")._unfocus();
         }
-
         _handleUp() {
           this._setState("Audio");
         }
-
         _handleEnter() {
-          this._setState("OtherSettingsScreen"); //    Router.navigate("settings/other"); //change to state based implementation
-
+          this._setState("OtherSettingsScreen");
+          //    Router.navigate("settings/other"); //change to state based implementation
         }
 
         _handleDown() {
           this._setState("NFRStatus");
         }
-
       }, class NFRStatus extends this {
         $enter() {
           this.tag('NFRStatus')._focus();
         }
-
         $exit() {
           this.tag('NFRStatus')._unfocus();
         }
-
         _handleUp() {
           this._setState('OtherSettings');
         }
-
         _handleDown() {
           if (this.dtvPlugin) {
             this._setState('DTVSettings');
           }
         }
-
         _handleEnter() {
           //handle Switch
           let self = this;
-
           if (Storage.get("NFRStatus")) {
             thunder$1.call("Netflix.1", "nfrstatus", {
               "params": "disable"
@@ -48922,171 +45258,128 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         }
-
       }, class DTVSettings extends this {
         $enter() {
           this.tag("DTVSettings")._focus();
         }
-
         $exit() {
           this.tag("DTVSettings")._unfocus();
         }
-
         _handleUp() {
           this._setState('NFRStatus');
         }
-
         _handleEnter() {
-          this._setState("LiveTvSettings"); //change to state based implementation
-          //    if (this.dtvPlugin) {
-          //      Router.navigate("settings/livetv");
-          //    }
-          // dtvApi.activate().then(res =>{
-          //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
-          // })
-
+          if (this.dtvPlugin) {
+            this._setState("LiveTvSettings");
+          }
+          dtvApi.activate().then(res => {
+            this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion' + res;
+          });
         }
-
       }, class AudioScreenOverlay extends this {
         $enter() {
           this.hide();
           this.tag('AudioScreenOverlay').visible = true;
           this.$updatePageTitle('Settings  Audio');
         }
-
         _getFocused() {
           return this.tag('AudioScreenOverlay');
         }
-
         $exit() {
           this.show();
           this.tag('AudioScreenOverlay').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
-          console.log("1");
-
           this._setState("Audio");
         }
-
       }, class VideoScreenOverlay extends this {
         $enter() {
           this.hide();
           this.tag('VideoScreenOverlay').visible = true;
           this.$updatePageTitle('Settings  Video');
         }
-
         _getFocused() {
           return this.tag('VideoScreenOverlay');
         }
-
         $exit() {
           this.show();
           this.tag('VideoScreenOverlay').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
-          console.log("videopage");
-
           this._setState('Video');
         }
-
       }, class NetworkConfigurationOverlay extends this {
         $enter() {
-          console.log("n/w enter");
           this.hide();
           this.tag('NetworkConfigurationOverlay').visible = true;
           this.$updatePageTitle("Settings  Network Configuration");
         }
-
         _getFocused() {
           return this.tag('NetworkConfigurationOverlay');
         }
-
         $exit() {
           this.show();
           this.tag('NetworkConfigurationOverlay').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
           this._setState("NetworkConfiguration");
         }
-
       }, class BluetoothScreenOverlay extends this {
         $enter() {
-          console.log("bpscreen");
           this.hide();
           this.tag('BluetoothScreenOverlay').visible = true;
           this.$updatePageTitle('Settings  Bluetooth On/Off');
         }
-
         _getFocused() {
-          console.log("getfocusedbp");
           return this.tag('BluetoothScreenOverlay');
         }
-
         $exit() {
           this.show();
           this.tag('BluetoothScreenOverlay').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
           this._setState('Bluetooth');
         }
-
       }, class OtherSettingsScreen extends this {
         $enter() {
-          console.log("bpscreen");
           this.hide();
           this.tag('OtherSettingsScreen').visible = true;
           this.$updatePageTitle('Settings  Other Settings');
         }
-
         _getFocused() {
-          console.log("getfocusedbp");
           return this.tag('OtherSettingsScreen');
         }
-
         $exit() {
           this.show();
           this.tag('OtherSettingsScreen').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
           this._setState('OtherSettings');
         }
-
       }, class LiveTvSettings extends this {
         $enter() {
-          ////console.log("bpscreen")
           this.hide();
           this.tag('LiveTvSettings').visible = true;
-          this.$updatePageTitle('Settings  Pair Remote Control');
+          this.$updatePageTitle("Settings / Live TV");
         }
-
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('LiveTvSettings');
         }
-
         $exit() {
           this.show();
           this.tag('LiveTvSettings').visible = false;
           this.$updatePageTitle('Settings');
         }
-
         _handleBack() {
           this._setState('DTVSettings');
         }
-
       }];
     }
-
   }
 
   /**
@@ -49115,7 +45408,7 @@ var APP_accelerator_home_ui = (function () {
   var powerState = 'ON';
   var thunder = thunderJS(config);
   var appApi = new AppApi();
-  var dtvApi = new DTVApi();
+  var dtvApi$1 = new DTVApi();
   class App extends Router.App {
     static getFonts() {
       return [{
@@ -49123,17 +45416,14 @@ var APP_accelerator_home_ui = (function () {
         url: Utils.asset('fonts/' + CONFIG.language.fontSrc)
       }];
     }
-
     _setup() {
       console.log("accelerator-home-ui version: " + Settings.get("platform", "version"));
       Router.startRouter(routes, this);
-
       document.onkeydown = e => {
         if (e.keyCode == keyMap.Backspace) {
           e.preventDefault();
         }
       };
-
       function updateAddress() {
         if (window.navigator.onLine) {
           console.log("is online");
@@ -49142,10 +45432,8 @@ var APP_accelerator_home_ui = (function () {
           console.log("is offline");
         }
       }
-
       window.addEventListener("offline", updateAddress);
     }
-
     static _template() {
       return {
         Pages: {
@@ -49174,48 +45462,40 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-
     static language() {
       return {
         file: Utils.asset('language/language-file.json'),
         language: CONFIG.language.id
       };
     }
-
     _captureKey(key) {
       console.log(key, key.keyCode);
-
       if (key.keyCode == keyMap.Escape || key.keyCode == keyMap.Home || key.keyCode === keyMap.m) {
         if (Storage.get('applicationType') != '') {
           appApi.exitApp(Storage.get('applicationType')).catch(err => {
             console.log(err);
           });
-
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) {
             Router.navigate('menu');
           }
         } else {
           if (!Router.isNavigating()) {
             if (Router.getActiveHash() === "dtvplayer") {
               //exit scenario for dtv player
-              dtvApi.exitChannel().then(res => {
+              dtvApi$1.exitChannel().then(res => {
                 console.log("exit channel: ", JSON.stringify(res));
               }).catch(err => {
                 console.log("failed to exit channel: ", JSON.stringify(err));
               });
-
               if (Router.getActiveWidget()) {
                 Router.getActiveWidget()._setState("IdleState");
               }
             }
-
             Router.navigate('menu');
           }
         }
-
         return true;
       }
-
       if (key.keyCode == keyMap.Inputs_Shortcut) {
         //for inputs overlay
         if (Storage.get("applicationType") !== "") {
@@ -49223,14 +45503,12 @@ var APP_accelerator_home_ui = (function () {
             Router.reload();
           } else {
             Router.navigate("tv-overlay/inputs", false);
-          } // appApi.setVisibility('ResidentApp', true);
-
-
+          }
+          // appApi.setVisibility('ResidentApp', true);
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: 'ResidentApp'
           }).then(result => {
             appApi.setVisibility('ResidentApp', true); //#requiredChange
-
             console.log('ResidentApp moveToFront Success');
             thunder.call("org.rdk.RDKShell", "setFocus", {
               client: 'ResidentApp'
@@ -49243,14 +45521,11 @@ var APP_accelerator_home_ui = (function () {
         } else {
           if (Router.getActiveHash() === "dtvplayer") {
             Router.focusWidget('TvOverlays');
-
             Router.getActiveWidget()._setState("OverlayInputScreen");
           }
         }
-
         return true;
       }
-
       if (key.keyCode == keyMap.Picture_Setting_Shortcut) {
         //for video settings overlay
         if (Storage.get("applicationType") !== "") {
@@ -49258,14 +45533,12 @@ var APP_accelerator_home_ui = (function () {
             Router.reload();
           } else {
             Router.navigate("tv-overlay/settings", false);
-          } // appApi.setVisibility('ResidentApp', true);
-
-
+          }
+          // appApi.setVisibility('ResidentApp', true);
           thunder.call('org.rdk.RDKShell', 'moveToFront', {
             client: 'ResidentApp'
           }).then(result => {
             appApi.setVisibility('ResidentApp', true); //#requiredChange
-
             console.log('ResidentApp moveToFront Success');
             thunder.call("org.rdk.RDKShell", "setFocus", {
               client: 'ResidentApp'
@@ -49278,73 +45551,67 @@ var APP_accelerator_home_ui = (function () {
         } else {
           if (Router.getActiveHash() === "dtvplayer") {
             Router.focusWidget('TvOverlays');
-
             Router.getActiveWidget()._setState("OverlaySettingsScreen");
           }
         }
-
         return true;
       }
-
       if (key.keyCode == keyMap.Settings_Shortcut) {
         console.log("settings shortcut");
-
-        if (Storage.get("applicationType") === "" && Router.getActiveHash() === "player") {
-          //launch settings overlay as widget for videoplayer
-          if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") {
-            //currently focused on settings overlay, so hide it
-            Router.focusPage();
+        if (Storage.get("applicationType") === "") {
+          //launch settings overlay/page depending on the current route.
+          if (Router.getActiveHash() === "player" || Router.getActiveHash() === "dtvplayer" || Router.getActiveHash() === "usb/player") {
+            //player supports settings overlay, so launch it as overlay
+            if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") {
+              //currently focused on settings overlay, so hide it
+              Router.focusPage();
+            } else {
+              //launch the settings overlay
+              Router.focusWidget('SettingsOverlay');
+            }
           } else {
-            //launch the settings overlay
+            //navigate to settings page for all other routes
+            Router.navigate("settings");
+          }
+        } else {
+          //currently on some application
+          if (Router.getActiveHash() === "applauncher") {
+            //if route is applauncher just focus the overlay widget
+            if (Router.getActiveWidget() && Router.getActiveWidget().__ref === "SettingsOverlay") {
+              //currently focused on settings overlay, so hide it
+              Router.focusPage();
+              let currentApp = Storage.get("applicationType");
+              appApi.zorder(currentApp);
+              appApi.setFocus(currentApp);
+              appApi.setVisibility(currentApp, true);
+            } else {
+              //launch the settings overlay
+              appApi.zorder("ResidentApp");
+              appApi.setFocus("ResidentApp");
+              appApi.setVisibility("ResidentApp", true);
+              Router.focusWidget('SettingsOverlay');
+            }
+          } else {
+            //if on some other route while on an application, route to applauncher before launching the settings overlay
+            appApi.zorder("ResidentApp");
+            appApi.setFocus("ResidentApp");
+            appApi.setVisibility("ResidentApp", true);
+            Router.navigate("applauncher");
             Router.focusWidget('SettingsOverlay');
           }
-
-          return true;
         }
-
-        Router.navigate('settings');
-        thunder.call("org.rdk.RDKShell", "getZOrder").then(res => {
-          if (res.clients[0] == "residentapp") {
-            if (Storage.get("applicationType") !== "") {
-              console.log("found resident app to be on top ,but it shouldn't have been on top, therefore changing its zorder");
-              let c_app = Storage.get("applicationType");
-              appApi.zorder(c_app);
-              appApi.setFocus(c_app);
-              appApi.setVisibility(c_app, true);
-            } else {
-              console.log("found resident app to be on top ,therefore just routing the application to the settings page");
-            }
-          } else {
-            console.log("found a non resident app to be on top");
-            appApi.zorder('ResidentApp');
-            appApi.setFocus("ResidentApp");
-
-            if (Router.isNavigating()) {
-              appApi.setVisibility("ResidentApp", true);
-            } else {
-              appApi.setVisibility("ResidentApp", true);
-              appApi.setFocus("ResidentApp");
-              appApi.zorder('residentApp');
-            }
-          }
-        }).catch(err => {
-          console.error(err);
-        });
         return true;
       }
-
       if (key.keyCode == keyMap.Guide_Shortcut) {
         Router.navigate('epg');
         return true;
       }
-
       if (key.keyCode == keyMap.Amazon) {
         appApi.launchApp("Amazon").catch(err => {
           console.error("Error in launching Amazon via dedicated key: " + JSON.stringify(err));
         });
         return true;
       }
-
       if (key.keyCode == keyMap.Youtube) {
         let params = {
           launchLocation: "dedicatedButton"
@@ -49354,7 +45621,6 @@ var APP_accelerator_home_ui = (function () {
         });
         return true;
       }
-
       if (key.keyCode == keyMap.Netflix) {
         //launchLocation mapping is in launchApp method in AppApi.js
         let params = {
@@ -49365,7 +45631,6 @@ var APP_accelerator_home_ui = (function () {
         });
         return true;
       }
-
       if (key.keyCode == keyMap.Power) {
         // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
         if (powerState == 'ON') {
@@ -49386,17 +45651,14 @@ var APP_accelerator_home_ui = (function () {
       } else if (key.keyCode == keyMap.AudioVolumeMute) {
         if (Storage.get('applicationType') !== '') {
           let activePage = Router.getActiveRoute();
-
           if (activePage !== 'overlay/volume') {
             Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
-
             this._moveToFront();
           } else {
             this._moveToFront();
-
             let page = Router.getActivePage();
             page.onVolumeMute();
           }
@@ -49405,25 +45667,20 @@ var APP_accelerator_home_ui = (function () {
             let page = Router.getActiveWidget();
             page.onVolumeMute();
           }
-
           Router.focusWidget('Volume');
         }
-
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeUp) {
         if (Storage.get('applicationType') !== '') {
           let activePage = Router.getActiveRoute();
-
           if (activePage !== 'overlay/volume') {
             Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
-
             this._moveToFront();
           } else {
             this._moveToFront();
-
             let page = Router.getActivePage();
             page.onVolumeKeyUp();
           }
@@ -49432,25 +45689,20 @@ var APP_accelerator_home_ui = (function () {
             let page = Router.getActiveWidget();
             page.onVolumeKeyUp();
           }
-
           Router.focusWidget('Volume');
         }
-
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeDown) {
         if (Storage.get('applicationType') !== '') {
           let activePage = Router.getActiveRoute();
-
           if (activePage !== 'overlay/volume') {
             Router.navigate('overlay/volume', {
               flag: true,
               route: activePage
             });
-
             this._moveToFront();
           } else {
             this._moveToFront();
-
             let page = Router.getActivePage();
             page.onVolumeKeyDown();
           }
@@ -49459,25 +45711,16 @@ var APP_accelerator_home_ui = (function () {
             let page = Router.getActiveWidget();
             page.onVolumeKeyDown();
           }
-
           Router.focusWidget('Volume');
         }
-
         return true;
       }
-
       return false;
     }
-
     _moveToFront() {
       appApi.setVisibility('ResidentApp', true);
       appApi.zorder('residentApp');
     }
-
-    $registerHide(h) {
-      this.setPanelsVisibility = h;
-    }
-
     _init() {
       if (Storage.get("applicationType") !== "HDMI") {
         //to default to hdmi, if previous input was hdmi
@@ -49497,11 +45740,9 @@ var APP_accelerator_home_ui = (function () {
         }
       });
       keyIntercept();
-
       if (!availableLanguages.includes(localStorage.getItem('Language'))) {
         localStorage.setItem('Language', 'English');
       }
-
       thunder.on('Controller.1', 'all', noti => {
         if (noti.data.url && noti.data.url.slice(-5) === "#boot") {
           // to exit metro apps by pressing back key
@@ -49514,46 +45755,37 @@ var APP_accelerator_home_ui = (function () {
       thunder.on('Controller', 'statechange', notification => {
         // get plugin status
         console.log("Controller statechange Notification : " + JSON.stringify(notification));
-
         if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
           console.log("".concat(notification.callsign, " status = ").concat(notification.state));
           console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
-
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("settings")) {
+          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) {
             //navigate to homescreen if route is tv-overlay when exiting from any app
             console.log("navigating to homescreen");
             Router.navigate("menu");
           }
-
           if (notification.callsign === Storage.get("applicationType")) {
             //only launch residentApp iff notification is from currentApp
             console.log(notification.callsign + " is in: " + notification.state + " state, and application type in Storage is still: " + Storage.get("applicationType") + " calling launchResidentApp");
             appApi.launchResidentApp();
           }
         }
-
         if (notification && notification.callsign === 'org.rdk.HdmiCec_2' && notification.state === 'Activated') {
           this.advanceScreen = Router.activePage();
-
           if (typeof this.advanceScreen.performOTPAction === 'function') {
             console.log('otp action');
             this.advanceScreen.performOTPAction();
           }
         }
-
         if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && notification.state == 'Activated') {
           Storage.set('applicationType', notification.callsign); //required in case app launch happens using curl command.
-
           if (notification.callsign === 'Netflix') {
             appApi.getNetflixESN().then(res => {
               Storage.set('Netflix_ESN', res);
             });
             thunder.on('Netflix', 'notifyeventchange', notification => {
               console.log("NETFLIX : notifyEventChange notification = ", JSON.stringify(notification));
-
               if (notification.EventName === "rendered") {
                 Router.navigate('menu');
-
                 if (Storage.get("NFRStatus")) {
                   thunder.call("Netflix.1", "nfrstatus", {
                     "params": "enable"
@@ -49571,14 +45803,11 @@ var APP_accelerator_home_ui = (function () {
                     console.error("Netflix : error while updating nfrstatus ".concat(nerr));
                   });
                 }
-
                 appApi.visibile('ResidentApp', false);
               }
-
               if (notification.EventName === "requestsuspend") {
                 this.deactivateChildApp('Netflix');
               }
-
               if (notification.EventName === "updated") {
                 console.log("Netflix : xxxxxxxxxxxxxxxxxx Updated Event Trigger xxxxxxxxxxxxxxxxxxxx");
                 appApi.getNetflixESN().then(res => {
@@ -49608,14 +45837,12 @@ var APP_accelerator_home_ui = (function () {
         console.log("".concat(plugin, " not available"), err);
       });
     }
-
     deactivateChildApp(plugin) {
       //#needToBeRemoved
       switch (plugin) {
         case 'WebApp':
           appApi.deactivateWeb();
           break;
-
         case 'Cobalt':
           appApi.suspendPremiumApp("Cobalt").then(res => {
             if (res) {
@@ -49627,21 +45854,17 @@ var APP_accelerator_home_ui = (function () {
                 console.error(err);
               });
             }
-
             console.log("Cobalt : suspend cobalt request");
           }).catch(err => {
             console.error(err);
           });
           break;
-
         case 'Lightning':
           appApi.deactivateLightning();
           break;
-
         case 'Native':
           appApi.killNative();
           break;
-
         case 'Amazon':
           appApi.suspendPremiumApp('Amazon').then(res => {
             if (res) {
@@ -49653,13 +45876,11 @@ var APP_accelerator_home_ui = (function () {
             }
           });
           break;
-
         case 'Netflix':
           appApi.suspendPremiumApp('Netflix').then(res => {
             thunder.call('org.rdk.RDKShell', 'setFocus', {
               client: "ResidentApp"
             });
-
             if (res) {
               let params = {
                 applicationName: "NetflixApp",
@@ -49669,25 +45890,21 @@ var APP_accelerator_home_ui = (function () {
             }
           });
           break;
-
         case 'HDMI':
           new HDMIApi().stopHDMIInput();
           Storage.set("_currentInputMode", {});
           break;
       }
     }
-
     $initLaunchPad(url) {
       return new Promise((resolve, reject) => {
         appApi.getPluginStatus('Netflix').then(result => {
           console.log("netflix plugin status is :", JSON.stringify(result));
           console.log("netflix plugin status is :", result);
-
           if (result[0].state === 'deactivated' || result[0].state === 'deactivation') {
             Router.navigate('image', {
               src: Utils.asset('images/apps/App_Netflix_Splash.png')
             });
-
             if (url) {
               appApi.configureApplication('Netflix', url).then(() => {
                 appApi.launchPremiumApp("Netflix").then(res => {
@@ -49738,15 +45955,13 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
+
     /**
      * Function to register event listeners for Xcast plugin.
      */
-
-
     registerXcastListeners() {
       this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
         console.log('Received a launch request ' + JSON.stringify(notification));
-
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
@@ -49768,12 +45983,11 @@ var APP_accelerator_home_ui = (function () {
       });
       this.xcastApi.registerEvent('onApplicationHideRequest', notification => {
         console.log('Received a hide request ' + JSON.stringify(notification));
-
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
-          console.log('Hide ' + this.xcastApps(notification.applicationName)); //second argument true means resident app won't be launched the required app will be exited in the background.
+          console.log('Hide ' + this.xcastApps(notification.applicationName));
+          //second argument true means resident app won't be launched the required app will be exited in the background.
           //only bring up the resident app when the notification is from the current app(ie app in focus)
-
           console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
           appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
           let params = {
@@ -49786,7 +46000,6 @@ var APP_accelerator_home_ui = (function () {
       });
       this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
         console.log('Received a resume request ' + JSON.stringify(notification));
-
         if (this.xcastApps(notification.applicationName)) {
           let applicationName = this.xcastApps(notification.applicationName);
           let params = {
@@ -49809,12 +46022,11 @@ var APP_accelerator_home_ui = (function () {
       this.xcastApi.registerEvent('onApplicationStopRequest', notification => {
         console.log('Received an xcast stop request ' + JSON.stringify(notification));
         console.log('Received a stop request ' + JSON.stringify(notification));
-
         if (this.xcastApps(notification.applicationName)) {
           console.log('Stop ' + this.xcastApps(notification.applicationName));
-          let applicationName = this.xcastApps(notification.applicationName); //second argument true means resident app won't be launched the required app will be exited in the background.
+          let applicationName = this.xcastApps(notification.applicationName);
+          //second argument true means resident app won't be launched the required app will be exited in the background.
           //only bring up the resident app when the notification is from the current app(ie app in focus)
-
           console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
           appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
           let params = {
@@ -49844,7 +46056,6 @@ var APP_accelerator_home_ui = (function () {
             } else if (results.state == 'suspended') {
               params.state = 'suspended';
             }
-
             console.log("STATE CHANGED : ");
             console.log(results);
             this.xcastApi.onApplicationStateChanged(params);
@@ -49853,37 +46064,33 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
+
     /**
      * Function to get the plugin name for the application name.
      * @param {string} app App instance.
      */
-
-
     xcastApps(app) {
       if (Object.keys(XcastApi.supportedApps()).includes(app)) {
         return XcastApi.supportedApps()[app];
       } else return false;
     }
-
     $mountEventConstructor(fun) {
       this.ListenerConstructor = fun;
-      console.log("MountEventConstructor was initialized"); // console.log(`listener constructor was set t0 = ${this.ListenerConstructor}`);
+      console.log("MountEventConstructor was initialized");
+      // console.log(`listener constructor was set t0 = ${this.ListenerConstructor}`);
     }
 
     $registerUsbMount() {
       this.disposableListener = this.ListenerConstructor();
       console.log("Successfully registered the usb Mount");
     }
-
     $deRegisterUsbMount() {
       console.log("the current usbListener = ".concat(this.disposableListener));
       this.disposableListener.dispose();
       console.log("successfully deregistered usb listener");
     }
-
     standby(value) {
       console.log("standby call");
-
       if (value == 'Back') ; else {
         if (powerState == 'ON') {
           console.log("Power state was on trying to set it to standby");
@@ -49891,7 +46098,6 @@ var APP_accelerator_home_ui = (function () {
             if (res.success) {
               console.log("successfully set to standby");
               powerState = 'STANDBY';
-
               if (Storage.get('applicationType') !== "") {
                 appApi.exitApp(Storage.get('applicationType'), false, true); //setting to forceDestroy since standby is supposed to deactivate the app.
               } else {
@@ -49905,7 +46111,6 @@ var APP_accelerator_home_ui = (function () {
         }
       }
     }
-
     $registerInactivityMonitoringEvents() {
       return new Promise((resolve, reject) => {
         console.log("registered inactivity listener");
@@ -49921,7 +46126,6 @@ var APP_accelerator_home_ui = (function () {
           console.log("activated the rdk shell plugin trying to set the inactivity listener; res = ".concat(JSON.stringify(res)));
           thunder.on("org.rdk.RDKShell.1", "onUserInactivity", notification => {
             console.log("user was inactive");
-
             if (powerState === "ON" && Storage.get('applicationType') == '') {
               this.standby("STANDBY");
             }
@@ -49935,15 +46139,12 @@ var APP_accelerator_home_ui = (function () {
         });
       });
     }
-
     $resetSleepTimer(t) {
       console.log("reset sleep timer call ".concat(t));
       var arr = t.split(" ");
-
       function setTimer() {
         console.log('Timer ', arr);
         var temp = arr[1].substring(0, 1);
-
         if (temp === 'H') {
           let temp1 = parseFloat(arr[0]) * 60;
           appApi.setInactivityInterval(temp1).then(res => {
@@ -49963,12 +46164,12 @@ var APP_accelerator_home_ui = (function () {
           });
         }
       }
-
       if (arr.length < 2) {
         appApi.enabledisableinactivityReporting(false).then(res => {
           if (res.success === true) {
             Storage.set('TimeoutInterval', false);
-            console.log("Disabled inactivity reporting"); // this.timerIsOff = true;
+            console.log("Disabled inactivity reporting");
+            // this.timerIsOff = true;
           }
         }).catch(err => {
           console.error("error : unable to set the reset; error = ".concat(err));
@@ -49976,8 +46177,8 @@ var APP_accelerator_home_ui = (function () {
       } else {
         appApi.enabledisableinactivityReporting(true).then(res => {
           if (res.success === true) {
-            console.log("Enabled inactivity reporting; trying to set the timer to ".concat(t)); // this.timerIsOff = false;
-
+            console.log("Enabled inactivity reporting; trying to set the timer to ".concat(t));
+            // this.timerIsOff = false;
             setTimer();
           }
         }).catch(err => {
@@ -49985,7 +46186,6 @@ var APP_accelerator_home_ui = (function () {
         });
       }
     }
-
   }
 
   /**

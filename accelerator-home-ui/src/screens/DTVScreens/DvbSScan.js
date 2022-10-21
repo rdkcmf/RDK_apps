@@ -475,6 +475,10 @@ export default class DvbSScan extends Lightning.Component {
       if(notification.finished){
         console.log("notification.finished: ", notification.finished)
         this.setScanFinished();
+        dtvApi.noOfServices().then(res => {
+          this.tag("ErrorNotification.Content").text.text = Language.translate("Found ") + res + Language.translate(" services.");
+          this.tag("ErrorNotification").visible = true;
+        })
       }
     })
 
@@ -1083,6 +1087,10 @@ export default class DvbSScan extends Lightning.Component {
               console.log(res);
               setTimeout(() => {
                 this.setScanFinished() //to give back controls after 30 sec in case searchstatus event fails
+                dtvApi.noOfServices().then(res => {
+                  this.tag("ErrorNotification.Content").text.text = Language.translate("Found ") + res + Language.translate(" services.");
+                  this.tag("ErrorNotification").visible = true;
+                })
               },30000)
             });
           } else {

@@ -95,17 +95,6 @@ export default class Menu extends Lightning.Component {
             this._setState('TopPanel')
         }
     }
-    setPanelsVisibility() {
-        console.log("Side and Top Panel's Visibility changed!")
-        if (Storage.get("applicationType") == '') {
-            this.tag("TopPanel").visible = true;
-            this.tag("SidePanel").visible = true;
-        }
-        else {
-            this.tag("TopPanel").visible = false;
-            this.tag("SidePanel").visible = false;
-        }
-    }
 
     $scroll(val) {
         if (this.mainView) {

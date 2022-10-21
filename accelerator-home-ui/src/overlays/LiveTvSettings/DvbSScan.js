@@ -45,10 +45,6 @@
  export default class DvbSScan extends Lightning.Component {
    static _template() {
      return {
-       rect: true,
-       //color: 0xff000000,
-       w: 1920,
-       h: 1080,
        DvbSScanScreenContents: {
          x: 200,
          y: 275,
@@ -513,7 +509,7 @@
  
    _handleBack() {
      this.resetForm();
-     Router.navigate("settings/livetv/scan");
+     return false; //so that handleBack of parent is also executed.
    }
  
    $getSatelliteList() {
@@ -651,6 +647,7 @@
        class Satellite extends this {
          $enter() {
            this.tag("Satellite")._focus();
+           this.tag("Scroller").y = 2; //to reset the scroll to show the first item.
          }
          $exit() {
            this.tag("Satellite")._unfocus();
@@ -673,14 +670,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectSatellite").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Satellite"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Satellite"),true);
                }
                $exit() {
                  this.tag("SelectSatellite").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                  this.tag("Satellite.Title").text.text =
                  Language.translate("Satellite") + ": " +
                    (Object.keys(this.selectedSatellite).length !== 0
@@ -723,14 +718,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectFrequency").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Frequency"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Frequency"),true);
                }
                $exit() {
                  this.tag("SelectFrequency").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                }
                _getFocused() {
                  return this.tag("SelectFrequency");
@@ -764,14 +757,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectPolarity").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Polarity"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Polarity"),true);
                }
                $exit() {
                  this.tag("SelectPolarity").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                  this.tag("Polarity.Title").text.text =
                  Language.translate("Polarity") +  ": " +
                    (this.selectedPolarity !== ""
@@ -816,14 +807,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectSymbolRate").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Symbol Rate"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Symbol Rate"),true);
                }
                $exit() {
                  this.tag("SelectSymbolRate").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                }
                _getFocused() {
                  return this.tag("SelectSymbolRate");
@@ -857,14 +846,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectFEC").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("FEC"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("FEC"),true);
                }
                $exit() {
                  this.tag("SelectFEC").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                  this.tag("FEC.Title").text.text =
                  Language.translate("FEC") + ": " +
                    (this.selectedFEC !== ""
@@ -934,14 +921,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectModulation").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Modulation"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Modulation"),true);
                }
                $exit() {
                  this.tag("SelectModulation").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                  this.tag("Modulation.Title").text.text =
                  Language.translate("Modulation") + ": " +
                    (this.selectedModulation !== ""
@@ -982,14 +967,12 @@
                $enter() {
                  this.tag("DvbSScanScreenContents").visible = false;
                  this.tag("SelectSearchType").visible = true;
-                 this.widgets.menu.updateTopPanelText(Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Search Mode"));
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan")+" / " + Language.translate("Search Mode"),true);
                }
                $exit() {
                  this.tag("SelectSearchType").visible = false;
                  this.tag("DvbSScanScreenContents").visible = true;
-                 this.widgets.menu.updateTopPanelText(
-                   Language.translate("Settings / Live TV / Scan / DVB-S Scan")
-                 );
+                 this.fireAncestors('$updatePageTitle', Language.translate("Settings / Live TV / Scan / DVB-S Scan"),true);
                  this.tag("SearchType.Title").text.text =
                  Language.translate("Search Mode") + ": " +
                    (this.selectedSearchType !== ""

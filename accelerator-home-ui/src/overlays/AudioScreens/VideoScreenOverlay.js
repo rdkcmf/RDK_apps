@@ -175,9 +175,6 @@ export default class VideoScreen extends Lightning.Component {
     this._setState('Resolution')
   }
 
-  $changeStateVideo(state){
-    this._setState(state)
-   }
   _focus() {
     this._appApi.getResolution().then(resolution => {
       this.tag("Resolution.Title").text.text = Language.translate('Resolution: ') + resolution;

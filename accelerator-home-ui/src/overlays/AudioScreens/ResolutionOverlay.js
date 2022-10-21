@@ -141,9 +141,6 @@
                  _handleUp() {
                      this.tag('List').setPrevious()
                  }
-                 _handleBack(){
-                    this.fireAncestors('$changeStateVideo',"Resolution")
-                  }
           
              },
          ]

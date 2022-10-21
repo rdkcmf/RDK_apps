@@ -278,8 +278,6 @@ export default class NetworkInfo extends Lightning.Component {
     }
 
     _focus() {
-
-        this.widgets.menu.setPanelsVisibility()
         //Getting the default interface
         appApi.getDefaultInterface().
             then((result) => {

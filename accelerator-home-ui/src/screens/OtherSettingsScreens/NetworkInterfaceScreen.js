@@ -92,7 +92,6 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
     }
 
     _focus() {
-        this.widgets.menu.setPanelsVisibility()
         this._setState('WiFi');
     }
 

@@ -294,15 +294,11 @@ var thunder = ThunderJS(config);
      });
    }
 
-   $changeState(state){
-    console.log("check", state)
-    this._setState(state)
-   }
  
    _handleBack() {
      console.log("application Type = ", Storage.get("applicationType"));
-     if (Storage.get("applicationType") == "") {
-       if (Router.getActiveHash() === "player") {
+     if (Storage.get("applicationType") === "") {
+       if (Router.getActiveHash() === "player" || Router.getActiveHash() === "dtvplayer" || Router.getActiveHash() === "usb/player") {
          Router.focusPage();
        } else {
          Router.focusPage();
@@ -328,9 +324,13 @@ var thunder = ThunderJS(config);
     //do nothing
    }
 
-   $updatePageTitle(title){
+   $updatePageTitle(title,alreadyTranslated){
     console.log("title",title)
-    this.tag("BreadCrumbs").text.text = Language.translate(title);
+    if(alreadyTranslated) {
+      this.tag("BreadCrumbs").text.text = title;
+    }else {
+      this.tag("BreadCrumbs").text.text = Language.translate(title);
+    }
    }
 
    hide() {
@@ -342,7 +342,6 @@ var thunder = ThunderJS(config);
     this.tag('SettingsScreenContents').visible = true
   }
   $hideBreadCrum(){ 
-    console.log("hide breadcrum")
     this.tag("BreadCrumbs").visible = false;
   }
   $showBreadCrum(){
@@ -362,7 +361,6 @@ var thunder = ThunderJS(config);
            this._setState("Bluetooth");
          }
          _handleEnter() {
-          console.log("n/w")
           this._setState('NetworkConfigurationOverlay')
            //Router.navigate("settings/network"); //change to state based implementation
          }
@@ -501,14 +499,12 @@ var thunder = ThunderJS(config);
           this._setState('NFRStatus')
         }
          _handleEnter() {
-          this._setState("LiveTvSettings")
-            //change to state based implementation
-        //    if (this.dtvPlugin) {
-        //      Router.navigate("settings/livetv");
-        //    }
-           // dtvApi.activate().then(res =>{
-           //   this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
-           // })
+           if (this.dtvPlugin) {
+            this._setState("LiveTvSettings")
+           }
+           dtvApi.activate().then(res =>{
+             this.tag('DTVSettings.Title').text.text = 'DTV Settings: Activtion'+ res
+           })
          }
        },
        class AudioScreenOverlay extends this {
@@ -526,7 +522,6 @@ var thunder = ThunderJS(config);
          this.$updatePageTitle('Settings')
         }
         _handleBack() {
-          console.log("1")
           this._setState("Audio");
         }
       },
@@ -545,13 +540,11 @@ var thunder = ThunderJS(config);
           this.$updatePageTitle('Settings')
         }
         _handleBack() {
-          console.log("videopage")
           this._setState('Video')
         }
       },
       class NetworkConfigurationOverlay extends this{
         $enter() {
-          console.log("n/w enter")
           this.hide()
           this.tag('NetworkConfigurationOverlay').visible = true
           this.$updatePageTitle("Settings  Network Configuration")
@@ -570,13 +563,11 @@ var thunder = ThunderJS(config);
       },
       class BluetoothScreenOverlay extends this {
         $enter() {
-          console.log("bpscreen")
           this.hide()
           this.tag('BluetoothScreenOverlay').visible = true
           this.$updatePageTitle('Settings  Bluetooth On/Off')
         }
         _getFocused() {
-          console.log("getfocusedbp")
           return this.tag('BluetoothScreenOverlay')
         }
         $exit() {
@@ -590,13 +581,11 @@ var thunder = ThunderJS(config);
       },
       class OtherSettingsScreen extends this {
         $enter() {
-          console.log("bpscreen")
           this.hide()
           this.tag('OtherSettingsScreen').visible = true
           this.$updatePageTitle('Settings  Other Settings')
         }
         _getFocused() {
-          console.log("getfocusedbp")
           return this.tag('OtherSettingsScreen')
         }
         $exit() {
@@ -610,13 +599,11 @@ var thunder = ThunderJS(config);
       },
       class LiveTvSettings extends this {
         $enter() {
-          ////console.log("bpscreen")
           this.hide()
           this.tag('LiveTvSettings').visible = true
-          this.$updatePageTitle('Settings  Pair Remote Control')
+          this.$updatePageTitle("Settings / Live TV")
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('LiveTvSettings')
         }
         $exit() {

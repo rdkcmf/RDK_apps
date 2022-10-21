@@ -191,7 +191,6 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   _focus() {
-    this.widgets.menu.setPanelsVisibility()
 
     this._setState('AddADevice')
     this._enable()

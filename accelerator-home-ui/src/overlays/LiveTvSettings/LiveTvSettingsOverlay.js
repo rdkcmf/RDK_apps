@@ -31,10 +31,6 @@
  export default class LiveTVSettings extends Lightning.Component {
    static _template() {
      return {
-       rect: true,
-      // color: 0x00000000,
-       w: 1920,
-       h: 1080,
        LiveTVSettingsScreenContents: {
          x: 200,
          y: 275,
@@ -111,10 +107,18 @@
        );
      }
    }
+
+  hide() {
+    this.tag("LiveTVSettingsScreenContents").visible = false;
+  }
+
+  show() {
+    this.tag("LiveTVSettingsScreenContents").visible = true;
+  }
  
-   _handleBack() {
-     Router.navigate("settings");
-   }
+  //  _handleBack() {
+  //    Router.navigate("settings");
+  //  }
  
    static _states() {
      return [

@@ -170,8 +170,6 @@
          });
      }
      _focus() {
-        console.log("2")
-         //this.widgets.menu.setPanelsVisibility()
          this._setState(this.state) //can be used on init as well
  
          new NetworkApi().getDefaultInterface().then(interfaceName => {

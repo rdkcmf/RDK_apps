@@ -28,10 +28,6 @@
  export default class LiveTVScan extends Lightning.Component {
     static _template() {
         return {
-            rect: true,
-            //color: 0xff000000,
-            w: 1920,
-            h: 1080,
             LiveTVScanScreenContents: {
                 x: 200,
                 y: 275,
@@ -122,6 +118,14 @@
    _focus() {
      this._setState('SScan')
    }
+
+    hide() {
+        this.tag("LiveTVScanScreenContents").visible = false;
+    }
+
+    show() {
+        this.tag("LiveTVScanScreenContents").visible = true;
+    }
  
   
  
@@ -182,7 +186,7 @@
             $exit() {
                 this.show()
                 this.tag('DvbSScan').visible = false
-                this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan /')
+                this.fireAncestors('$updatePageTitle', 'Settings / Live TV / Scan')
             }
             _getFocused() {
                 return this.tag('DvbSScan')
