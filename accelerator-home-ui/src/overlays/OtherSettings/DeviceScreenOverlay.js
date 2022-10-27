@@ -170,7 +170,7 @@
      }
  
      _focus() {
-         this._setState(this.state)
+        this._setState('Info')
      }
  
     //  _handleBack() {

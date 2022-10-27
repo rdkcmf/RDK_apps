@@ -202,7 +202,7 @@
    }
  
    _focus() {
-     this._setState(this.state)
+    this._setState('OutputMode')
      this.appApi.getSoundMode()
        .then(result => {
          this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode

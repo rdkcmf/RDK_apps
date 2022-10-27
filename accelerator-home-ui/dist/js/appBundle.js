@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Wed, 26 Oct 2022 17:33:34 GMT
+ * Generated: Thu, 27 Oct 2022 12:13:37 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -27248,8 +27248,8 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const errorTitle = 'Error Title';
-  const errorMsg = 'Error Message';
+  const errorTitle$1 = 'Error Title';
+  const errorMsg$1 = 'Error Message';
   class Failscreen extends lng$1.Component {
     notify(args) {
       console.log(args);
@@ -27266,8 +27266,8 @@ var APP_accelerator_home_ui = (function () {
     }
     _unfocus() {
       this.alpha = 0;
-      this.tag('FailScreen.Title').text.text = errorTitle;
-      this.tag('FailScreen.Message').text.text = errorMsg;
+      this.tag('FailScreen.Title').text.text = errorTitle$1;
+      this.tag('FailScreen.Message').text.text = errorMsg$1;
     }
     static _template() {
       return {
@@ -27282,7 +27282,7 @@ var APP_accelerator_home_ui = (function () {
           Title: {
             mountX: 0.5,
             text: {
-              text: errorTitle,
+              text: errorTitle$1,
               fontFace: CONFIG.language.font,
               fontSize: 40,
               textColor: CONFIG.theme.hex
@@ -27301,7 +27301,7 @@ var APP_accelerator_home_ui = (function () {
             y: 125,
             mountX: 0.5,
             text: {
-              text: errorMsg,
+              text: errorMsg$1,
               fontFace: CONFIG.language.font,
               fontSize: 25
             }
@@ -37164,7 +37164,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('OutputMode');
     }
     _focus() {
-      this._setState(this.state);
+      this._setState('OutputMode');
       this.appApi.getSoundMode().then(result => {
         this.tag('OutputMode.Title').text.text = Language.translate('Output Mode: ') + result.soundMode;
       });
@@ -37459,9 +37459,6 @@ var APP_accelerator_home_ui = (function () {
         _handleUp() {
           this.tag('List').setPrevious();
         }
-        //  _handleBack(){
-        //     this.fireAncestors('$changeStateVideo',"Resolution")
-        //   }
       }];
     }
   }
@@ -37662,7 +37659,7 @@ var APP_accelerator_home_ui = (function () {
         };
         this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
       });
-      this._setState(this.state);
+      this._setState('Resolution');
     }
     hide() {
       this.tag('VideoScreenContents').visible = false;
@@ -38160,10 +38157,8 @@ var APP_accelerator_home_ui = (function () {
           }
         });
       });
-      this._handleBack();
-      //Router.back();
+      this.fireAncestors("$navigateBack");
     }
-
     static _template() {
       return {
         Text: {
@@ -38628,23 +38623,6 @@ var APP_accelerator_home_ui = (function () {
     _updateText(txt) {
       this.tag("Pwd").text.text = txt;
     }
-    //  _handleBack() {
-    //    Router.back()
-    //  }
-
-    /**
-     * @param {{ item: Wifi Response Object; }} args
-     */
-    //  set params(args) {
-    //    if (args.wifiItem) {
-    //      this.item(args.wifiItem)
-    //    } else {
-    //    this._handleBack()
-    //      //Router.navigate('settings/network/interface/wifi')
-    //    }
-
-    //  }
-
     item(item) {
       this.star = "";
       this.passwd = "";
@@ -38683,7 +38661,7 @@ var APP_accelerator_home_ui = (function () {
     }
     pressEnter(option) {
       if (option === 'Cancel') {
-        this._handleBack();
+        this.fireAncestors("$navigateBack");
       } else if (option === 'Connect') {
         if (this._item) {
           console.log('trying to connect wifi');
@@ -38691,20 +38669,13 @@ var APP_accelerator_home_ui = (function () {
             console.log('Not able to connect to wifi', JSON.stringify(err));
           });
         }
-        this._handleBack();
+        this.fireAncestors("$navigateBack");
       } else if (option === 'Disconnect') {
         this._wifi.disconnect().then(() => {
-          this._handleBack();
+          this.fireAncestors("$navigateBack");
         });
       }
     }
-
-    // startConnect(password) {
-    //   this._wifi.connect(this._item, password).then(() => {
-    //     Router.back()
-    //   })
-
-    // }
     startConnect(password) {
       this._wifi.connect(this._item, password).then(() => {
         this._wifi.saveSSID(this._item.ssid, password, this._item.security).then(response => {
@@ -38715,7 +38686,7 @@ var APP_accelerator_home_ui = (function () {
             });
           }
         });
-        this._handleBack();
+        this.fireAncestors("$navigateBack");
       });
     }
     static _states() {
@@ -38808,6 +38779,102 @@ var APP_accelerator_home_ui = (function () {
           this.tag("PasswordBox").texture = lng$1.Tools.getRoundRect(1279, 88, 0, 3, 0xffffffff, false);
         }
       }];
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  const errorTitle = 'Error Title';
+  const errorMsg = 'Error Message';
+  class FailComponent extends lng$1.Component {
+    notify(args) {
+      console.log(args);
+      if (args.title && args.msg) {
+        this.tag('FailComponent.Title').text.text = args.title;
+        this.tag('FailComponent.Message').text.text = Language.translate(args.msg);
+      }
+    }
+    _unfocus() {
+      this.tag('FailComponent.Title').text.text = errorTitle;
+      this.tag('FailComponent.Message').text.text = errorMsg;
+    }
+    static _template() {
+      return {
+        FailComponent: {
+          x: 960,
+          y: 300,
+          Title: {
+            mountX: 0.5,
+            text: {
+              text: errorTitle,
+              fontFace: CONFIG.language.font,
+              fontSize: 40,
+              textColor: CONFIG.theme.hex
+            }
+          },
+          BorderTop: {
+            x: 0,
+            y: 75,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Message: {
+            x: 0,
+            y: 125,
+            mountX: 0.5,
+            text: {
+              text: errorMsg,
+              fontFace: CONFIG.language.font,
+              fontSize: 25
+            }
+          },
+          RectangleDefault: {
+            x: 0,
+            y: 200,
+            w: 200,
+            mountX: 0.5,
+            h: 50,
+            rect: true,
+            color: CONFIG.theme.hex,
+            Ok: {
+              x: 100,
+              y: 25,
+              mount: 0.5,
+              text: {
+                text: Language.translate("OK"),
+                fontFace: CONFIG.language.font,
+                fontSize: 22
+              }
+            }
+          },
+          BorderBottom: {
+            x: 0,
+            y: 300,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          }
+        }
+      };
     }
   }
 
@@ -38933,6 +39000,10 @@ var APP_accelerator_home_ui = (function () {
         },
         WifiPairingScreen: {
           type: WifiPairingScreen,
+          visible: false
+        },
+        FailScreen: {
+          type: FailComponent,
           visible: false
         }
       };
@@ -39115,8 +39186,10 @@ var APP_accelerator_home_ui = (function () {
       this.tag('WifiContents').visible = true;
     }
     $PairingnetworkParams() {
-      console.log("state", this.state);
       return this.ListItem;
+    }
+    $navigateBack() {
+      this._setState('Switch');
     }
     static _states() {
       return [class Switch extends this {
@@ -39248,6 +39321,27 @@ var APP_accelerator_home_ui = (function () {
         _handleBack() {
           this._setState('Switch');
         }
+      }, class FailScreen extends this {
+        $enter() {
+          console.log("wifiscreen");
+          this.hide();
+          this.fireAncestors('$hideBreadCrum');
+          this.tag('FailScreen').visible = true;
+        }
+        $exit() {
+          this.show();
+          this.fireAncestors('$showBreadCrum');
+          this.tag('FailScreen').visible = false;
+        }
+        _getFocused() {
+          return this.tag('FailScreen');
+        }
+        _handleBack() {
+          this._setState('Switch');
+        }
+        _handleEnter() {
+          this._setState('Switch');
+        }
       }];
     }
 
@@ -39333,13 +39427,11 @@ var APP_accelerator_home_ui = (function () {
             this._wifi.setDefaultInterface('ETHERNET', true);
           }
         });
-        if (this.widgets) {
-          this.widgets.fail.notify({
-            title: 'WiFi Error',
-            msg: this.onError[notification.code]
-          });
-          Router.focusWidget('Fail');
-        }
+        this.tag("FailScreen").notify({
+          title: 'WiFi Error',
+          msg: this.onError[notification.code]
+        });
+        this._setState('FailScreen');
       });
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
         this.renderDeviceList(notification.ssids);
@@ -39743,8 +39835,7 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     _focus() {
-      this._setState(this.state); //can be used on init as well
-
+      this._setState('NetworkInfo');
       new Network().getDefaultInterface().then(interfaceName => {
         this.$NetworkInterfaceText(interfaceName);
       });
@@ -39901,10 +39992,6 @@ var APP_accelerator_home_ui = (function () {
   class BluetoothPairingScreen extends lng$1.Component {
     static _template() {
       return {
-        w: 1920,
-        h: 2000,
-        rect: true,
-        color: 0x00000000,
         BluetoothPair: {
           x: 960,
           y: 300,
@@ -40010,7 +40097,8 @@ var APP_accelerator_home_ui = (function () {
         }
       };
     }
-    item(item) {
+    getData(item) {
+      console.log("setting pairing screen item: ", item);
       _item = item;
       this._setState('ConnectDisconnect');
       this.tag('Title').text = item.name;
@@ -40024,6 +40112,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('ConnectDisconnect');
     }
     _focus() {
+      this._setState('ConnectDisconnect');
       this.item(this.fireAncestors("$BluetoothParams"));
     }
     static _states() {
@@ -40034,17 +40123,9 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           // this.tag('Pairing').text = "Someting is wrong " + _item.name
           if (_item.connected) {
-            // this.tag('Pairing').text = "Connecting to " + _item.name
-            //this.fireAncestors('$pressEnter', 'Disconnect')
-            Router.navigate('settings/bluetooth', {
-              action: 'Disconnect'
-            });
+            this.fireAncestors('$triggerBluetoothAction', 'Disconnect');
           } else {
-            // this.tag('Pairing').text = "Disconnecting from " + _item.name
-            // this.fireAncestors('$pressEnter', 'Connect')
-            Router.navigate('settings/bluetooth', {
-              action: 'Connect'
-            });
+            this.fireAncestors('$triggerBluetoothAction', 'Connect');
           }
         }
         _handleRight() {
@@ -40078,10 +40159,7 @@ var APP_accelerator_home_ui = (function () {
           this._focus();
         }
         _handleEnter() {
-          //this.fireAncestors('$pressEnter', 'Unpair')
-          Router.navigate('settings/bluetooth', {
-            action: 'Unpair'
-          });
+          this.fireAncestors('$triggerBluetoothAction', 'Unpair');
         }
         _handleRight() {
           this._setState('Cancel');
@@ -40117,10 +40195,7 @@ var APP_accelerator_home_ui = (function () {
           this._focus();
         }
         _handleEnter() {
-          //this.fireAncestors('$pressEnter', 'Cancel')
-          Router.navigate('settings/bluetooth', {
-            action: 'Cancel'
-          });
+          this.fireAncestors('$triggerBluetoothAction', 'Cancel');
         }
         _handleLeft() {
           this._setState('Unpair');
@@ -40180,19 +40255,6 @@ var APP_accelerator_home_ui = (function () {
         Bluetooth: {
           y: 275,
           x: 200,
-          Confirmation: {
-            x: 780,
-            y: 100,
-            type: BluetoothConfirmation,
-            visible: false
-          },
-          PairingScreen: {
-            x: 780,
-            y: 100,
-            type: BluetoothPairingScreen,
-            zIndex: 100,
-            visible: false
-          },
           Switch: {
             type: SettingsMainItem,
             Title: {
@@ -40291,30 +40353,37 @@ var APP_accelerator_home_ui = (function () {
         BluetoothPairingScreen: {
           type: BluetoothPairingScreen,
           visible: false
+        },
+        FailScreen: {
+          type: FailComponent,
+          visible: false
         }
       };
     }
 
-    /**
-     * @param {{ action: String; }} args
-     */
-    set params(args) {
-      if (args.action) {
-        this.pressEnter(args.action);
-      }
+    //  $navigateBack() {
+    //   this._setState('AddADevice')
+    // }
+
+    $triggerBluetoothAction(option) {
+      this.pressEnter(option);
+      this._setState('AddADevice');
+    }
+    hide() {
+      this.tag('Bluetooth').visible = false;
+    }
+    show() {
+      this.tag('Bluetooth').visible = true;
     }
     _unfocus() {
       this._disable();
-    }
-    pageTransition() {
-      return 'left';
     }
     _firstEnable() {
       this._bt = new BluetoothApi();
       this._bluetooth = false;
       this._activateBluetooth();
       this._setState('Switch');
-      //this.switch()
+      this.switch(); //so that switch will be enabled by default
       //this._bluetooth = false
       this._pairedNetworks = this.tag('Networks.PairedNetworks');
       this._availableNetworks = this.tag('Networks.AvailableNetworks');
@@ -40409,118 +40478,7 @@ var APP_accelerator_home_ui = (function () {
       this.tag('AvailableNetworks').patch({
         visible: false
       });
-      this.tag('Confirmation').patch({
-        visible: false
-      });
       //  this.loadingAnimation.start()
-      // this.tag('TopPanel').patch({ alpha: 0 });
-      // this.tag('SidePanel').patch({ alpha: 0 });
-    }
-
-    showPairingScreen() {
-      this.tag('Switch').patch({
-        alpha: 0
-      });
-      this.tag('PairedNetworks').patch({
-        alpha: 0
-      });
-      this.tag('AddADevice').patch({
-        alpha: 0
-      });
-      this.tag('Searching').patch({
-        visible: false
-      });
-      this.tag('AvailableNetworks').patch({
-        visible: false
-      });
-      this.tag('Confirmation').patch({
-        visible: false
-      });
-      this.tag('PairingScreen').patch({
-        visible: true
-      });
-      this.fireAncestors('$hideTopPanel');
-      // this.tag('TopPanel').patch({ alpha: 0 });
-      // this.tag('SidePanel').patch({ alpha: 0 });
-    }
-
-    hidePairingScreen() {
-      this.tag('Switch').patch({
-        alpha: 1
-      });
-      this.tag('PairedNetworks').patch({
-        alpha: 1
-      });
-      this.tag('AddADevice').patch({
-        alpha: 1
-      });
-      this.tag('Searching').patch({
-        visible: false
-      });
-      this.tag('AvailableNetworks').patch({
-        visible: false
-      });
-      this.tag('Confirmation').patch({
-        visible: false
-      });
-      this.tag('PairingScreen').patch({
-        visible: false
-      });
-      this.fireAncestors('$showTopPanel');
-      // this.tag('TopPanel').patch({ alpha: 0 });
-      // this.tag('SidePanel').patch({ alpha: 0 });
-    }
-
-    showConfirmation() {
-      this.tag('Switch').patch({
-        alpha: 0
-      });
-      this.tag('PairedNetworks').patch({
-        alpha: 0
-      });
-      this.tag('AddADevice').patch({
-        alpha: 0
-      });
-      this.tag('Searching').patch({
-        visible: false
-      });
-      this.tag('AvailableNetworks').patch({
-        visible: false
-      });
-      this.tag('PairingScreen').patch({
-        visible: false
-      });
-      this.tag('Confirmation').patch({
-        visible: true
-      });
-      this.fireAncestors('$hideTopPanel');
-      // this.tag('TopPanel').patch({ alpha: 0 });
-      // this.tag('SidePanel').patch({ alpha: 0 });
-    }
-
-    hideConfirmation() {
-      this.tag('Switch').patch({
-        alpha: 1
-      });
-      this.tag('PairedNetworks').patch({
-        alpha: 1
-      });
-      this.tag('AddADevice').patch({
-        alpha: 1
-      });
-      this.tag('Searching').patch({
-        visible: false
-      });
-      this.tag('AvailableNetworks').patch({
-        visible: false
-      });
-      this.tag('PairingScreen').patch({
-        visible: false
-      });
-      this.tag('Confirmation').patch({
-        visible: false
-      });
-      this.fireAncestors('$showTopPanel');
       // this.tag('TopPanel').patch({ alpha: 0 });
       // this.tag('SidePanel').patch({ alpha: 0 });
     }
@@ -40569,81 +40527,86 @@ var APP_accelerator_home_ui = (function () {
     }
     pressEnter(option) {
       if (option === 'Cancel') {
-        this._setState('Switch');
+        this._setState('AddADevice');
       } else if (option === 'Pair') {
         this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._availableNetworks.tag('List').element._item.name;
           if (result.success) {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Pairing Succesful'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           } else {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Pairing Failed'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           }
-          this.hideAvailableDevices();
+        }).finally(() => {
+          this._setState('AddADevice');
         });
       } else if (option === 'Connect') {
         this._bt.connect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
           if (!result) {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Connection Failed'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           } else {
             this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID);
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Connection Successful'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           }
+        }).finally(() => {
+          this._setState('AddADevice');
         });
       } else if (option === 'Disconnect') {
         this._bt.disconnect(this._pairedNetworks.tag('List').element._item.deviceID, this._pairedNetworks.tag('List').element._item.deviceType).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
           if (!result) {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Failed to Disconnect'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           } else {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Disconnected'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           }
+        }).finally(() => {
+          this._setState('AddADevice');
         });
       } else if (option === 'Unpair') {
         this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
           let btName = this._pairedNetworks.tag('List').element._item.name;
           if (result) {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Unpaired'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           } else {
-            this.widgets.fail.notify({
+            this.tag("FailScreen").notify({
               title: btName,
               msg: 'Unpairing Failed'
             });
-            Router.focusWidget('Fail');
+            this._setState('FailScreen');
           }
+        }).finally(() => {
+          this._setState('AddADevice');
         });
       }
     }
-
-    //, { bluetoothItem: this._pairedNetworks.tag('List').element._item }
     $BluetoothParams() {
       return this._pairedNetworks.tag('List').element._item;
     }
@@ -40651,7 +40614,6 @@ var APP_accelerator_home_ui = (function () {
       return [class Switch extends this {
         $enter() {
           this.hideAvailableDevices();
-          this.hidePairingScreen();
           this.tag('Switch')._focus();
         }
         $exit() {
@@ -40662,17 +40624,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this.switch();
-        }
-      }, class Confirmation extends this {
-        $enter() {
-          this.showConfirmation();
-        }
-        _getFocused() {
-          return this.tag('Confirmation');
-        }
-        $pressOK() {
-          this._setState('Switch');
-          this.hideConfirmation();
         }
       }, class PairedDevices extends this {
         $enter() {
@@ -40688,10 +40639,8 @@ var APP_accelerator_home_ui = (function () {
           this._navigate('MyDevices', 'up');
         }
         _handleEnter() {
-          //this.showPairingScreen()
-          //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
+          this.tag('BluetoothPairingScreen').getData(this._pairedNetworks.tag('List').element._item);
           this._setState('BluetoothPairingScreen');
-          //this._setState('PairingScreen')
         }
       }, class AvailableDevices extends this {
         _getFocused() {
@@ -40705,12 +40654,10 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this.pressEnter('Pair');
-          //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
         }
-
         _handleBack() {
           this.hideAvailableDevices();
-          this._setState('Switch');
+          this._setState('AddADevice');
         }
       }, class AddADevice extends this {
         $enter() {
@@ -40738,37 +40685,45 @@ var APP_accelerator_home_ui = (function () {
             this._setState('AvailableDevices');
           }
         }
-      }, class PairingScreen extends this {
+      }, class BluetoothPairingScreen extends this {
         $enter() {
           this._disable();
           this._bt.stopScan();
-          return this.tag('PairingScreen');
-        }
-        _getFocused() {
-          return this.tag('PairingScreen');
-        }
-        $exit() {
-          this.tag('PairingScreen').visible = false;
-          this._enable();
-        }
-      }, class BluetoothPairingScreen extends this {
-        $enter() {
-          ////console.log("bpscreen")
           this.hide();
           this.fireAncestors('$hideBreadCrum');
           this.tag('BluetoothPairingScreen').visible = true;
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('BluetoothPairingScreen');
         }
         $exit() {
+          this._enable();
           this.show();
-          this.fireAncestors(' $showBreadCrum');
-          this.tag('LiveTvSettings').visible = false;
+          this.fireAncestors('$showBreadCrum');
+          this.tag('BluetoothPairingScreen').visible = false;
         }
         _handleBack() {
-          this._setState('Switch');
+          this._setState('AddADevice');
+        }
+      }, class FailScreen extends this {
+        $enter() {
+          this.hide();
+          this.fireAncestors('$hideBreadCrum');
+          this.tag('FailScreen').visible = true;
+        }
+        $exit() {
+          this.show();
+          this.fireAncestors('$showBreadCrum');
+          this.tag('FailScreen').visible = false;
+        }
+        _getFocused() {
+          return this.tag('FailScreen');
+        }
+        _handleBack() {
+          this._setState('AddADevice');
+        }
+        _handleEnter() {
+          this._setState('AddADevice');
         }
       }];
     }
@@ -40843,21 +40798,17 @@ var APP_accelerator_home_ui = (function () {
           this.renderDeviceList();
           let btName = notification.name;
           if (notification.connected) {
-            if (this.widgets.fail) {
-              this.widgets.fail.notify({
-                title: btName,
-                msg: 'CONNECTION SUCCESS'
-              });
-              Router.focusWidget('Fail');
-            }
+            this.tag("FailScreen").notify({
+              title: btName,
+              msg: 'CONNECTION SUCCESS'
+            });
+            this._setState('FailScreen');
           } else {
-            if (this.widgets.fail) {
-              this.widgets.fail.notify({
-                title: btName,
-                msg: 'CONNECTION FAILED'
-              });
-              Router.focusWidget('Fail');
-            }
+            this.tag("FailScreen").notify({
+              title: btName,
+              msg: 'CONNECTION FAILED'
+            });
+            this._setState('FailScreen');
           }
         });
         this._bt.registerEvent('onDiscoveryCompleted', () => {
@@ -40872,13 +40823,11 @@ var APP_accelerator_home_ui = (function () {
         this._bt.registerEvent('onRequestFailed', notification => {
           this._bt.startScan();
           this.renderDeviceList();
-          if (this.widgets.fail) {
-            this.widgets.fail.notify({
-              title: notification.name,
-              msg: notification.newStatus
-            });
-            Router.focusWidget('Fail');
-          }
+          this.tag("FailScreen").notify({
+            title: notification.name,
+            msg: notification.newStatus
+          });
+          this._setState('FailScreen');
         });
       }).catch(err => {
         console.log(err);
@@ -40928,10 +40877,6 @@ var APP_accelerator_home_ui = (function () {
   class DvbSScan extends lng$1.Component {
     static _template() {
       return {
-        //  rect: true,
-        //  //color: 0xff000000,
-        //  w: 1920,
-        //  h: 1080,
         DvbSScanScreenContents: {
           x: 200,
           y: 275,
@@ -41899,10 +41844,6 @@ var APP_accelerator_home_ui = (function () {
   class LiveTVScan extends lng$1.Component {
     static _template() {
       return {
-        // rect: true,
-        // //color: 0xff000000,
-        // w: 1920,
-        // h: 1080,
         LiveTVScanScreenContents: {
           x: 200,
           y: 275,
@@ -42089,10 +42030,6 @@ var APP_accelerator_home_ui = (function () {
   class LiveTVSettings extends lng$1.Component {
     static _template() {
       return {
-        //  rect: true,
-        // // color: 0x00000000,
-        //  w: 1920,
-        //  h: 1080,
         LiveTVSettingsScreenContents: {
           x: 200,
           y: 275,
@@ -42157,7 +42094,7 @@ var APP_accelerator_home_ui = (function () {
       this.dtvApi = new DTVApi();
     }
     _focus() {
-      this._setState(this.state);
+      this._setState("Activate");
       if (active) {
         this.tag("Activate.Button").src = Utils.asset("images/settings/ToggleOnOrange.png");
       } else {
@@ -42627,36 +42564,36 @@ var APP_accelerator_home_ui = (function () {
   class PrivacyPolicyScreen extends lng$1.Component {
     static _template() {
       return {
-        rect: true,
-        color: 0x00000000,
-        w: 1920,
-        h: 1080,
-        clipping: true,
-        PrivacyPolicy: {
+        PrivacyPolicyScreenContents: {
+          h: 810,
+          w: 1720,
           x: 200,
           y: 270,
-          Title: {
-            x: 10,
-            y: 45,
-            mountY: 0.5,
-            text: {
-              text: "Privacy Policy",
-              textColor: COLORS.titleColor,
-              fontFace: CONFIG.language.font,
-              fontStyle: "bold",
-              fontSize: 40
-            }
-          },
-          Content: {
-            x: 10,
-            y: 100,
-            text: {
-              text: _privacyPolicy,
-              textColor: COLORS.titleColor,
-              fontFace: CONFIG.language.font,
-              fontSize: 20,
-              wordWrapWidth: 1500,
-              wordWrap: true
+          clipping: true,
+          PrivacyPolicy: {
+            Title: {
+              x: 10,
+              y: 45,
+              mountY: 0.5,
+              text: {
+                text: "Privacy Policy",
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontStyle: "bold",
+                fontSize: 40
+              }
+            },
+            Content: {
+              x: 10,
+              y: 100,
+              text: {
+                text: _privacyPolicy,
+                textColor: COLORS.titleColor,
+                fontFace: CONFIG.language.font,
+                fontSize: 20,
+                wordWrapWidth: 1500,
+                wordWrap: true
+              }
             }
           }
         }
@@ -42673,7 +42610,7 @@ var APP_accelerator_home_ui = (function () {
     //  }
 
     _handleUp() {
-      if (this.tag("PrivacyPolicy").y <= 235) {
+      if (this.tag("PrivacyPolicy").y <= 3) {
         this.tag("PrivacyPolicy").y += 35;
       }
     }
@@ -43035,212 +42972,218 @@ var APP_accelerator_home_ui = (function () {
   class DeviceInformationScreen extends lng$1.Component {
     static _template() {
       return {
-        DeviceInfoContents: {
+        DeviceInfoWrapper: {
+          w: 1720,
+          h: 810,
           x: 200,
           y: 275,
-          Line1: {
-            y: 0,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          ChipSet: {
-            Title: {
-              x: 10,
-              y: 45,
+          clipping: true,
+          DeviceInfoContents: {
+            y: 3,
+            Line1: {
+              y: 0,
               mountY: 0.5,
-              text: {
-                text: Language.translate("Chipset"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            ChipSet: {
+              Title: {
+                x: 10,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Chipset"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 45,
+                mountY: 0.5,
+                text: {
+                  text: "N/A",
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 45,
+            Line2: {
+              y: 90,
               mountY: 0.5,
-              text: {
-                text: "N/A",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line2: {
-            y: 90,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          SerialNumber: {
-            Title: {
-              x: 10,
-              y: 135,
-              mountY: 0.5,
-              text: {
-                text: Language.translate("Serial Number"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            SerialNumber: {
+              Title: {
+                x: 10,
+                y: 135,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Serial Number"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 135,
+                mountY: 0.5,
+                text: {
+                  text: "N/A",
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 135,
+            Line3: {
+              y: 180,
               mountY: 0.5,
-              text: {
-                text: "N/A",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line3: {
-            y: 180,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          Location: {
-            Title: {
-              x: 10,
-              y: 225,
-              mountY: 0.5,
-              text: {
-                text: Language.translate("Location"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            Location: {
+              Title: {
+                x: 10,
+                y: 225,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Location"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 225,
+                mountY: 0.5,
+                text: {
+                  text: "City: N/A , Country: N/A ",
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 225,
+            Line4: {
+              y: 270,
               mountY: 0.5,
-              text: {
-                text: "City: N/A , Country: N/A ",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line4: {
-            y: 270,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          SupportedDRM: {
-            Title: {
-              x: 10,
-              y: 360,
-              mountY: 0.5,
-              text: {
-                text: Language.translate("Supported DRM & Key-System"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                wordWrapWidth: 1600,
-                wordWrap: true,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            SupportedDRM: {
+              Title: {
+                x: 10,
+                y: 360,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Supported DRM & Key-System"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  wordWrapWidth: 1600,
+                  wordWrap: true,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 360,
+                mountY: 0.5,
+                text: {
+                  text: "N/A",
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  wordWrapWidth: 1200,
+                  wordWrap: true,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 360,
+            Line5: {
+              y: 450,
               mountY: 0.5,
-              text: {
-                text: "N/A",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                wordWrapWidth: 1200,
-                wordWrap: true,
-                fontSize: 25
-              }
-            }
-          },
-          Line5: {
-            y: 450,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          FirmwareVersions: {
-            Title: {
-              x: 10,
-              y: 540,
-              mountY: 0.5,
-              text: {
-                text: Language.translate("Firmware version"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            FirmwareVersions: {
+              Title: {
+                x: 10,
+                y: 540,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("Firmware version"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 540,
+                mountY: 0.5,
+                text: {
+                  text: "UI Version: ".concat(Settings.get('platform', 'version'), ", Build Version: , Timestamp: "),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 540,
+            Line6: {
+              y: 630,
               mountY: 0.5,
-              text: {
-                text: "UI Version: ".concat(Settings.get('platform', 'version'), ", Build Version: , Timestamp: "),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
-            }
-          },
-          Line6: {
-            y: 630,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
-          },
-          AppVersions: {
-            Title: {
-              x: 10,
-              y: 720,
-              mountY: 0.5,
-              text: {
-                text: Language.translate("App Info"),
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
+            },
+            AppVersions: {
+              Title: {
+                x: 10,
+                y: 720,
+                mountY: 0.5,
+                text: {
+                  text: Language.translate("App Info"),
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
+              },
+              Value: {
+                x: 400,
+                y: 720,
+                mountY: 0.5,
+                text: {
+                  text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
+                  textColor: COLORS.titleColor,
+                  fontFace: CONFIG.language.font,
+                  fontSize: 25
+                }
               }
             },
-            Value: {
-              x: 400,
-              y: 720,
+            Line7: {
+              y: 810,
               mountY: 0.5,
-              text: {
-                text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
-                textColor: COLORS.titleColor,
-                fontFace: CONFIG.language.font,
-                fontSize: 25
-              }
+              w: 1600,
+              h: 3,
+              rect: true,
+              color: 0xFFFFFFFF
             }
-          },
-          Line7: {
-            y: 810,
-            mountY: 0.5,
-            w: 1600,
-            h: 3,
-            rect: true,
-            color: 0xFFFFFFFF
           }
         }
       };
@@ -43349,12 +43292,12 @@ var APP_accelerator_home_ui = (function () {
     //  }
 
     _handleDown() {
-      if (this.tag("DeviceInfoContents").y > 215) {
+      if (this.tag("DeviceInfoContents").y > -200) {
         this.tag("DeviceInfoContents").y -= 20;
       }
     }
     _handleUp() {
-      if (this.tag("DeviceInfoContents").y < 275) {
+      if (this.tag("DeviceInfoContents").y < 3) {
         this.tag("DeviceInfoContents").y += 20;
       }
     }
@@ -43844,7 +43787,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('Info');
     }
     _focus() {
-      this._setState(this.state);
+      this._setState('Info');
     }
 
     //  _handleBack() {
@@ -44177,7 +44120,7 @@ var APP_accelerator_home_ui = (function () {
       this._setState('CECControl');
     }
     _focus() {
-      this._setState(this.state);
+      this._setState('CECControl');
     }
     performOTPAction() {
       this.cecApi.setEnabled().then(res => {
@@ -44559,7 +44502,7 @@ var APP_accelerator_home_ui = (function () {
       this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + text;
     }
     _focus() {
-      this._setState(this.state);
+      this._setState('SleepTimer');
       if (Storage.get('TimeoutInterval')) {
         this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval');
       } else {

@@ -29,214 +29,220 @@
  export default class DeviceInformationScreen extends Lightning.Component {
      static _template() {
          return {
-             DeviceInfoContents: {
-                 x: 200,
-                 y: 275,
-                 Line1: {
-                     y: 0,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 ChipSet: {
-                     Title: {
-                         x: 10,
-                         y: 45,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`Chipset`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 45,
-                         mountY: 0.5,
-                         text: {
-                             text: `N/A`,
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     }
-                 },
-                 Line2: {
-                     y: 90,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 SerialNumber: {
-                     Title: {
-                         x: 10,
-                         y: 135,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`Serial Number`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 135,
-                         mountY: 0.5,
-                         text: {
-                             text: `N/A`,
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                 },
-                 Line3: {
-                     y: 180,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 Location: {
-                     Title: {
-                         x: 10,
-                         y: 225,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`Location`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 225,
-                         mountY: 0.5,
-                         text: {
-                             text: `City: N/A , Country: N/A `,
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                 },
-                 Line4: {
-                     y: 270,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 SupportedDRM: {
-                     Title: {
-                         x: 10,
-                         y: 360,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`Supported DRM & Key-System`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             wordWrapWidth: 1600,
-                             wordWrap: true,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 360,
-                         mountY: 0.5,
-                         text: {
-                             text: `N/A`,
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             wordWrapWidth: 1200,
-                             wordWrap: true,
-                             fontSize: 25,
-                         }
-                     },
-                 },
-                 Line5: {
-                     y: 450,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 FirmwareVersions: {
-                     Title: {
-                         x: 10,
-                         y: 540,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`Firmware version`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 540,
-                         mountY: 0.5,
-                         text: {
-                             text: `UI Version: ${Settings.get('platform', 'version')}, Build Version: , Timestamp: `,
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                 },
-                 Line6: {
-                     y: 630,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-                 AppVersions: {
-                     Title: {
-                         x: 10,
-                         y: 720,
-                         mountY: 0.5,
-                         text: {
-                             text: Language.translate(`App Info`),
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                     Value: {
-                         x: 400,
-                         y: 720,
-                         mountY: 0.5,
-                         text: {
-                             text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
-                             textColor: COLORS.titleColor,
-                             fontFace: CONFIG.language.font,
-                             fontSize: 25,
-                         }
-                     },
-                 },
-                 Line7: {
-                     y: 810,
-                     mountY: 0.5,
-                     w: 1600,
-                     h: 3,
-                     rect: true,
-                     color: 0xFFFFFFFF
-                 },
-             },
+            DeviceInfoWrapper: {
+                w: 1720,
+                h: 810,
+                x: 200,
+                y: 275,
+                clipping:true,
+                DeviceInfoContents: {
+                    y: 3,
+                    Line1: {
+                        y: 0,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    ChipSet: {
+                        Title: {
+                            x: 10,
+                            y: 45,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`Chipset`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 45,
+                            mountY: 0.5,
+                            text: {
+                                text: `N/A`,
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        }
+                    },
+                    Line2: {
+                        y: 90,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    SerialNumber: {
+                        Title: {
+                            x: 10,
+                            y: 135,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`Serial Number`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 135,
+                            mountY: 0.5,
+                            text: {
+                                text: `N/A`,
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                    },
+                    Line3: {
+                        y: 180,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    Location: {
+                        Title: {
+                            x: 10,
+                            y: 225,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`Location`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 225,
+                            mountY: 0.5,
+                            text: {
+                                text: `City: N/A , Country: N/A `,
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                    },
+                    Line4: {
+                        y: 270,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    SupportedDRM: {
+                        Title: {
+                            x: 10,
+                            y: 360,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`Supported DRM & Key-System`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                wordWrapWidth: 1600,
+                                wordWrap: true,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 360,
+                            mountY: 0.5,
+                            text: {
+                                text: `N/A`,
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                wordWrapWidth: 1200,
+                                wordWrap: true,
+                                fontSize: 25,
+                            }
+                        },
+                    },
+                    Line5: {
+                        y: 450,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    FirmwareVersions: {
+                        Title: {
+                            x: 10,
+                            y: 540,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`Firmware version`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 540,
+                            mountY: 0.5,
+                            text: {
+                                text: `UI Version: ${Settings.get('platform', 'version')}, Build Version: , Timestamp: `,
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                    },
+                    Line6: {
+                        y: 630,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                    AppVersions: {
+                        Title: {
+                            x: 10,
+                            y: 720,
+                            mountY: 0.5,
+                            text: {
+                                text: Language.translate(`App Info`),
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                        Value: {
+                            x: 400,
+                            y: 720,
+                            mountY: 0.5,
+                            text: {
+                                text: "Youtube:\nAmazon Prime:\nNetflix ESN:",
+                                textColor: COLORS.titleColor,
+                                fontFace: CONFIG.language.font,
+                                fontSize: 25,
+                            }
+                        },
+                    },
+                    Line7: {
+                        y: 810,
+                        mountY: 0.5,
+                        w: 1600,
+                        h: 3,
+                        rect: true,
+                        color: 0xFFFFFFFF
+                    },
+                }
+            }
          }
      }
  
@@ -361,12 +367,12 @@
     //  }
  
      _handleDown() {
-         if (this.tag("DeviceInfoContents").y > 215) {
+         if (this.tag("DeviceInfoContents").y > -200) {
              this.tag("DeviceInfoContents").y -= 20;
          }
      }
      _handleUp() {
-         if (this.tag("DeviceInfoContents").y < 275) {
+         if (this.tag("DeviceInfoContents").y < 3) {
              this.tag("DeviceInfoContents").y += 20;
          }
      }

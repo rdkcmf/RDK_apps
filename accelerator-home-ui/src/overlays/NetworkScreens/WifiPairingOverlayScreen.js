@@ -116,22 +116,6 @@
    _updateText(txt) {
      this.tag("Pwd").text.text = txt;
    }
-  //  _handleBack() {
-  //    Router.back()
-  //  }
- 
-   /**
-    * @param {{ item: Wifi Response Object; }} args
-    */
-  //  set params(args) {
-  //    if (args.wifiItem) {
-  //      this.item(args.wifiItem)
-  //    } else {
-  //    this._handleBack()
-  //      //Router.navigate('settings/network/interface/wifi')
-  //    }
- 
-  //  }
  
    item(item) {
      this.star = "";
@@ -178,7 +162,7 @@
  
    pressEnter(option) {
      if (option === 'Cancel') {
-       this._handleBack()
+      this.fireAncestors("$navigateBack")
      } else if (option === 'Connect') {
        if (this._item) {
          console.log('trying to connect wifi')
@@ -189,20 +173,13 @@
              console.log('Not able to connect to wifi', JSON.stringify(err))
            })
        }
-       this._handleBack()
+       this.fireAncestors("$navigateBack")
      } else if (option === 'Disconnect') {
        this._wifi.disconnect().then(() => {
-        this._handleBack()
+        this.fireAncestors("$navigateBack")
        })
      }
    }
- 
-   // startConnect(password) {
-   //   this._wifi.connect(this._item, password).then(() => {
-   //     Router.back()
-   //   })
- 
-   // }
    startConnect(password) {
      this._wifi.connect(this._item, password).then(() => {
        this._wifi.saveSSID(this._item.ssid, password, this._item.security).then((response) => {
@@ -217,7 +194,7 @@
            })
          }
        })
-       this._handleBack()
+       this.fireAncestors("$navigateBack")
      })
  
    }

@@ -96,7 +96,7 @@
      this.dtvApi = new DTVApi();
    }
    _focus() {
-     this._setState(this.state);
+    this._setState("Activate");
      if (active) {
        this.tag("Activate.Button").src = Utils.asset(
          "images/settings/ToggleOnOrange.png"

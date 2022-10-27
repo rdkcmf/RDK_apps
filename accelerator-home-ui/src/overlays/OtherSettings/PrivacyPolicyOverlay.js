@@ -110,41 +110,41 @@
  
  export default class PrivacyPolicyScreen extends Lightning.Component {
      static _template() {
-         return {
-             rect: true,
-             color: 0x00000000,
-             w: 1920,
-             h: 1080,
-             clipping: true,
-             PrivacyPolicy: {
-                 x: 200,
-                 y: 270,
-                 Title: {
-                     x: 10,
-                     y: 45,
-                     mountY: 0.5,
-                     text: {
-                         text: `Privacy Policy`,
-                         textColor: COLORS.titleColor,
-                         fontFace: CONFIG.language.font,
-                         fontStyle: "bold",
-                         fontSize: 40,
-                     }
-                 },
-                 Content: {
-                     x: 10,
-                     y: 100,
-                     text: {
-                         text: _privacyPolicy,
-                         textColor: COLORS.titleColor,
-                         fontFace: CONFIG.language.font,
-                         fontSize: 20,
-                         wordWrapWidth: 1500,
-                         wordWrap: true,
-                     }
-                 }
-             }
-         }
+        return {
+            PrivacyPolicyScreenContents:{
+                h:810,
+                w:1720,   
+                x: 200,
+                y: 270,
+                clipping: true,
+                PrivacyPolicy: {
+                    Title: {
+                        x: 10,
+                        y: 45,
+                        mountY: 0.5,
+                        text: {
+                            text: `Privacy Policy`,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontStyle: "bold",
+                            fontSize: 40,
+                        }
+                    },
+                    Content: {
+                        x: 10,
+                        y: 100,
+                        text: {
+                            text: _privacyPolicy,
+                            textColor: COLORS.titleColor,
+                            fontFace: CONFIG.language.font,
+                            fontSize: 20,
+                            wordWrapWidth: 1500,
+                            wordWrap: true,
+                        }
+                    }
+                }
+            }
+        }
      }
  
      _handleDown() {
@@ -158,7 +158,7 @@
     //  }
  
      _handleUp() {
-         if (this.tag("PrivacyPolicy").y <= 235) {
+         if (this.tag("PrivacyPolicy").y <= 3) {
              this.tag("PrivacyPolicy").y += 35;
          }
      }

@@ -170,7 +170,7 @@
          });
      }
      _focus() {
-         this._setState(this.state) //can be used on init as well
+        this._setState('NetworkInfo')
  
          new NetworkApi().getDefaultInterface().then(interfaceName => {
              this.$NetworkInterfaceText(interfaceName)

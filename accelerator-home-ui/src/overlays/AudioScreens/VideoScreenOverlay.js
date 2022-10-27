@@ -203,7 +203,7 @@ export default class VideoScreen extends Lightning.Component {
       }
       this.tag("HDR.Title").text.text = Language.translate('High Dynamic Range: ') + availableHDROptions[result];
     })
-    this._setState(this.state)
+    this._setState('Resolution')
   }
 
  

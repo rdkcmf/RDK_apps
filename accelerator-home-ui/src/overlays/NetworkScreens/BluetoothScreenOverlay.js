@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Router, Utils, Language, Registry } from '@lightningjs/sdk'
+ import { Lightning, Utils, Language, Registry } from '@lightningjs/sdk'
  import BluetoothItem from '../../items/BluetoothItem'
  import SettingsMainItem from '../../items/SettingsMainItem'
  import BluetoothApi from '../../api/BluetoothApi'
- import BluetoothConfirmation from '../../screens/BluetoothConfirmation'
  import BluetoothPairingScreen from './BluetoothPairing'
  import { COLORS } from '../../colors/Colors'
  import { CONFIG } from '../../Config/Config'
+import FailComponent from './FailComponent'
  
  /**
   * Class for Bluetooth screen.
@@ -34,19 +34,6 @@
        Bluetooth: {
          y: 275,
          x: 200,
-         Confirmation: {
-           x: 780,
-           y: 100,
-           type: BluetoothConfirmation,
-           visible: false
-         },
-         PairingScreen: {
-           x: 780,
-           y: 100,
-           type: BluetoothPairingScreen,
-           zIndex: 100,
-           visible: false
-         },
          Switch: {
            type: SettingsMainItem,
            Title: {
@@ -145,26 +132,34 @@
        BluetoothPairingScreen:{
         type: BluetoothPairingScreen,
         visible: false
+       },
+       FailScreen: {
+        type: FailComponent,
+        visible: false
        }
  
      }
    }
  
-   /**
-    * @param {{ action: String; }} args
-    */
-   set params(args) {
-     if (args.action) {
-       this.pressEnter(args.action)
-     }
-   }
+  //  $navigateBack() {
+  //   this._setState('AddADevice')
+  // }
+
+  $triggerBluetoothAction(option) {
+    this.pressEnter(option)
+    this._setState('AddADevice')
+  }
+
+  hide() {
+    this.tag('Bluetooth').visible = false
+  }
+
+  show() {
+      this.tag('Bluetooth').visible = true
+  }
  
    _unfocus() {
      this._disable()
-   }
- 
-   pageTransition() {
-     return 'left'
    }
  
    _firstEnable() {
@@ -172,7 +167,7 @@
      this._bluetooth = false
      this._activateBluetooth()
      this._setState('Switch')
-     //this.switch()
+     this.switch() //so that switch will be enabled by default
      //this._bluetooth = false
      this._pairedNetworks = this.tag('Networks.PairedNetworks')
      this._availableNetworks = this.tag('Networks.AvailableNetworks')
@@ -242,63 +237,11 @@
      this.tag('AddADevice').patch({ alpha: 1 });
      this.tag('Searching').patch({ visible: false });
      this.tag('AvailableNetworks').patch({ visible: false });
-     this.tag('Confirmation').patch({ visible: false });
      //  this.loadingAnimation.start()
      // this.tag('TopPanel').patch({ alpha: 0 });
      // this.tag('SidePanel').patch({ alpha: 0 });
    }
  
-   showPairingScreen() {
-     this.tag('Switch').patch({ alpha: 0 });
-     this.tag('PairedNetworks').patch({ alpha: 0 });
-     this.tag('AddADevice').patch({ alpha: 0 });
-     this.tag('Searching').patch({ visible: false });
-     this.tag('AvailableNetworks').patch({ visible: false });
-     this.tag('Confirmation').patch({ visible: false });
-     this.tag('PairingScreen').patch({ visible: true });
-     this.fireAncestors('$hideTopPanel');
-     // this.tag('TopPanel').patch({ alpha: 0 });
-     // this.tag('SidePanel').patch({ alpha: 0 });
-   }
- 
-   hidePairingScreen() {
-     this.tag('Switch').patch({ alpha: 1 });
-     this.tag('PairedNetworks').patch({ alpha: 1 });
-     this.tag('AddADevice').patch({ alpha: 1 });
-     this.tag('Searching').patch({ visible: false });
-     this.tag('AvailableNetworks').patch({ visible: false });
-     this.tag('Confirmation').patch({ visible: false });
-     this.tag('PairingScreen').patch({ visible: false });
-     this.fireAncestors('$showTopPanel');
-     // this.tag('TopPanel').patch({ alpha: 0 });
-     // this.tag('SidePanel').patch({ alpha: 0 });
-   }
- 
-   showConfirmation() {
-     this.tag('Switch').patch({ alpha: 0 });
-     this.tag('PairedNetworks').patch({ alpha: 0 });
-     this.tag('AddADevice').patch({ alpha: 0 });
-     this.tag('Searching').patch({ visible: false });
-     this.tag('AvailableNetworks').patch({ visible: false });
-     this.tag('PairingScreen').patch({ visible: false });
-     this.tag('Confirmation').patch({ visible: true });
-     this.fireAncestors('$hideTopPanel');
-     // this.tag('TopPanel').patch({ alpha: 0 });
-     // this.tag('SidePanel').patch({ alpha: 0 });
-   }
- 
-   hideConfirmation() {
-     this.tag('Switch').patch({ alpha: 1 });
-     this.tag('PairedNetworks').patch({ alpha: 1 });
-     this.tag('AddADevice').patch({ alpha: 1 });
-     this.tag('Searching').patch({ visible: false });
-     this.tag('AvailableNetworks').patch({ visible: false });
-     this.tag('PairingScreen').patch({ visible: false });
-     this.tag('Confirmation').patch({ visible: false });
-     this.fireAncestors('$showTopPanel');
-     // this.tag('TopPanel').patch({ alpha: 0 });
-     // this.tag('SidePanel').patch({ alpha: 0 });
-   }
  
    /**
     * Function to render list of Bluetooth devices
@@ -345,18 +288,19 @@
  
    pressEnter(option) {
      if (option === 'Cancel') {
-       this._setState('Switch')
+       this._setState('AddADevice')
      } else if (option === 'Pair') {
        this._bt.pair(this._availableNetworks.tag('List').element._item.deviceID).then(result => {
          let btName = this._availableNetworks.tag('List').element._item.name
          if (result.success) {
-           this.widgets.fail.notify({ title: btName, msg: 'Pairing Succesful' })
-           Router.focusWidget('Fail')
+          this.tag("FailScreen").notify({ title: btName, msg: 'Pairing Succesful'})
+          this._setState('FailScreen');
          } else {
-           this.widgets.fail.notify({ title: btName, msg: 'Pairing Failed' })
-           Router.focusWidget('Fail')
+          this.tag("FailScreen").notify({ title: btName, msg: 'Pairing Failed'})
+          this._setState('FailScreen');
          }
-         this.hideAvailableDevices()
+       }).finally(() => {
+        this._setState('AddADevice');
        })
      } else if (option === 'Connect') {
        this._bt
@@ -367,13 +311,15 @@
          .then(result => {
            let btName = this._pairedNetworks.tag('List').element._item.name
            if (!result) {
-             this.widgets.fail.notify({ title: btName, msg: 'Connection Failed' })
-             Router.focusWidget('Fail')
+            this.tag("FailScreen").notify({ title: btName, msg: 'Connection Failed'})
+            this._setState('FailScreen');
            } else {
              this._bt.setAudioStream(this._pairedNetworks.tag('List').element._item.deviceID)
-             this.widgets.fail.notify({ title: btName, msg: 'Connection Successful' })
-             Router.focusWidget('Fail')
+             this.tag("FailScreen").notify({ title: btName, msg: 'Connection Successful'})
+             this._setState('FailScreen');
            }
+         }).finally(() => {
+          this._setState('AddADevice');
          })
      } else if (option === 'Disconnect') {
        this._bt
@@ -384,28 +330,31 @@
          .then(result => {
            let btName = this._pairedNetworks.tag('List').element._item.name
            if (!result) {
-             this.widgets.fail.notify({ title: btName, msg: 'Failed to Disconnect' })
-             Router.focusWidget('Fail')
+            this.tag("FailScreen").notify({ title: btName, msg: 'Failed to Disconnect'})
+            this._setState('FailScreen');
            } else {
-             this.widgets.fail.notify({ title: btName, msg: 'Disconnected' })
-             Router.focusWidget('Fail')
+            this.tag("FailScreen").notify({ title: btName, msg: 'Disconnected'})
+            this._setState('FailScreen');
            }
+         }).finally(() => {
+          this._setState('AddADevice');
          })
      } else if (option === 'Unpair') {
        this._bt.unpair(this._pairedNetworks.tag('List').element._item.deviceID).then(result => {
          let btName = this._pairedNetworks.tag('List').element._item.name
          if (result) {
-           this.widgets.fail.notify({ title: btName, msg: 'Unpaired' })
-           Router.focusWidget('Fail')
+          this.tag("FailScreen").notify({ title: btName, msg: 'Unpaired'})
+          this._setState('FailScreen');
          } else {
-           this.widgets.fail.notify({ title: btName, msg: 'Unpairing Failed' })
-           Router.focusWidget('Fail')
+          this.tag("FailScreen").notify({ title: btName, msg: 'Unpairing Failed'})
+          this._setState('FailScreen');
          }
+       }).finally(() => {
+        this._setState('AddADevice');
        })
      }
    }
 
-   //, { bluetoothItem: this._pairedNetworks.tag('List').element._item }
    $BluetoothParams(){
     return this._pairedNetworks.tag('List').element._item
    }
@@ -415,7 +364,6 @@
        class Switch extends this {
          $enter() {
            this.hideAvailableDevices()
-           this.hidePairingScreen()
            this.tag('Switch')._focus()
          }
          $exit() {
@@ -428,19 +376,6 @@
            this.switch()
          }
        },
-       class Confirmation extends this{
-         $enter() {
-           this.showConfirmation()
-         }
-         _getFocused() {
-           return this.tag('Confirmation')
-         }
-         $pressOK() {
-           this._setState('Switch')
-           this.hideConfirmation()
-         }
-       },
- 
        class PairedDevices extends this {
          $enter() {
            this.hideAvailableDevices()
@@ -455,10 +390,8 @@
            this._navigate('MyDevices', 'up')
          }
          _handleEnter() {
-           //this.showPairingScreen()
-           //this.tag('PairingScreen').item = this._pairedNetworks.tag('List').element._item
+          this.tag('BluetoothPairingScreen').getData(this._pairedNetworks.tag('List').element._item)
           this._setState('BluetoothPairingScreen')
-           //this._setState('PairingScreen')
          }
        },
        class AvailableDevices extends this {
@@ -473,11 +406,10 @@
          }
          _handleEnter() {
            this.pressEnter('Pair')
-           //this.tag('Confirmation').item = this._availableNetworks.tag('List').element._item
          }
          _handleBack() {
            this.hideAvailableDevices()
-           this._setState('Switch')
+           this._setState('AddADevice')
          }
        },
        class AddADevice extends this {
@@ -507,42 +439,51 @@
            }
          }
        },
-       class PairingScreen extends this {
-         $enter() {
-           this._disable()
-           this._bt.stopScan()
-           return this.tag('PairingScreen')
-         }
-         _getFocused() {
-           return this.tag('PairingScreen')
-         }
-         $exit() {
-           this.tag('PairingScreen').visible = false
-           this._enable()
-         }
-       },
        class BluetoothPairingScreen extends this {
         $enter() {
-          ////console.log("bpscreen")
+          this._disable()
+          this._bt.stopScan()
           this.hide()
           this.fireAncestors('$hideBreadCrum')
           this.tag('BluetoothPairingScreen').visible = true
           
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('BluetoothPairingScreen')
         }
         $exit() {
+          this._enable()
           this.show()
-          this.fireAncestors(' $showBreadCrum')
-          this.tag('LiveTvSettings').visible = false
-          
+          this.fireAncestors('$showBreadCrum')
+          this.tag('BluetoothPairingScreen').visible = false
         }
         _handleBack() {
-          this._setState('Switch')
+          this._setState('AddADevice')
         }
       },
+
+      class FailScreen extends this {
+        $enter() {
+            this.hide()
+            this.fireAncestors('$hideBreadCrum')
+            this.tag('FailScreen').visible = true
+           
+        }
+        $exit() {
+            this.show()
+            this.fireAncestors('$showBreadCrum')
+            this.tag('FailScreen').visible = false
+        }
+        _getFocused() {
+            return this.tag('FailScreen')
+        }
+        _handleBack() {
+          this._setState('AddADevice')
+        }
+        _handleEnter() {
+          this._setState('AddADevice')
+        }
+      }
      ]
    }
  
@@ -624,15 +565,11 @@
          this.renderDeviceList()
          let btName = notification.name
          if (notification.connected) {
-           if (this.widgets.fail) {
-             this.widgets.fail.notify({ title: btName, msg: 'CONNECTION SUCCESS' })
-             Router.focusWidget('Fail')
-           }
+          this.tag("FailScreen").notify({ title: btName, msg: 'CONNECTION SUCCESS'})
+          this._setState('FailScreen');
          } else {
-           if (this.widgets.fail) {
-             this.widgets.fail.notify({ title: btName, msg: 'CONNECTION FAILED' })
-             Router.focusWidget('Fail')
-           }
+          this.tag("FailScreen").notify({ title: btName, msg: 'CONNECTION FAILED'})
+          this._setState('FailScreen');
          }
        })
        this._bt.registerEvent('onDiscoveryCompleted', () => {
@@ -647,10 +584,8 @@
        this._bt.registerEvent('onRequestFailed', notification => {
          this._bt.startScan()
          this.renderDeviceList()
-         if (this.widgets.fail) {
-           this.widgets.fail.notify({ title: notification.name, msg: notification.newStatus })
-           Router.focusWidget('Fail')
-         }
+        this.tag("FailScreen").notify({ title: notification.name, msg: notification.newStatus})
+        this._setState('FailScreen');
  
        })
      })

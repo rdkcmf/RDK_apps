@@ -25,6 +25,7 @@
  import { CONFIG } from '../../Config/Config'
  import JoinAnotherNetworkOverlay from './JoinAnotherNetworkOverlay'
 import WifiPairingScreen from './WifiPairingOverlayScreen'
+import FailComponent from './FailComponent'
  
  /**
  * Class for WiFi screen.
@@ -123,6 +124,10 @@ import WifiPairingScreen from './WifiPairingOverlayScreen'
        },
        WifiPairingScreen:{
         type: WifiPairingScreen,
+        visible: false
+       },
+       FailScreen: {
+        type: FailComponent,
         visible: false
        }
      }
@@ -308,18 +313,20 @@ import WifiPairingScreen from './WifiPairingOverlayScreen'
      })
    }
   
-   hide() {
+  hide() {
     this.tag('WifiContents').visible = false
-}
+  }
 
-show() {
-    this.tag('WifiContents').visible = true
-}
-$PairingnetworkParams(){
-  console.log("state",this.state)
-  return (this.ListItem)
-}
+  show() {
+      this.tag('WifiContents').visible = true
+  }
+  $PairingnetworkParams(){
+    return (this.ListItem)
+  }
 
+  $navigateBack() {
+    this._setState('Switch')
+  }
 
 
 
@@ -463,7 +470,31 @@ $PairingnetworkParams(){
       _handleBack() {
           this._setState('Switch')
       }
-  },
+    },
+
+    class FailScreen extends this {
+      $enter() {
+          console.log("wifiscreen")
+          this.hide()
+          this.fireAncestors('$hideBreadCrum')
+          this.tag('FailScreen').visible = true
+         
+      }
+      $exit() {
+          this.show()
+          this.fireAncestors('$showBreadCrum')
+          this.tag('FailScreen').visible = false
+      }
+      _getFocused() {
+          return this.tag('FailScreen')
+      }
+      _handleBack() {
+          this._setState('Switch')
+      }
+      _handleEnter() {
+        this._setState('Switch')
+      }
+    }
      ]
    }
  
@@ -553,10 +584,8 @@ $PairingnetworkParams(){
            this._wifi.setDefaultInterface('ETHERNET', true)
          }
        })
-       if (this.widgets) {
-         this.widgets.fail.notify({ title: 'WiFi Error', msg: this.onError[notification.code] })
-         Router.focusWidget('Fail')
-       }
+       this.tag("FailScreen").notify({ title: 'WiFi Error', msg: this.onError[notification.code]})
+       this._setState('FailScreen');
      })
      this._wifi.registerEvent('onAvailableSSIDs', notification => {
        this.renderDeviceList(notification.ssids)

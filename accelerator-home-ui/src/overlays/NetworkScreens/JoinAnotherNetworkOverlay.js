@@ -66,8 +66,7 @@
          }
        })
      })
-     this._handleBack()
-     //Router.back();
+     this.fireAncestors("$navigateBack");
    }
    static _template() {
      return {

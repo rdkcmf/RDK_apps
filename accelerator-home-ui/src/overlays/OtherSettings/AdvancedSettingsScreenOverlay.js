@@ -182,7 +182,7 @@
          this._setState('CECControl')
      }
      _focus() {
-         this._setState(this.state)
+        this._setState('CECControl')
      }
      performOTPAction() {
          this.cecApi.setEnabled().then(res => {

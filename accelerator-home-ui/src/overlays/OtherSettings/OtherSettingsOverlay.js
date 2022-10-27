@@ -245,7 +245,7 @@
      }
  
      _focus() {
-         this._setState(this.state)
+        this._setState('SleepTimer')
  
          if (Storage.get('TimeoutInterval')) {
              this.tag('SleepTimer.Title').text.text = Language.translate('Sleep Timer: ') + Storage.get('TimeoutInterval')

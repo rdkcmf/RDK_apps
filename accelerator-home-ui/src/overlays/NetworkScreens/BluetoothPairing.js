@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- import { Lightning, Router, Language } from '@lightningjs/sdk'
+ import { Lightning, Language } from '@lightningjs/sdk'
  import { CONFIG } from "../../Config/Config"
  let _item
  /**
@@ -25,10 +25,6 @@
  export default class BluetoothPairingScreen extends Lightning.Component {
      static _template() {
          return {
-             w: 1920,
-             h: 2000,
-             rect: true,
-             color: 0x00000000,
              BluetoothPair: {
                  x: 960,
                  y: 300,
@@ -106,7 +102,8 @@
          }
      }
  
-     item(item) {
+     getData(item) {
+        console.log("setting pairing screen item: ",item)
          _item = item
          this._setState('ConnectDisconnect')
          this.tag('Title').text = item.name
@@ -121,6 +118,7 @@
          this._setState('ConnectDisconnect')
      }
      _focus(){
+        this._setState('ConnectDisconnect')
         this.item(this.fireAncestors("$BluetoothParams"))
      }
  
@@ -133,13 +131,9 @@
                  _handleEnter() {
                      // this.tag('Pairing').text = "Someting is wrong " + _item.name
                      if (_item.connected) {
-                         // this.tag('Pairing').text = "Connecting to " + _item.name
-                         //this.fireAncestors('$pressEnter', 'Disconnect')
-                         Router.navigate('settings/bluetooth', { action: 'Disconnect' })
+                         this.fireAncestors('$triggerBluetoothAction', 'Disconnect')
                      } else {
-                         // this.tag('Pairing').text = "Disconnecting from " + _item.name
-                         // this.fireAncestors('$pressEnter', 'Connect')
-                         Router.navigate('settings/bluetooth', { action: 'Connect' })
+                         this.fireAncestors('$triggerBluetoothAction', 'Connect')
                      }
                  }
                  _handleRight() {
@@ -174,8 +168,7 @@
                      this._focus()
                  }
                  _handleEnter() {
-                     //this.fireAncestors('$pressEnter', 'Unpair')
-                     Router.navigate('settings/bluetooth', { action: 'Unpair' })
+                     this.fireAncestors('$triggerBluetoothAction', 'Unpair')
  
                  }
                  _handleRight() {
@@ -213,8 +206,7 @@
                      this._focus()
                  }
                  _handleEnter() {
-                     //this.fireAncestors('$pressEnter', 'Cancel')
-                     Router.navigate('settings/bluetooth', { action: 'Cancel' })
+                     this.fireAncestors('$triggerBluetoothAction', 'Cancel')
                  }
                  _handleLeft() {
                      this._setState('Unpair')
