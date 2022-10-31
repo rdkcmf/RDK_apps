@@ -54,8 +54,8 @@
    startConnectForAnotherNetwork(device, passphrase) {
      wifi.connect({ ssid: device.ssid, security: device.security }, passphrase).then(() => {
        wifi.saveSSID(device.ssid, passphrase, device.security).then((response) => {
-         if (response.result === 0) {
-           // console.log(response);
+        if (response.result === 0 && response.success === true) {
+          wifi.SaveSSIDKey(this._item.ssid).then((persistenceResponse)=>{console.log(persistenceResponse)})
            // Router.back()
          }
          else if (response.result !== 0) {

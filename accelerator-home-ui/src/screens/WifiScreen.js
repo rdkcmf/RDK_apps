@@ -258,19 +258,24 @@ export default class WiFiScreen extends Lightning.Component {
     this._wifi.stopScan()
   }
 
-
+  pairedDevices(){
+    this._pairedNetworks.tag('List').items = []
+    this._availableNetworks.tag('List').items =[]
+  }
 
   /**
    * Function to render list of Wi-Fi networks.
    */
   renderDeviceList(ssids) {
+    this._pairedList  =[];
+     this._pairedNetworks.h = 0;
+     this._pairedNetworks.tag('List').items = []
+     this._pairedNetworks.tag('List').h  = 0
     this._wifi.getConnectedSSID().then(result => {
+      console.log("getconnectedSSID response", result)
       if (result.ssid != '') {
         this._pairedList = [result]
-      } else {
-        this._pairedList = []
-      }
-      this._pairedNetworks.h = this._pairedList.length * 90
+        this._pairedNetworks.h = this._pairedList.length * 90
       this._pairedNetworks.tag('List').h = this._pairedList.length * 90
       this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
         item.connected = true
@@ -283,7 +288,10 @@ export default class WiFiScreen extends Lightning.Component {
         }
       })
 
+      }
+
       this._otherList = ssids.filter(device => {
+        console.log("SSID filter", device)
         result = this._pairedList.map(a => a.ssid)
         if (result.includes(device.ssid)) {
           return false
@@ -291,6 +299,7 @@ export default class WiFiScreen extends Lightning.Component {
       })
       this._availableNetworks.h = this._otherList.length * 90
       this._availableNetworks.tag('List').h = this._otherList.length * 90
+      //this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h
       this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
         item.connected = false
         return {
@@ -376,7 +385,21 @@ export default class WiFiScreen extends Lightning.Component {
           this._navigate('AvailableDevices', 'up')
         }
         _handleEnter() {
-          Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
+          console.log("SSID check", this._availableNetworks.tag('List').element._item)
+          let item = this._availableNetworks.tag('List').element._item
+          console.log("enter connect method")
+          this._wifi.getSSIDKey().then((response)=>{
+            console.log("ssid check")
+            if(response === item.ssid ){
+              this._wifi.connect().then((response)=>{console.log(response)})
+              .catch(err =>{ 
+                Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
+                this._wifi.SaveSSIDKey("").then(()=>{})})
+               
+            }
+            else { Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })}
+          })
+          //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
         }
       },
       class JoinAnotherNetwork extends this {
@@ -468,6 +491,7 @@ export default class WiFiScreen extends Lightning.Component {
       this.tag('Switch.Loader').visible = true
       this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
       this._wifi.discoverSSIDs()
+      this.pairedDevices()
     }
   }
 
@@ -484,8 +508,16 @@ export default class WiFiScreen extends Lightning.Component {
       if (notification.state === 2 || notification.state === 5) {
         this._wifi.discoverSSIDs()
       }
+      if(notification.state === 5){
+        this._wifi.getConnectedSSID().then(result => {
+        this._wifi.SaveSSIDKey(result.ssid).then((response)=>{console.log(response)})
+        })
+      }
     })
     this._wifi.registerEvent('onError', notification => {
+      if(notification.code === 4){
+        this._wifi.clearSSID()
+      }
       console.log('on errro')
       this._wifi.discoverSSIDs()
       this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -499,6 +531,7 @@ export default class WiFiScreen extends Lightning.Component {
       }
     })
     this._wifi.registerEvent('onAvailableSSIDs', notification => {
+      console.log("Notification[onAvailableSSIDs]:", notification.ssids)
       this.renderDeviceList(notification.ssids)
       if (!notification.moreData) {
         setTimeout(() => {

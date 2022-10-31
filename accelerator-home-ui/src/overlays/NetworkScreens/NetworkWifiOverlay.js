@@ -267,39 +267,47 @@ import FailComponent from './FailComponent'
      this._wifi.stopScan()
    }
  
- 
+   pairedDevices(){
+    this._pairedNetworks.tag('List').items = []
+    this._availableNetworks.tag('List').items =[]
+  }
  
    /**
     * Function to render list of Wi-Fi networks.
     */
    renderDeviceList(ssids) {
+    this._pairedList  =[];
+    this._pairedNetworks.h = 0;
+    this._pairedNetworks.tag('List').items = []
+    this._pairedNetworks.tag('List').h  = 0
      this._wifi.getConnectedSSID().then(result => {
-       if (result.ssid != '') {
-         this._pairedList = [result]
-       } else {
-         this._pairedList = []
-       }
-       this._pairedNetworks.h = this._pairedList.length * 90
-       this._pairedNetworks.tag('List').h = this._pairedList.length * 90
-       this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
-         item.connected = true
-         return {
-           ref: 'Paired' + index,
-           w: 1920 - 300,
-           h: 90,
-           type: WiFiItem,
-           item: item,
-         }
-       })
+      if (result.ssid != '') {
+        this._pairedList = [result]
+        this._pairedNetworks.h = this._pairedList.length * 90
+      this._pairedNetworks.tag('List').h = this._pairedList.length * 90
+      this._pairedNetworks.tag('List').items = this._pairedList.map((item, index) => {
+        item.connected = true
+        return {
+          ref: 'Paired' + index,
+          w: 1920 - 300,
+          h: 90,
+          type: WiFiItem,
+          item: item,
+        }
+      })
+      } 
  
        this._otherList = ssids.filter(device => {
+        console.log("SSID filter", device)
          result = this._pairedList.map(a => a.ssid)
          if (result.includes(device.ssid)) {
            return false
          } else return device
        })
+       console.log("otherlist", this._otherList)
        this._availableNetworks.h = this._otherList.length * 90
        this._availableNetworks.tag('List').h = this._otherList.length * 90
+       this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h
        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
          item.connected = false
          return {
@@ -397,10 +405,21 @@ import FailComponent from './FailComponent'
            this._navigate('AvailableDevices', 'up')
          }
          _handleEnter() {
-          this.ListItem = this._availableNetworks.tag('List').element._item 
-          this._setState("WifiPairingScreen")
-           //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._availableNetworks.tag('List').element._item })
-         }
+          console.log("SSID check", this._availableNetworks.tag('List').element._item)
+          this.ListItem = this._pairedNetworks.tag('List').element._item 
+          console.log("enter connect method")
+          this._wifi.getSSIDKey().then((response)=>{
+            console.log("ssid check")
+            if(response === ListItem.ssid ){
+              this._wifi.connect().then((response)=>{console.log(response)})
+              .catch(err =>{ 
+                this._setState("WifiPairingScreen")
+                this._wifi.SaveSSIDKey("").then(()=>{})})
+               
+            }
+            else {this._setState("WifiPairingScreen")}
+          })
+     }
        },
        class JoinAnotherNetwork extends this {
          $enter() {
@@ -559,6 +578,7 @@ import FailComponent from './FailComponent'
        this.tag('Switch.Loader').visible = true
        this.tag('Switch.Button').src = Utils.asset('images/settings/ToggleOnOrange.png')
        this._wifi.discoverSSIDs()
+       this.pairedDevices()
      }
    }
  
@@ -575,8 +595,16 @@ import FailComponent from './FailComponent'
        if (notification.state === 2 || notification.state === 5) {
          this._wifi.discoverSSIDs()
        }
+       if(notification.state === 5){
+        this._wifi.getConnectedSSID().then(result => {
+        this._wifi.SaveSSIDKey(result.ssid).then((response)=>{console.log(response)})
+        })
+      }
      })
      this._wifi.registerEvent('onError', notification => {
+      if(notification.code === 4){
+        this._wifi.clearSSID()
+      }
        console.log('on errro')
        this._wifi.discoverSSIDs()
        this._wifi.setInterface('ETHERNET', true).then(res => {
@@ -588,6 +616,7 @@ import FailComponent from './FailComponent'
        this._setState('FailScreen');
      })
      this._wifi.registerEvent('onAvailableSSIDs', notification => {
+      console.log("notification", notification)
        this.renderDeviceList(notification.ssids)
        if (!notification.moreData) {
          setTimeout(() => {

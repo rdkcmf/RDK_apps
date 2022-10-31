@@ -183,8 +183,8 @@
    startConnect(password) {
      this._wifi.connect(this._item, password).then(() => {
        this._wifi.saveSSID(this._item.ssid, password, this._item.security).then((response) => {
-         if (response.result === 0) {
-           // console.log(response);
+        if (response.result === 0  &&  response.success === true) {
+          this._wifi.SaveSSIDKey(this._item.ssid).then((persistenceResponse)=>{console.log(persistenceResponse)})
            // Router.back()
          }
          else if (response.result !== 0) {

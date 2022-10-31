@@ -68,8 +68,9 @@ export default class WiFiItem extends Lightning.Component {
   set item(item) {
 
     this._item = item
-    this.status = item.connected ? 'Connected' : 'Not Connected'
-
+    if(item.ssid){
+      this.status = item.connected ? 'Connected' : 'Not Connected'
+    }
     var wifiicon = "";
     if (item.signalStrength >= -50) {
       wifiicon = this.WiFi4

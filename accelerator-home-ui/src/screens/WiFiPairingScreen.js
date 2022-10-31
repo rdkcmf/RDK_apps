@@ -213,14 +213,15 @@ export default class WifiPairingScreen extends Lightning.Component {
   startConnect(password) {
     this._wifi.connect(this._item, password).then(() => {
       this._wifi.saveSSID(this._item.ssid, password, this._item.security).then((response) => {
-        if (response.result === 0) {
+        if (response.result === 0 && response.success === true) {
+          this._wifi.SaveSSIDKey(this._item.ssid).then((persistenceResponse)=>{console.log(persistenceResponse)})
           // console.log(response);
-          // Router.back()
+           Router.back()
         }
         else if (response.result !== 0) {
           this._wifi.clearSSID().then((response) => {
             // console.log(response)
-            // Router.back()
+             Router.back()
           })
         }
       })
@@ -228,7 +229,6 @@ export default class WifiPairingScreen extends Lightning.Component {
     })
 
   }
-
 
   static _states() {
     return [

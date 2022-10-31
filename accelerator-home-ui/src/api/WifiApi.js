@@ -169,18 +169,20 @@ export default class Wifi {
    * @param {object} device
    * @param {string} passphrase
    */
-  connect(device, passphrase) {
+   connect(device, passphrase) {
+    let params ={}
+    if(device && passphrase){
+      params={
+        ssid: device.ssid,
+        passphrase: passphrase,
+        securityMode: device.security,
+      }
+    }
     return new Promise((resolve, reject) => {
       this.disconnect().then(() => {
-        console.log(`connect SSID ${device.ssid}`)
         this._thunder
-          .call(this.callsign, 'connect', {
-            ssid: device.ssid,
-            passphrase: passphrase,
-            securityMode: device.security,
-          })
+          .call(this.callsign, 'connect', params)
           .then(result => {
-            console.log(`connected SSID ${device.ssid}`)
             this.setInterface('WIFI', true).then(res => {
               if (res.success) {
                 this.setDefaultInterface('WIFI', true)
@@ -354,6 +356,37 @@ export default class Wifi {
       .catch(err => {
         console.log('Error in clear ssid')
       })
+    })
+  }
+
+  SaveSSIDKey(value1) {
+    return new Promise((resolve, reject) => {
+      this._thunder
+        .call('org.rdk.PersistentStore', 'setValue', {
+          namespace: "wifi",
+          key: "SSID",
+          value: value1
+        })
+        .then(result => {
+          resolve(result.success)
+        })
+        .catch(err => {
+          console.error('storage SSID failed', err)
+          reject()
+        })
+    })
+  }
+  //get SSID value from Persistence Store
+  getSSIDKey() {
+    return new Promise((resolve) => {
+      this._thunder
+        .call('org.rdk.PersistentStore', 'getValue', { namespace: 'wifi', key: 'SSID' })
+        .then(result => {
+          resolve(result.value)
+        })
+        .catch(err => {
+          resolve('')
+        })
     })
   }
 }
