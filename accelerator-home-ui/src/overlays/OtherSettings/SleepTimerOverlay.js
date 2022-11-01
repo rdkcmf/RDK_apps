@@ -75,10 +75,6 @@
          this._setState('Options')
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/other')
-    //  }
- 
      static _states() {
          return [
              class Options extends this{

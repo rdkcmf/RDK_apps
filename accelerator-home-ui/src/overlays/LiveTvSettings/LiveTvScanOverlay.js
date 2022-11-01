@@ -141,9 +141,6 @@
             _handleDown() {
                 this._setState('CScan')
             }
-            _handleEnter() {
-                //Router.navigate()
-            }
         },
         class CScan extends this{
             $enter() {
@@ -158,9 +155,6 @@
             _handleDown() {
                 this._setState('SScan')
             }
-            _handleEnter() {
-                // Router.navigate()
-            }
         },
         class SScan extends this {
             $enter() {
@@ -174,7 +168,6 @@
             }
             _handleEnter() {
                 this._setState("DvbSScan")
-                //Router.navigate('settings/livetv/scan/dvb-s-scan')
             }
         },
         class DvbSScan extends this {

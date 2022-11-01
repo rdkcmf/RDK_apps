@@ -89,10 +89,6 @@
      this._setState('Languages')
    }
  
-//    _handleBack() {
-//      Router.navigate('settings/other')
-//    }
- 
    static _states() {
      return [
        class Languages extends this{

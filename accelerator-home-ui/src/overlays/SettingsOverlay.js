@@ -362,7 +362,6 @@ var thunder = ThunderJS(config);
          }
          _handleEnter() {
           this._setState('NetworkConfigurationOverlay')
-           //Router.navigate("settings/network"); //change to state based implementation
          }
        },
        class Bluetooth extends this {
@@ -381,7 +380,6 @@ var thunder = ThunderJS(config);
          _handleLeft() {}
          _handleEnter() {
           this._setState("BluetoothScreenOverlay")
-        //    Router.navigate("settings/bluetooth"); ////change to state based implementation
          }
        },
  
@@ -400,7 +398,6 @@ var thunder = ThunderJS(config);
          }
          _handleEnter() {
           this._setState('VideoScreenOverlay')
-        //    Router.navigate("settings/video"); //change to state based implementation
          }
        },
  
@@ -416,7 +413,6 @@ var thunder = ThunderJS(config);
          }
          _handleEnter() {
           this._setState('AudioScreenOverlay')
-        //    Router.navigate("settings/audio"); //change to state based implementation
          }
          _handleDown() {
            this._setState("OtherSettings");
@@ -435,7 +431,6 @@ var thunder = ThunderJS(config);
          }
          _handleEnter() {
           this._setState("OtherSettingsScreen")
-        //    Router.navigate("settings/other"); //change to state based implementation
          }
          _handleDown() {
           this._setState("NFRStatus")

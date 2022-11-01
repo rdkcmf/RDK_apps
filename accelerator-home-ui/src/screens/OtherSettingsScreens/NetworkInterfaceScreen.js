@@ -207,7 +207,7 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
                     })
                 }
                 _handleDown() {
-                    this._setState('WiFi')
+                    // this._setState('WiFi')
                 }
                 _handleUp() {
                     this._setState('WiFi')

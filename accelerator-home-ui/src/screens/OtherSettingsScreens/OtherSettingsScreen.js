@@ -268,7 +268,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this.tag('SleepTimer')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('AdvancedSettings')
+                    // this._setState('AdvancedSettings')
                 }
                 _handleDown() {
                     // this._setState('RemoteControl')
@@ -377,7 +377,7 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('Privacy')
                 }
                 _handleDown() {
-                    this._setState('SleepTimer')
+                    // this._setState('SleepTimer')
                 }
                 _handleEnter() {
                     Router.navigate('settings/advanced')

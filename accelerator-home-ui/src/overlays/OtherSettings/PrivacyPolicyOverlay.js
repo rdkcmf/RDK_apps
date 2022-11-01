@@ -153,10 +153,6 @@
          }
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/other/privacy')
-    //  }
- 
      _handleUp() {
          if (this.tag("PrivacyPolicy").y <= 3) {
              this.tag("PrivacyPolicy").y += 35;

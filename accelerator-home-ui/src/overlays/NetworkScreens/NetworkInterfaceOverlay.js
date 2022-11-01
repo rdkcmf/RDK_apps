@@ -181,9 +181,6 @@
                 }
                  _handleEnter() {
                     this._setState("WifiScreen")
-                    //  if (!Router.isNavigating()) {
-                    //      Router.navigate('settings/network/interface/wifi')
-                    //  }
  
                  }
              },
@@ -204,7 +201,7 @@
                      })
                  }
                  _handleDown() {
-                     this._setState('WiFi')
+                    //  this._setState('WiFi')
                  }
                  _handleUp() {
                      this._setState('WiFi')

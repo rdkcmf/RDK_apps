@@ -382,7 +382,6 @@ import FailComponent from './FailComponent'
          _handleEnter() {
          this.ListItem = this._pairedNetworks.tag('List').element._item 
           this._setState("WifiPairingScreen")
-           //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._pairedNetworks.tag('List').element._item })
          }
        },
        class AvailableDevices extends this {
@@ -430,9 +429,6 @@ import FailComponent from './FailComponent'
          }
          _handleEnter() {
           this._setState("JoinAnotherNetworkOverlay")
-          //  if (this.wifiStatus) {
-          //    Router.navigate('settings/network/interface/wifi/another')
-          //  }
          }
          _handleDown() {
            if (this.wifiStatus) {

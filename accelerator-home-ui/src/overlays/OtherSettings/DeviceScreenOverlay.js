@@ -108,6 +108,7 @@
                  },
                  Reboot: {
                      y: 270,
+                     alpha: 0.3, // disabled
                      type: SettingsMainItem,
                      Title: {
                          x: 10,
@@ -173,9 +174,6 @@
         this._setState('Info')
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced')
-    //  }
     hide() {
         this.tag('DeviceScreenContents').visible = false
        
@@ -195,14 +193,13 @@
                      this.tag('Info')._unfocus()
                  }
                  _handleUp() {
-                     this._setState('Reboot');
+                    //  this._setState('Reboot');
                  }
                  _handleDown() {
                      this._setState('TimeZone')
                  }
                  _handleEnter() {
                     this._setState("DeviceInformationScreen")
-                     //Router.navigate('settings/advanced/device/info')
                  }
              },
              class TimeZone extends this{
@@ -220,7 +217,6 @@
                  }
                  _handleEnter() {
                     this._setState("TimeZoneOverlay")
-                     //Router.navigate('settings/advanced/device/timezone')
                  }
              },
              class Firmware extends this{
@@ -231,14 +227,13 @@
                      this.tag('Firmware')._unfocus()
                  }
                  _handleUp() {
-                     this._setState('Info');
+                     this._setState('TimeZone');
                  }
                  _handleDown() {
-                     this._setState('Reboot')
+                    //  this._setState('Reboot')
                  }
                  _handleEnter() {
                     this._setState("FirmwareScreen")
-                     //Router.navigate('settings/advanced/device/firmware')
                  }
              },
              class Reboot extends this{
@@ -255,7 +250,7 @@
                      this._setState('Info')
                  }
                  _handleEnter() {
-                     Router.navigate('settings/advanced/device/reboot')
+                    //  Router.navigate('settings/advanced/device/reboot')
                  }
              },
              class Reset extends this{
@@ -277,13 +272,11 @@
              },
              class DeviceInformationScreen extends this {
                 $enter() {
-                  ////console.log("bpscreen")
                   this.hide()
                   this.tag('DeviceInformationScreen').visible = true
                   this.fireAncestors("$updatePageTitle",'Settings  Other Settings  Advanced Settings  Device  Info')
                 }
                 _getFocused() {
-                  //console.log("getfocusedbp")
                   return this.tag('DeviceInformationScreen')
                 }
                 $exit() {
@@ -298,13 +291,11 @@
               //TimeZoneOverlay
               class TimeZoneOverlay extends this {
                 $enter() {
-                  ////console.log("bpscreen")
                   this.hide()
                   this.tag('TimeZoneOverlay').visible = true
                   this.fireAncestors("$updatePageTitle",'Settings  Other Settings  Advanced Settings  Device  Time')
                 }
                 _getFocused() {
-                  //console.log("getfocusedbp")
                   return this.tag('TimeZoneOverlay')
                 }
                 $exit() {
@@ -318,13 +309,11 @@
               },
               class FirmwareScreen extends this {
                 $enter() {
-                  ////console.log("bpscreen")
                   this.hide()
                   this.tag('FirmwareScreen').visible = true
                   this.fireAncestors("$updatePageTitle",'Settings  Other Settings  Advanced Settings  Device  Firmware Update')
                 }
                 _getFocused() {
-                  //console.log("getfocusedbp")
                   return this.tag('FirmwareScreen')
                 }
                 $exit() {

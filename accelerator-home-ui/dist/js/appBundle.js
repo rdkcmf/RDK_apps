@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Mon, 31 Oct 2022 13:31:11 GMT
+ * Generated: Wed, 02 Nov 2022 18:25:42 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -11954,6 +11954,26 @@ var APP_accelerator_home_ui = (function () {
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
   };
+  const defineProperties = (component, props) => {
+    props.forEach(prop => {
+      Object.defineProperty(component, prop, {
+        set: function (value) {
+          component["_".concat(prop)] = value;
+        },
+        get: function () {
+          return component["_".concat(prop)];
+        }
+      });
+    });
+  };
+  const findIndexOfObject = (array, search, targetProp) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][targetProp] === search) {
+        return i;
+      }
+    }
+    return -1;
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -12000,6 +12020,11 @@ var APP_accelerator_home_ui = (function () {
       } = this._findLocationOfIndex(targetIndex);
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
+      this._previous = {
+        mainIndex,
+        crossIndex,
+        realIndex: previousIndex
+      };
       this._index = targetIndex;
       this._indexChanged({
         previousIndex,
@@ -13370,6 +13395,799 @@ var APP_accelerator_home_ui = (function () {
     center: 0.5,
     right: 1
   };
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  const calcCarouselNavigation = (dir, current, min, max) => {
+    let target = current + dir;
+    if (target < min) {
+      target = max;
+    }
+    if (target > max) {
+      target = min;
+    }
+    return target;
+  };
+  class Stepper extends lng$1.Component {
+    static _template() {
+      return {
+        h: 80,
+        w: 574,
+        Focus: {
+          alpha: 0,
+          w: w => w,
+          h: h => h,
+          rect: true
+        },
+        Label: {
+          x: 30,
+          y: h => h * 0.5,
+          mountY: 0.5,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        },
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 30;
+      this._max = 100;
+      this._min = 0;
+      this._value = 50;
+      this._options = undefined;
+      this._label = 'label';
+      this._focusAnimation = null;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'Label',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this._update();
+    }
+    _navigate(dir) {
+      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
+      const event = {
+        value: this._value
+      };
+      if (this._options) {
+        event.options = this._options;
+      }
+      this.fireAncestors('$onValueChanged', event);
+      this.signal('onValueChanged', event);
+    }
+    _handleLeft() {
+      this._navigate(-1);
+    }
+    _handleRight() {
+      this._navigate(1);
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set label(str) {
+      this._label = str;
+      if (this.active) {
+        this.tag('Label').text.text = str;
+      }
+    }
+    get label() {
+      return this._label;
+    }
+    set value(str) {
+      this._value = str;
+      if (this.active) {
+        this.tag('Value').text.text = this.optionValue || this._value;
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    get optionValue() {
+      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
+    }
+    set options(arr) {
+      const refactor = arr.map(option => {
+        if (typeof option === 'string') {
+          return {
+            label: option
+          };
+        }
+        return option;
+      });
+      this._value = 0;
+      this._options = refactor;
+      this._max = refactor.length - 1;
+      this._update();
+    }
+    get options() {
+      return this._options;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ArrowStepper extends Stepper {
+    static _template() {
+      return {
+        ...super._template(),
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          ArrowLeft: {
+            y: h => h * 0.5,
+            mountY: 0.5
+          },
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          },
+          ArrowRight: {
+            y: h => h * 0.5,
+            x: w => w,
+            mountY: 0.5,
+            mountX: 1
+          }
+        }
+      };
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          ArrowLeft: {
+            color: this._labelColor
+          },
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          },
+          ArrowRight: {
+            color: this._labelColor
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'ValueWrapper.ArrowLeft',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.ArrowRight',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      const arrowLeft = this.tag('ArrowLeft');
+      const arrowRight = this.tag('ArrowRight');
+      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
+        arrowLeft.text = {
+          text: '\u25c0',
+          fontSize: 18
+        };
+      }
+      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
+        arrowRight.text = {
+          text: '\u25b6',
+          fontSize: 18
+        };
+      }
+      this._update();
+    }
+  }
+
+  class ColorShift extends lng$1.Component {
+    static _template() {
+      return {
+        w: 574,
+        h: 240,
+        List: {
+          type: List,
+          w: w => w,
+          h: h => h,
+          forceLoad: true,
+          spacing: 0,
+          direction: 'column'
+        }
+      };
+    }
+    _construct() {
+      this._autoColorShift = true;
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._options = [{
+        type: 'neutral',
+        label: 'normal'
+      }, {
+        type: 'protanopia',
+        label: 'Protanopia'
+      }, {
+        type: 'deuteranopia',
+        label: 'Deuteranopia'
+      }, {
+        type: 'tritanopia',
+        label: 'Tritanopia'
+      }, {
+        type: 'monochromacy',
+        label: 'Achromatopsia'
+      }];
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
+    }
+    _getFocused() {
+      return this.tag('List');
+    }
+    _shiftColors() {
+      if (this._autoColorShift && this.application && this.application.colorshift) {
+        this.application.colorshift(this._settings.correction, this._settings);
+      }
+    }
+    $onValueChanged() {
+      const listItems = this.tag('List').items;
+      const correction = listItems[0];
+      this._settings = {
+        correction: correction.options[correction.value].type,
+        brightness: listItems[1].value,
+        contrast: listItems[2].value,
+        gamma: listItems[3].value
+      };
+      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
+        const steppers = listItems.slice(1);
+        steppers.forEach(stepper => {
+          stepper.value = 50;
+        });
+      }
+      this._currentCorrection = this._settings.correction;
+      this._shiftColors();
+      this.signal('onColorShift', this._settings);
+    }
+    _update() {
+      const list = this.tag('List');
+      const steppers = ['Brightness', 'Contrast', 'Gamma'];
+      const options = this._options;
+      const settings = this._settings;
+      const colors = {
+        focusColor: this._focusColor,
+        labelColor: this._labelColor,
+        labelColorFocused: this._labelColorFocused
+      };
+      this._shiftColors();
+      const settingItems = steppers.map(stepper => {
+        const lowerC = stepper.toLocaleLowerCase();
+        return {
+          type: this["".concat(lowerC, "Component")],
+          label: stepper,
+          value: settings[lowerC],
+          w: this.finalW,
+          h: 80,
+          ...colors
+        };
+      });
+      settingItems.unshift({
+        type: this.correctionComponent,
+        options,
+        value: findIndexOfObject(options, settings.correction, 'type'),
+        label: 'Color adjustment',
+        w: this.finalW,
+        h: 80,
+        ...colors
+      });
+      list.clear();
+      list.add(settingItems);
+    }
+    _firstActive() {
+      if (!this._settings) {
+        this._settings = {
+          correction: 'neutral',
+          brightness: 50,
+          contrast: 50,
+          gamma: 50
+        };
+      }
+      this._update();
+    }
+    set settings(obj) {
+      this._settings = obj;
+      if (this.active) {
+        const listItems = this.tag('List').items;
+        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
+        listItems[1] = obj.brightness || 50;
+        listItems[2] = obj.contrast || 50;
+        listItems[3] = obj.gamma || 50;
+      }
+    }
+    get settings() {
+      return this._settings;
+    }
+    get correctionTag() {
+      return this.tag('List').items[0];
+    }
+    get brightnessTag() {
+      return this.tag('List').items[1];
+    }
+    get contrastTag() {
+      return this.tag('List').items[2];
+    }
+    get gammaTag() {
+      return this.tag('List').items[3];
+    }
+    get adjustmentTags() {
+      return this.tag('List').items;
+    }
+    set stepperComponent(component) {
+      this._stepperComponent = component;
+    }
+    get stepperComponent() {
+      return this._stepperComponent || ArrowStepper;
+    }
+    set correctionComponent(component) {
+      this._correctionComponent = component;
+    }
+    get correctionComponent() {
+      return this._correctionComponent || this.stepperComponent;
+    }
+    set brightnessComponent(component) {
+      this._brightnessComponent = component;
+    }
+    get brightnessComponent() {
+      return this._brightnessComponent || this.stepperComponent;
+    }
+    set contrastComponent(component) {
+      this._contrastComponent = component;
+    }
+    get contrastComponent() {
+      return this._contrastComponent || this.stepperComponent;
+    }
+    set gammaComponent(component) {
+      this._gammaComponent = component;
+    }
+    get gammaComponent() {
+      return this._gammaComponent || this.stepperComponent;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class CarouselItem extends lng$1.Component {
+    static _template() {
+      return {
+        Focus: {
+          alpha: 0,
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          w: 120,
+          h: 50,
+          rect: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 25
+          }
+        },
+        Label: {
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          renderOffscreen: true,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 40;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
+    }
+    set label(str) {
+      this.tag('Label').text.text = str;
+      this._label = str;
+    }
+    get label() {
+      return this._label;
+    }
+    _init() {
+      const label = this.tag('Label');
+      label.on('txLoaded', () => {
+        this.patch({
+          w: label.renderWidth,
+          Focus: {
+            w: label.renderWidth + this._padding * 2
+          }
+        });
+        if (this.collectionWrapper) {
+          this.collectionWrapper.reposition();
+        }
+      });
+    }
+    _focus() {
+      this.patch({
+        Focus: {
+          smooth: {
+            alpha: 1
+          }
+        },
+        Label: {
+          smooth: {
+            color: this._labelColorFocused
+          }
+        }
+      });
+    }
+    _unfocus(target) {
+      if (target.isCarouselItem === true) {
+        this.patch({
+          Focus: {
+            smooth: {
+              alpha: 0
+            }
+          },
+          Label: {
+            smooth: {
+              color: this._labelColor
+            }
+          }
+        });
+      }
+    }
+    _firstActive() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          color: this._labelColor
+        }
+      });
+      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
+        this._focus();
+      }
+    }
+    get isCarouselItem() {
+      return true;
+    }
+    static get width() {
+      return 120;
+    }
+    static get height() {
+      return 50;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ProgressBar$1 extends lng$1.Component {
+    static _template() {
+      return {
+        w: 300,
+        h: 10,
+        Background: {
+          w: w => w,
+          h: h => h,
+          rect: true,
+          rtt: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 5
+          },
+          Progress: {
+            h: h => h,
+            w: 10,
+            rect: true,
+            shader: {
+              type: lng$1.shaders.RoundedRectangle,
+              radius: 0
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._progressColor = 0xff009245;
+      this._progressColorFocused = undefined;
+      this._backgroundColor = 0xff9d9d9d;
+      this._backgroundColorFocused = undefined;
+      this._backgroundRadius = 5;
+      this._progressRadius = 0;
+      this.value = 0.5;
+      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
+    }
+    progress(p) {
+      if (p > 1) {
+        p = p / 100;
+      }
+      this._value = p;
+      this.tag('Progress').w = this.w * p;
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Background',
+          p: 'color',
+          v: {
+            0: this._backgroundColor,
+            1: this._backgroundColorFocused || this._backgroundColor
+          }
+        }, {
+          t: 'Background.Progress',
+          p: 'color',
+          v: {
+            0: this._progressColor,
+            1: this._progressColorFocused || this._progressColor
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this.patch({
+        Background: {
+          color: this._backgroundColor,
+          shader: {
+            radius: this._backgroundRadius
+          },
+          Progress: {
+            color: this._progressColor,
+            shader: {
+              radius: this._progressRadius
+            }
+          }
+        }
+      });
+      this.progress(this._value);
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set value(p) {
+      this._value = p;
+      if (this.active) {
+        this.progress(p);
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    set backgroundRadius(num) {
+      this._backgroundRadius = num;
+      if (this.active) {
+        this.tag('Background').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    set progressRadius(num) {
+      this._progressRadius = num;
+      if (this.active) {
+        this.tag('Progress').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    get backgroundTag() {
+      return this.tag('Background');
+    }
+    get progressTag() {
+      return this.tag('Progress');
+    }
+  }
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -19234,7 +20052,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('NetworkInterface');
         }
         _handleDown() {
-          this._setState('NetworkInfo');
+          // this._setState('NetworkInfo')
         }
         _handleEnter() {
           this.loadingAnimation.start();
@@ -19795,7 +20613,7 @@ var APP_accelerator_home_ui = (function () {
           });
         }
         _handleDown() {
-          this._setState('WiFi');
+          // this._setState('WiFi')
         }
         _handleUp() {
           this._setState('WiFi');
@@ -20932,7 +21750,7 @@ var APP_accelerator_home_ui = (function () {
         }
       });
       this._wifi.registerEvent('onAvailableSSIDs', notification => {
-        console.log("Notification name", notification.ssids);
+        console.log("Notification[onAvailableSSIDs]:", notification.ssids);
         this.renderDeviceList(notification.ssids);
         if (!notification.moreData) {
           setTimeout(() => {
@@ -22357,7 +23175,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('SleepTimer')._unfocus();
         }
         _handleUp() {
-          this._setState('AdvancedSettings');
+          // this._setState('AdvancedSettings')
         }
         _handleDown() {
           // this._setState('RemoteControl')
@@ -22456,7 +23274,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Privacy');
         }
         _handleDown() {
-          this._setState('SleepTimer');
+          // this._setState('SleepTimer')
         }
         _handleEnter() {
           Router.navigate('settings/advanced');
@@ -23288,7 +24106,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('LocalDeviceDiscovery')._unfocus();
         }
         _handleUp() {
-          this._setState('PrivacyPolicy');
+          // this._setState('PrivacyPolicy')
         }
         _handleDown() {
           this._setState('UsbMediaDevices');
@@ -23375,7 +24193,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('ClearCookies');
         }
         _handleDown() {
-          this._setState('LocalDeviceDiscovery');
+          // this._setState('LocalDeviceDiscovery')
         }
         _handleEnter() {
           Router.navigate('settings/other/privacyPolicy');
@@ -24029,7 +24847,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Info')._unfocus();
         }
         _handleUp() {
-          this._setState('Reboot');
+          // this._setState('Reboot');
         }
         _handleDown() {
           this._setState('TimeZone');
@@ -24061,7 +24879,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Firmware')._unfocus();
         }
         _handleUp() {
-          this._setState('Info');
+          this._setState('TimeZone');
         }
         _handleDown() {
           this._setState('Reboot');
@@ -24080,7 +24898,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Firmware');
         }
         _handleDown() {
-          this._setState('Info');
+          // this._setState('Info')
         }
         _handleEnter() {
           Router.navigate('settings/advanced/device/reboot');
@@ -36452,7 +37270,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState('HdmiOutputScreen');
-          //Router.navigate('settings/audio/output')
         }
       }, class OutputMode extends this {
         $enter() {
@@ -36470,7 +37287,6 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           console.log("hdmioutputscreen");
           this._setState('HdmiOutputScreen');
-          //Router.navigate('settings/audio/output')
         }
       }, class DynamicRange extends this {
         $enter() {
@@ -36673,11 +37489,6 @@ var APP_accelerator_home_ui = (function () {
         this.loadingAnimation.stop();
       }
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/video')
-    //  }
-
     _focus() {
       this.loadingAnimation.start();
       var options = [];
@@ -36944,7 +37755,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("ResolutionOverlay");
-          //Router.navigate('settings/video/resolution')
         }
       }, class HDR extends this {
         $enter() {
@@ -38515,7 +39325,6 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {
           this.ListItem = this._pairedNetworks.tag('List').element._item;
           this._setState("WifiPairingScreen");
-          //Router.navigate('settings/network/interface/wifi/connect', { wifiItem: this._pairedNetworks.tag('List').element._item })
         }
       }, class AvailableDevices extends this {
         $enter() {
@@ -38562,11 +39371,7 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("JoinAnotherNetworkOverlay");
-          //  if (this.wifiStatus) {
-          //    Router.navigate('settings/network/interface/wifi/another')
-          //  }
         }
-
         _handleDown() {
           if (this.wifiStatus) {
             if (this._pairedNetworks.tag('List').length > 0) {
@@ -38924,9 +39729,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("WifiScreen");
-          //  if (!Router.isNavigating()) {
-          //      Router.navigate('settings/network/interface/wifi')
-          //  }
         }
       }, class Ethernet extends this {
         $enter() {
@@ -38945,7 +39747,7 @@ var APP_accelerator_home_ui = (function () {
           });
         }
         _handleDown() {
-          this._setState('WiFi');
+          //  this._setState('WiFi')
         }
         _handleUp() {
           this._setState('WiFi');
@@ -39204,7 +40006,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('NetworkInterface');
         }
         _handleDown() {
-          this._setState('NetworkInfo');
+          //  this._setState('NetworkInfo')
         }
         _handleEnter() {
           this.loadingAnimation.start();
@@ -41258,9 +42060,6 @@ var APP_accelerator_home_ui = (function () {
         _handleDown() {
           this._setState('CScan');
         }
-        _handleEnter() {
-          //Router.navigate()
-        }
       }, class CScan extends this {
         $enter() {
           this.tag('CScan')._focus();
@@ -41274,9 +42073,6 @@ var APP_accelerator_home_ui = (function () {
         _handleDown() {
           this._setState('SScan');
         }
-        _handleEnter() {
-          // Router.navigate()
-        }
       }, class SScan extends this {
         $enter() {
           this.tag('SScan')._focus();
@@ -41289,7 +42085,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("DvbSScan");
-          //Router.navigate('settings/livetv/scan/dvb-s-scan')
         }
       }, class DvbSScan extends this {
         $enter() {
@@ -41415,11 +42210,6 @@ var APP_accelerator_home_ui = (function () {
     show() {
       this.tag("LiveTVSettingsScreenContents").visible = true;
     }
-
-    //  _handleBack() {
-    //    Router.navigate("settings");
-    //  }
-
     static _states() {
       return [class Activate extends this {
         $enter() {
@@ -41458,7 +42248,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("LiveTvScanOverlay");
-          //Router.navigate("settings/livetv/scan");
         }
       }, class LiveTvScanOverlay extends this {
         $enter() {
@@ -41564,11 +42353,6 @@ var APP_accelerator_home_ui = (function () {
       });
       this._setState('Options');
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/other')
-    //  }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
@@ -41652,11 +42436,6 @@ var APP_accelerator_home_ui = (function () {
         this.prevTicOb = prevTicObject;
       }
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/other')
-    //  }
-
     static _states() {
       return [class Options extends this {
         _getFocused() {
@@ -41809,11 +42588,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this._setState('Languages');
     }
-
-    //    _handleBack() {
-    //      Router.navigate('settings/other')
-    //    }
-
     static _states() {
       return [class Languages extends this {
         $enter() {}
@@ -41912,11 +42686,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag("PrivacyPolicy").y -= 35;
       }
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/other/privacy')
-    //  }
-
     _handleUp() {
       if (this.tag("PrivacyPolicy").y <= 3) {
         this.tag("PrivacyPolicy").y += 35;
@@ -42138,7 +42907,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('LocalDeviceDiscovery')._unfocus();
         }
         _handleUp() {
-          this._setState('PrivacyPolicy');
+          //  this._setState('PrivacyPolicy')
         }
         _handleDown() {
           this._setState('UsbMediaDevices');
@@ -42225,11 +42994,10 @@ var APP_accelerator_home_ui = (function () {
           this._setState('ClearCookies');
         }
         _handleDown() {
-          this._setState('LocalDeviceDiscovery');
+          //  this._setState('LocalDeviceDiscovery')
         }
         _handleEnter() {
           this._setState("PrivacyPolicyScreen");
-          //Router.navigate('settings/other/privacyPolicy')
         }
       }, class PrivacyPolicyScreen extends this {
         $enter() {
@@ -42594,11 +43362,6 @@ var APP_accelerator_home_ui = (function () {
       console.log("setting netflix ESN value to ".concat(v));
       this.tag('AppVersions.Value').text.text = v;
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced/device')
-    //  }
-
     _handleDown() {
       if (this.tag("DeviceInfoContents").y > -200) {
         this.tag("DeviceInfoContents").y -= 20;
@@ -42608,6 +43371,202 @@ var APP_accelerator_home_ui = (function () {
       if (this.tag("DeviceInfoContents").y < 3) {
         this.tag("DeviceInfoContents").y += 20;
       }
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for rendering items in Settings screen.
+   */
+  class TimeOverlayItems extends lng$1.Component {
+    static _template() {
+      return {
+        TimeItemsContents: {
+          y: 3,
+          List: {
+            type: lng$1.components.ListComponent,
+            h: 810,
+            w: 1920 - 300,
+            itemSize: 90,
+            horizontal: false,
+            invertDirection: true,
+            roll: true,
+            rollMax: 900,
+            itemScrollOffset: -6
+          }
+        }
+      };
+    }
+
+    /**
+     * Function refresh the list.
+     */
+    refreshList(item) {
+      console.log("item from refreshList", item);
+      this._item = item;
+      this.tag('List').items = Object.keys(item.time_region).map((ele, idx) => {
+        return {
+          ref: 'Time' + idx,
+          w: 1620,
+          h: 90,
+          type: TimeItem,
+          item: [ele, ele === item.isActive]
+        };
+      });
+    }
+    _firstEnable() {
+      this.appApi = new AppApi();
+    }
+    _handleDown() {
+      this.tag('List').setNext();
+    }
+    _handleUp() {
+      this.tag('List').setPrevious();
+    }
+    _handleEnter() {
+      console.log("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
+      this.fireAncestors("$updateTimeZone", "".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
+      //  this.widgets.menu.updateTimeZone(`${this._item.zone}/${this.tag('List').element._item[0]}`)
+      this.appApi.setZone("".concat(this._item.zone, "/").concat(this.tag('List').element._item[0]));
+      //  Router.navigate('settings/advanced/device/timezone', { refresh: true })
+      return false; //to execute handle enter in parent component
+    }
+
+    _getFocused() {
+      return this.tag('List').element;
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
+  /**
+   * Class for rendering items in Settings screen.
+   */
+  class TimeZoneOverlayItem extends lng$1.Component {
+    _construct() {
+      this.Arrow = Utils.asset('/images/settings/Arrow.png');
+      this.Tick = Utils.asset('/images/settings/Tick.png');
+    }
+    static _template() {
+      return {
+        zIndex: 1,
+        TopLine: {
+          y: 0,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        },
+        Item: {
+          w: 1600,
+          h: 90
+        },
+        BottomLine: {
+          y: 90,
+          mountY: 0.5,
+          w: 1600,
+          h: 3,
+          rect: true,
+          color: 0xFFFFFFFF
+        }
+      };
+    }
+
+    /**
+     * Function to set contents for an item in settings screen.
+     */
+    set item(item) {
+      this._item = item;
+      this.tag('Item').patch({
+        Right: {
+          y: 45,
+          x: 1600,
+          mountX: 1,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(this.Arrow, 45, 45),
+          color: 0xffffffff
+        },
+        Tick: {
+          y: 45,
+          mountY: 0.5,
+          texture: lng$1.Tools.getSvgTexture(this.Tick, 32.5, 32.5),
+          color: 0xffffffff,
+          visible: item[2]
+        },
+        Left: {
+          x: 40,
+          y: 45,
+          mountY: 0.5,
+          text: {
+            text: item[0],
+            fontSize: 25,
+            textColor: COLORS.textColor,
+            fontFace: CONFIG.language.font
+          }
+        }
+      });
+    }
+    _handleEnter() {
+      console.log('enter', this._item[1]);
+      this.fireAncestors("$navigateAndRefreshItems", {
+        time_region: this._item[1],
+        zone: this._item[0],
+        isActive: this.zone
+      });
+      // Router.navigate('settings/advanced/device/timezone/item', { time_region: this._item[1], zone: this._item[0], isActive: this.zone })
+    }
+
+    _focus() {
+      this.tag('TopLine').color = CONFIG.theme.hex;
+      this.tag('BottomLine').color = CONFIG.theme.hex;
+      this.patch({
+        zIndex: 2
+      });
+      this.tag('TopLine').h = 6;
+      this.tag('BottomLine').h = 6;
+    }
+    _unfocus() {
+      this.tag('TopLine').color = 0xFFFFFFFF;
+      this.tag('BottomLine').color = 0xFFFFFFFF;
+      this.patch({
+        zIndex: 1
+      });
+      this.tag('TopLine').h = 3;
+      this.tag('BottomLine').h = 3;
     }
   }
 
@@ -42622,14 +43581,14 @@ var APP_accelerator_home_ui = (function () {
     }
     static _template() {
       return {
-        rect: true,
-        h: 1080,
-        w: 1920,
-        color: CONFIG.theme.background,
-        TimeZone: {
+        TimeZoneOverlayScreenContents: {
           x: 200,
           y: 275,
+          w: 1720,
+          h: 810,
+          clipping: true,
           List: {
+            y: 3,
             type: lng$1.components.ListComponent,
             w: 1920 - 300,
             itemSize: 90,
@@ -42637,7 +43596,7 @@ var APP_accelerator_home_ui = (function () {
             invertDirection: true,
             roll: true,
             rollMax: 900,
-            itemScrollOffset: -1
+            itemScrollOffset: -6
           },
           Error: {
             alpha: 0,
@@ -42662,6 +43621,15 @@ var APP_accelerator_home_ui = (function () {
             zIndex: 4,
             src: Utils.asset("images/settings/Loading.gif")
           }
+        },
+        TimeOverlayItems: {
+          x: 200,
+          y: 275,
+          w: 1720,
+          h: 810,
+          clipping: true,
+          type: TimeOverlayItems,
+          visible: false
         }
       };
     }
@@ -42705,7 +43673,7 @@ var APP_accelerator_home_ui = (function () {
             ref: 'Time' + idx,
             w: 1620,
             h: 90,
-            type: TimeZoneItem,
+            type: TimeZoneOverlayItem,
             item: item,
             zone: this.zone !== undefined ? this.zone.split('/')[1] : ''
           };
@@ -42715,9 +43683,7 @@ var APP_accelerator_home_ui = (function () {
       }
       this.loadingAnimation.stop();
       this.tag('Loader').visible = false;
-    }
-    _getFocused() {
-      return this.tag('List').element;
+      this._setState('List');
     }
     _unfocus() {
       if (this.loadingAnimation.isPlaying()) {
@@ -42725,19 +43691,51 @@ var APP_accelerator_home_ui = (function () {
         this.tag('Loader').visible = false;
       }
     }
-    _handleDown() {
-      this.tag('List').setNext();
+    hide() {
+      this.tag('TimeZoneOverlayScreenContents').visible = false;
     }
-    _handleUp() {
-      this.tag('List').setPrevious();
+    show() {
+      this.tag('TimeZoneOverlayScreenContents').visible = true;
     }
-
-    // _handleBack() {
-    //     Router.navigate('settings/advanced/device')
-    // }
-
+    $navigateAndRefreshItems(params) {
+      this.tag("TimeOverlayItems").refreshList(params);
+      this._setState('TimeOverlayItems');
+    }
     static _states() {
-      return [];
+      return [class TimeOverlayItems extends this {
+        $enter() {
+          this.hide();
+          this.tag('TimeOverlayItems').visible = true;
+        }
+        $exit() {
+          this.show();
+          this.tag('TimeOverlayItems').visible = false;
+          this._firstEnable(); // so that the list will be refreshed when exiting from child screen.
+        }
+
+        _getFocused() {
+          return this.tag('TimeOverlayItems');
+        }
+        _handleEnter() {
+          this._setState('List');
+        }
+        _handleBack() {
+          this._setState('List');
+        }
+      }, class List extends this {
+        $enter() {
+          this.show();
+        }
+        _getFocused() {
+          return this.tag('List').element;
+        }
+        _handleDown() {
+          this.tag('List').setNext();
+        }
+        _handleUp() {
+          this.tag('List').setPrevious();
+        }
+      }];
     }
   }
 
@@ -42919,11 +43917,6 @@ var APP_accelerator_home_ui = (function () {
         console.error(err);
       });
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced/device')
-    //  }
-
     static _states() {
       return [class FirmwareUpdate extends this {
         _handleEnter() {
@@ -43035,6 +44028,8 @@ var APP_accelerator_home_ui = (function () {
           },
           Reboot: {
             y: 270,
+            alpha: 0.3,
+            // disabled
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -43097,10 +44092,6 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this._setState('Info');
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced')
-    //  }
     hide() {
       this.tag('DeviceScreenContents').visible = false;
     }
@@ -43116,14 +44107,13 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Info')._unfocus();
         }
         _handleUp() {
-          this._setState('Reboot');
+          //  this._setState('Reboot');
         }
         _handleDown() {
           this._setState('TimeZone');
         }
         _handleEnter() {
           this._setState("DeviceInformationScreen");
-          //Router.navigate('settings/advanced/device/info')
         }
       }, class TimeZone extends this {
         $enter() {
@@ -43140,7 +44130,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("TimeZoneOverlay");
-          //Router.navigate('settings/advanced/device/timezone')
         }
       }, class Firmware extends this {
         $enter() {
@@ -43150,14 +44139,13 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Firmware')._unfocus();
         }
         _handleUp() {
-          this._setState('Info');
+          this._setState('TimeZone');
         }
         _handleDown() {
-          this._setState('Reboot');
+          //  this._setState('Reboot')
         }
         _handleEnter() {
           this._setState("FirmwareScreen");
-          //Router.navigate('settings/advanced/device/firmware')
         }
       }, class Reboot extends this {
         $enter() {
@@ -43173,7 +44161,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Info');
         }
         _handleEnter() {
-          Router.navigate('settings/advanced/device/reboot');
+          //  Router.navigate('settings/advanced/device/reboot')
         }
       }, class Reset extends this {
         $enter() {
@@ -43191,13 +44179,11 @@ var APP_accelerator_home_ui = (function () {
         _handleEnter() {}
       }, class DeviceInformationScreen extends this {
         $enter() {
-          ////console.log("bpscreen")
           this.hide();
           this.tag('DeviceInformationScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Info');
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('DeviceInformationScreen');
         }
         $exit() {
@@ -43212,13 +44198,11 @@ var APP_accelerator_home_ui = (function () {
       //TimeZoneOverlay
       class TimeZoneOverlay extends this {
         $enter() {
-          ////console.log("bpscreen")
           this.hide();
           this.tag('TimeZoneOverlay').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Time');
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('TimeZoneOverlay');
         }
         $exit() {
@@ -43231,13 +44215,11 @@ var APP_accelerator_home_ui = (function () {
         }
       }, class FirmwareScreen extends this {
         $enter() {
-          ////console.log("bpscreen")
           this.hide();
           this.tag('FirmwareScreen').visible = true;
           this.fireAncestors("$updatePageTitle", 'Settings  Other Settings  Advanced Settings  Device  Firmware Update');
         }
         _getFocused() {
-          //console.log("getfocusedbp")
           return this.tag('FirmwareScreen');
         }
         $exit() {
@@ -43549,7 +44531,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("DeviceScreen");
-          // Router.navigate('settings/advanced/device')
         }
       }, class DeviceScreen extends this {
         $enter() {
@@ -43703,7 +44684,8 @@ var APP_accelerator_home_ui = (function () {
             }
           },
           Language: {
-            //alpha: 0.3, // disabled
+            alpha: 0.3,
+            // disabled
             y: 450 - 90,
             type: SettingsMainItem,
             Title: {
@@ -43826,11 +44808,6 @@ var APP_accelerator_home_ui = (function () {
         this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode;
       });
     }
-
-    //  _handleBack() {
-    //      Router.navigate('settings')
-    //  }
-
     hide() {
       this.tag('OtherSettingsScreenContents').visible = false;
     }
@@ -43846,7 +44823,7 @@ var APP_accelerator_home_ui = (function () {
           this.tag('SleepTimer')._unfocus();
         }
         _handleUp() {
-          this._setState('AdvancedSettings');
+          //  this._setState('AdvancedSettings')
         }
         _handleDown() {
           // this._setState('RemoteControl')
@@ -43854,7 +44831,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("SleepTimerScreen");
-          //Router.navigate('settings/other/timer')
         }
       }, class RemoteControl extends this {
         $enter() {
@@ -43897,12 +44873,10 @@ var APP_accelerator_home_ui = (function () {
           this._setState('SleepTimer');
         }
         _handleDown() {
-          // this._setState('Theme')
-          this._setState('Language');
+          this._setState('Privacy');
         }
         _handleEnter() {
           this._setState("EnergySavingsScreen");
-          // Router.navigate('settings/other/energy')
         }
       }, class Language extends this {
         $enter() {
@@ -43918,8 +44892,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Privacy');
         }
         _handleEnter() {
-          this._setState("LanguageScreen");
-          //Router.navigate('settings/other/language')
+          // this._setState("LanguageScreen")
         }
       }, class Privacy extends this {
         $enter() {
@@ -43929,14 +44902,13 @@ var APP_accelerator_home_ui = (function () {
           this.tag('Privacy')._unfocus();
         }
         _handleUp() {
-          this._setState('Language');
+          this._setState('EnergySaver');
         }
         _handleDown() {
           this._setState('AdvancedSettings');
         }
         _handleEnter() {
           this._setState("PrivacyScreen");
-          //Router.navigate('settings/other/privacy')
         }
       }, class AdvancedSettings extends this {
         $enter() {
@@ -43949,11 +44921,10 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Privacy');
         }
         _handleDown() {
-          this._setState('SleepTimer');
+          //  this._setState('SleepTimer')
         }
         _handleEnter() {
           this._setState("AdvanceSettingsScreen");
-          //Router.navigate('settings/advanced')
         }
       }, class SleepTimerScreen extends this {
         $enter() {
@@ -44394,7 +45365,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState('NetworkConfigurationOverlay');
-          //Router.navigate("settings/network"); //change to state based implementation
         }
       }, class Bluetooth extends this {
         $enter() {
@@ -44412,7 +45382,6 @@ var APP_accelerator_home_ui = (function () {
         _handleLeft() {}
         _handleEnter() {
           this._setState("BluetoothScreenOverlay");
-          //    Router.navigate("settings/bluetooth"); ////change to state based implementation
         }
       }, class Video extends this {
         $enter() {
@@ -44429,7 +45398,6 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState('VideoScreenOverlay');
-          //    Router.navigate("settings/video"); //change to state based implementation
         }
       }, class Audio extends this {
         $enter() {
@@ -44443,9 +45411,7 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState('AudioScreenOverlay');
-          //    Router.navigate("settings/audio"); //change to state based implementation
         }
-
         _handleDown() {
           this._setState("OtherSettings");
         }
@@ -44461,9 +45427,7 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           this._setState("OtherSettingsScreen");
-          //    Router.navigate("settings/other"); //change to state based implementation
         }
-
         _handleDown() {
           this._setState("NFRStatus");
         }
@@ -44718,6 +45682,9 @@ var APP_accelerator_home_ui = (function () {
         file: Utils.asset('language/language-file.json'),
         language: CONFIG.language.id
       };
+    }
+    $updateTimeZone(timezone) {
+      this.tag('Menu').updateTimeZone(timezone);
     }
     _captureKey(key) {
       console.log(key, key.keyCode);

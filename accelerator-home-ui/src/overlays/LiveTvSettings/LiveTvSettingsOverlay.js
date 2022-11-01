@@ -116,10 +116,6 @@
     this.tag("LiveTVSettingsScreenContents").visible = true;
   }
  
-  //  _handleBack() {
-  //    Router.navigate("settings");
-  //  }
- 
    static _states() {
      return [
        class Activate extends this {
@@ -164,7 +160,6 @@
          }
          _handleEnter() {
             this._setState("LiveTvScanOverlay")
-           //Router.navigate("settings/livetv/scan");
          }
        },
        class LiveTvScanOverlay extends this {

@@ -187,7 +187,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this.tag('Info')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('Reboot');
+                    // this._setState('Reboot');
                 }
                 _handleDown() {
                     this._setState('TimeZone')
@@ -221,7 +221,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this.tag('Firmware')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('Info');
+                    this._setState('TimeZone');
                 }
                 _handleDown() {
                     this._setState('Reboot')
@@ -241,7 +241,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware');
                 }
                 _handleDown() {
-                    this._setState('Info')
+                    // this._setState('Info')
                 }
                 _handleEnter() {
                     Router.navigate('settings/advanced/device/reboot')

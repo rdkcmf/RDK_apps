@@ -1,7 +1,8 @@
 import { Lightning, Language, Router, Utils } from "@lightningjs/sdk";
 import AppApi from "../../api/AppApi";
 import { CONFIG } from "../../Config/Config";
-import TimeZoneItem from "../../items/TimeZoneItem";
+import TimeOverlayItems from "../../items/TimeOverlayItems";
+import TimeZoneOverlayItem from "../../items/TimeZoneOverlayItem";
 
 export default class TimeZone extends Lightning.Component { 
     /**
@@ -14,14 +15,14 @@ export default class TimeZone extends Lightning.Component {
     }
     static _template() {
         return {
-            rect: true,
-            h: 1080,
-            w: 1920,
-            color: CONFIG.theme.background,
-            TimeZone: {
+            TimeZoneOverlayScreenContents: {
                 x: 200,
                 y: 275,
+                w: 1720,
+                h: 810,
+                clipping: true,
                 List: {
+                    y:3,
                     type: Lightning.components.ListComponent,
                     w: 1920 - 300,
                     itemSize: 90,
@@ -29,7 +30,7 @@ export default class TimeZone extends Lightning.Component {
                     invertDirection: true,
                     roll: true,
                     rollMax: 900,
-                    itemScrollOffset: -1,
+                    itemScrollOffset: -6,
                 },
                 Error: {
                     alpha: 0,
@@ -55,6 +56,15 @@ export default class TimeZone extends Lightning.Component {
                     src: Utils.asset("images/settings/Loading.gif")
                 },
             },
+            TimeOverlayItems: {
+                x: 200,
+                y: 275,
+                w: 1720,
+                h: 810,
+                clipping: true,
+                type: TimeOverlayItems,
+                visible: false
+            }
         }
     }
 
@@ -89,7 +99,7 @@ export default class TimeZone extends Lightning.Component {
                     ref: 'Time' + idx,
                     w: 1620,
                     h: 90,
-                    type: TimeZoneItem,
+                    type: TimeZoneOverlayItem,
                     item: item,
                     zone: this.zone !== undefined ? this.zone.split('/')[1] : ''
                 }
@@ -99,10 +109,7 @@ export default class TimeZone extends Lightning.Component {
         }
         this.loadingAnimation.stop()
         this.tag('Loader').visible = false
-    }
-
-    _getFocused() {
-        return this.tag('List').element
+        this._setState('List')
     }
 
     _unfocus() {
@@ -113,20 +120,55 @@ export default class TimeZone extends Lightning.Component {
 
     }
 
-
-    _handleDown() {
-        this.tag('List').setNext()
+    hide() {
+        this.tag('TimeZoneOverlayScreenContents').visible = false;
     }
 
-    _handleUp() {
-        this.tag('List').setPrevious()
+    show() {
+        this.tag('TimeZoneOverlayScreenContents').visible = true;
     }
 
-    // _handleBack() {
-    //     Router.navigate('settings/advanced/device')
-    // }
+    $navigateAndRefreshItems(params) {
+        this.tag("TimeOverlayItems").refreshList(params);
+        this._setState('TimeOverlayItems');
+    }
 
     static _states() {
-        return [];
+        return [
+            class TimeOverlayItems extends this{
+                $enter() {
+                    this.hide()
+                    this.tag('TimeOverlayItems').visible = true;
+                }
+                $exit() {
+                    this.show()
+                    this.tag('TimeOverlayItems').visible = false;
+                    this._firstEnable();// so that the list will be refreshed when exiting from child screen.
+                }
+                _getFocused() {
+                    return this.tag('TimeOverlayItems')
+                }
+                _handleEnter() {
+                    this._setState('List')
+                }
+                _handleBack() {
+                    this._setState('List');
+                }
+            },
+            class List extends this{
+                $enter() {
+                    this.show()
+                }
+                _getFocused() {
+                    return this.tag('List').element
+                }
+                _handleDown() {
+                    this.tag('List').setNext()
+                }
+                _handleUp() {
+                    this.tag('List').setPrevious()
+                }
+            }
+        ];
     }
 }

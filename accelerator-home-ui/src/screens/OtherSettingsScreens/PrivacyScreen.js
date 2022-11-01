@@ -241,7 +241,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     this.tag('LocalDeviceDiscovery')._unfocus()
                 }
                 _handleUp() {
-                    this._setState('PrivacyPolicy')
+                    // this._setState('PrivacyPolicy')
                 }
                 _handleDown() {
                     this._setState('UsbMediaDevices')
@@ -333,7 +333,7 @@ export default class PrivacyScreen extends Lightning.Component {
                     this._setState('ClearCookies')
                 }
                 _handleDown() {
-                    this._setState('LocalDeviceDiscovery')
+                    // this._setState('LocalDeviceDiscovery')
                 }
                 _handleEnter() {
                     Router.navigate('settings/other/privacyPolicy')

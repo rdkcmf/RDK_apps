@@ -135,7 +135,7 @@
                      },
                  },
                  Language: {
-                     //alpha: 0.3, // disabled
+                     alpha: 0.3, // disabled
                      y: 450 - 90,
                      type: SettingsMainItem,
                      Title: {
@@ -264,11 +264,7 @@
              this.tag("EnergySaver.Title").text.text = Language.translate("Energy Saver: ") + currentStandbyMode
          })
      }
- 
-    //  _handleBack() {
-    //      Router.navigate('settings')
-    //  }
-    
+
    hide() {
     this.tag('OtherSettingsScreenContents').visible = false
    
@@ -289,7 +285,7 @@
                      this.tag('SleepTimer')._unfocus()
                  }
                  _handleUp() {
-                     this._setState('AdvancedSettings')
+                    //  this._setState('AdvancedSettings')
                  }
                  _handleDown() {
                      // this._setState('RemoteControl')
@@ -297,7 +293,6 @@
                  }
                  _handleEnter() {
                     this._setState("SleepTimerScreen")
-                     //Router.navigate('settings/other/timer')
                  }
              },
  
@@ -346,12 +341,10 @@
                      this._setState('SleepTimer')
                  }
                  _handleDown() {
-                     // this._setState('Theme')
-                     this._setState('Language')
+                     this._setState('Privacy')
                  }
                  _handleEnter() {
                     this._setState("EnergySavingsScreen")
-                    // Router.navigate('settings/other/energy')
                  }
              },
  
@@ -369,8 +362,7 @@
                      this._setState('Privacy')
                  }
                  _handleEnter() {
-                    this._setState("LanguageScreen")
-                     //Router.navigate('settings/other/language')
+                    // this._setState("LanguageScreen")
                  }
              },
              class Privacy extends this {
@@ -381,14 +373,13 @@
                      this.tag('Privacy')._unfocus()
                  }
                  _handleUp() {
-                     this._setState('Language')
+                     this._setState('EnergySaver')
                  }
                  _handleDown() {
                      this._setState('AdvancedSettings')
                  }
                  _handleEnter() {
                     this._setState("PrivacyScreen")
-                     //Router.navigate('settings/other/privacy')
                  }
              },
              class AdvancedSettings extends this {
@@ -402,11 +393,10 @@
                      this._setState('Privacy')
                  }
                  _handleDown() {
-                     this._setState('SleepTimer')
+                    //  this._setState('SleepTimer')
                  }
                  _handleEnter() {
                     this._setState("AdvanceSettingsScreen")
-                     //Router.navigate('settings/advanced')
                  }
              },
              class SleepTimerScreen extends this {

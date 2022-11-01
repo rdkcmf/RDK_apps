@@ -105,6 +105,10 @@ export default class App extends Router.App {
     }
   }
 
+  $updateTimeZone(timezone) {
+    this.tag('Menu').updateTimeZone(timezone)
+  }
+
   _captureKey(key) {
     console.log(key, key.keyCode)
     if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {

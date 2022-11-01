@@ -228,7 +228,6 @@ export default class VideoScreen extends Lightning.Component {
         }
         _handleEnter() {
           this._setState("ResolutionOverlay")
-          //Router.navigate('settings/video/resolution')
         }
        
 

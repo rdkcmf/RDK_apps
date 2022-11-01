@@ -192,10 +192,6 @@
          })
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced/device')
-    //  }
- 
      static _states() {
          return [
              class FirmwareUpdate extends this{

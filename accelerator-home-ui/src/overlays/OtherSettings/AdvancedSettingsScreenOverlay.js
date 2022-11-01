@@ -326,7 +326,6 @@
                  }
                  _handleEnter() {
                     this._setState("DeviceScreen")
-                    // Router.navigate('settings/advanced/device')
                  }
              },
              class DeviceScreen extends this {

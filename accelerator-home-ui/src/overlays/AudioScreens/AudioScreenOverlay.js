@@ -231,7 +231,6 @@
          }
          _handleEnter() {
           this._setState('HdmiOutputScreen')
-           //Router.navigate('settings/audio/output')
          }
  
        },
@@ -251,7 +250,6 @@
          _handleEnter() {
           console.log("hdmioutputscreen")
           this._setState('HdmiOutputScreen')
-           //Router.navigate('settings/audio/output')
          }
          
        },

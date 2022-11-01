@@ -236,7 +236,7 @@
                      this.tag('LocalDeviceDiscovery')._unfocus()
                  }
                  _handleUp() {
-                     this._setState('PrivacyPolicy')
+                    //  this._setState('PrivacyPolicy')
                  }
                  _handleDown() {
                      this._setState('UsbMediaDevices')
@@ -328,11 +328,10 @@
                      this._setState('ClearCookies')
                  }
                  _handleDown() {
-                     this._setState('LocalDeviceDiscovery')
+                    //  this._setState('LocalDeviceDiscovery')
                  }
                  _handleEnter() {
                     this._setState("PrivacyPolicyScreen")
-                     //Router.navigate('settings/other/privacyPolicy')
                  }
              },
              class PrivacyPolicyScreen extends this {

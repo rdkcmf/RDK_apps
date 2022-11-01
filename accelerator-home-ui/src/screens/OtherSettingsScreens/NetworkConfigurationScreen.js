@@ -232,7 +232,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInterface')
                 }
                 _handleDown() {
-                    this._setState('NetworkInfo')
+                    // this._setState('NetworkInfo')
                 }
                 _handleEnter() {
                     this.loadingAnimation.start()

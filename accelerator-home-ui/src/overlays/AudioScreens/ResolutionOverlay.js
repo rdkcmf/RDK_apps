@@ -88,10 +88,6 @@
          }
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/video')
-    //  }
- 
      _focus() {
          this.loadingAnimation.start()
          var options = []

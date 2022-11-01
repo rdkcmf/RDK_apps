@@ -362,10 +362,6 @@
          this.tag('AppVersions.Value').text.text = v;
      }
  
-    //  _handleBack() {
-    //      Router.navigate('settings/advanced/device')
-    //  }
- 
      _handleDown() {
          if (this.tag("DeviceInfoContents").y > -200) {
              this.tag("DeviceInfoContents").y -= 20;
