@@ -47,7 +47,7 @@ export default class TvOverlayInputItem extends Lightning.Component {
           y: 45,
           mountY: 0.5,
           mountX: 1,
-          src: Utils.asset("images/settings/Loading.gif"),
+          src: Utils.asset("images/settings/Loading.png"),
           color: 0xffffffff,
           visible: false,
         },
@@ -121,7 +121,7 @@ export default class TvOverlayInputItem extends Lightning.Component {
     });
     this.tag("Item.Loader").on("txError", () => {
       const url =
-        "http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif";
+        "http://127.0.0.1:50050/lxresui/static/images/settings/Loading.png";
       this.tag("Item.Loader").src = url;
     });
   }

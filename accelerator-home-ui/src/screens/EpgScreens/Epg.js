@@ -44,7 +44,7 @@ export default class Epg extends Lightning.Component {
         mount: 0.5,
         w: 100,
         h: 100,
-        src: Utils.asset("images/settings/Loading.gif"),
+        src: Utils.asset("images/settings/Loading.png"),
         visible: true,
       },
       Wrapper: {

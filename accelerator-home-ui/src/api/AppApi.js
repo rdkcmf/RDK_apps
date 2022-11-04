@@ -442,7 +442,7 @@ export default class AppApi {
       "appsMenu": { "Cobalt": "menu", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Section" },
       "epgScreen": { "Cobalt": "guide", "Netflix": "App_launched_from_EPG_Grid" },
       "dial": { "Cobalt": "dial", "Netflix": "App_launched_via_DIAL_request" },
-      "gracenote": { "Cobalt": "gracenote", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" },
+      "gracenote": { "Cobalt": "launcher", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" },
     };
     if(launchLocation && launchLocationKeyMapping[launchLocation]){
       if(callsign === "Netflix" || callsign === "Cobalt"){
@@ -542,8 +542,8 @@ export default class AppApi {
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US" //default to english US if language is not available.
       url = url ? url : "https://www.youtube.com/tv?"
       url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url
-      url = launchLocation==="gracenote" ? url : url + "&launch=" + launchLocation //skipping to append launch reason to url if launchLocation is gracenote
-      if( (pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote" ){ //for youtube cold launch | currently only urls from dial can be passed via configuration
+      url = url + "&launch=" + launchLocation //skipping to append launch reason to url if launchLocation is gracenote
+      if((pluginState === "deactivated" || pluginState === "deactivation")){ //for youtube cold launch | currently only urls from dial can be passed via configuration
         params.configuration = { //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
           "language": language,
           "url": url,

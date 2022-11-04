@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Wed, 02 Nov 2022 18:25:42 GMT
+ * Generated: Fri, 04 Nov 2022 13:05:01 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7186,7 +7186,7 @@ var APP_accelerator_home_ui = (function () {
           "Netflix": "App_launched_via_DIAL_request"
         },
         "gracenote": {
-          "Cobalt": "gracenote",
+          "Cobalt": "launcher",
           "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
         }
       };
@@ -7287,8 +7287,8 @@ var APP_accelerator_home_ui = (function () {
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"; //default to english US if language is not available.
         url = url ? url : "https://www.youtube.com/tv?";
         url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url;
-        url = launchLocation === "gracenote" ? url : url + "&launch=" + launchLocation; //skipping to append launch reason to url if launchLocation is gracenote
-        if ((pluginState === "deactivated" || pluginState === "deactivation") && launchLocation !== "gracenote") {
+        url = url + "&launch=" + launchLocation; //skipping to append launch reason to url if launchLocation is gracenote
+        if (pluginState === "deactivated" || pluginState === "deactivation") {
           //for youtube cold launch | currently only urls from dial can be passed via configuration
           params.configuration = {
             //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
@@ -16183,7 +16183,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.png')
             }
           },
           Networks: {
@@ -19931,7 +19931,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.png'),
               visible: false
             }
           },
@@ -20437,7 +20437,7 @@ var APP_accelerator_home_ui = (function () {
   const wifi$4 = new Wifi();
   class NetworkInterfaceScreen$1 extends lng$1.Component {
     _construct() {
-      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
+      this.LoadingIcon = Utils.asset('images/settings/Loading.png');
     }
     static _template() {
       return {
@@ -20492,7 +20492,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.png'),
               visible: false
             }
           }
@@ -20545,7 +20545,7 @@ var APP_accelerator_home_ui = (function () {
     }
     _firstActive() {
       this.tag('Ethernet.Loader').on('txError', () => {
-        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
+        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.png';
         this.tag('Ethernet.Loader').src = url;
       });
     }
@@ -21286,7 +21286,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.png')
             },
             Button: {
               h: 45,
@@ -23575,7 +23575,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: true
           }
         }
@@ -25605,7 +25605,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: false
           }
         }
@@ -25901,7 +25901,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.png")
           }
         }
       };
@@ -26742,7 +26742,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: true
           }
         }
@@ -26885,7 +26885,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.png")
           }
         }
       };
@@ -28471,7 +28471,7 @@ var APP_accelerator_home_ui = (function () {
             w: 110,
             h: 110,
             zIndex: 2,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: false
           },
           Buttons: {
@@ -29180,7 +29180,7 @@ var APP_accelerator_home_ui = (function () {
             w: 90,
             h: 90,
             zIndex: 2,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: false
           }
         }
@@ -29294,7 +29294,7 @@ var APP_accelerator_home_ui = (function () {
             mountX: 1,
             y: 200,
             mountY: 0.5,
-            src: Utils.asset('images/settings/Loading.gif')
+            src: Utils.asset('images/settings/Loading.png')
           },
           Networks: {
             x: -800,
@@ -32388,7 +32388,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 25,
               mountY: 0.5,
-              src: Utils.asset("images/settings/Loading.gif")
+              src: Utils.asset("images/settings/Loading.png")
             }
           }
         },
@@ -34139,7 +34139,7 @@ var APP_accelerator_home_ui = (function () {
             y: 45,
             mountY: 0.5,
             mountX: 1,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             color: 0xffffffff,
             visible: false
           },
@@ -34216,7 +34216,7 @@ var APP_accelerator_home_ui = (function () {
         this.tag("Item.Tick").src = url;
       });
       this.tag("Item.Loader").on("txError", () => {
-        const url = "http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif";
+        const url = "http://127.0.0.1:50050/lxresui/static/images/settings/Loading.png";
         this.tag("Item.Loader").src = url;
       });
     }
@@ -35089,7 +35089,7 @@ var APP_accelerator_home_ui = (function () {
           mount: 0.5,
           w: 100,
           h: 100,
-          src: Utils.asset("images/settings/Loading.gif"),
+          src: Utils.asset("images/settings/Loading.png"),
           visible: true
         },
         Wrapper: {
@@ -36976,7 +36976,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: true
           }
         }
@@ -37452,7 +37452,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.png")
           }
         }
       };
@@ -39012,7 +39012,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.png')
             },
             Button: {
               h: 45,
@@ -39579,7 +39579,7 @@ var APP_accelerator_home_ui = (function () {
   const wifi = new Wifi();
   class NetworkInterfaceScreen extends lng$1.Component {
     _construct() {
-      this.LoadingIcon = Utils.asset('images/settings/Loading.gif');
+      this.LoadingIcon = Utils.asset('images/settings/Loading.png');
     }
     static _template() {
       return {
@@ -39630,7 +39630,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.png'),
               visible: false
             }
           }
@@ -39687,7 +39687,7 @@ var APP_accelerator_home_ui = (function () {
     }
     _firstActive() {
       this.tag('Ethernet.Loader').on('txError', () => {
-        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif';
+        const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.png';
         this.tag('Ethernet.Loader').src = url;
       });
     }
@@ -39876,7 +39876,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif'),
+              src: Utils.asset('images/settings/Loading.png'),
               visible: false
             }
           },
@@ -40410,7 +40410,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 45,
               mountY: 0.5,
-              src: Utils.asset('images/settings/Loading.gif')
+              src: Utils.asset('images/settings/Loading.png')
             }
           },
           Networks: {
@@ -41275,7 +41275,7 @@ var APP_accelerator_home_ui = (function () {
               mountX: 1,
               y: 25,
               mountY: 0.5,
-              src: Utils.asset("images/settings/Loading.gif")
+              src: Utils.asset("images/settings/Loading.png")
             }
           }
         },
@@ -42422,7 +42422,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
             visible: true
           }
         }
@@ -43619,7 +43619,7 @@ var APP_accelerator_home_ui = (function () {
             h: 90,
             mount: 0.5,
             zIndex: 4,
-            src: Utils.asset("images/settings/Loading.gif")
+            src: Utils.asset("images/settings/Loading.png")
           }
         },
         TimeOverlayItems: {
@@ -44940,7 +44940,7 @@ var APP_accelerator_home_ui = (function () {
         $exit() {
           this.show();
           this.tag('SleepTimerScreen').visible = false;
-          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings');
         }
         _handleBack() {
           this._setState('SleepTimer');
@@ -44959,7 +44959,7 @@ var APP_accelerator_home_ui = (function () {
         $exit() {
           this.show();
           this.tag('EnergySavingsScreen').visible = false;
-          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings');
         }
         _handleBack() {
           this._setState('EnergySaver');
@@ -44980,7 +44980,7 @@ var APP_accelerator_home_ui = (function () {
         $exit() {
           this.show();
           this.tag('LanguageScreen').visible = false;
-          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings');
         }
         _handleBack() {
           this._setState('Language');
@@ -45001,7 +45001,7 @@ var APP_accelerator_home_ui = (function () {
         $exit() {
           this.show();
           this.tag('PrivacyScreen').visible = false;
-          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings');
         }
         _handleBack() {
           this._setState('Privacy');
@@ -45020,7 +45020,7 @@ var APP_accelerator_home_ui = (function () {
         $exit() {
           this.show();
           this.tag('AdvanceSettingsScreen').visible = false;
-          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings ');
+          this.fireAncestors("$updatePageTitle", 'Settings  Other Settings');
         }
         _handleBack() {
           this._setState('AdvancedSettings');

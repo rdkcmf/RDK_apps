@@ -58,7 +58,7 @@ import FailComponent from './FailComponent'
              mountX: 1,
              y: 45,
              mountY: 0.5,
-             src: Utils.asset('images/settings/Loading.gif'),
+             src: Utils.asset('images/settings/Loading.png'),
            },
            Button: {
              h: 45,

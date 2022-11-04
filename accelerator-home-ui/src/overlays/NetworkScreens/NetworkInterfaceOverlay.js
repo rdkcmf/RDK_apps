@@ -29,7 +29,7 @@
  export default class NetworkInterfaceScreen extends Lightning.Component {
  
      _construct() {
-         this.LoadingIcon = Utils.asset('images/settings/Loading.gif')
+         this.LoadingIcon = Utils.asset('images/settings/Loading.png')
      }
      static _template() {
          return {
@@ -80,7 +80,7 @@
                          mountX: 1,
                          y: 45,
                          mountY: 0.5,
-                         src: Utils.asset('images/settings/Loading.gif'),
+                         src: Utils.asset('images/settings/Loading.png'),
                          visible: false,
                      },
                  },
@@ -132,7 +132,7 @@
  
      _firstActive() {
          this.tag('Ethernet.Loader').on('txError', () => {
-             const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.gif'
+             const url = 'http://127.0.0.1:50050/lxresui/static/images/settings/Loading.png'
              this.tag('Ethernet.Loader').src = url
          })
      }

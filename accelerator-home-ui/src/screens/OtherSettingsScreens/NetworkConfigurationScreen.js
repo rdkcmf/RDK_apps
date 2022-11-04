@@ -109,7 +109,7 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                         mountX: 1,
                         y: 45,
                         mountY: 0.5,
-                        src: Utils.asset('images/settings/Loading.gif'),
+                        src: Utils.asset('images/settings/Loading.png'),
                         visible: false,
                     },
                 },

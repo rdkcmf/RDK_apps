@@ -104,7 +104,7 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                     w: 90,
                     h: 90,
                     zIndex: 2,
-                    src: Utils.asset("images/settings/Loading.gif"),
+                    src: Utils.asset("images/settings/Loading.png"),
                     visible: false
                 },
             }

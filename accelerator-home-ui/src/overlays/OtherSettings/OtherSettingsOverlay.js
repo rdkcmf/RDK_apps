@@ -413,7 +413,7 @@
                 $exit() {
                   this.show()
                   this.tag('SleepTimerScreen').visible = false
-                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings ')
+                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings')
                 }
                 _handleBack() {
                   this._setState('SleepTimer')
@@ -433,7 +433,7 @@
                 $exit() {
                   this.show()
                   this.tag('EnergySavingsScreen').visible = false
-                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings ')
+                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings')
                 }
                 _handleBack() {
                   this._setState('EnergySaver')
@@ -454,7 +454,7 @@
                 $exit() {
                   this.show()
                   this.tag('LanguageScreen').visible = false
-                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings ')
+                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings')
                 }
                 _handleBack() {
                   this._setState('Language')
@@ -475,7 +475,7 @@
                 $exit() {
                   this.show()
                   this.tag('PrivacyScreen').visible = false
-                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings ')
+                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings')
                 }
                 _handleBack() {
                   this._setState('Privacy')
@@ -495,7 +495,7 @@
                 $exit() {
                   this.show()
                   this.tag('AdvanceSettingsScreen').visible = false
-                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings ')
+                  this.fireAncestors("$updatePageTitle",'Settings  Other Settings')
                 }
                 _handleBack() {
                   this._setState('AdvancedSettings')

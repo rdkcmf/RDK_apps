@@ -70,7 +70,7 @@ export default class NetworkList extends Lightning.Component {
           mountX: 1,
           y: 200,
           mountY: 0.5,
-          src: Utils.asset('images/settings/Loading.gif'),
+          src: Utils.asset('images/settings/Loading.png'),
         },
         Networks: {
           x: -800,

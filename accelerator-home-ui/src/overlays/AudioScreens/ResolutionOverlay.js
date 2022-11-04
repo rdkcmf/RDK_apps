@@ -54,7 +54,7 @@
                      h: 90,
                      mount: 0.5,
                      zIndex: 4,
-                     src: Utils.asset("images/settings/Loading.gif")
+                     src: Utils.asset("images/settings/Loading.png")
                  },
              },
  

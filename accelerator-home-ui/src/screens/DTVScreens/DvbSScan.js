@@ -348,7 +348,7 @@ export default class DvbSScan extends Lightning.Component {
             mountX: 1,
             y: 25,
             mountY: 0.5,
-            src: Utils.asset("images/settings/Loading.gif"),
+            src: Utils.asset("images/settings/Loading.png"),
           },
         },
       },

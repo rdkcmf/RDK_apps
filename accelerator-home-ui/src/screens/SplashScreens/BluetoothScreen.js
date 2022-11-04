@@ -86,7 +86,7 @@ export default class BluetoothScreen extends Lightning.Component {
                     w: 110,
                     h: 110,
                     zIndex: 2,
-                    src: Utils.asset("images/settings/Loading.gif"),
+                    src: Utils.asset("images/settings/Loading.png"),
                     visible: false
                 },
                 Buttons: {
