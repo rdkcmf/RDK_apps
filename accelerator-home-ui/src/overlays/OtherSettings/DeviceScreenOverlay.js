@@ -25,6 +25,7 @@
  import DeviceInformationScreen from './DeviceInformationOverlay';
  import TimeZoneOverlay from './TimeZoneOverlay';
  import FirmwareScreen from './FirmWareOverlay';
+import RebootConfirmation from './RebootConfirmation';
  /**
   * Class for Video and Audio screen.
   */
@@ -108,7 +109,7 @@
                  },
                  Reboot: {
                      y: 270,
-                     alpha: 0.3, // disabled
+                    //  alpha: 0.3, // disabled
                      type: SettingsMainItem,
                      Title: {
                          x: 10,
@@ -158,6 +159,10 @@
              },
              FirmwareScreen:{
                 type: FirmwareScreen,
+                visible: false
+             },
+             RebootConfirmationScreen:{
+                type: RebootConfirmation,
                 visible: false
              }
          }
@@ -230,7 +235,7 @@
                      this._setState('TimeZone');
                  }
                  _handleDown() {
-                    //  this._setState('Reboot')
+                     this._setState('Reboot')
                  }
                  _handleEnter() {
                     this._setState("FirmwareScreen")
@@ -247,10 +252,10 @@
                      this._setState('Firmware');
                  }
                  _handleDown() {
-                     this._setState('Info')
+                    //  this._setState('Reset')
                  }
                  _handleEnter() {
-                    //  Router.navigate('settings/advanced/device/reboot')
+                    this._setState("RebootConfirmation")
                  }
              },
              class Reset extends this{
@@ -325,6 +330,27 @@
                   this._setState('Firmware')
                 }
               },
+              class RebootConfirmation extends this {
+                $enter() {
+                    this.hide();
+                    this.tag("RebootConfirmationScreen").visible = true;
+                    this.fireAncestors('$hideBreadCrum')
+                }
+                _getFocused() {
+                    return this.tag("RebootConfirmationScreen")
+                }
+                $exit() {
+                    this.show();
+                    this.tag("RebootConfirmationScreen").visible = false;
+                    this.fireAncestors('$showBreadCrum')
+                }
+                _handleBack() {
+                    this._setState('Reboot')
+                }
+                _handleEnter() { //default behaviour, confirm will override this
+                    this._setState('Reboot')
+                }
+              }
          ]
      }
  

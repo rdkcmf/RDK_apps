@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Fri, 04 Nov 2022 13:05:01 GMT
+ * Generated: Thu, 10 Nov 2022 15:57:18 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -9341,8 +9341,8 @@ var APP_accelerator_home_ui = (function () {
   }).catch(() => {
     Storage.set("ipAddress", null);
   });
-  let appApi$a = new AppApi();
-  appApi$a.getIP().then(ip => {
+  let appApi$b = new AppApi();
+  appApi$b.getIP().then(ip => {
     IpAddress2 = ip;
   });
 
@@ -9452,7 +9452,7 @@ var APP_accelerator_home_ui = (function () {
     }
     getMovieSubscriptions(id) {
       return new Promise((resolve, reject) => {
-        appApi$a.fetchApiKey().then(res => {
+        appApi$b.fetchApiKey().then(res => {
           // console.log("Key is: ", res);
           // console.log("tmsID is :", id);
           try {
@@ -9467,7 +9467,7 @@ var APP_accelerator_home_ui = (function () {
     }
     getAPIKey() {
       return new Promise((resolve, reject) => {
-        appApi$a.fetchApiKey().then(res => {
+        appApi$b.fetchApiKey().then(res => {
           let [day, month, year] = [new Date().getUTCDate(), new Date().getUTCMonth(), new Date().getUTCFullYear()];
           month += 1;
           day = day.toString();
@@ -20111,7 +20111,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$9 = new AppApi();
+  var appApi$a = new AppApi();
   var defaultInterface$1 = "";
   var currentInterface$1 = [];
   class NetworkInfo$1 extends lng$1.Component {
@@ -20351,13 +20351,13 @@ var APP_accelerator_home_ui = (function () {
       };
     }
     getIPSetting(interfaceName) {
-      appApi$9.getIPSetting(interfaceName).then(result => {
+      appApi$a.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
     _focus() {
       //Getting the default interface
-      appApi$9.getDefaultInterface().then(result => {
+      appApi$a.getDefaultInterface().then(result => {
         defaultInterface$1 = result.interface;
         this.getIPSetting(defaultInterface$1);
         if (defaultInterface$1 === "WIFI") {
@@ -20377,12 +20377,12 @@ var APP_accelerator_home_ui = (function () {
         }
 
         //Filtering the current interface
-        appApi$9.getInterfaces().then(result => {
+        appApi$a.getInterfaces().then(result => {
           currentInterface$1 = result.interfaces.filter(data => data.interface === defaultInterface$1);
           //console.log(currentInterface);
           if (currentInterface$1[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
-            appApi$9.getConnectedSSID().then(result => {
+            appApi$a.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -20394,7 +20394,7 @@ var APP_accelerator_home_ui = (function () {
               }
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
-            appApi$9.getIPSetting(defaultInterface$1).then(result => {
+            appApi$a.getIPSetting(defaultInterface$1).then(result => {
               this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
               this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
@@ -23777,7 +23777,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$8 = new AppApi();
+  const appApi$9 = new AppApi();
   const thunder$a = thunderJS({
     host: '127.0.0.1',
     port: 9998,
@@ -23831,8 +23831,8 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      appApi$8.deactivateResidentApp(loader$2);
-      appApi$8.setVisibility('ResidentApp', true);
+      appApi$9.deactivateResidentApp(loader$2);
+      appApi$9.setVisibility('ResidentApp', true);
       thunder$a.call('org.rdk.RDKShell', 'moveToFront', {
         client: 'ResidentApp'
       }).then(result => {
@@ -23871,8 +23871,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$8.launchResident(notification_url, loader$2).catch(err => {});
-            appApi$8.setVisibility('ResidentApp', false);
+            appApi$9.launchResident(notification_url, loader$2).catch(err => {});
+            appApi$9.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -25499,7 +25499,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$7 = new AppApi();
+  const appApi$8 = new AppApi();
   /**
    * Class for Reboot Confirmation Screen.
    */
@@ -25637,7 +25637,7 @@ var APP_accelerator_home_ui = (function () {
           this._focus();
         }
         _handleEnter() {
-          appApi$7.reboot().then(result => {
+          appApi$8.reboot().then(result => {
             console.log('device rebooting' + JSON.stringify(result));
             this._setState('Rebooting');
           });
@@ -26710,7 +26710,7 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for HDMI Output Screen.
    */
-  var appApi$6 = new AppApi();
+  var appApi$7 = new AppApi();
   class HdmiOutputScreen$1 extends lng$1.Component {
     pageTransition() {
       return 'left';
@@ -26780,8 +26780,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$6.getSoundMode().then(result => {
-        appApi$6.getSupportedAudioModes().then(res => {
+      appApi$7.getSoundMode().then(result => {
+        appApi$7.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -28404,7 +28404,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  var appApi$5 = new AppApi();
+  var appApi$6 = new AppApi();
   var bluetoothApi = new BluetoothApi();
   const config$7 = {
     host: '127.0.0.1',
@@ -28562,15 +28562,15 @@ var APP_accelerator_home_ui = (function () {
     }
     _firstEnable() {
       console.log("checking");
-      appApi$5.getPluginStatus('org.rdk.RemoteControl').then(result => {
-        appApi$5.activateAutoPairing().then(result => {
+      appApi$6.getPluginStatus('org.rdk.RemoteControl').then(result => {
+        appApi$6.activateAutoPairing().then(result => {
           console.log("paired devices result", result);
           //this.initTimer();
           Router.navigate('splash/language');
         });
       }).catch(err => {
         console.log(' remote autoPair plugin error:', JSON.stringify(err));
-        appApi$5.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
+        appApi$6.getPluginStatusParams('org.rdk.Bluetooth').then(pluginresult => {
           console.log("status", pluginresult[1]);
           if (pluginresult[1] === 'deactivated') {
             bluetoothApi.btactivate().then(result => {
@@ -28681,7 +28681,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$4 = new AppApi();
+  const appApi$5 = new AppApi();
   const loader$1 = 'Loader';
   class LanguageScreen$1 extends lng$1.Component {
     static _template() {
@@ -28810,8 +28810,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$4.launchResident(notification_url, loader$1).catch(err => {});
-            appApi$4.setVisibility('ResidentApp', false);
+            appApi$5.launchResident(notification_url, loader$1).catch(err => {});
+            appApi$5.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -36954,7 +36954,7 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class for HDMI Output Screen.
    */
-  var appApi$3 = new AppApi();
+  var appApi$4 = new AppApi();
   class HdmiOutputScreen extends lng$1.Component {
     static _template() {
       return {
@@ -37014,8 +37014,8 @@ var APP_accelerator_home_ui = (function () {
     _focus() {
       this.loadingAnimation.start();
       var options = [];
-      appApi$3.getSoundMode().then(result => {
-        appApi$3.getSupportedAudioModes().then(res => {
+      appApi$4.getSoundMode().then(result => {
+        appApi$4.getSupportedAudioModes().then(res => {
           options = [...res.supportedAudioModes];
           this.tag('HdmiOutputScreenContents').h = options.length * 90;
           this.tag('HdmiOutputScreenContents.List').h = options.length * 90;
@@ -37880,7 +37880,7 @@ var APP_accelerator_home_ui = (function () {
     * Class for Other Settings Screen.
     */
 
-  var appApi$2 = new AppApi();
+  var appApi$3 = new AppApi();
   var defaultInterface = "";
   var currentInterface = [];
   class NetworkInfo extends lng$1.Component {
@@ -38107,13 +38107,13 @@ var APP_accelerator_home_ui = (function () {
       };
     }
     getIPSetting(interfaceName) {
-      appApi$2.getIPSetting(interfaceName).then(result => {
+      appApi$3.getIPSetting(interfaceName).then(result => {
         this.tag('InternetProtocol.Value').text.text = result.ipversion;
       }).catch(err => console.log(err));
     }
     _focus() {
       //Getting the default interface
-      appApi$2.getDefaultInterface().then(result => {
+      appApi$3.getDefaultInterface().then(result => {
         defaultInterface = result.interface;
         this.getIPSetting(defaultInterface);
         if (defaultInterface === "WIFI") {
@@ -38133,12 +38133,12 @@ var APP_accelerator_home_ui = (function () {
         }
 
         //Filtering the current interface
-        appApi$2.getInterfaces().then(result => {
+        appApi$3.getInterfaces().then(result => {
           currentInterface = result.interfaces.filter(data => data.interface === defaultInterface);
           //console.log(currentInterface);
           if (currentInterface[0].connected) {
             this.tag("Status.Value").text.text = "Connected";
-            appApi$2.getConnectedSSID().then(result => {
+            appApi$3.getConnectedSSID().then(result => {
               if (parseInt(result.signalStrength) >= -50) {
                 this.tag("SignalStrength.Value").text.text = "Excellent";
               } else if (parseInt(result.signalStrength) >= -60) {
@@ -38150,7 +38150,7 @@ var APP_accelerator_home_ui = (function () {
               }
               this.tag("SSID.Value").text.text = "".concat(result.ssid);
             }).catch(error => console.log(error));
-            appApi$2.getIPSetting(defaultInterface).then(result => {
+            appApi$3.getIPSetting(defaultInterface).then(result => {
               this.tag('IPAddress.Value').text.text = "".concat(result.ipaddr);
               this.tag("Gateway.Value").text.text = "".concat(result.gateway);
             }).catch(error => console.log(error));
@@ -42526,7 +42526,7 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
-  const appApi$1 = new AppApi();
+  const appApi$2 = new AppApi();
   const thunder$2 = thunderJS({
     host: '127.0.0.1',
     port: 9998,
@@ -42570,8 +42570,8 @@ var APP_accelerator_home_ui = (function () {
           item: item
         };
       });
-      appApi$1.deactivateResidentApp(loader);
-      appApi$1.setVisibility('ResidentApp', true);
+      appApi$2.deactivateResidentApp(loader);
+      appApi$2.setVisibility('ResidentApp', true);
       thunder$2.call('org.rdk.RDKShell', 'moveToFront', {
         client: 'ResidentApp'
       }).then(result => {
@@ -42607,8 +42607,8 @@ var APP_accelerator_home_ui = (function () {
             let url = path.slice(-1) === '/' ? "static/loaderApp/index.html" : "/static/loaderApp/index.html";
             let notification_url = location.origin + path + url;
             console.log(notification_url);
-            appApi$1.launchResident(notification_url, loader).catch(err => {});
-            appApi$1.setVisibility('ResidentApp', false);
+            appApi$2.launchResident(notification_url, loader).catch(err => {});
+            appApi$2.setVisibility('ResidentApp', false);
             location.reload();
           }
         }
@@ -43945,6 +43945,244 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  const appApi$1 = new AppApi();
+  /**
+   * Class for Reboot Confirmation Component.
+   */
+  class RebootConfirmation extends lng$1.Component {
+    static _template() {
+      return {
+        RebootScreen: {
+          x: 950,
+          y: 270,
+          Title: {
+            x: 0,
+            y: 0,
+            mountX: 0.5,
+            text: {
+              text: Language.translate("Reboot"),
+              fontFace: CONFIG.language.font,
+              fontSize: 40,
+              textColor: CONFIG.theme.hex
+            }
+          },
+          BorderTop: {
+            x: 0,
+            y: 75,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Info: {
+            x: 0,
+            y: 125,
+            mountX: 0.5,
+            text: {
+              text: Language.translate("Click Confirm to reboot!"),
+              fontFace: CONFIG.language.font,
+              fontSize: 25
+            }
+          },
+          Buttons: {
+            x: 100,
+            y: 200,
+            w: 440,
+            mountX: 0.5,
+            h: 50,
+            Confirm: {
+              x: 0,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 0xffffffff,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language.translate("Confirm"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 0xff000000
+                }
+              }
+            },
+            Cancel: {
+              x: 220,
+              w: 200,
+              mountX: 0.5,
+              h: 50,
+              rect: true,
+              color: 0xff7d7d7d,
+              Title: {
+                x: 100,
+                y: 25,
+                mount: 0.5,
+                text: {
+                  text: Language.translate("Cancel"),
+                  fontFace: CONFIG.language.font,
+                  fontSize: 22,
+                  textColor: 0xff000000
+                }
+              }
+            }
+          },
+          BorderBottom: {
+            x: 0,
+            y: 300,
+            w: 1558,
+            h: 3,
+            rect: true,
+            mountX: 0.5
+          },
+          Loader: {
+            x: 0,
+            y: 150,
+            mountX: 0.5,
+            w: 90,
+            h: 90,
+            zIndex: 2,
+            src: Utils.asset("images/settings/Loading.png"),
+            visible: false
+          }
+        }
+      };
+    }
+    _focus() {
+      this._setState("Confirm");
+      this.loadingAnimation = this.tag("Loader").animation({
+        duration: 3,
+        repeat: -1,
+        stopMethod: "immediate",
+        stopDelay: 0.2,
+        actions: [{
+          p: "rotation",
+          v: {
+            sm: 0,
+            0: 0,
+            1: 2 * Math.PI
+          }
+        }]
+      });
+    }
+    static _states() {
+      return [class Confirm extends this {
+        $enter() {
+          this._focus();
+        }
+        _handleEnter() {
+          appApi$1.reboot().then(result => {
+            console.log("device rebooting" + JSON.stringify(result));
+            this._setState("Rebooting");
+          });
+        }
+        _handleRight() {
+          this._setState("Cancel");
+        }
+        _focus() {
+          this.tag("Confirm").patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag("Confirm.Title").patch({
+            text: {
+              textColor: 0xffffffff
+            }
+          });
+        }
+        _unfocus() {
+          this.tag("Confirm").patch({
+            color: 0xffffffff
+          });
+          this.tag("Confirm.Title").patch({
+            text: {
+              textColor: 0xff000000
+            }
+          });
+        }
+        $exit() {
+          this._unfocus();
+        }
+      }, class Cancel extends this {
+        //handleEnter is not required, default behaviour from parent is to exit this screen
+        $enter() {
+          this._focus();
+        }
+        _handleLeft() {
+          this._setState("Confirm");
+        }
+        _focus() {
+          this.tag("Cancel").patch({
+            color: CONFIG.theme.hex
+          });
+          this.tag("Cancel.Title").patch({
+            text: {
+              textColor: 0xffffffff
+            }
+          });
+        }
+        _unfocus() {
+          this.tag("Cancel").patch({
+            color: 0xff7d7d7d
+          });
+          this.tag("Cancel.Title").patch({
+            text: {
+              textColor: 0xff000000
+            }
+          });
+        }
+        $exit() {
+          this._unfocus();
+        }
+      }, class Rebooting extends this {
+        $enter() {
+          this.loadingAnimation.start();
+          this.tag("Loader").visible = true;
+          this.tag("Title").text.text = "Rebooting...";
+          this.tag("Buttons").visible = false;
+          this.tag("Info").visible = false;
+        }
+        _handleEnter() {
+          // do nothing
+        }
+        _handleLeft() {
+          // do nothing
+        }
+        _handleRight() {
+          // do nothing
+        }
+        _handleBack() {
+          // do nothing
+        }
+        _handleUp() {
+          // do nothing
+        }
+        _handleDown() {
+          // do nothing
+        }
+      }];
+    }
+  }
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   /**
    * Class for Video and Audio screen.
    */
@@ -44028,8 +44266,7 @@ var APP_accelerator_home_ui = (function () {
           },
           Reboot: {
             y: 270,
-            alpha: 0.3,
-            // disabled
+            //  alpha: 0.3, // disabled
             type: SettingsMainItem,
             Title: {
               x: 10,
@@ -44080,6 +44317,10 @@ var APP_accelerator_home_ui = (function () {
         },
         FirmwareScreen: {
           type: FirmwareScreen,
+          visible: false
+        },
+        RebootConfirmationScreen: {
+          type: RebootConfirmation,
           visible: false
         }
       };
@@ -44142,7 +44383,7 @@ var APP_accelerator_home_ui = (function () {
           this._setState('TimeZone');
         }
         _handleDown() {
-          //  this._setState('Reboot')
+          this._setState('Reboot');
         }
         _handleEnter() {
           this._setState("FirmwareScreen");
@@ -44158,10 +44399,10 @@ var APP_accelerator_home_ui = (function () {
           this._setState('Firmware');
         }
         _handleDown() {
-          this._setState('Info');
+          //  this._setState('Reset')
         }
         _handleEnter() {
-          //  Router.navigate('settings/advanced/device/reboot')
+          this._setState("RebootConfirmation");
         }
       }, class Reset extends this {
         $enter() {
@@ -44229,6 +44470,27 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleBack() {
           this._setState('Firmware');
+        }
+      }, class RebootConfirmation extends this {
+        $enter() {
+          this.hide();
+          this.tag("RebootConfirmationScreen").visible = true;
+          this.fireAncestors('$hideBreadCrum');
+        }
+        _getFocused() {
+          return this.tag("RebootConfirmationScreen");
+        }
+        $exit() {
+          this.show();
+          this.tag("RebootConfirmationScreen").visible = false;
+          this.fireAncestors('$showBreadCrum');
+        }
+        _handleBack() {
+          this._setState('Reboot');
+        }
+        _handleEnter() {
+          //default behaviour, confirm will override this
+          this._setState('Reboot');
         }
       }];
     }
