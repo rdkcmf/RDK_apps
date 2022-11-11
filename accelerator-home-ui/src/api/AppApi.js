@@ -427,6 +427,7 @@ export default class AppApi {
    */
 
    async launchApp(callsign, args) {
+    Router.navigate("applauncher");
     console.log("launchApp called with: ",callsign,args)
     let url,preventInternetCheck,preventCurrentExit,launchLocation;
     if(args){
@@ -468,12 +469,14 @@ export default class AppApi {
     const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
 
     if (!availableCallsigns.includes(callsign)) {
+      Router.navigate("menu");
       return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
     }
 
     if (!preventInternetCheck) {
       let internet = await this.isConnectedToInternet();
       if (!internet) {
+        Router.navigate("menu");
         return Promise.reject("No Internet Available, can't launchApp.");
       }
     }
@@ -486,6 +489,7 @@ export default class AppApi {
       pluginState = pluginStatus[0].state;
     } catch (err) {
       console.log(err);
+      Router.navigate("menu");
       return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
     }
     console.log(callsign+" : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
@@ -493,7 +497,9 @@ export default class AppApi {
     if (callsign === "Netflix") {
       if (pluginState === "deactivated" || pluginState === "deactivation") { //netflix cold launch scenario
         console.log(`Netflix : ColdLaunch`)
-        Router.navigate('image', { src: Utils.asset('images/apps/App_Netflix_Splash.png') }); //to show the splash screen for netflix
+        if(Router.getActivePage().showSplashImage){
+          Router.getActivePage().showSplashImage(callsign) //to make the splash image for netflix visible
+        }
         if (url) {
           try {
             console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ", url, IIDqueryString);
@@ -569,17 +575,22 @@ export default class AppApi {
       })
     }
 
+    if(callsign === "Netflix"){ //special case for netflix to show splash screen
+      params.behind = "ResidentApp" //to make the app launch behind resident app | app will be moved to front after first frame event is triggered
+    }
     console.log("Calling launchApp with params: ",params);
     return new Promise((resolve, reject) => {
       thunder.call("org.rdk.RDKShell", "launch", params).then(res => {
         console.log(`${callsign} : Launch results in ${JSON.stringify(res)}`)
         if (res.success) {
-          thunder.call("org.rdk.RDKShell", "moveToFront", {
-            "client": callsign,
-            "callsign": callsign
-          }).catch(err => {
-            console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front")
-          })
+          if(callsign !== "Netflix"){ //if app is not netflix, move it to front(netflix will be moved to front from applauncherScreen.)
+            thunder.call("org.rdk.RDKShell", "moveToFront", {
+              "client": callsign,
+              "callsign": callsign
+            }).catch(err => {
+              console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front")
+            })
+          }
 
           thunder.call("org.rdk.RDKShell", "setFocus", {
             "client": callsign,
@@ -615,6 +626,7 @@ export default class AppApi {
 
         } else {
           console.error("failed to launchApp(success false) : ", callsign, " ERROR: ", JSON.stringify(res))
+          Router.navigate("menu");
           reject(res)
         }
       }).catch(err => {
@@ -623,7 +635,7 @@ export default class AppApi {
         //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
         thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
         this.launchResidentApp();
-
+        Router.navigate("menu");
         reject(err)
       })
     })

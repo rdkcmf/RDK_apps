@@ -17,37 +17,96 @@
  * limitations under the License.
  **/
 
- import { Lightning, Router } from "@lightningjs/sdk";
+import { Lightning, Registry, Router, Utils } from "@lightningjs/sdk";
+import ThunderJS from "ThunderJS";
 
 //applauncher screen "will" be responsible for handling all overlays as widget and splash screens for apps(if required) | currently only handles settings overlay widget
- export default class AppLauncherScreen extends Lightning.Component {
-    static _template() {
-        return {
-          Overlay: {
-            w: 1920,
-            h: 1080,
-          },
-        };
-      }
-    
-      _firstEnable() {
-        console.log("app-overlay is enabled for firstTime")
-      }
-  
-      _focus() {
-          console.log("app-overlay is focused");
-      }
-    
-      _handleBack() {
-          // this.widgets.settingsoverlay._handleBack();
-          Router.navigate("menu");
-      }
-    
-      _handleLeft() {
-        console.log("Router History: ",Router.getHistory());
-      }
-      _handleRight() {
-        console.log("getActiveWidget: ",Router.getActiveWidget())
-      }
-    
+export default class AppLauncherScreen extends Lightning.Component {
+  static _template() {
+    return {
+      Overlay: {
+        w: 1920,
+        h: 1080,
+      },
+      SplashImage: {
+        w: 1920,
+        h: 1080,
+        x: 960,
+        y: 540,
+        mount: 0.5,
+        src: "", 
+        visible: false
+      },
+    };
+  }
+
+  showSplashImage(callsign){
+    if(this.splashImages[callsign]){ //splash image won't be shown if the callsign and image location is mapped in this.splashImages
+
+      //first frame event
+      this.firstFrameListener = this._thunder.on("org.rdk.RDKShell", "onApplicationFirstFrame", (notification) => {
+        console.log("onApplicationFirstFrame notification from applauncherscreen: ",notification)
+        if(notification.client === callsign.toLowerCase()){
+          console.log("firstframe event triggered hiding splash image");
+          this.tag("SplashImage").src = "" 
+          this.tag("SplashImage").visible = false;
+          this.moveApptoFront(callsign);
+          this.firstFrameListener.dispose(); //dispose listener after event is triggered for first time
+        }
+      })
+
+      //to show the splash image
+      this.splashTimeout && Registry.clearTimeout(this.splashTimeout)
+      this.tag("SplashImage").src = Utils.asset(this.splashImages[callsign])
+      this.tag("SplashImage").visible = true;
+
+      //to hide the splash image after 30 sec in case firstframe event failed
+      this.splashTimeout = Registry.setTimeout(() => {
+        console.log("timeout triggered hiding splash image");
+        this.tag("SplashImage").src = "" 
+        this.tag("SplashImage").visible = false;
+        this.moveApptoFront(callsign);
+        this.firstFrameListener.dispose(); //dispose the event listener incase event did not trigger till 30s
+      }, 30000)
+      
     }
+  }
+
+  moveApptoFront(callsign) { //moving the launched app to front.
+    console.log("moveToFront: ",callsign,"from applauncher")
+    this._thunder.call("org.rdk.RDKShell", "moveToFront", {
+      "client": callsign,
+      "callsign": callsign
+    }).catch(err => {
+      console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front")
+    })
+  }
+
+  _firstEnable() {
+    console.log("app-overlay is enabled for firstTime");
+    this.splashImages = {
+      "Netflix": 'images/apps/App_Netflix_Splash.png'
+    }; //mapping between callsigns and splash images
+    const config = {
+      host: '127.0.0.1',
+      port: 9998,
+      default: 1,
+    };
+    this._thunder = ThunderJS(config);
+  }
+
+  _focus() {
+    console.log("app-overlay is focused");
+  }
+
+  _handleBack() {
+    Router.navigate("menu");
+  }
+
+  _handleLeft() {
+    console.log("Router History: ", Router.getHistory());
+  }
+  _handleRight() {
+    console.log("getActiveWidget: ", Router.getActiveWidget());
+  }
+}

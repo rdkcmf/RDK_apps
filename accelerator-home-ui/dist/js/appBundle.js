@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Thu, 10 Nov 2022 15:57:18 GMT
+ * Generated: Fri, 11 Nov 2022 14:47:00 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7155,6 +7155,7 @@ var APP_accelerator_home_ui = (function () {
      */
 
     async launchApp(callsign, args) {
+      Router.navigate("applauncher");
       console.log("launchApp called with: ", callsign, args);
       let url, preventInternetCheck, preventCurrentExit, launchLocation;
       if (args) {
@@ -7210,11 +7211,13 @@ var APP_accelerator_home_ui = (function () {
       }
       const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
       if (!availableCallsigns.includes(callsign)) {
+        Router.navigate("menu");
         return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
       }
       if (!preventInternetCheck) {
         let internet = await this.isConnectedToInternet();
         if (!internet) {
+          Router.navigate("menu");
           return Promise.reject("No Internet Available, can't launchApp.");
         }
       }
@@ -7226,6 +7229,7 @@ var APP_accelerator_home_ui = (function () {
         pluginState = pluginStatus[0].state;
       } catch (err) {
         console.log(err);
+        Router.navigate("menu");
         return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
       }
       console.log(callsign + " : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
@@ -7233,9 +7237,10 @@ var APP_accelerator_home_ui = (function () {
         if (pluginState === "deactivated" || pluginState === "deactivation") {
           //netflix cold launch scenario
           console.log("Netflix : ColdLaunch");
-          Router.navigate('image', {
-            src: Utils.asset('images/apps/App_Netflix_Splash.png')
-          }); //to show the splash screen for netflix
+          if (Router.getActivePage().showSplashImage) {
+            Router.getActivePage().showSplashImage(callsign); //to make the splash image for netflix visible
+          }
+
           if (url) {
             try {
               console.log("Netflix ColdLaunch passing netflix url & IIDqueryString using configureApplication method:  ", url, IIDqueryString);
@@ -7314,17 +7319,25 @@ var APP_accelerator_home_ui = (function () {
           "visible": false
         });
       }
+      if (callsign === "Netflix") {
+        //special case for netflix to show splash screen
+        params.behind = "ResidentApp"; //to make the app launch behind resident app | app will be moved to front after first frame event is triggered
+      }
+
       console.log("Calling launchApp with params: ", params);
       return new Promise((resolve, reject) => {
         thunder$e.call("org.rdk.RDKShell", "launch", params).then(res => {
           console.log("".concat(callsign, " : Launch results in ").concat(JSON.stringify(res)));
           if (res.success) {
-            thunder$e.call("org.rdk.RDKShell", "moveToFront", {
-              "client": callsign,
-              "callsign": callsign
-            }).catch(err => {
-              console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
-            });
+            if (callsign !== "Netflix") {
+              //if app is not netflix, move it to front(netflix will be moved to front from applauncherScreen.)
+              thunder$e.call("org.rdk.RDKShell", "moveToFront", {
+                "client": callsign,
+                "callsign": callsign
+              }).catch(err => {
+                console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
+              });
+            }
             thunder$e.call("org.rdk.RDKShell", "setFocus", {
               "client": callsign,
               "callsign": callsign
@@ -7354,6 +7367,7 @@ var APP_accelerator_home_ui = (function () {
             resolve(res);
           } else {
             console.error("failed to launchApp(success false) : ", callsign, " ERROR: ", JSON.stringify(res));
+            Router.navigate("menu");
             reject(res);
           }
         }).catch(err => {
@@ -7364,6 +7378,7 @@ var APP_accelerator_home_ui = (function () {
             "callsign": callsign
           });
           this.launchResidentApp();
+          Router.navigate("menu");
           reject(err);
         });
       });
@@ -35886,17 +35901,76 @@ var APP_accelerator_home_ui = (function () {
         Overlay: {
           w: 1920,
           h: 1080
+        },
+        SplashImage: {
+          w: 1920,
+          h: 1080,
+          x: 960,
+          y: 540,
+          mount: 0.5,
+          src: "",
+          //set to a empty string/transparent image
+          visible: false
         }
       };
     }
+    showSplashImage(callsign) {
+      if (this.splashImages[callsign]) {
+        //splash image won't be shown if the callsign and image location is mapped in this.splashImages
+
+        //first frame event
+        this.firstFrameListener = this._thunder.on("org.rdk.RDKShell", "onApplicationFirstFrame", notification => {
+          console.log("onApplicationFirstFrame notification from applauncherscreen: ", notification);
+          if (notification.client === callsign.toLowerCase()) {
+            console.log("firstframe event triggered hiding splash image");
+            this.tag("SplashImage").src = ""; //set to a empty string/transparent image
+            this.tag("SplashImage").visible = false;
+            this.moveApptoFront(callsign);
+            this.firstFrameListener.dispose(); //dispose listener after event is triggered for first time
+          }
+        });
+
+        //to show the splash image
+        this.splashTimeout && Registry.clearTimeout(this.splashTimeout);
+        this.tag("SplashImage").src = Utils.asset(this.splashImages[callsign]);
+        this.tag("SplashImage").visible = true;
+
+        //to hide the splash image after 30 sec in case firstframe event failed
+        this.splashTimeout = Registry.setTimeout(() => {
+          console.log("timeout triggered hiding splash image");
+          this.tag("SplashImage").src = ""; //set to a empty string/transparent image
+          this.tag("SplashImage").visible = false;
+          this.moveApptoFront(callsign);
+          this.firstFrameListener.dispose(); //dispose the event listener incase event didnot trigger till 30s
+        }, 30000);
+      }
+    }
+    moveApptoFront(callsign) {
+      //moving the launched app to front.
+      console.log("moveToFront: ", callsign, "from applauncher");
+      this._thunder.call("org.rdk.RDKShell", "moveToFront", {
+        "client": callsign,
+        "callsign": callsign
+      }).catch(err => {
+        console.error("failed to moveToFront : ", callsign, " ERROR: ", JSON.stringify(err), " | fail reason can be since app is already in front");
+      });
+    }
     _firstEnable() {
       console.log("app-overlay is enabled for firstTime");
+      this.splashImages = {
+        "Netflix": 'images/apps/App_Netflix_Splash.png'
+      }; //mapping between callsigns and splash images
+      const config = {
+        host: '127.0.0.1',
+        port: 9998,
+        default: 1
+      };
+      this._thunder = thunderJS(config);
     }
     _focus() {
       console.log("app-overlay is focused");
     }
     _handleBack() {
-      // this.widgets.settingsoverlay._handleBack();
       Router.navigate("menu");
     }
     _handleLeft() {
