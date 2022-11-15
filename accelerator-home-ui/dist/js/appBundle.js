@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Fri, 11 Nov 2022 14:47:00 GMT
+ * Generated: Tue, 15 Nov 2022 15:58:13 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7976,7 +7976,7 @@ var APP_accelerator_home_ui = (function () {
           return activatedNetflix;
       }
     }
-    standby(value) {
+    setPowerState(value) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.System', 'setPowerState', {
           "powerState": value,
@@ -7985,6 +7985,16 @@ var APP_accelerator_home_ui = (function () {
           resolve(result);
         }).catch(err => {
           resolve(false);
+        });
+      });
+    }
+    getPowerState() {
+      return new Promise((resolve, reject) => {
+        thunder$e.call('org.rdk.System', 'getPowerState').then(result => {
+          resolve(result);
+        }).catch(err => {
+          console.log("org.rdk.System: getPowerState: Error in getting powerstate: ", err);
+          reject(err);
         });
       });
     }
@@ -35909,7 +35919,6 @@ var APP_accelerator_home_ui = (function () {
           y: 540,
           mount: 0.5,
           src: "",
-          //set to a empty string/transparent image
           visible: false
         }
       };
@@ -35923,7 +35932,7 @@ var APP_accelerator_home_ui = (function () {
           console.log("onApplicationFirstFrame notification from applauncherscreen: ", notification);
           if (notification.client === callsign.toLowerCase()) {
             console.log("firstframe event triggered hiding splash image");
-            this.tag("SplashImage").src = ""; //set to a empty string/transparent image
+            this.tag("SplashImage").src = "";
             this.tag("SplashImage").visible = false;
             this.moveApptoFront(callsign);
             this.firstFrameListener.dispose(); //dispose listener after event is triggered for first time
@@ -35938,10 +35947,10 @@ var APP_accelerator_home_ui = (function () {
         //to hide the splash image after 30 sec in case firstframe event failed
         this.splashTimeout = Registry.setTimeout(() => {
           console.log("timeout triggered hiding splash image");
-          this.tag("SplashImage").src = ""; //set to a empty string/transparent image
+          this.tag("SplashImage").src = "";
           this.tag("SplashImage").visible = false;
           this.moveApptoFront(callsign);
-          this.firstFrameListener.dispose(); //dispose the event listener incase event didnot trigger till 30s
+          this.firstFrameListener.dispose(); //dispose the event listener incase event did not trigger till 30s
         }, 30000);
       }
     }
@@ -46187,18 +46196,32 @@ var APP_accelerator_home_ui = (function () {
       }
       if (key.keyCode == keyMap.Power) {
         // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
-        if (powerState == 'ON') {
-          this.standby('STANDBY');
-          return true;
-        } else if (powerState == 'STANDBY') {
-          appApi.standby("ON").then(res => {
-            powerState = 'ON';
-          });
-          return true;
-        }
+        appApi.getPowerState().then(res => {
+          console.log("getPowerState: ", res);
+          if (res.success) {
+            if (res.powerState === "ON") {
+              console.log("current powerState is ON so setting power state to LIGHT_SLEEP/DEEP_SLEEP depending of preferred option");
+              appApi.getPreferredStandbyMode().then(res => {
+                console.log("getPreferredStandbyMode: ", res.preferredStandbyMode);
+                appApi.setPowerState(res.preferredStandbyMode).then(result => {
+                  if (result.success) {
+                    console.log("successfully set powerstate to: " + res.preferredStandbyMode);
+                  }
+                });
+              });
+            } else {
+              console.log("current powerState is " + res.powerState + " so setting power state to ON");
+              appApi.setPowerState("ON").then(res => {
+                if (res.success) {
+                  console.log("successfully set powerstate to: ON");
+                }
+              });
+            }
+          }
+        });
       } else if (key.keyCode == 228) {
         console.log("___________DEEP_SLEEP_______________________F12");
-        appApi.standby("DEEP_SLEEP").then(res => {
+        appApi.setPowerState("DEEP_SLEEP").then(res => {
           powerState = 'DEEP_SLEEP';
         });
         return true;
@@ -46376,6 +46399,20 @@ var APP_accelerator_home_ui = (function () {
       });
     }
 
+    _firstEnable() {
+      thunder.on("org.rdk.System", "onSystemPowerStateChanged", notification => {
+        console.log("onSystemPowerStateChanged Notification: ", notification);
+        if (notification.powerState !== "ON" && notification.currentPowerState === "ON") {
+          console.log("onSystemPowerStateChanged Notification: power state was changed from ON to " + notification.powerState);
+          let currentApp = Storage.get('applicationType');
+          if (currentApp !== "") {
+            appApi.exitApp(currentApp); //will suspend/destroy the app depending on the setting.
+          }
+
+          Router.navigate('menu');
+        }
+      });
+    }
     activateChildApp(plugin) {
       //#currentlyNotUsed #needToBeRemoved
       fetch('http://127.0.0.1:9998/Service/Controller/').then(res => res.json()).then(data => {
@@ -46648,12 +46685,12 @@ var APP_accelerator_home_ui = (function () {
       if (value == 'Back') ; else {
         if (powerState == 'ON') {
           console.log("Power state was on trying to set it to standby");
-          appApi.standby(value).then(res => {
+          appApi.setPowerState(value).then(res => {
             if (res.success) {
               console.log("successfully set to standby");
               powerState = 'STANDBY';
               if (Storage.get('applicationType') !== "") {
-                appApi.exitApp(Storage.get('applicationType'), false, true); //setting to forceDestroy since standby is supposed to deactivate the app.
+                appApi.exitApp(Storage.get('applicationType'));
               } else {
                 if (!Router.isNavigating()) {
                   Router.navigate('menu');
@@ -46668,7 +46705,7 @@ var APP_accelerator_home_ui = (function () {
     $registerInactivityMonitoringEvents() {
       return new Promise((resolve, reject) => {
         console.log("registered inactivity listener");
-        appApi.standby('ON').then(res => {
+        appApi.setPowerState('ON').then(res => {
           if (res.success) {
             powerState = 'ON';
           }

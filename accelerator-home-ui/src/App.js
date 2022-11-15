@@ -277,20 +277,33 @@ export default class App extends Router.App {
 
     if (key.keyCode == Keymap.Power) {
       // Remote power key and keyboard F1 key used for STANDBY and POWER_ON
-      if (powerState == 'ON') {
-        this.standby('STANDBY');
-        return true
-      } else if (powerState == 'STANDBY') {
-        appApi.standby("ON").then(res => {
-          powerState = 'ON';
-        })
-        return true
-      }
-
+      appApi.getPowerState().then(res => {
+        console.log("getPowerState: ",res)
+        if(res.success){
+          if(res.powerState === "ON") {
+            console.log("current powerState is ON so setting power state to LIGHT_SLEEP/DEEP_SLEEP depending of preferred option");
+            appApi.getPreferredStandbyMode().then(res => {
+              console.log("getPreferredStandbyMode: ",res.preferredStandbyMode);
+              appApi.setPowerState(res.preferredStandbyMode).then(result => {
+                if(result.success){
+                  console.log("successfully set powerstate to: " + res.preferredStandbyMode)
+                }
+              })
+            })
+          } else {
+            console.log("current powerState is "+ res.powerState + " so setting power state to ON");
+            appApi.setPowerState("ON").then(res => {
+              if(res.success){
+                console.log("successfully set powerstate to: ON")
+              }
+            })
+          }
+        }
+      })
     } else if (key.keyCode == 228) {
 
       console.log("___________DEEP_SLEEP_______________________F12")
-      appApi.standby("DEEP_SLEEP").then(res => {
+      appApi.setPowerState("DEEP_SLEEP").then(res => {
         powerState = 'DEEP_SLEEP'
       })
       return true
@@ -463,6 +476,20 @@ export default class App extends Router.App {
     });
 
 
+  }
+
+  _firstEnable() {
+    thunder.on("org.rdk.System", "onSystemPowerStateChanged", notification => {
+        console.log("onSystemPowerStateChanged Notification: ",notification); 
+        if(notification.powerState !== "ON" && notification.currentPowerState === "ON"){
+          console.log("onSystemPowerStateChanged Notification: power state was changed from ON to " + notification.powerState)
+          let currentApp = Storage.get('applicationType')
+          if (currentApp !== "") {
+            appApi.exitApp(currentApp); //will suspend/destroy the app depending on the setting.
+          }
+          Router.navigate('menu');
+        }
+    })
   }
 
   activateChildApp(plugin) { //#currentlyNotUsed #needToBeRemoved
@@ -740,13 +767,13 @@ export default class App extends Router.App {
     } else {
       if (powerState == 'ON') {
         console.log(`Power state was on trying to set it to standby`);
-        appApi.standby(value).then(res => {
+        appApi.setPowerState(value).then(res => {
 
           if (res.success) {
             console.log(`successfully set to standby`);
             powerState = 'STANDBY'
             if (Storage.get('applicationType') !== "") {
-              appApi.exitApp(Storage.get('applicationType'), false, true); //setting to forceDestroy since standby is supposed to deactivate the app.
+              appApi.exitApp(Storage.get('applicationType'));
             } else {
               if (!Router.isNavigating()) {
                 Router.navigate('menu')
@@ -763,7 +790,7 @@ export default class App extends Router.App {
   $registerInactivityMonitoringEvents() {
     return new Promise((resolve, reject) => {
       console.log(`registered inactivity listener`);
-      appApi.standby('ON').then(res => {
+      appApi.setPowerState('ON').then(res => {
         if (res.success) {
           powerState = 'ON'
         }

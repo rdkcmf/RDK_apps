@@ -1288,7 +1288,7 @@ export default class AppApi {
     }
   }
 
-  standby(value) {
+  setPowerState(value) {
     return new Promise((resolve, reject) => {
       thunder
         .call('org.rdk.System', 'setPowerState', { "powerState": value, "standbyReason": "Requested by user" })
@@ -1297,6 +1297,20 @@ export default class AppApi {
         })
         .catch(err => {
           resolve(false)
+        })
+    })
+  }
+
+  getPowerState() {
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.System', 'getPowerState')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("org.rdk.System: getPowerState: Error in getting powerstate: ",err)
+          reject(err)
         })
     })
   }
