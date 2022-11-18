@@ -2034,5 +2034,260 @@ export default class AppApi {
         })
     })
    }
+   resetBassEnhancer(port) {
+    console.log("portname", port)
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'resetBassEnhancer', {
+          "audioPort": port
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("resetBassEnchancer", err)
+          resolve(false)
+        });
+    })
+
+  }
+  resetDialogEnhancement(port){
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'resetDialogEnhancement', {
+          "audioPort": port
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("resetDialogEnhancement", err)
+          resolve(false)
+        });
+    })
+  }
+  //resetSurroundVirtualizer
+  resetSurroundVirtualizer(port){
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'resetSurroundVirtualizer', {
+          "audioPort": port
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("resetSoundVitualizer", err)
+          resolve(false)
+        });
+    })
+  }
+  //resetVolumeLeveller
+  resetVolumeLeveller(port){
+    return new Promise((resolve, reject) => {
+      thunder
+        .call('org.rdk.DisplaySettings', 'resetVolumeLeveller', {
+          "audioPort": port
+        })
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("resetvolumeLevel", err)
+          resolve(false)
+        });
+    })
+  }
+  flushcache() {
+    return new Promise((resolve) => {
+      thunder
+        .call('org.rdk.PersistentStore', 'flushCache')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("flushCache", err)
+        resolve(false)
+        })
+    })
+  }
+  //resetInactivityTime
+  resetInactivityTime() {
+    return new Promise((resolve) => {
+      thunder
+        .call('org.rdk.RDKShell', 'resetInactivityTime')
+        .then(result => {
+          resolve(result)
+        })
+        .catch(err => {
+          console.log("resetInactivityTime", err)
+          resolve(false)
+        })
+    })
+  }
+//clearLastDeepSleepReason
+clearLastDeepSleepReason() {
+  return new Promise((resolve) => {
+    thunder
+      .call('org.rdk.System', 'clearLastDeepSleepReason')
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("clearLastDeepSleepReason", err)
+        resolve(false)
+      })
+  })
+}
+getSupportedAudioPorts() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.DisplaySettings', 'getSupportedAudioPorts')
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("getSupportedAudioPorts", err)
+        resolve(false)
+      });
+  })
+
+}
+
+monitorStatus(callsign) {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('Monitor', 'resetstats',{
+        "callsign" : callsign
+      })
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("monitorStatus", err)
+        resolve(false)
+      });
+  })
+
+}
+// warehouse api's
+internalReset() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.Warehouse', 'internalReset',{
+        "passPhrase": "FOR TEST PURPOSES ONLY"
+    })
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("interalReset", err)
+        resolve(false)
+      });
+  })
+
+}
+
+isClean() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.Warehouse', 'isClean')
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("isClean", err)
+        resolve(false)
+      });
+  })
+
+}
+lightReset() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.Warehouse', 'lightReset')
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("lightReset", err)
+        resolve(false)
+      });
+  })
+
+}
+resetDevice() {
+  return new Promise((resolve, reject) => {
+    thunder
+      .call('org.rdk.Warehouse', 'resetDevice',{
+        "suppressReboot": false,
+        "resetType": "USERFACTORY"
+    })
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("resetDevice", err)
+        resolve(false)
+      });
+  })
+
+}
+//{ path: ".cache" }
+deletecache(systemcCallsign, path) {
+  return new Promise((resolve, reject) => {
+    thunder.call(systemcCallsign,'delete',{path: path})
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("deletecache", err)
+        resolve(false)
+      });
+  })
+
+}
+// activate controller plugin
+activateController(callsign){
+  return new Promise((resolve, reject) => {
+    thunder
+    .call('Controller', 'activate', { callsign: callsign })
+      .then(result => {
+        resolve(result)
+      })
+      .catch(err => {
+        console.log("activateController", err)
+        resolve(false)
+      });
+  })
+}
+checkStatus(plugin) {
+  return new Promise((resolve, reject) => {
+      thunder.call('Controller', 'status@' + plugin)
+          .then(res => {
+              console.log(JSON.stringify(res))
+              resolve(res)
+          })
+          .catch(err => {
+            console.log("checkStatusApi",err)
+              resolve(false)
+            });
+  })
+}
+
+configStatus(){
+//controller.1.configuration
+return new Promise((resolve, reject) => {
+  thunder.call('Controller', 'status')
+      .then(res => {
+          console.log(JSON.stringify(res))
+          resolve(res)
+      })
+      .catch(err => {
+        console.log("configStatus", err)
+        resolve(false)
+        });
+})
+}
 
 }

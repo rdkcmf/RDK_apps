@@ -135,7 +135,6 @@ export default class DeviceScreen extends Lightning.Component {
                 },
                 Reset: {
                     y: 360,
-                    alpha: 0.3, // disabled
                     type: SettingsMainItem,
                     Title: {
                         x: 10,
@@ -241,7 +240,7 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware');
                 }
                 _handleDown() {
-                    // this._setState('Info')
+                    this._setState('Reset')
                 }
                 _handleEnter() {
                     Router.navigate('settings/advanced/device/reboot')
@@ -255,13 +254,13 @@ export default class DeviceScreen extends Lightning.Component {
                     this.tag('Reset')._unfocus()
                 }
                 _handleUp() {
-                    //this._setState('Reboot');
+                    this._setState('Reboot');
                 }
                 _handleDown() {
                     //this._setState('Info')
                 }
                 _handleEnter() {
-
+                    Router.navigate('settings/advanced/device/factoryReset')
                 }
             },
         ]

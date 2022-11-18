@@ -29,6 +29,7 @@ import FirmwareScreen from '../screens/OtherSettingsScreens/FirmwareScreen'
 import RebootConfirmationScreen from '../screens/OtherSettingsScreens/RebootConfirmationScreen'
 import TimeZone from '../screens/OtherSettingsScreens/TimeZone'
 import TimeItems from '../items/TimeItems'
+import FactoryResetConfirmationScreen from '../screens/OtherSettingsScreens/FactoryResetConfirmationScreen'
 
 
 export default {
@@ -98,5 +99,9 @@ export default {
       path: 'settings/advanced/device/reboot',
       component: RebootConfirmationScreen,
     },
+    {
+      path: 'settings/advanced/device/factoryReset',
+      component: FactoryResetConfirmationScreen,
+    }
   ]
 }
