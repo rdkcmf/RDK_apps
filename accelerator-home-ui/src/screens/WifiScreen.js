@@ -441,15 +441,22 @@ export default class WiFiScreen extends Lightning.Component {
     if (listname === 'MyDevices') list = this._pairedNetworks.tag('List')
     else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List')
     if (dir === 'down') {
+      if(list.length === 0) {
+        this._setState('JoinAnotherNetwork')
+        return;
+      }
       if (list.index < list.length - 1) list.setNext()
       else if (list.index == list.length - 1) {
         this._wifi.discoverSSIDs()
-        this._setState('JoinAnotherNetwork')
         if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
           this._setState('AvailableDevices')
         }
       }
     } else if (dir === 'up') {
+      if(list.length === 0) {
+        this._setState('JoinAnotherNetwork')
+        return;
+      }
       if (list.index > 0) list.setPrevious()
       else if (list.index == 0) {
         if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {

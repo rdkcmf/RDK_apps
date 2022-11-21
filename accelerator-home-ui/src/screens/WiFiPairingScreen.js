@@ -216,12 +216,10 @@ export default class WifiPairingScreen extends Lightning.Component {
         if (response.result === 0 && response.success === true) {
           this._wifi.SaveSSIDKey(this._item.ssid).then((persistenceResponse)=>{console.log(persistenceResponse)})
           // console.log(response);
-           Router.back()
         }
         else if (response.result !== 0) {
           this._wifi.clearSSID().then((response) => {
             // console.log(response)
-             Router.back()
           })
         }
       })

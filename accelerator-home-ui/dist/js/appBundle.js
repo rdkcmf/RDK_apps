@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Fri, 18 Nov 2022 15:28:21 GMT
+ * Generated: Mon, 21 Nov 2022 12:00:09 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -10654,7 +10654,7 @@ var APP_accelerator_home_ui = (function () {
   /**
    * Class to render items in main view.
    */
-  class ListItem$1 extends lng$1.Component {
+  class ListItem extends lng$1.Component {
     /**
      * Function to render various elements in the main view item.
      */
@@ -12179,6 +12179,26 @@ var APP_accelerator_home_ui = (function () {
   const limitWithinRange = (num, min, max) => {
     return Math.min(Math.max(num, min), max);
   };
+  const defineProperties = (component, props) => {
+    props.forEach(prop => {
+      Object.defineProperty(component, prop, {
+        set: function (value) {
+          component["_".concat(prop)] = value;
+        },
+        get: function () {
+          return component["_".concat(prop)];
+        }
+      });
+    });
+  };
+  const findIndexOfObject = (array, search, targetProp) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][targetProp] === search) {
+        return i;
+      }
+    }
+    return -1;
+  };
 
   /*
    * If not stated otherwise in this file or this component's LICENSE file the
@@ -12225,6 +12245,11 @@ var APP_accelerator_home_ui = (function () {
       } = this._findLocationOfIndex(targetIndex);
       this._mainIndex = mainIndex;
       this._crossIndex = crossIndex;
+      this._previous = {
+        mainIndex,
+        crossIndex,
+        realIndex: previousIndex
+      };
       this._index = targetIndex;
       this._indexChanged({
         previousIndex,
@@ -13596,6 +13621,799 @@ var APP_accelerator_home_ui = (function () {
     right: 1
   };
 
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  const calcCarouselNavigation = (dir, current, min, max) => {
+    let target = current + dir;
+    if (target < min) {
+      target = max;
+    }
+    if (target > max) {
+      target = min;
+    }
+    return target;
+  };
+  class Stepper extends lng$1.Component {
+    static _template() {
+      return {
+        h: 80,
+        w: 574,
+        Focus: {
+          alpha: 0,
+          w: w => w,
+          h: h => h,
+          rect: true
+        },
+        Label: {
+          x: 30,
+          y: h => h * 0.5,
+          mountY: 0.5,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        },
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 30;
+      this._max = 100;
+      this._min = 0;
+      this._value = 50;
+      this._options = undefined;
+      this._label = 'label';
+      this._focusAnimation = null;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding', 'max', 'min', 'focusAnimation']);
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'Label',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this._update();
+    }
+    _navigate(dir) {
+      this.value = calcCarouselNavigation(dir, this._value, this._min, this._max);
+      const event = {
+        value: this._value
+      };
+      if (this._options) {
+        event.options = this._options;
+      }
+      this.fireAncestors('$onValueChanged', event);
+      this.signal('onValueChanged', event);
+    }
+    _handleLeft() {
+      this._navigate(-1);
+    }
+    _handleRight() {
+      this._navigate(1);
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set label(str) {
+      this._label = str;
+      if (this.active) {
+        this.tag('Label').text.text = str;
+      }
+    }
+    get label() {
+      return this._label;
+    }
+    set value(str) {
+      this._value = str;
+      if (this.active) {
+        this.tag('Value').text.text = this.optionValue || this._value;
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    get optionValue() {
+      return this._options && this._options[this._value] && this._options[this._value].label || undefined;
+    }
+    set options(arr) {
+      const refactor = arr.map(option => {
+        if (typeof option === 'string') {
+          return {
+            label: option
+          };
+        }
+        return option;
+      });
+      this._value = 0;
+      this._options = refactor;
+      this._max = refactor.length - 1;
+      this._update();
+    }
+    get options() {
+      return this._options;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ArrowStepper extends Stepper {
+    static _template() {
+      return {
+        ...super._template(),
+        ValueWrapper: {
+          x: w => w - 30,
+          w: 200,
+          h: h => h,
+          mountX: 1,
+          ArrowLeft: {
+            y: h => h * 0.5,
+            mountY: 0.5
+          },
+          Value: {
+            x: w => w * 0.5,
+            y: h => h * 0.5,
+            mountX: 0.5,
+            mountY: 0.5,
+            text: {
+              text: '',
+              fontSize: 22
+            }
+          },
+          ArrowRight: {
+            y: h => h * 0.5,
+            x: w => w,
+            mountY: 0.5,
+            mountX: 1
+          }
+        }
+      };
+    }
+    _update() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          x: this._padding,
+          color: this._labelColor,
+          text: {
+            text: this._label
+          }
+        },
+        ValueWrapper: {
+          x: w => w - this._padding,
+          ArrowLeft: {
+            color: this._labelColor
+          },
+          Value: {
+            color: this._labelColor,
+            text: {
+              text: this.optionValue || this.value
+            }
+          },
+          ArrowRight: {
+            color: this._labelColor
+          }
+        }
+      });
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Focus',
+          p: 'alpha',
+          v: {
+            0: 0,
+            1: 1
+          }
+        }, {
+          t: 'ValueWrapper.ArrowLeft',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.Value',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }, {
+          t: 'ValueWrapper.ArrowRight',
+          p: 'color',
+          v: {
+            0: this._labelColor,
+            1: this._labelColorFocused
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      const arrowLeft = this.tag('ArrowLeft');
+      const arrowRight = this.tag('ArrowRight');
+      if (!(arrowLeft.src !== undefined && arrowLeft.text !== null)) {
+        arrowLeft.text = {
+          text: '\u25c0',
+          fontSize: 18
+        };
+      }
+      if (!(arrowRight.src !== undefined && arrowRight.text !== null)) {
+        arrowRight.text = {
+          text: '\u25b6',
+          fontSize: 18
+        };
+      }
+      this._update();
+    }
+  }
+
+  class ColorShift extends lng$1.Component {
+    static _template() {
+      return {
+        w: 574,
+        h: 240,
+        List: {
+          type: List,
+          w: w => w,
+          h: h => h,
+          forceLoad: true,
+          spacing: 0,
+          direction: 'column'
+        }
+      };
+    }
+    _construct() {
+      this._autoColorShift = true;
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._options = [{
+        type: 'neutral',
+        label: 'normal'
+      }, {
+        type: 'protanopia',
+        label: 'Protanopia'
+      }, {
+        type: 'deuteranopia',
+        label: 'Deuteranopia'
+      }, {
+        type: 'tritanopia',
+        label: 'Tritanopia'
+      }, {
+        type: 'monochromacy',
+        label: 'Achromatopsia'
+      }];
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'options', 'autoColorShift']);
+    }
+    _getFocused() {
+      return this.tag('List');
+    }
+    _shiftColors() {
+      if (this._autoColorShift && this.application && this.application.colorshift) {
+        this.application.colorshift(this._settings.correction, this._settings);
+      }
+    }
+    $onValueChanged() {
+      const listItems = this.tag('List').items;
+      const correction = listItems[0];
+      this._settings = {
+        correction: correction.options[correction.value].type,
+        brightness: listItems[1].value,
+        contrast: listItems[2].value,
+        gamma: listItems[3].value
+      };
+      if (this._currentCorrection && this._settings.correction !== this._currentCorrection) {
+        const steppers = listItems.slice(1);
+        steppers.forEach(stepper => {
+          stepper.value = 50;
+        });
+      }
+      this._currentCorrection = this._settings.correction;
+      this._shiftColors();
+      this.signal('onColorShift', this._settings);
+    }
+    _update() {
+      const list = this.tag('List');
+      const steppers = ['Brightness', 'Contrast', 'Gamma'];
+      const options = this._options;
+      const settings = this._settings;
+      const colors = {
+        focusColor: this._focusColor,
+        labelColor: this._labelColor,
+        labelColorFocused: this._labelColorFocused
+      };
+      this._shiftColors();
+      const settingItems = steppers.map(stepper => {
+        const lowerC = stepper.toLocaleLowerCase();
+        return {
+          type: this["".concat(lowerC, "Component")],
+          label: stepper,
+          value: settings[lowerC],
+          w: this.finalW,
+          h: 80,
+          ...colors
+        };
+      });
+      settingItems.unshift({
+        type: this.correctionComponent,
+        options,
+        value: findIndexOfObject(options, settings.correction, 'type'),
+        label: 'Color adjustment',
+        w: this.finalW,
+        h: 80,
+        ...colors
+      });
+      list.clear();
+      list.add(settingItems);
+    }
+    _firstActive() {
+      if (!this._settings) {
+        this._settings = {
+          correction: 'neutral',
+          brightness: 50,
+          contrast: 50,
+          gamma: 50
+        };
+      }
+      this._update();
+    }
+    set settings(obj) {
+      this._settings = obj;
+      if (this.active) {
+        const listItems = this.tag('List').items;
+        listItems[0] = findIndexOfObject(this._options, obj.correction, 'type');
+        listItems[1] = obj.brightness || 50;
+        listItems[2] = obj.contrast || 50;
+        listItems[3] = obj.gamma || 50;
+      }
+    }
+    get settings() {
+      return this._settings;
+    }
+    get correctionTag() {
+      return this.tag('List').items[0];
+    }
+    get brightnessTag() {
+      return this.tag('List').items[1];
+    }
+    get contrastTag() {
+      return this.tag('List').items[2];
+    }
+    get gammaTag() {
+      return this.tag('List').items[3];
+    }
+    get adjustmentTags() {
+      return this.tag('List').items;
+    }
+    set stepperComponent(component) {
+      this._stepperComponent = component;
+    }
+    get stepperComponent() {
+      return this._stepperComponent || ArrowStepper;
+    }
+    set correctionComponent(component) {
+      this._correctionComponent = component;
+    }
+    get correctionComponent() {
+      return this._correctionComponent || this.stepperComponent;
+    }
+    set brightnessComponent(component) {
+      this._brightnessComponent = component;
+    }
+    get brightnessComponent() {
+      return this._brightnessComponent || this.stepperComponent;
+    }
+    set contrastComponent(component) {
+      this._contrastComponent = component;
+    }
+    get contrastComponent() {
+      return this._contrastComponent || this.stepperComponent;
+    }
+    set gammaComponent(component) {
+      this._gammaComponent = component;
+    }
+    get gammaComponent() {
+      return this._gammaComponent || this.stepperComponent;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class CarouselItem extends lng$1.Component {
+    static _template() {
+      return {
+        Focus: {
+          alpha: 0,
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          w: 120,
+          h: 50,
+          rect: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 25
+          }
+        },
+        Label: {
+          x: w => w * 0.5,
+          y: h => h * 0.5,
+          mount: 0.5,
+          renderOffscreen: true,
+          text: {
+            text: '',
+            fontSize: 22
+          }
+        }
+      };
+    }
+    _construct() {
+      this._focusColor = 0xff009245;
+      this._labelColor = 0xff9d9d9d;
+      this._labelColorFocused = 0xffffffff;
+      this._padding = 40;
+      defineProperties(this, ['focusColor', 'labelColor', 'labelColorFocused', 'padding']);
+    }
+    set label(str) {
+      this.tag('Label').text.text = str;
+      this._label = str;
+    }
+    get label() {
+      return this._label;
+    }
+    _init() {
+      const label = this.tag('Label');
+      label.on('txLoaded', () => {
+        this.patch({
+          w: label.renderWidth,
+          Focus: {
+            w: label.renderWidth + this._padding * 2
+          }
+        });
+        if (this.collectionWrapper) {
+          this.collectionWrapper.reposition();
+        }
+      });
+    }
+    _focus() {
+      this.patch({
+        Focus: {
+          smooth: {
+            alpha: 1
+          }
+        },
+        Label: {
+          smooth: {
+            color: this._labelColorFocused
+          }
+        }
+      });
+    }
+    _unfocus(target) {
+      if (target.isCarouselItem === true) {
+        this.patch({
+          Focus: {
+            smooth: {
+              alpha: 0
+            }
+          },
+          Label: {
+            smooth: {
+              color: this._labelColor
+            }
+          }
+        });
+      }
+    }
+    _firstActive() {
+      this.patch({
+        Focus: {
+          color: this._focusColor
+        },
+        Label: {
+          color: this._labelColor
+        }
+      });
+      if (this.cparent.componentIndex === this.collectionWrapper.currentItemWrapper.componentIndex) {
+        this._focus();
+      }
+    }
+    get isCarouselItem() {
+      return true;
+    }
+    static get width() {
+      return 120;
+    }
+    static get height() {
+      return 50;
+    }
+  }
+
+  /*
+   * If not stated otherwise in this file or this component's LICENSE file the
+   * following copyright and licenses apply:
+   *
+   * Copyright 2021 Metrological
+   *
+   * Licensed under the Apache License, Version 2.0 (the License);
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   */
+  class ProgressBar$1 extends lng$1.Component {
+    static _template() {
+      return {
+        w: 300,
+        h: 10,
+        Background: {
+          w: w => w,
+          h: h => h,
+          rect: true,
+          rtt: true,
+          shader: {
+            type: lng$1.shaders.RoundedRectangle,
+            radius: 5
+          },
+          Progress: {
+            h: h => h,
+            w: 10,
+            rect: true,
+            shader: {
+              type: lng$1.shaders.RoundedRectangle,
+              radius: 0
+            }
+          }
+        }
+      };
+    }
+    _construct() {
+      this._progressColor = 0xff009245;
+      this._progressColorFocused = undefined;
+      this._backgroundColor = 0xff9d9d9d;
+      this._backgroundColorFocused = undefined;
+      this._backgroundRadius = 5;
+      this._progressRadius = 0;
+      this.value = 0.5;
+      defineProperties(this, ['progressColor', 'backgroundColor', 'progressColorFocused', 'backgroundColorFocused']);
+    }
+    progress(p) {
+      if (p > 1) {
+        p = p / 100;
+      }
+      this._value = p;
+      this.tag('Progress').w = this.w * p;
+    }
+    _createFocusAnimation() {
+      this._focusAnimation = this.animation({
+        duration: 0.2,
+        stopMethod: 'reverse',
+        actions: [{
+          t: 'Background',
+          p: 'color',
+          v: {
+            0: this._backgroundColor,
+            1: this._backgroundColorFocused || this._backgroundColor
+          }
+        }, {
+          t: 'Background.Progress',
+          p: 'color',
+          v: {
+            0: this._progressColor,
+            1: this._progressColorFocused || this._progressColor
+          }
+        }]
+      });
+    }
+    _firstActive() {
+      if (!this._focusAnimation) {
+        this._createFocusAnimation();
+      }
+      this.patch({
+        Background: {
+          color: this._backgroundColor,
+          shader: {
+            radius: this._backgroundRadius
+          },
+          Progress: {
+            color: this._progressColor,
+            shader: {
+              radius: this._progressRadius
+            }
+          }
+        }
+      });
+      this.progress(this._value);
+      if (this.hasFocus()) {
+        this._focus();
+      }
+    }
+    _focus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.start();
+      }
+    }
+    _unfocus() {
+      if (this._focusAnimation) {
+        this._focusAnimation.stop();
+      }
+    }
+    set value(p) {
+      this._value = p;
+      if (this.active) {
+        this.progress(p);
+      }
+    }
+    get value() {
+      return this._value;
+    }
+    set backgroundRadius(num) {
+      this._backgroundRadius = num;
+      if (this.active) {
+        this.tag('Background').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    set progressRadius(num) {
+      this._progressRadius = num;
+      if (this.active) {
+        this.tag('Progress').shader.radius = num;
+      }
+    }
+    get progressRadius() {
+      return this._progressRadius;
+    }
+    get backgroundTag() {
+      return this.tag('Background');
+    }
+    get progressTag() {
+      return this.tag('Progress');
+    }
+  }
+
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -14141,7 +14959,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 268,
           h: 151,
-          type: ListItem$1,
+          type: ListItem,
           data: {
             ...info,
             displayName: "Port ".concat(info.id),
@@ -14160,7 +14978,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 268,
           h: 151,
-          type: ListItem$1,
+          type: ListItem,
           data: info,
           focus: 1.11,
           unfocus: 1,
@@ -14180,7 +14998,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: this.gracenote || this.inputSelect ? 268 : 454,
           h: this.gracenote || this.inputSelect ? 151 : 255,
-          type: ListItem$1,
+          type: ListItem,
           data: info,
           focus: 1.11,
           unfocus: 1,
@@ -14194,7 +15012,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 268,
           h: 151,
-          type: ListItem$1,
+          type: ListItem,
           data: info,
           focus: 1.15,
           unfocus: 1,
@@ -14212,7 +15030,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 257,
           h: 145,
-          type: ListItem$1,
+          type: ListItem,
           data: info,
           focus: 1.15,
           unfocus: 1,
@@ -14229,7 +15047,7 @@ var APP_accelerator_home_ui = (function () {
         return {
           w: 257,
           h: 145,
-          type: ListItem$1,
+          type: ListItem,
           data: info,
           focus: 1.15,
           unfocus: 1,
@@ -20384,11 +21202,9 @@ var APP_accelerator_home_ui = (function () {
               console.log(persistenceResponse);
             });
             // console.log(response);
-            Router.back();
           } else if (response.result !== 0) {
             this._wifi.clearSSID().then(response => {
               // console.log(response)
-              Router.back();
             });
           }
         });
@@ -21065,14 +21881,21 @@ var APP_accelerator_home_ui = (function () {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
       if (dir === 'down') {
+        if (list.length === 0) {
+          this._setState('JoinAnotherNetwork');
+          return;
+        }
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           this._wifi.discoverSSIDs();
-          this._setState('JoinAnotherNetwork');
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
         }
       } else if (dir === 'up') {
+        if (list.length === 0) {
+          this._setState('JoinAnotherNetwork');
+          return;
+        }
         if (list.index > 0) list.setPrevious();else if (list.index == 0) {
           if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
             this._setState('PairedDevices');
@@ -39091,7 +39914,7 @@ var APP_accelerator_home_ui = (function () {
         console.log("otherlist", this._otherList);
         this._availableNetworks.h = this._otherList.length * 90;
         this._availableNetworks.tag('List').h = this._otherList.length * 90;
-        this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h;
+        //  this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h
         this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
           item.connected = false;
           return {
@@ -39178,11 +40001,11 @@ var APP_accelerator_home_ui = (function () {
         }
         _handleEnter() {
           console.log("SSID check", this._availableNetworks.tag('List').element._item);
-          this.ListItem = this._pairedNetworks.tag('List').element._item;
+          this.ListItem = this._availableNetworks.tag('List').element._item;
           console.log("enter connect method");
           this._wifi.getSSIDKey().then(response => {
             console.log("ssid check");
-            if (response === ListItem.ssid) {
+            if (response === this.ListItem.ssid) {
               this._wifi.connect().then(response => {
                 console.log(response);
               }).catch(err => {
@@ -39288,14 +40111,21 @@ var APP_accelerator_home_ui = (function () {
       let list;
       if (listname === 'MyDevices') list = this._pairedNetworks.tag('List');else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List');
       if (dir === 'down') {
+        if (list.length === 0) {
+          this._setState('JoinAnotherNetwork');
+          return;
+        }
         if (list.index < list.length - 1) list.setNext();else if (list.index == list.length - 1) {
           this._wifi.discoverSSIDs();
-          this._setState('JoinAnotherNetwork');
           if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
             this._setState('AvailableDevices');
           }
         }
       } else if (dir === 'up') {
+        if (list.length === 0) {
+          this._setState('JoinAnotherNetwork');
+          return;
+        }
         if (list.index > 0) list.setPrevious();else if (list.index == 0) {
           if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
             this._setState('PairedDevices');

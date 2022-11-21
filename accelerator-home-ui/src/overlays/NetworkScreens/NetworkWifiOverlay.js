@@ -307,7 +307,7 @@ import FailComponent from './FailComponent'
        console.log("otherlist", this._otherList)
        this._availableNetworks.h = this._otherList.length * 90
        this._availableNetworks.tag('List').h = this._otherList.length * 90
-       this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h
+      //  this._availableNetworks.tag('List').y = this._pairedNetworks.tag('List').h
        this._availableNetworks.tag('List').items = this._otherList.map((item, index) => {
          item.connected = false
          return {
@@ -405,11 +405,11 @@ import FailComponent from './FailComponent'
          }
          _handleEnter() {
           console.log("SSID check", this._availableNetworks.tag('List').element._item)
-          this.ListItem = this._pairedNetworks.tag('List').element._item 
+          this.ListItem = this._availableNetworks.tag('List').element._item 
           console.log("enter connect method")
           this._wifi.getSSIDKey().then((response)=>{
             console.log("ssid check")
-            if(response === ListItem.ssid ){
+            if(response === this.ListItem.ssid ){
               this._wifi.connect().then((response)=>{console.log(response)})
               .catch(err =>{ 
                 this._setState("WifiPairingScreen")
@@ -524,15 +524,22 @@ import FailComponent from './FailComponent'
      if (listname === 'MyDevices') list = this._pairedNetworks.tag('List')
      else if (listname === 'AvailableDevices') list = this._availableNetworks.tag('List')
      if (dir === 'down') {
+      if(list.length === 0) {
+        this._setState('JoinAnotherNetwork')
+        return;
+      }
        if (list.index < list.length - 1) list.setNext()
        else if (list.index == list.length - 1) {
          this._wifi.discoverSSIDs()
-         this._setState('JoinAnotherNetwork')
          if (listname === 'MyDevices' && this._availableNetworks.tag('List').length > 0) {
            this._setState('AvailableDevices')
          }
        }
      } else if (dir === 'up') {
+      if(list.length === 0) {
+        this._setState('JoinAnotherNetwork')
+        return;
+      }
        if (list.index > 0) list.setPrevious()
        else if (list.index == 0) {
          if (listname === 'AvailableDevices' && this._pairedNetworks.tag('List').length > 0) {
