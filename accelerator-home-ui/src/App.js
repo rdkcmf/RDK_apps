@@ -42,6 +42,8 @@ var powerState = 'ON';
 var thunder = ThunderJS(config);
 var appApi = new AppApi();
 var dtvApi = new DTVApi();
+var hdmiApi = new HDMIApi()
+
 
 
 export default class App extends Router.App {
@@ -493,6 +495,10 @@ export default class App extends Router.App {
   }
 
   activateChildApp(plugin) { //#currentlyNotUsed #needToBeRemoved
+    if(plugin == "YouTubeKids" || plugin == "YouTubeTV"){
+      plugin = "Cobalt"
+    }
+
     fetch('http://127.0.0.1:9998/Service/Controller/')
       .then(res => res.json())
       .then(data => {
@@ -628,24 +634,120 @@ export default class App extends Router.App {
   /**
    * Function to register event listeners for Xcast plugin.
    */
-  registerXcastListeners() {
+   registerXcastListeners() {
     this.xcastApi.registerEvent('onApplicationLaunchRequest', notification => {
       console.log('Received a launch request ' + JSON.stringify(notification));
 
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
+
         let url = applicationName === "Cobalt" ? notification.parameters.url + '&inApp=true' : notification.parameters.url;
-        let params = {
-          url: url,
-          launchLocation: "dial"
+
+        if (applicationName === "YouTubeKids") {
+          hdmiApi.checkStatus("Cobalt").then(res=>{
+            if(res[0].state === "running"){
+
+              thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' }).then(r => {
+                console.log(`Cobalt : Cobalt instance deactivated`, r)
+                let params = {
+                  url: url,
+                  launchLocation: "dial"
+                }
+                appApi.launchApp("Cobalt", params).then(res => {// we launch cobalt
+                  
+                    Storage.set("applicationType", "Cobalt")  
+                  
+                  console.log("App launched on xcast event: ", res);
+                  let params = { applicationName: notification.applicationName, state: 'running' }; // we update applicationStateChanged for YouTubeKids
+                  this.xcastApi.onApplicationStateChanged(params);
+                }).catch(err => {
+                  console.error("Applaunch error on xcast notification: ", err)
+                })
+    
+              }).catch(err => {
+                console.error("Cobalt : error while deactivating cobalt instance", err)
+              })
+
+
+            }
+            else{
+              let params = {
+                url: url,
+                launchLocation: "dial"
+              }
+              let aName = "Cobalt"
+              appApi.launchApp(aName, params).then(res => {
+                Storage.set("applicationType", "Cobalt")
+                console.log("App launched on xcast event: ", res);
+                let params = { applicationName: notification.applicationName, state: 'running' };
+                this.xcastApi.onApplicationStateChanged(params);
+              }).catch(err => {
+                console.log("Applaunch error on xcast notification: ", err)
+              })
+            }
+          })
+          
         }
-        appApi.launchApp(applicationName, params).then(res => {
-          console.log("App launched on xcast event: ", res);
-          let params = { applicationName: notification.applicationName, state: 'running' };
-          this.xcastApi.onApplicationStateChanged(params);
-        }).catch(err => {
-          console.log("Applaunch error on xcast notification: ", err)
-        })
+        else if(applicationName === "YouTubeTV"){
+          hdmiApi.checkStatus("Cobalt").then(res=>{
+            if(res[0].state === "running"){
+
+              thunder.call('org.rdk.RDKShell', 'destroy', { callsign: 'Cobalt' }).then(r => {
+
+
+                let params = {
+                  url: url,
+                  launchLocation: "dial"
+                }
+
+                appApi.launchApp("Cobalt", params).then(res => {// we launch cobalt
+                  Storage.set("applicationType", "Cobalt")
+                  console.log("App launched on xcast event: ", res);
+                  let params = { applicationName: notification.applicationName, state: 'running' }; // we update applicationStateChanged for YouTubeKids
+                  this.xcastApi.onApplicationStateChanged(params);
+                }).catch(err => {
+                  console.error("Applaunch error on xcast notification: ", err)
+                })
+
+              }).catch(err=>{
+                console.error(err)
+              })
+            }
+            else{
+              let params = {
+                url: url,
+                launchLocation: "dial"
+              }
+              let aName = "Cobalt"
+              appApi.launchApp(aName, params).then(res => {
+                Storage.set("applicationType", "Cobalt")
+                console.log("App launched on xcast event: ", res);
+                let params = { applicationName: notification.applicationName, state: 'running' };
+                this.xcastApi.onApplicationStateChanged(params);
+              }).catch(err => {
+                console.log("Applaunch error on xcast notification: ", err)
+              })
+            }
+            
+          }).catch(err=>{
+            console.error(err)
+          })
+          
+        }
+        else {
+          let params = {
+            url: url,
+            launchLocation: "dial"
+          }
+          appApi.launchApp(applicationName, params).then(res => {
+            console.log("App launched on xcast event: ", res);
+            Storage.set("applicationType", applicationName)
+            let params = { applicationName: notification.applicationName, state: 'running' };
+            this.xcastApi.onApplicationStateChanged(params);
+          }).catch(err => {
+            console.log("Applaunch error on xcast notification: ", err)
+          })
+        }
 
       }
     });
@@ -655,14 +757,24 @@ export default class App extends Router.App {
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
         console.log('Hide ' + this.xcastApps(notification.applicationName));
-        //second argument true means resident app won't be launched the required app will be exited in the background.
-        //only bring up the resident app when the notification is from the current app(ie app in focus)
-        console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
-        appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
-
         let params = { applicationName: notification.applicationName, state: 'suspended' };
-        console.log(`Event : On hide request, updating application Status to `, params);
-        this.xcastApi.onApplicationStateChanged(params);
+        if (applicationName === "YouTubeKids") {
+          appApi.suspendPremiumApp("Cobalt")
+          this.xcastApi.onApplicationStateChanged(params);
+        } 
+        else if(applicationName === "YouTubeTV"){
+          appApi.suspendPremiumApp("Cobalt")
+          this.xcastApi.onApplicationStateChanged(params);
+        }else {
+          //second argument true means resident app won't be launched the required app will be exited in the background.
+          //only bring up the resident app when the notification is from the current app(ie app in focus)
+          console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+          appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
+
+          console.log(`Event : On hide request, updating application Status to `, params);
+          this.xcastApi.onApplicationStateChanged(params);
+        }
+
       }
     });
     this.xcastApi.registerEvent('onApplicationResumeRequest', notification => {
@@ -673,8 +785,14 @@ export default class App extends Router.App {
           url: notification.parameters.url,
           launchLocation: "dial"
         }
+        let aName = applicationName
+        if(aName == "YouTubeKids" || aName == "YouTubeTV"){
+          aName = "Cobalt"
+        }
         console.log('Resume ', applicationName, " with params: ", params);
-        appApi.launchApp(applicationName, params).then(res => {
+        appApi.launchApp(aName, params).then(res => {
+          Storage.set("applicationType", aName)
+          
           console.log("launched ", applicationName, " on casting resume request: ", res);
           let params = { applicationName: notification.applicationName, state: 'running' };
           this.xcastApi.onApplicationStateChanged(params);
@@ -689,13 +807,25 @@ export default class App extends Router.App {
       if (this.xcastApps(notification.applicationName)) {
         console.log('Stop ' + this.xcastApps(notification.applicationName));
         let applicationName = this.xcastApps(notification.applicationName);
-        //second argument true means resident app won't be launched the required app will be exited in the background.
-        //only bring up the resident app when the notification is from the current app(ie app in focus)
-        console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
-        appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
+        if (applicationName === "YouTubeKids") {
+          appApi.deactivateCobalt()
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          this.xcastApi.onApplicationStateChanged(params);
+        }
+        else if(applicationName === "YouTubeTV"){
+          appApi.deactivateCobalt()
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          this.xcastApi.onApplicationStateChanged(params);
+        }
+        else {
+          //second argument true means resident app won't be launched the required app will be exited in the background.
+          //only bring up the resident app when the notification is from the current app(ie app in focus)
+          console.log("exitApp is getting called depending upon " + applicationName + "!==" + Storage.get("applicationType"));
+          appApi.exitApp(applicationName, applicationName !== Storage.get("applicationType"));
 
-        let params = { applicationName: notification.applicationName, state: 'stopped' };
-        this.xcastApi.onApplicationStateChanged(params);
+          let params = { applicationName: notification.applicationName, state: 'stopped' };
+          this.xcastApi.onApplicationStateChanged(params);
+        }
       }
     });
     this.xcastApi.registerEvent('onApplicationStateRequest', notification => {
@@ -703,24 +833,31 @@ export default class App extends Router.App {
       // console.log(JSON.stringify(notification))
       if (this.xcastApps(notification.applicationName)) {
         let applicationName = this.xcastApps(notification.applicationName);
-        let params = { applicationName: notification.applicationName, state: 'stopped' };
+        let params = { applicationName: notification.applicationName, state: 'stopped' };   
 
         appApi.registerEvent('statechange', results => {
           if (results.callsign === applicationName && results.state === 'Activated') {
             params.state = 'running'
-            Storage.set("applicationType", results.callsign) //required in case app launch happens using curl command.
+            if(results.callsign == "YouTubeKids" || results.callsign == "YouTubeTV"){
+              Storage.set("applicationType", "Cobalt")  //required in case app launch happens using curl command.
+            }else{
+              Storage.set("applicationType", results.callsign) //required in case app launch happens using curl command.
+            }
           }
-          else if (results.state === 'Deactivation') {
+          else if (results.state == 'Deactivation') {
             params.state = "stopped"
           }
-          else if (results.state = "Activation") {
+          else if (results.state == "Activation") {
             // params.state = "running"
           }
-          else if (results.state = "Resumed") {
+          else if (results.state == "Resumed") {
             params.state = "running"
           }
           else if (results.state == 'suspended') {
             params.state = 'suspended';
+          }
+          else{
+            console.warn(" THIS SHOULDN'T HAPPEN : unexpected app state"+results.state)
           }
           console.log(`STATE CHANGED : `);
           console.log(results);

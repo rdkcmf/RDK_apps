@@ -140,13 +140,14 @@ export default class XcastApi {
     return new Promise((resolve, reject) => {
       console.log('Notifying back');
       this._thunder.call('org.rdk.Xcast.1', 'onApplicationStateChanged', params).then(result => {
+        console.log(`an application state has been changed : result =>`,JSON.stringify(result))
         resolve(result);
       }).catch(err => { console.error(err); resolve(false); });
     });
   }
 
   static supportedApps() {
-    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' };
+    var xcastApps = { AmazonInstantVideo: 'Amazon', YouTube: 'Cobalt', NetflixApp: 'Netflix' ,YouTubeKids:"YouTubeKids" , YouTubeTV:"YouTubeTV"};
     return xcastApps;
   }
 }

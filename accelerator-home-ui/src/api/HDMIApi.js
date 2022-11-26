@@ -106,6 +106,11 @@ export default class HDMIApi {
             this._thunder.call('Controller.1', 'status@' + plugin)
                 .then(res => {
                     console.log(JSON.stringify(res))
+                    resolve(res)
+                })
+                .catch(err=>{
+                    console.error(JSON.stringify(err))
+                    reject(err)
                 })
         })
     }
