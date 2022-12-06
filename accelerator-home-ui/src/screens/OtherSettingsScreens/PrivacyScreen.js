@@ -181,7 +181,9 @@ export default class PrivacyScreen extends Lightning.Component {
         this.checkUSBDeviceStatus()
     }
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/other')
+        }
     }
 
     checkUSBDeviceStatus() {
@@ -336,7 +338,9 @@ export default class PrivacyScreen extends Lightning.Component {
                     // this._setState('LocalDeviceDiscovery')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/other/privacyPolicy')
+                    }
                 }
             },
         ]

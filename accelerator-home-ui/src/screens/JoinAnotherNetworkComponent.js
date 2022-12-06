@@ -232,7 +232,9 @@ export default class JoinAnotherNetworkComponent extends Lightning.Component {
   }
 
   _handleBack() {
-    Router.back()
+    if(!Router.isNavigating()){
+      Router.back()
+      }
   }
   static _states() {
     return [

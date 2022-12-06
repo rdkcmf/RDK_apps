@@ -195,7 +195,9 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/other')
+        }
     }
 
     performOTPAction() {
@@ -329,7 +331,9 @@ export default class AdvanceSettingsScreen extends Lightning.Component {
                     //this._setState('UI Voice')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device')
+                    }
                 }
             },
         ]

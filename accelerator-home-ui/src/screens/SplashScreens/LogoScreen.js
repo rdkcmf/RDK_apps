@@ -65,7 +65,7 @@ export default class LogoScreen extends Lightning.Component {
         console.log('Splash Screen timer end - ', new Date().toUTCString())
     }
 
-    _focus() {
+   async _focus() {
         let path = 'splash/bluetooth'
         var map = { 37: false, 38: false, 39: false, 40: false };
         this.handler = (e) => {
@@ -77,6 +77,7 @@ export default class LogoScreen extends Lightning.Component {
             }
         }
         Registry.addEventListener(document, 'keydown', this.handler)
+        await this.btApi.btactivate().then(res => {console.log("btactivate", res)})
         this.btApi.getPairedDevices()
             .then(devices => {
                 console.log(devices)

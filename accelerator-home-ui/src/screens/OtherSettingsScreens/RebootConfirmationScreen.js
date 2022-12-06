@@ -122,7 +122,9 @@ export default class RebootConfirmationScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/advanced/device')
+        }
     }
 
 
@@ -174,7 +176,9 @@ export default class RebootConfirmationScreen extends Lightning.Component {
                     this._focus()
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.back()
+                    }
                 }
                 _handleLeft() {
                     this._setState('Confirm')

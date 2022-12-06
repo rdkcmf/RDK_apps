@@ -162,7 +162,9 @@ export default class NetworkInterfaceScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/network')
+        }
     }
     pageTransition() {
         return 'left'

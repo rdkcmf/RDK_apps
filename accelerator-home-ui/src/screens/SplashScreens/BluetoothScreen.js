@@ -125,8 +125,8 @@ export default class BluetoothScreen extends Lightning.Component {
                         bluetoothApi.getDiscoveredDevices().then((getdocoveredInfo) => {
                           console.log('onDiscoveredDevice',getdocoveredInfo[0].name )
                           this.tag('Info').text.text = `pairing this device ${getdocoveredInfo[0].name}` 
-                          bluetoothApi.connect(getdocoveredInfo[0].deviceID, getdocoveredInfo[0].deviceType).then(connectresult=>{
-                                 console.log("connectresult",connectresult)
+                          //bluetoothApi.connect(getdocoveredInfo[0].deviceID, getdocoveredInfo[0].deviceType).then(connectresult=>{
+                               //  console.log("connectresult",connectresult)
                                  bluetoothApi.pair(getdocoveredInfo[0].deviceID).then(Pairresult=>{
                                     console.log("Pairresult",Pairresult)
                                     bluetoothApi.getConnectedDevices().then(getCdresult =>{
@@ -166,11 +166,11 @@ export default class BluetoothScreen extends Lightning.Component {
                                     console.error(`Can't pair device : ${JSON.stringify(err)}`)
                                     
                                   })
-                          })
-                          .catch(err => {
-                            console.error(`Can't connect : ${JSON.stringify(err)}`)
+                          //})
+                          //.catch(err => {
+                            //console.error(`Can't connect : ${JSON.stringify(err)}`)
                             
-                          })
+                          //})
                         })
                         // })
                       })

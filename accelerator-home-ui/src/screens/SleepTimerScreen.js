@@ -90,7 +90,9 @@ export default class SleepTimerScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/other')
+        }
     }
 
     static _states() {

@@ -215,7 +215,9 @@ export default class VideoScreen extends Lightning.Component {
   }
 
   _handleBack() {
+    if(!Router.isNavigating()){
     Router.navigate('settings')
+    }
   }
 
   static _states() {
@@ -231,7 +233,9 @@ export default class VideoScreen extends Lightning.Component {
           this._setState('HDR')
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/video/resolution')
+          }
         }
 
       },

@@ -127,7 +127,9 @@ export default class HdmiOutputScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/audio')
+        }
     }
 
 

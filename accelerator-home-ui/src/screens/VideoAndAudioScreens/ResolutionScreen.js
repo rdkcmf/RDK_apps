@@ -102,7 +102,9 @@ export default class ResolutionScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/video')
+        }
     }
 
     _focus() {

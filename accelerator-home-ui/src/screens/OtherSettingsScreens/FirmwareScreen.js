@@ -207,7 +207,9 @@ export default class FirmwareScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/advanced/device')
+        }
     }
 
     static _states() {

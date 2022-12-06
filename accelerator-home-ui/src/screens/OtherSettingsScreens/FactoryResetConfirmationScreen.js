@@ -127,7 +127,9 @@
      }
  
      _handleBack() {
+        if(!Router.isNavigating()){
          Router.navigate('settings/advanced/device')
+        }
      }
  
 
@@ -225,7 +227,9 @@
                      this._focus()
                  }
                  _handleEnter() {
+                    if(!Router.isNavigating()){
                      Router.back()
+                    }
                  }
                  _handleLeft() {
                      this._setState('Confirm')

@@ -296,7 +296,9 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Bluetooth')
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/network')
+          }
         }
       },
       class Bluetooth extends this {
@@ -315,7 +317,9 @@ export default class SettingsScreen extends Lightning.Component {
         _handleLeft() {
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/bluetooth')
+          }
         }
       },
 
@@ -333,7 +337,9 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Audio')
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/video')
+          }
         }
 
       },
@@ -349,7 +355,9 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Video')
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/audio')
+          }
         }
         _handleDown() {
           this._setState('OtherSettings')
@@ -367,7 +375,9 @@ export default class SettingsScreen extends Lightning.Component {
           this._setState('Audio')
         }
         _handleEnter() {
+          if(!Router.isNavigating()){
           Router.navigate('settings/other')
+          }
         }
         _handleDown() {
           this._setState("NFRStatus")

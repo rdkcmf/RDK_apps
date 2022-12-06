@@ -35,7 +35,9 @@ export default class NetworkInfo extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/network')
+        }
     }
 
     _onChanged() {

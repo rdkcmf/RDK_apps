@@ -204,7 +204,9 @@ export default class BluetoothScreen extends Lightning.Component {
   }
 
   _handleBack() {
-    Router.navigate('settings')
+    if(!Router.isNavigating()){
+      Router.navigate('settings')
+      }
   }
   /**
    * Function to be excuted when the Bluetooth screen is enabled.

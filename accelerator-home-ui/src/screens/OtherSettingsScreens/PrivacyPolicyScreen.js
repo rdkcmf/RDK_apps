@@ -164,7 +164,9 @@ export default class PrivacyPolicyScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/other/privacy')
+        }
     }
 
     _handleUp() {

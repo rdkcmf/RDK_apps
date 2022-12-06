@@ -313,7 +313,9 @@ export default class WiFiScreen extends Lightning.Component {
     })
   }
   _handleBack() {
+    if(!Router.isNavigating()){
     Router.navigate('settings/network/interface')
+    }
   }
 
   _onChanged() {

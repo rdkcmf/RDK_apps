@@ -371,7 +371,9 @@ export default class DeviceInformationScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/advanced/device')
+        }
     }
 
     _handleDown() {

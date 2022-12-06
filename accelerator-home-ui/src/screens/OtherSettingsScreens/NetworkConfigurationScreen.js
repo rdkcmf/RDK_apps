@@ -178,7 +178,9 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings')
+        }
     }
     _onChanged() {
         this.widgets.menu.updateTopPanelText(Language.translate('Settings  Network Configuration'))
@@ -197,7 +199,9 @@ export default class NetworkConfigurationScreen extends Lightning.Component {
                     this._setState('NetworkInterface')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/network/info')
+                    }
 
                 }
             },

@@ -254,7 +254,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings')
+        }
     }
 
     static _states() {
@@ -275,7 +277,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('EnergySaver')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/other/timer')
+                    }
                 }
             },
 
@@ -328,7 +332,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('Language')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/other/energy')
+                    }
                 }
             },
 
@@ -346,7 +352,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('Privacy')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/other/language')
+                    }
                 }
             },
             class Privacy extends this {
@@ -363,7 +371,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     this._setState('AdvancedSettings')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/other/privacy')
+                    }
                 }
             },
             class AdvancedSettings extends this {
@@ -380,7 +390,9 @@ export default class OtherSettingsScreen extends Lightning.Component {
                     // this._setState('SleepTimer')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced')
+                    }
                 }
             },
         ]

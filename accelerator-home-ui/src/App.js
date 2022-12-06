@@ -399,7 +399,8 @@ export default class App extends Router.App {
       localStorage.setItem('Language', 'English')
     }
     thunder.on('Controller.1', 'all', noti => {
-      if (noti.data.url && noti.data.url.slice(-5) === "#boot") { // to exit metro apps by pressing back key
+      console.log("controller notification", noti)
+      if ((noti.data.url && noti.data.url.slice(-5) === "#boot") || (noti.data && noti.data.httpstatus === 403)) { // to exit metro apps by pressing back key
         appApi.exitApp(Storage.get('applicationType'));
       }
     })

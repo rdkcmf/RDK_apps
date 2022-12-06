@@ -173,7 +173,9 @@ export default class DeviceScreen extends Lightning.Component {
     }
 
     _handleBack() {
+        if(!Router.isNavigating()){
         Router.navigate('settings/advanced')
+        }
     }
 
     static _states() {
@@ -192,7 +194,9 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('TimeZone')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device/info')
+                    }
                 }
             },
             class TimeZone extends this{
@@ -209,7 +213,9 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Firmware')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device/timezone')
+                    }
                 }
             },
             class Firmware extends this{
@@ -226,7 +232,9 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Reboot')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device/firmware')
+                    }
                 }
             },
             class Reboot extends this{
@@ -243,7 +251,9 @@ export default class DeviceScreen extends Lightning.Component {
                     this._setState('Reset')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device/reboot')
+                    }
                 }
             },
             class Reset extends this{
@@ -260,7 +270,9 @@ export default class DeviceScreen extends Lightning.Component {
                     //this._setState('Info')
                 }
                 _handleEnter() {
+                    if(!Router.isNavigating()){
                     Router.navigate('settings/advanced/device/factoryReset')
+                    }
                 }
             },
         ]
