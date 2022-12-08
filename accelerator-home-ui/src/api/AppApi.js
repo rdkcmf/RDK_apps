@@ -427,6 +427,13 @@ export default class AppApi {
    */
 
    async launchApp(callsign, args) {
+    const saveAbleRoutes = ["menu","epg","apps"] //routing back will happen to only these routes, otherwise it will default to #menu when exiting the app.
+    const lastVisitedRoute = Router.getActiveHash();
+    if(saveAbleRoutes.includes(lastVisitedRoute)){
+      Storage.set("lastVisitedRoute", lastVisitedRoute);
+    } else {
+      Storage.set("lastVisitedRoute", "menu");
+    }
     Router.navigate("applauncher");
     console.log("launchApp called with: ",callsign,args)
     let url,preventInternetCheck,preventCurrentExit,launchLocation;
@@ -469,14 +476,14 @@ export default class AppApi {
     const availableCallsigns = ["Amazon", "Cobalt", "HtmlApp", "LightningApp", "Netflix"];
 
     if (!availableCallsigns.includes(callsign)) {
-      Router.navigate("menu");
+      Router.navigate(Storage.get("lastVisitedRoute"));
       return Promise.reject("Can't launch App: " + callsign + " | Error: callsign not found!");
     }
 
     if (!preventInternetCheck) {
       let internet = await this.isConnectedToInternet();
       if (!internet) {
-        Router.navigate("menu");
+        Router.navigate(Storage.get("lastVisitedRoute"));
         return Promise.reject("No Internet Available, can't launchApp.");
       }
     }
@@ -489,7 +496,7 @@ export default class AppApi {
       pluginState = pluginStatus[0].state;
     } catch (err) {
       console.log(err);
-      Router.navigate("menu");
+      Router.navigate(Storage.get("lastVisitedRoute"));
       return Promise.reject("PluginError: " + callsign + ": App not supported on this device | Error: " + JSON.stringify(err));
     }
     console.log(callsign+" : pluginStatus: " + JSON.stringify(pluginStatus) + " pluginState: ", JSON.stringify(pluginState));
@@ -626,7 +633,7 @@ export default class AppApi {
 
         } else {
           console.error("failed to launchApp(success false) : ", callsign, " ERROR: ", JSON.stringify(res))
-          Router.navigate("menu");
+          Router.navigate(Storage.get("lastVisitedRoute"));
           reject(res)
         }
       }).catch(err => {
@@ -635,7 +642,7 @@ export default class AppApi {
         //destroying the app incase it's stuck in launching | if taking care of ResidentApp as callsign, make sure to prevent destroying it
         thunder.call('org.rdk.RDKShell', 'destroy', { "callsign": callsign });
         this.launchResidentApp();
-        Router.navigate("menu");
+        Router.navigate(Storage.get("lastVisitedRoute"));
         reject(err)
       })
     })

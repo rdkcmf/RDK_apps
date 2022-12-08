@@ -386,6 +386,7 @@ export default class App extends Router.App {
     if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
       Storage.set('applicationType', '');//to set the application type to none
     }
+    Storage.set("lastVisitedRoute", "menu"); //setting to menu so that it will be always defaulted to #menu
     appApi.enableDisplaySettings().then(res => { console.log(`results : ${JSON.stringify(res)}`) }).catch(err => { console.error("error while enabling displaysettings") })
     appApi.cobaltStateChangeEvent()
     this.xcastApi = new XcastApi()
@@ -416,9 +417,9 @@ export default class App extends Router.App {
       if (notification && (notification.callsign === 'Cobalt' || notification.callsign === 'Amazon' || notification.callsign === 'LightningApp' || notification.callsign === 'HtmlApp' || notification.callsign === 'Netflix') && (notification.state == 'Deactivation' || notification.state == 'Deactivated')) {
         console.log(`${notification.callsign} status = ${notification.state}`)
         console.log(">>notification.callsign: ", notification.callsign, " applicationType: ", Storage.get("applicationType"));
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) { //navigate to homescreen if route is tv-overlay when exiting from any app
-          console.log("navigating to homescreen")
-          Router.navigate("menu")
+        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) { //navigate to last visited route when exiting from any app
+          console.log("navigating to lastVisitedRoute")
+          Router.navigate(Storage.get("lastVisitedRoute"));
         }
         if (notification.callsign === Storage.get("applicationType")) { //only launch residentApp iff notification is from currentApp
           console.log(notification.callsign + " is in: " + notification.state + " state, and application type in Storage is still: " + Storage.get("applicationType") + " calling launchResidentApp")

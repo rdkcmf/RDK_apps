@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Registry, Router, Utils } from "@lightningjs/sdk";
+import { Lightning, Registry, Router, Storage, Utils } from "@lightningjs/sdk";
 import ThunderJS from "ThunderJS";
 
 //applauncher screen "will" be responsible for handling all overlays as widget and splash screens for apps(if required) | currently only handles settings overlay widget
@@ -100,7 +100,7 @@ export default class AppLauncherScreen extends Lightning.Component {
   }
 
   _handleBack() {
-    Router.navigate("menu");
+    Router.navigate(Storage.get("lastVisitedRoute"));
   }
 
   _handleLeft() {
