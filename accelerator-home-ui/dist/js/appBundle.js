@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Fri, 09 Dec 2022 10:50:51 GMT
+ * Generated: Mon, 12 Dec 2022 15:20:40 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7153,7 +7153,7 @@ var APP_accelerator_home_ui = (function () {
      * @param {String} callsign String required callsign of the particular app.
      * @param {Object} args Object optional depending on following properties.
      *  @property {string} url: optional for youtube & netflix | required for Lightning and WebApps
-     *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote",]
+     *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote","alexa"]
      *  @property {boolean} preventInternetCheck: optional | true will prevent bydefault check for internet
      *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
      */
@@ -7199,6 +7199,10 @@ var APP_accelerator_home_ui = (function () {
         },
         "gracenote": {
           "Cobalt": "launcher",
+          "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
+        },
+        "alexa": {
+          "Cobalt": "voice",
           "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page"
         }
       };
@@ -7303,7 +7307,11 @@ var APP_accelerator_home_ui = (function () {
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"; //default to english US if language is not available.
         url = url ? url : "https://www.youtube.com/tv?";
         url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url;
-        url = url + "&launch=" + launchLocation; //skipping to append launch reason to url if launchLocation is gracenote
+        url = url + "&launch=" + launchLocation;
+        if (launchLocation === "voice") {
+          url = url + "&inApp=true&vs=2"; //url specific for alexa launch
+          console.log("Cobalt is being launched by alexa using the url: " + url);
+        }
         if (pluginState === "deactivated" || pluginState === "deactivation") {
           //for youtube cold launch | currently only urls from dial can be passed via configuration
           params.configuration = {
@@ -46653,6 +46661,120 @@ var APP_accelerator_home_ui = (function () {
    * See the License for the specific language governing permissions and
    * limitations under the License.
    **/
+  //Payloads, and other keys related to alexa and voiceControl plugin.
+
+  const AlexaLauncherKeyMap = {
+    //add other app identifier and callsign map here
+    "amzn1.alexa-ask-target.app.70045": {
+      "name": "YouTube",
+      "callsign": "Cobalt",
+      "url": "https://www.youtube.com/tv"
+    },
+    "amzn1.alexa-ask-target.app.58952": {
+      "name": "CNN go",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.CNN"
+    },
+    "amzn1.alexa-ask-target.app.72095": {
+      "name": "Prime Video",
+      "callsign": "Amazon",
+      "url": ""
+    },
+    "amzn1.alexa-ask-target.app.36377": {
+      "name": "Netflix",
+      "callsign": "Netflix",
+      "url": ""
+    },
+    "amzn1.alexa-ask-target.app.34908": {
+      "name": "XUMO",
+      "callsign": "HtmlApp",
+      "url": "https://x1box-app.xumo.com/index.html"
+    },
+    "amzn1.alexa-ask-target.app.94721": {
+      "name": "NBCU Peacock",
+      "callsign": "LightningApp",
+      "url": "https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/"
+    },
+    "amzn1.alexa-ask-target.app.92933": {
+      "name": "Vimeo",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.VimeoRelease"
+    },
+    "amzn1.alexa-ask-target.app.96247": {
+      "name": "The Weather Network",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WeatherNetwork"
+    },
+    "amzn1.alexa-ask-target.app.48144": {
+      "name": "Euronews",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Euronews"
+    },
+    "amzn1.alexa-ask-target.app.54002": {
+      "name": "AccuWeather - Weather for Life",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather"
+    },
+    "amzn1.alexa-ask-target.app.63851": {
+      "name": "Baeble",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic"
+    },
+    "amzn1.alexa-ask-target.app.58518": {
+      "name": "Al Jazeera",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera"
+    },
+    "amzn1.alexa-ask-target.app.41915": {
+      "name": "Radioline",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Radioline"
+    },
+    "amzn1.alexa-ask-target.app.45441": {
+      "name": "Wallstreet Journal",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.WallStreetJournal"
+    },
+    "amzn1.alexa-ask-target.app.47328": {
+      "name": "Radio by MyTuner",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.appgeneration.mytuner"
+    },
+    "amzn1.alexa-ask-target.app.79431": {
+      "name": "Tastemade TV",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Tastemade"
+    },
+    "amzn1.alexa-ask-target.app.16283": {
+      "name": "Bloomberg TV+",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.bloomberg.metrological.x1"
+    },
+    "amzn1.alexa-ask-target.app.79143": {
+      "name": "Free Games by PlayWorks",
+      "callsign": "LightningApp",
+      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids"
+    }
+  };
+
+  /**
+   * If not stated otherwise in this file or this component's LICENSE
+   * file the following copyright and licenses apply:
+   *
+   * Copyright 2020 RDK Management
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   **/
   const config = {
     host: '127.0.0.1',
     port: 9998,
@@ -47017,8 +47139,8 @@ var APP_accelerator_home_ui = (function () {
       }
       thunder.on('Controller.1', 'all', noti => {
         console.log("controller notification", noti);
-        if (noti.data.url && noti.data.url.slice(-5) === "#boot" || noti.data && noti.data.httpstatus === 403) {
-          // to exit metro apps by pressing back key
+        if (noti.data.url && noti.data.url.slice(-5) === "#boot" || noti.data && noti.data.httpstatus !== 200) {
+          // to exit metro apps by pressing back key & to auto exit webapp if httpstatus is not 200
           appApi.exitApp(Storage.get('applicationType'));
         }
       });
@@ -47108,6 +47230,66 @@ var APP_accelerator_home_ui = (function () {
           Router.navigate('menu');
         }
       });
+      console.log("Calling listenToVoiceControl method to activate VoiceControl Plugin");
+      this.listenToVoiceControl();
+    }
+    listenToVoiceControl() {
+      console.log("listenToVoiceControl method got called, Activating and listening to VoiceControl Plugin");
+      const systemcCallsign = "org.rdk.VoiceControl";
+      thunder.Controller.activate({
+        callsign: systemcCallsign
+      }).then(res => {
+        console.log("VoiceControl Plugin Activation result: ", res);
+        thunder.on(systemcCallsign, 'onServerMessage', notification => {
+          console.log("VoiceControl.onServerMessage Notification: ", notification);
+          const header = notification.directive.header;
+          const payload = notification.directive.payload;
+
+          /////////Alexa.Launcher START
+          if (header.namespace === "Alexa.Launcher") {
+            //Alexa.launcher will handle launching a particular app(exiting might also be there)
+            if (notification.directive.header.name === "LaunchTarget") {
+              //Alexa payload will be to "launch" an app
+              if (AlexaLauncherKeyMap[payload.identifier]) {
+                let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign;
+                let appUrl = AlexaLauncherKeyMap[payload.identifier].url; //keymap url will be default, if alexa can give a url, it can be used istead
+                let params = {
+                  url: appUrl,
+                  launchLocation: "alexa"
+                };
+                console.log("Alexa is trying to launch " + appCallsign + " using params: " + JSON.stringify(params));
+                appApi.launchApp(appCallsign, params).catch(err => {
+                  console.error("Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
+                });
+              } else {
+                console.log("Alexa is trying to launch a non-supported app : " + JSON.stringify(payload));
+              }
+            }
+          }
+          /////////Alexa.Launcher END
+        });
+
+        thunder.on(systemcCallsign, 'onKeywordVerification', notification => {
+          console.log("VoiceControl.onKeywordVerification Notification: " + JSON.stringify(notification));
+        });
+        thunder.on(systemcCallsign, 'onSessionBegin', notification => {
+          console.log("VoiceControl.onSessionBegin Notification: " + JSON.stringify(notification));
+        });
+        thunder.on(systemcCallsign, 'onSessionEnd', notification => {
+          console.log("VoiceControl.onSessionEnd Notification: " + JSON.stringify(notification));
+        });
+        thunder.on(systemcCallsign, 'onStreamBegin', notification => {
+          console.log("VoiceControl.onStreamBegin Notification: " + JSON.stringify(notification));
+        });
+        thunder.on(systemcCallsign, 'onStreamEnd', notification => {
+          console.log("VoiceControl.onStreamEnd Notification: " + JSON.stringify(notification));
+        });
+        thunder.on(systemcCallsign, 'onSuspend', notification => {
+          console.log("VoiceControl.onSuspend Notification: " + JSON.stringify(notification));
+        });
+      }).catch(err => {
+        console.log("VoiceControl Plugin Activation ERROR!: ", err);
+      });
     }
     activateChildApp(plugin) {
       //#currentlyNotUsed #needToBeRemoved
@@ -47166,15 +47348,24 @@ var APP_accelerator_home_ui = (function () {
             }
           });
           break;
-        case 'Netflix':
-          appApi.suspendPremiumApp('Netflix').then(res => {
-            thunder.call('org.rdk.RDKShell', 'setFocus', {
+        case "Netflix":
+          appApi.suspendPremiumApp("Netflix").then(res => {
+            Router.navigate(Storage.get("lastVisitedRoute"));
+            thunder.call("org.rdk.RDKShell", "setFocus", {
               client: "ResidentApp"
+            });
+            thunder.call("org.rdk.RDKShell", "setVisibility", {
+              client: "ResidentApp",
+              visible: true
+            });
+            thunder.call("org.rdk.RDKShell", "moveToFront", {
+              client: "ResidentApp",
+              callsign: "ResidentApp"
             });
             if (res) {
               let params = {
                 applicationName: "NetflixApp",
-                state: 'suspended'
+                state: "suspended"
               };
               this.xcastApi.onApplicationStateChanged(params);
             }

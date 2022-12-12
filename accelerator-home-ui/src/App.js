@@ -32,6 +32,7 @@ import DTVApi from './api/DTVApi';
 import TvOverlayScreen from './tvOverlay/TvOverlayScreen';
 import ChannelOverlay from './MediaPlayer/ChannelOverlay';
 import SettingsOverlay from './overlays/SettingsOverlay';
+import { AlexaLauncherKeyMap } from './Config/AlexaConfig';
 
 const config = {
   host: '127.0.0.1',
@@ -401,7 +402,7 @@ export default class App extends Router.App {
     }
     thunder.on('Controller.1', 'all', noti => {
       console.log("controller notification", noti)
-      if ((noti.data.url && noti.data.url.slice(-5) === "#boot") || (noti.data && noti.data.httpstatus === 403)) { // to exit metro apps by pressing back key
+      if ((noti.data.url && noti.data.url.slice(-5) === "#boot") || (noti.data && noti.data.httpstatus !== 200)) { // to exit metro apps by pressing back key & to auto exit webapp if httpstatus is not 200
         appApi.exitApp(Storage.get('applicationType'));
       }
     })
@@ -494,6 +495,75 @@ export default class App extends Router.App {
           Router.navigate('menu');
         }
     })
+
+    console.log("Calling listenToVoiceControl method to activate VoiceControl Plugin")
+    this.listenToVoiceControl();
+  }
+
+  listenToVoiceControl() {
+    console.log("listenToVoiceControl method got called, Activating and listening to VoiceControl Plugin")
+    const systemcCallsign = "org.rdk.VoiceControl"
+
+    thunder.Controller.activate({callsign: systemcCallsign}).then(res => {
+      console.log("VoiceControl Plugin Activation result: ",res)
+
+      thunder.on(systemcCallsign, 'onServerMessage', notification => { 
+        console.log("VoiceControl.onServerMessage Notification: ",notification)
+  
+        const header = notification.directive.header
+        const payload = notification.directive.payload
+        
+        /////////Alexa.Launcher START
+        if(header.namespace === "Alexa.Launcher"){
+          //Alexa.launcher will handle launching a particular app(exiting might also be there)
+          if(notification.directive.header.name === "LaunchTarget"){
+            //Alexa payload will be to "launch" an app
+            if(AlexaLauncherKeyMap[payload.identifier]){
+              let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign
+              let appUrl = AlexaLauncherKeyMap[payload.identifier].url //keymap url will be default, if alexa can give a url, it can be used istead
+              let params = {
+                url: appUrl,
+                launchLocation: "alexa"
+              }
+              console.log("Alexa is trying to launch "+ appCallsign + " using params: "+ JSON.stringify(params))
+              appApi.launchApp(appCallsign,params).catch(err => {
+                console.error("Error in launching "+ appCallsign + " via Alexa: " + JSON.stringify(err))
+              });
+            } else {
+              console.log("Alexa is trying to launch a non-supported app : "+JSON.stringify(payload))
+            }
+          }
+        }
+        /////////Alexa.Launcher END
+      })
+
+      thunder.on(systemcCallsign, 'onKeywordVerification', notification => { 
+        console.log("VoiceControl.onKeywordVerification Notification: " + JSON.stringify(notification))
+      })
+
+      thunder.on(systemcCallsign, 'onSessionBegin', notification => { 
+        console.log("VoiceControl.onSessionBegin Notification: " + JSON.stringify(notification))
+      })
+
+      thunder.on(systemcCallsign, 'onSessionEnd', notification => { 
+        console.log("VoiceControl.onSessionEnd Notification: " + JSON.stringify(notification))
+      })
+
+      thunder.on(systemcCallsign, 'onStreamBegin', notification => { 
+        console.log("VoiceControl.onStreamBegin Notification: " + JSON.stringify(notification))
+      })
+
+      thunder.on(systemcCallsign, 'onStreamEnd', notification => { 
+        console.log("VoiceControl.onStreamEnd Notification: " + JSON.stringify(notification))
+      })
+
+      thunder.on(systemcCallsign, 'onSuspend', notification => { 
+        console.log("VoiceControl.onSuspend Notification: " + JSON.stringify(notification))
+      })
+
+    }).catch(err => {
+      console.log("VoiceControl Plugin Activation ERROR!: ",err)
+    })
   }
 
   activateChildApp(plugin) { //#currentlyNotUsed #needToBeRemoved
@@ -548,15 +618,26 @@ export default class App extends Router.App {
           }
         });
         break;
-      case 'Netflix':
-        appApi.suspendPremiumApp('Netflix').then(res => {
-          thunder.call('org.rdk.RDKShell', 'setFocus', { client: "ResidentApp" })
-          if (res) {
-            let params = { applicationName: "NetflixApp", state: 'suspended' };
-            this.xcastApi.onApplicationStateChanged(params);
-          }
-        })
-        break;
+        case "Netflix":
+          appApi.suspendPremiumApp("Netflix").then((res) => {
+            Router.navigate(Storage.get("lastVisitedRoute"));
+            thunder.call("org.rdk.RDKShell", "setFocus", {
+              client: "ResidentApp",
+            });
+            thunder.call("org.rdk.RDKShell", "setVisibility", {
+              client: "ResidentApp",
+              visible: true,
+            });
+            thunder.call("org.rdk.RDKShell", "moveToFront", {
+              client: "ResidentApp",
+              callsign: "ResidentApp",
+            });
+            if (res) {
+              let params = { applicationName: "NetflixApp", state: "suspended" };
+              this.xcastApi.onApplicationStateChanged(params);
+            }
+          });
+          break;
       case 'HDMI':
         new HDMIApi().stopHDMIInput()
         Storage.set("_currentInputMode", {});

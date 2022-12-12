@@ -421,7 +421,7 @@ export default class AppApi {
    * @param {String} callsign String required callsign of the particular app.
    * @param {Object} args Object optional depending on following properties.
    *  @property {string} url: optional for youtube & netflix | required for Lightning and WebApps
-   *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote",]
+   *  @property {string} launchLocation: optional | to pass Netflix IIDs or Youtube launch reason | launchLocation value is one among these values ["mainView", "dedicatedButton", "appsMenu", "epgScreen", "dial", "gracenote","alexa"]
    *  @property {boolean} preventInternetCheck: optional | true will prevent bydefault check for internet
    *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
    */
@@ -451,6 +451,7 @@ export default class AppApi {
       "epgScreen": { "Cobalt": "guide", "Netflix": "App_launched_from_EPG_Grid" },
       "dial": { "Cobalt": "dial", "Netflix": "App_launched_via_DIAL_request" },
       "gracenote": { "Cobalt": "launcher", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" },
+      "alexa": { "Cobalt": "voice", "Netflix": "App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page" },
     };
     if(launchLocation && launchLocationKeyMapping[launchLocation]){
       if(callsign === "Netflix" || callsign === "Cobalt"){
@@ -555,7 +556,11 @@ export default class AppApi {
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US" //default to english US if language is not available.
       url = url ? url : "https://www.youtube.com/tv?"
       url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url
-      url = url + "&launch=" + launchLocation //skipping to append launch reason to url if launchLocation is gracenote
+      url = url + "&launch=" + launchLocation
+      if(launchLocation==="voice"){ 
+        url = url + "&inApp=true&vs=2" //url specific for alexa launch
+        console.log("Cobalt is being launched by alexa using the url: "+url)
+      }
       if((pluginState === "deactivated" || pluginState === "deactivation")){ //for youtube cold launch | currently only urls from dial can be passed via configuration
         params.configuration = { //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
           "language": language,
