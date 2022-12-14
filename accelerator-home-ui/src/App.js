@@ -402,7 +402,7 @@ export default class App extends Router.App {
     }
     thunder.on('Controller.1', 'all', noti => {
       console.log("controller notification", noti)
-      if ((noti.data.url && noti.data.url.slice(-5) === "#boot") || (noti.data && noti.data.httpstatus !== 200)) { // to exit metro apps by pressing back key & to auto exit webapp if httpstatus is not 200
+      if ((noti.data.url && noti.data.url.slice(-5) === "#boot") || (noti.data.httpstatus && noti.data.httpstatus != 200 && noti.data.httpstatus != -1 )) { // to exit metro apps by pressing back key & to auto exit webapp if httpstatus is not 200
         appApi.exitApp(Storage.get('applicationType'));
       }
     })
@@ -510,13 +510,13 @@ export default class App extends Router.App {
       thunder.on(systemcCallsign, 'onServerMessage', notification => { 
         console.log("VoiceControl.onServerMessage Notification: ",notification)
   
-        const header = notification.directive.header
-        const payload = notification.directive.payload
+        const header = notification.xr_speech_avs.directive.header
+        const payload = notification.xr_speech_avs.directive.payload
         
         /////////Alexa.Launcher START
         if(header.namespace === "Alexa.Launcher"){
           //Alexa.launcher will handle launching a particular app(exiting might also be there)
-          if(notification.directive.header.name === "LaunchTarget"){
+          if(header.name === "LaunchTarget"){
             //Alexa payload will be to "launch" an app
             if(AlexaLauncherKeyMap[payload.identifier]){
               let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign

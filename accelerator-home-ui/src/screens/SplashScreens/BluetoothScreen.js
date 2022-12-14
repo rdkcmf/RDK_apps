@@ -241,7 +241,7 @@ export default class BluetoothScreen extends Lightning.Component {
             timerText.text.text = `0:0${time.seconds}`
             if (time.total <= 0) {
                 Registry.clearInterval(this.timeInterval)
-               // Router.navigate('splash/language')
+                Router.navigate('splash/language')
             }
         }, 1000)
     }
