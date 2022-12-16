@@ -69,11 +69,6 @@ export const AlexaLauncherKeyMap = { //add other app identifier and callsign map
         "callsign": "LightningApp",
         "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     },
-    "amzn1.alexa-ask-target.app.63851": {
-        "name": "Baeble",
-        "callsign": "LightningApp",
-        "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    },
     "amzn1.alexa-ask-target.app.58518": {
         "name": "Al Jazeera",
         "callsign": "LightningApp",

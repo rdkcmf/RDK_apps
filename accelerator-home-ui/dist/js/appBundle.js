@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Wed, 14 Dec 2022 09:12:06 GMT
+ * Generated: Fri, 16 Dec 2022 13:38:47 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -9148,11 +9148,6 @@ var APP_accelerator_home_ui = (function () {
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.AccuWeather.png"
   }, {
-    displayName: "BaebleMusic",
-    applicationType: "LightningApp",
-    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "https://cdn-ipv6.metrological.com/lightning/apps/com.metrological.ui.FutureUI/2.0.15-ea2bf91/static/images/applications/com.metrological.app.BaebleMusic.png"
-  }, {
     displayName: "Aljazeera",
     applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",
@@ -9270,11 +9265,6 @@ var APP_accelerator_home_ui = (function () {
     applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather",
     url: "/images/metroApps/Test-05.jpg"
-  }, {
-    displayName: "BaebleMusic",
-    applicationType: "LightningApp",
-    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "/images/metroApps/Test-06.jpg"
   }, {
     displayName: "Aljazeera",
     applicationType: "LightningApp",
@@ -24755,6 +24745,7 @@ var APP_accelerator_home_ui = (function () {
           }
         }).catch(err => {
           console.error("Netflix : error while getting netflix plugin status ie. ", JSON.stringify(err));
+          self.netflixESN = "Youtube: NA \nAmazon Prime: NA \nNetflix ESN: \"Not Detected\"";
         });
       }
       this.appApi.registerChangeLocation();
@@ -45896,11 +45887,6 @@ var APP_accelerator_home_ui = (function () {
       "name": "AccuWeather - Weather for Life",
       "callsign": "LightningApp",
       "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.AccuWeather"
-    },
-    "amzn1.alexa-ask-target.app.63851": {
-      "name": "Baeble",
-      "callsign": "LightningApp",
-      "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic"
     },
     "amzn1.alexa-ask-target.app.58518": {
       "name": "Al Jazeera",

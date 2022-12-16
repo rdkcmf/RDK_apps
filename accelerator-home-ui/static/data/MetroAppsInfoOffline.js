@@ -51,12 +51,6 @@ export var metroAppsInfoOffline = [
     url: "/images/metroApps/Test-05.jpg"
   },
   {
-    displayName: "BaebleMusic",
-    applicationType: "LightningApp",
-    uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.BaebleMusic",
-    url: "/images/metroApps/Test-06.jpg"
-  },
-  {
     displayName: "Aljazeera",
     applicationType: "LightningApp",
     uri: "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.metrological.app.Aljazeera",

@@ -358,6 +358,7 @@ export default class DeviceInformationScreen extends Lightning.Component {
                     }
                 }).catch(err => {
                     console.error(`Netflix : error while getting netflix plugin status ie. `, JSON.stringify(err))
+                    self.netflixESN = `Youtube: NA \nAmazon Prime: NA \nNetflix ESN: "Not Detected"`;
                 })
         }
 
