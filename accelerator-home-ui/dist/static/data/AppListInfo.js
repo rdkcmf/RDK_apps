@@ -41,13 +41,13 @@ export var appListInfo = [
   {
     displayName: 'Youtube',
     applicationType: 'Cobalt',
-    uri: 'https://www.youtube.com/tv',
+    uri: '',
     url: '/images/apps/App_YouTube_454x255.png',
   },
   {
     displayName: 'Peacock',
     applicationType: 'LightningApp',
-    uri: 'https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/',
+    uri: '',
     url: '/images/apps/App_Peacock_454x255.png',
   },
   {

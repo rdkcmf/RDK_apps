@@ -554,10 +554,9 @@ export default class AppApi {
     } else if(callsign ==="Cobalt"){
       let language = localStorage.getItem("Language");
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US" //default to english US if language is not available.
-      url = url ? url : "https://www.youtube.com/tv?"
-      url = url === "https://www.youtube.com/tv" ? "https://www.youtube.com/tv?" : url
+      url = url ? url : Storage.get("CobaltDefaultURL")
       url = url + "&launch=" + launchLocation
-      if(launchLocation==="voice"){ 
+      if(launchLocation==="voice"){
         url = url + "&inApp=true&vs=2" //url specific for alexa launch
         console.log("Cobalt is being launched by alexa using the url: "+url)
       }

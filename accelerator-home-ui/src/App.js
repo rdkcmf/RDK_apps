@@ -114,7 +114,7 @@ export default class App extends Router.App {
 
   _captureKey(key) {
     console.log(key, key.keyCode)
-    if (key.keyCode == Keymap.Escape || key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
+    if (key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
       if (Storage.get('applicationType') != '') {
         appApi.exitApp(Storage.get('applicationType')).catch(err => {
           console.log(err)
@@ -384,6 +384,12 @@ export default class App extends Router.App {
 
 
   _init() {
+    appApi.getPluginStatus("Cobalt").then(res => { //to set the default url for cobalt
+      console.log("getPluginStatus result: " + JSON.stringify(res));
+      Storage.set("CobaltDefaultURL",res[0].configuration.url);
+    }).catch(err => {
+      console.log("getPluginStatus ERROR: ",err);
+    })
     if (Storage.get("applicationType") !== "HDMI") { //to default to hdmi, if previous input was hdmi
       Storage.set('applicationType', '');//to set the application type to none
     }

@@ -267,20 +267,22 @@ export default class SettingsScreen extends Lightning.Component {
   }
 
   _handleBack() {
-
-    console.log("application Type = ", Storage.get("applicationType"))
-    if (Storage.get("applicationType") == "") {
+    if(!Router.isNavigating()){
       Router.navigate('menu')
-    }
-    else {
-      this.appApi.visibile("ResidentApp", false)
-      let appType = Storage.get("applicationType");
-      if (appType === "WebApp") {
-        appType = "HtmlApp"
       }
-      this.appApi.setFocus(appType)
-      this.appApi.zorder(appType)
-    }
+    // console.log("application Type = ", Storage.get("applicationType"))
+    // if (Storage.get("applicationType") == "") {
+    //   Router.navigate('menu')
+    // }
+    // else {
+    //   this.appApi.visibile("ResidentApp", false)
+    //   let appType = Storage.get("applicationType");
+    //   if (appType === "WebApp") {
+    //     appType = "HtmlApp"
+    //   }
+    //   this.appApi.setFocus(appType)
+    //   this.appApi.zorder(appType)
+    // }
   }
 
   static _states() {

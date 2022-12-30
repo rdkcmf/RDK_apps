@@ -22,7 +22,7 @@ export const AlexaLauncherKeyMap = { //add other app identifier and callsign map
     "amzn1.alexa-ask-target.app.70045": {
       "name": "YouTube",
       "callsign": "Cobalt",
-      "url": "https://www.youtube.com/tv",
+      "url": "",
     },
     "amzn1.alexa-ask-target.app.58952": {
       "name": "CNN go",
@@ -47,7 +47,7 @@ export const AlexaLauncherKeyMap = { //add other app identifier and callsign map
     "amzn1.alexa-ask-target.app.94721": {
         "name": "NBCU Peacock",
         "callsign": "LightningApp",
-        "url": "https://tv.clients.peacocktv.com/lightning/rc/prod/browser/5dcb818/",
+        "url": "",
     },
     "amzn1.alexa-ask-target.app.92933": {
         "name": "Vimeo",

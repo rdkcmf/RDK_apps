@@ -78,20 +78,6 @@ export function keyIntercept() {
             thunder
                 .call(rdkshellCallsign, 'addKeyIntercept', {
                     client: 'ResidentApp',
-                    keyCode: Keymap.Escape,
-                    modifiers: [],
-                })
-                .catch(err => {
-                    console.log('Error', err);
-                });
-        })
-        .catch(err => {
-            console.log('Error', err);
-        })
-        .then(result => {
-            thunder
-                .call(rdkshellCallsign, 'addKeyIntercept', {
-                    client: 'ResidentApp',
                     keyCode: Keymap.F1,
                     modifiers: [],
                 })
@@ -347,34 +333,6 @@ export function keyIntercept() {
                 .call(rdkshellCallsign, 'addKeyIntercept', {
                     client: 'ResidentApp',
                     keyCode: Keymap.Pause,
-                    modifiers: [],
-                })
-                .catch(err => {
-                    console.log('Error', err);
-                });
-        })
-        .catch(err => {
-            console.log('Error', err);
-        })
-        .then(result => {
-            thunder
-                .call(rdkshellCallsign, 'addKeyIntercept', {
-                    client: 'Cobalt',
-                    keyCode: Keymap.Escape,
-                    modifiers: [],
-                })
-                .catch(err => {
-                    console.log('Error', err);
-                });
-        })
-        .catch(err => {
-            console.log('Error', err);
-        })
-        .then(result => {
-            thunder
-                .call(rdkshellCallsign, 'addKeyIntercept', {
-                    client: 'Amazon',
-                    keyCode: Keymap.Escape,
                     modifiers: [],
                 })
                 .catch(err => {
