@@ -2,8 +2,8 @@
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
  * CLI version: 2.9.1
- * 
- * Generated: Mon, 02 Jan 2023 13:05:34 GMT
+ *
+ * Generated: Tue, 03 Jan 2023 21:24:49 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6744,39 +6744,39 @@ var APP_accelerator_home_ui = (function () {
 
   var App_launched_via_Netflix_Button = {
   	source_type: 3,
-  	iid: "0b2a9564"
+  	iid: "00000001"
   };
   var App_launched_at_suspended_mode_at_power_on = {
   	source_type: 22,
-  	iid: "ee4255bf"
+  	iid: "00000002"
   };
   var App_launched_via_DIAL_request = {
   	source_type: 12,
-  	iid: "99a5fb82"
+  	iid: "00000003"
   };
   var App_launched_from_EPG_Grid = {
   	source_type: 3,
-  	iid: "g5127fac"
+  	iid: "00000004"
   };
   var App_launched_via_channel_number = {
   	source_type: 3,
-  	iid: "521ge753"
+  	iid: "00000005"
   };
   var App_launched_from_channel_info_bar = {
   	source_type: 3,
-  	iid: "5h0x31l4"
+  	iid: "00000006"
   };
   var App_launched_via_channel_surf_option = {
   	source_type: 3,
-  	iid: "5m938124"
+  	iid: "00000007"
   };
   var App_launched_via_Netflix_Icon_On_The_Apps_Section = {
   	source_type: 3,
-  	iid: "513v474y"
+  	iid: "00000008"
   };
   var App_launched_via_Netflix_Icon_On_The_Apps_Row_On_The_Main_Home_Page = {
   	source_type: 3,
-  	iid: "k5r7313g"
+  	iid: "00000009"
   };
   var NetflixIIDs = {
   	App_launched_via_Netflix_Button: App_launched_via_Netflix_Button,
@@ -11504,7 +11504,9 @@ var APP_accelerator_home_ui = (function () {
       }
       this._refocus();
       this.scrollCollectionWrapper(obj);
-      this.signal('onIndexChanged', obj);
+      if (previous !== target) {
+        this.signal('onIndexChanged', obj);
+      }
     }
     setIndex(index) {
       const targetIndex = limitWithinRange(index, 0, this._items.length - 1);
@@ -11553,10 +11555,15 @@ var APP_accelerator_home_ui = (function () {
         throw new Error('addAt: The index ' + index + ' is out of bounds ' + this._items.length);
       }
     }
-    remove(item) {
-      if (this.hasItems && item.assignedID) {
-        for (let i = 0; i < this.wrapper.children.length; i++) {
-          if (this.wrapper.children[i].assignedID === item.assignedID) {
+    remove(target) {
+      if (this.hasItems && target.assignedID) {
+        const itemWrappers = this.itemWrappers;
+        for (let i = 0; i < this._items.length; i++) {
+          let item = this._items[i];
+          if (itemWrappers[i] && itemWrappers[i].component.isAlive) {
+            item = itemWrappers[i].component;
+          }
+          if (target.assignedID === item.assignedID) {
             return this.removeAt(i);
           }
         }
@@ -13422,7 +13429,7 @@ var APP_accelerator_home_ui = (function () {
         crossSize = 0,
         position = 0;
       wrapper.children.forEach(item => {
-        const sizes = this._getItemSizes(item.component);
+        const sizes = this._getItemSizes(item);
         position += sizes[mainMarginFrom] || sizes.margin || 0;
         crossPos = item[cross] || crossPos;
         if (crossSize < sizes[crossDim]) {
