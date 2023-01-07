@@ -2,8 +2,8 @@
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
  * CLI version: 2.9.1
- *
- * Generated: Tue, 03 Jan 2023 21:24:49 GMT
+ * 
+ * Generated: Tue, 10 Jan 2023 14:13:03 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7320,6 +7320,18 @@ var APP_accelerator_home_ui = (function () {
             "launchtype": "launch=" + launchLocation
           };
         }
+      } else if (callsign = "Amazon") {
+        let language = localStorage.getItem("Language");
+        language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US";
+        params.configuration = {
+          "deviceLanguage": language
+        };
+      } else if (callsign = "Netflix") {
+        let language = localStorage.getItem("Language");
+        language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US";
+        params.configuration = {
+          "language": language
+        };
       }
       if (!preventCurrentExit && currentApp !== "") {
         //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack

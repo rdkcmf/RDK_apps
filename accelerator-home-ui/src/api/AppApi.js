@@ -568,6 +568,16 @@ export default class AppApi {
         } 
       }
     }
+    else if(callsign = "Amazon"){
+      let language = localStorage.getItem("Language");
+      language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"
+      params.configuration= { "deviceLanguage" : language};
+    }
+    else if(callsign = "Netflix"){
+      let language = localStorage.getItem("Language");
+      language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"
+      params.configuration ={"language" : language};
+    }
 
     if (!preventCurrentExit && currentApp !== "") { //currentApp==="" means currently on residentApp | make currentApp = "residentApp" in the cache and stack
       try {
