@@ -115,31 +115,7 @@ export default class App extends Router.App {
   _captureKey(key) {
     console.log(key, key.keyCode)
     if (key.keyCode == Keymap.Home || key.keyCode === Keymap.m) {
-      if (Storage.get('applicationType') != '') {
-        appApi.exitApp(Storage.get('applicationType')).catch(err => {
-          console.log(err)
-        });
-        if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) {
-          Router.navigate('menu');
-        }
-      } else {
-        if (!Router.isNavigating()) {
-          if (Router.getActiveHash() === "dtvplayer") { //exit scenario for dtv player
-            dtvApi
-              .exitChannel()
-              .then((res) => {
-                console.log("exit channel: ", JSON.stringify(res));
-              })
-              .catch((err) => {
-                console.log("failed to exit channel: ", JSON.stringify(err));
-              });
-            if (Router.getActiveWidget()) {
-              Router.getActiveWidget()._setState("IdleState");
-            }
-          }
-          Router.navigate('menu');
-        }
-      }
+      this.jumpToRoute("menu"); //method to exit the current app(if any) and route to home screen
       return true
 
     }
@@ -527,20 +503,45 @@ export default class App extends Router.App {
             if(AlexaLauncherKeyMap[payload.identifier]){
               let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign
               let appUrl = AlexaLauncherKeyMap[payload.identifier].url //keymap url will be default, if alexa can give a url, it can be used istead
+              let targetRoute = AlexaLauncherKeyMap[payload.identifier].route
               let params = {
                 url: appUrl,
                 launchLocation: "alexa"
               }
               console.log("Alexa is trying to launch "+ appCallsign + " using params: "+ JSON.stringify(params))
-              appApi.launchApp(appCallsign,params).catch(err => {
-                console.error("Error in launching "+ appCallsign + " via Alexa: " + JSON.stringify(err))
-              });
+              if(appCallsign){ //appCallsign is valid means target is an app and it needs to be launched
+                appApi.launchApp(appCallsign,params).catch(err => {
+                  console.error("Error in launching "+ appCallsign + " via Alexa: " + JSON.stringify(err))
+                });
+              } else if(targetRoute){
+                this.jumpToRoute(targetRoute);// exits the app if any and navigates to the specific route.
+              }
             } else {
               console.log("Alexa is trying to launch a non-supported app : "+JSON.stringify(payload))
             }
           }
+        }/////////Alexa.Launcher END
+        else if(header.namespace === "Alexa.RemoteVideoPlayer") { //alexa remote video player will search on youtube for now
+          console.log("Alexa.RemoteVideoPlayer: "+JSON.stringify(header))
+          if(header.name === "SearchAndDisplayResults" || header.name === "SearchAndPlay"){ 
+            console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: "+JSON.stringify(header))
+            if(payload.entities[1].type === "App"){
+              console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: Payload: "+JSON.stringify(payload))
+              if(payload.entities[1].value === "YouTube"){
+                const cobaltLaunchParams = {
+                  url: Storage.get("CobaltDefaultURL")+"&va=search&vq=" + encodeURI(payload.searchText.transcribed),
+                  launchLocation: "alexa"
+                }
+                console.log("youtube search is getting invoked using alexa params: "+JSON.stringify(cobaltLaunchParams));
+                appApi.launchApp("Cobalt",cobaltLaunchParams).then(res => {
+                  console.log("Cobalt launched successfully using alexa search: "+JSON.stringify(res))
+                }).catch(err => {
+                  console.log("Cobalt launched FAILED using alexa search: "+JSON.stringify(err))
+                })
+              }
+            }
+          }
         }
-        /////////Alexa.Launcher END
       })
 
       thunder.on(systemcCallsign, 'onKeywordVerification', notification => { 
@@ -1091,6 +1092,34 @@ export default class App extends Router.App {
           setTimer();
         }
       }).catch(err => { console.error(`error while enabling inactivity reporting`) });
+    }
+  }
+      
+  jumpToRoute(route) {
+    if (Storage.get('applicationType') != '') {
+      appApi.exitApp(Storage.get('applicationType')).catch(err => {
+        console.log(err)
+      });
+      Storage.set("lastVisitedRoute", route);// incase any state change event tries to navigate, it need to be navigated to alexa requested route
+      Router.navigate(route);
+    } else {
+      if (!Router.isNavigating()) {
+        if (Router.getActiveHash() === "dtvplayer") { //exit scenario for dtv player
+          dtvApi
+            .exitChannel()
+            .then((res) => {
+              console.log("exit channel: ", JSON.stringify(res));
+            })
+            .catch((err) => {
+              console.log("failed to exit channel: ", JSON.stringify(err));
+            });
+          if (Router.getActiveWidget()) {
+            Router.getActiveWidget()._setState("IdleState");
+          }
+        }
+        Storage.set("lastVisitedRoute", route);
+        Router.navigate(route);
+      }
     }
   }
 }

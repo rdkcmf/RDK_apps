@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Tue, 10 Jan 2023 14:13:03 GMT
+ * Generated: Wed, 11 Jan 2023 11:47:59 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -11516,7 +11516,7 @@ var APP_accelerator_home_ui = (function () {
       }
       this._refocus();
       this.scrollCollectionWrapper(obj);
-      if (previous !== target) {
+      if (obj.previousIndex !== obj.index) {
         this.signal('onIndexChanged', obj);
       }
     }
@@ -11925,7 +11925,7 @@ var APP_accelerator_home_ui = (function () {
       return this.wrapper.children[this._index];
     }
     get currentItem() {
-      return this.currentItemWrapper.component;
+      return this.currentItemWrapper && this.currentItemWrapper.component || undefined;
     }
     set direction(string) {
       this._direction = CollectionWrapper.DIRECTION[string] || CollectionWrapper.DIRECTION.row;
@@ -11970,7 +11970,7 @@ var APP_accelerator_home_ui = (function () {
     set scroll(value) {
       this._scroll = value;
     }
-    get scrollTo() {
+    get scroll() {
       return this._scroll;
     }
     set autoResize(bool) {
@@ -46648,7 +46648,7 @@ var APP_accelerator_home_ui = (function () {
   //Payloads, and other keys related to alexa and voiceControl plugin.
 
   const AlexaLauncherKeyMap = {
-    //add other app identifier and callsign map here
+    //app/shortcuts identifier and callsign map 
     "amzn1.alexa-ask-target.app.70045": {
       "name": "YouTube",
       "callsign": "Cobalt",
@@ -46733,6 +46733,35 @@ var APP_accelerator_home_ui = (function () {
       "name": "Free Games by PlayWorks",
       "callsign": "LightningApp",
       "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids"
+    },
+    //shortcuts
+    "amzn1.alexa-ask-target.shortcut.33122": {
+      "name": "Home",
+      "route": "menu"
+    },
+    "amzn1.alexa-ask-target.shortcut.28647": {
+      "name": "Apps",
+      "route": "apps"
+    },
+    "amzn1.alexa-ask-target.shortcut.68228": {
+      "name": "Guide",
+      "route": "epg"
+    },
+    "amzn1.alexa-ask-target.shortcut.07395": {
+      "name": "Settings",
+      "route": "settings"
+    },
+    "amzn1.alexa-ask-target.shortcut.94081": {
+      "name": "Bluetooth Settings",
+      "route": "settings/bluetooth"
+    },
+    "amzn1.alexa-ask-target.shortcut.58566": {
+      "name": "Network Settings",
+      "route": "settings/network"
+    },
+    "amzn1.alexa-ask-target.shortcut.12736": {
+      "name": "Privacy Settings",
+      "route": "settings/other/privacy"
     }
   };
 
@@ -46829,29 +46858,7 @@ var APP_accelerator_home_ui = (function () {
     _captureKey(key) {
       console.log(key, key.keyCode);
       if (key.keyCode == keyMap.Home || key.keyCode === keyMap.m) {
-        if (Storage.get('applicationType') != '') {
-          appApi.exitApp(Storage.get('applicationType')).catch(err => {
-            console.log(err);
-          });
-          if (Router.getActiveHash().startsWith("tv-overlay") || Router.getActiveHash().startsWith("overlay") || Router.getActiveHash().startsWith("applauncher")) {
-            Router.navigate('menu');
-          }
-        } else {
-          if (!Router.isNavigating()) {
-            if (Router.getActiveHash() === "dtvplayer") {
-              //exit scenario for dtv player
-              dtvApi$1.exitChannel().then(res => {
-                console.log("exit channel: ", JSON.stringify(res));
-              }).catch(err => {
-                console.log("failed to exit channel: ", JSON.stringify(err));
-              });
-              if (Router.getActiveWidget()) {
-                Router.getActiveWidget()._setState("IdleState");
-              }
-            }
-            Router.navigate('menu');
-          }
-        }
+        this.jumpToRoute("menu"); //method to exit the current app(if any) and route to home screen
         return true;
       }
       if (key.keyCode == keyMap.Inputs_Shortcut) {
@@ -47239,22 +47246,48 @@ var APP_accelerator_home_ui = (function () {
               if (AlexaLauncherKeyMap[payload.identifier]) {
                 let appCallsign = AlexaLauncherKeyMap[payload.identifier].callsign;
                 let appUrl = AlexaLauncherKeyMap[payload.identifier].url; //keymap url will be default, if alexa can give a url, it can be used istead
+                let targetRoute = AlexaLauncherKeyMap[payload.identifier].route;
                 let params = {
                   url: appUrl,
                   launchLocation: "alexa"
                 };
                 console.log("Alexa is trying to launch " + appCallsign + " using params: " + JSON.stringify(params));
-                appApi.launchApp(appCallsign, params).catch(err => {
-                  console.error("Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
-                });
+                if (appCallsign) {
+                  //appCallsign is valid means target is an app and it needs to be launched
+                  appApi.launchApp(appCallsign, params).catch(err => {
+                    console.error("Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
+                  });
+                } else if (targetRoute) {
+                  this.jumpToRoute(targetRoute); // exits the app if any and navigates to the specific route.
+                }
               } else {
                 console.log("Alexa is trying to launch a non-supported app : " + JSON.stringify(payload));
               }
             }
+          } /////////Alexa.Launcher END
+          else if (header.namespace === "Alexa.RemoteVideoPlayer") {
+            //alexa remote video player will search on youtube for now
+            console.log("Alexa.RemoteVideoPlayer: " + JSON.stringify(header));
+            if (header.name === "SearchAndDisplayResults" || header.name === "SearchAndPlay") {
+              console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: " + JSON.stringify(header));
+              if (payload.entities[1].type === "App") {
+                console.log("Alexa.RemoteVideoPlayer: SearchAndDisplayResults || SearchAndPlay: Payload: " + JSON.stringify(payload));
+                if (payload.entities[1].value === "YouTube") {
+                  const cobaltLaunchParams = {
+                    url: Storage.get("CobaltDefaultURL") + "&va=search&vq=" + encodeURI(payload.searchText.transcribed),
+                    launchLocation: "alexa"
+                  };
+                  console.log("youtube search is getting invoked using alexa params: " + JSON.stringify(cobaltLaunchParams));
+                  appApi.launchApp("Cobalt", cobaltLaunchParams).then(res => {
+                    console.log("Cobalt launched successfully using alexa search: " + JSON.stringify(res));
+                  }).catch(err => {
+                    console.log("Cobalt launched FAILED using alexa search: " + JSON.stringify(err));
+                  });
+                }
+              }
+            }
           }
-          /////////Alexa.Launcher END
         });
-
         thunder.on(systemcCallsign, 'onKeywordVerification', notification => {
           console.log("VoiceControl.onKeywordVerification Notification: " + JSON.stringify(notification));
         });
@@ -47781,6 +47814,31 @@ var APP_accelerator_home_ui = (function () {
         }).catch(err => {
           console.error("error while enabling inactivity reporting");
         });
+      }
+    }
+    jumpToRoute(route) {
+      if (Storage.get('applicationType') != '') {
+        appApi.exitApp(Storage.get('applicationType')).catch(err => {
+          console.log(err);
+        });
+        Storage.set("lastVisitedRoute", route); // incase any state change event tries to navigate, it need to be navigated to alexa requested route
+        Router.navigate(route);
+      } else {
+        if (!Router.isNavigating()) {
+          if (Router.getActiveHash() === "dtvplayer") {
+            //exit scenario for dtv player
+            dtvApi$1.exitChannel().then(res => {
+              console.log("exit channel: ", JSON.stringify(res));
+            }).catch(err => {
+              console.log("failed to exit channel: ", JSON.stringify(err));
+            });
+            if (Router.getActiveWidget()) {
+              Router.getActiveWidget()._setState("IdleState");
+            }
+          }
+          Storage.set("lastVisitedRoute", route);
+          Router.navigate(route);
+        }
       }
     }
   }

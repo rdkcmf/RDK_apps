@@ -18,7 +18,7 @@
  **/
 //Payloads, and other keys related to alexa and voiceControl plugin.
 
-export const AlexaLauncherKeyMap = { //add other app identifier and callsign map here
+export const AlexaLauncherKeyMap = { //app/shortcuts identifier and callsign map 
     "amzn1.alexa-ask-target.app.70045": {
       "name": "YouTube",
       "callsign": "Cobalt",
@@ -103,5 +103,34 @@ export const AlexaLauncherKeyMap = { //add other app identifier and callsign map
         "name": "Free Games by PlayWorks",
         "callsign": "LightningApp",
         "url": "https://widgets.metrological.com/lightning/rdk/d431ce8577be56e82630650bf701c57d#app:com.playworks.pwkids",
+    },
+    //shortcuts
+    "amzn1.alexa-ask-target.shortcut.33122": {
+        "name": "Home",
+        "route": "menu"
+    },
+    "amzn1.alexa-ask-target.shortcut.28647": {
+        "name": "Apps",
+        "route": "apps"
+    },
+    "amzn1.alexa-ask-target.shortcut.68228": {
+        "name": "Guide",
+        "route": "epg"
+    },
+    "amzn1.alexa-ask-target.shortcut.07395": {
+        "name": "Settings",
+        "route": "settings"
+    },
+    "amzn1.alexa-ask-target.shortcut.94081": {
+        "name": "Bluetooth Settings",
+        "route": "settings/bluetooth"
+    },
+    "amzn1.alexa-ask-target.shortcut.58566": {
+        "name": "Network Settings",
+        "route": "settings/network"
+    },
+    "amzn1.alexa-ask-target.shortcut.12736": {
+        "name": "Privacy Settings",
+        "route": "settings/other/privacy"
     },
   };
