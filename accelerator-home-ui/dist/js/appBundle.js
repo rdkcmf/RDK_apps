@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Wed, 11 Jan 2023 11:47:59 GMT
+ * Generated: Thu, 12 Jan 2023 15:18:39 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7320,13 +7320,13 @@ var APP_accelerator_home_ui = (function () {
             "launchtype": "launch=" + launchLocation
           };
         }
-      } else if (callsign = "Amazon") {
+      } else if (callsign === "Amazon") {
         let language = localStorage.getItem("Language");
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US";
         params.configuration = {
           "deviceLanguage": language
         };
-      } else if (callsign = "Netflix") {
+      } else if (callsign === "Netflix") {
         let language = localStorage.getItem("Language");
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US";
         params.configuration = {
@@ -17040,7 +17040,7 @@ var APP_accelerator_home_ui = (function () {
             if (this.widgets.fail) {
               this.widgets.fail.notify({
                 title: btName,
-                msg: 'CONNECTION SUCCESS'
+                msg: 'CONNECTED'
               });
               Router.focusWidget('Fail');
             }
@@ -17048,7 +17048,7 @@ var APP_accelerator_home_ui = (function () {
             if (this.widgets.fail) {
               this.widgets.fail.notify({
                 title: btName,
-                msg: 'CONNECTION FAILED'
+                msg: 'DISCONNECTED'
               });
               Router.focusWidget('Fail');
             }
@@ -28070,6 +28070,9 @@ var APP_accelerator_home_ui = (function () {
     }
     _focus() {
       this.alpha = 1;
+      setTimeout(function () {
+        Router.focusPage();
+      }, 20000);
     }
     _unfocus() {
       this.alpha = 0;

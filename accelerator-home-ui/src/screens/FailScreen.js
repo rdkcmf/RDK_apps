@@ -37,6 +37,9 @@ export default class Failscreen extends Lightning.Component {
 
     _focus() {
         this.alpha = 1
+        setTimeout(function () {
+            Router.focusPage()
+         }, 20000);
     }
 
     _unfocus() {

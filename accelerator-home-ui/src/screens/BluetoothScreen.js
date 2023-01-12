@@ -607,12 +607,12 @@ export default class BluetoothScreen extends Lightning.Component {
         let btName = notification.name
         if (notification.connected) {
           if (this.widgets.fail) {
-            this.widgets.fail.notify({ title: btName, msg: 'CONNECTION SUCCESS' })
+            this.widgets.fail.notify({ title: btName, msg: 'CONNECTED' })
             Router.focusWidget('Fail')
           }
         } else {
           if (this.widgets.fail) {
-            this.widgets.fail.notify({ title: btName, msg: 'CONNECTION FAILED' })
+            this.widgets.fail.notify({ title: btName, msg: 'DISCONNECTED' })
             Router.focusWidget('Fail')
           }
         }

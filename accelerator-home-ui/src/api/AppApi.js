@@ -568,12 +568,12 @@ export default class AppApi {
         } 
       }
     }
-    else if(callsign = "Amazon"){
+    else if(callsign === "Amazon"){
       let language = localStorage.getItem("Language");
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"
       params.configuration= { "deviceLanguage" : language};
     }
-    else if(callsign = "Netflix"){
+    else if(callsign === "Netflix"){
       let language = localStorage.getItem("Language");
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"
       params.configuration ={"language" : language};
