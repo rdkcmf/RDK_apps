@@ -426,7 +426,7 @@ export default class AppApi {
    *  @property {boolean} preventCurrentExit: optional |  true will prevent bydefault launch of previous app
    */
 
-   async launchApp(callsign, args) {
+  async launchApp(callsign, args) {
     const saveAbleRoutes = ["menu","epg","apps"] //routing back will happen to only these routes, otherwise it will default to #menu when exiting the app.
     const lastVisitedRoute = Router.getActiveHash();
     if(saveAbleRoutes.includes(lastVisitedRoute)){
@@ -554,20 +554,25 @@ export default class AppApi {
     } else if(callsign ==="Cobalt"){
       let language = localStorage.getItem("Language");
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US" //default to english US if language is not available.
-      url = url ? url : Storage.get("CobaltDefaultURL")
-      url = url + "&launch=" + launchLocation
-      if(launchLocation==="voice"){
+      // url = url ? url : Storage.get("CobaltDefaultURL")
+      let defaultURL = Storage.get("CobaltDefaultURL"); // this goes into rdkShellLaunch
+      console.log(`appending launch location to ${defaultURL}`)
+      defaultURL = defaultURL + "&launch=" + launchLocation 
+      if(url){
+        url = url + "&launch=" + launchLocation
+      }
+      if(launchLocation==="voice" && url){
         url = url + "&inApp=true&vs=2" //url specific for alexa launch
         console.log("Cobalt is being launched by alexa using the url: "+url)
-      }
-      if((pluginState === "deactivated" || pluginState === "deactivation")){ //for youtube cold launch | currently only urls from dial can be passed via configuration
+      }   
+
         params.configuration = { //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
           "language": language,
-          "url": url,
+          "url": defaultURL,
           "launchtype":"launch=" + launchLocation
         } 
       }
-    }
+    
     else if(callsign === "Amazon"){
       let language = localStorage.getItem("Language");
       language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"
@@ -636,7 +641,7 @@ export default class AppApi {
 
           }
 
-          if (callsign === "Cobalt" && url && !params.configuration) { //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
+          if (callsign === "Cobalt" && url ) { //this url is given either alexa , gracenote or by the customer via casting.
             console.log("Calling deeplink for cobalt with url: " + url);
             thunder.call(callsign, 'deeplink', url)
           }

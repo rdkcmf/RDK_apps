@@ -2,8 +2,8 @@
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
  * CLI version: 2.9.1
- * 
- * Generated: Thu, 12 Jan 2023 15:18:39 GMT
+ *
+ * Generated: Tue, 17 Jan 2023 17:30:34 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7305,21 +7305,23 @@ var APP_accelerator_home_ui = (function () {
       } else if (callsign === "Cobalt") {
         let language = localStorage.getItem("Language");
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US"; //default to english US if language is not available.
-        url = url ? url : Storage.get("CobaltDefaultURL");
-        url = url + "&launch=" + launchLocation;
-        if (launchLocation === "voice") {
+        // url = url ? url : Storage.get("CobaltDefaultURL")
+        let defaultURL = Storage.get("CobaltDefaultURL"); // this goes into rdkShellLaunch
+        console.log("appending launch location to ".concat(defaultURL));
+        defaultURL = defaultURL + "&launch=" + launchLocation;
+        if (url) {
+          url = url + "&launch=" + launchLocation;
+        }
+        if (launchLocation === "voice" && url) {
           url = url + "&inApp=true&vs=2"; //url specific for alexa launch
           console.log("Cobalt is being launched by alexa using the url: " + url);
         }
-        if (pluginState === "deactivated" || pluginState === "deactivation") {
-          //for youtube cold launch | currently only urls from dial can be passed via configuration
-          params.configuration = {
-            //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
-            "language": language,
-            "url": url,
-            "launchtype": "launch=" + launchLocation
-          };
-        }
+        params.configuration = {
+          //for gracenote cold launch url needs to be re formatted to youtube.com/tv/
+          "language": language,
+          "url": defaultURL,
+          "launchtype": "launch=" + launchLocation
+        };
       } else if (callsign === "Amazon") {
         let language = localStorage.getItem("Language");
         language = availableLanguageCodes[language] ? availableLanguageCodes[language] : "en-US";
@@ -7388,8 +7390,8 @@ var APP_accelerator_home_ui = (function () {
               }); //if netflix splash screen was launched resident app was kept visible Netflix until app launched.
             }
 
-            if (callsign === "Cobalt" && url && !params.configuration) {
-              //passing url to cobalt once launched | if params.configuration exist means no need for deeplink
+            if (callsign === "Cobalt" && url) {
+              //this url is given either alexa , gracenote or by the customer via casting.
               console.log("Calling deeplink for cobalt with url: " + url);
               thunder$e.call(callsign, 'deeplink', url);
             }
@@ -32514,16 +32516,6 @@ var APP_accelerator_home_ui = (function () {
     "8": 56,
     "9": 57,
     "F1": 112,
-    "F2": 113,
-    "F3": 114,
-    "F4": 115,
-    "F5": 116,
-    "Amazon": 117,
-    //F6
-    "Netflix": 118,
-    //F7
-    "Youtube": 119,
-    //F8
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -32596,16 +32588,23 @@ var APP_accelerator_home_ui = (function () {
     "Backspace": 8,
     "MediaRewind": 227,
     "MediaFastForward": 228,
+    "Inputs_Shortcut": 113,
+    //F2
+    "Picture_Setting_Shortcut": 114,
+    //F3
+    "Youtube": 115,
+    //F4
     "Power": 116,
     // F5
+    "Amazon": 117,
+    //F6
+    "Netflix": 118,
+    //F7, F8 Voice RCU Key
     "PageUp": 33,
     "PageDown": 34,
     "Home": 36,
     "Settings_Shortcut": 121,
-    "Guide_Shortcut": 120,
-    "Inputs_Shortcut": 113,
-    //F2
-    "Picture_Setting_Shortcut": 114 //F3
+    "Guide_Shortcut": 120
   };
 
   /**
@@ -35388,6 +35387,7 @@ var APP_accelerator_home_ui = (function () {
   }
 
   function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -35399,6 +35399,20 @@ var APP_accelerator_home_ui = (function () {
       obj[key] = value;
     }
     return obj;
+  }
+  function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+      var res = prim.call(input, hint || "default");
+      if (typeof res !== "object") return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
   }
 
   class Volume extends lng$1.Component {
@@ -47107,6 +47121,10 @@ var APP_accelerator_home_ui = (function () {
       appApi.getPluginStatus("Cobalt").then(res => {
         //to set the default url for cobalt
         console.log("getPluginStatus result: " + JSON.stringify(res));
+        if (res[0].configuration.url.includes("?") === false) {
+          res[0].configuration.url += "?";
+          console.log("Appending '?' to Cobalt base url.");
+        }
         Storage.set("CobaltDefaultURL", res[0].configuration.url);
       }).catch(err => {
         console.log("getPluginStatus ERROR: ", err);

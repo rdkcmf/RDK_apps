@@ -362,6 +362,10 @@ export default class App extends Router.App {
   _init() {
     appApi.getPluginStatus("Cobalt").then(res => { //to set the default url for cobalt
       console.log("getPluginStatus result: " + JSON.stringify(res));
+      if (res[0].configuration.url.includes("?") === false) {
+        res[0].configuration.url += "?";
+        console.log("Appending '?' to Cobalt base url.");
+      }
       Storage.set("CobaltDefaultURL",res[0].configuration.url);
     }).catch(err => {
       console.log("getPluginStatus ERROR: ",err);

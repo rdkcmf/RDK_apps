@@ -29,13 +29,6 @@ const keyMap = {
     "8": 56,
     "9": 57,
     "F1": 112,
-    "F2": 113,
-    "F3": 114,
-    "F4": 115,
-    "F5": 116,
-    "Amazon": 117, //F6
-    "Netflix": 118, //F7
-    "Youtube": 119, //F8
     "F11": 122,
     "F12": 123,
     "q": 81,
@@ -108,14 +101,17 @@ const keyMap = {
     "Backspace": 8,
     "MediaRewind": 227,
     "MediaFastForward": 228,
+    "Inputs_Shortcut": 113, //F2
+    "Picture_Setting_Shortcut": 114, //F3
+    "Youtube": 115, //F4
     "Power": 116, // F5
+    "Amazon": 117, //F6
+    "Netflix": 118, //F7, F8 Voice RCU Key
     "PageUp": 33,
     "PageDown": 34,
     "Home": 36,
     "Settings_Shortcut": 121,
     "Guide_Shortcut": 120,
-    "Inputs_Shortcut": 113, //F2
-    "Picture_Setting_Shortcut": 114, //F3
 }
 
 export default keyMap
