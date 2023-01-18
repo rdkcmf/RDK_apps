@@ -2,8 +2,8 @@
  * App version: 3.7 19/07/22
  * SDK version: 4.8.3
  * CLI version: 2.9.1
- *
- * Generated: Tue, 17 Jan 2023 17:30:34 GMT
+ * 
+ * Generated: Wed, 18 Jan 2023 06:14:43 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -6162,7 +6162,7 @@ var APP_accelerator_home_ui = (function () {
       ...plugins
     });
   };
-  const resolve = (result, args) => {
+  const resolve$1 = (result, args) => {
     if (typeof result !== 'object' || typeof result === 'object' && (!result.then || typeof result.then !== 'function')) {
       result = new Promise((resolve, reject) => {
         result instanceof Error === false ? resolve(result) : reject(result);
@@ -6237,7 +6237,7 @@ var APP_accelerator_home_ui = (function () {
               for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                 args[_key2] = arguments[_key2];
               }
-              return resolve(prop.apply(this, args), args);
+              return resolve$1(prop.apply(this, args), args);
             };
           }
           if (typeof prop === 'object') {
@@ -11518,7 +11518,7 @@ var APP_accelerator_home_ui = (function () {
       }
       this._refocus();
       this.scrollCollectionWrapper(obj);
-      if (obj.previousIndex !== obj.index) {
+      if (previous !== target) {
         this.signal('onIndexChanged', obj);
       }
     }
@@ -11927,7 +11927,7 @@ var APP_accelerator_home_ui = (function () {
       return this.wrapper.children[this._index];
     }
     get currentItem() {
-      return this.currentItemWrapper && this.currentItemWrapper.component || undefined;
+      return this.currentItemWrapper.component;
     }
     set direction(string) {
       this._direction = CollectionWrapper.DIRECTION[string] || CollectionWrapper.DIRECTION.row;
@@ -11972,7 +11972,7 @@ var APP_accelerator_home_ui = (function () {
     set scroll(value) {
       this._scroll = value;
     }
-    get scroll() {
+    get scrollTo() {
       return this._scroll;
     }
     set autoResize(bool) {
@@ -35387,7 +35387,6 @@ var APP_accelerator_home_ui = (function () {
   }
 
   function _defineProperty(obj, key, value) {
-    key = _toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -35399,20 +35398,6 @@ var APP_accelerator_home_ui = (function () {
       obj[key] = value;
     }
     return obj;
-  }
-  function _toPrimitive(input, hint) {
-    if (typeof input !== "object" || input === null) return input;
-    var prim = input[Symbol.toPrimitive];
-    if (prim !== undefined) {
-      var res = prim.call(input, hint || "default");
-      if (typeof res !== "object") return res;
-      throw new TypeError("@@toPrimitive must return a primitive value.");
-    }
-    return (hint === "string" ? String : Number)(input);
-  }
-  function _toPropertyKey(arg) {
-    var key = _toPrimitive(arg, "string");
-    return typeof key === "symbol" ? key : String(key);
   }
 
   class Volume extends lng$1.Component {
@@ -46781,6 +46766,26 @@ var APP_accelerator_home_ui = (function () {
       "route": "settings/other/privacy"
     }
   };
+  const errorPayload = {
+    "msgPayload": {
+      "event": {
+        "header": {
+          "namespace": "Alexa",
+          "name": "ErrorResponse",
+          "messageId": "Unique identifier, preferably a version 4 UUID",
+          "correlationToken": "Opaque correlation token that matches the request",
+          "payloadVersion": "3"
+        },
+        "endpoint": {
+          "endpointId": "Endpoint ID"
+        },
+        "payload": {
+          "type": "Error type",
+          "message": "Error message"
+        }
+      }
+    }
+  };
 
   /**
    * If not stated otherwise in this file or this component's LICENSE
@@ -47276,7 +47281,26 @@ var APP_accelerator_home_ui = (function () {
                 if (appCallsign) {
                   //appCallsign is valid means target is an app and it needs to be launched
                   appApi.launchApp(appCallsign, params).catch(err => {
+                    console.log("checkerrstatusAlexa", err);
+                    if (err.includes("Netflix")) {
+                      errorPayload.msgPayload.event.payload.type = "AppId is not supported in RDK";
+                      errorPayload.msgPayload.event.payload.message = "AppId is not supported in RDK,";
+                    } else {
+                      errorPayload.msgPayload.event.payload.type = "ENDPOINT_UNREACHABLE";
+                      errorPayload.msgPayload.event.payload.message = "ENDPOINT_UNREACHABLE";
+                    }
+                    errorPayload.msgPayload.event.header.correlationToken = notification.xr_speech_avs.directive.header.correlationToken;
+                    errorPayload.msgPayload.event.header.payloadVersion = notification.xr_speech_avs.directive.header.payloadVersion;
+                    errorPayload.msgPayload.event.endpoint.endpointId = notification.xr_speech_avs.directive.endpoint.endpointId;
+                    console.log("errorpayload", errorPayload);
                     console.error("Error in launching " + appCallsign + " via Alexa: " + JSON.stringify(err));
+                    thunder.call('org.rdk.VoiceControl', 'sendVoiceMessage', {
+                      params: errorPayload
+                    }).then(result => {
+                      console.log("alexaError", result);
+                    }).catch(err => {
+                      resolve(false);
+                    });
                   });
                 } else if (targetRoute) {
                   this.jumpToRoute(targetRoute); // exits the app if any and navigates to the specific route.

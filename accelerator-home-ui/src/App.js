@@ -32,7 +32,7 @@ import DTVApi from './api/DTVApi';
 import TvOverlayScreen from './tvOverlay/TvOverlayScreen';
 import ChannelOverlay from './MediaPlayer/ChannelOverlay';
 import SettingsOverlay from './overlays/SettingsOverlay';
-import { AlexaLauncherKeyMap } from './Config/AlexaConfig';
+import { AlexaLauncherKeyMap, errorPayload} from './Config/AlexaConfig';
 
 const config = {
   host: '127.0.0.1',
@@ -515,7 +515,23 @@ export default class App extends Router.App {
               console.log("Alexa is trying to launch "+ appCallsign + " using params: "+ JSON.stringify(params))
               if(appCallsign){ //appCallsign is valid means target is an app and it needs to be launched
                 appApi.launchApp(appCallsign,params).catch(err => {
-                  console.error("Error in launching "+ appCallsign + " via Alexa: " + JSON.stringify(err))
+                  console.log("checkerrstatusAlexa", err)
+                  if(err.includes("Netflix")){
+                    errorPayload.msgPayload.event.payload.type = "AppId is not supported in RDK"
+                    errorPayload.msgPayload.event.payload.message ="AppId is not supported in RDK,"
+                  }
+                  else{
+                    errorPayload.msgPayload.event.payload.type = "ENDPOINT_UNREACHABLE"
+                    errorPayload.msgPayload.event.payload.message ="ENDPOINT_UNREACHABLE"
+                  }
+                errorPayload.msgPayload.event.header.correlationToken = notification.xr_speech_avs.directive.header.correlationToken
+                errorPayload.msgPayload.event.header.payloadVersion = notification.xr_speech_avs.directive.header.payloadVersion
+                errorPayload.msgPayload.event.endpoint.endpointId = notification.xr_speech_avs.directive.endpoint.endpointId
+                console.log("errorpayload",errorPayload)
+                console.error("Error in launching "+ appCallsign + " via Alexa: " + JSON.stringify(err))
+               thunder.call('org.rdk.VoiceControl', 'sendVoiceMessage',{ params: errorPayload }).then(result =>{console.log("alexaError", result)}).catch(err => {
+                resolve(false)
+              })
                 });
               } else if(targetRoute){
                 this.jumpToRoute(targetRoute);// exits the app if any and navigates to the specific route.

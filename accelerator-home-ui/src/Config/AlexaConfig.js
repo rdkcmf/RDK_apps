@@ -134,3 +134,24 @@ export const AlexaLauncherKeyMap = { //app/shortcuts identifier and callsign map
         "route": "settings/other/privacy"
     },
   };
+  export const errorPayload =
+  {
+    "msgPayload":{
+    "event": {
+      "header": {
+        "namespace": "Alexa",
+        "name": "ErrorResponse",
+        "messageId": "Unique identifier, preferably a version 4 UUID",
+         "correlationToken": "Opaque correlation token that matches the request",
+        "payloadVersion": "3"
+      },
+      "endpoint":{
+        "endpointId": "Endpoint ID"
+      },
+      "payload": {
+        "type": "Error type",
+        "message": "Error message"
+      }
+    }
+   }
+  }
