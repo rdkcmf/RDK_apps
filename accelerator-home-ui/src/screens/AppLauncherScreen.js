@@ -19,6 +19,7 @@
 
 import { Lightning, Registry, Router, Storage, Utils } from "@lightningjs/sdk";
 import ThunderJS from "ThunderJS";
+import AppApi from "../api/AppApi";
 
 //applauncher screen "will" be responsible for handling all overlays as widget and splash screens for apps(if required) | currently only handles settings overlay widget
 export default class AppLauncherScreen extends Lightning.Component {
@@ -83,7 +84,7 @@ export default class AppLauncherScreen extends Lightning.Component {
   }
 
   _firstEnable() {
-    console.log("app-overlay is enabled for firstTime");
+    console.log("AppLauncherScreen is enabled for firstTime");
     this.splashImages = {
       "Netflix": 'images/apps/App_Netflix_Splash.png'
     }; //mapping between callsigns and splash images
@@ -93,20 +94,25 @@ export default class AppLauncherScreen extends Lightning.Component {
       default: 1,
     };
     this._thunder = ThunderJS(config);
+    this.appApi = new AppApi();
   }
 
   _focus() {
-    console.log("app-overlay is focused");
+    console.log("AppLauncherScreen is focused");
   }
 
-  _handleBack() {
-    Router.navigate(Storage.get("lastVisitedRoute"));
-  }
-
-  _handleLeft() {
-    console.log("Router History: ", Router.getHistory());
-  }
-  _handleRight() {
-    console.log("getActiveWidget: ", Router.getActiveWidget());
+  _handleKey() {
+    console.log("AppLauncherScreen is in focus, returning focus to corresponding app")
+    if(Storage.get("applicationType") === "") { //if appLauncher screen is in focus while on residentApp
+      this.appApi.zorder("ResidentApp");
+      this.appApi.setFocus("ResidentApp");
+      this.appApi.visible("ResidentApp", true);
+      Router.navigate(Storage.get("lastVisitedRoute"));
+    } else { //when appLauncher screen is in focus while on other apps
+      let currentApp = Storage.get("applicationType");
+      this.appApi.zorder(currentApp);
+      this.appApi.setFocus(currentApp);
+      this.appApi.visible(currentApp, true);
+    }
   }
 }

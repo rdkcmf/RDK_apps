@@ -287,66 +287,66 @@ export default class App extends Router.App {
       })
       return true
 
-    } else if (key.keyCode == Keymap.AudioVolumeMute) {
-      if (Storage.get('applicationType') !== '') {
-        let activePage = Router.getActiveRoute()
-        if (activePage !== 'overlay/volume') {
-          Router.navigate('overlay/volume', { flag: true, route: activePage })
-          this._moveToFront()
-        } else {
-          this._moveToFront()
-          let page = Router.getActivePage()
-          page.onVolumeMute()
+    } else if (key.keyCode === Keymap.AudioVolumeMute) {
+      if (Storage.get('applicationType') === ''){
+        this.tag("Volume").onVolumeMute();
+      } else {
+        console.log("muting on some app")
+        if(Router.getActiveHash() === "applauncher"){
+          console.log("muting on some app while route is app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          this.tag("Volume").onVolumeMute();
+        } else  {
+          console.log("muting on some app while route is NOT app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          Router.navigate("applauncher");
+          this.tag("Volume").onVolumeMute();
         }
-      }
-      else {
-        if (Router.getActiveWidget()) {
-          let page = Router.getActiveWidget()
-          page.onVolumeMute()
-        }
-        Router.focusWidget('Volume')
       }
       return true
 
     } else if (key.keyCode == Keymap.AudioVolumeUp) {
-      if (Storage.get('applicationType') !== '') {
-        let activePage = Router.getActiveRoute()
-        if (activePage !== 'overlay/volume') {
-          Router.navigate('overlay/volume', { flag: true, route: activePage })
-          this._moveToFront()
-        } else {
-          this._moveToFront()
-          let page = Router.getActivePage()
-          page.onVolumeKeyUp()
+
+      if(Storage.get('applicationType') === ''){
+        this.tag("Volume").onVolumeKeyUp();
+      } else {
+        console.log("muting on some app")
+        if(Router.getActiveHash() === "applauncher"){
+          console.log("muting on some app while route is app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          this.tag("Volume").onVolumeKeyUp();
+        } else  {
+          console.log("muting on some app while route is NOT app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          Router.navigate("applauncher");
+          this.tag("Volume").onVolumeKeyUp();
         }
-      }
-      else {
-        if (Router.getActiveWidget()) {
-          let page = Router.getActiveWidget()
-          page.onVolumeKeyUp()
-        }
-        Router.focusWidget('Volume')
       }
       return true
 
     } else if (key.keyCode == Keymap.AudioVolumeDown) {
-      if (Storage.get('applicationType') !== '') {
-        let activePage = Router.getActiveRoute()
-        if (activePage !== 'overlay/volume') {
-          Router.navigate('overlay/volume', { flag: true, route: activePage })
-          this._moveToFront()
-        } else {
-          this._moveToFront()
-          let page = Router.getActivePage()
-          page.onVolumeKeyDown()
+
+
+      if(Storage.get('applicationType') === ''){
+        this.tag("Volume").onVolumeKeyDown();
+      } else {
+        console.log("muting on some app")
+        if(Router.getActiveHash() === "applauncher"){
+          console.log("muting on some app while route is app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          this.tag("Volume").onVolumeKeyDown();
+        } else  {
+          console.log("muting on some app while route is NOT app launcher")
+          appApi.zorder("ResidentApp")
+          appApi.visible("ResidentApp", true)
+          Router.navigate("applauncher");
+          this.tag("Volume").onVolumeKeyDown();
         }
-      }
-      else {
-        if (Router.getActiveWidget()) {
-          let page = Router.getActiveWidget()
-          page.onVolumeKeyDown()
-        }
-        Router.focusWidget('Volume')
       }
       return true
     }
@@ -447,7 +447,7 @@ export default class App extends Router.App {
               }
 
 
-              appApi.visibile('ResidentApp', false);
+              appApi.visible('ResidentApp', false);
             }
             if (notification.EventName === "requestsuspend") {
               this.deactivateChildApp('Netflix')

@@ -35,7 +35,6 @@ import AppStore from '../views/AppStore'
 import detailsScreenRoutes from './detailsScreenRoutes'
 import liveTvRoutes from './liveTvRoutes'
 import TvOverlayScreen from '../tvOverlay/TvOverlayScreen'
-import Volume from '../tvOverlay/components/Volume'
 import EPGScreen from "../screens/EpgScreens/Epg"
 import DTVPlayer from '../MediaPlayer/DTVPlayer'
 import AppLauncherScreen from '../screens/AppLauncherScreen'
@@ -133,13 +132,9 @@ export default {
       }
     },
     {
-      path: 'overlay/volume',
-      component: Volume
-    },
-    {
       path: 'applauncher',
       component: AppLauncherScreen,
-      widgets: ['SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
+      widgets: ['Volume','SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
     },
     {
       path: 'player',

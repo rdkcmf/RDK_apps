@@ -3,7 +3,7 @@
  * SDK version: 4.8.3
  * CLI version: 2.9.1
  * 
- * Generated: Wed, 18 Jan 2023 06:14:43 GMT
+ * Generated: Fri, 20 Jan 2023 10:02:07 GMT
  */
 
 var APP_accelerator_home_ui = (function () {
@@ -7894,7 +7894,7 @@ var APP_accelerator_home_ui = (function () {
         }
       });
     }
-    visibile(client, visible) {
+    visible(client, visible) {
       return new Promise((resolve, reject) => {
         thunder$e.call('org.rdk.RDKShell', 'setVisibility', {
           client: client,
@@ -10501,21 +10501,7 @@ var APP_accelerator_home_ui = (function () {
       if (!Router.isNavigating()) {
         Router.navigate('menu');
       }
-      // console.log("application Type = ", Storage.get("applicationType"))
-      // if (Storage.get("applicationType") == "") {
-      //   Router.navigate('menu')
-      // }
-      // else {
-      //   this.appApi.visibile("ResidentApp", false)
-      //   let appType = Storage.get("applicationType");
-      //   if (appType === "WebApp") {
-      //     appType = "HtmlApp"
-      //   }
-      //   this.appApi.setFocus(appType)
-      //   this.appApi.zorder(appType)
-      // }
     }
-
     static _states() {
       return [class NetworkConfiguration extends this {
         $enter() {
@@ -11518,7 +11504,7 @@ var APP_accelerator_home_ui = (function () {
       }
       this._refocus();
       this.scrollCollectionWrapper(obj);
-      if (previous !== target) {
+      if (obj.previousIndex !== obj.index) {
         this.signal('onIndexChanged', obj);
       }
     }
@@ -11927,7 +11913,7 @@ var APP_accelerator_home_ui = (function () {
       return this.wrapper.children[this._index];
     }
     get currentItem() {
-      return this.currentItemWrapper.component;
+      return this.currentItemWrapper && this.currentItemWrapper.component || undefined;
     }
     set direction(string) {
       this._direction = CollectionWrapper.DIRECTION[string] || CollectionWrapper.DIRECTION.row;
@@ -11972,7 +11958,7 @@ var APP_accelerator_home_ui = (function () {
     set scroll(value) {
       this._scroll = value;
     }
-    get scrollTo() {
+    get scroll() {
       return this._scroll;
     }
     set autoResize(bool) {
@@ -35386,172 +35372,6 @@ var APP_accelerator_home_ui = (function () {
     }
   }
 
-  function _defineProperty(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
-    return obj;
-  }
-
-  class Volume extends lng$1.Component {
-    constructor() {
-      super(...arguments);
-      _defineProperty(this, "setVolume", async val => {
-        const value = await this.appApi.setVolumeLevel('HDMI0', val);
-        return value;
-      });
-      _defineProperty(this, "setMute", async val => {
-        const status = await this.appApi.audio_mute('HDMI0', val);
-        return status;
-      });
-    }
-    static _template() {
-      return {
-        rect: true,
-        w: 1920,
-        h: 320,
-        color: 0xFF000000,
-        y: -320,
-        alpha: 0.9,
-        transitions: {
-          y: {
-            duration: .3,
-            timingFunction: 'cubic-bezier(0.17, 0.9, 0.32, 1.3)'
-          },
-          h: {
-            duration: .3,
-            timingFunction: 'cubic-bezier(0.17, 0.9, 0.32, 1.3)'
-          }
-        },
-        Overlay: {
-          Line: {
-            y: 317,
-            h: 3,
-            w: 1920,
-            rect: true,
-            color: 0xffffffff
-          }
-        },
-        VolumeInfo: {
-          alpha: 1,
-          zIndex: 2,
-          y: 160,
-          x: 960,
-          mountX: 0.5,
-          mountY: 0.5,
-          h: 100,
-          w: 100,
-          src: Utils.asset('/images/volume/Volume.png'),
-          Text: {
-            x: 100,
-            y: 0,
-            text: {
-              text: 0,
-              fontSize: 80,
-              fontFace: CONFIG.language.font
-            }
-          }
-        }
-      };
-    }
-    _firstEnable() {
-      this.appApi = new AppApi();
-      this.volTimeout = null;
-      this.volume = 0;
-      this.mute = false;
-      this.appApi.getConnectedAudioPorts().then(res => {
-        this.appApi.getVolumeLevel(res.connectedAudioPorts[0]).then(res1 => {
-          this.appApi.muteStatus(res.connectedAudioPorts[0]).then(result => {
-            this.mute = result.muted;
-          });
-          if (res1) {
-            this.volume = parseInt(res1.volumeLevel);
-            this._updateText(this.volume);
-          }
-        });
-      }).catch(err => {
-        this._updateText(this.volume);
-      });
-    }
-    onVolumeKeyDown() {
-      this.volTimeout && Registry.clearTimeout(this.volTimeout);
-      this.volTimeout = Registry.setTimeout(() => {
-        this._handleBack();
-      }, 2000);
-      if (this.volume > 0) {
-        this.volume -= 5;
-        if (this.setVolume(this.volume)) this._updateText(this.volume);
-      }
-    }
-    onVolumeKeyUp() {
-      this.volTimeout && Registry.clearTimeout(this.volTimeout);
-      this.volTimeout = Registry.setTimeout(() => {
-        this._handleBack();
-      }, 2000);
-      if (this.volume < 100) {
-        this.volume += 5;
-        if (this.setVolume(this.volume)) this._updateText(this.volume);
-      }
-    }
-    onVolumeMute() {
-      this.volTimeout && Registry.clearTimeout(this.volTimeout);
-      this.volTimeout = Registry.setTimeout(() => {
-        this._handleBack();
-      }, 2000);
-      if (this.setMute(!this.mute)) {
-        this.mute = !this.mute;
-        this._updateIcon(this.mute);
-      }
-    }
-    _updateText(val) {
-      this.tag('Text').text.text = val;
-    }
-    _updateIcon(check) {
-      if (check) {
-        this.tag('VolumeInfo').src = Utils.asset('images/volume/Volume_Mute.png');
-      } else {
-        this.tag('VolumeInfo').src = Utils.asset('/images/volume/Volume.png');
-      }
-    }
-    _focus() {
-      this.volTimeout = Registry.setTimeout(() => {
-        this._handleBack();
-      }, 2000);
-      this.patch({
-        smooth: {
-          y: -30
-        }
-      });
-    }
-    _unfocus() {
-      this.volTimeout && Registry.clearTimeout(this.volTimeout);
-      this.patch({
-        smooth: {
-          y: -320
-        }
-      });
-    }
-    _handleBack() {
-      console.log(Storage.get('applicationType'));
-      if (Storage.get('applicationType')) {
-        this.appApi.visibile('ResidentApp', false);
-        this.appApi.setVisibility(Storage.get('applicationType'), true);
-      } else {
-        Router.focusPage();
-      }
-    }
-    static _states() {
-      return [];
-    }
-  }
-
   /**
    * If not stated otherwise in this file or this component's LICENSE
    * file the following copyright and licenses apply:
@@ -36675,7 +36495,7 @@ var APP_accelerator_home_ui = (function () {
       });
     }
     _firstEnable() {
-      console.log("app-overlay is enabled for firstTime");
+      console.log("AppLauncherScreen is enabled for firstTime");
       this.splashImages = {
         "Netflix": 'images/apps/App_Netflix_Splash.png'
       }; //mapping between callsigns and splash images
@@ -36685,18 +36505,26 @@ var APP_accelerator_home_ui = (function () {
         default: 1
       };
       this._thunder = thunderJS(config);
+      this.appApi = new AppApi();
     }
     _focus() {
-      console.log("app-overlay is focused");
+      console.log("AppLauncherScreen is focused");
     }
-    _handleBack() {
-      Router.navigate(Storage.get("lastVisitedRoute"));
-    }
-    _handleLeft() {
-      console.log("Router History: ", Router.getHistory());
-    }
-    _handleRight() {
-      console.log("getActiveWidget: ", Router.getActiveWidget());
+    _handleKey() {
+      console.log("AppLauncherScreen is in focus, returning focus to corresponding app");
+      if (Storage.get("applicationType") === "") {
+        //if appLauncher screen is in focus while on residentApp
+        this.appApi.zorder("ResidentApp");
+        this.appApi.setFocus("ResidentApp");
+        this.appApi.visible("ResidentApp", true);
+        Router.navigate(Storage.get("lastVisitedRoute"));
+      } else {
+        //when appLauncher screen is in focus while on other apps
+        let currentApp = Storage.get("applicationType");
+        this.appApi.zorder(currentApp);
+        this.appApi.setFocus(currentApp);
+        this.appApi.visible(currentApp, true);
+      }
     }
   }
 
@@ -36790,12 +36618,9 @@ var APP_accelerator_home_ui = (function () {
         preventStorage: true
       }
     }, {
-      path: 'overlay/volume',
-      component: Volume
-    }, {
       path: 'applauncher',
       component: AppLauncherScreen,
-      widgets: ['SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
+      widgets: ['Volume', 'SettingsOverlay'] //other overlays needs to be added to improve ovelay functionality.
     }, {
       path: 'player',
       component: AAMPVideoPlayer,
@@ -37693,6 +37518,167 @@ var APP_accelerator_home_ui = (function () {
     }).catch(err => {
       console.log('Error', err);
     });
+  }
+
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+    return obj;
+  }
+
+  class Volume extends lng$1.Component {
+    constructor() {
+      super(...arguments);
+      _defineProperty(this, "setVolume", async val => {
+        const value = await this.appApi.setVolumeLevel('HDMI0', val);
+        return value;
+      });
+      _defineProperty(this, "setMute", async val => {
+        const status = await this.appApi.audio_mute('HDMI0', val);
+        return status;
+      });
+    }
+    static _template() {
+      return {
+        rect: true,
+        w: 1920,
+        h: 320,
+        color: 0xFF000000,
+        y: -320,
+        alpha: 0.9,
+        transitions: {
+          y: {
+            duration: .3,
+            timingFunction: 'cubic-bezier(0.17, 0.9, 0.32, 1.3)'
+          },
+          h: {
+            duration: .3,
+            timingFunction: 'cubic-bezier(0.17, 0.9, 0.32, 1.3)'
+          }
+        },
+        Overlay: {
+          Line: {
+            y: 317,
+            h: 3,
+            w: 1920,
+            rect: true,
+            color: 0xffffffff
+          }
+        },
+        VolumeInfo: {
+          alpha: 1,
+          zIndex: 2,
+          y: 160,
+          x: 960,
+          mountX: 0.5,
+          mountY: 0.5,
+          h: 100,
+          w: 100,
+          src: Utils.asset('/images/volume/Volume.png'),
+          Text: {
+            x: 100,
+            y: 0,
+            text: {
+              text: 0,
+              fontSize: 80,
+              fontFace: CONFIG.language.font
+            }
+          }
+        }
+      };
+    }
+    _firstEnable() {
+      this.appApi = new AppApi();
+      this.volTimeout = null;
+      this.volume = 0;
+      this.mute = false;
+      this.updateValues();
+    }
+    onVolumeKeyDown() {
+      this.focus();
+      this.volTimeout && Registry.clearTimeout(this.volTimeout);
+      this.volTimeout = Registry.setTimeout(() => {
+        this.unfocus();
+      }, 2000);
+      if (this.volume > 0) {
+        this.volume -= 5;
+        if (this.setVolume(this.volume)) this._updateText(this.volume);
+      }
+    }
+    onVolumeKeyUp() {
+      this.focus();
+      this.volTimeout && Registry.clearTimeout(this.volTimeout);
+      this.volTimeout = Registry.setTimeout(() => {
+        this.unfocus();
+      }, 2000);
+      if (this.volume < 100) {
+        this.volume += 5;
+        if (this.setVolume(this.volume)) this._updateText(this.volume);
+      }
+    }
+    onVolumeMute() {
+      this.focus();
+      this.volTimeout && Registry.clearTimeout(this.volTimeout);
+      this.volTimeout = Registry.setTimeout(() => {
+        this.unfocus();
+      }, 2000);
+      if (this.setMute(!this.mute)) {
+        this.mute = !this.mute;
+        this._updateIcon(this.mute);
+      }
+    }
+    _updateText(val) {
+      this.tag('Text').text.text = val;
+    }
+    _updateIcon(check) {
+      if (check) {
+        this.tag('VolumeInfo').src = Utils.asset('images/volume/Volume_Mute.png');
+      } else {
+        this.tag('VolumeInfo').src = Utils.asset('/images/volume/Volume.png');
+      }
+    }
+    focus() {
+      //the volume widget would never be actually focused
+      this.patch({
+        smooth: {
+          y: -30
+        }
+      });
+      this.updateValues();
+    }
+    unfocus() {
+      //the volume widget would never be actually focused
+      this.volTimeout && Registry.clearTimeout(this.volTimeout);
+      this.patch({
+        smooth: {
+          y: -320
+        }
+      });
+    }
+    updateValues() {
+      this.appApi.getConnectedAudioPorts().then(res => {
+        this.appApi.getVolumeLevel(res.connectedAudioPorts[0]).then(res1 => {
+          this.appApi.muteStatus(res.connectedAudioPorts[0]).then(result => {
+            this.mute = result.muted;
+            this._updateIcon(this.mute);
+          });
+          if (res1) {
+            this.volume = parseInt(res1.volumeLevel);
+            this._updateText(this.volume);
+          }
+        });
+      }).catch(err => {
+        this._updateText(this.volume);
+      });
+    }
   }
 
   /**
@@ -46348,7 +46334,7 @@ var APP_accelerator_home_ui = (function () {
         }
       } else {
         Router.focusPage();
-        this.appApi.visibile("ResidentApp", false);
+        this.appApi.visible("ResidentApp", false);
         this.appApi.setFocus(Storage.get("applicationType"));
       }
     }
@@ -47049,70 +47035,61 @@ var APP_accelerator_home_ui = (function () {
           powerState = 'DEEP_SLEEP';
         });
         return true;
-      } else if (key.keyCode == keyMap.AudioVolumeMute) {
-        if (Storage.get('applicationType') !== '') {
-          let activePage = Router.getActiveRoute();
-          if (activePage !== 'overlay/volume') {
-            Router.navigate('overlay/volume', {
-              flag: true,
-              route: activePage
-            });
-            this._moveToFront();
-          } else {
-            this._moveToFront();
-            let page = Router.getActivePage();
-            page.onVolumeMute();
-          }
+      } else if (key.keyCode === keyMap.AudioVolumeMute) {
+        if (Storage.get('applicationType') === '') {
+          this.tag("Volume").onVolumeMute();
         } else {
-          if (Router.getActiveWidget()) {
-            let page = Router.getActiveWidget();
-            page.onVolumeMute();
+          console.log("muting on some app");
+          if (Router.getActiveHash() === "applauncher") {
+            console.log("muting on some app while route is app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            this.tag("Volume").onVolumeMute();
+          } else {
+            console.log("muting on some app while route is NOT app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            Router.navigate("applauncher");
+            this.tag("Volume").onVolumeMute();
           }
-          Router.focusWidget('Volume');
         }
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeUp) {
-        if (Storage.get('applicationType') !== '') {
-          let activePage = Router.getActiveRoute();
-          if (activePage !== 'overlay/volume') {
-            Router.navigate('overlay/volume', {
-              flag: true,
-              route: activePage
-            });
-            this._moveToFront();
-          } else {
-            this._moveToFront();
-            let page = Router.getActivePage();
-            page.onVolumeKeyUp();
-          }
+        if (Storage.get('applicationType') === '') {
+          this.tag("Volume").onVolumeKeyUp();
         } else {
-          if (Router.getActiveWidget()) {
-            let page = Router.getActiveWidget();
-            page.onVolumeKeyUp();
+          console.log("muting on some app");
+          if (Router.getActiveHash() === "applauncher") {
+            console.log("muting on some app while route is app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            this.tag("Volume").onVolumeKeyUp();
+          } else {
+            console.log("muting on some app while route is NOT app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            Router.navigate("applauncher");
+            this.tag("Volume").onVolumeKeyUp();
           }
-          Router.focusWidget('Volume');
         }
         return true;
       } else if (key.keyCode == keyMap.AudioVolumeDown) {
-        if (Storage.get('applicationType') !== '') {
-          let activePage = Router.getActiveRoute();
-          if (activePage !== 'overlay/volume') {
-            Router.navigate('overlay/volume', {
-              flag: true,
-              route: activePage
-            });
-            this._moveToFront();
-          } else {
-            this._moveToFront();
-            let page = Router.getActivePage();
-            page.onVolumeKeyDown();
-          }
+        if (Storage.get('applicationType') === '') {
+          this.tag("Volume").onVolumeKeyDown();
         } else {
-          if (Router.getActiveWidget()) {
-            let page = Router.getActiveWidget();
-            page.onVolumeKeyDown();
+          console.log("muting on some app");
+          if (Router.getActiveHash() === "applauncher") {
+            console.log("muting on some app while route is app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            this.tag("Volume").onVolumeKeyDown();
+          } else {
+            console.log("muting on some app while route is NOT app launcher");
+            appApi.zorder("ResidentApp");
+            appApi.visible("ResidentApp", true);
+            Router.navigate("applauncher");
+            this.tag("Volume").onVolumeKeyDown();
           }
-          Router.focusWidget('Volume');
         }
         return true;
       }
@@ -47217,7 +47194,7 @@ var APP_accelerator_home_ui = (function () {
                     console.error("Netflix : error while updating nfrstatus ".concat(nerr));
                   });
                 }
-                appApi.visibile('ResidentApp', false);
+                appApi.visible('ResidentApp', false);
               }
               if (notification.EventName === "requestsuspend") {
                 this.deactivateChildApp('Netflix');

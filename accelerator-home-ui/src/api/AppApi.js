@@ -1179,7 +1179,7 @@ export default class AppApi {
     })
   }
 
-  visibile(client, visible) {
+  visible(client, visible) {
     return new Promise((resolve, reject) => {
       thunder.call('org.rdk.RDKShell', 'setVisibility', {
         client: client,

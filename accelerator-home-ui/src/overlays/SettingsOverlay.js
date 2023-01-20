@@ -306,7 +306,7 @@ var thunder = ThunderJS(config);
        }
      } else {
        Router.focusPage();
-       this.appApi.visibile("ResidentApp", false);
+       this.appApi.visible("ResidentApp", false);
        this.appApi.setFocus(Storage.get("applicationType"));
      }
    }

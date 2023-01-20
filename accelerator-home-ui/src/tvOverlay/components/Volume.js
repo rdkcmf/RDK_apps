@@ -17,7 +17,7 @@
  * limitations under the License.
  **/
 
-import { Lightning, Registry, Router, Storage, Utils } from "@lightningjs/sdk";
+import { Lightning, Registry, Utils } from "@lightningjs/sdk";
 import AppApi from "../../api/AppApi";
 import { CONFIG } from "../../Config/Config";
 
@@ -66,31 +66,14 @@ export default class Volume extends Lightning.Component {
         this.volTimeout = null
         this.volume = 0
         this.mute = false;
-        this.appApi.getConnectedAudioPorts()
-            .then(res => {
-                this.appApi.getVolumeLevel(res.connectedAudioPorts[0])
-                    .then(res1 => {
-                        this.appApi.muteStatus(res.connectedAudioPorts[0])
-                            .then(result => {
-                                this.mute = result.muted;
-                            });
-                        if (res1) {
-                            this.volume = parseInt(res1.volumeLevel);
-                            this._updateText(this.volume);
-                        }
-                    });
-
-
-            })
-            .catch(err => {
-                this._updateText(this.volume)
-            })
+        this.updateValues();
     }
 
     onVolumeKeyDown() {
+        this.focus();
         this.volTimeout && Registry.clearTimeout(this.volTimeout)
         this.volTimeout = Registry.setTimeout(() => {
-            this._handleBack()
+            this.unfocus()
         }, 2000)
         if (this.volume > 0) {
             this.volume -= 5;
@@ -100,9 +83,10 @@ export default class Volume extends Lightning.Component {
     }
 
     onVolumeKeyUp() {
+        this.focus();
         this.volTimeout && Registry.clearTimeout(this.volTimeout)
         this.volTimeout = Registry.setTimeout(() => {
-            this._handleBack()
+            this.unfocus()
         }, 2000)
         if (this.volume < 100) {
             this.volume += 5;
@@ -112,9 +96,10 @@ export default class Volume extends Lightning.Component {
     }
 
     onVolumeMute() {
+        this.focus();
         this.volTimeout && Registry.clearTimeout(this.volTimeout)
         this.volTimeout = Registry.setTimeout(() => {
-            this._handleBack()
+            this.unfocus()
         }, 2000)
         if (this.setMute(!this.mute)) {
             this.mute = !this.mute
@@ -143,18 +128,16 @@ export default class Volume extends Lightning.Component {
         }
     }
 
-    _focus() {
-        this.volTimeout = Registry.setTimeout(() => {
-            this._handleBack()
-        }, 2000)
+    focus() { //the volume widget would never be actually focused
         this.patch({
             smooth: {
                 y: -30
             }
         })
+        this.updateValues();
     }
 
-    _unfocus() {
+    unfocus() { //the volume widget would never be actually focused
         this.volTimeout && Registry.clearTimeout(this.volTimeout)
         this.patch({
             smooth: {
@@ -163,18 +146,24 @@ export default class Volume extends Lightning.Component {
         })
     }
 
-    _handleBack() {
-        console.log(Storage.get('applicationType'))
-        if (Storage.get('applicationType')) {
-            this.appApi.visibile('ResidentApp', false)
-            this.appApi.setVisibility(Storage.get('applicationType'), true)
-        }
-        else {
-            Router.focusPage()
-        }
-    }
-
-    static _states() {
-        return [];
+    updateValues() {
+        this.appApi.getConnectedAudioPorts()
+            .then(res => {
+                this.appApi.getVolumeLevel(res.connectedAudioPorts[0])
+                    .then(res1 => {
+                        this.appApi.muteStatus(res.connectedAudioPorts[0])
+                            .then(result => {
+                                this.mute = result.muted;
+                                this._updateIcon(this.mute);
+                            });
+                        if (res1) {
+                            this.volume = parseInt(res1.volumeLevel);
+                            this._updateText(this.volume);
+                        }
+                    });
+            })
+            .catch(err => {
+                this._updateText(this.volume)
+            })
     }
 }
